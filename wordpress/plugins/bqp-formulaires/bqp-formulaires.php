@@ -1,0 +1,1488 @@
+<?php
+/**
+ * Plugin Name:       BQP Formulaires
+ * Description:       Créateur de formulaires de contact. Chaque formulaire génère son propre shortcode [bqp_formulaire id="..."].
+ * Version:           1.0.0
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
+ * Author:            Aurea Media
+ * License:           GPL-2.0-or-later
+ */
+
+/**
+ * BQP Formulaires — créateur de formulaires de contact.
+ *
+ * Chaque formulaire créé génère son propre shortcode.
+ * Compatible extension classique ET Code Snippets.
+ *
+ * Shortcode : [bqp_formulaire id="123"]
+ *
+ * Version : 1.0.0
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! defined( 'BQF_VERSION' ) ) {
+	define( 'BQF_VERSION', '1.0.0' );
+}
+if ( ! defined( 'BQF_CPT' ) ) {
+	define( 'BQF_CPT', 'bqf_formulaire' );
+}
+if ( ! defined( 'BQF_MSG' ) ) {
+	define( 'BQF_MSG', 'bqf_message' );
+}
+if ( ! defined( 'BQF_MAIL' ) ) {
+	define( 'BQF_MAIL', 'contact@boursequatrepoint.fr' );
+}
+
+/* -------------------------------------------------------------------------
+ * 1. Palette et helpers
+ * ---------------------------------------------------------------------- */
+
+function bqf_palette() {
+	return array(
+		'bordeaux'      => '#74041C',
+		'bordeaux_dark' => '#31020C',
+		'navy'          => '#001756',
+		'ink'           => '#424242',
+		'muted'         => '#888888',
+		'line'          => '#E3E3E3',
+		'soft'          => '#F5F5F5',
+	);
+}
+
+function bqf_hex_to_rgba( $hex, $alpha = 1 ) {
+	$hex = ltrim( (string) $hex, '#' );
+
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+
+	if ( 6 !== strlen( $hex ) || ! ctype_xdigit( $hex ) ) {
+		$hex = '74041C';
+	}
+
+	return sprintf(
+		'rgba(%d,%d,%d,%s)',
+		hexdec( substr( $hex, 0, 2 ) ),
+		hexdec( substr( $hex, 2, 2 ) ),
+		hexdec( substr( $hex, 4, 2 ) ),
+		rtrim( rtrim( number_format( (float) $alpha, 2, '.', '' ), '0' ), '.' )
+	);
+}
+
+/**
+ * Les types de champs proposés dans l'administration.
+ */
+function bqf_field_types() {
+	return array(
+		'text'     => 'Texte court',
+		'email'    => 'E-mail',
+		'tel'      => 'Téléphone',
+		'url'      => 'Site internet',
+		'number'   => 'Nombre',
+		'textarea' => 'Texte long',
+		'select'   => 'Liste déroulante',
+		'radio'    => 'Boutons radio',
+		'checkbox' => 'Case à cocher',
+		'date'     => 'Date',
+	);
+}
+
+/**
+ * Les types qui attendent une liste de choix.
+ */
+function bqf_types_with_options() {
+	return array( 'select', 'radio' );
+}
+
+/**
+ * Les champs d'un formulaire, nettoyés et prêts à l'emploi.
+ */
+function bqf_get_fields( $form_id ) {
+	$fields = get_post_meta( (int) $form_id, '_bqf_fields', true );
+
+	if ( ! is_array( $fields ) ) {
+		return array();
+	}
+
+	$clean = array();
+	$used  = array();
+
+	foreach ( $fields as $field ) {
+		if ( empty( $field['label'] ) ) {
+			continue;
+		}
+
+		$type = isset( $field['type'] ) ? (string) $field['type'] : 'text';
+		if ( ! array_key_exists( $type, bqf_field_types() ) ) {
+			$type = 'text';
+		}
+
+		$key = sanitize_key( str_replace( '-', '_', sanitize_title( $field['label'] ) ) );
+		if ( '' === $key ) {
+			$key = 'champ';
+		}
+
+		$base = $key;
+		$i    = 2;
+		while ( in_array( $key, $used, true ) ) {
+			$key = $base . '_' . $i;
+			$i++;
+		}
+		$used[] = $key;
+
+		$options = array();
+		if ( ! empty( $field['options'] ) ) {
+			foreach ( preg_split( '/\r\n|\r|\n/', (string) $field['options'] ) as $line ) {
+				$line = trim( $line );
+				if ( '' !== $line ) {
+					$options[] = $line;
+				}
+			}
+		}
+
+		$clean[] = array(
+			'key'         => $key,
+			'label'       => (string) $field['label'],
+			'type'        => $type,
+			'width'       => ( isset( $field['width'] ) && 'half' === $field['width'] ) ? 'half' : 'full',
+			'required'    => ! empty( $field['required'] ),
+			'placeholder' => isset( $field['placeholder'] ) ? (string) $field['placeholder'] : '',
+			'options'     => $options,
+		);
+	}
+
+	return $clean;
+}
+
+/**
+ * Les réglages d'un formulaire, avec leurs valeurs par défaut.
+ */
+function bqf_get_settings( $form_id ) {
+	$form_id = (int) $form_id;
+
+	$defaults = array(
+		'email'   => BQF_MAIL,
+		'sujet'   => 'Nouveau message depuis le site',
+		'intro'   => '',
+		'bouton'  => 'Envoyer',
+		'succes'  => 'Merci, votre message a bien été envoyé. Nous revenons vers vous rapidement.',
+		'rgpd'    => '',
+	);
+
+	$saved = array(
+		'email'  => (string) get_post_meta( $form_id, '_bqf_email', true ),
+		'sujet'  => (string) get_post_meta( $form_id, '_bqf_sujet', true ),
+		'intro'  => (string) get_post_meta( $form_id, '_bqf_intro', true ),
+		'bouton' => (string) get_post_meta( $form_id, '_bqf_bouton', true ),
+		'succes' => (string) get_post_meta( $form_id, '_bqf_succes', true ),
+		'rgpd'   => (string) get_post_meta( $form_id, '_bqf_rgpd', true ),
+	);
+
+	foreach ( $saved as $key => $value ) {
+		if ( '' === trim( $value ) ) {
+			$saved[ $key ] = $defaults[ $key ];
+		}
+	}
+
+	if ( ! is_email( $saved['email'] ) ) {
+		$saved['email'] = BQF_MAIL;
+	}
+
+	return $saved;
+}
+
+/* -------------------------------------------------------------------------
+ * 2. Types de contenu : formulaires et messages reçus
+ * ---------------------------------------------------------------------- */
+
+add_action( 'init', 'bqf_register_content' );
+function bqf_register_content() {
+
+	register_post_type(
+		BQF_CPT,
+		array(
+			'labels'              => array(
+				'name'               => 'Formulaires',
+				'singular_name'      => 'Formulaire',
+				'menu_name'          => 'Formulaires',
+				'add_new'            => 'Créer un formulaire',
+				'add_new_item'       => 'Créer un formulaire',
+				'edit_item'          => 'Modifier le formulaire',
+				'new_item'           => 'Nouveau formulaire',
+				'search_items'       => 'Rechercher un formulaire',
+				'not_found'          => 'Aucun formulaire pour le moment.',
+				'not_found_in_trash' => 'Aucun formulaire dans la corbeille.',
+				'all_items'          => 'Tous les formulaires',
+				'item_published'     => 'Formulaire créé.',
+				'item_updated'       => 'Formulaire mis à jour.',
+			),
+			'public'              => false,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'has_archive'         => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_rest'        => false,
+			'menu_position'       => 28,
+			'menu_icon'           => 'dashicons-feedback',
+			'supports'            => array( 'title' ),
+			'capability_type'     => 'post',
+			'map_meta_cap'        => true,
+		)
+	);
+
+	register_post_type(
+		BQF_MSG,
+		array(
+			'labels'             => array(
+				'name'          => 'Messages reçus',
+				'singular_name' => 'Message',
+				'menu_name'     => 'Messages reçus',
+				'all_items'     => 'Messages reçus',
+				'edit_item'     => 'Message reçu',
+				'search_items'  => 'Rechercher un message',
+				'not_found'     => 'Aucun message reçu.',
+			),
+			'public'             => false,
+			'publicly_queryable' => false,
+			'show_ui'            => true,
+			'show_in_menu'       => 'edit.php?post_type=' . BQF_CPT,
+			'show_in_rest'       => false,
+			'supports'           => array( 'title' ),
+			'capability_type'    => 'post',
+			'map_meta_cap'       => true,
+			'capabilities'       => array( 'create_posts' => 'do_not_allow' ),
+		)
+	);
+}
+
+add_filter( 'enter_title_here', 'bqf_title_placeholder', 10, 2 );
+function bqf_title_placeholder( $text, $post ) {
+	if ( $post && BQF_CPT === $post->post_type ) {
+		return 'Nom du formulaire (titre affiché au-dessus)';
+	}
+
+	return $text;
+}
+
+/**
+ * Crée le formulaire « Manifester son intérêt », une seule fois.
+ */
+add_action( 'admin_init', 'bqf_maybe_seed_form' );
+function bqf_maybe_seed_form() {
+	if ( get_option( 'bqf_seeded' ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return;
+	}
+
+	$form_id = wp_insert_post(
+		array(
+			'post_type'   => BQF_CPT,
+			'post_status' => 'publish',
+			'post_title'  => 'Manifester son intérêt',
+		)
+	);
+
+	if ( $form_id && ! is_wp_error( $form_id ) ) {
+		update_post_meta( $form_id, '_bqf_email', BQF_MAIL );
+		update_post_meta( $form_id, '_bqf_sujet', 'Nouvelle manifestation d\'intérêt' );
+		update_post_meta( $form_id, '_bqf_intro', 'Formulaire préqualifié, transmis au délégué aux partenariats.' );
+		update_post_meta( $form_id, '_bqf_bouton', 'Envoyer ma demande' );
+		update_post_meta( $form_id, '_bqf_succes', 'Merci, votre demande a bien été transmise au délégué aux partenariats. Nous revenons vers vous rapidement.' );
+
+		update_post_meta(
+			$form_id,
+			'_bqf_fields',
+			array(
+				array(
+					'label'       => 'Organisation',
+					'type'        => 'text',
+					'width'       => 'full',
+					'required'    => 1,
+					'placeholder' => 'Nom de la structure',
+					'options'     => '',
+				),
+				array(
+					'label'       => 'Contact',
+					'type'        => 'text',
+					'width'       => 'half',
+					'required'    => 1,
+					'placeholder' => 'Nom et prénom',
+					'options'     => '',
+				),
+				array(
+					'label'       => 'E-mail',
+					'type'        => 'email',
+					'width'       => 'half',
+					'required'    => 1,
+					'placeholder' => 'vous@exemple.fr',
+					'options'     => '',
+				),
+				array(
+					'label'       => 'Catégorie',
+					'type'        => 'select',
+					'width'       => 'half',
+					'required'    => 1,
+					'placeholder' => 'Choisir',
+					'options'     => "Entreprise\nAcadémique\nInstitutionnel\nMédia\nAssociation",
+				),
+				array(
+					'label'       => 'Nature du soutien',
+					'type'        => 'select',
+					'width'       => 'half',
+					'required'    => 0,
+					'placeholder' => 'Choisir',
+					'options'     => "Financier\nMécénat de compétences\nPartenariat média\nMise à disposition de ressources\nAutre",
+				),
+				array(
+					'label'       => 'Votre projet',
+					'type'        => 'textarea',
+					'width'       => 'full',
+					'required'    => 0,
+					'placeholder' => 'Décrivez brièvement le partenariat envisagé.',
+					'options'     => '',
+				),
+			)
+		);
+	}
+
+	update_option( 'bqf_seeded', BQF_VERSION, false );
+}
+
+/* -------------------------------------------------------------------------
+ * 3. Écran de création : réglages, champs, shortcode
+ * ---------------------------------------------------------------------- */
+
+add_action( 'add_meta_boxes', 'bqf_add_meta_boxes' );
+function bqf_add_meta_boxes() {
+	add_meta_box( 'bqf_shortcode_box', 'Shortcode à coller', 'bqf_render_shortcode_box', BQF_CPT, 'side', 'high' );
+	add_meta_box( 'bqf_settings_box', 'Réglages du formulaire', 'bqf_render_settings_box', BQF_CPT, 'normal', 'high' );
+	add_meta_box( 'bqf_fields_box', 'Champs du formulaire', 'bqf_render_fields_box', BQF_CPT, 'normal', 'high' );
+	add_meta_box( 'bqf_message_box', 'Contenu du message', 'bqf_render_message_box', BQF_MSG, 'normal', 'high' );
+}
+
+function bqf_render_shortcode_box( $post ) {
+	$code = '[bqp_formulaire id="' . (int) $post->ID . '"]';
+
+	$html  = '<div class="bqf-sc">';
+	$html .= '<p class="bqf-sc__hint">Collez ce code dans une page, ou dans un widget <strong>Shortcode</strong> d\'Elementor.</p>';
+	$html .= '<div class="bqf-sc__row">';
+	$html .= '<input type="text" class="bqf-sc__input" id="bqf-sc-input" readonly value="' . esc_attr( $code ) . '" />';
+	$html .= '<button type="button" class="button button-primary" id="bqf-sc-copy">Copier</button>';
+	$html .= '</div>';
+
+	if ( 'auto-draft' === $post->post_status ) {
+		$html .= '<p class="bqf-sc__hint">Le numéro définitif apparaîtra après le premier enregistrement.</p>';
+	}
+
+	$html .= '</div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+function bqf_render_settings_box( $post ) {
+	wp_nonce_field( 'bqf_save_form', 'bqf_form_nonce' );
+
+	$s = bqf_get_settings( $post->ID );
+
+	$html  = '<div class="bqf-admin">';
+	$html .= '<div class="bqf-admin__grid2">';
+
+	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_email">Adresse de réception</label>';
+	$html .= '<input type="email" class="bqf-admin__input" name="bqf_email" id="bqf_email" value="' . esc_attr( $s['email'] ) . '" placeholder="' . esc_attr( BQF_MAIL ) . '" />';
+	$html .= '<span class="bqf-admin__hint">Les messages de ce formulaire arrivent à cette adresse.</span>';
+	$html .= '</p>';
+
+	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_sujet">Objet de l\'e-mail</label>';
+	$html .= '<input type="text" class="bqf-admin__input" name="bqf_sujet" id="bqf_sujet" value="' . esc_attr( $s['sujet'] ) . '" />';
+	$html .= '<span class="bqf-admin__hint">Ce que vous verrez dans votre boîte de réception.</span>';
+	$html .= '</p>';
+
+	$html .= '</div>';
+
+	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_intro">Texte d\'introduction</label>';
+	$html .= '<input type="text" class="bqf-admin__input" name="bqf_intro" id="bqf_intro" value="' . esc_attr( $s['intro'] ) . '" placeholder="Une phrase sous le titre du formulaire" />';
+	$html .= '</p>';
+
+	$html .= '<div class="bqf-admin__grid2">';
+
+	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_bouton">Libellé du bouton</label>';
+	$html .= '<input type="text" class="bqf-admin__input" name="bqf_bouton" id="bqf_bouton" value="' . esc_attr( $s['bouton'] ) . '" />';
+	$html .= '</p>';
+
+	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_rgpd">Case de consentement</label>';
+	$html .= '<input type="text" class="bqf-admin__input" name="bqf_rgpd" id="bqf_rgpd" value="' . esc_attr( $s['rgpd'] ) . '" placeholder="J\'accepte que mes données soient utilisées pour me recontacter." />';
+	$html .= '<span class="bqf-admin__hint">Laissez vide pour ne pas afficher de case à cocher.</span>';
+	$html .= '</p>';
+
+	$html .= '</div>';
+
+	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_succes">Message de confirmation</label>';
+	$html .= '<textarea class="bqf-admin__input bqf-admin__textarea" name="bqf_succes" id="bqf_succes" rows="2">' . esc_textarea( $s['succes'] ) . '</textarea>';
+	$html .= '<span class="bqf-admin__hint">Affiché à la place du formulaire une fois le message envoyé.</span>';
+	$html .= '</p>';
+
+	$html .= '</div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/**
+ * Une ligne du constructeur de champs.
+ */
+function bqf_render_field_row( $index, $field ) {
+	$field = wp_parse_args(
+		(array) $field,
+		array(
+			'label'       => '',
+			'type'        => 'text',
+			'width'       => 'full',
+			'required'    => 0,
+			'placeholder' => '',
+			'options'     => '',
+		)
+	);
+
+	$name     = 'bqf_fields[' . $index . ']';
+	$has_opts = in_array( $field['type'], bqf_types_with_options(), true );
+
+	$html  = '<div class="bqf-row" data-row>';
+
+	$html .= '<div class="bqf-row__head">';
+	$html .= '<span class="bqf-row__handle dashicons dashicons-menu-alt"></span>';
+	$html .= '<span class="bqf-row__title" data-row-title>' . esc_html( $field['label'] ? $field['label'] : 'Nouveau champ' ) . '</span>';
+	$html .= '<span class="bqf-row__actions">';
+	$html .= '<button type="button" class="bqf-row__btn" data-move="up" title="Monter"><span class="dashicons dashicons-arrow-up-alt2"></span></button>';
+	$html .= '<button type="button" class="bqf-row__btn" data-move="down" title="Descendre"><span class="dashicons dashicons-arrow-down-alt2"></span></button>';
+	$html .= '<button type="button" class="bqf-row__btn bqf-row__btn--del" data-remove title="Supprimer"><span class="dashicons dashicons-trash"></span></button>';
+	$html .= '</span>';
+	$html .= '</div>';
+
+	$html .= '<div class="bqf-row__body">';
+
+	$html .= '<label class="bqf-row__field bqf-row__field--label">';
+	$html .= '<span class="bqf-admin__label">Libellé</span>';
+	$html .= '<input type="text" class="bqf-admin__input" name="' . esc_attr( $name ) . '[label]" value="' . esc_attr( $field['label'] ) . '" data-label placeholder="Organisation" />';
+	$html .= '</label>';
+
+	$html .= '<label class="bqf-row__field">';
+	$html .= '<span class="bqf-admin__label">Type</span>';
+	$html .= '<select class="bqf-admin__input" name="' . esc_attr( $name ) . '[type]" data-type>';
+	foreach ( bqf_field_types() as $value => $caption ) {
+		$html .= '<option value="' . esc_attr( $value ) . '"' . selected( $field['type'], $value, false ) . '>' . esc_html( $caption ) . '</option>';
+	}
+	$html .= '</select>';
+	$html .= '</label>';
+
+	$html .= '<label class="bqf-row__field">';
+	$html .= '<span class="bqf-admin__label">Largeur</span>';
+	$html .= '<select class="bqf-admin__input" name="' . esc_attr( $name ) . '[width]">';
+	$html .= '<option value="full"' . selected( $field['width'], 'full', false ) . '>Pleine largeur</option>';
+	$html .= '<option value="half"' . selected( $field['width'], 'half', false ) . '>Demi-largeur</option>';
+	$html .= '</select>';
+	$html .= '</label>';
+
+	$html .= '<label class="bqf-row__field bqf-row__field--check">';
+	$html .= '<input type="checkbox" name="' . esc_attr( $name ) . '[required]" value="1"' . checked( $field['required'], 1, false ) . ' />';
+	$html .= '<span>Obligatoire</span>';
+	$html .= '</label>';
+
+	$html .= '<label class="bqf-row__field bqf-row__field--wide">';
+	$html .= '<span class="bqf-admin__label">Texte d\'aide</span>';
+	$html .= '<input type="text" class="bqf-admin__input" name="' . esc_attr( $name ) . '[placeholder]" value="' . esc_attr( $field['placeholder'] ) . '" placeholder="Affiché en gris dans le champ vide" />';
+	$html .= '</label>';
+
+	$html .= '<label class="bqf-row__field bqf-row__field--wide bqf-row__options"' . ( $has_opts ? '' : ' hidden' ) . ' data-options>';
+	$html .= '<span class="bqf-admin__label">Choix proposés, un par ligne</span>';
+	$html .= '<textarea class="bqf-admin__input bqf-admin__textarea" name="' . esc_attr( $name ) . '[options]" rows="4" placeholder="Entreprise&#10;Académique&#10;Institutionnel">' . esc_textarea( $field['options'] ) . '</textarea>';
+	$html .= '</label>';
+
+	$html .= '</div></div>';
+
+	return $html;
+}
+
+function bqf_render_fields_box( $post ) {
+	$saved  = get_post_meta( $post->ID, '_bqf_fields', true );
+	$saved  = is_array( $saved ) ? $saved : array();
+
+	$html  = '<div class="bqf-admin bqf-builder">';
+	$html .= '<div class="bqf-builder__list" id="bqf-rows">';
+
+	if ( $saved ) {
+		foreach ( array_values( $saved ) as $i => $field ) {
+			$html .= bqf_render_field_row( $i, $field );
+		}
+	}
+
+	$html .= '</div>';
+
+	$html .= '<div class="bqf-builder__empty" id="bqf-empty"' . ( $saved ? ' hidden' : '' ) . '>';
+	$html .= '<span class="dashicons dashicons-editor-table"></span>';
+	$html .= '<span>Aucun champ pour le moment. Ajoutez le premier ci-dessous.</span>';
+	$html .= '</div>';
+
+	$html .= '<p class="bqf-builder__add"><button type="button" class="button button-primary button-hero" id="bqf-add"><span class="dashicons dashicons-plus-alt2"></span> Ajouter un champ</button></p>';
+
+	$html .= '<template id="bqf-tpl">' . bqf_render_field_row( '__INDEX__', array() ) . '</template>';
+
+	$html .= '</div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+add_action( 'save_post_' . BQF_CPT, 'bqf_save_form', 10, 2 );
+function bqf_save_form( $post_id, $post ) {
+	if ( ! isset( $_POST['bqf_form_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqf_form_nonce'] ) ), 'bqf_save_form' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	$email = isset( $_POST['bqf_email'] ) ? sanitize_email( wp_unslash( $_POST['bqf_email'] ) ) : '';
+	update_post_meta( $post_id, '_bqf_email', is_email( $email ) ? $email : BQF_MAIL );
+
+	foreach ( array( 'sujet', 'intro', 'bouton', 'rgpd' ) as $key ) {
+		$value = isset( $_POST[ 'bqf_' . $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'bqf_' . $key ] ) ) : '';
+		update_post_meta( $post_id, '_bqf_' . $key, $value );
+	}
+
+	$succes = isset( $_POST['bqf_succes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['bqf_succes'] ) ) : '';
+	update_post_meta( $post_id, '_bqf_succes', $succes );
+
+	$fields = array();
+
+	if ( isset( $_POST['bqf_fields'] ) && is_array( $_POST['bqf_fields'] ) ) {
+		$raw = wp_unslash( $_POST['bqf_fields'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) || empty( $row['label'] ) ) {
+				continue;
+			}
+
+			$type = isset( $row['type'] ) ? sanitize_key( $row['type'] ) : 'text';
+			if ( ! array_key_exists( $type, bqf_field_types() ) ) {
+				$type = 'text';
+			}
+
+			$fields[] = array(
+				'label'       => sanitize_text_field( $row['label'] ),
+				'type'        => $type,
+				'width'       => ( isset( $row['width'] ) && 'half' === $row['width'] ) ? 'half' : 'full',
+				'required'    => empty( $row['required'] ) ? 0 : 1,
+				'placeholder' => isset( $row['placeholder'] ) ? sanitize_text_field( $row['placeholder'] ) : '',
+				'options'     => isset( $row['options'] ) ? sanitize_textarea_field( $row['options'] ) : '',
+			);
+		}
+	}
+
+	update_post_meta( $post_id, '_bqf_fields', $fields );
+}
+
+/* -------------------------------------------------------------------------
+ * 4. Messages reçus et colonnes d'administration
+ * ---------------------------------------------------------------------- */
+
+function bqf_render_message_box( $post ) {
+	$data = get_post_meta( $post->ID, '_bqf_data', true );
+	$meta = get_post_meta( $post->ID, '_bqf_meta', true );
+
+	if ( ! is_array( $data ) || ! $data ) {
+		echo '<p>Message vide.</p>';
+		return;
+	}
+
+	$html = '<table class="bqf-msg">';
+
+	foreach ( $data as $line ) {
+		$value = isset( $line['value'] ) ? (string) $line['value'] : '';
+
+		$html .= '<tr>';
+		$html .= '<th>' . esc_html( isset( $line['label'] ) ? $line['label'] : '' ) . '</th>';
+		$html .= '<td>' . nl2br( esc_html( $value ) ) . '</td>';
+		$html .= '</tr>';
+	}
+
+	if ( is_array( $meta ) ) {
+		$html .= '<tr><th>Page d\'origine</th><td>' . esc_html( isset( $meta['url'] ) ? $meta['url'] : '' ) . '</td></tr>';
+		$html .= '<tr><th>Formulaire</th><td>' . esc_html( isset( $meta['form'] ) ? $meta['form'] : '' ) . '</td></tr>';
+	}
+
+	$html .= '</table>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+add_filter( 'manage_' . BQF_CPT . '_posts_columns', 'bqf_form_columns' );
+function bqf_form_columns( $columns ) {
+	$new = array();
+
+	if ( isset( $columns['cb'] ) ) {
+		$new['cb'] = $columns['cb'];
+	}
+
+	$new['title']         = 'Formulaire';
+	$new['bqf_shortcode'] = 'Shortcode';
+	$new['bqf_email']     = 'Réception';
+	$new['bqf_count']     = 'Champs';
+	$new['date']          = isset( $columns['date'] ) ? $columns['date'] : 'Date';
+
+	return $new;
+}
+
+add_action( 'manage_' . BQF_CPT . '_posts_custom_column', 'bqf_form_column_content', 10, 2 );
+function bqf_form_column_content( $column, $post_id ) {
+	if ( 'bqf_shortcode' === $column ) {
+		echo '<code class="bqf-code">[bqp_formulaire id="' . (int) $post_id . '"]</code>';
+		return;
+	}
+
+	if ( 'bqf_email' === $column ) {
+		$s = bqf_get_settings( $post_id );
+		echo esc_html( $s['email'] );
+		return;
+	}
+
+	if ( 'bqf_count' === $column ) {
+		echo esc_html( count( bqf_get_fields( $post_id ) ) );
+	}
+}
+
+add_filter( 'manage_' . BQF_MSG . '_posts_columns', 'bqf_msg_columns' );
+function bqf_msg_columns( $columns ) {
+	$new = array();
+
+	if ( isset( $columns['cb'] ) ) {
+		$new['cb'] = $columns['cb'];
+	}
+
+	$new['title']    = 'Message';
+	$new['bqf_form'] = 'Formulaire';
+	$new['bqf_from'] = 'Expéditeur';
+	$new['date']     = 'Reçu le';
+
+	return $new;
+}
+
+add_action( 'manage_' . BQF_MSG . '_posts_custom_column', 'bqf_msg_column_content', 10, 2 );
+function bqf_msg_column_content( $column, $post_id ) {
+	$meta = get_post_meta( $post_id, '_bqf_meta', true );
+	$meta = is_array( $meta ) ? $meta : array();
+
+	if ( 'bqf_form' === $column ) {
+		echo esc_html( isset( $meta['form'] ) ? $meta['form'] : '—' );
+		return;
+	}
+
+	if ( 'bqf_from' === $column ) {
+		$from = isset( $meta['email'] ) ? $meta['email'] : '';
+
+		if ( $from ) {
+			echo '<a href="mailto:' . esc_attr( $from ) . '">' . esc_html( $from ) . '</a>';
+		} else {
+			echo '<span style="color:#b0b0b0;">—</span>';
+		}
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * 5. Page « Mode d'emploi »
+ * ---------------------------------------------------------------------- */
+
+add_action( 'admin_menu', 'bqf_admin_help_page' );
+function bqf_admin_help_page() {
+	add_submenu_page(
+		'edit.php?post_type=' . BQF_CPT,
+		'Mode d\'emploi',
+		'Mode d\'emploi',
+		'edit_posts',
+		'bqf-aide',
+		'bqf_render_help_page'
+	);
+}
+
+function bqf_render_help_page() {
+	$steps = array(
+		array( '1', 'Créer le formulaire', 'Formulaires &rsaquo; Créer un formulaire. Le titre saisi s\'affiche en haut du bloc sur le site.' ),
+		array( '2', 'Régler la réception', 'Indiquez l\'adresse qui recevra les messages. Par défaut <strong>' . esc_html( BQF_MAIL ) . '</strong>.' ),
+		array( '3', 'Ajouter les champs', 'Bouton <strong>Ajouter un champ</strong>, autant de fois que nécessaire. Chaque champ a un libellé, un type, une largeur et peut être rendu obligatoire.' ),
+		array( '4', 'Copier le shortcode', 'Il apparaît dans l\'encadré à droite de l\'écran, et dans la colonne Shortcode de la liste.' ),
+		array( '5', 'Coller dans la page', 'Dans Elementor, widget <strong>Shortcode</strong>, placé dans la colonne de droite de votre section.' ),
+	);
+
+	$options = array(
+		array( 'id', 'Le formulaire à afficher. Obligatoire dès que vous avez plusieurs formulaires.', '[bqp_formulaire id="12"]' ),
+		array( 'titre', 'Remplace le titre du formulaire, ou le masque avec titre="non".', '[bqp_formulaire id="12" titre="non"]' ),
+		array( 'carte', 'Affiche le formulaire dans une carte blanche encadrée : oui ou non.', '[bqp_formulaire id="12" carte="non"]' ),
+		array( 'colonnes', 'Nombre de colonnes de la grille : 1 ou 2.', '[bqp_formulaire id="12" colonnes="1"]' ),
+	);
+
+	$html  = '<div class="wrap bqf-help">';
+	$html .= '<h1 class="bqf-help__title">Formulaires de contact</h1>';
+	$html .= '<p class="bqf-help__intro">Chaque formulaire créé génère automatiquement son propre shortcode. Vous pouvez en créer autant que vous voulez, avec des champs et une adresse de réception différents à chaque fois.</p>';
+
+	$html .= '<div class="bqf-help__steps">';
+	foreach ( $steps as $step ) {
+		$html .= '<div class="bqf-help__step">';
+		$html .= '<span class="bqf-help__num">' . esc_html( $step[0] ) . '</span>';
+		$html .= '<div><strong>' . esc_html( $step[1] ) . '</strong><p>' . wp_kses( $step[2], array( 'strong' => array() ) ) . '</p></div>';
+		$html .= '</div>';
+	}
+	$html .= '</div>';
+
+	$html .= '<h2 class="bqf-help__subtitle">Les options du shortcode</h2>';
+	$html .= '<table class="widefat striped bqf-help__table"><thead><tr><th>Option</th><th>Rôle</th><th>Exemple</th></tr></thead><tbody>';
+	foreach ( $options as $option ) {
+		$html .= '<tr><td><code>' . esc_html( $option[0] ) . '</code></td><td>' . esc_html( $option[1] ) . '</td><td><code>' . esc_html( $option[2] ) . '</code></td></tr>';
+	}
+	$html .= '</tbody></table>';
+
+	$html .= '<h2 class="bqf-help__subtitle">Bon à savoir</h2><ul class="bqf-help__list">';
+	$html .= '<li>Chaque message est <strong>aussi enregistré</strong> dans <strong>Formulaires &rsaquo; Messages reçus</strong>. Rien n\'est perdu, même si un e-mail se perd en route.</li>';
+	$html .= '<li>Deux protections anti-spam sont actives : un champ piège invisible et un contrôle du temps de remplissage. Aucun captcha à installer.</li>';
+	$html .= '<li>Répondre à l\'e-mail reçu répond directement à la personne : son adresse est placée en <em>Reply-To</em>.</li>';
+	$html .= '<li>Si les e-mails n\'arrivent pas, c\'est presque toujours un problème d\'envoi côté hébergeur. Une extension SMTP règle le problème.</li>';
+	$html .= '</ul></div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/* -------------------------------------------------------------------------
+ * 6. Styles et script de l'administration
+ * ---------------------------------------------------------------------- */
+
+add_action( 'admin_enqueue_scripts', 'bqf_admin_assets' );
+function bqf_admin_assets( $hook ) {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+
+	if ( ! $screen || ! in_array( $screen->post_type, array( BQF_CPT, BQF_MSG ), true ) ) {
+		return;
+	}
+
+	wp_register_style( 'bqf-admin', false, array(), BQF_VERSION );
+	wp_enqueue_style( 'bqf-admin' );
+	wp_add_inline_style( 'bqf-admin', bqf_admin_css() );
+
+	if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		wp_register_script( 'bqf-admin', false, array(), BQF_VERSION, true );
+		wp_enqueue_script( 'bqf-admin' );
+		wp_add_inline_script( 'bqf-admin', bqf_admin_js() );
+	}
+}
+
+function bqf_admin_css() {
+	$p = bqf_palette();
+
+	return '
+	.bqf-admin{font-size:14px;}
+	.bqf-admin [hidden],.bqf-builder [hidden]{display:none !important;}
+	.bqf-admin__grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;}
+	@media (max-width:782px){.bqf-admin__grid2{grid-template-columns:1fr;}}
+	.bqf-admin__label{display:block;margin-bottom:7px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:' . $p['bordeaux'] . ';}
+	.bqf-admin__field{margin:0 0 20px;}
+	.bqf-admin__input{width:100%;padding:10px 13px;border:1px solid #dcdcde;border-radius:8px;background:#fff;box-shadow:none;transition:border-color .2s,box-shadow .2s;}
+	.bqf-admin__input:focus{border-color:' . $p['bordeaux'] . ';box-shadow:0 0 0 3px ' . bqf_hex_to_rgba( $p['bordeaux'], 0.12 ) . ';outline:none;}
+	.bqf-admin__textarea{resize:vertical;line-height:1.6;}
+	.bqf-admin__hint{display:block;margin-top:6px;color:#787c82;font-size:12.5px;line-height:1.5;}
+
+	.bqf-sc__hint{margin:0 0 10px;color:#787c82;font-size:12.5px;line-height:1.5;}
+	.bqf-sc__row{display:flex;gap:8px;}
+	.bqf-sc__input{flex:1;min-width:0;padding:8px 11px;border:1px solid ' . bqf_hex_to_rgba( $p['bordeaux'], 0.25 ) . ';border-radius:7px;background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.05 ) . ';color:' . $p['bordeaux'] . ';font-family:Menlo,Consolas,monospace;font-size:12.5px;font-weight:600;}
+	.bqf-code{background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.06 ) . ';color:' . $p['bordeaux'] . ';padding:4px 9px;border-radius:5px;font-size:12.5px;}
+
+	.bqf-builder__list{display:flex;flex-direction:column;gap:12px;}
+	.bqf-row{border:1px solid #e2e2e4;border-radius:11px;background:#fff;overflow:hidden;transition:border-color .2s,box-shadow .2s;}
+	.bqf-row:hover{border-color:' . bqf_hex_to_rgba( $p['bordeaux'], 0.3 ) . ';box-shadow:0 4px 14px -8px rgba(49,2,12,.35);}
+	.bqf-row__head{display:flex;align-items:center;gap:10px;padding:11px 14px;background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.04 ) . ';border-bottom:1px solid #ececee;}
+	.bqf-row__handle{color:' . bqf_hex_to_rgba( $p['bordeaux'], 0.45 ) . ';}
+	.bqf-row__title{flex:1;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
+	.bqf-row__actions{display:flex;gap:4px;}
+	.bqf-row__btn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:1px solid #dcdcde;border-radius:7px;background:#fff;color:#50575e;cursor:pointer;transition:.18s;}
+	.bqf-row__btn:hover{border-color:' . $p['bordeaux'] . ';color:' . $p['bordeaux'] . ';}
+	.bqf-row__btn--del:hover{border-color:#b32d2e;color:#b32d2e;}
+	.bqf-row__btn .dashicons{font-size:16px;width:16px;height:16px;}
+	.bqf-row__body{display:grid;grid-template-columns:2fr 1.3fr 1.1fr auto;gap:16px;padding:18px;align-items:start;}
+	@media (max-width:1100px){.bqf-row__body{grid-template-columns:1fr 1fr;}}
+	@media (max-width:782px){.bqf-row__body{grid-template-columns:1fr;}}
+	.bqf-row__field{display:block;}
+	.bqf-row__field--wide{grid-column:1 / -1;}
+	.bqf-row__field--check{display:flex;align-items:center;gap:7px;padding-top:26px;white-space:nowrap;}
+	.bqf-row__field--check span{font-size:13px;color:#50575e;}
+	.bqf-builder__empty{display:flex;align-items:center;justify-content:center;gap:10px;padding:30px;border:2px dashed #dcdcde;border-radius:11px;color:#a7aaad;}
+	.bqf-builder__add{margin:18px 0 0;}
+	#bqf-add{display:inline-flex;align-items:center;gap:7px;}
+
+	.bqf-msg{width:100%;border-collapse:collapse;}
+	.bqf-msg th{width:220px;padding:11px 14px 11px 0;text-align:left;vertical-align:top;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:' . $p['bordeaux'] . ';border-bottom:1px solid #ececee;}
+	.bqf-msg td{padding:11px 0;vertical-align:top;line-height:1.6;border-bottom:1px solid #ececee;}
+
+	.bqf-help__title{font-size:30px;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
+	.bqf-help__intro{max-width:800px;font-size:14.5px;line-height:1.7;color:#50575e;}
+	.bqf-help__steps{display:grid;gap:12px;max-width:900px;margin:26px 0 10px;}
+	.bqf-help__step{display:flex;gap:14px;padding:16px 20px;border:1px solid #e2e2e4;border-radius:12px;background:#fff;}
+	.bqf-help__step p{margin:4px 0 0;color:#50575e;line-height:1.6;}
+	.bqf-help__num{display:flex;align-items:center;justify-content:center;flex:0 0 30px;width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,' . $p['bordeaux'] . ',' . $p['bordeaux_dark'] . ');color:#fff;font-weight:700;font-size:13px;}
+	.bqf-help__subtitle{margin-top:34px;font-size:19px;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
+	.bqf-help__table{max-width:1000px;}
+	.bqf-help__table code{color:' . $p['bordeaux'] . ';background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.06 ) . ';}
+	.bqf-help__list{max-width:900px;line-height:1.8;list-style:disc;padding-left:20px;color:#50575e;}
+	';
+}
+
+function bqf_admin_js() {
+	return "
+	(function(){
+		function ready(fn){
+			if ('loading' === document.readyState) { document.addEventListener('DOMContentLoaded', fn); }
+			else { fn(); }
+		}
+
+		ready(function(){
+			var list  = document.getElementById('bqf-rows');
+			var tpl   = document.getElementById('bqf-tpl');
+			var add   = document.getElementById('bqf-add');
+			var empty = document.getElementById('bqf-empty');
+			var index = 1000;
+
+			var copy  = document.getElementById('bqf-sc-copy');
+			var input = document.getElementById('bqf-sc-input');
+
+			if (copy && input) {
+				copy.addEventListener('click', function(){
+					input.select();
+					try { document.execCommand('copy'); } catch (e) {}
+					var old = copy.textContent;
+					copy.textContent = 'Copié';
+					setTimeout(function(){ copy.textContent = old; }, 1600);
+				});
+			}
+
+			if (!list || !tpl || !add) { return; }
+
+			function refreshEmpty(){
+				if (empty) { empty.hidden = (list.children.length > 0); }
+			}
+
+			function optionsToggle(row){
+				var type = row.querySelector('[data-type]');
+				var opts = row.querySelector('[data-options]');
+				if (!type || !opts) { return; }
+				opts.hidden = ('select' !== type.value && 'radio' !== type.value);
+			}
+
+			add.addEventListener('click', function(){
+				index++;
+				var html = tpl.innerHTML.split('__INDEX__').join(String(index));
+				var box  = document.createElement('div');
+				box.innerHTML = html;
+				var row = box.firstElementChild;
+				list.appendChild(row);
+				refreshEmpty();
+				optionsToggle(row);
+				var first = row.querySelector('[data-label]');
+				if (first) { first.focus(); }
+			});
+
+			list.addEventListener('click', function(e){
+				var btn = e.target.closest('button');
+				if (!btn) { return; }
+
+				var row = btn.closest('[data-row]');
+				if (!row) { return; }
+
+				if (btn.hasAttribute('data-remove')) {
+					e.preventDefault();
+					row.remove();
+					refreshEmpty();
+					return;
+				}
+
+				var move = btn.getAttribute('data-move');
+				if ('up' === move) {
+					e.preventDefault();
+					if (row.previousElementSibling) { list.insertBefore(row, row.previousElementSibling); }
+				} else if ('down' === move) {
+					e.preventDefault();
+					if (row.nextElementSibling) { list.insertBefore(row.nextElementSibling, row); }
+				}
+			});
+
+			list.addEventListener('input', function(e){
+				if (!e.target.hasAttribute('data-label')) { return; }
+				var row   = e.target.closest('[data-row]');
+				var title = row ? row.querySelector('[data-row-title]') : null;
+				if (title) { title.textContent = e.target.value || 'Nouveau champ'; }
+			});
+
+			list.addEventListener('change', function(e){
+				if (!e.target.hasAttribute('data-type')) { return; }
+				var row = e.target.closest('[data-row]');
+				if (row) { optionsToggle(row); }
+			});
+
+			Array.prototype.forEach.call(list.children, optionsToggle);
+			refreshEmpty();
+		});
+	})();
+	";
+}
+
+/* -------------------------------------------------------------------------
+ * 7. Réception et envoi des messages
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Stocke l'état d'une soumission pour que le shortcode puisse l'afficher.
+ */
+function bqf_state( $form_id, $set = null ) {
+	static $store = array();
+
+	$form_id = (int) $form_id;
+
+	if ( null !== $set ) {
+		$store[ $form_id ] = $set;
+	}
+
+	return isset( $store[ $form_id ] ) ? $store[ $form_id ] : array( 'errors' => array(), 'values' => array() );
+}
+
+add_action( 'template_redirect', 'bqf_handle_submission' );
+function bqf_handle_submission() {
+	if ( empty( $_POST['bqf_form_id'] ) ) {
+		return;
+	}
+
+	$form_id = absint( $_POST['bqf_form_id'] );
+	$form    = $form_id ? get_post( $form_id ) : null;
+
+	if ( ! $form || BQF_CPT !== $form->post_type ) {
+		return;
+	}
+
+	$errors = array();
+	$values = array();
+	$lines  = array();
+
+	// Session expirée (page servie depuis un cache trop ancien).
+	$nonce = isset( $_POST['bqf_nonce'] ) ? sanitize_key( wp_unslash( $_POST['bqf_nonce'] ) ) : '';
+	if ( ! wp_verify_nonce( $nonce, 'bqf_send_' . $form_id ) ) {
+		bqf_state( $form_id, array( 'errors' => array( 'Votre session a expiré. Merci de recharger la page puis de renvoyer le formulaire.' ), 'values' => array() ) );
+		return;
+	}
+
+	// Piège à robots : ce champ est invisible, il doit rester vide.
+	if ( ! empty( $_POST['bqf_hp'] ) ) {
+		bqf_state( $form_id, array( 'errors' => array( 'Envoi refusé.' ), 'values' => array() ) );
+		return;
+	}
+
+	// Formulaire rempli trop vite pour être humain.
+	$started = isset( $_POST['bqf_t'] ) ? absint( $_POST['bqf_t'] ) : 0;
+	if ( $started && ( time() - $started ) < 4 ) {
+		bqf_state( $form_id, array( 'errors' => array( 'Envoi refusé.' ), 'values' => array() ) );
+		return;
+	}
+
+	$settings = bqf_get_settings( $form_id );
+	$fields   = bqf_get_fields( $form_id );
+	$reply_to = '';
+	$sender   = '';
+
+	foreach ( $fields as $field ) {
+		$name = 'bqf_' . $field['key'];
+		$raw  = isset( $_POST[ $name ] ) ? wp_unslash( $_POST[ $name ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		switch ( $field['type'] ) {
+			case 'email':
+				$value = sanitize_email( (string) $raw );
+				if ( '' !== $value && ! is_email( $value ) ) {
+					$errors[] = sprintf( 'Le champ « %s » ne contient pas une adresse e-mail valide.', $field['label'] );
+					$value    = sanitize_text_field( (string) $raw );
+				} elseif ( $value && ! $reply_to ) {
+					$reply_to = $value;
+				}
+				break;
+
+			case 'url':
+				$value = esc_url_raw( trim( (string) $raw ) );
+				break;
+
+			case 'number':
+				$value = trim( (string) $raw );
+				if ( '' !== $value && ! is_numeric( $value ) ) {
+					$errors[] = sprintf( 'Le champ « %s » doit contenir un nombre.', $field['label'] );
+				}
+				break;
+
+			case 'textarea':
+				$value = sanitize_textarea_field( (string) $raw );
+				break;
+
+			case 'checkbox':
+				$value = empty( $raw ) ? '' : 'Oui';
+				break;
+
+			case 'select':
+			case 'radio':
+				$value = sanitize_text_field( (string) $raw );
+				if ( '' !== $value && $field['options'] && ! in_array( $value, $field['options'], true ) ) {
+					$value = '';
+				}
+				break;
+
+			default:
+				$value = sanitize_text_field( (string) $raw );
+		}
+
+		if ( $field['required'] && '' === trim( (string) $value ) ) {
+			$errors[] = sprintf( 'Le champ « %s » est obligatoire.', $field['label'] );
+		}
+
+		if ( ! $sender && 'text' === $field['type'] && '' !== $value ) {
+			$sender = $value;
+		}
+
+		$values[ $field['key'] ] = $value;
+		$lines[]                 = array( 'label' => $field['label'], 'value' => $value );
+	}
+
+	// Case de consentement.
+	if ( '' !== $settings['rgpd'] && empty( $_POST['bqf_rgpd'] ) ) {
+		$errors[] = 'Merci de cocher la case de consentement.';
+	}
+
+	if ( $errors ) {
+		bqf_state( $form_id, array( 'errors' => $errors, 'values' => $values ) );
+		return;
+	}
+
+	$source = wp_get_referer();
+	$source = $source ? $source : home_url( add_query_arg( array() ) );
+
+	// Corps du message.
+	$body = array( 'Nouveau message envoyé depuis ' . get_bloginfo( 'name' ) . '.', '' );
+
+	foreach ( $lines as $line ) {
+		$body[] = $line['label'] . ' : ' . ( '' === $line['value'] ? '—' : $line['value'] );
+	}
+
+	$body[] = '';
+	$body[] = '---';
+	$body[] = 'Formulaire : ' . get_the_title( $form_id );
+	$body[] = 'Page : ' . $source;
+	$body[] = 'Date : ' . wp_date( 'd/m/Y à H:i' );
+
+	// L'expéditeur reste sur le domaine du site pour passer les filtres,
+	// l'adresse du visiteur est placée en réponse.
+	$host = wp_parse_url( home_url(), PHP_URL_HOST );
+	$host = preg_replace( '/^www\./i', '', (string) $host );
+
+	$headers = array(
+		'Content-Type: text/plain; charset=UTF-8',
+		sprintf( 'From: %s <%s>', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ), 'no-reply@' . $host ),
+	);
+
+	if ( $reply_to ) {
+		$headers[] = 'Reply-To: ' . $reply_to;
+	}
+
+	$sent = wp_mail( $settings['email'], $settings['sujet'], implode( "\n", $body ), $headers );
+
+	// Le message est archivé dans l'administration, même si l'e-mail échoue.
+	$title = get_the_title( $form_id ) . ' — ' . ( $sender ? $sender : ( $reply_to ? $reply_to : 'sans nom' ) );
+
+	$message_id = wp_insert_post(
+		array(
+			'post_type'   => BQF_MSG,
+			'post_status' => 'publish',
+			'post_title'  => wp_strip_all_tags( $title ),
+		)
+	);
+
+	if ( $message_id && ! is_wp_error( $message_id ) ) {
+		update_post_meta( $message_id, '_bqf_data', $lines );
+		update_post_meta(
+			$message_id,
+			'_bqf_meta',
+			array(
+				'form'  => get_the_title( $form_id ),
+				'email' => $reply_to,
+				'url'   => $source,
+				'sent'  => $sent ? 'oui' : 'non',
+			)
+		);
+	}
+
+	$redirect = remove_query_arg( 'bqf_ok' );
+	$redirect = add_query_arg( 'bqf_ok', $form_id, $redirect );
+
+	wp_safe_redirect( $redirect . '#bqf-' . $form_id );
+	exit;
+}
+
+/* -------------------------------------------------------------------------
+ * 8. Shortcode [bqp_formulaire]
+ * ---------------------------------------------------------------------- */
+
+add_action( 'wp_enqueue_scripts', 'bqf_register_front_assets' );
+function bqf_register_front_assets() {
+	wp_register_style( 'bqf-formulaires', false, array(), BQF_VERSION );
+	wp_add_inline_style( 'bqf-formulaires', bqf_front_css() );
+
+	if ( is_singular() ) {
+		$post = get_post();
+
+		if ( $post instanceof WP_Post && has_shortcode( (string) $post->post_content, 'bqp_formulaire' ) ) {
+			wp_enqueue_style( 'bqf-formulaires' );
+		}
+	}
+}
+
+add_shortcode( 'bqp_formulaire', 'bqf_shortcode' );
+function bqf_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'id'       => '',
+			'titre'    => '',
+			'carte'    => 'oui',
+			'colonnes' => '2',
+		),
+		$atts,
+		'bqp_formulaire'
+	);
+
+	$form_id = absint( $atts['id'] );
+
+	if ( ! $form_id ) {
+		$found = get_posts(
+			array(
+				'post_type'        => BQF_CPT,
+				'post_status'      => 'publish',
+				'numberposts'      => 1,
+				'orderby'          => 'ID',
+				'order'            => 'ASC',
+				'fields'           => 'ids',
+				'suppress_filters' => false,
+			)
+		);
+
+		$form_id = $found ? (int) $found[0] : 0;
+	}
+
+	$form = $form_id ? get_post( $form_id ) : null;
+
+	if ( ! $form || BQF_CPT !== $form->post_type || 'publish' !== $form->post_status ) {
+		if ( current_user_can( 'edit_posts' ) ) {
+			return '<p class="bqf-notice">Formulaire introuvable. Vérifiez l\'identifiant du shortcode dans <strong>Formulaires</strong>.</p>';
+		}
+
+		return '';
+	}
+
+	$fields = bqf_get_fields( $form_id );
+
+	if ( ! $fields ) {
+		if ( current_user_can( 'edit_posts' ) ) {
+			return '<p class="bqf-notice">Ce formulaire ne contient aucun champ. Ajoutez-en depuis <strong>Formulaires</strong>.</p>';
+		}
+
+		return '';
+	}
+
+	wp_enqueue_style( 'bqf-formulaires' );
+
+	$settings = bqf_get_settings( $form_id );
+	$state    = bqf_state( $form_id );
+	$errors   = $state['errors'];
+	$values   = $state['values'];
+
+	$cols  = ( '1' === (string) $atts['colonnes'] ) ? 1 : 2;
+	$card  = ! in_array( strtolower( $atts['carte'] ), array( 'non', 'no', 'false', '0' ), true );
+	$anchor = 'bqf-' . $form_id;
+
+	$title = get_the_title( $form_id );
+	if ( '' !== trim( $atts['titre'] ) ) {
+		$title = in_array( strtolower( $atts['titre'] ), array( 'non', 'no', 'false', '0' ), true ) ? '' : $atts['titre'];
+	}
+
+	$sent = isset( $_GET['bqf_ok'] ) && absint( $_GET['bqf_ok'] ) === $form_id; // phpcs:ignore WordPress.Security.NonceVerification
+
+	$classes = 'bqf-form' . ( $card ? ' bqf-form--card' : '' );
+
+	$html  = '<section class="' . esc_attr( $classes ) . '" id="' . esc_attr( $anchor ) . '" style="--bqf-cols:' . (int) $cols . ';">';
+
+	if ( '' !== $title ) {
+		$html .= '<h2 class="bqf-form__title">' . esc_html( $title ) . '</h2>';
+	}
+
+	if ( '' !== $settings['intro'] ) {
+		$html .= '<p class="bqf-form__intro">' . esc_html( $settings['intro'] ) . '</p>';
+	}
+
+	if ( $sent ) {
+		$html .= '<div class="bqf-success" role="status">';
+		$html .= '<span class="bqf-success__icon" aria-hidden="true">';
+		$html .= '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+		$html .= '</span>';
+		$html .= '<p>' . esc_html( $settings['succes'] ) . '</p>';
+		$html .= '</div></section>';
+
+		return $html;
+	}
+
+	if ( $errors ) {
+		$html .= '<div class="bqf-errors" role="alert"><ul>';
+		foreach ( $errors as $error ) {
+			$html .= '<li>' . esc_html( $error ) . '</li>';
+		}
+		$html .= '</ul></div>';
+	}
+
+	$html .= '<form class="bqf-form__grid" method="post" action="' . esc_url( remove_query_arg( 'bqf_ok' ) ) . '#' . esc_attr( $anchor ) . '">';
+
+	foreach ( $fields as $field ) {
+		$name  = 'bqf_' . $field['key'];
+		$id    = $anchor . '-' . $field['key'];
+		$value = isset( $values[ $field['key'] ] ) ? (string) $values[ $field['key'] ] : '';
+		$req   = $field['required'] ? ' required' : '';
+		$span  = ( 'half' === $field['width'] ) ? ' bqf-field--half' : ' bqf-field--full';
+
+		if ( 'checkbox' === $field['type'] ) {
+			$html .= '<div class="bqf-field bqf-field--checkbox' . $span . '">';
+			$html .= '<label class="bqf-check">';
+			$html .= '<input type="checkbox" name="' . esc_attr( $name ) . '" value="1"' . checked( $value, 'Oui', false ) . $req . ' />';
+			$html .= '<span>' . esc_html( $field['label'] ) . ( $field['required'] ? ' <em class="bqf-req">*</em>' : '' ) . '</span>';
+			$html .= '</label></div>';
+			continue;
+		}
+
+		$html .= '<div class="bqf-field' . $span . '">';
+
+		$caption = esc_html( $field['label'] ) . ( $field['required'] ? ' <em class="bqf-req">*</em>' : '' );
+
+		if ( 'radio' === $field['type'] ) {
+			$html .= '<span class="bqf-field__label">' . $caption . '</span>';
+		} else {
+			$html .= '<label class="bqf-field__label" for="' . esc_attr( $id ) . '">' . $caption . '</label>';
+		}
+
+		if ( 'textarea' === $field['type'] ) {
+			$html .= '<textarea class="bqf-input bqf-input--area" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" rows="4" placeholder="' . esc_attr( $field['placeholder'] ) . '"' . $req . '>' . esc_textarea( $value ) . '</textarea>';
+
+		} elseif ( 'select' === $field['type'] ) {
+			$empty = $field['placeholder'] ? $field['placeholder'] : 'Choisir';
+			$html .= '<select class="bqf-input bqf-input--select" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '"' . $req . '>';
+			$html .= '<option value="">' . esc_html( $empty ) . '</option>';
+			foreach ( $field['options'] as $option ) {
+				$html .= '<option value="' . esc_attr( $option ) . '"' . selected( $value, $option, false ) . '>' . esc_html( $option ) . '</option>';
+			}
+			$html .= '</select>';
+
+		} elseif ( 'radio' === $field['type'] ) {
+			$html .= '<div class="bqf-radios">';
+			foreach ( $field['options'] as $i => $option ) {
+				$html .= '<label class="bqf-check">';
+				$html .= '<input type="radio" name="' . esc_attr( $name ) . '" value="' . esc_attr( $option ) . '"' . checked( $value, $option, false ) . ( ( $field['required'] && 0 === $i ) ? ' required' : '' ) . ' />';
+				$html .= '<span>' . esc_html( $option ) . '</span>';
+				$html .= '</label>';
+			}
+			$html .= '</div>';
+
+		} else {
+			$type  = in_array( $field['type'], array( 'email', 'tel', 'url', 'number', 'date' ), true ) ? $field['type'] : 'text';
+			$html .= '<input type="' . esc_attr( $type ) . '" class="bqf-input" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '"' . $req . ' />';
+		}
+
+		$html .= '</div>';
+	}
+
+	if ( '' !== $settings['rgpd'] ) {
+		$html .= '<div class="bqf-field bqf-field--full bqf-field--checkbox">';
+		$html .= '<label class="bqf-check"><input type="checkbox" name="bqf_rgpd" value="1" required /><span>' . esc_html( $settings['rgpd'] ) . ' <em class="bqf-req">*</em></span></label>';
+		$html .= '</div>';
+	}
+
+	// Champ piège, invisible pour les visiteurs.
+	$html .= '<div class="bqf-hp" aria-hidden="true"><label>Ne pas remplir<input type="text" name="bqf_hp" value="" tabindex="-1" autocomplete="off" /></label></div>';
+
+	$html .= '<input type="hidden" name="bqf_form_id" value="' . (int) $form_id . '" />';
+	$html .= '<input type="hidden" name="bqf_t" value="' . (int) time() . '" />';
+	$html .= wp_nonce_field( 'bqf_send_' . $form_id, 'bqf_nonce', false, false );
+
+	$html .= '<div class="bqf-field bqf-field--full">';
+	$html .= '<button type="submit" class="bqf-submit">' . esc_html( $settings['bouton'] ) . '</button>';
+	$html .= '</div>';
+
+	$html .= '</form></section>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
+ * 9. Styles du formulaire (charte boursequatrepoint.fr)
+ * ---------------------------------------------------------------------- */
+
+function bqf_front_css() {
+	$p = bqf_palette();
+
+	return '
+	.bqf-form{
+		--bqf-bordeaux:' . $p['bordeaux'] . ';
+		--bqf-bordeaux-dark:' . $p['bordeaux_dark'] . ';
+		--bqf-navy:' . $p['navy'] . ';
+		--bqf-ink:' . $p['ink'] . ';
+		--bqf-muted:' . $p['muted'] . ';
+		--bqf-line:#DDDDDD;
+		--bqf-cols:2;
+		--bqf-serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif;
+		--bqf-sans:"Inter","Montserrat","Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+		box-sizing:border-box;width:100%;margin:0 auto;
+	}
+	.bqf-form *,.bqf-form *::before,.bqf-form *::after{box-sizing:border-box;}
+
+	.bqf-form--card{
+		padding:clamp(24px,3.2vw,40px);
+		background:#fff;border:1px solid #E8E8E8;border-radius:6px;
+		box-shadow:0 1px 2px rgba(49,2,12,.04);
+	}
+
+	.bqf-form__title{
+		margin:0 0 8px;
+		font-family:var(--bqf-serif);font-weight:600;font-size:clamp(1.6rem,2.6vw,2.05rem);
+		line-height:1.2;color:var(--bqf-bordeaux-dark);
+	}
+	.bqf-form__intro{
+		margin:0 0 28px;
+		font-family:var(--bqf-sans);font-size:.93rem;line-height:1.6;
+		color:' . bqf_hex_to_rgba( $p['navy'], 0.62 ) . ';
+	}
+
+	.bqf-form__grid{
+		display:grid;grid-template-columns:repeat(var(--bqf-cols),minmax(0,1fr));
+		gap:20px 20px;margin:0;
+	}
+	@media (max-width:600px){.bqf-form{--bqf-cols:1;}}
+
+	.bqf-field{display:flex;flex-direction:column;min-width:0;}
+	.bqf-field--full{grid-column:1 / -1;}
+	.bqf-field--half{grid-column:span 1;}
+
+	.bqf-field__label{
+		display:block;margin:0 0 8px;
+		font-family:var(--bqf-sans);font-size:.685rem;font-weight:700;line-height:1.4;
+		letter-spacing:.095em;text-transform:uppercase;color:var(--bqf-bordeaux);
+	}
+	.bqf-req{font-style:normal;color:var(--bqf-bordeaux);}
+
+	.bqf-form input.bqf-input,
+	.bqf-form textarea.bqf-input,
+	.bqf-form select.bqf-input{
+		width:100% !important;max-width:100% !important;margin:0 !important;
+		padding:13px 15px !important;
+		border:1px solid var(--bqf-line) !important;border-radius:4px !important;
+		background:#fff !important;background-image:none;
+		color:#2f2f2f !important;
+		font-family:var(--bqf-sans) !important;font-size:.95rem !important;font-weight:400 !important;
+		line-height:1.45 !important;letter-spacing:0 !important;text-transform:none !important;
+		box-shadow:none !important;
+		transition:border-color .2s ease,box-shadow .2s ease;
+	}
+	.bqf-form select.bqf-input{height:auto !important;padding-right:38px !important;cursor:pointer;}
+	.bqf-form textarea.bqf-input--area{min-height:112px;resize:vertical;}
+
+	.bqf-form input.bqf-input::placeholder,
+	.bqf-form textarea.bqf-input::placeholder{color:#9a9a9a;opacity:1;}
+
+	.bqf-form input.bqf-input:focus,
+	.bqf-form textarea.bqf-input:focus,
+	.bqf-form select.bqf-input:focus{
+		border-color:var(--bqf-bordeaux) !important;
+		box-shadow:0 0 0 3px ' . bqf_hex_to_rgba( $p['bordeaux'], 0.1 ) . ' !important;
+		outline:none !important;
+	}
+
+	.bqf-check{
+		display:flex;align-items:flex-start;gap:10px;cursor:pointer;
+		font-family:var(--bqf-sans);font-size:.9rem;line-height:1.55;color:#4f4f4f;
+	}
+	.bqf-check input{margin:3px 0 0 !important;width:16px;height:16px;flex:0 0 16px;accent-color:' . $p['bordeaux'] . ';}
+	.bqf-radios{display:flex;flex-direction:column;gap:9px;}
+
+	.bqf-form button.bqf-submit{
+		display:block;width:100%;margin:6px 0 0;padding:17px 24px;
+		border:0;border-radius:4px;cursor:pointer;
+		background:var(--bqf-bordeaux);
+		background-image:linear-gradient(180deg,var(--bqf-bordeaux) 0%,var(--bqf-bordeaux-dark) 160%);
+		color:#fff !important;
+		font-family:var(--bqf-sans);font-size:.78rem;font-weight:700;line-height:1;
+		letter-spacing:.11em;text-transform:uppercase;text-decoration:none;
+		box-shadow:0 8px 20px -12px ' . bqf_hex_to_rgba( $p['bordeaux_dark'], 0.9 ) . ';
+		transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+	}
+	.bqf-form button.bqf-submit:hover{
+		filter:brightness(1.09);transform:translateY(-1px);
+		box-shadow:0 12px 26px -12px ' . bqf_hex_to_rgba( $p['bordeaux_dark'], 0.95 ) . ';
+	}
+	.bqf-form button.bqf-submit:active{transform:none;}
+	.bqf-form button.bqf-submit:focus-visible{outline:2px solid var(--bqf-bordeaux);outline-offset:3px;}
+
+	.bqf-errors{
+		margin:0 0 22px;padding:15px 18px;border-radius:5px;
+		border:1px solid ' . bqf_hex_to_rgba( $p['bordeaux'], 0.3 ) . ';
+		background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.05 ) . ';
+	}
+	.bqf-errors ul{margin:0;padding-left:18px;list-style:disc;}
+	.bqf-errors li{
+		margin:3px 0;font-family:var(--bqf-sans);font-size:.88rem;line-height:1.55;
+		color:var(--bqf-bordeaux-dark);
+	}
+
+	.bqf-success{
+		display:flex;align-items:flex-start;gap:14px;
+		padding:22px 24px;border-radius:5px;
+		border:1px solid ' . bqf_hex_to_rgba( $p['bordeaux'], 0.22 ) . ';
+		background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.045 ) . ';
+	}
+	.bqf-success__icon{
+		display:flex;align-items:center;justify-content:center;flex:0 0 38px;width:38px;height:38px;
+		border-radius:50%;background:var(--bqf-bordeaux);color:#fff;
+	}
+	.bqf-success p{
+		margin:6px 0 0;font-family:var(--bqf-sans);font-size:.95rem;line-height:1.6;
+		color:var(--bqf-bordeaux-dark);
+	}
+
+	.bqf-hp{position:absolute !important;left:-9999px !important;width:1px;height:1px;overflow:hidden;}
+
+	.bqf-notice{
+		padding:16px 20px;border-radius:6px;
+		border:1px dashed ' . bqf_hex_to_rgba( $p['bordeaux'], 0.35 ) . ';
+		background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.04 ) . ';color:' . $p['bordeaux_dark'] . ';
+		font-family:"Inter",sans-serif;font-size:.93rem;
+	}
+
+	@media (prefers-reduced-motion:reduce){
+		.bqf-form button.bqf-submit,.bqf-form input.bqf-input,.bqf-form select.bqf-input,.bqf-form textarea.bqf-input{transition:none;}
+		.bqf-form button.bqf-submit:hover{transform:none;}
+	}
+	';
+}
