@@ -63,6 +63,25 @@ Contrôles appliqués avant tout enregistrement : code d'erreur d'envoi, poids, 
 
 Si l'envoi dépasse la limite `post_max_size` du serveur, PHP vide la requête : un garde-fou détecte ce cas et affiche un message clair au lieu d'un échec silencieux.
 
+## Formulaire à profils
+
+Un formulaire peut proposer une barre de pastilles qui change les champs affichés, la phrase d'aide, le libellé du bouton et le destinataire. C'est ce qui reproduit la page Contact de la maquette.
+
+Trois éléments :
+
+1. **Un champ de type `Sélecteur de profil (pastilles)`.** Sa zone de liste contient les profils, un par ligne. Un seul par formulaire.
+2. **Sur chaque autre champ, la zone `Afficher uniquement pour`.** Cochez les profils concernés. Aucune case cochée : le champ reste visible pour tout le monde.
+3. **L'encadré `Profils et destinataires`.** Pour chaque profil : une adresse de réception, une phrase d'aide et un libellé de bouton. Laissés vides, ils reprennent les réglages généraux du formulaire.
+
+Le formulaire **Contact** est créé automatiquement avec les sept profils Candidat, Adhérent, Donateur, Entreprise ou mécène, Partenaire, Presse et médias, Demande générale, et leurs champs spécifiques.
+
+Points techniques :
+
+- l'état initial est calculé côté serveur, le premier profil est déjà en place dans le HTML ;
+- les champs masqués sont **désactivés**, pas seulement cachés : un champ obligatoire d'un autre profil ne bloque donc jamais l'envoi et n'est pas transmis ;
+- côté serveur, les champs d'un autre profil ne sont ni exigés, ni validés, ni inclus dans l'e-mail ;
+- l'objet de l'e-mail reçoit le profil en suffixe, et le profil est enregistré avec le message archivé.
+
 ## Options du shortcode
 
 | Option | Rôle | Exemple |

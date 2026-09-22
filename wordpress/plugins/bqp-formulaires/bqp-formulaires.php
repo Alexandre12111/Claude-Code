@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       BQP Formulaires
- * Description:       Créateur de formulaires de contact. Chaque formulaire génère son propre shortcode [bqp_formulaire id="..."].
- * Version:           1.1.0
+ * Description:       Créateur de formulaires de contact, avec formulaires à profils. Chaque formulaire génère son propre shortcode [bqp_formulaire id="..."].
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -17,7 +17,7 @@
  *
  * Shortcode : [bqp_formulaire id="123"]
  *
- * Version : 1.1.0
+ * Version : 1.2.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQF_VERSION' ) ) {
-	define( 'BQF_VERSION', '1.1.0' );
+	define( 'BQF_VERSION', '1.2.0' );
 }
 if ( ! defined( 'BQF_CPT' ) ) {
 	define( 'BQF_CPT', 'bqf_formulaire' );
@@ -89,6 +89,7 @@ function bqf_field_types() {
 		'checkbox' => 'Case à cocher',
 		'date'     => 'Date',
 		'file'     => 'Fichier à déposer',
+		'profil'   => 'Sélecteur de profil (pastilles)',
 	);
 }
 
@@ -104,7 +105,7 @@ function bqf_types_with_options() {
  * Pour un champ fichier, cette zone contient les extensions autorisées.
  */
 function bqf_types_with_list() {
-	return array( 'select', 'radio', 'file' );
+	return array( 'select', 'radio', 'file', 'profil' );
 }
 
 /**
@@ -217,10 +218,21 @@ function bqf_get_fields( $form_id ) {
 			}
 		}
 
+		$profils = array();
+		if ( ! empty( $field['profils'] ) ) {
+			foreach ( (array) $field['profils'] as $profil ) {
+				$profil = trim( (string) $profil );
+				if ( '' !== $profil ) {
+					$profils[] = $profil;
+				}
+			}
+		}
+
 		$clean[] = array(
 			'key'         => $key,
 			'label'       => (string) $field['label'],
 			'type'        => $type,
+			'profils'     => $profils,
 			'width'       => in_array( ( isset( $field['width'] ) ? $field['width'] : '' ), array( 'half', 'third' ), true ) ? $field['width'] : 'full',
 			'required'    => ! empty( $field['required'] ),
 			'placeholder' => isset( $field['placeholder'] ) ? (string) $field['placeholder'] : '',
@@ -229,6 +241,65 @@ function bqf_get_fields( $form_id ) {
 	}
 
 	return $clean;
+}
+
+/**
+ * Le champ « sélecteur de profil » d'un formulaire, s'il existe.
+ */
+function bqf_profil_field( $fields ) {
+	foreach ( (array) $fields as $field ) {
+		if ( 'profil' === $field['type'] ) {
+			return $field;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * La liste des profils déclarés dans un formulaire.
+ */
+function bqf_form_profiles( $fields ) {
+	$field = bqf_profil_field( $fields );
+
+	return $field ? $field['options'] : array();
+}
+
+/**
+ * Destinataire, phrase d'aide et libellé de bouton par profil.
+ */
+function bqf_get_profile_settings( $form_id ) {
+	$saved = get_post_meta( (int) $form_id, '_bqf_profils', true );
+
+	return is_array( $saved ) ? $saved : array();
+}
+
+/**
+ * Les réglages d'un profil précis, complétés par ceux du formulaire.
+ */
+function bqf_profile_settings_for( $profile, $profiles, $settings ) {
+	$row = isset( $profiles[ $profile ] ) ? $profiles[ $profile ] : array();
+
+	$email  = isset( $row['email'] ) ? (string) $row['email'] : '';
+	$help   = isset( $row['help'] ) ? (string) $row['help'] : '';
+	$bouton = isset( $row['bouton'] ) ? (string) $row['bouton'] : '';
+
+	return array(
+		'email'  => is_email( $email ) ? $email : $settings['email'],
+		'help'   => $help,
+		'bouton' => '' !== trim( $bouton ) ? $bouton : $settings['bouton'],
+	);
+}
+
+/**
+ * Un champ est-il visible pour le profil actif ?
+ */
+function bqf_field_visible( $field, $profile ) {
+	if ( empty( $field['profils'] ) ) {
+		return true;
+	}
+
+	return in_array( $profile, $field['profils'], true );
 }
 
 /**
@@ -244,6 +315,7 @@ function bqf_get_settings( $form_id ) {
 		'bouton'  => 'Envoyer',
 		'succes'  => 'Merci, votre message a bien été envoyé. Nous revenons vers vous rapidement.',
 		'rgpd'    => '',
+		'mention' => '',
 		'poids'   => '5',
 	);
 
@@ -253,8 +325,9 @@ function bqf_get_settings( $form_id ) {
 		'intro'  => (string) get_post_meta( $form_id, '_bqf_intro', true ),
 		'bouton' => (string) get_post_meta( $form_id, '_bqf_bouton', true ),
 		'succes' => (string) get_post_meta( $form_id, '_bqf_succes', true ),
-		'rgpd'   => (string) get_post_meta( $form_id, '_bqf_rgpd', true ),
-		'poids'  => (string) get_post_meta( $form_id, '_bqf_poids', true ),
+		'rgpd'    => (string) get_post_meta( $form_id, '_bqf_rgpd', true ),
+		'mention' => (string) get_post_meta( $form_id, '_bqf_mention', true ),
+		'poids'   => (string) get_post_meta( $form_id, '_bqf_poids', true ),
 	);
 
 	foreach ( $saved as $key => $value ) {
@@ -335,6 +408,117 @@ function bqf_register_content() {
 			'capabilities'       => array( 'create_posts' => 'do_not_allow' ),
 		)
 	);
+}
+
+/**
+ * Crée le formulaire de contact à profils, une seule fois.
+ */
+add_action( 'admin_init', 'bqf_maybe_seed_contact' );
+function bqf_maybe_seed_contact() {
+	if ( get_option( 'bqf_seeded_contact' ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		return;
+	}
+
+	$form_id = wp_insert_post(
+		array(
+			'post_type'   => BQF_CPT,
+			'post_status' => 'publish',
+			'post_title'  => 'Contact',
+		)
+	);
+
+	if ( ! $form_id || is_wp_error( $form_id ) ) {
+		update_option( 'bqf_seeded_contact', BQF_VERSION, false );
+		return;
+	}
+
+	$candidat   = array( 'Candidat' );
+	$adherent   = array( 'Adhérent' );
+	$donateur   = array( 'Donateur' );
+	$entreprise = array( 'Entreprise ou mécène' );
+	$partenaire = array( 'Partenaire' );
+	$presse     = array( 'Presse et médias' );
+	$generale   = array( 'Demande générale' );
+
+	$champ = function ( $label, $type, $width, $required, $placeholder, $options, $profils ) {
+		return array(
+			'label'       => $label,
+			'type'        => $type,
+			'width'       => $width,
+			'required'    => $required,
+			'placeholder' => $placeholder,
+			'options'     => $options,
+			'profils'     => $profils,
+		);
+	};
+
+	update_post_meta( $form_id, '_bqf_email', BQF_MAIL );
+	update_post_meta( $form_id, '_bqf_sujet', 'Nouveau message depuis la page Contact' );
+	update_post_meta( $form_id, '_bqf_intro', '' );
+	update_post_meta( $form_id, '_bqf_mention', 'Les informations transmises servent uniquement à traiter votre demande.' );
+	update_post_meta( $form_id, '_bqf_bouton', 'Envoyer le message' );
+	update_post_meta( $form_id, '_bqf_succes', 'Merci, votre message a bien été transmis au service concerné. Nous revenons vers vous rapidement.' );
+	update_post_meta( $form_id, '_bqf_poids', 5 );
+
+	update_post_meta(
+		$form_id,
+		'_bqf_fields',
+		array(
+			$champ( 'Vous êtes', 'profil', 'full', 0, '', "Candidat\nAdhérent\nDonateur\nEntreprise ou mécène\nPartenaire\nPresse et médias\nDemande générale", array() ),
+
+			$champ( 'Nom et prénom', 'text', 'half', 1, 'Votre nom', '', array() ),
+			$champ( 'Adresse e-mail', 'email', 'half', 1, 'vous@exemple.fr', '', array() ),
+
+			$champ( 'Établissement', 'text', 'half', 1, 'Université, laboratoire, média', '', $candidat ),
+			$champ( 'Programme visé', 'select', 'half', 1, 'Choisir', "Grand Prix Jean-Michel Quatrepoint\nBourses Jeunes Chercheurs\nPrix de l'Essai et du Débat public", $candidat ),
+			$champ( 'Titre du travail', 'text', 'full', 0, 'Titre exact du travail', '', $candidat ),
+
+			$champ( "Numéro d'adhérent", 'text', 'half', 0, 'Si vous en avez un', '', $adherent ),
+			$champ( 'Type de demande', 'select', 'half', 1, 'Choisir', "Adhésion nouvelle\nRenouvellement\nAccès aux archives\nAutre", $adherent ),
+
+			$champ( 'Nature du don', 'select', 'half', 1, 'Choisir', "Don ponctuel\nDon régulier\nLegs\nDon fléché sur un programme", $donateur ),
+			$champ( 'Programme soutenu', 'select', 'half', 0, 'Choisir', "Sans préférence\nBourses Jeunes Chercheurs\nPublications et Cahiers\nBibliothèque et numérisation", $donateur ),
+
+			$champ( 'Entreprise', 'text', 'half', 1, 'Raison sociale', '', $entreprise ),
+			$champ( 'Fonction', 'text', 'half', 1, 'Votre fonction', '', $entreprise ),
+			$champ( 'Forme de soutien envisagée', 'select', 'half', 0, 'Choisir', "Mécénat et dotation\nFinancement d'une bourse\nMécénat de compétence\nÀ définir", $entreprise ),
+			$champ( 'Budget envisagé', 'select', 'half', 0, 'Choisir', "Non déterminé\nMoins de 10 000 €\n10 000 à 50 000 €\nPlus de 50 000 €", $entreprise ),
+
+			$champ( 'Organisation', 'text', 'half', 1, 'Nom de la structure', '', $partenaire ),
+			$champ( 'Catégorie', 'select', 'half', 1, 'Choisir', "Académique\nInstitutionnel\nMédia\nAssociation", $partenaire ),
+
+			$champ( 'Média', 'text', 'half', 1, 'Nom du média', '', $presse ),
+			$champ( 'Nature de la demande', 'select', 'half', 1, 'Choisir', "Interview d'un lauréat\nAccréditation cérémonie\nDossier et visuels de presse\nAutre", $presse ),
+			$champ( 'Date de bouclage', 'date', 'half', 0, '', '', $presse ),
+			$champ( 'Support', 'select', 'half', 0, 'Choisir', "Presse écrite\nRadio\nTélévision\nWeb\nPodcast", $presse ),
+
+			$champ( 'Objet', 'select', 'full', 1, 'Choisir', "Bibliothèque et archives\nDevenir rapporteur\nInformation générale\nAutre demande", $generale ),
+
+			$champ( 'Votre message', 'textarea', 'full', 1, 'Décrivez votre demande en quelques lignes.', '', array() ),
+		)
+	);
+
+	// L'adresse reste vide : chaque profil reprend celle du formulaire tant
+	// que les boîtes de service ne sont pas créées.
+	update_post_meta(
+		$form_id,
+		'_bqf_profils',
+		array(
+			'Candidat'             => array( 'email' => '', 'help' => 'Votre message sera transmis au service des candidatures.', 'bouton' => 'Envoyer au service des candidatures' ),
+			'Adhérent'             => array( 'email' => '', 'help' => "Votre message sera transmis au secrétariat de l'association.", 'bouton' => 'Envoyer au secrétariat' ),
+			'Donateur'             => array( 'email' => '', 'help' => 'Votre message sera transmis au délégué au mécénat.', 'bouton' => 'Envoyer au délégué au mécénat' ),
+			'Entreprise ou mécène' => array( 'email' => '', 'help' => 'Votre message sera transmis au délégué aux partenariats.', 'bouton' => 'Envoyer au délégué aux partenariats' ),
+			'Partenaire'           => array( 'email' => '', 'help' => 'Votre message sera transmis au délégué aux partenariats.', 'bouton' => 'Envoyer au délégué aux partenariats' ),
+			'Presse et médias'     => array( 'email' => '', 'help' => 'Votre message sera transmis au service de presse.', 'bouton' => 'Envoyer au service de presse' ),
+			'Demande générale'     => array( 'email' => '', 'help' => 'Votre message sera transmis au secrétariat général.', 'bouton' => 'Envoyer au secrétariat général' ),
+		)
+	);
+
+	update_option( 'bqf_seeded_contact', BQF_VERSION, false );
 }
 
 add_filter( 'enter_title_here', 'bqf_title_placeholder', 10, 2 );
@@ -442,6 +626,7 @@ function bqf_add_meta_boxes() {
 	add_meta_box( 'bqf_shortcode_box', 'Shortcode à coller', 'bqf_render_shortcode_box', BQF_CPT, 'side', 'high' );
 	add_meta_box( 'bqf_settings_box', 'Réglages du formulaire', 'bqf_render_settings_box', BQF_CPT, 'normal', 'high' );
 	add_meta_box( 'bqf_fields_box', 'Champs du formulaire', 'bqf_render_fields_box', BQF_CPT, 'normal', 'high' );
+	add_meta_box( 'bqf_profils_box', 'Profils et destinataires', 'bqf_render_profils_box', BQF_CPT, 'normal', 'default' );
 	add_meta_box( 'bqf_message_box', 'Contenu du message', 'bqf_render_message_box', BQF_MSG, 'normal', 'high' );
 }
 
@@ -507,6 +692,12 @@ function bqf_render_settings_box( $post ) {
 	$html .= '</div>';
 
 	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_mention">Mention sous le formulaire</label>';
+	$html .= '<input type="text" class="bqf-admin__input" name="bqf_mention" id="bqf_mention" value="' . esc_attr( $s['mention'] ) . '" placeholder="Les informations transmises servent uniquement à traiter votre demande." />';
+	$html .= '<span class="bqf-admin__hint">Petite ligne grise affichée juste au-dessus du bouton d\'envoi.</span>';
+	$html .= '</p>';
+
+	$html .= '<p class="bqf-admin__field">';
 	$html .= '<label class="bqf-admin__label" for="bqf_poids">Poids maximum d\'un fichier déposé</label>';
 	$html .= '<input type="number" class="bqf-admin__input bqf-admin__input--small" name="bqf_poids" id="bqf_poids" value="' . esc_attr( $s['poids'] ) . '" min="1" max="64" step="1" /> <span class="bqf-admin__unit">Mo</span>';
 	$html .= '<span class="bqf-admin__hint">Utile uniquement si le formulaire contient un champ « Fichier à déposer ». Votre hébergeur impose aussi sa propre limite.</span>';
@@ -526,7 +717,7 @@ function bqf_render_settings_box( $post ) {
 /**
  * Une ligne du constructeur de champs.
  */
-function bqf_render_field_row( $index, $field ) {
+function bqf_render_field_row( $index, $field, $profiles = array() ) {
 	$field = wp_parse_args(
 		(array) $field,
 		array(
@@ -536,12 +727,15 @@ function bqf_render_field_row( $index, $field ) {
 			'required'    => 0,
 			'placeholder' => '',
 			'options'     => '',
+			'profils'     => array(),
 		)
 	);
 
 	$name     = 'bqf_fields[' . $index . ']';
-	$has_opts = in_array( $field['type'], bqf_types_with_list(), true );
-	$is_file  = ( 'file' === $field['type'] );
+	$has_opts  = in_array( $field['type'], bqf_types_with_list(), true );
+	$is_file   = ( 'file' === $field['type'] );
+	$is_profil = ( 'profil' === $field['type'] );
+	$chosen    = (array) $field['profils'];
 
 	$html  = '<div class="bqf-row" data-row>';
 
@@ -596,21 +790,85 @@ function bqf_render_field_row( $index, $field ) {
 	$html .= '<span class="bqf-admin__hint" data-options-hint' . ( $is_file ? '' : ' hidden' ) . '>Laissez vide pour accepter : ' . esc_html( implode( ', ', bqf_default_extensions() ) ) . '. Les fichiers exécutables sont toujours refusés.</span>';
 	$html .= '</label>';
 
+	if ( $profiles ) {
+		$html .= '<div class="bqf-row__field bqf-row__field--wide bqf-row__profils"' . ( $is_profil ? ' hidden' : '' ) . ' data-profils-box>';
+		$html .= '<span class="bqf-admin__label">Afficher uniquement pour</span>';
+		$html .= '<span class="bqf-chips">';
+
+		foreach ( $profiles as $profile ) {
+			$on = in_array( $profile, $chosen, true );
+
+			$html .= '<label class="bqf-chip' . ( $on ? ' is-on' : '' ) . '">';
+			$html .= '<input type="checkbox" name="' . esc_attr( $name ) . '[profils][]" value="' . esc_attr( $profile ) . '"' . checked( $on, true, false ) . ' />';
+			$html .= '<span>' . esc_html( $profile ) . '</span>';
+			$html .= '</label>';
+		}
+
+		$html .= '</span>';
+		$html .= '<span class="bqf-admin__hint">Aucune case cochée : le champ est affiché pour tous les profils. La liste se met à jour après enregistrement si vous modifiez les profils.</span>';
+		$html .= '</div>';
+	}
+
 	$html .= '</div></div>';
 
 	return $html;
 }
 
+/**
+ * Encadré des profils : destinataire, phrase d'aide et bouton.
+ */
+function bqf_render_profils_box( $post ) {
+	$fields   = bqf_get_fields( $post->ID );
+	$profiles = bqf_form_profiles( $fields );
+	$rows     = bqf_get_profile_settings( $post->ID );
+	$settings = bqf_get_settings( $post->ID );
+
+	if ( ! $profiles ) {
+		echo '<div class="bqf-admin"><p class="bqf-admin__hint">'
+			. 'Ce formulaire n\'a pas de sélecteur de profil. Ajoutez un champ de type '
+			. '<strong>Sélecteur de profil (pastilles)</strong> et saisissez la liste des profils, un par ligne, '
+			. 'puis enregistrez : le tableau des destinataires apparaîtra ici.'
+			. '</p></div>';
+		return;
+	}
+
+	$html  = '<div class="bqf-admin">';
+	$html .= '<p class="bqf-admin__hint">Chaque profil peut être routé vers une adresse différente, avec sa propre phrase d\'aide et son propre libellé de bouton. Laissez vide pour reprendre les réglages généraux du formulaire.</p>';
+	$html .= '<table class="bqf-profils"><thead><tr>';
+	$html .= '<th>Profil</th><th>Adresse de réception</th><th>Phrase d\'aide</th><th>Libellé du bouton</th>';
+	$html .= '</tr></thead><tbody>';
+
+	foreach ( array_values( $profiles ) as $i => $profile ) {
+		$row    = isset( $rows[ $profile ] ) ? $rows[ $profile ] : array();
+		$name   = 'bqf_profils[' . $i . ']';
+		$email  = isset( $row['email'] ) ? $row['email'] : '';
+		$help   = isset( $row['help'] ) ? $row['help'] : '';
+		$bouton = isset( $row['bouton'] ) ? $row['bouton'] : '';
+
+		$html .= '<tr>';
+		$html .= '<th scope="row">' . esc_html( $profile ) . '<input type="hidden" name="' . esc_attr( $name ) . '[name]" value="' . esc_attr( $profile ) . '" /></th>';
+		$html .= '<td><input type="email" class="bqf-admin__input" name="' . esc_attr( $name ) . '[email]" value="' . esc_attr( $email ) . '" placeholder="' . esc_attr( $settings['email'] ) . '" /></td>';
+		$html .= '<td><input type="text" class="bqf-admin__input" name="' . esc_attr( $name ) . '[help]" value="' . esc_attr( $help ) . '" placeholder="Votre message sera transmis à…" /></td>';
+		$html .= '<td><input type="text" class="bqf-admin__input" name="' . esc_attr( $name ) . '[bouton]" value="' . esc_attr( $bouton ) . '" placeholder="' . esc_attr( $settings['bouton'] ) . '" /></td>';
+		$html .= '</tr>';
+	}
+
+	$html .= '</tbody></table></div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
 function bqf_render_fields_box( $post ) {
-	$saved  = get_post_meta( $post->ID, '_bqf_fields', true );
-	$saved  = is_array( $saved ) ? $saved : array();
+	$saved    = get_post_meta( $post->ID, '_bqf_fields', true );
+	$saved    = is_array( $saved ) ? $saved : array();
+	$profiles = bqf_form_profiles( bqf_get_fields( $post->ID ) );
 
 	$html  = '<div class="bqf-admin bqf-builder">';
 	$html .= '<div class="bqf-builder__list" id="bqf-rows">';
 
 	if ( $saved ) {
 		foreach ( array_values( $saved ) as $i => $field ) {
-			$html .= bqf_render_field_row( $i, $field );
+			$html .= bqf_render_field_row( $i, $field, $profiles );
 		}
 	}
 
@@ -623,7 +881,7 @@ function bqf_render_fields_box( $post ) {
 
 	$html .= '<p class="bqf-builder__add"><button type="button" class="button button-primary button-hero" id="bqf-add"><span class="dashicons dashicons-plus-alt2"></span> Ajouter un champ</button></p>';
 
-	$html .= '<template id="bqf-tpl">' . bqf_render_field_row( '__INDEX__', array() ) . '</template>';
+	$html .= '<template id="bqf-tpl">' . bqf_render_field_row( '__INDEX__', array(), $profiles ) . '</template>';
 
 	$html .= '</div>';
 
@@ -650,7 +908,7 @@ function bqf_save_form( $post_id, $post ) {
 	$poids = isset( $_POST['bqf_poids'] ) ? absint( $_POST['bqf_poids'] ) : 5;
 	update_post_meta( $post_id, '_bqf_poids', max( 1, min( 64, $poids ) ) );
 
-	foreach ( array( 'sujet', 'intro', 'bouton', 'rgpd' ) as $key ) {
+	foreach ( array( 'sujet', 'intro', 'bouton', 'rgpd', 'mention' ) as $key ) {
 		$value = isset( $_POST[ 'bqf_' . $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'bqf_' . $key ] ) ) : '';
 		update_post_meta( $post_id, '_bqf_' . $key, $value );
 	}
@@ -673,9 +931,20 @@ function bqf_save_form( $post_id, $post ) {
 				$type = 'text';
 			}
 
+			$profils = array();
+			if ( ! empty( $row['profils'] ) && is_array( $row['profils'] ) ) {
+				foreach ( $row['profils'] as $profil ) {
+					$profil = sanitize_text_field( (string) $profil );
+					if ( '' !== $profil ) {
+						$profils[] = $profil;
+					}
+				}
+			}
+
 			$fields[] = array(
 				'label'       => sanitize_text_field( $row['label'] ),
 				'type'        => $type,
+				'profils'     => $profils,
 				'width'       => in_array( ( isset( $row['width'] ) ? $row['width'] : '' ), array( 'half', 'third' ), true ) ? $row['width'] : 'full',
 				'required'    => empty( $row['required'] ) ? 0 : 1,
 				'placeholder' => isset( $row['placeholder'] ) ? sanitize_text_field( $row['placeholder'] ) : '',
@@ -685,6 +954,29 @@ function bqf_save_form( $post_id, $post ) {
 	}
 
 	update_post_meta( $post_id, '_bqf_fields', $fields );
+
+	$profils = array();
+
+	if ( isset( $_POST['bqf_profils'] ) && is_array( $_POST['bqf_profils'] ) ) {
+		$raw = wp_unslash( $_POST['bqf_profils'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) || empty( $row['name'] ) ) {
+				continue;
+			}
+
+			$name  = sanitize_text_field( $row['name'] );
+			$email = isset( $row['email'] ) ? sanitize_email( $row['email'] ) : '';
+
+			$profils[ $name ] = array(
+				'email'  => is_email( $email ) ? $email : '',
+				'help'   => isset( $row['help'] ) ? sanitize_text_field( $row['help'] ) : '',
+				'bouton' => isset( $row['bouton'] ) ? sanitize_text_field( $row['bouton'] ) : '',
+			);
+		}
+	}
+
+	update_post_meta( $post_id, '_bqf_profils', $profils );
 }
 
 /* -------------------------------------------------------------------------
@@ -741,6 +1033,10 @@ function bqf_render_message_box( $post ) {
 	if ( is_array( $meta ) ) {
 		$html .= '<tr><th>Page d\'origine</th><td>' . esc_html( isset( $meta['url'] ) ? $meta['url'] : '' ) . '</td></tr>';
 		$html .= '<tr><th>Formulaire</th><td>' . esc_html( isset( $meta['form'] ) ? $meta['form'] : '' ) . '</td></tr>';
+
+		if ( ! empty( $meta['profil'] ) ) {
+			$html .= '<tr><th>Profil</th><td>' . esc_html( $meta['profil'] ) . '</td></tr>';
+		}
 	}
 
 	$html .= '</table>';
@@ -869,6 +1165,7 @@ function bqf_render_help_page() {
 		array( '3', 'Ajouter les champs', 'Bouton <strong>Ajouter un champ</strong>, autant de fois que nécessaire. La <strong>largeur</strong> décide du nombre de champs par ligne : pleine largeur pour un seul, demie pour deux côte à côte, tiers pour trois.' ),
 		array( '4', 'Copier le shortcode', 'Il apparaît dans l\'encadré à droite de l\'écran, et dans la colonne Shortcode de la liste.' ),
 		array( '5', 'Coller dans la page', 'Dans Elementor, widget <strong>Shortcode</strong>, placé dans la colonne de droite de votre section.' ),
+		array( '6', 'Formulaire à profils (facultatif)', 'Ajoutez un champ <strong>Sélecteur de profil</strong>, cochez les profils concernés sur chaque champ, puis réglez les destinataires dans l\'encadré <strong>Profils et destinataires</strong>.' ),
 	);
 
 	$options = array(
@@ -899,6 +1196,8 @@ function bqf_render_help_page() {
 	$html .= '</tbody></table>';
 
 	$html .= '<h2 class="bqf-help__subtitle">Bon à savoir</h2><ul class="bqf-help__list">';
+	$html .= '<li><strong>Formulaire à profils.</strong> Ajoutez un champ de type <strong>Sélecteur de profil (pastilles)</strong> et saisissez les profils, un par ligne. Sur chaque autre champ, cochez dans <strong>Afficher uniquement pour</strong> les profils concernés : le champ n\'apparaît que pour eux. Un champ sans case cochée reste visible pour tout le monde.</li>';
+	$html .= '<li>L\'encadré <strong>Profils et destinataires</strong> permet de router chaque profil vers une adresse différente, avec sa propre phrase d\'aide et son propre libellé de bouton. Laissé vide, un profil reprend les réglages généraux du formulaire.</li>';
 	$html .= '<li>Pour mettre <strong>deux champs sur la même ligne</strong>, réglez leur largeur sur <strong>Demie</strong>. Deux champs en demi-largeur qui se suivent se placent côte à côte. Trois champs en <strong>Tiers</strong> occupent une ligne complète.</li>';
 	$html .= '<li>Le type <strong>Fichier à déposer</strong> permet au visiteur de joindre un document. Le fichier est envoyé en pièce jointe de l\'e-mail et conservé dans le message archivé. Les extensions acceptées et le poids maximum se règlent dans le champ et dans les réglages du formulaire.</li>';
 	$html .= '<li>Les fichiers déposés sont stockés dans un dossier fermé à l\'accès direct : ils ne se téléchargent que depuis l\'administration. Supprimer un message supprime aussi ses pièces jointes.</li>';
@@ -956,6 +1255,16 @@ function bqf_admin_css() {
 	.bqf-sc__input{flex:1;min-width:0;padding:8px 11px;border:1px solid ' . bqf_hex_to_rgba( $p['bordeaux'], 0.25 ) . ';border-radius:7px;background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.05 ) . ';color:' . $p['bordeaux'] . ';font-family:Menlo,Consolas,monospace;font-size:12.5px;font-weight:600;}
 	.bqf-code{background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.06 ) . ';color:' . $p['bordeaux'] . ';padding:4px 9px;border-radius:5px;font-size:12.5px;}
 
+	.bqf-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px;}
+	.bqf-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid #dcdcde;border-radius:999px;background:#fff;cursor:pointer;font-size:12.5px;transition:.18s;}
+	.bqf-chip:hover{border-color:' . bqf_hex_to_rgba( $p['bordeaux'], 0.45 ) . ';}
+	.bqf-chip input{margin:0 !important;}
+	.bqf-chip.is-on{border-color:' . $p['bordeaux'] . ';background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.06 ) . ';color:' . $p['bordeaux'] . ';font-weight:600;}
+	.bqf-profils{width:100%;border-collapse:collapse;margin-top:14px;}
+	.bqf-profils th,.bqf-profils td{padding:9px 12px 9px 0;text-align:left;vertical-align:middle;border-bottom:1px solid #ececee;}
+	.bqf-profils thead th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:' . $p['bordeaux'] . ';}
+	.bqf-profils tbody th{width:190px;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
+	@media (max-width:1000px){.bqf-profils,.bqf-profils tbody,.bqf-profils tr,.bqf-profils td,.bqf-profils th{display:block;width:auto;}.bqf-profils thead{display:none;}.bqf-profils tr{padding:10px 0;border-bottom:1px solid #ececee;}.bqf-profils td{border:0;padding:5px 0;}}
 	.bqf-builder__list{display:flex;flex-direction:column;gap:12px;}
 	.bqf-row{border:1px solid #e2e2e4;border-radius:11px;background:#fff;overflow:hidden;transition:border-color .2s,box-shadow .2s;}
 	.bqf-row:hover{border-color:' . bqf_hex_to_rgba( $p['bordeaux'], 0.3 ) . ';box-shadow:0 4px 14px -8px rgba(49,2,12,.35);}
@@ -1368,12 +1677,30 @@ function bqf_handle_submission() {
 
 	$settings  = bqf_get_settings( $form_id );
 	$fields    = bqf_get_fields( $form_id );
+
+	$profiles       = bqf_form_profiles( $fields );
+	$profil_field   = bqf_profil_field( $fields );
+	$active_profile = '';
+
+	if ( $profiles && $profil_field ) {
+		$chosen = isset( $_POST[ 'bqf_' . $profil_field['key'] ] )
+			? sanitize_text_field( wp_unslash( $_POST[ 'bqf_' . $profil_field['key'] ] ) )
+			: '';
+
+		$active_profile = in_array( $chosen, $profiles, true ) ? $chosen : $profiles[0];
+	}
+
 	$reply_to  = '';
 	$sender    = '';
 	$pending   = array();
 	$max_bytes = (int) $settings['poids'] * 1048576;
 
 	foreach ( $fields as $field ) {
+		// Un champ réservé à un autre profil n'est ni exigé ni transmis.
+		if ( ! bqf_field_visible( $field, $active_profile ) ) {
+			continue;
+		}
+
 		$name = 'bqf_' . $field['key'];
 		$raw  = isset( $_POST[ $name ] ) ? wp_unslash( $_POST[ $name ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 
@@ -1440,6 +1767,10 @@ function bqf_handle_submission() {
 				if ( '' !== $value && $field['options'] && ! in_array( $value, $field['options'], true ) ) {
 					$value = '';
 				}
+				break;
+
+			case 'profil':
+				$value = $active_profile;
 				break;
 
 			default:
@@ -1511,6 +1842,9 @@ function bqf_handle_submission() {
 	$body[] = '';
 	$body[] = '---';
 	$body[] = 'Formulaire : ' . get_the_title( $form_id );
+	if ( $active_profile ) {
+		$body[] = 'Profil : ' . $active_profile;
+	}
 	$body[] = 'Page : ' . $source;
 	$body[] = 'Date : ' . wp_date( 'd/m/Y à H:i' );
 
@@ -1537,7 +1871,11 @@ function bqf_handle_submission() {
 		}
 	}
 
-	$sent = wp_mail( $settings['email'], $settings['sujet'], implode( "\n", $body ), $headers, $attachments );
+	$conf    = bqf_profile_settings_for( $active_profile, bqf_get_profile_settings( $form_id ), $settings );
+	$to      = $profiles ? $conf['email'] : $settings['email'];
+	$subject = $settings['sujet'] . ( $active_profile ? ' — ' . $active_profile : '' );
+
+	$sent = wp_mail( $to, $subject, implode( "\n", $body ), $headers, $attachments );
 
 	// Le message est archivé dans l'administration, même si l'e-mail échoue.
 	$title = get_the_title( $form_id ) . ' — ' . ( $sender ? $sender : ( $reply_to ? $reply_to : 'sans nom' ) );
@@ -1561,10 +1899,11 @@ function bqf_handle_submission() {
 			$message_id,
 			'_bqf_meta',
 			array(
-				'form'  => get_the_title( $form_id ),
-				'email' => $reply_to,
-				'url'   => $source,
-				'sent'  => $sent ? 'oui' : 'non',
+				'form'   => get_the_title( $form_id ),
+				'email'  => $reply_to,
+				'url'    => $source,
+				'sent'   => $sent ? 'oui' : 'non',
+				'profil' => $active_profile,
 			)
 		);
 	}
@@ -1657,6 +1996,31 @@ function bqf_shortcode( $atts ) {
 	$errors   = $state['errors'];
 	$values   = $state['values'];
 
+	$profiles       = bqf_form_profiles( $fields );
+	$profile_rows   = bqf_get_profile_settings( $form_id );
+	$profil_field   = bqf_profil_field( $fields );
+	$active_profile = '';
+	$profile_map    = array();
+
+	if ( $profiles ) {
+		$submitted = ( $profil_field && isset( $values[ $profil_field['key'] ] ) ) ? (string) $values[ $profil_field['key'] ] : '';
+
+		$active_profile = in_array( $submitted, $profiles, true ) ? $submitted : $profiles[0];
+
+		foreach ( $profiles as $profile ) {
+			$conf = bqf_profile_settings_for( $profile, $profile_rows, $settings );
+
+			$profile_map[ $profile ] = array(
+				'help'   => $conf['help'],
+				'bouton' => $conf['bouton'],
+			);
+		}
+	}
+
+	$active_conf = $profiles
+		? bqf_profile_settings_for( $active_profile, $profile_rows, $settings )
+		: array( 'email' => $settings['email'], 'help' => '', 'bouton' => $settings['bouton'] );
+
 	if ( ! empty( $GLOBALS['bqf_too_big'] ) ) {
 		$errors[] = 'L\'envoi est trop volumineux pour le serveur. Merci de déposer un fichier plus léger.';
 	}
@@ -1674,7 +2038,12 @@ function bqf_shortcode( $atts ) {
 
 	$classes = 'bqf-form' . ( $card ? ' bqf-form--card' : '' ) . ( $single ? ' bqf-form--single' : '' );
 
-	$html  = '<section class="' . esc_attr( $classes ) . '" id="' . esc_attr( $anchor ) . '">';
+	$data = '';
+	if ( $profiles ) {
+		$data = ' data-bqf-profils="' . esc_attr( wp_json_encode( $profile_map ) ) . '"';
+	}
+
+	$html  = '<section class="' . esc_attr( $classes ) . '" id="' . esc_attr( $anchor ) . '"' . $data . '>';
 
 	if ( '' !== $title ) {
 		$html .= '<h2 class="bqf-form__title">' . esc_html( $title ) . '</h2>';
@@ -1682,6 +2051,10 @@ function bqf_shortcode( $atts ) {
 
 	if ( '' !== $settings['intro'] ) {
 		$html .= '<p class="bqf-form__intro">' . esc_html( $settings['intro'] ) . '</p>';
+	}
+
+	if ( $profiles && '' !== $active_conf['help'] ) {
+		$html .= '<p class="bqf-form__profil-help" data-profil-help>' . esc_html( $active_conf['help'] ) . '</p>';
 	}
 
 	if ( $sent ) {
@@ -1720,8 +2093,37 @@ function bqf_shortcode( $atts ) {
 		$req   = $field['required'] ? ' required' : '';
 		$span  = ' bqf-field--' . $field['width'];
 
+		$group = '';
+		if ( ! empty( $field['profils'] ) ) {
+			$group = ' data-for="' . esc_attr( implode( '|', $field['profils'] ) ) . '"'
+				. ( bqf_field_visible( $field, $active_profile ) ? '' : ' hidden' );
+		}
+
+		// Le sélecteur de profil : une rangée de pastilles.
+		if ( 'profil' === $field['type'] ) {
+			if ( ! $field['options'] ) {
+				continue;
+			}
+
+			$html .= '<div class="bqf-field bqf-field--full bqf-field--profils">';
+			$html .= '<span class="bqf-field__label">' . esc_html( $field['label'] ) . '</span>';
+			$html .= '<div class="bqf-pills" role="group" aria-label="' . esc_attr( $field['label'] ) . '">';
+
+			foreach ( $field['options'] as $option ) {
+				$on = ( $option === $active_profile );
+
+				$html .= '<button type="button" class="bqf-pill' . ( $on ? ' is-active' : '' ) . '" data-profil="' . esc_attr( $option ) . '" aria-pressed="' . ( $on ? 'true' : 'false' ) . '">'
+					. esc_html( $option ) . '</button>';
+			}
+
+			$html .= '</div>';
+			$html .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $active_profile ) . '" data-profil-value />';
+			$html .= '</div>';
+			continue;
+		}
+
 		if ( 'checkbox' === $field['type'] ) {
-			$html .= '<div class="bqf-field bqf-field--checkbox' . $span . '">';
+			$html .= '<div class="bqf-field bqf-field--checkbox' . $span . '"' . $group . '>';
 			$html .= '<label class="bqf-check">';
 			$html .= '<input type="checkbox" name="' . esc_attr( $name ) . '" value="1"' . checked( $value, 'Oui', false ) . $req . ' />';
 			$html .= '<span>' . esc_html( $field['label'] ) . ( $field['required'] ? ' <em class="bqf-req">*</em>' : '' ) . '</span>';
@@ -1729,7 +2131,7 @@ function bqf_shortcode( $atts ) {
 			continue;
 		}
 
-		$html .= '<div class="bqf-field' . $span . '">';
+		$html .= '<div class="bqf-field' . $span . '"' . $group . '>';
 
 		$caption = esc_html( $field['label'] ) . ( $field['required'] ? ' <em class="bqf-req">*</em>' : '' );
 
@@ -1796,8 +2198,12 @@ function bqf_shortcode( $atts ) {
 	$html .= '<input type="hidden" name="bqf_t" value="' . (int) time() . '" />';
 	$html .= wp_nonce_field( 'bqf_send_' . $form_id, 'bqf_nonce', false, false );
 
+	if ( '' !== $settings['mention'] ) {
+		$html .= '<p class="bqf-form__mention bqf-field--full">' . esc_html( $settings['mention'] ) . '</p>';
+	}
+
 	$html .= '<div class="bqf-field bqf-field--full">';
-	$html .= '<button type="submit" class="bqf-submit">' . esc_html( $settings['bouton'] ) . '</button>';
+	$html .= '<button type="submit" class="bqf-submit" data-profil-button>' . esc_html( $active_conf['bouton'] ) . '</button>';
 	$html .= '</div>';
 
 	$html .= '</form></section>';
@@ -1811,7 +2217,62 @@ function bqf_shortcode( $atts ) {
 function bqf_front_js() {
 	return "
 	(function(){
+		function initProfils(section){
+			var map = {};
+			try { map = JSON.parse(section.getAttribute('data-bqf-profils') || '{}'); } catch (e) { map = {}; }
+
+			var pills  = section.querySelectorAll('.bqf-pill');
+			var hidden = section.querySelector('[data-profil-value]');
+			var help   = section.querySelector('[data-profil-help]');
+			var button = section.querySelector('[data-profil-button]');
+			var groups = section.querySelectorAll('[data-for]');
+
+			if (!pills.length) { return; }
+
+			function apply(profile){
+				Array.prototype.forEach.call(pills, function(pill){
+					var on = (pill.getAttribute('data-profil') === profile);
+					if (on) { pill.classList.add('is-active'); } else { pill.classList.remove('is-active'); }
+					pill.setAttribute('aria-pressed', on ? 'true' : 'false');
+				});
+
+				if (hidden) { hidden.value = profile; }
+
+				Array.prototype.forEach.call(groups, function(group){
+					var list = (group.getAttribute('data-for') || '').split('|');
+					var on   = (list.indexOf(profile) !== -1);
+
+					group.hidden = !on;
+
+					// Un champ obligatoire mais masqué bloquerait l'envoi :
+					// on le neutralise, il n'est alors pas transmis non plus.
+					Array.prototype.forEach.call(group.querySelectorAll('input, select, textarea'), function(el){
+						el.disabled = !on;
+					});
+				});
+
+				var conf = map[profile] || {};
+
+				if (help) {
+					help.textContent = conf.help || '';
+					help.hidden = !conf.help;
+				}
+
+				if (button && conf.bouton) { button.textContent = conf.bouton; }
+			}
+
+			Array.prototype.forEach.call(pills, function(pill){
+				pill.addEventListener('click', function(){
+					apply(pill.getAttribute('data-profil'));
+				});
+			});
+
+			apply((hidden && hidden.value) ? hidden.value : pills[0].getAttribute('data-profil'));
+		}
+
 		function boot(){
+			Array.prototype.forEach.call(document.querySelectorAll('.bqf-form[data-bqf-profils]'), initProfils);
+
 			var inputs = document.querySelectorAll('.bqf-file__input');
 
 			Array.prototype.forEach.call(inputs, function(input){
@@ -1877,6 +2338,53 @@ function bqf_front_css() {
 		font-family:var(--bqf-sans);font-size:.93rem;line-height:1.6;
 		color:' . bqf_hex_to_rgba( $p['navy'], 0.62 ) . ';
 	}
+
+	.bqf-form__profil-help{
+		margin:0 0 26px;
+		font-family:var(--bqf-sans);font-size:.88rem;line-height:1.55;
+		color:' . bqf_hex_to_rgba( $p['navy'], 0.62 ) . ';
+	}
+	.bqf-form__profil-help[hidden]{display:none;}
+	.bqf-form__intro + .bqf-form__profil-help{margin-top:-18px;}
+
+	.bqf-form__mention{
+		margin:4px 0 0;
+		font-family:var(--bqf-sans);font-size:.78rem;line-height:1.55;color:var(--bqf-muted);
+	}
+
+	.bqf-field--profils{margin-bottom:6px;}
+	.bqf-pills{display:flex;flex-wrap:wrap;gap:8px;}
+	.bqf-form button.bqf-pill{
+		-webkit-appearance:none;appearance:none;
+		display:inline-flex;align-items:center;
+		width:auto;min-height:0;margin:0;padding:9px 17px;
+		border:1.5px solid var(--bqf-line) !important;border-radius:999px !important;
+		background:#fff !important;background-image:none !important;
+		color:var(--bqf-ink) !important;
+		font-family:var(--bqf-sans);font-size:.7rem;font-weight:700;line-height:1;
+		letter-spacing:.055em;text-transform:uppercase;text-decoration:none;text-shadow:none;
+		cursor:pointer;box-shadow:none;
+		transition:color .25s ease,border-color .25s ease,background-color .25s ease,box-shadow .25s ease,transform .25s ease;
+	}
+	.bqf-form button.bqf-pill:hover,
+	.bqf-form button.bqf-pill:focus{
+		background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.06 ) . ' !important;
+		border-color:var(--bqf-bordeaux) !important;
+		color:var(--bqf-bordeaux) !important;
+		transform:translateY(-1px);
+	}
+	.bqf-form button.bqf-pill.is-active,
+	.bqf-form button.bqf-pill.is-active:hover,
+	.bqf-form button.bqf-pill.is-active:focus{
+		background:var(--bqf-bordeaux) !important;
+		background-image:linear-gradient(180deg,var(--bqf-bordeaux) 0%,var(--bqf-bordeaux-dark) 100%) !important;
+		border-color:transparent !important;
+		color:#fff !important;
+		box-shadow:0 8px 18px -10px ' . bqf_hex_to_rgba( $p['bordeaux_dark'], 0.75 ) . ';
+		transform:none;
+	}
+	.bqf-form button.bqf-pill:focus-visible{outline:2px solid var(--bqf-bordeaux);outline-offset:3px;}
+	.bqf-field[hidden]{display:none !important;}
 
 	.bqf-form__grid{
 		display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
