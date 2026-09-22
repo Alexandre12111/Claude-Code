@@ -1,14 +1,3 @@
-<?php
-/**
- * Plugin Name:       BQP Partenaires
- * Description:       Gestion et affichage des partenaires avec le shortcode [bqp_partenaires].
- * Version:           1.1.0
- * Requires at least: 6.0
- * Requires PHP:      7.4
- * Author:            Aurea Media
- * License:           GPL-2.0-or-later
- */
-
 /**
  * BQP Partenaires — gestion et affichage des partenaires.
  *
