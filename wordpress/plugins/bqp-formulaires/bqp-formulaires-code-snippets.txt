@@ -6,7 +6,7 @@
  *
  * Shortcode : [bqp_formulaire id="123"]
  *
- * Version : 1.0.0
+ * Version : 1.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQF_VERSION' ) ) {
-	define( 'BQF_VERSION', '1.0.0' );
+	define( 'BQF_VERSION', '1.1.0' );
 }
 if ( ! defined( 'BQF_CPT' ) ) {
 	define( 'BQF_CPT', 'bqf_formulaire' );
@@ -77,6 +77,7 @@ function bqf_field_types() {
 		'radio'    => 'Boutons radio',
 		'checkbox' => 'Case à cocher',
 		'date'     => 'Date',
+		'file'     => 'Fichier à déposer',
 	);
 }
 
@@ -85,6 +86,78 @@ function bqf_field_types() {
  */
 function bqf_types_with_options() {
 	return array( 'select', 'radio' );
+}
+
+/**
+ * Les types qui affichent la zone de liste dans l'administration.
+ * Pour un champ fichier, cette zone contient les extensions autorisées.
+ */
+function bqf_types_with_list() {
+	return array( 'select', 'radio', 'file' );
+}
+
+/**
+ * Extensions acceptées par défaut pour un champ fichier.
+ */
+function bqf_default_extensions() {
+	return array( 'pdf', 'doc', 'docx', 'odt', 'rtf', 'txt', 'jpg', 'jpeg', 'png', 'webp' );
+}
+
+/**
+ * Extensions refusées quoi qu'il arrive, même si elles sont saisies.
+ */
+function bqf_blocked_extensions() {
+	return array(
+		'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'phar', 'pht',
+		'htm', 'html', 'xhtml', 'shtml', 'js', 'mjs', 'svg', 'swf',
+		'exe', 'com', 'bat', 'cmd', 'sh', 'bash', 'cgi', 'pl', 'py', 'rb',
+		'jar', 'vbs', 'ps1', 'msi', 'dll', 'so', 'htaccess', 'htpasswd', 'ini',
+	);
+}
+
+/**
+ * Les extensions retenues pour un champ fichier, nettoyées.
+ */
+function bqf_field_extensions( $field ) {
+	$list = array();
+
+	foreach ( (array) $field['options'] as $line ) {
+		foreach ( preg_split( '/[\s,;]+/', (string) $line ) as $ext ) {
+			$ext = strtolower( ltrim( trim( (string) $ext ), '.' ) );
+
+			if ( '' === $ext || ! preg_match( '/^[a-z0-9]{1,8}$/', $ext ) ) {
+				continue;
+			}
+
+			if ( in_array( $ext, bqf_blocked_extensions(), true ) ) {
+				continue;
+			}
+
+			$list[] = $ext;
+		}
+	}
+
+	$list = array_values( array_unique( $list ) );
+
+	return $list ? $list : bqf_default_extensions();
+}
+
+/**
+ * Les types MIME correspondant à une liste d'extensions.
+ */
+function bqf_mimes_for( $extensions ) {
+	$mimes = array();
+
+	foreach ( wp_get_mime_types() as $pattern => $mime ) {
+		foreach ( explode( '|', $pattern ) as $ext ) {
+			if ( in_array( $ext, $extensions, true ) ) {
+				$mimes[ $pattern ] = $mime;
+				break;
+			}
+		}
+	}
+
+	return $mimes;
 }
 
 /**
@@ -137,7 +210,7 @@ function bqf_get_fields( $form_id ) {
 			'key'         => $key,
 			'label'       => (string) $field['label'],
 			'type'        => $type,
-			'width'       => ( isset( $field['width'] ) && 'half' === $field['width'] ) ? 'half' : 'full',
+			'width'       => in_array( ( isset( $field['width'] ) ? $field['width'] : '' ), array( 'half', 'third' ), true ) ? $field['width'] : 'full',
 			'required'    => ! empty( $field['required'] ),
 			'placeholder' => isset( $field['placeholder'] ) ? (string) $field['placeholder'] : '',
 			'options'     => $options,
@@ -160,6 +233,7 @@ function bqf_get_settings( $form_id ) {
 		'bouton'  => 'Envoyer',
 		'succes'  => 'Merci, votre message a bien été envoyé. Nous revenons vers vous rapidement.',
 		'rgpd'    => '',
+		'poids'   => '5',
 	);
 
 	$saved = array(
@@ -169,6 +243,7 @@ function bqf_get_settings( $form_id ) {
 		'bouton' => (string) get_post_meta( $form_id, '_bqf_bouton', true ),
 		'succes' => (string) get_post_meta( $form_id, '_bqf_succes', true ),
 		'rgpd'   => (string) get_post_meta( $form_id, '_bqf_rgpd', true ),
+		'poids'  => (string) get_post_meta( $form_id, '_bqf_poids', true ),
 	);
 
 	foreach ( $saved as $key => $value ) {
@@ -180,6 +255,8 @@ function bqf_get_settings( $form_id ) {
 	if ( ! is_email( $saved['email'] ) ) {
 		$saved['email'] = BQF_MAIL;
 	}
+
+	$saved['poids'] = max( 1, min( 64, (int) $saved['poids'] ) );
 
 	return $saved;
 }
@@ -419,6 +496,12 @@ function bqf_render_settings_box( $post ) {
 	$html .= '</div>';
 
 	$html .= '<p class="bqf-admin__field">';
+	$html .= '<label class="bqf-admin__label" for="bqf_poids">Poids maximum d\'un fichier déposé</label>';
+	$html .= '<input type="number" class="bqf-admin__input bqf-admin__input--small" name="bqf_poids" id="bqf_poids" value="' . esc_attr( $s['poids'] ) . '" min="1" max="64" step="1" /> <span class="bqf-admin__unit">Mo</span>';
+	$html .= '<span class="bqf-admin__hint">Utile uniquement si le formulaire contient un champ « Fichier à déposer ». Votre hébergeur impose aussi sa propre limite.</span>';
+	$html .= '</p>';
+
+	$html .= '<p class="bqf-admin__field">';
 	$html .= '<label class="bqf-admin__label" for="bqf_succes">Message de confirmation</label>';
 	$html .= '<textarea class="bqf-admin__input bqf-admin__textarea" name="bqf_succes" id="bqf_succes" rows="2">' . esc_textarea( $s['succes'] ) . '</textarea>';
 	$html .= '<span class="bqf-admin__hint">Affiché à la place du formulaire une fois le message envoyé.</span>';
@@ -446,7 +529,8 @@ function bqf_render_field_row( $index, $field ) {
 	);
 
 	$name     = 'bqf_fields[' . $index . ']';
-	$has_opts = in_array( $field['type'], bqf_types_with_options(), true );
+	$has_opts = in_array( $field['type'], bqf_types_with_list(), true );
+	$is_file  = ( 'file' === $field['type'] );
 
 	$html  = '<div class="bqf-row" data-row>';
 
@@ -479,8 +563,9 @@ function bqf_render_field_row( $index, $field ) {
 	$html .= '<label class="bqf-row__field">';
 	$html .= '<span class="bqf-admin__label">Largeur</span>';
 	$html .= '<select class="bqf-admin__input" name="' . esc_attr( $name ) . '[width]">';
-	$html .= '<option value="full"' . selected( $field['width'], 'full', false ) . '>Pleine largeur</option>';
-	$html .= '<option value="half"' . selected( $field['width'], 'half', false ) . '>Demi-largeur</option>';
+	$html .= '<option value="full"' . selected( $field['width'], 'full', false ) . '>Pleine largeur — 1 champ par ligne</option>';
+	$html .= '<option value="half"' . selected( $field['width'], 'half', false ) . '>Demie — 2 champs par ligne</option>';
+	$html .= '<option value="third"' . selected( $field['width'], 'third', false ) . '>Tiers — 3 champs par ligne</option>';
 	$html .= '</select>';
 	$html .= '</label>';
 
@@ -495,8 +580,9 @@ function bqf_render_field_row( $index, $field ) {
 	$html .= '</label>';
 
 	$html .= '<label class="bqf-row__field bqf-row__field--wide bqf-row__options"' . ( $has_opts ? '' : ' hidden' ) . ' data-options>';
-	$html .= '<span class="bqf-admin__label">Choix proposés, un par ligne</span>';
+	$html .= '<span class="bqf-admin__label" data-options-label>' . ( $is_file ? 'Extensions autorisées, séparées par une virgule' : 'Choix proposés, un par ligne' ) . '</span>';
 	$html .= '<textarea class="bqf-admin__input bqf-admin__textarea" name="' . esc_attr( $name ) . '[options]" rows="4" placeholder="Entreprise&#10;Académique&#10;Institutionnel">' . esc_textarea( $field['options'] ) . '</textarea>';
+	$html .= '<span class="bqf-admin__hint" data-options-hint' . ( $is_file ? '' : ' hidden' ) . '>Laissez vide pour accepter : ' . esc_html( implode( ', ', bqf_default_extensions() ) ) . '. Les fichiers exécutables sont toujours refusés.</span>';
 	$html .= '</label>';
 
 	$html .= '</div></div>';
@@ -550,6 +636,9 @@ function bqf_save_form( $post_id, $post ) {
 	$email = isset( $_POST['bqf_email'] ) ? sanitize_email( wp_unslash( $_POST['bqf_email'] ) ) : '';
 	update_post_meta( $post_id, '_bqf_email', is_email( $email ) ? $email : BQF_MAIL );
 
+	$poids = isset( $_POST['bqf_poids'] ) ? absint( $_POST['bqf_poids'] ) : 5;
+	update_post_meta( $post_id, '_bqf_poids', max( 1, min( 64, $poids ) ) );
+
 	foreach ( array( 'sujet', 'intro', 'bouton', 'rgpd' ) as $key ) {
 		$value = isset( $_POST[ 'bqf_' . $key ] ) ? sanitize_text_field( wp_unslash( $_POST[ 'bqf_' . $key ] ) ) : '';
 		update_post_meta( $post_id, '_bqf_' . $key, $value );
@@ -576,7 +665,7 @@ function bqf_save_form( $post_id, $post ) {
 			$fields[] = array(
 				'label'       => sanitize_text_field( $row['label'] ),
 				'type'        => $type,
-				'width'       => ( isset( $row['width'] ) && 'half' === $row['width'] ) ? 'half' : 'full',
+				'width'       => in_array( ( isset( $row['width'] ) ? $row['width'] : '' ), array( 'half', 'third' ), true ) ? $row['width'] : 'full',
 				'required'    => empty( $row['required'] ) ? 0 : 1,
 				'placeholder' => isset( $row['placeholder'] ) ? sanitize_text_field( $row['placeholder'] ) : '',
 				'options'     => isset( $row['options'] ) ? sanitize_textarea_field( $row['options'] ) : '',
@@ -609,6 +698,33 @@ function bqf_render_message_box( $post ) {
 		$html .= '<th>' . esc_html( isset( $line['label'] ) ? $line['label'] : '' ) . '</th>';
 		$html .= '<td>' . nl2br( esc_html( $value ) ) . '</td>';
 		$html .= '</tr>';
+	}
+
+	$files = get_post_meta( $post->ID, '_bqf_files', true );
+
+	if ( is_array( $files ) && $files ) {
+		$links = array();
+
+		foreach ( $files as $i => $file ) {
+			$exists = ! empty( $file['path'] ) && is_file( $file['path'] );
+
+			if ( ! $exists ) {
+				$links[] = '<span class="bqf-file-gone">' . esc_html( $file['name'] ) . ' (fichier supprimé)</span>';
+				continue;
+			}
+
+			$url = wp_nonce_url(
+				admin_url( 'admin-post.php?action=bqf_download&msg=' . (int) $post->ID . '&f=' . (int) $i ),
+				'bqf_download_' . (int) $post->ID . '_' . (int) $i
+			);
+
+			$links[] = '<a class="bqf-file-link" href="' . esc_url( $url ) . '">'
+				. '<span class="dashicons dashicons-download"></span>'
+				. esc_html( $file['name'] ) . ' <em>(' . esc_html( size_format( (int) $file['size'] ) ) . ')</em>'
+				. '</a>';
+		}
+
+		$html .= '<tr><th>Pièces jointes</th><td>' . implode( '<br />', $links ) . '</td></tr>';
 	}
 
 	if ( is_array( $meta ) ) {
@@ -693,6 +809,32 @@ function bqf_msg_column_content( $column, $post_id ) {
 	}
 }
 
+/**
+ * Supprimer un message supprime aussi ses pièces jointes.
+ */
+add_action( 'before_delete_post', 'bqf_delete_message_files' );
+function bqf_delete_message_files( $post_id ) {
+	if ( BQF_MSG !== get_post_type( $post_id ) ) {
+		return;
+	}
+
+	$files = get_post_meta( $post_id, '_bqf_files', true );
+
+	if ( ! is_array( $files ) ) {
+		return;
+	}
+
+	$base = realpath( bqf_upload_path() );
+
+	foreach ( $files as $file ) {
+		$real = ! empty( $file['path'] ) ? realpath( $file['path'] ) : false;
+
+		if ( $real && $base && 0 === strpos( $real, $base ) && is_file( $real ) ) {
+			wp_delete_file( $real );
+		}
+	}
+}
+
 /* -------------------------------------------------------------------------
  * 5. Page « Mode d'emploi »
  * ---------------------------------------------------------------------- */
@@ -713,7 +855,7 @@ function bqf_render_help_page() {
 	$steps = array(
 		array( '1', 'Créer le formulaire', 'Formulaires &rsaquo; Créer un formulaire. Le titre saisi s\'affiche en haut du bloc sur le site.' ),
 		array( '2', 'Régler la réception', 'Indiquez l\'adresse qui recevra les messages. Par défaut <strong>' . esc_html( BQF_MAIL ) . '</strong>.' ),
-		array( '3', 'Ajouter les champs', 'Bouton <strong>Ajouter un champ</strong>, autant de fois que nécessaire. Chaque champ a un libellé, un type, une largeur et peut être rendu obligatoire.' ),
+		array( '3', 'Ajouter les champs', 'Bouton <strong>Ajouter un champ</strong>, autant de fois que nécessaire. La <strong>largeur</strong> décide du nombre de champs par ligne : pleine largeur pour un seul, demie pour deux côte à côte, tiers pour trois.' ),
 		array( '4', 'Copier le shortcode', 'Il apparaît dans l\'encadré à droite de l\'écran, et dans la colonne Shortcode de la liste.' ),
 		array( '5', 'Coller dans la page', 'Dans Elementor, widget <strong>Shortcode</strong>, placé dans la colonne de droite de votre section.' ),
 	);
@@ -746,6 +888,9 @@ function bqf_render_help_page() {
 	$html .= '</tbody></table>';
 
 	$html .= '<h2 class="bqf-help__subtitle">Bon à savoir</h2><ul class="bqf-help__list">';
+	$html .= '<li>Pour mettre <strong>deux champs sur la même ligne</strong>, réglez leur largeur sur <strong>Demie</strong>. Deux champs en demi-largeur qui se suivent se placent côte à côte. Trois champs en <strong>Tiers</strong> occupent une ligne complète.</li>';
+	$html .= '<li>Le type <strong>Fichier à déposer</strong> permet au visiteur de joindre un document. Le fichier est envoyé en pièce jointe de l\'e-mail et conservé dans le message archivé. Les extensions acceptées et le poids maximum se règlent dans le champ et dans les réglages du formulaire.</li>';
+	$html .= '<li>Les fichiers déposés sont stockés dans un dossier fermé à l\'accès direct : ils ne se téléchargent que depuis l\'administration. Supprimer un message supprime aussi ses pièces jointes.</li>';
 	$html .= '<li>Chaque message est <strong>aussi enregistré</strong> dans <strong>Formulaires &rsaquo; Messages reçus</strong>. Rien n\'est perdu, même si un e-mail se perd en route.</li>';
 	$html .= '<li>Deux protections anti-spam sont actives : un champ piège invisible et un contrôle du temps de remplissage. Aucun captcha à installer.</li>';
 	$html .= '<li>Répondre à l\'e-mail reçu répond directement à la personne : son adresse est placée en <em>Reply-To</em>.</li>';
@@ -791,6 +936,8 @@ function bqf_admin_css() {
 	.bqf-admin__input{width:100%;padding:10px 13px;border:1px solid #dcdcde;border-radius:8px;background:#fff;box-shadow:none;transition:border-color .2s,box-shadow .2s;}
 	.bqf-admin__input:focus{border-color:' . $p['bordeaux'] . ';box-shadow:0 0 0 3px ' . bqf_hex_to_rgba( $p['bordeaux'], 0.12 ) . ';outline:none;}
 	.bqf-admin__textarea{resize:vertical;line-height:1.6;}
+	.bqf-admin__input--small{width:100px !important;display:inline-block;}
+	.bqf-admin__unit{margin-left:7px;color:#787c82;font-size:13px;}
 	.bqf-admin__hint{display:block;margin-top:6px;color:#787c82;font-size:12.5px;line-height:1.5;}
 
 	.bqf-sc__hint{margin:0 0 10px;color:#787c82;font-size:12.5px;line-height:1.5;}
@@ -823,6 +970,9 @@ function bqf_admin_css() {
 	.bqf-msg{width:100%;border-collapse:collapse;}
 	.bqf-msg th{width:220px;padding:11px 14px 11px 0;text-align:left;vertical-align:top;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:' . $p['bordeaux'] . ';border-bottom:1px solid #ececee;}
 	.bqf-msg td{padding:11px 0;vertical-align:top;line-height:1.6;border-bottom:1px solid #ececee;}
+	.bqf-file-link{display:inline-flex;align-items:center;gap:6px;margin:2px 0;text-decoration:none;}
+	.bqf-file-link em{color:#787c82;font-style:normal;font-size:12.5px;}
+	.bqf-file-gone{color:#a7aaad;}
 
 	.bqf-help__title{font-size:30px;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
 	.bqf-help__intro{max-width:800px;font-size:14.5px;line-height:1.7;color:#50575e;}
@@ -872,10 +1022,26 @@ function bqf_admin_js() {
 			}
 
 			function optionsToggle(row){
-				var type = row.querySelector('[data-type]');
-				var opts = row.querySelector('[data-options]');
+				var type  = row.querySelector('[data-type]');
+				var opts  = row.querySelector('[data-options]');
+				var label = row.querySelector('[data-options-label]');
+				var hint  = row.querySelector('[data-options-hint]');
+
 				if (!type || !opts) { return; }
-				opts.hidden = ('select' !== type.value && 'radio' !== type.value);
+
+				var value  = type.value;
+				var isList = ('select' === value || 'radio' === value);
+				var isFile = ('file' === value);
+
+				opts.hidden = !(isList || isFile);
+
+				if (label) {
+					label.textContent = isFile
+						? 'Extensions autorisées, séparées par une virgule'
+						: 'Choix proposés, un par ligne';
+				}
+
+				if (hint) { hint.hidden = !isFile; }
 			}
 
 			add.addEventListener('click', function(){
@@ -936,6 +1102,197 @@ function bqf_admin_js() {
 }
 
 /* -------------------------------------------------------------------------
+ * 7. Fichiers déposés
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Le dossier des pièces jointes, créé et fermé au public.
+ */
+function bqf_upload_path() {
+	$uploads = wp_upload_dir();
+	$dir     = trailingslashit( $uploads['basedir'] ) . 'bqp-formulaires';
+
+	if ( ! is_dir( $dir ) ) {
+		wp_mkdir_p( $dir );
+	}
+
+	// Les pièces jointes peuvent contenir des données personnelles :
+	// le dossier est fermé à l'accès direct, le téléchargement passe
+	// par l'administration.
+	$htaccess = $dir . '/.htaccess';
+	if ( ! file_exists( $htaccess ) ) {
+		file_put_contents( $htaccess, "Order deny,allow\nDeny from all\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+
+	$index = $dir . '/index.php';
+	if ( ! file_exists( $index ) ) {
+		file_put_contents( $index, '<' . '?php' . "\n// Silence.\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+
+	return $dir;
+}
+
+add_filter( 'upload_dir', 'bqf_filter_upload_dir' );
+function bqf_filter_upload_dir( $dirs ) {
+	if ( empty( $GLOBALS['bqf_uploading'] ) ) {
+		return $dirs;
+	}
+
+	$dirs['path']   = trailingslashit( $dirs['basedir'] ) . 'bqp-formulaires';
+	$dirs['url']    = trailingslashit( $dirs['baseurl'] ) . 'bqp-formulaires';
+	$dirs['subdir'] = '/bqp-formulaires';
+
+	return $dirs;
+}
+
+/**
+ * Nom de fichier aléatoire : le nom d'origine n'est jamais exposé.
+ */
+function bqf_unique_filename( $dir, $name, $ext ) {
+	return wp_generate_password( 24, false, false ) . strtolower( $ext );
+}
+
+/**
+ * Vérifie puis enregistre un fichier déposé.
+ * Renvoie array('error' => string) ou array('file' => array).
+ */
+function bqf_check_upload( $upload, $field, $max_bytes ) {
+	$label = $field['label'];
+
+	if ( ! isset( $upload['error'] ) || UPLOAD_ERR_NO_FILE === $upload['error'] ) {
+		return '';
+	}
+
+	if ( UPLOAD_ERR_INI_SIZE === $upload['error'] || UPLOAD_ERR_FORM_SIZE === $upload['error'] ) {
+		return sprintf( 'Le fichier déposé dans « %s » est trop volumineux.', $label );
+	}
+
+	if ( UPLOAD_ERR_OK !== $upload['error'] ) {
+		return sprintf( 'Le fichier déposé dans « %s » n\'a pas pu être reçu. Merci de réessayer.', $label );
+	}
+
+	if ( ! empty( $upload['size'] ) && $upload['size'] > $max_bytes ) {
+		return sprintf(
+			'Le fichier déposé dans « %1$s » dépasse %2$s Mo.',
+			$label,
+			number_format_i18n( $max_bytes / 1048576, 0 )
+		);
+	}
+
+	$extensions = bqf_field_extensions( $field );
+	$ext        = strtolower( pathinfo( (string) $upload['name'], PATHINFO_EXTENSION ) );
+
+	if ( '' === $ext || in_array( $ext, bqf_blocked_extensions(), true ) || ! in_array( $ext, $extensions, true ) ) {
+		return sprintf(
+			'Le fichier déposé dans « %1$s » n\'est pas d\'un format accepté (%2$s).',
+			$label,
+			strtoupper( implode( ', ', $extensions ) )
+		);
+	}
+
+	$check = wp_check_filetype_and_ext( $upload['tmp_name'], $upload['name'], bqf_mimes_for( $extensions ) );
+
+	if ( empty( $check['ext'] ) || empty( $check['type'] ) ) {
+		return sprintf( 'Le contenu du fichier déposé dans « %s » ne correspond pas à son extension.', $label );
+	}
+
+	return '';
+}
+
+/**
+ * Enregistre un fichier déjà contrôlé.
+ * Renvoie array('error' => string) ou array('file' => array).
+ */
+function bqf_store_upload( $upload, $field, $max_bytes ) {
+	$label = $field['label'];
+	$error = bqf_check_upload( $upload, $field, $max_bytes );
+
+	if ( '' !== $error ) {
+		return array( 'error' => $error );
+	}
+
+	if ( ! isset( $upload['error'] ) || UPLOAD_ERR_NO_FILE === $upload['error'] ) {
+		return array( 'error' => '' );
+	}
+
+	$mimes = bqf_mimes_for( bqf_field_extensions( $field ) );
+
+	if ( ! function_exists( 'wp_handle_upload' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+	}
+
+	bqf_upload_path();
+
+	$GLOBALS['bqf_uploading'] = true;
+
+	$moved = wp_handle_upload(
+		$upload,
+		array(
+			'test_form'                => false,
+			'mimes'                    => $mimes,
+			'unique_filename_callback' => 'bqf_unique_filename',
+		)
+	);
+
+	$GLOBALS['bqf_uploading'] = false;
+
+	if ( isset( $moved['error'] ) ) {
+		return array( 'error' => sprintf( 'Le fichier déposé dans « %1$s » a été refusé : %2$s', $label, $moved['error'] ) );
+	}
+
+	return array(
+		'error' => '',
+		'file'  => array(
+			'label' => $label,
+			'name'  => sanitize_file_name( (string) $upload['name'] ),
+			'path'  => $moved['file'],
+			'size'  => (int) $upload['size'],
+		),
+	);
+}
+
+/**
+ * Téléchargement d'une pièce jointe depuis l'administration.
+ */
+add_action( 'admin_post_bqf_download', 'bqf_download_file' );
+function bqf_download_file() {
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_die( 'Accès refusé.' );
+	}
+
+	$message_id = isset( $_GET['msg'] ) ? absint( $_GET['msg'] ) : 0;
+	$index      = isset( $_GET['f'] ) ? absint( $_GET['f'] ) : 0;
+
+	check_admin_referer( 'bqf_download_' . $message_id . '_' . $index );
+
+	$files = get_post_meta( $message_id, '_bqf_files', true );
+
+	if ( ! is_array( $files ) || ! isset( $files[ $index ] ) ) {
+		wp_die( 'Fichier introuvable.' );
+	}
+
+	$file = $files[ $index ];
+	$path = isset( $file['path'] ) ? (string) $file['path'] : '';
+	$real = $path ? realpath( $path ) : false;
+	$base = realpath( bqf_upload_path() );
+
+	if ( ! $real || ! $base || 0 !== strpos( $real, $base ) || ! is_file( $real ) ) {
+		wp_die( 'Fichier introuvable.' );
+	}
+
+	$type = wp_check_filetype( $real );
+
+	nocache_headers();
+	header( 'Content-Type: ' . ( $type['type'] ? $type['type'] : 'application/octet-stream' ) );
+	header( 'Content-Disposition: attachment; filename="' . sanitize_file_name( $file['name'] ) . '"' );
+	header( 'Content-Length: ' . filesize( $real ) );
+	header( 'X-Content-Type-Options: nosniff' );
+
+	readfile( $real ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+	exit;
+}
+
+/* -------------------------------------------------------------------------
  * 7. Réception et envoi des messages
  * ---------------------------------------------------------------------- */
 
@@ -956,6 +1313,13 @@ function bqf_state( $form_id, $set = null ) {
 
 add_action( 'template_redirect', 'bqf_handle_submission' );
 function bqf_handle_submission() {
+	// Au-delà de post_max_size, PHP vide $_POST : sans ce garde-fou,
+	// l'envoi échouerait en silence.
+	if ( empty( $_POST ) && isset( $_SERVER['REQUEST_METHOD'] ) && 'POST' === $_SERVER['REQUEST_METHOD'] && ! empty( $_SERVER['CONTENT_LENGTH'] ) ) {
+		$GLOBALS['bqf_too_big'] = true;
+		return;
+	}
+
 	if ( empty( $_POST['bqf_form_id'] ) ) {
 		return;
 	}
@@ -991,14 +1355,43 @@ function bqf_handle_submission() {
 		return;
 	}
 
-	$settings = bqf_get_settings( $form_id );
-	$fields   = bqf_get_fields( $form_id );
-	$reply_to = '';
-	$sender   = '';
+	$settings  = bqf_get_settings( $form_id );
+	$fields    = bqf_get_fields( $form_id );
+	$reply_to  = '';
+	$sender    = '';
+	$pending   = array();
+	$max_bytes = (int) $settings['poids'] * 1048576;
 
 	foreach ( $fields as $field ) {
 		$name = 'bqf_' . $field['key'];
 		$raw  = isset( $_POST[ $name ] ) ? wp_unslash( $_POST[ $name ] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		if ( 'file' === $field['type'] ) {
+			$upload = isset( $_FILES[ $name ] ) ? $_FILES[ $name ] : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			$empty  = ( ! $upload || ! isset( $upload['error'] ) || UPLOAD_ERR_NO_FILE === $upload['error'] );
+
+			if ( $empty ) {
+				if ( $field['required'] ) {
+					$errors[] = sprintf( 'Le champ « %s » attend un fichier.', $field['label'] );
+				}
+
+				$values[ $field['key'] ] = '';
+				$lines[]                 = array( 'label' => $field['label'], 'value' => '' );
+				continue;
+			}
+
+			$problem = bqf_check_upload( $upload, $field, $max_bytes );
+
+			if ( '' !== $problem ) {
+				$errors[] = $problem;
+			} else {
+				$pending[] = array( 'upload' => $upload, 'field' => $field );
+			}
+
+			$values[ $field['key'] ] = '';
+			$lines[]                 = array( 'label' => $field['label'], 'value' => sanitize_file_name( (string) $upload['name'] ) );
+			continue;
+		}
 
 		switch ( $field['type'] ) {
 			case 'email':
@@ -1064,6 +1457,36 @@ function bqf_handle_submission() {
 		return;
 	}
 
+	// Les fichiers ne sont déplacés qu'une fois tout le reste validé.
+	$stored      = array();
+	$attachments = array();
+
+	foreach ( $pending as $item ) {
+		$result = bqf_store_upload( $item['upload'], $item['field'], $max_bytes );
+
+		if ( ! empty( $result['error'] ) ) {
+			$errors[] = $result['error'];
+			continue;
+		}
+
+		if ( ! empty( $result['file'] ) ) {
+			$stored[]      = $result['file'];
+			$attachments[] = $result['file']['path'];
+		}
+	}
+
+	if ( $errors ) {
+		// On ne laisse jamais de fichier orphelin derrière une erreur.
+		foreach ( $stored as $file ) {
+			if ( ! empty( $file['path'] ) && is_file( $file['path'] ) ) {
+				wp_delete_file( $file['path'] );
+			}
+		}
+
+		bqf_state( $form_id, array( 'errors' => $errors, 'values' => $values ) );
+		return;
+	}
+
 	$source = wp_get_referer();
 	$source = $source ? $source : home_url( add_query_arg( array() ) );
 
@@ -1094,7 +1517,16 @@ function bqf_handle_submission() {
 		$headers[] = 'Reply-To: ' . $reply_to;
 	}
 
-	$sent = wp_mail( $settings['email'], $settings['sujet'], implode( "\n", $body ), $headers );
+	if ( $stored ) {
+		$body[] = '';
+		$body[] = count( $stored ) > 1 ? 'Fichiers joints :' : 'Fichier joint :';
+
+		foreach ( $stored as $file ) {
+			$body[] = '- ' . $file['label'] . ' : ' . $file['name'] . ' (' . size_format( $file['size'] ) . ')';
+		}
+	}
+
+	$sent = wp_mail( $settings['email'], $settings['sujet'], implode( "\n", $body ), $headers, $attachments );
 
 	// Le message est archivé dans l'administration, même si l'e-mail échoue.
 	$title = get_the_title( $form_id ) . ' — ' . ( $sender ? $sender : ( $reply_to ? $reply_to : 'sans nom' ) );
@@ -1109,6 +1541,11 @@ function bqf_handle_submission() {
 
 	if ( $message_id && ! is_wp_error( $message_id ) ) {
 		update_post_meta( $message_id, '_bqf_data', $lines );
+
+		if ( $stored ) {
+			update_post_meta( $message_id, '_bqf_files', $stored );
+		}
+
 		update_post_meta(
 			$message_id,
 			'_bqf_meta',
@@ -1137,11 +1574,15 @@ function bqf_register_front_assets() {
 	wp_register_style( 'bqf-formulaires', false, array(), BQF_VERSION );
 	wp_add_inline_style( 'bqf-formulaires', bqf_front_css() );
 
+	wp_register_script( 'bqf-formulaires', false, array(), BQF_VERSION, true );
+	wp_add_inline_script( 'bqf-formulaires', bqf_front_js() );
+
 	if ( is_singular() ) {
 		$post = get_post();
 
 		if ( $post instanceof WP_Post && has_shortcode( (string) $post->post_content, 'bqp_formulaire' ) ) {
 			wp_enqueue_style( 'bqf-formulaires' );
+			wp_enqueue_script( 'bqf-formulaires' );
 		}
 	}
 }
@@ -1198,13 +1639,18 @@ function bqf_shortcode( $atts ) {
 	}
 
 	wp_enqueue_style( 'bqf-formulaires' );
+	wp_enqueue_script( 'bqf-formulaires' );
 
 	$settings = bqf_get_settings( $form_id );
 	$state    = bqf_state( $form_id );
 	$errors   = $state['errors'];
 	$values   = $state['values'];
 
-	$cols  = ( '1' === (string) $atts['colonnes'] ) ? 1 : 2;
+	if ( ! empty( $GLOBALS['bqf_too_big'] ) ) {
+		$errors[] = 'L\'envoi est trop volumineux pour le serveur. Merci de déposer un fichier plus léger.';
+	}
+
+	$single = ( '1' === (string) $atts['colonnes'] );
 	$card  = ! in_array( strtolower( $atts['carte'] ), array( 'non', 'no', 'false', '0' ), true );
 	$anchor = 'bqf-' . $form_id;
 
@@ -1215,9 +1661,9 @@ function bqf_shortcode( $atts ) {
 
 	$sent = isset( $_GET['bqf_ok'] ) && absint( $_GET['bqf_ok'] ) === $form_id; // phpcs:ignore WordPress.Security.NonceVerification
 
-	$classes = 'bqf-form' . ( $card ? ' bqf-form--card' : '' );
+	$classes = 'bqf-form' . ( $card ? ' bqf-form--card' : '' ) . ( $single ? ' bqf-form--single' : '' );
 
-	$html  = '<section class="' . esc_attr( $classes ) . '" id="' . esc_attr( $anchor ) . '" style="--bqf-cols:' . (int) $cols . ';">';
+	$html  = '<section class="' . esc_attr( $classes ) . '" id="' . esc_attr( $anchor ) . '">';
 
 	if ( '' !== $title ) {
 		$html .= '<h2 class="bqf-form__title">' . esc_html( $title ) . '</h2>';
@@ -1246,14 +1692,22 @@ function bqf_shortcode( $atts ) {
 		$html .= '</ul></div>';
 	}
 
-	$html .= '<form class="bqf-form__grid" method="post" action="' . esc_url( remove_query_arg( 'bqf_ok' ) ) . '#' . esc_attr( $anchor ) . '">';
+	$has_file = false;
+	foreach ( $fields as $field ) {
+		if ( 'file' === $field['type'] ) {
+			$has_file = true;
+			break;
+		}
+	}
+
+	$html .= '<form class="bqf-form__grid" method="post" action="' . esc_url( remove_query_arg( 'bqf_ok' ) ) . '#' . esc_attr( $anchor ) . '"' . ( $has_file ? ' enctype="multipart/form-data"' : '' ) . '>';
 
 	foreach ( $fields as $field ) {
 		$name  = 'bqf_' . $field['key'];
 		$id    = $anchor . '-' . $field['key'];
 		$value = isset( $values[ $field['key'] ] ) ? (string) $values[ $field['key'] ] : '';
 		$req   = $field['required'] ? ' required' : '';
-		$span  = ( 'half' === $field['width'] ) ? ' bqf-field--half' : ' bqf-field--full';
+		$span  = ' bqf-field--' . $field['width'];
 
 		if ( 'checkbox' === $field['type'] ) {
 			$html .= '<div class="bqf-field bqf-field--checkbox' . $span . '">';
@@ -1296,6 +1750,20 @@ function bqf_shortcode( $atts ) {
 			}
 			$html .= '</div>';
 
+		} elseif ( 'file' === $field['type'] ) {
+			$exts   = bqf_field_extensions( $field );
+			$accept = '.' . implode( ',.', $exts );
+
+			$html .= '<div class="bqf-file">';
+			$html .= '<input type="file" class="bqf-file__input" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" accept="' . esc_attr( $accept ) . '"' . $req . ' />';
+			$html .= '<label class="bqf-file__button" for="' . esc_attr( $id ) . '">';
+			$html .= '<svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><path d="M10 14V4m0 0L6 8m4-4l4 4M3 15v1.5A1.5 1.5 0 004.5 18h11a1.5 1.5 0 001.5-1.5V15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+			$html .= '<span>' . esc_html( $field['placeholder'] ? $field['placeholder'] : 'Choisir un fichier' ) . '</span>';
+			$html .= '</label>';
+			$html .= '<span class="bqf-file__name" data-file-name>Aucun fichier sélectionné</span>';
+			$html .= '</div>';
+			$html .= '<span class="bqf-help">' . esc_html( strtoupper( implode( ', ', $exts ) ) ) . ' — ' . esc_html( $settings['poids'] ) . ' Mo maximum.</span>';
+
 		} else {
 			$type  = in_array( $field['type'], array( 'email', 'tel', 'url', 'number', 'date' ), true ) ? $field['type'] : 'text';
 			$html .= '<input type="' . esc_attr( $type ) . '" class="bqf-input" name="' . esc_attr( $name ) . '" id="' . esc_attr( $id ) . '" value="' . esc_attr( $value ) . '" placeholder="' . esc_attr( $field['placeholder'] ) . '"' . $req . ' />';
@@ -1324,6 +1792,40 @@ function bqf_shortcode( $atts ) {
 	$html .= '</form></section>';
 
 	return $html;
+}
+
+/**
+ * Affiche le nom du fichier choisi à côté du bouton.
+ */
+function bqf_front_js() {
+	return "
+	(function(){
+		function boot(){
+			var inputs = document.querySelectorAll('.bqf-file__input');
+
+			Array.prototype.forEach.call(inputs, function(input){
+				input.addEventListener('change', function(){
+					var box = input.parentNode.querySelector('[data-file-name]');
+					if (!box) { return; }
+
+					if (input.files && input.files.length) {
+						box.textContent = input.files[0].name;
+						box.classList.add('is-set');
+					} else {
+						box.textContent = 'Aucun fichier sélectionné';
+						box.classList.remove('is-set');
+					}
+				});
+			});
+		}
+
+		if ('loading' === document.readyState) {
+			document.addEventListener('DOMContentLoaded', boot);
+		} else {
+			boot();
+		}
+	})();
+	";
 }
 
 /* -------------------------------------------------------------------------
@@ -1366,14 +1868,19 @@ function bqf_front_css() {
 	}
 
 	.bqf-form__grid{
-		display:grid;grid-template-columns:repeat(var(--bqf-cols),minmax(0,1fr));
+		display:grid;grid-template-columns:repeat(6,minmax(0,1fr));
 		gap:20px 20px;margin:0;
 	}
-	@media (max-width:600px){.bqf-form{--bqf-cols:1;}}
 
 	.bqf-field{display:flex;flex-direction:column;min-width:0;}
-	.bqf-field--full{grid-column:1 / -1;}
-	.bqf-field--half{grid-column:span 1;}
+	.bqf-field--full{grid-column:span 6;}
+	.bqf-field--half{grid-column:span 3;}
+	.bqf-field--third{grid-column:span 2;}
+	.bqf-form--single .bqf-field{grid-column:span 6;}
+	@media (max-width:860px){.bqf-field--third{grid-column:span 3;}}
+	@media (max-width:600px){
+		.bqf-field--half,.bqf-field--third{grid-column:span 6;}
+	}
 
 	.bqf-field__label{
 		display:block;margin:0 0 8px;
@@ -1458,6 +1965,32 @@ function bqf_front_css() {
 	.bqf-success p{
 		margin:6px 0 0;font-family:var(--bqf-sans);font-size:.95rem;line-height:1.6;
 		color:var(--bqf-bordeaux-dark);
+	}
+
+	.bqf-file{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+	.bqf-form input.bqf-file__input{
+		position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;
+		overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+	}
+	.bqf-file__button{
+		display:inline-flex;align-items:center;gap:9px;
+		padding:12px 18px;border:1px solid var(--bqf-line);border-radius:4px;
+		background:#fff;color:var(--bqf-bordeaux);cursor:pointer;
+		font-family:var(--bqf-sans);font-size:.74rem;font-weight:700;line-height:1;
+		letter-spacing:.08em;text-transform:uppercase;
+		transition:border-color .2s ease,background-color .2s ease;
+	}
+	.bqf-file__button:hover{border-color:var(--bqf-bordeaux);background:' . bqf_hex_to_rgba( $p['bordeaux'], 0.05 ) . ';}
+	.bqf-form input.bqf-file__input:focus-visible + .bqf-file__button{outline:2px solid var(--bqf-bordeaux);outline-offset:3px;}
+	.bqf-file__name{
+		flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+		font-family:var(--bqf-sans);font-size:.88rem;color:#6b6b6b;
+	}
+	.bqf-file__name.is-set{color:var(--bqf-bordeaux-dark);font-weight:600;}
+	.bqf-help{
+		display:block;margin-top:8px;
+		font-family:var(--bqf-sans);font-size:.74rem;line-height:1.5;
+		letter-spacing:.02em;color:var(--bqf-muted);
 	}
 
 	.bqf-hp{position:absolute !important;left:-9999px !important;width:1px;height:1px;overflow:hidden;}

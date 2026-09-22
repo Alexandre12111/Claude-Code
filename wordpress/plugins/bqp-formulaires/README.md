@@ -25,14 +25,43 @@ Compresser le dossier en `.zip`, puis Extensions → Ajouter → Téléverser.
 
 1. **Formulaires → Créer un formulaire**. Le titre saisi s'affiche en haut du bloc.
 2. **Réglages** : adresse de réception, objet de l'e-mail, introduction, libellé du bouton, message de confirmation, case de consentement facultative.
-3. **Champs** : bouton *Ajouter un champ*, autant de fois que nécessaire. Chaque champ a un libellé, un type, une largeur (pleine ou demie) et peut être rendu obligatoire. Les flèches réordonnent, la croix supprime.
+3. **Champs** : bouton *Ajouter un champ*, autant de fois que nécessaire. Chaque champ a un libellé, un type, une largeur et peut être rendu obligatoire. Les flèches réordonnent, la croix supprime.
 4. **Shortcode** : il apparaît dans l'encadré à droite, avec un bouton *Copier*. Il figure aussi dans la colonne *Shortcode* de la liste des formulaires.
+
+### Plusieurs champs sur une même ligne
+
+C'est le réglage **Largeur** de chaque champ :
+
+| Largeur | Effet |
+|---|---|
+| Pleine largeur | 1 champ par ligne |
+| Demie | 2 champs côte à côte |
+| Tiers | 3 champs côte à côte |
+
+Deux champs réglés sur *Demie* qui se suivent se placent automatiquement sur la même ligne, par exemple Nom et prénom à gauche et Adresse e-mail à droite. Trois champs en *Tiers* remplissent une ligne complète. Sur mobile, tout repasse sur une seule colonne.
 
 ### Types de champs disponibles
 
-Texte court, E-mail, Téléphone, Site internet, Nombre, Texte long, Liste déroulante, Boutons radio, Case à cocher, Date.
+Texte court, E-mail, Téléphone, Site internet, Nombre, Texte long, Liste déroulante, Boutons radio, Case à cocher, Date, **Fichier à déposer**.
 
 Les listes déroulantes et les boutons radio font apparaître une zone **Choix proposés**, un par ligne.
+
+### Dépôt de fichier
+
+Le type **Fichier à déposer** ajoute un bouton de sélection de fichier. La même zone sert alors à saisir les **extensions autorisées**, séparées par des virgules. Laissée vide, elle accepte : pdf, doc, docx, odt, rtf, txt, jpg, jpeg, png, webp.
+
+Le poids maximum se règle dans les réglages du formulaire, 5 Mo par défaut.
+
+Ce qui se passe à la réception :
+
+- le fichier part **en pièce jointe** de l'e-mail ;
+- il est aussi conservé avec le message archivé, téléchargeable depuis l'administration ;
+- il est stocké sous un nom aléatoire dans `wp-content/uploads/bqp-formulaires/`, dossier fermé à l'accès direct par un `.htaccess`. Le téléchargement passe par un lien d'administration protégé par capacité et jeton ;
+- supprimer un message supprime aussi ses pièces jointes.
+
+Contrôles appliqués avant tout enregistrement : code d'erreur d'envoi, poids, extension (liste autorisée moins une liste noire d'exécutables toujours refusée : php, phtml, html, js, svg, exe, sh…), et correspondance réelle entre le contenu du fichier et son extension via `wp_check_filetype_and_ext`. Aucun fichier n'est déplacé tant qu'une autre erreur subsiste dans le formulaire, et les fichiers déjà déplacés sont supprimés si une erreur survient ensuite.
+
+Si l'envoi dépasse la limite `post_max_size` du serveur, PHP vide la requête : un garde-fou détecte ce cas et affiche un message clair au lieu d'un échec silencieux.
 
 ## Options du shortcode
 
@@ -41,7 +70,7 @@ Les listes déroulantes et les boutons radio font apparaître une zone **Choix p
 | `id` | Le formulaire à afficher | `[bqp_formulaire id="12"]` |
 | `titre` | Remplace ou masque le titre | `[bqp_formulaire id="12" titre="non"]` |
 | `carte` | Carte blanche encadrée, oui ou non | `[bqp_formulaire id="12" carte="non"]` |
-| `colonnes` | 1 ou 2 colonnes | `[bqp_formulaire id="12" colonnes="1"]` |
+| `colonnes` | `1` force un champ par ligne, quelles que soient les largeurs réglées | `[bqp_formulaire id="12" colonnes="1"]` |
 
 Sans `id`, le premier formulaire publié est affiché.
 
