@@ -1,0 +1,1137 @@
+<?php
+/**
+ * Plugin Name:       BQP Partenaires
+ * Plugin URI:        https://boursequatrepoint.fr/
+ * Description:       Gestion et affichage des partenaires (logo, categorie, description, lien) avec un shortcode [bqp_partenaires] et des filtres par categorie.
+ * Version:           1.0.0
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
+ * Author:            Aurea Media
+ * License:           GPL-2.0-or-later
+ * Text Domain:       bqp-partenaires
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+define( 'BQP_PARTENAIRES_VERSION', '1.0.0' );
+define( 'BQP_PARTENAIRES_CPT', 'bqp_partenaire' );
+define( 'BQP_PARTENAIRES_TAX', 'bqp_partenaire_cat' );
+
+/* -------------------------------------------------------------------------
+ * 1. Palette et helpers
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Palette officielle du site (relevee sur les reglages Elementor).
+ */
+function bqp_palette() {
+	return array(
+		'bordeaux'      => '#74041C',
+		'bordeaux_dark' => '#31020C',
+		'navy'          => '#001756',
+		'orange'        => '#C75A18',
+		'ink'           => '#424242',
+		'muted'         => '#888888',
+		'line'          => '#E8E8E8',
+		'soft'          => '#F5F5F5',
+	);
+}
+
+/**
+ * Categories creees automatiquement a l'activation : slug => [nom, couleur].
+ */
+function bqp_default_terms() {
+	$p = bqp_palette();
+
+	return array(
+		'entreprises'     => array( 'Entreprises', $p['bordeaux'] ),
+		'academiques'     => array( 'Académiques', $p['navy'] ),
+		'institutionnels' => array( 'Institutionnels', $p['orange'] ),
+		'medias'          => array( 'Médias', $p['ink'] ),
+		'associations'    => array( 'Associations', $p['bordeaux_dark'] ),
+	);
+}
+
+/**
+ * Convertit un hexadecimal en rgba() pour les fonds translucides.
+ */
+function bqp_hex_to_rgba( $hex, $alpha = 1 ) {
+	$hex = ltrim( (string) $hex, '#' );
+
+	if ( 3 === strlen( $hex ) ) {
+		$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+	}
+
+	if ( 6 !== strlen( $hex ) || ! ctype_xdigit( $hex ) ) {
+		$hex = '74041C';
+	}
+
+	return sprintf(
+		'rgba(%d, %d, %d, %s)',
+		hexdec( substr( $hex, 0, 2 ) ),
+		hexdec( substr( $hex, 2, 2 ) ),
+		hexdec( substr( $hex, 4, 2 ) ),
+		rtrim( rtrim( number_format( (float) $alpha, 2, '.', '' ), '0' ), '.' )
+	);
+}
+
+/**
+ * Couleur associee a un terme, avec repli sur le bordeaux.
+ */
+function bqp_term_color( $term_id ) {
+	$color = get_term_meta( (int) $term_id, 'bqp_color', true );
+
+	if ( $color && preg_match( '/^#[0-9A-Fa-f]{6}$/', $color ) ) {
+		return $color;
+	}
+
+	$term     = get_term( (int) $term_id, BQP_PARTENAIRES_TAX );
+	$defaults = bqp_default_terms();
+
+	if ( $term && ! is_wp_error( $term ) && isset( $defaults[ $term->slug ] ) ) {
+		return $defaults[ $term->slug ][1];
+	}
+
+	$palette = bqp_palette();
+
+	return $palette['bordeaux'];
+}
+
+/**
+ * Initiales utilisees quand aucun logo n'est renseigne.
+ */
+function bqp_initials( $name ) {
+	$parts     = preg_split( '/[\s\-\']+/u', trim( wp_strip_all_tags( $name ) ) );
+	$initials  = '';
+
+	foreach ( (array) $parts as $part ) {
+		if ( '' === $part ) {
+			continue;
+		}
+		$first     = function_exists( 'mb_substr' ) ? mb_substr( $part, 0, 1 ) : substr( $part, 0, 1 );
+		$initials .= function_exists( 'mb_strtoupper' ) ? mb_strtoupper( $first ) : strtoupper( $first );
+
+		$length = function_exists( 'mb_strlen' ) ? mb_strlen( $initials ) : strlen( $initials );
+		if ( $length >= 2 ) {
+			break;
+		}
+	}
+
+	return $initials ? $initials : '?';
+}
+
+/* -------------------------------------------------------------------------
+ * 2. Custom post type + taxonomie
+ * ---------------------------------------------------------------------- */
+
+add_action( 'init', 'bqp_register_content' );
+function bqp_register_content() {
+
+	register_post_type(
+		BQP_PARTENAIRES_CPT,
+		array(
+			'labels'              => array(
+				'name'                  => 'Partenaires',
+				'singular_name'         => 'Partenaire',
+				'menu_name'             => 'Partenaires',
+				'add_new'               => 'Ajouter un partenaire',
+				'add_new_item'          => 'Ajouter un partenaire',
+				'edit_item'             => 'Modifier le partenaire',
+				'new_item'              => 'Nouveau partenaire',
+				'view_item'             => 'Voir le partenaire',
+				'search_items'          => 'Rechercher un partenaire',
+				'not_found'             => 'Aucun partenaire pour le moment.',
+				'not_found_in_trash'    => 'Aucun partenaire dans la corbeille.',
+				'all_items'             => 'Tous les partenaires',
+				'item_published'        => 'Partenaire publié.',
+				'item_updated'          => 'Partenaire mis à jour.',
+			),
+			// Volontairement non public : un partenaire n'a pas de page dediee,
+			// ce qui evite des pages trop legeres dans l'index Google.
+			'public'              => false,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'has_archive'         => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_rest'        => false,
+			'menu_position'       => 26,
+			'menu_icon'           => 'dashicons-awards',
+			'supports'            => array( 'title', 'page-attributes' ),
+			'capability_type'     => 'post',
+			'map_meta_cap'        => true,
+		)
+	);
+
+	register_taxonomy(
+		BQP_PARTENAIRES_TAX,
+		BQP_PARTENAIRES_CPT,
+		array(
+			'labels'            => array(
+				'name'          => 'Catégories',
+				'singular_name' => 'Catégorie',
+				'menu_name'     => 'Catégories',
+				'all_items'     => 'Toutes les catégories',
+				'edit_item'     => 'Modifier la catégorie',
+				'add_new_item'  => 'Ajouter une catégorie',
+				'search_items'  => 'Rechercher une catégorie',
+			),
+			'public'            => false,
+			'publicly_queryable'=> false,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'show_in_rest'      => false,
+			'hierarchical'      => true,
+			'rewrite'           => false,
+		)
+	);
+}
+
+/**
+ * Creation des 5 categories par defaut + reglage des permaliens.
+ */
+register_activation_hook( __FILE__, 'bqp_activate' );
+function bqp_activate() {
+	bqp_register_content();
+
+	foreach ( bqp_default_terms() as $slug => $data ) {
+		if ( term_exists( $slug, BQP_PARTENAIRES_TAX ) ) {
+			continue;
+		}
+
+		$term = wp_insert_term( $data[0], BQP_PARTENAIRES_TAX, array( 'slug' => $slug ) );
+
+		if ( ! is_wp_error( $term ) ) {
+			add_term_meta( $term['term_id'], 'bqp_color', $data[1], true );
+		}
+	}
+
+	flush_rewrite_rules();
+}
+
+register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
+
+/**
+ * Libelle du champ titre plus parlant.
+ */
+add_filter( 'enter_title_here', 'bqp_title_placeholder', 10, 2 );
+function bqp_title_placeholder( $text, $post ) {
+	if ( $post && BQP_PARTENAIRES_CPT === $post->post_type ) {
+		return 'Nom du partenaire';
+	}
+
+	return $text;
+}
+
+/* -------------------------------------------------------------------------
+ * 3. Champ couleur sur les categories
+ * ---------------------------------------------------------------------- */
+
+add_action( BQP_PARTENAIRES_TAX . '_add_form_fields', 'bqp_term_color_add_field' );
+function bqp_term_color_add_field() {
+	$palette = bqp_palette();
+	?>
+	<div class="form-field">
+		<label for="bqp_color">Couleur de l'étiquette</label>
+		<input type="color" name="bqp_color" id="bqp_color" value="<?php echo esc_attr( $palette['bordeaux'] ); ?>" />
+		<p>Couleur du badge affiché sur les cartes partenaires.</p>
+	</div>
+	<?php
+	wp_nonce_field( 'bqp_term_color', 'bqp_term_color_nonce' );
+}
+
+add_action( BQP_PARTENAIRES_TAX . '_edit_form_fields', 'bqp_term_color_edit_field' );
+function bqp_term_color_edit_field( $term ) {
+	?>
+	<tr class="form-field">
+		<th scope="row"><label for="bqp_color">Couleur de l'étiquette</label></th>
+		<td>
+			<input type="color" name="bqp_color" id="bqp_color" value="<?php echo esc_attr( bqp_term_color( $term->term_id ) ); ?>" />
+			<p class="description">Couleur du badge affiché sur les cartes partenaires.</p>
+			<?php wp_nonce_field( 'bqp_term_color', 'bqp_term_color_nonce' ); ?>
+		</td>
+	</tr>
+	<?php
+}
+
+add_action( 'created_' . BQP_PARTENAIRES_TAX, 'bqp_save_term_color' );
+add_action( 'edited_' . BQP_PARTENAIRES_TAX, 'bqp_save_term_color' );
+function bqp_save_term_color( $term_id ) {
+	if ( ! isset( $_POST['bqp_term_color_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqp_term_color_nonce'] ) ), 'bqp_term_color' ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'manage_categories' ) ) {
+		return;
+	}
+
+	if ( isset( $_POST['bqp_color'] ) ) {
+		$color = sanitize_hex_color( wp_unslash( $_POST['bqp_color'] ) );
+		if ( $color ) {
+			update_term_meta( $term_id, 'bqp_color', $color );
+		}
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * 4. Metabox : logo, site web, description
+ * ---------------------------------------------------------------------- */
+
+add_action( 'add_meta_boxes', 'bqp_add_meta_boxes' );
+function bqp_add_meta_boxes() {
+	add_meta_box(
+		'bqp_partenaire_details',
+		'Fiche du partenaire',
+		'bqp_render_meta_box',
+		BQP_PARTENAIRES_CPT,
+		'normal',
+		'high'
+	);
+}
+
+function bqp_render_meta_box( $post ) {
+	wp_nonce_field( 'bqp_save_partenaire', 'bqp_partenaire_nonce' );
+
+	$logo_id = (int) get_post_meta( $post->ID, '_bqp_logo_id', true );
+	$url     = (string) get_post_meta( $post->ID, '_bqp_url', true );
+	$desc    = (string) get_post_meta( $post->ID, '_bqp_description', true );
+	$logo    = $logo_id ? wp_get_attachment_image_src( $logo_id, 'medium' ) : false;
+	?>
+	<div class="bqp-admin">
+
+		<div class="bqp-admin__grid">
+
+			<div class="bqp-admin__col bqp-admin__col--logo">
+				<span class="bqp-admin__label">Logo du partenaire</span>
+
+				<div class="bqp-admin__logo-box <?php echo $logo ? 'has-logo' : ''; ?>" id="bqp-logo-box">
+					<img src="<?php echo $logo ? esc_url( $logo[0] ) : ''; ?>" alt="" id="bqp-logo-preview" <?php echo $logo ? '' : 'hidden'; ?> />
+					<div class="bqp-admin__logo-empty" id="bqp-logo-empty" <?php echo $logo ? 'hidden' : ''; ?>>
+						<span class="dashicons dashicons-format-image"></span>
+						<span>Aucun logo</span>
+					</div>
+				</div>
+
+				<input type="hidden" name="bqp_logo_id" id="bqp-logo-id" value="<?php echo esc_attr( $logo_id ); ?>" />
+
+				<div class="bqp-admin__logo-actions">
+					<button type="button" class="button button-primary" id="bqp-logo-select"><?php echo $logo ? 'Remplacer' : 'Choisir un logo'; ?></button>
+					<button type="button" class="button-link bqp-admin__remove" id="bqp-logo-remove" <?php echo $logo ? '' : 'hidden'; ?>>Retirer</button>
+				</div>
+
+				<p class="bqp-admin__hint">PNG ou SVG sur fond transparent, largeur conseillée 400&nbsp;px.</p>
+			</div>
+
+			<div class="bqp-admin__col">
+
+				<p class="bqp-admin__field">
+					<label class="bqp-admin__label" for="bqp_url">Site internet</label>
+					<input type="url" class="bqp-admin__input" name="bqp_url" id="bqp_url"
+						value="<?php echo esc_attr( $url ); ?>" placeholder="https://exemple.fr" />
+					<span class="bqp-admin__hint">Le lien s'ouvre dans un nouvel onglet depuis la carte.</span>
+				</p>
+
+				<p class="bqp-admin__field">
+					<label class="bqp-admin__label" for="bqp_description">Courte description</label>
+					<textarea class="bqp-admin__input bqp-admin__textarea" name="bqp_description" id="bqp_description"
+						rows="4" maxlength="400" placeholder="Une ou deux phrases sur le partenaire et son rôle."><?php echo esc_textarea( $desc ); ?></textarea>
+					<span class="bqp-admin__hint">
+						<span id="bqp-count"><?php echo esc_html( function_exists( 'mb_strlen' ) ? mb_strlen( $desc ) : strlen( $desc ) ); ?></span> caractères.
+						Idéalement entre 90 et 180 pour un alignement parfait des cartes.
+					</span>
+				</p>
+
+				<p class="bqp-admin__field">
+					<span class="bqp-admin__label">Catégorie</span>
+					<span class="bqp-admin__hint">
+						La catégorie se choisit dans l'encadré <strong>Catégories</strong>, à droite de cet écran.
+						Elle détermine l'étiquette colorée et les filtres du bloc.
+					</span>
+				</p>
+
+			</div>
+
+		</div>
+
+		<div class="bqp-admin__shortcode">
+			<span class="dashicons dashicons-shortcode"></span>
+			<span>Pour afficher le bloc sur une page :</span>
+			<code>[bqp_partenaires]</code>
+		</div>
+
+	</div>
+	<?php
+}
+
+add_action( 'save_post_' . BQP_PARTENAIRES_CPT, 'bqp_save_partenaire', 10, 2 );
+function bqp_save_partenaire( $post_id, $post ) {
+	if ( ! isset( $_POST['bqp_partenaire_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqp_partenaire_nonce'] ) ), 'bqp_save_partenaire' ) ) {
+		return;
+	}
+
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	$logo_id = isset( $_POST['bqp_logo_id'] ) ? absint( $_POST['bqp_logo_id'] ) : 0;
+	if ( $logo_id ) {
+		update_post_meta( $post_id, '_bqp_logo_id', $logo_id );
+	} else {
+		delete_post_meta( $post_id, '_bqp_logo_id' );
+	}
+
+	$url = isset( $_POST['bqp_url'] ) ? trim( (string) wp_unslash( $_POST['bqp_url'] ) ) : '';
+	if ( '' !== $url && ! preg_match( '#^https?://#i', $url ) ) {
+		$url = 'https://' . ltrim( $url, '/' );
+	}
+	$url = esc_url_raw( $url );
+	if ( $url ) {
+		update_post_meta( $post_id, '_bqp_url', $url );
+	} else {
+		delete_post_meta( $post_id, '_bqp_url' );
+	}
+
+	$desc = isset( $_POST['bqp_description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['bqp_description'] ) ) : '';
+	if ( '' !== $desc ) {
+		update_post_meta( $post_id, '_bqp_description', $desc );
+	} else {
+		delete_post_meta( $post_id, '_bqp_description' );
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * 5. Colonnes de la liste des partenaires
+ * ---------------------------------------------------------------------- */
+
+add_filter( 'manage_' . BQP_PARTENAIRES_CPT . '_posts_columns', 'bqp_admin_columns' );
+function bqp_admin_columns( $columns ) {
+	$new = array();
+
+	if ( isset( $columns['cb'] ) ) {
+		$new['cb'] = $columns['cb'];
+	}
+
+	$new['bqp_logo'] = 'Logo';
+	$new['title']    = 'Partenaire';
+
+	if ( isset( $columns[ 'taxonomy-' . BQP_PARTENAIRES_TAX ] ) ) {
+		$new[ 'taxonomy-' . BQP_PARTENAIRES_TAX ] = 'Catégorie';
+	}
+
+	$new['bqp_url']   = 'Site internet';
+	$new['bqp_order'] = 'Ordre';
+	$new['date']      = isset( $columns['date'] ) ? $columns['date'] : 'Date';
+
+	return $new;
+}
+
+add_action( 'manage_' . BQP_PARTENAIRES_CPT . '_posts_custom_column', 'bqp_admin_column_content', 10, 2 );
+function bqp_admin_column_content( $column, $post_id ) {
+	switch ( $column ) {
+		case 'bqp_logo':
+			$logo_id = (int) get_post_meta( $post_id, '_bqp_logo_id', true );
+			if ( $logo_id ) {
+				echo '<span class="bqp-col-logo">' . wp_get_attachment_image( $logo_id, array( 90, 60 ), false, array( 'alt' => '' ) ) . '</span>';
+			} else {
+				echo '<span class="bqp-col-logo bqp-col-logo--empty">' . esc_html( bqp_initials( get_the_title( $post_id ) ) ) . '</span>';
+			}
+			break;
+
+		case 'bqp_url':
+			$url = (string) get_post_meta( $post_id, '_bqp_url', true );
+			if ( $url ) {
+				printf(
+					'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+					esc_url( $url ),
+					esc_html( preg_replace( '#^https?://(www\.)?#i', '', untrailingslashit( $url ) ) )
+				);
+			} else {
+				echo '<span style="color:#b0b0b0;">—</span>';
+			}
+			break;
+
+		case 'bqp_order':
+			echo esc_html( get_post_field( 'menu_order', $post_id ) );
+			break;
+	}
+}
+
+add_filter( 'manage_edit-' . BQP_PARTENAIRES_CPT . '_sortable_columns', 'bqp_sortable_columns' );
+function bqp_sortable_columns( $columns ) {
+	$columns['bqp_order'] = 'menu_order';
+
+	return $columns;
+}
+
+add_action( 'pre_get_posts', 'bqp_admin_default_order' );
+function bqp_admin_default_order( $query ) {
+	if ( ! is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( BQP_PARTENAIRES_CPT !== $query->get( 'post_type' ) ) {
+		return;
+	}
+
+	if ( ! $query->get( 'orderby' ) ) {
+		$query->set( 'orderby', array( 'menu_order' => 'ASC', 'title' => 'ASC' ) );
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * 6. Page d'aide + styles de l'administration
+ * ---------------------------------------------------------------------- */
+
+add_action( 'admin_menu', 'bqp_admin_help_page' );
+function bqp_admin_help_page() {
+	add_submenu_page(
+		'edit.php?post_type=' . BQP_PARTENAIRES_CPT,
+		'Mode d\'emploi',
+		'Mode d\'emploi',
+		'edit_posts',
+		'bqp-aide',
+		'bqp_render_help_page'
+	);
+}
+
+function bqp_render_help_page() {
+	$options = array(
+		array( 'categories', 'Limite le bloc à certaines catégories (slugs séparés par une virgule).', 'toutes', '[bqp_partenaires categories="entreprises,medias"]' ),
+		array( 'colonnes', 'Nombre de colonnes sur grand écran : 2, 3 ou 4.', '3', '[bqp_partenaires colonnes="4"]' ),
+		array( 'filtres', 'Affiche ou masque la barre de filtres : oui ou non.', 'oui', '[bqp_partenaires filtres="non"]' ),
+		array( 'compteurs', 'Affiche le nombre de partenaires dans chaque filtre.', 'oui', '[bqp_partenaires compteurs="non"]' ),
+		array( 'titre', 'Ajoute un titre au-dessus du bloc.', 'vide', '[bqp_partenaires titre="Ils nous accompagnent"]' ),
+		array( 'logos', 'Rendu des logos : grisaille (couleur au survol) ou couleur.', 'grisaille', '[bqp_partenaires logos="couleur"]' ),
+		array( 'limite', 'Nombre maximum de partenaires affichés.', 'tous', '[bqp_partenaires limite="8"]' ),
+		array( 'ordre', 'Tri : manuel, nom ou recent.', 'manuel', '[bqp_partenaires ordre="nom"]' ),
+	);
+	?>
+	<div class="wrap bqp-help">
+
+		<h1 class="bqp-help__title">Bloc Partenaires</h1>
+		<p class="bqp-help__intro">
+			Ajoutez vos partenaires depuis le menu <strong>Partenaires</strong>, puis collez le shortcode ci-dessous
+			dans une page Elementor (widget <em>Shortcode</em>) ou dans l'éditeur WordPress.
+			Les cartes et les filtres se mettent à jour automatiquement.
+		</p>
+
+		<div class="bqp-help__hero">
+			<span>Shortcode principal</span>
+			<code>[bqp_partenaires]</code>
+		</div>
+
+		<h2 class="bqp-help__subtitle">Les options disponibles</h2>
+
+		<table class="widefat striped bqp-help__table">
+			<thead>
+				<tr>
+					<th>Option</th>
+					<th>Rôle</th>
+					<th>Par défaut</th>
+					<th>Exemple</th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ( $options as $option ) : ?>
+				<tr>
+					<td><code><?php echo esc_html( $option[0] ); ?></code></td>
+					<td><?php echo esc_html( $option[1] ); ?></td>
+					<td><?php echo esc_html( $option[2] ); ?></td>
+					<td><code><?php echo esc_html( $option[3] ); ?></code></td>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
+
+		<h2 class="bqp-help__subtitle">Bon à savoir</h2>
+		<ul class="bqp-help__list">
+			<li>L'ordre d'affichage se règle avec le champ <strong>Ordre</strong> de chaque partenaire (0 en premier).</li>
+			<li>La couleur de chaque étiquette se modifie dans <strong>Partenaires &rsaquo; Catégories</strong>.</li>
+			<li>Un partenaire sans logo affiche automatiquement ses initiales dans un médaillon bordeaux.</li>
+			<li>Un partenaire sans lien reste affiché, simplement sans bouton de redirection.</li>
+			<li>Les fiches partenaires ne créent aucune page publique, pour ne pas diluer le référencement du site.</li>
+		</ul>
+
+	</div>
+	<?php
+}
+
+add_action( 'admin_enqueue_scripts', 'bqp_admin_assets' );
+function bqp_admin_assets( $hook ) {
+	$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+	$is_cpt = $screen && ( BQP_PARTENAIRES_CPT === $screen->post_type );
+
+	if ( ! $is_cpt ) {
+		return;
+	}
+
+	if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		wp_enqueue_media();
+	}
+
+	wp_register_style( 'bqp-admin', false, array(), BQP_PARTENAIRES_VERSION );
+	wp_enqueue_style( 'bqp-admin' );
+	wp_add_inline_style( 'bqp-admin', bqp_admin_css() );
+
+	if ( in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		wp_register_script( 'bqp-admin', false, array( 'jquery' ), BQP_PARTENAIRES_VERSION, true );
+		wp_enqueue_script( 'bqp-admin' );
+		wp_add_inline_script( 'bqp-admin', bqp_admin_js() );
+	}
+}
+
+function bqp_admin_css() {
+	$p = bqp_palette();
+
+	return '
+	.bqp-admin{font-size:14px;}
+	.bqp-admin__grid{display:grid;grid-template-columns:260px 1fr;gap:28px;align-items:start;}
+	@media (max-width:782px){.bqp-admin__grid{grid-template-columns:1fr;}}
+	.bqp-admin__label{display:block;margin-bottom:8px;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:' . $p['bordeaux'] . ';}
+	.bqp-admin__field{margin:0 0 22px;}
+	.bqp-admin__input{width:100%;padding:11px 14px;border:1px solid #dcdcde;border-radius:8px;background:#fff;box-shadow:none;transition:border-color .2s,box-shadow .2s;}
+	.bqp-admin__input:focus{border-color:' . $p['bordeaux'] . ';box-shadow:0 0 0 3px ' . bqp_hex_to_rgba( $p['bordeaux'], 0.12 ) . ';outline:none;}
+	.bqp-admin__textarea{resize:vertical;min-height:96px;line-height:1.6;}
+	.bqp-admin__hint{display:block;margin-top:7px;color:#787c82;font-size:12.5px;line-height:1.5;}
+	.bqp-admin__logo-box{display:flex;align-items:center;justify-content:center;height:150px;padding:18px;border:2px dashed #dcdcde;border-radius:12px;background:#fbfbfc;transition:border-color .2s,background .2s;}
+	.bqp-admin__logo-box.has-logo{border-style:solid;border-color:' . bqp_hex_to_rgba( $p['bordeaux'], 0.3 ) . ';background:#fff;}
+	.bqp-admin__logo-box img{max-width:100%;max-height:114px;width:auto;height:auto;object-fit:contain;}
+	.bqp-admin__logo-empty{display:flex;flex-direction:column;align-items:center;gap:6px;color:#a7aaad;font-size:12.5px;}
+	.bqp-admin__logo-empty .dashicons{font-size:30px;width:30px;height:30px;}
+	.bqp-admin__logo-actions{display:flex;align-items:center;gap:12px;margin-top:12px;}
+	.bqp-admin__remove{color:#b32d2e;text-decoration:none;cursor:pointer;}
+	.bqp-admin__remove:hover{color:#8a2223;}
+	.bqp-admin__shortcode{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:8px;padding:14px 18px;border-radius:10px;background:' . bqp_hex_to_rgba( $p['bordeaux'], 0.05 ) . ';border:1px solid ' . bqp_hex_to_rgba( $p['bordeaux'], 0.14 ) . ';color:' . $p['bordeaux_dark'] . ';}
+	.bqp-admin__shortcode code{background:#fff;border:1px solid ' . bqp_hex_to_rgba( $p['bordeaux'], 0.2 ) . ';color:' . $p['bordeaux'] . ';padding:5px 11px;border-radius:6px;font-weight:600;}
+	.bqp-admin__shortcode .dashicons{color:' . $p['bordeaux'] . ';}
+	.column-bqp_logo{width:110px;}
+	.column-bqp_order{width:70px;}
+	.bqp-col-logo{display:flex;align-items:center;justify-content:center;width:90px;height:56px;border:1px solid #e6e6e8;border-radius:8px;background:#fff;overflow:hidden;}
+	.bqp-col-logo img{max-width:74px;max-height:42px;width:auto;height:auto;object-fit:contain;}
+	.bqp-col-logo--empty{background:' . bqp_hex_to_rgba( $p['bordeaux'], 0.07 ) . ';border-color:' . bqp_hex_to_rgba( $p['bordeaux'], 0.16 ) . ';color:' . $p['bordeaux'] . ';font-weight:700;letter-spacing:.04em;}
+	.bqp-help__title{font-size:30px;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
+	.bqp-help__intro{max-width:760px;font-size:14.5px;line-height:1.7;color:#50575e;}
+	.bqp-help__hero{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:22px 0 32px;padding:22px 26px;border-radius:14px;background:linear-gradient(135deg,' . $p['bordeaux'] . ' 0%,' . $p['bordeaux_dark'] . ' 100%);color:#fff;box-shadow:0 12px 30px -16px ' . bqp_hex_to_rgba( $p['bordeaux_dark'], 0.8 ) . ';}
+	.bqp-help__hero span{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.75;}
+	.bqp-help__hero code{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);color:#fff;padding:9px 16px;border-radius:8px;font-size:15px;font-weight:600;}
+	.bqp-help__subtitle{margin-top:34px;font-size:19px;font-weight:600;color:' . $p['bordeaux_dark'] . ';}
+	.bqp-help__table{max-width:1080px;border-radius:10px;overflow:hidden;}
+	.bqp-help__table th{font-weight:600;}
+	.bqp-help__table code{color:' . $p['bordeaux'] . ';background:' . bqp_hex_to_rgba( $p['bordeaux'], 0.06 ) . ';}
+	.bqp-help__list{max-width:840px;line-height:1.8;list-style:disc;padding-left:20px;color:#50575e;}
+	';
+}
+
+function bqp_admin_js() {
+	return "
+	(function(\$){
+		\$(function(){
+			var frame,
+				\$id      = \$('#bqp-logo-id'),
+				\$preview = \$('#bqp-logo-preview'),
+				\$empty   = \$('#bqp-logo-empty'),
+				\$box     = \$('#bqp-logo-box'),
+				\$remove  = \$('#bqp-logo-remove'),
+				\$select  = \$('#bqp-logo-select');
+
+			\$select.on('click', function(e){
+				e.preventDefault();
+
+				if (frame) { frame.open(); return; }
+
+				frame = wp.media({
+					title: 'Choisir le logo du partenaire',
+					button: { text: 'Utiliser ce logo' },
+					library: { type: 'image' },
+					multiple: false
+				});
+
+				frame.on('select', function(){
+					var att = frame.state().get('selection').first().toJSON(),
+						src = (att.sizes && att.sizes.medium) ? att.sizes.medium.url : att.url;
+
+					\$id.val(att.id);
+					\$preview.attr('src', src).prop('hidden', false);
+					\$empty.prop('hidden', true);
+					\$box.addClass('has-logo');
+					\$remove.prop('hidden', false);
+					\$select.text('Remplacer');
+				});
+
+				frame.open();
+			});
+
+			\$remove.on('click', function(e){
+				e.preventDefault();
+				\$id.val('');
+				\$preview.attr('src','').prop('hidden', true);
+				\$empty.prop('hidden', false);
+				\$box.removeClass('has-logo');
+				\$remove.prop('hidden', true);
+				\$select.text('Choisir un logo');
+			});
+
+			\$('#bqp_description').on('input', function(){
+				\$('#bqp-count').text(\$(this).val().length);
+			});
+		});
+	})(jQuery);
+	";
+}
+
+/* -------------------------------------------------------------------------
+ * 7. Shortcode [bqp_partenaires]
+ * ---------------------------------------------------------------------- */
+
+add_action( 'wp_enqueue_scripts', 'bqp_register_front_assets' );
+function bqp_register_front_assets() {
+	wp_register_style( 'bqp-partenaires', false, array(), BQP_PARTENAIRES_VERSION );
+	wp_add_inline_style( 'bqp-partenaires', bqp_front_css() );
+
+	wp_register_script( 'bqp-partenaires', false, array(), BQP_PARTENAIRES_VERSION, true );
+	wp_add_inline_script( 'bqp-partenaires', bqp_front_js() );
+
+	// Chargement anticipe quand le shortcode est detectable dans la page,
+	// pour que le style soit present des le rendu et non dans le pied de page.
+	if ( is_singular() ) {
+		$post = get_post();
+
+		if ( $post instanceof WP_Post && has_shortcode( (string) $post->post_content, 'bqp_partenaires' ) ) {
+			wp_enqueue_style( 'bqp-partenaires' );
+			wp_enqueue_script( 'bqp-partenaires' );
+		}
+	}
+}
+
+add_shortcode( 'bqp_partenaires', 'bqp_shortcode' );
+function bqp_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'categories' => '',
+			'colonnes'   => '3',
+			'filtres'    => 'oui',
+			'compteurs'  => 'oui',
+			'titre'      => '',
+			'logos'      => 'grisaille',
+			'limite'     => '-1',
+			'ordre'      => 'manuel',
+		),
+		$atts,
+		'bqp_partenaires'
+	);
+
+	$columns   = max( 2, min( 4, (int) $atts['colonnes'] ) );
+	$show_tabs = in_array( strtolower( $atts['filtres'] ), array( 'oui', 'yes', 'true', '1' ), true );
+	$show_nb   = in_array( strtolower( $atts['compteurs'] ), array( 'oui', 'yes', 'true', '1' ), true );
+	$grayscale = 'couleur' !== strtolower( $atts['logos'] );
+	$limit     = (int) $atts['limite'];
+
+	switch ( strtolower( $atts['ordre'] ) ) {
+		case 'nom':
+			$orderby = array( 'title' => 'ASC' );
+			break;
+		case 'recent':
+			$orderby = array( 'date' => 'DESC' );
+			break;
+		default:
+			$orderby = array( 'menu_order' => 'ASC', 'title' => 'ASC' );
+	}
+
+	$args = array(
+		'post_type'              => BQP_PARTENAIRES_CPT,
+		'post_status'            => 'publish',
+		'posts_per_page'         => ( 0 === $limit ) ? -1 : $limit,
+		'orderby'                => $orderby,
+		'no_found_rows'          => true,
+		'update_post_term_cache' => true,
+		'ignore_sticky_posts'    => true,
+	);
+
+	$slugs = array_filter( array_map( 'sanitize_title', explode( ',', $atts['categories'] ) ) );
+	if ( $slugs ) {
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => BQP_PARTENAIRES_TAX,
+				'field'    => 'slug',
+				'terms'    => $slugs,
+			),
+		);
+	}
+
+	$query = new WP_Query( $args );
+
+	if ( ! $query->have_posts() ) {
+		wp_reset_postdata();
+
+		if ( current_user_can( 'edit_posts' ) ) {
+			return '<p class="bqp-empty-notice">Aucun partenaire publié pour le moment. Ajoutez-en depuis le menu <strong>Partenaires</strong>.</p>';
+		}
+
+		return '';
+	}
+
+	wp_enqueue_style( 'bqp-partenaires' );
+	wp_enqueue_script( 'bqp-partenaires' );
+
+	$cards = array();
+	$tabs  = array();
+
+	while ( $query->have_posts() ) {
+		$query->the_post();
+
+		$post_id = get_the_ID();
+		$terms   = get_the_terms( $post_id, BQP_PARTENAIRES_TAX );
+		$terms   = ( $terms && ! is_wp_error( $terms ) ) ? $terms : array();
+
+		$term_slugs = array();
+		foreach ( $terms as $term ) {
+			$term_slugs[] = $term->slug;
+
+			if ( ! isset( $tabs[ $term->slug ] ) ) {
+				$tabs[ $term->slug ] = array(
+					'name'  => $term->name,
+					'color' => bqp_term_color( $term->term_id ),
+					'count' => 0,
+				);
+			}
+			$tabs[ $term->slug ]['count']++;
+		}
+
+		$main_term = $terms ? reset( $terms ) : null;
+
+		$cards[] = array(
+			'id'     => $post_id,
+			'name'   => get_the_title(),
+			'logo'   => (int) get_post_meta( $post_id, '_bqp_logo_id', true ),
+			'url'    => (string) get_post_meta( $post_id, '_bqp_url', true ),
+			'desc'   => (string) get_post_meta( $post_id, '_bqp_description', true ),
+			'label'  => $main_term ? $main_term->name : '',
+			'color'  => $main_term ? bqp_term_color( $main_term->term_id ) : bqp_palette()['bordeaux'],
+			'slugs'  => $term_slugs,
+		);
+	}
+
+	wp_reset_postdata();
+
+	$uid     = 'bqp-' . wp_unique_id();
+	$palette = bqp_palette();
+
+	ob_start();
+	?>
+	<section class="bqp-partners<?php echo $grayscale ? ' bqp-partners--grayscale' : ''; ?>"
+		id="<?php echo esc_attr( $uid ); ?>"
+		style="--bqp-cols-max:<?php echo esc_attr( $columns ); ?>;">
+
+		<?php if ( '' !== trim( $atts['titre'] ) ) : ?>
+			<h2 class="bqp-partners__title"><?php echo esc_html( $atts['titre'] ); ?></h2>
+			<span class="bqp-partners__rule" aria-hidden="true"></span>
+		<?php endif; ?>
+
+		<?php if ( $show_tabs && count( $tabs ) > 1 ) : ?>
+			<div class="bqp-filters" role="group" aria-label="Filtrer les partenaires par catégorie">
+
+				<button type="button" class="bqp-filter is-active" data-filter="*" aria-pressed="true"
+					style="--bqp-cat:<?php echo esc_attr( $palette['bordeaux'] ); ?>;">
+					Tous
+					<?php if ( $show_nb ) : ?>
+						<span class="bqp-filter__count"><?php echo esc_html( count( $cards ) ); ?></span>
+					<?php endif; ?>
+				</button>
+
+				<?php foreach ( $tabs as $slug => $tab ) : ?>
+					<button type="button" class="bqp-filter" data-filter="<?php echo esc_attr( $slug ); ?>" aria-pressed="false"
+						style="--bqp-cat:<?php echo esc_attr( $tab['color'] ); ?>;">
+						<?php echo esc_html( $tab['name'] ); ?>
+						<?php if ( $show_nb ) : ?>
+							<span class="bqp-filter__count"><?php echo esc_html( $tab['count'] ); ?></span>
+						<?php endif; ?>
+					</button>
+				<?php endforeach; ?>
+
+			</div>
+		<?php endif; ?>
+
+		<div class="bqp-grid">
+
+			<?php foreach ( $cards as $card ) : ?>
+				<article class="bqp-card"
+					data-cats="<?php echo esc_attr( implode( ' ', $card['slugs'] ) ); ?>"
+					style="--bqp-cat:<?php echo esc_attr( $card['color'] ); ?>;--bqp-cat-soft:<?php echo esc_attr( bqp_hex_to_rgba( $card['color'], 0.09 ) ); ?>;--bqp-cat-line:<?php echo esc_attr( bqp_hex_to_rgba( $card['color'], 0.22 ) ); ?>;">
+
+					<div class="bqp-card__logo">
+						<?php if ( $card['logo'] ) : ?>
+							<?php
+							echo wp_get_attachment_image(
+								$card['logo'],
+								'medium',
+								false,
+								array(
+									'class'   => 'bqp-card__img',
+									'alt'     => 'Logo ' . $card['name'],
+									'loading' => 'lazy',
+								)
+							);
+							?>
+						<?php else : ?>
+							<span class="bqp-card__initials" aria-hidden="true"><?php echo esc_html( bqp_initials( $card['name'] ) ); ?></span>
+						<?php endif; ?>
+					</div>
+
+					<div class="bqp-card__body">
+
+						<?php if ( $card['label'] ) : ?>
+							<span class="bqp-card__badge"><?php echo esc_html( $card['label'] ); ?></span>
+						<?php endif; ?>
+
+						<h3 class="bqp-card__name"><?php echo esc_html( $card['name'] ); ?></h3>
+
+						<?php if ( $card['desc'] ) : ?>
+							<p class="bqp-card__desc"><?php echo esc_html( $card['desc'] ); ?></p>
+						<?php endif; ?>
+
+						<?php if ( $card['url'] ) : ?>
+							<a class="bqp-card__link" href="<?php echo esc_url( $card['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+								<span>Visiter le site</span>
+								<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+									<path d="M1 8h12M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+								</svg>
+								<span class="screen-reader-text">(nouvelle fenêtre)</span>
+							</a>
+						<?php endif; ?>
+
+					</div>
+
+				</article>
+			<?php endforeach; ?>
+
+		</div>
+
+		<p class="bqp-noresult" hidden>Aucun partenaire dans cette catégorie pour le moment.</p>
+
+	</section>
+	<?php
+
+	return ob_get_clean();
+}
+
+/* -------------------------------------------------------------------------
+ * 8. Styles du bloc (charte boursequatrepoint.fr)
+ * ---------------------------------------------------------------------- */
+
+function bqp_front_css() {
+	$p = bqp_palette();
+
+	return '
+	.bqp-partners{
+		--bqp-bordeaux:' . $p['bordeaux'] . ';
+		--bqp-bordeaux-dark:' . $p['bordeaux_dark'] . ';
+		--bqp-ink:' . $p['ink'] . ';
+		--bqp-muted:' . $p['muted'] . ';
+		--bqp-line:' . $p['line'] . ';
+		--bqp-soft:' . $p['soft'] . ';
+		--bqp-cols:var(--bqp-cols-max,3);
+		--bqp-serif:"Cormorant Garamond","Playfair Display",Georgia,"Times New Roman",serif;
+		--bqp-sans:"Inter","Montserrat","Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+		box-sizing:border-box;width:100%;margin:0 auto;padding:0;
+	}
+	.bqp-partners *,.bqp-partners *::before,.bqp-partners *::after{box-sizing:border-box;}
+
+	.bqp-partners__title{
+		margin:0 0 14px;text-align:center;
+		font-family:var(--bqp-serif);font-weight:600;font-size:clamp(1.85rem,3.4vw,2.65rem);
+		line-height:1.15;letter-spacing:.005em;color:var(--bqp-bordeaux-dark);
+	}
+	.bqp-partners__rule{
+		display:block;width:64px;height:2px;margin:0 auto 38px;
+		background:linear-gradient(90deg,var(--bqp-bordeaux),var(--bqp-bordeaux-dark));
+	}
+
+	/* --- Filtres --- */
+	.bqp-filters{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:0 0 38px;}
+	.bqp-filter{
+		display:inline-flex;align-items:center;gap:7px;
+		margin:0;padding:11px 22px;border:1px solid var(--bqp-line);border-radius:999px;
+		background:#fff;color:var(--bqp-ink);
+		font-family:var(--bqp-sans);font-size:.78rem;font-weight:600;line-height:1;
+		letter-spacing:.09em;text-transform:uppercase;cursor:pointer;
+		transition:color .28s ease,border-color .28s ease,background .28s ease,box-shadow .28s ease,transform .28s ease;
+	}
+	.bqp-filter:hover{border-color:var(--bqp-cat);color:var(--bqp-cat);transform:translateY(-1px);}
+	.bqp-filter:focus-visible{outline:2px solid var(--bqp-cat);outline-offset:3px;}
+	.bqp-filter.is-active{
+		background:var(--bqp-cat);border-color:transparent;color:#fff;
+		box-shadow:0 10px 22px -12px var(--bqp-cat);
+	}
+	.bqp-filter__count{
+		display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+		padding:0 5px;border-radius:999px;background:rgba(0,0,0,.06);color:inherit;
+		font-size:.66rem;font-weight:700;letter-spacing:0;transition:background .28s ease;
+	}
+	.bqp-filter.is-active .bqp-filter__count{background:rgba(255,255,255,.24);}
+
+	/* --- Grille --- */
+	.bqp-grid{display:grid;grid-template-columns:repeat(var(--bqp-cols),minmax(0,1fr));gap:26px;align-items:stretch;}
+	@media (max-width:1024px){.bqp-partners{--bqp-cols:2;}}
+	@media (max-width:620px){.bqp-partners{--bqp-cols:1;}.bqp-grid{gap:20px;}.bqp-card__logo{height:126px;padding:22px;}}
+
+	/* --- Carte --- */
+	.bqp-card{
+		position:relative;display:flex;flex-direction:column;overflow:hidden;
+		background:#fff;border:1px solid var(--bqp-line);border-radius:16px;
+		transition:transform .38s cubic-bezier(.2,.7,.3,1),box-shadow .38s ease,border-color .38s ease;
+		animation:bqp-in .45s cubic-bezier(.2,.7,.3,1) both;
+	}
+	.bqp-card::after{
+		content:"";position:absolute;inset:0 0 auto 0;height:3px;
+		background:var(--bqp-cat);transform:scaleX(0);transform-origin:left;
+		transition:transform .42s cubic-bezier(.2,.7,.3,1);
+	}
+	.bqp-card:hover,.bqp-card:focus-within{
+		transform:translateY(-6px);
+		border-color:var(--bqp-cat-line,var(--bqp-line));
+		box-shadow:0 22px 44px -24px rgba(49,2,12,.5);
+	}
+	.bqp-card:hover::after,.bqp-card:focus-within::after{transform:scaleX(1);}
+	.bqp-card[hidden]{display:none;}
+
+	@keyframes bqp-in{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+
+	/* --- Logo --- */
+	.bqp-card__logo{
+		display:flex;align-items:center;justify-content:center;
+		height:142px;padding:26px;background:#FCFBFB;border-bottom:1px solid var(--bqp-line);
+	}
+	.bqp-card__img{
+		max-width:100%;max-height:90px;width:auto;height:auto;object-fit:contain;
+		transition:filter .4s ease,opacity .4s ease,transform .4s ease;
+	}
+	.bqp-partners--grayscale .bqp-card__img{filter:grayscale(1);opacity:.7;}
+	.bqp-partners--grayscale .bqp-card:hover .bqp-card__img{filter:none;opacity:1;transform:scale(1.03);}
+	.bqp-card__initials{
+		display:flex;align-items:center;justify-content:center;flex:0 0 74px;
+		width:74px;height:74px;border-radius:50%;
+		background:var(--bqp-cat-soft,rgba(116,4,28,.09));color:var(--bqp-cat);
+		font-family:var(--bqp-serif);font-size:1.7rem;font-weight:600;letter-spacing:.02em;
+	}
+
+	/* --- Contenu --- */
+	.bqp-card__body{display:flex;flex-direction:column;gap:12px;flex:1;padding:24px 24px 22px;}
+	.bqp-card__badge{
+		align-self:flex-start;max-width:100%;padding:5px 12px;border-radius:999px;
+		overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+		background:var(--bqp-cat-soft,rgba(116,4,28,.09));
+		border:1px solid var(--bqp-cat-line,rgba(116,4,28,.22));color:var(--bqp-cat);
+		font-family:var(--bqp-sans);font-size:.66rem;font-weight:700;line-height:1.5;
+		letter-spacing:.1em;text-transform:uppercase;
+	}
+	.bqp-card__name{
+		margin:0;font-family:var(--bqp-serif);font-weight:600;
+		font-size:1.42rem;line-height:1.25;color:var(--bqp-bordeaux-dark);
+		overflow-wrap:break-word;
+	}
+	.bqp-card__desc{
+		margin:0;flex:1;font-family:var(--bqp-sans);font-size:.93rem;line-height:1.68;color:#5d5d5d;
+	}
+	.bqp-card__link{
+		display:inline-flex;align-items:center;gap:9px;margin-top:6px;padding-top:16px;
+		border-top:1px solid var(--bqp-line);color:var(--bqp-bordeaux);text-decoration:none;
+		font-family:var(--bqp-sans);font-size:.76rem;font-weight:700;line-height:1;
+		letter-spacing:.09em;text-transform:uppercase;transition:color .28s ease;
+	}
+	.bqp-card__link:hover,.bqp-card__link:focus{color:var(--bqp-cat);text-decoration:none;}
+	.bqp-card__link svg{transition:transform .3s cubic-bezier(.2,.7,.3,1);}
+	.bqp-card__link:hover svg{transform:translateX(5px);}
+	.bqp-card__link:focus-visible{outline:2px solid var(--bqp-cat);outline-offset:4px;border-radius:3px;}
+
+	/* --- Divers --- */
+	.bqp-noresult{
+		margin:34px 0 0;text-align:center;color:var(--bqp-muted);
+		font-family:var(--bqp-sans);font-size:.95rem;font-style:italic;
+	}
+	.bqp-noresult[hidden]{display:none;}
+	.bqp-empty-notice{
+		padding:18px 22px;border:1px dashed ' . bqp_hex_to_rgba( $p['bordeaux'], 0.35 ) . ';border-radius:12px;
+		background:' . bqp_hex_to_rgba( $p['bordeaux'], 0.04 ) . ';color:' . $p['bordeaux_dark'] . ';
+		font-family:"Inter",sans-serif;font-size:.95rem;
+	}
+	.bqp-partners .screen-reader-text{
+		position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+		clip:rect(0,0,0,0);white-space:nowrap;border:0;
+	}
+
+	@media (prefers-reduced-motion:reduce){
+		.bqp-card,.bqp-card::after,.bqp-card__img,.bqp-card__link svg,.bqp-filter{transition:none;animation:none;}
+		.bqp-card:hover{transform:none;}
+	}
+	';
+}
+
+/* -------------------------------------------------------------------------
+ * 9. Filtrage cote navigateur
+ * ---------------------------------------------------------------------- */
+
+function bqp_front_js() {
+	return "
+	(function(){
+		function initBlock(root){
+			var filters = root.querySelectorAll('.bqp-filter');
+			var cards   = root.querySelectorAll('.bqp-card');
+			var empty   = root.querySelector('.bqp-noresult');
+
+			if (!filters.length) { return; }
+
+			function apply(value){
+				var visible = 0;
+
+				cards.forEach(function(card){
+					var cats  = (card.getAttribute('data-cats') || '').split(' ');
+					var match = ('*' === value) || (cats.indexOf(value) !== -1);
+
+					if (match) {
+						card.hidden = false;
+						card.style.animation = 'none';
+						void card.offsetWidth;
+						card.style.animation = '';
+						card.style.animationDelay = (visible * 45) + 'ms';
+						visible++;
+					} else {
+						card.hidden = true;
+					}
+				});
+
+				if (empty) { empty.hidden = (visible > 0); }
+			}
+
+			filters.forEach(function(button){
+				button.addEventListener('click', function(){
+					filters.forEach(function(other){
+						other.classList.remove('is-active');
+						other.setAttribute('aria-pressed', 'false');
+					});
+
+					button.classList.add('is-active');
+					button.setAttribute('aria-pressed', 'true');
+
+					apply(button.getAttribute('data-filter'));
+				});
+			});
+		}
+
+		function boot(){
+			document.querySelectorAll('.bqp-partners').forEach(initBlock);
+		}
+
+		if ('loading' === document.readyState) {
+			document.addEventListener('DOMContentLoaded', boot);
+		} else {
+			boot();
+		}
+	})();
+	";
+}
