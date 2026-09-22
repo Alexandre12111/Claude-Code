@@ -6,7 +6,7 @@
  *
  * Shortcode : [bqp_gouvernance]
  *
- * Version : 1.0.0
+ * Version : 1.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQG_VERSION' ) ) {
-	define( 'BQG_VERSION', '1.0.0' );
+	define( 'BQG_VERSION', '1.1.0' );
 }
 if ( ! defined( 'BQG_CPT' ) ) {
 	define( 'BQG_CPT', 'bqg_membre' );
@@ -497,8 +497,10 @@ function bqg_render_help_page() {
 	$options = array(
 		array( 'instances', 'Limite le bloc à certaines instances (slugs séparés par une virgule).', 'toutes', '[bqp_gouvernance instances="bureau"]' ),
 		array( 'colonnes', 'Nombre de colonnes sur grand écran : 2, 3 ou 4.', '3', '[bqp_gouvernance colonnes="4"]' ),
-		array( 'format', 'Forme des photos : portrait, carre ou rond.', 'portrait', '[bqp_gouvernance format="rond"]' ),
+		array( 'format', 'Forme des photos : carre, portrait ou rond.', 'carre', '[bqp_gouvernance format="rond"]' ),
 		array( 'filtres', 'Affiche ou masque la barre de filtres : oui ou non.', 'oui', '[bqp_gouvernance filtres="non"]' ),
+		array( 'defaut', 'Instance affichée au chargement de la page, ou tous.', 'bureau', '[bqp_gouvernance defaut="conseil-scientifique"]' ),
+		array( 'tous', 'Ajoute un bouton Tous devant les instances.', 'non', '[bqp_gouvernance tous="oui"]' ),
 		array( 'compteurs', 'Affiche le nombre de membres dans chaque filtre.', 'oui', '[bqp_gouvernance compteurs="non"]' ),
 		array( 'titre', 'Ajoute un titre au-dessus du bloc.', 'vide', '[bqp_gouvernance titre="Notre gouvernance"]' ),
 		array( 'photos', 'Rendu des photos : couleur ou grisaille (couleur au survol).', 'couleur', '[bqp_gouvernance photos="grisaille"]' ),
@@ -508,7 +510,8 @@ function bqg_render_help_page() {
 	);
 
 	$notes = array(
-		'Les photos sont recadrées automatiquement au format choisi, cadrées sur le haut pour ne jamais couper le visage. Toutes les cartes ont donc exactement la même taille.',
+		'Les photos sont recadrées automatiquement au format choisi, cadrées sur le haut pour ne jamais couper le visage. Elles remplissent toujours tout le cadre, quelle que soit la taille du fichier envoyé.',
+		'Au chargement de la page, c\'est le <strong>Bureau</strong> qui s\'affiche. Pour ouvrir sur une autre instance, utilisez <code>defaut</code>.',
 		'Pour les photos envoyées <strong>avant</strong> l\'installation de ce bloc, lancez une régénération des miniatures (extension <em>Regenerate Thumbnails</em>) afin qu\'elles bénéficient du recadrage. En attendant, elles restent correctement cadrées à l\'affichage.',
 		'L\'ordre d\'affichage se règle avec le champ <strong>Ordre</strong> de chaque membre (0 en premier).',
 		'La couleur de chaque étiquette se modifie dans <strong>Gouvernance &rsaquo; Instances</strong>.',
@@ -541,7 +544,7 @@ function bqg_render_help_page() {
 
 	$html .= '<h2 class="bqg-help__subtitle">Bon à savoir</h2><ul class="bqg-help__list">';
 	foreach ( $notes as $note ) {
-		$html .= '<li>' . wp_kses( $note, array( 'strong' => array(), 'em' => array() ) ) . '</li>';
+		$html .= '<li>' . wp_kses( $note, array( 'strong' => array(), 'em' => array(), 'code' => array() ) ) . '</li>';
 	}
 	$html .= '</ul></div>';
 
@@ -712,9 +715,11 @@ function bqg_shortcode( $atts ) {
 		array(
 			'instances' => '',
 			'colonnes'  => '3',
-			'format'    => 'portrait',
+			'format'    => 'carre',
 			'filtres'   => 'oui',
 			'compteurs' => 'oui',
+			'tous'      => 'non',
+			'defaut'    => 'bureau',
 			'titre'     => '',
 			'photos'    => 'couleur',
 			'badges'    => 'oui',
@@ -729,12 +734,13 @@ function bqg_shortcode( $atts ) {
 	$show_tabs = in_array( strtolower( $atts['filtres'] ), array( 'oui', 'yes', 'true', '1' ), true );
 	$show_nb   = in_array( strtolower( $atts['compteurs'] ), array( 'oui', 'yes', 'true', '1' ), true );
 	$show_bdg  = in_array( strtolower( $atts['badges'] ), array( 'oui', 'yes', 'true', '1' ), true );
+	$show_all  = in_array( strtolower( $atts['tous'] ), array( 'oui', 'yes', 'true', '1' ), true );
 	$grayscale = 'grisaille' === strtolower( $atts['photos'] );
 	$limit     = (int) $atts['limite'];
 
 	$format = strtolower( $atts['format'] );
 	if ( ! in_array( $format, array( 'portrait', 'carre', 'rond' ), true ) ) {
-		$format = 'portrait';
+		$format = 'carre';
 	}
 
 	$image_size = ( 'portrait' === $format ) ? 'bqg_portrait' : 'bqg_carre';
@@ -822,6 +828,39 @@ function bqg_shortcode( $atts ) {
 
 	wp_reset_postdata();
 
+	// Ordre des onglets : les instances connues d'abord (Bureau, puis
+	// Conseil scientifique), les eventuelles autres ensuite par ordre alphabetique.
+	$ordered = array();
+	foreach ( array_keys( bqg_default_terms() ) as $known ) {
+		if ( isset( $tabs[ $known ] ) ) {
+			$ordered[ $known ] = $tabs[ $known ];
+			unset( $tabs[ $known ] );
+		}
+	}
+	ksort( $tabs );
+	$tabs = $ordered + $tabs;
+
+	$show_filters = $show_tabs && count( $tabs ) > 1;
+
+	// Instance affichee au chargement de la page.
+	$raw_default = strtolower( trim( (string) $atts['defaut'] ) );
+	$active      = '';
+
+	if ( in_array( $raw_default, array( 'tous', 'all', '*' ), true ) ) {
+		$active   = '*';
+		$show_all = true;
+	} elseif ( '' !== $raw_default && isset( $tabs[ sanitize_title( $raw_default ) ] ) ) {
+		$active = sanitize_title( $raw_default );
+	}
+
+	if ( '' === $active ) {
+		$active = $show_all ? '*' : (string) key( $tabs );
+	}
+
+	if ( ! $show_filters ) {
+		$active = '*';
+	}
+
 	$classes = 'bqg-team bqg-team--' . $format . ( $grayscale ? ' bqg-team--grayscale' : '' );
 
 	$html  = '<section class="' . esc_attr( $classes ) . '" style="--bqg-cols-max:' . esc_attr( $columns ) . ';">';
@@ -831,16 +870,20 @@ function bqg_shortcode( $atts ) {
 		$html .= '<span class="bqg-team__rule" aria-hidden="true"></span>';
 	}
 
-	if ( $show_tabs && count( $tabs ) > 1 ) {
+	if ( $show_filters ) {
 		$html .= '<div class="bqg-filters" role="group" aria-label="Filtrer les membres par instance">';
 
-		$html .= '<button type="button" class="bqg-filter is-active" data-filter="*" aria-pressed="true">'
-			. '<span class="bqg-filter__label">Tous</span>'
-			. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( count( $members ) ) . '</span>' : '' )
-			. '</button>';
+		if ( $show_all ) {
+			$is_on  = ( '*' === $active );
+			$html  .= '<button type="button" class="bqg-filter' . ( $is_on ? ' is-active' : '' ) . '" data-filter="*" aria-pressed="' . ( $is_on ? 'true' : 'false' ) . '">'
+				. '<span class="bqg-filter__label">Tous</span>'
+				. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( count( $members ) ) . '</span>' : '' )
+				. '</button>';
+		}
 
 		foreach ( $tabs as $slug => $tab ) {
-			$html .= '<button type="button" class="bqg-filter" data-filter="' . esc_attr( $slug ) . '" aria-pressed="false">'
+			$is_on = ( $slug === $active );
+			$html .= '<button type="button" class="bqg-filter' . ( $is_on ? ' is-active' : '' ) . '" data-filter="' . esc_attr( $slug ) . '" aria-pressed="' . ( $is_on ? 'true' : 'false' ) . '">'
 				. '<span class="bqg-filter__label">' . esc_html( $tab['name'] ) . '</span>'
 				. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( $tab['count'] ) . '</span>' : '' )
 				. '</button>';
@@ -851,12 +894,22 @@ function bqg_shortcode( $atts ) {
 
 	$html .= '<div class="bqg-grid">';
 
+	$visible = 0;
+
 	foreach ( $members as $member ) {
 		$style = '--bqg-cat:' . $member['color']
 			. ';--bqg-cat-soft:' . bqg_hex_to_rgba( $member['color'], 0.09 )
 			. ';--bqg-cat-line:' . bqg_hex_to_rgba( $member['color'], 0.22 ) . ';';
 
-		$html .= '<article class="bqg-card" data-cats="' . esc_attr( implode( ' ', $member['slugs'] ) ) . '" style="' . esc_attr( $style ) . '">';
+		// L'etat initial est calcule cote serveur : la bonne instance est
+		// deja affichee au chargement, sans attendre le JavaScript.
+		$is_shown = ( '*' === $active ) || in_array( $active, $member['slugs'], true );
+
+		if ( $is_shown ) {
+			$visible++;
+		}
+
+		$html .= '<article class="bqg-card" data-cats="' . esc_attr( implode( ' ', $member['slugs'] ) ) . '" style="' . esc_attr( $style ) . '"' . ( $is_shown ? '' : ' hidden' ) . '>';
 
 		$html .= '<div class="bqg-card__photo">';
 		if ( $member['photo'] ) {
@@ -895,7 +948,7 @@ function bqg_shortcode( $atts ) {
 	}
 
 	$html .= '</div>';
-	$html .= '<p class="bqg-noresult" hidden>Aucun membre dans cette instance pour le moment.</p>';
+	$html .= '<p class="bqg-noresult"' . ( $visible > 0 ? ' hidden' : '' ) . '>Aucun membre dans cette instance pour le moment.</p>';
 	$html .= '</section>';
 
 	return $html;
@@ -1017,9 +1070,14 @@ function bqg_front_css() {
 		width:158px;padding-bottom:158px;margin:32px auto 0;border-radius:50%;
 		box-shadow:0 0 0 1px var(--bqg-cat-line,rgba(116,4,28,.22));
 	}
-	.bqg-card__img{
-		position:absolute;top:0;left:0;width:100%;height:100%;
-		object-fit:cover;object-position:center top;
+	.bqg-team .bqg-card__photo img.bqg-card__img{
+		position:absolute !important;top:0 !important;left:0 !important;
+		display:block !important;
+		width:100% !important;height:100% !important;
+		min-width:100% !important;min-height:100% !important;
+		max-width:none !important;max-height:none !important;
+		object-fit:cover !important;object-position:center top;
+		border-radius:0;
 		transition:filter .45s ease,transform .6s cubic-bezier(.2,.7,.3,1);
 	}
 	.bqg-team--grayscale .bqg-card__img{filter:grayscale(1);}

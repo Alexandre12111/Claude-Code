@@ -42,8 +42,10 @@ Puis coller le shortcode dans une page :
 |---|---|---|
 | `instances` | slugs séparés par une virgule | toutes |
 | `colonnes` | 2, 3 ou 4 | 3 |
-| `format` | portrait, carre, rond | portrait |
+| `format` | carre, portrait, rond | carre |
 | `filtres` | oui / non | oui |
+| `defaut` | slug de l'instance ouverte au chargement, ou `tous` | bureau |
+| `tous` | oui / non (bouton « Tous » devant les instances) | non |
 | `compteurs` | oui / non | oui |
 | `titre` | texte libre | vide |
 | `photos` | couleur / grisaille | couleur |
@@ -55,21 +57,30 @@ Exemples :
 
 ```
 [bqp_gouvernance titre="Notre gouvernance"]
-[bqp_gouvernance instances="bureau" colonnes="4" format="rond" photos="grisaille"]
+[bqp_gouvernance defaut="conseil-scientifique"]
+[bqp_gouvernance tous="oui" format="rond" photos="grisaille"]
 ```
+
+## Comportement des filtres
+
+Deux onglets seulement : **Bureau** et **Conseil scientifique**, dans cet ordre. Il n'y a pas de bouton « Tous » par défaut, on peut le rajouter avec `tous="oui"`.
+
+Au chargement de la page, c'est le Bureau qui s'affiche. Ce choix est calculé côté serveur, donc la bonne instance est déjà en place dans le HTML : pas de clignotement ni d'attente du JavaScript. Pour ouvrir sur une autre instance, utiliser `defaut="conseil-scientifique"` ou `defaut="tous"`.
 
 ## Le recadrage des photos
 
 Deux mécanismes se complètent pour que toutes les photos aient exactement la même taille, quelle que soit celle envoyée :
 
 1. **Deux tailles d'image sont enregistrées** dans WordPress, en recadrage dur, cadré en haut pour ne jamais couper le visage :
+   - `bqg_carre` : 560 × 560 px (format par défaut)
    - `bqg_portrait` : 520 × 650 px
-   - `bqg_carre` : 560 × 560 px
 2. **Un recadrage CSS** (`object-fit: cover` + ratio fixe) prend le relais à l'affichage, ce qui couvre aussi les photos envoyées avant l'installation du plugin.
+
+Les règles de dimension de l'image sont en `!important`, car le thème `hello-elementor` et Elementor appliquent tous les deux `img { height: auto }`, ce qui empêchait la photo de remplir le cadre.
 
 Pour que les photos déjà présentes dans la médiathèque bénéficient du premier mécanisme, lancer une régénération des miniatures avec l'extension *Regenerate Thumbnails*. Ce n'est pas obligatoire, le rendu reste correct sans.
 
-Taille source conseillée : au moins 520 × 650 px, sujet centré et cadré en buste.
+Taille source conseillée : au moins 560 × 560 px, sujet centré et cadré en buste. N'importe quel format de fichier convient, paysage comme panoramique, le recadrage s'en charge.
 
 ## Notes techniques
 
