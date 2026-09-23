@@ -5,10 +5,14 @@
  */
 defined( 'ABSPATH' ) || exit;
 
-$tel   = schiesser_reglage( 'telephone' );
-$email = schiesser_reglage( 'email' );
-$ig    = schiesser_reglage( 'instagram' );
-$fb    = schiesser_reglage( 'facebook' );
+$tel     = schiesser_reglage( 'telephone' );
+$email   = schiesser_reglage( 'email' );
+$ig      = schiesser_reglage( 'instagram' );
+$fb      = schiesser_reglage( 'facebook' );
+$rue     = schiesser_reglage( 'rue' );
+$ville   = schiesser_reglage( 'ville' );
+$annee   = schiesser_reglage( 'annee_fondation' );
+$mention = get_page_by_path( 'mentions-legales' ) ?: get_page_by_path( 'impressum' );
 ?>
 </main>
 
@@ -16,7 +20,7 @@ $fb    = schiesser_reglage( 'facebook' );
 	<div class="wrap">
 		<div class="fgrid">
 			<div class="fbrand">
-				<span class="brand"><?php schiesser_logo( trim( schiesser_reglage( 'adresse_1' ) . ' · Basel · Seit 1870' ) ); ?></span>
+				<span class="brand"><?php schiesser_logo( implode( ' · ', array_filter( array( $rue, $ville, $annee ? 'Seit ' . $annee : '' ) ) ) ); ?></span>
 				<p><?php echo esc_html( schiesser_reglage( 'presentation' ) ); ?></p>
 				<div class="x-social">
 					<?php if ( $ig ) : ?>
@@ -31,14 +35,14 @@ $fb    = schiesser_reglage( 'facebook' );
 				</div>
 			</div>
 			<div class="fcol">
-				<h5>Nous trouver</h5>
-				<span class="fcol-txt"><?php echo esc_html( schiesser_reglage( 'adresse_1' ) ); ?>, <?php echo esc_html( schiesser_reglage( 'adresse_2' ) ); ?></span>
+				<h2 class="fcol-titre">Nous trouver</h2>
+				<span class="fcol-txt"><?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?></span>
 				<span class="fcol-txt"><?php echo esc_html( schiesser_horaires_resume() ); ?></span>
 				<?php if ( $email ) : ?><a href="<?php echo esc_url( 'mailto:' . $email ); ?>"><?php echo esc_html( $email ); ?></a><?php endif; ?>
 				<?php if ( $tel ) : ?><a href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><?php echo esc_html( $tel ); ?></a><?php endif; ?>
 			</div>
 			<div class="fcol">
-				<h5>Explorer</h5>
+				<h2 class="fcol-titre">Explorer</h2>
 				<?php foreach ( schiesser_liens_menu() as $lien ) : ?>
 					<a href="<?php echo esc_url( $lien['url'] ); ?>"><?php echo esc_html( $lien['titre'] ); ?></a>
 				<?php endforeach; ?>
@@ -47,9 +51,10 @@ $fb    = schiesser_reglage( 'facebook' );
 		<div class="fbottom">
 			<span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
 			<span class="x-legal">
+				<?php if ( $mention && 'publish' === $mention->post_status ) : ?><a href="<?php echo esc_url( get_permalink( $mention ) ); ?>"><?php echo esc_html( get_the_title( $mention ) ); ?></a><?php endif; ?>
 				<?php if ( get_privacy_policy_url() ) : ?><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Confidentialité</a><?php endif; ?>
 			</span>
-			<span><?php echo esc_html( schiesser_reglage( 'adresse_1' ) ); ?> · Basel</span>
+			<span><?php echo esc_html( implode( ' · ', array_filter( array( $rue, $ville ) ) ) ); ?></span>
 		</div>
 	</div>
 </footer>

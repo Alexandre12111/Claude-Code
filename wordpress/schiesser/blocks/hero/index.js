@@ -1,7 +1,8 @@
 /**
  * Bloc Hero : édition dans l'éditeur.
  * Le client clique directement sur les textes pour les modifier,
- * et change la photo avec le bouton « Image » de la barre d'outils.
+ * change la photo avec le bouton « Photo » de la barre d'outils,
+ * et règle le reste dans le panneau de droite (styles de boutons, accent, hauteur).
  * JavaScript simple, sans étape de compilation.
  */
 (function (wp) {
@@ -12,17 +13,23 @@
   var useSelect = wp.data.useSelect;
 
   var SCEAU_TEXTE = 'CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·';
+  var STYLES_BOUTON = [
+    { label: 'Crème (plein)', value: 'creme' },
+    { label: 'Vert maison (plein)', value: 'vert' },
+    { label: 'Contour clair', value: 'contour' }
+  ];
+  var CLASSES_BOUTON = { creme: 'btn btn-solid', vert: 'btn btn-kir', contour: 'btn btn-ghost' };
 
   function Sceau() {
     return el('div', { className: 'hero-seal', 'aria-hidden': true },
       el('svg', { viewBox: '0 0 200 200' },
         el('defs', null, el('path', { id: 'sealRingEd', d: 'M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0' })),
         el('g', { className: 'ring' },
-          el('text', { fontFamily: 'Inter, sans-serif', fontSize: 11, fontWeight: 600, letterSpacing: 3, fill: 'currentColor' },
+          el('text', { className: 'seal-txt', fontSize: 11, fontWeight: 600, letterSpacing: 3, fill: 'currentColor' },
             el('textPath', { href: '#sealRingEd', textLength: 496, lengthAdjust: 'spacing' }, SCEAU_TEXTE))),
         el('circle', { cx: 100, cy: 100, r: 64, fill: 'none', stroke: 'currentColor', strokeOpacity: 0.55 }),
         el('circle', { cx: 100, cy: 100, r: 58, fill: 'none', stroke: 'currentColor', strokeOpacity: 0.4, strokeDasharray: '1 4' }),
-        el('text', { x: 100, y: 121, textAnchor: 'middle', fontFamily: 'Bodoni Moda, serif', fontSize: 58, fontWeight: 500, fill: 'currentColor' }, 'S')
+        el('text', { className: 'seal-s', x: 100, y: 121, textAnchor: 'middle', fontSize: 58, fontWeight: 500, fill: 'currentColor' }, 'S')
       )
     );
   }
@@ -35,7 +42,7 @@
         var ed = select('core/editor');
         return ed ? ed.getEditedPostAttribute('title') : '';
       }, []);
-      var blockProps = be.useBlockProps({ className: 'hero hero--' + a.hauteur });
+      var blockProps = be.useBlockProps({ className: 'hero hero--' + a.hauteur + ' hero--accent-' + (a.accent || 'creme') });
 
       function choisirImage(m) {
         var url = (m.sizes && m.sizes.full) ? m.sizes.full.url : m.url;
@@ -65,6 +72,17 @@
             ],
             onChange: function (v) { set({ hauteur: v }); }
           }),
+          el(c.SelectControl, {
+            label: 'Couleur des mots en italique du titre',
+            value: a.accent || 'creme',
+            options: [
+              { label: 'Crème (d’origine)', value: 'creme' },
+              { label: 'Menthe', value: 'menthe' },
+              { label: 'Blanc', value: 'blanc' }
+            ],
+            help: 'Pour mettre un mot en italique : sélectionnez-le, puis Ctrl+I (Cmd+I sur Mac).',
+            onChange: function (v) { set({ accent: v }); }
+          }),
           el(c.ToggleControl, {
             label: 'Afficher le fil d’Ariane (Accueil · Page)',
             checked: a.ariane,
@@ -76,17 +94,33 @@
             onChange: function (v) { set({ sceau: v }); }
           })
         ),
-        el(c.PanelBody, { title: 'Liens des boutons', initialOpen: true },
+        el(c.PanelBody, { title: 'Boutons', initialOpen: true },
+          el(c.SelectControl, {
+            label: 'Style du bouton 1', value: a.bouton1Style || 'creme', options: STYLES_BOUTON,
+            onChange: function (v) { set({ bouton1Style: v }); }
+          }),
           el(c.TextControl, {
             label: 'Lien du bouton 1',
-            help: 'Adresse d’une page (ex. /boutique/) ou d’une section (ex. #catalogue).',
+            help: 'Adresse d’une page (ex. /boutique/) ou d’une section de la page (ex. #catalogue).',
             value: a.bouton1Lien,
             onChange: function (v) { set({ bouton1Lien: v }); }
+          }),
+          el(c.SelectControl, {
+            label: 'Style du bouton 2', value: a.bouton2Style || 'contour', options: STYLES_BOUTON,
+            onChange: function (v) { set({ bouton2Style: v }); }
           }),
           el(c.TextControl, {
             label: 'Lien du bouton 2',
             value: a.bouton2Lien,
             onChange: function (v) { set({ bouton2Lien: v }); }
+          })
+        ),
+        el(c.PanelBody, { title: 'Photo', initialOpen: false },
+          el(c.TextareaControl, {
+            label: 'Texte alternatif (description de la photo)',
+            help: 'Décrit l’image pour Google et les personnes malvoyantes. Ex. « Vitrine de pralinés de la Confiserie Schiesser à Bâle ».',
+            value: a.imageAlt,
+            onChange: function (v) { set({ imageAlt: v }); }
           })
         )
       );
@@ -113,7 +147,7 @@
               a.ariane ? el('div', { className: 'crumb' }, el('span', null, 'Accueil'), ' · ', el('span', null, titrePage || 'Page')) : null,
               el(be.RichText, {
                 tagName: 'p', className: 'eyebrow', value: a.surtitre, allowedFormats: [],
-                placeholder: 'Surtitre (ex. Rez-de-chaussée · Marktplatz)',
+                placeholder: 'Surtitre (ex. Confiserie et tea room à Bâle)',
                 onChange: function (v) { set({ surtitre: v }); }
               }),
               el(be.RichText, {
@@ -127,15 +161,16 @@
                 onChange: function (v) { set({ texte: v }); }
               }),
               el('div', { className: 'hero-actions' },
-                el('span', { className: 'btn btn-solid' },
+                el('span', { className: CLASSES_BOUTON[a.bouton1Style || 'creme'] },
                   el(be.RichText, {
                     tagName: 'span', value: a.bouton1Texte, allowedFormats: [], placeholder: 'Bouton 1',
                     onChange: function (v) { set({ bouton1Texte: v }); }
                   }), ' ', el('span', { className: 'a' }, '→')),
-                el(be.RichText, {
-                  tagName: 'span', className: 'btn btn-ghost', value: a.bouton2Texte, allowedFormats: [], placeholder: 'Bouton 2 (facultatif)',
-                  onChange: function (v) { set({ bouton2Texte: v }); }
-                })
+                el('span', { className: CLASSES_BOUTON[a.bouton2Style || 'contour'] },
+                  el(be.RichText, {
+                    tagName: 'span', value: a.bouton2Texte, allowedFormats: [], placeholder: 'Bouton 2 (facultatif)',
+                    onChange: function (v) { set({ bouton2Texte: v }); }
+                  }))
               ),
               a.sceau ? el(Sceau) : null
             )

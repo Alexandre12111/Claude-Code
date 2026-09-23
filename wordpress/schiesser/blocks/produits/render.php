@@ -1,39 +1,41 @@
 <?php
 /**
  * Bloc « Grille des produits » : rendu sur le site.
- * Les produits viennent du menu « Produits » ; rien n'est saisi ici.
+ * Les produits viennent du menu « Produits » (ou de WooCommerce une fois installé) ;
+ * rien n'est saisi ici. Chaque carte est un lien vers la page du produit :
+ * un clic ouvre la fiche rapide, un clic molette (ou Ctrl+clic) ouvre la page.
  *
  * @var array $attributes Valeurs saisies dans l'éditeur.
  */
 
 defined( 'ABSPATH' ) || exit;
 
-$a       = $attributes;
-$apercu  = ! empty( $a['apercu'] ); // aperçu dans l'éditeur : grille seule
-$requete = new WP_Query( array(
-	'post_type'      => SCHIESSER_PRODUIT,
-	'post_status'    => 'publish',
-	'posts_per_page' => -1,
-	'orderby'        => array( 'menu_order' => 'ASC', 'title' => 'ASC' ),
-	'no_found_rows'  => true,
-) );
+$a        = $attributes;
+$apercu   = ! empty( $a['apercu'] ); // aperçu dans l'éditeur : grille seule
+$limite   = max( 0, (int) ( $a['limite'] ?? 0 ) );
+$source   = in_array( $a['source'] ?? 'auto', array( 'auto', 'maison', 'woocommerce' ), true ) ? $a['source'] : 'auto';
+$produits = schiesser_liste_produits( $source, $limite );
 
-$produits = array();
-foreach ( $requete->posts as $p ) {
-	$produits[] = schiesser_donnees_produit( $p );
+if ( ! $produits && ! $apercu && ! current_user_can( 'edit_posts' ) ) {
+	return; // aucun produit : la section n'apparaît pas aux visiteurs
 }
 
-$categories = get_terms( array(
-	'taxonomy'   => SCHIESSER_CATEGORIE,
-	'hide_empty' => true,
-	'orderby'    => 'term_id',
-) );
-$categories = is_wp_error( $categories ) ? array() : $categories;
+/* Filtres : les catégories des produits affichés, dans l'ordre où elles apparaissent. */
+$categories = array();
+foreach ( $produits as $p ) {
+	foreach ( $p['categories'] as $slug => $nom ) {
+		$categories[ $slug ] = $nom;
+	}
+}
+$filtres = ! empty( $a['filtres'] ) && count( $categories ) > 1;
 
-/* Données de la fiche détaillée, lues par assets/js/boutique.js */
+/* Données de la fiche rapide, lues par assets/js/boutique.js */
 $fiches = array();
 foreach ( $produits as $p ) {
-	$lignes = $p['fiche'];
+	$lignes = array();
+	foreach ( $p['fiche'] as $l ) {
+		$lignes[] = array( $l[0] ?? '', $l[1] ?? '', 0 );
+	}
 	if ( $p['accord'] ) {
 		$lignes[] = array( 'Accord', $p['accord'], 1 );
 	}
@@ -42,75 +44,65 @@ foreach ( $produits as $p ) {
 	}
 	$fiches[] = array(
 		'nom'         => $p['nom'],
+		'url'         => $p['url'],
 		'categorie'   => $p['categorie'],
 		'description' => $p['description'],
 		'prix'        => $p['prix'],
 		'unite'       => $p['unite'],
 		'image'       => $p['image'],
-		'alt'         => $p['alt'] ?: $p['nom'],
+		'alt'         => $p['alt'],
 		'lignes'      => $lignes,
+		'panier'      => $p['achetable'] ? $p['panier'] : '',
 	);
 }
 
 $pluriel = count( $produits ) > 1 ? 'produits' : 'produit';
+$email   = schiesser_reglage( 'email' );
+$id_nom  = 'fiche-nom-' . ( sanitize_title( $a['ancre'] ?? '' ) ?: 'produits' );
 
 ob_start();
 ?>
-<div class="js-boutique">
+<div class="js-boutique" data-email="<?php echo esc_attr( $email ); ?>">
 	<?php if ( ! $produits ) : ?>
-		<p class="boutique-vide">Aucun produit pour le moment. Ajoutez-en depuis le menu <strong>Produits</strong> de l'administration.</p>
+		<p class="boutique-vide">Aucun produit publié pour le moment. Ajoutez-en depuis le menu <strong>Produits</strong> de l'administration : ils apparaîtront ici automatiquement.</p>
 	<?php else : ?>
-		<div class="shop-bar">
-			<div class="shop-filters" role="group" aria-label="Filtrer par catégorie">
-				<button type="button" class="fchip on" data-filtre="">Tout</button>
-				<?php foreach ( $categories as $cat ) : ?>
-					<button type="button" class="fchip" data-filtre="<?php echo esc_attr( $cat->slug ); ?>"><?php echo esc_html( $cat->name ); ?></button>
-				<?php endforeach; ?>
+		<?php if ( $filtres ) : ?>
+			<div class="shop-bar">
+				<div class="shop-filters" role="group" aria-label="Filtrer par catégorie">
+					<button type="button" class="fchip on" data-filtre="" aria-pressed="true">Tout</button>
+					<?php foreach ( $categories as $slug => $nom ) : ?>
+						<button type="button" class="fchip" data-filtre="<?php echo esc_attr( $slug ); ?>" aria-pressed="false"><?php echo esc_html( $nom ); ?></button>
+					<?php endforeach; ?>
+				</div>
+				<div class="shop-count" aria-live="polite"><b class="js-nombre"><?php echo (int) count( $produits ); ?></b> <span class="js-libelle"><?php echo esc_html( $pluriel ); ?></span></div>
 			</div>
-			<div class="shop-count" aria-live="polite"><b class="js-nombre"><?php echo (int) count( $produits ); ?></b> <span class="js-libelle"><?php echo esc_html( $pluriel ); ?></span></div>
-		</div>
+		<?php endif; ?>
 
 		<div class="shop-grid">
-			<?php foreach ( $produits as $i => $p ) : ?>
-				<button type="button" class="card" data-i="<?php echo (int) $i; ?>" data-categories="<?php echo esc_attr( implode( ' ', $p['categories'] ) ); ?>" style="animation-delay:<?php echo esc_attr( $i * 0.04 ); ?>s">
-					<span class="card-im">
-						<?php if ( $p['image'] ) : ?>
-							<img src="<?php echo esc_url( $p['image'] ); ?>" alt="<?php echo esc_attr( $p['alt'] ); ?>" loading="lazy" decoding="async">
-						<?php endif; ?>
-						<span class="tint"></span>
-						<?php if ( $p['badge'] ) : ?>
-							<span class="card-tag<?php echo 'menthe' === $p['badge_style'] ? ' gold' : ''; ?>"><?php echo esc_html( $p['badge'] ); ?></span>
-						<?php endif; ?>
-						<span class="card-see">Voir la fiche</span>
-					</span>
-					<span class="card-body">
-						<span class="card-plate">Pl. <?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
-						<span class="card-name"><?php echo esc_html( $p['nom'] ); ?></span>
-						<?php if ( $p['prix'] ) : ?><span class="card-price"><?php echo esc_html( $p['prix'] ); ?></span><?php endif; ?>
-						<?php if ( $p['unite'] ) : ?><span class="card-unit"><?php echo esc_html( $p['unite'] ); ?></span><?php endif; ?>
-					</span>
-				</button>
-			<?php endforeach; ?>
+			<?php foreach ( $produits as $i => $p ) { schiesser_carte_produit( $p, $i, ! $apercu ); } ?>
 		</div>
 
 		<?php if ( ! $apercu ) : ?>
-			<script type="application/json" class="js-boutique-data"><?php echo wp_json_encode( $fiches, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE ); ?></script>
+			<script type="application/json" class="js-boutique-data"><?php echo wp_json_encode( $fiches, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ); ?></script>
 
-			<div class="sheet js-sheet" role="dialog" aria-modal="true" aria-label="Fiche produit" hidden>
+			<div class="sheet js-sheet" role="dialog" aria-modal="true" aria-labelledby="<?php echo esc_attr( $id_nom ); ?>" hidden>
 				<div class="sh-wrap">
 					<div class="sh-in">
 						<div class="sh-im">
-							<img class="js-sh-img" src="" alt="">
-							<button type="button" class="sh-close js-sh-fermer" aria-label="Fermer">✕</button>
+							<img class="js-sh-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async">
+							<button type="button" class="sh-close js-sh-fermer" aria-label="Fermer la fiche">✕</button>
 						</div>
 						<div class="sh-tx">
 							<span class="sh-k js-sh-cat"></span>
-							<h3 class="js-sh-nom"></h3>
+							<p class="sh-nom js-sh-nom" id="<?php echo esc_attr( $id_nom ); ?>"></p>
 							<p class="sd js-sh-desc"></p>
 							<div class="sh-rows js-sh-lignes"></div>
 							<div class="sh-price"><span class="pk js-sh-unite"></span><span class="pv js-sh-prix"></span></div>
 							<div class="sh-foot">
-								<a class="btn btn-kir" href="<?php echo esc_url( 'mailto:' . schiesser_reglage( 'email' ) ); ?>"><span>Commander</span> <span class="a" aria-hidden="true">→</span></a>
+								<div class="sh-actions">
+									<a class="btn btn-kir js-sh-action" href="<?php echo esc_url( 'mailto:' . $email ); ?>"><span class="js-sh-action-texte">Commander</span> <span class="a" aria-hidden="true">→</span></a>
+									<a class="sh-lien js-sh-page" href="#">Voir la page du produit</a>
+								</div>
 								<div class="sh-nav">
 									<button type="button" class="js-sh-prec" aria-label="Produit précédent">←</button>
 									<button type="button" class="js-sh-suiv" aria-label="Produit suivant">→</button>
@@ -131,15 +123,27 @@ if ( $apercu ) {
 	return;
 }
 
-$ancre = sanitize_title( $a['ancre'] ?? 'catalogue' );
+$fonds  = array( 'papier' => '', 'clair' => 'bg-soft', 'alterne' => 'bg-alt', 'sable' => 'bg-deep' );
+$fond   = isset( $fonds[ $a['fond'] ?? '' ] ) ? $a['fond'] : 'papier';
+$ancre  = sanitize_title( $a['ancre'] ?? 'catalogue' );
+$titre  = trim( wp_strip_all_tags( $a['titre'] ?? '' ) );
+$lien   = trim( wp_strip_all_tags( $a['lienTexte'] ?? '' ) );
+$classe = trim( 'sec sec-produits ' . $fonds[ $fond ] );
 ?>
-<section <?php echo get_block_wrapper_attributes( array( 'class' => 'sec', 'id' => $ancre ?: null ) ); ?>>
+<section <?php echo get_block_wrapper_attributes( array( 'class' => $classe, 'id' => $ancre ?: null ) ); ?>>
 	<div class="wrap">
-		<div class="sec-head rv">
-			<span class="idx"><i class="x-diamond"></i><?php echo esc_html( $a['numero'] ); ?></span>
-			<h2><?php echo schiesser_kses_titre( $a['titre'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></h2>
-			<?php if ( $a['note'] ) : ?><p class="note"><?php echo schiesser_kses_titre( $a['note'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p><?php endif; ?>
-		</div>
+		<?php if ( '' !== $titre || '' !== trim( $a['numero'] ?? '' ) ) : ?>
+			<div class="sec-head rv">
+				<span class="idx<?php echo '' === trim( $a['numero'] ?? '' ) ? ' idx--vide' : ''; ?>"><i class="x-diamond"></i><?php echo esc_html( $a['numero'] ?? '' ); ?></span>
+				<?php if ( '' !== $titre ) : ?><h2><?php echo schiesser_kses_titre( $a['titre'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></h2><?php endif; ?>
+				<?php if ( ! empty( $a['note'] ) ) : ?><p class="note"><?php echo schiesser_kses_titre( $a['note'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p><?php endif; ?>
+			</div>
+		<?php endif; ?>
 		<?php echo $grille; // phpcs:ignore WordPress.Security.EscapeOutput ?>
+		<?php if ( '' !== $lien ) : ?>
+			<div class="shop-tout">
+				<a class="btn btn-line" href="<?php echo esc_url( $a['lienUrl'] ?: schiesser_url_boutique() ); ?>"><span><?php echo esc_html( $lien ); ?></span> <span class="a" aria-hidden="true">→</span></a>
+			</div>
+		<?php endif; ?>
 	</div>
 </section>

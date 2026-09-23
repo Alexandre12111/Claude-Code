@@ -5,8 +5,8 @@
 	"title": "Grille des produits",
 	"category": "schiesser",
 	"icon": "grid-view",
-	"description": "Affiche automatiquement les produits saisis dans le menu « Produits », avec filtres par catégorie et fiche détaillée.",
-	"keywords": [ "boutique", "produits", "catalogue" ],
+	"description": "Affiche automatiquement les produits saisis dans le menu « Produits » (ou WooCommerce), avec filtres par catégorie et fiche détaillée.",
+	"keywords": [ "boutique", "produits", "catalogue", "woocommerce" ],
 	"textdomain": "schiesser",
 	"supports": {
 		"html": false,
@@ -18,6 +18,12 @@
 		"titre": { "type": "string", "default": "Les produits de la boutique" },
 		"note": { "type": "string", "default": "Cliquez un produit pour ouvrir sa fiche détaillée." },
 		"ancre": { "type": "string", "default": "catalogue" },
+		"fond": { "type": "string", "default": "papier" },
+		"source": { "type": "string", "default": "auto" },
+		"limite": { "type": "number", "default": 0 },
+		"filtres": { "type": "boolean", "default": true },
+		"lienTexte": { "type": "string", "default": "" },
+		"lienUrl": { "type": "string", "default": "" },
 		"apercu": { "type": "boolean", "default": false }
 	},
 	"editorScript": "file:./index.js",

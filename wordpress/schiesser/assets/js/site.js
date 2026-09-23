@@ -33,17 +33,34 @@
     document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); });
   }
 
-  /* ouvert / fermé, d'après les horaires des Réglages de la maison */
+  /* ouvert / fermé, d'après les horaires des Réglages de la maison (heure de la boutique) */
   var H = S.horaires || {};
+  var fuseau = (S.fuseau && S.fuseau.indexOf('/') > 0) ? S.fuseau : null;
   function hh(h) { var m = Math.round((h % 1) * 60); return String(Math.floor(h)).padStart(2, '0') + ':' + String(m).padStart(2, '0'); }
+  function maintenant() {
+    var d = new Date();
+    if (fuseau && window.Intl) {
+      try {
+        var p = {};
+        new Intl.DateTimeFormat('en-US', { timeZone: fuseau, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+          .formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+        var jours = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+        if (p.weekday in jours) return { jour: jours[p.weekday], h: (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60, d: d };
+      } catch (e) { /* fuseau inconnu : heure de l'appareil */ }
+    }
+    return { jour: d.getDay(), h: d.getHours() + d.getMinutes() / 60, d: d };
+  }
   function etat() {
-    var now = new Date(), d = now.getDay(), h = now.getHours() + now.getMinutes() / 60;
-    var j = H[d], ouvert = !!j && h >= j[0] && h < j[1];
+    var t = maintenant();
+    var j = H[t.jour], ouvert = !!j && t.h >= j[0] && t.h < j[1];
     document.querySelectorAll('.js-led').forEach(function (e) { e.classList.toggle('shut', !ouvert); });
     document.querySelectorAll('.js-statut').forEach(function (e) { e.textContent = ouvert ? 'Ouvert' : 'Fermé'; });
     document.querySelectorAll('.js-heures').forEach(function (e) { e.textContent = j ? hh(j[0]) + '–' + hh(j[1]) : 'Fermé aujourd’hui'; });
+    var options = { weekday: 'long', day: 'numeric', month: 'long' };
+    if (fuseau) options.timeZone = fuseau;
     document.querySelectorAll('.js-date').forEach(function (e) {
-      e.textContent = now.toLocaleDateString(S.langue || 'fr', { weekday: 'long', day: 'numeric', month: 'long' });
+      try { e.textContent = t.d.toLocaleDateString(S.langue || 'fr', options); }
+      catch (err) { e.textContent = t.d.toLocaleDateString(); }
     });
   }
   etat(); setInterval(etat, 30000);

@@ -13,16 +13,54 @@
 			"defaultPalette": false,
 			"defaultGradients": false,
 			"palette": [
-				{ "slug": "encre", "name": "Encre", "color": "#2A1C12" },
-				{ "slug": "vert", "name": "Vert maison", "color": "#23503B" },
-				{ "slug": "menthe", "name": "Menthe", "color": "#8CC5A6" },
-				{ "slug": "papier", "name": "Papier", "color": "#F1EADE" }
+				{
+					"slug": "encre",
+					"name": "Encre",
+					"color": "#2A1C12"
+				},
+				{
+					"slug": "vert",
+					"name": "Vert maison",
+					"color": "#23503B"
+				},
+				{
+					"slug": "menthe",
+					"name": "Menthe",
+					"color": "#8CC5A6"
+				},
+				{
+					"slug": "papier",
+					"name": "Papier",
+					"color": "#F1EADE"
+				}
 			]
 		},
 		"typography": {
 			"customFontSize": false,
 			"dropCap": false,
-			"fontSizes": []
+			"fontSizes": [
+				{
+					"slug": "petit",
+					"name": "Petit",
+					"size": "14px"
+				},
+				{
+					"slug": "normal",
+					"name": "Normal",
+					"size": "16.5px"
+				},
+				{
+					"slug": "grand",
+					"name": "Grand",
+					"size": "clamp(19px, 1.8vw, 22px)"
+				},
+				{
+					"slug": "tres-grand",
+					"name": "Très grand",
+					"size": "clamp(24px, 2.6vw, 32px)"
+				}
+			],
+			"defaultFontSizes": false
 		},
 		"spacing": {
 			"padding": false,

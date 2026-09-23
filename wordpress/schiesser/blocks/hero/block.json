@@ -5,29 +5,97 @@
 	"title": "Hero (grande image)",
 	"category": "schiesser",
 	"icon": "cover-image",
-	"description": "Grande photo d'ouverture avec surtitre, titre, texte et boutons.",
-	"keywords": [ "hero", "bannière", "titre", "image" ],
+	"description": "Grande photo d'ouverture avec surtitre, titre principal (H1), texte et boutons. Une seule par page.",
+	"keywords": [
+		"hero",
+		"bannière",
+		"titre",
+		"image"
+	],
 	"textdomain": "schiesser",
 	"supports": {
 		"html": false,
-		"align": [ "full" ],
+		"align": [
+			"full"
+		],
 		"multiple": false
 	},
 	"attributes": {
-		"align": { "type": "string", "default": "full" },
-		"surtitre": { "type": "string", "default": "" },
-		"titre": { "type": "string", "default": "" },
-		"texte": { "type": "string", "default": "" },
-		"imageId": { "type": "number", "default": 0 },
-		"imageUrl": { "type": "string", "default": "" },
-		"imageAlt": { "type": "string", "default": "" },
-		"bouton1Texte": { "type": "string", "default": "" },
-		"bouton1Lien": { "type": "string", "default": "" },
-		"bouton2Texte": { "type": "string", "default": "" },
-		"bouton2Lien": { "type": "string", "default": "" },
-		"hauteur": { "type": "string", "default": "page" },
-		"ariane": { "type": "boolean", "default": true },
-		"sceau": { "type": "boolean", "default": false }
+		"align": {
+			"type": "string",
+			"default": "full"
+		},
+		"surtitre": {
+			"type": "string",
+			"default": ""
+		},
+		"titre": {
+			"type": "string",
+			"default": ""
+		},
+		"texte": {
+			"type": "string",
+			"default": ""
+		},
+		"imageId": {
+			"type": "number",
+			"default": 0
+		},
+		"imageUrl": {
+			"type": "string",
+			"default": ""
+		},
+		"imageAlt": {
+			"type": "string",
+			"default": ""
+		},
+		"bouton1Texte": {
+			"type": "string",
+			"default": ""
+		},
+		"bouton1Lien": {
+			"type": "string",
+			"default": ""
+		},
+		"bouton2Texte": {
+			"type": "string",
+			"default": ""
+		},
+		"bouton2Lien": {
+			"type": "string",
+			"default": ""
+		},
+		"hauteur": {
+			"type": "string",
+			"default": "page"
+		},
+		"ariane": {
+			"type": "boolean",
+			"default": true
+		},
+		"sceau": {
+			"type": "boolean",
+			"default": false
+		},
+		"bouton1Style": {
+			"type": "string",
+			"default": "creme"
+		},
+		"bouton2Style": {
+			"type": "string",
+			"default": "contour"
+		},
+		"accent": {
+			"type": "string",
+			"default": "creme"
+		},
+		"lock": {
+			"type": "object",
+			"default": {
+				"remove": true,
+				"move": false
+			}
+		}
 	},
 	"editorScript": "file:./index.js",
 	"style": "schiesser-site",

@@ -16,7 +16,7 @@ defined( 'ABSPATH' ) || exit;
 
 <div class="pg on" id="page-<?php echo esc_attr( schiesser_cle_page() ); ?>">
 
-<div class="meta">
+<div class="meta" role="region" aria-label="Ouverture du jour">
 	<div class="wrap">
 		<div class="l">
 			<span class="status"><span class="led js-led"></span><span class="js-statut">Ouvert</span> · <span class="js-heures"></span></span>
@@ -37,6 +37,7 @@ defined( 'ABSPATH' ) || exit;
 			<?php endforeach; ?>
 		</nav>
 		<div class="hact">
+			<?php if ( function_exists( 'schiesser_lien_panier' ) ) { schiesser_lien_panier(); } ?>
 			<button class="burger" type="button" aria-label="Menu" aria-controls="nav" aria-expanded="false"><i></i><i></i><i></i></button>
 		</div>
 	</div>
