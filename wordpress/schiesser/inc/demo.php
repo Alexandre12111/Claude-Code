@@ -310,7 +310,7 @@ function schiesser_demo_produits() {
 		),
 		array(
 			'nom' => 'Coffret de chocolats', 'anciens' => array( 'coffret-decouverte' ), 'categorie' => 'Coffrets',
-			'prix' => 'CHF 28.00', 'unite' => '16 pièces', 'badge' => 'Cadeau', 'style' => 'vert',
+			'prix' => 'CHF 28.—', 'unite' => '16 pièces', 'badge' => 'Cadeau', 'style' => 'vert',
 			'accroche' => 'Sélection composée à la main',
 			'photo' => '1549007994-cb92caebd54b', 'alt' => 'Coffret de chocolats assortis emballé pour offrir',
 			'description' => 'Un coffret de chocolats composé à la main dans nos vitrines et emballé pour offrir. Le meilleur moyen de tout goûter.',
@@ -319,7 +319,7 @@ function schiesser_demo_produits() {
 			'texte' => array(
 				'Le coffret de chocolats pour tout goûter : ' . $l( schiesser_demo_url_produit( 'Pralinés artisanaux' ), 'pralinés artisanaux' ) . ', ' . $l( schiesser_demo_url_produit( 'Truffes au chocolat' ), 'truffes au chocolat' ) . ' et spécialités de saison, choisis dans nos vitrines et rangés à la main.',
 				'### Trois formats',
-				'9, 16 ou 25 pièces, chaque coffret emballé pour offrir. Le coffret de 16 pièces coûte CHF 28.00 ; les autres formats sont indiqués en boutique. En hiver, quelques ' . $l( schiesser_demo_url_produit( 'Marrons glacés' ), 'marrons glacés' ) . ' peuvent compléter l’assortiment.',
+				'9, 16 ou 25 pièces, chaque coffret emballé pour offrir. Le coffret de 16 pièces coûte CHF 28.— ; les autres formats sont indiqués en boutique. En hiver, quelques ' . $l( schiesser_demo_url_produit( 'Marrons glacés' ), 'marrons glacés' ) . ' peuvent compléter l’assortiment.',
 				'### Cadeaux d’entreprise',
 				'Pour vos clients ou vos équipes, nous ajoutons votre message ou votre logo. Tout est expliqué sur la page ' . $l( '/cadeaux-entreprise/', 'cadeaux d’entreprise' ) . '.',
 				'### Conservation',
@@ -547,27 +547,27 @@ function schiesser_demo_pages() {
 			array( 'valeur' => '1920', 'libelle' => 'Le salon prend sa forme actuelle à l’étage' ),
 			array( 'valeur' => 'Auj.', 'libelle' => 'Des générations plus tard, les habitués sont toujours là' ),
 		) ) )
-	. $b( 'schiesser/carte-salon', array( 'numero' => '03', 'titre' => 'La carte du salon de thé', 'note' => 'Ce qui se déguste à l’étage, assis, sans se presser.', 'fond' => 'alterne', 'ancre' => 'carte', 'mention' => 'Carte susceptible d’évoluer selon la saison et les arrivages.', 'sSurtitre' => 'La suggestion du jour', 'sTitre' => 'Chocolat chaud & part du jour', 'sTexte' => 'Notre chocolat chaud maison, accompagné de la pâtisserie sortie du four le matin même.', 'sPied' => 'Servi toute la journée', 'sPrix' => 'CHF 14.00' ) + $img( $P['cake'], 'gateau-sur-commande', 'Chocolat chaud et part du jour au salon de thé', 's' ),
+	. $b( 'schiesser/carte-salon', array( 'numero' => '03', 'titre' => 'La carte du salon de thé', 'note' => 'Ce qui se déguste à l’étage, assis, sans se presser.', 'fond' => 'alterne', 'ancre' => 'carte', 'mention' => 'Carte susceptible d’évoluer selon la saison et les arrivages.', 'sSurtitre' => 'La suggestion du jour', 'sTitre' => 'Chocolat chaud & part du jour', 'sTexte' => 'Notre chocolat chaud maison, accompagné de la pâtisserie sortie du four le matin même.', 'sPied' => 'Servi toute la journée', 'sPrix' => 'CHF 14.—' ) + $img( $P['cake'], 'gateau-sur-commande', 'Chocolat chaud et part du jour au salon de thé', 's' ),
 		$menu( 'Cafés & chocolats', $P['bisc'], 'biscuits-aux-amandes', 'Cafés et chocolats chauds servis au salon', array(
 			array( 'Café crème', 'CHF 5.20', 'Torréfaction sélectionnée pour la maison, servi en porcelaine.' ),
 			array( 'Chocolat chaud maison', 'CHF 7.50', 'Préparé à partir de notre chocolat de couverture, à l’ancienne. En hiver, avec un ' . $l( $pr( 'Marrons glacés' ), 'marron glacé' ) . '.', 'Signature' ),
-			array( 'Cappuccino', 'CHF 6.00', 'Mousse dense, servi avec un praliné de la boutique.' ),
+			array( 'Cappuccino', 'CHF 6.—', 'Mousse dense, servi avec un praliné de la boutique.' ),
 			array( 'Espresso', 'CHF 4.50', 'Court et franc, comme il se doit.' ),
 		) )
 		. $menu( 'Thés & infusions', $P['salon'], 'salon-de-the-bale', 'Théières et service à thé du salon', array(
 			array( 'Thé noir de saison', 'CHF 6.50', 'Sélection changeante, servie en théière.' ),
 			array( 'Thé vert', 'CHF 6.50', 'Infusion douce, à l’eau frémissante.' ),
-			array( 'Infusion maison', 'CHF 6.00', 'Mélange de plantes composé pour le salon.' ),
+			array( 'Infusion maison', 'CHF 6.—', 'Mélange de plantes composé pour le salon.' ),
 		) )
 		. $menu( 'Pâtisseries', $P['cake'], 'gateau-sur-commande', 'Pâtisseries du jour présentées à l’étage', array(
 			array( 'Part du jour', 'CHF 7.80', 'La pâtisserie sortie du four le matin même.', 'Chaque jour' ),
 			array( 'Gâteau au chocolat', 'CHF 8.20', 'Dense et peu sucré, servi à température.' ),
 			array( 'Tarte de saison', 'CHF 7.50', 'Selon les fruits du marché, juste en face.' ),
-			array( 'Assortiment de pralinés', 'CHF 9.00', 'Trois ' . $l( $pr( 'Pralinés artisanaux' ), 'pralinés artisanaux' ) . ' choisis dans la vitrine du bas.' ),
+			array( 'Assortiment de pralinés', 'CHF 9.—', 'Trois ' . $l( $pr( 'Pralinés artisanaux' ), 'pralinés artisanaux' ) . ' choisis dans la vitrine du bas.' ),
 		) )
 		. $menu( 'Salé & glaces', $P['marr'], 'marrons-glaces', 'Assiettes salées et coupes glacées du salon', array(
 			array( 'Petite salade', 'CHF 12.50', 'Feuilles de saison, vinaigrette maison.' ),
-			array( 'Croque du salon', 'CHF 14.00', 'Pain de campagne, servi chaud.' ),
+			array( 'Croque du salon', 'CHF 14.—', 'Pain de campagne, servi chaud.' ),
 			array( 'Coupe glacée', 'CHF 10.50', 'Glaces maison, chantilly montée à la commande.', 'En saison' ),
 			array( 'Boule de glace', 'CHF 3.80', 'À l’unité, parfums du jour.' ),
 		) ) )

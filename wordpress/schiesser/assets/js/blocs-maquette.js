@@ -280,7 +280,8 @@
           a['c' + n + 'Auto'] ? null : champLien(props, 'c' + n + 'Lien', 'Lien (facultatif)'));
       })),
       el('section', bp, el('div', { className: 'wrap' },
-        el('div', { className: 'lv-main' }, el('span', { className: 'lv-dot' }), el('span', { className: 'lv-state' }, 'Ouvert'), el('span', { className: 'lv-count' }, 'Fermeture dans ', el('b', null, '4h42'))),
+        // État réel à l'ouverture de l'éditeur (sur le site, il se met à jour en direct).
+        el('div', { className: 'lv-main' }, el('span', { className: 'lv-dot' + (ED.ouvert === 'non' ? ' shut' : '') }), el('span', { className: 'lv-state' }, ED.ouvert === 'non' ? 'Fermé' : 'Ouvert'), el('span', { className: 'lv-count' }, (ED.etatTexte || 'Fermeture dans') + ' ', el('b', null, ED.etatDuree || ''))),
         cellule(1), cellule(2))));
   });
 
@@ -453,7 +454,8 @@
     var set = props.setAttributes;
     return Section(props, {
       panneaux: el(c.PanelBody, { title: 'Carte et boutons', initialOpen: true },
-        el(c.ToggleControl, { label: 'Carte interactive (OpenStreetMap)', checked: !!a.carte, help: 'Position : Réglages maison, latitude et longitude.', onChange: maj(set, 'carte') }),
+        el(c.ToggleControl, { label: 'Carte interactive', checked: !!a.carte, help: 'Position : Réglages maison, latitude et longitude.', onChange: maj(set, 'carte') }),
+        choixFondCarte(a, set),
         champLien(props, 'b1Lien', 'Lien du bouton 1', 'Vide : e-mail de la maison.'),
         champLien(props, 'b2Lien', 'Lien du bouton 2', 'Vide : itinéraire Google Maps.'))
     }, el('div', { className: 'visit' },
@@ -463,6 +465,16 @@
         Liste('sch-ed-lignes', 'schiesser/ligne', [['schiesser/ligne', { libelle: 'Adresse', auto: 'adresse' }], ['schiesser/ligne', { libelle: 'Horaires', auto: 'horaires' }], ['schiesser/ligne', { libelle: 'Contact', auto: 'contact' }]], 'vertical'),
         el('div', { className: 'vcta' }, bouton(props, 'b1Texte', 'btn-kir', 'Nous écrire', true), bouton(props, 'b2Texte', 'btn-line', 'Itinéraire')))));
   }, true);
+
+  // Fond de la carte interactive (les deux sont gratuits avec la mention des sources, affichée sur la carte).
+  function choixFondCarte(a, set) {
+    return a.carte ? el(c.SelectControl, {
+      label: 'Fond de carte', value: a.fondCarte || 'osm',
+      options: [{ label: 'OpenStreetMap', value: 'osm' }, { label: 'CARTO Voyager (plus épuré)', value: 'carto' }],
+      help: 'CARTO : vérifiez ses conditions d’utilisation pour un site commercial (voir LISEZMOI).',
+      onChange: maj(set, 'fondCarte')
+    }) : null;
+  }
 
   /* Ligne d'information : son apparence suit la section qui la contient. */
   var OPTIONS_LIGNE = [
@@ -761,7 +773,8 @@
     var set = props.setAttributes;
     return Section(props, {
       panneaux: el(c.PanelBody, { title: 'Carte et horaires', initialOpen: true },
-        el(c.ToggleControl, { label: 'Carte interactive (OpenStreetMap)', checked: !!a.carte, onChange: maj(set, 'carte') }),
+        el(c.ToggleControl, { label: 'Carte interactive', checked: !!a.carte, onChange: maj(set, 'carte') }),
+        choixFondCarte(a, set),
         el(c.TextControl, { label: 'Titre des horaires', value: a.titreHoraires, onChange: maj(set, 'titreHoraires') }),
         el(c.TextControl, { label: 'Bouton 1 (itinéraire)', value: a.b1Texte, onChange: maj(set, 'b1Texte') }),
         el(c.TextControl, { label: 'Bouton 2 (carte agrandie)', value: a.b2Texte, onChange: maj(set, 'b2Texte') }),

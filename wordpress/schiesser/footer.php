@@ -13,12 +13,15 @@ $rue     = schiesser_reglage( 'rue' );
 $ville   = schiesser_reglage( 'ville' );
 $annee   = schiesser_reglage( 'annee_fondation' );
 $mention = get_page_by_path( 'mentions-legales' ) ?: get_page_by_path( 'impressum' );
+// Liens vers les sections de la page (celles qui ont une ancre), comme dans la maquette.
+$ancres  = ( is_page() && function_exists( 'schiesser_ancres_page' ) ) ? array_slice( schiesser_ancres_page(), 0, 5, true ) : array();
+$ancres  = count( $ancres ) >= 2 ? $ancres : array();
 ?>
 </main>
 
 <footer class="site-footer">
 	<div class="wrap">
-		<div class="fgrid">
+		<div class="fgrid<?php echo $ancres ? ' fgrid--4' : ''; ?>">
 			<div class="fbrand">
 				<span class="brand"><?php schiesser_logo( implode( ' · ', array_filter( array( $rue, $ville, $annee ? 'Seit ' . $annee : '' ) ) ) ); ?></span>
 				<p><?php echo esc_html( schiesser_reglage( 'presentation' ) ); ?></p>
@@ -41,6 +44,14 @@ $mention = get_page_by_path( 'mentions-legales' ) ?: get_page_by_path( 'impressu
 				<?php if ( $email ) : ?><a href="<?php echo esc_url( 'mailto:' . $email ); ?>"><?php echo esc_html( $email ); ?></a><?php endif; ?>
 				<?php if ( $tel ) : ?><a href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><?php echo esc_html( $tel ); ?></a><?php endif; ?>
 			</div>
+			<?php if ( $ancres ) : ?>
+				<nav class="fcol" aria-label="Sur cette page">
+					<h2 class="fcol-titre">Sur cette page</h2>
+					<?php foreach ( $ancres as $ancre => $titre ) : ?>
+						<a href="#<?php echo esc_attr( $ancre ); ?>"><?php echo esc_html( $titre ); ?></a>
+					<?php endforeach; ?>
+				</nav>
+			<?php endif; ?>
 			<div class="fcol">
 				<h2 class="fcol-titre">Explorer</h2>
 				<?php foreach ( schiesser_liens_menu( 'pied' ) as $lien ) : ?>

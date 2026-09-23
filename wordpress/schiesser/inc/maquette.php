@@ -101,7 +101,7 @@ function schiesser_mq_blocs() {
 		'frise'          => array( 'Ligne du temps', 'Dates clés sur fond sombre : cartes à faire glisser, ou chronologie à onglets.', 'backup', null,
 			array( 'align' => 'full', 'numero' => '', 'titre' => '', 'note' => '', 'ancre' => '', 'affichage' => 'cartes', 'indication' => 'Glissez pour explorer →', 'retenirLibelle' => 'À retenir' ) ),
 		'adresse'        => array( 'Nous trouver (carte et adresse)', 'Carte interactive et fiche : adresse, horaires en direct, groupes, contact, boutons.', 'location', null,
-			$s( 'alterne' ) + array( 'lieu' => '', 'carte' => true, 'b1Texte' => 'Nous écrire', 'b1Lien' => '', 'b2Texte' => 'Itinéraire', 'b2Lien' => '' ) ),
+			$s( 'alterne' ) + array( 'lieu' => '', 'carte' => true, 'fondCarte' => 'osm', 'b1Texte' => 'Nous écrire', 'b1Lien' => '', 'b2Texte' => 'Itinéraire', 'b2Lien' => '' ) ),
 		'galerie'        => array( 'Galerie (visionneuse)', 'Grande photo avec légende, flèches et vignettes.', 'format-gallery', null,
 			$s( 'sombre' ) ),
 		'infos'          => array( 'Bon à savoir (pictogrammes)', 'Grille d’informations pratiques, chacune avec un pictogramme.', 'info-outline', null,
@@ -129,7 +129,7 @@ function schiesser_mq_blocs() {
 		'avant-apres'    => array( 'Hier et aujourd’hui (comparateur)', 'Deux photos superposées, un curseur à faire glisser.', 'image-flip-horizontal', null,
 			array( 'align' => 'full', 'numero' => '', 'titre' => '', 'note' => '', 'ancre' => '', 'indication' => 'Glissez pour comparer' ) ),
 		'plan-horaires'  => array( 'Plan et horaires', 'Carte interactive avec la fiche de la maison, tableau des horaires.', 'calendar-alt', null,
-			$s() + array( 'carte' => true, 'titreHoraires' => 'Nos horaires', 'b1Texte' => 'Itinéraire', 'b2Texte' => 'Agrandir', 'apercu' => false ) ),
+			$s() + array( 'carte' => true, 'fondCarte' => 'carto', 'titreHoraires' => 'Nos horaires', 'b1Texte' => 'Itinéraire', 'b2Texte' => 'Agrandir', 'apercu' => false ) ),
 		'affluence'      => array( 'Affluence (meilleur moment)', 'Graphique d’affluence par jour et par heure, heures calmes et animées calculées automatiquement.', 'chart-area', null,
 			$s( 'sable' ) + array( 'debut' => 8, 'donnees' => schiesser_mq_affluence_defaut(), 'conseil' => 'Le matin, tout sort du four', 'apercu' => false ) ),
 		'trajets'        => array( 'Composez votre trajet', 'Points de départ et itinéraires détaillés, étape par étape.', 'car', null,
@@ -257,8 +257,42 @@ add_action( 'enqueue_block_editor_assets', function () {
 		'email'        => schiesser_reglage( 'email' ),
 		'aujourdhui'   => $e['aujourdhui'],
 		'demain'       => $e['demain'],
+		'ouvert'       => $e['ouvert'] ? 'oui' : 'non', // wp_localize_script transforme les booléens en texte
+		'etatTexte'    => $e['texte'],
+		'etatDuree'    => $e['duree'],
 	) );
 } );
+
+/**
+ * Sections de la page qui ont une ancre (réglage « Ancre » du bloc) :
+ * liens « Sur cette page » du pied de page, comme dans la maquette.
+ *
+ * @return array Ancre => titre de la section.
+ */
+function schiesser_ancres_page( $post = null ) {
+	$post  = get_post( $post );
+	$liens = array();
+	if ( ! $post ) {
+		return $liens;
+	}
+	$parcourir = function ( $blocs ) use ( &$parcourir, &$liens ) {
+		foreach ( $blocs as $b ) {
+			$nom = (string) $b['blockName'];
+			if ( 0 === strpos( $nom, 'schiesser/' ) ) {
+				$ancre = sanitize_title( $b['attrs']['ancre'] ?? ( 'schiesser/produits' === $nom ? 'catalogue' : '' ) );
+				$titre = trim( preg_replace( '/\s+/u', ' ', wp_strip_all_tags( str_replace( array( '<br>', '<br/>', '<br />' ), ' ', (string) ( $b['attrs']['titre'] ?? '' ) ) ) ) );
+				if ( '' !== $ancre && '' !== $titre && ! isset( $liens[ $ancre ] ) ) {
+					$liens[ $ancre ] = html_entity_decode( $titre, ENT_QUOTES, 'UTF-8' );
+				}
+			}
+			if ( ! empty( $b['innerBlocks'] ) ) {
+				$parcourir( $b['innerBlocks'] );
+			}
+		}
+	};
+	$parcourir( parse_blocks( (string) $post->post_content ) );
+	return $liens;
+}
 
 /* ------------------------------------------------------------------ */
 /* Outils de rendu                                                     */
@@ -711,6 +745,10 @@ function schiesser_mq_produits_catalogue( $a ) {
 			}
 		}
 	}
+	// Aucun des produits choisis n'est disponible (supprimés, dépubliés…) : le catalogue reprend les premiers produits.
+	if ( ! $liste && function_exists( 'schiesser_liste_produits' ) ) {
+		$liste = schiesser_liste_produits( ( $a['source'] ?? '' ) ?: 'auto', max( 0, (int) ( $a['limite'] ?? 6 ) ) );
+	}
 	return $liste;
 }
 
@@ -732,7 +770,6 @@ function schiesser_mq_rendu_catalogue( $a ) {
 			. '<span class="cat-thumb ph" data-label="' . esc_attr( $p['nom'] ) . '">' . $vignette . '</span></a>';
 		if ( $p['image_id'] ) {
 			$images .= wp_get_attachment_image( $p['image_id'], 'large', false, array(
-				'alt'      => '',
 				'loading'  => 'lazy',
 				'decoding' => 'async',
 				'data-i'   => (string) $i,
@@ -744,7 +781,7 @@ function schiesser_mq_rendu_catalogue( $a ) {
 	$premier = $produits[0];
 	$contenu = '<div class="cat"><div class="cat-list rv">' . $lignes . '</div>'
 		. '<div class="cat-preview" aria-hidden="true"><div class="pv ph" data-label="Aperçu">' . $images . '</div>'
-		. '<div class="cap"><span class="js-cap-nom">' . esc_html( $premier['nom'] ) . '</span><span class="js-cap-no">Pl. 01</span></div></div></div>';
+		. '<div class="cap"><span class="cap-nom js-cap-nom">' . esc_html( $premier['nom'] ) . '</span><span class="cap-no js-cap-no">Pl. 01</span></div></div></div>';
 	return schiesser_mq_section( $a, $contenu );
 }
 
@@ -776,7 +813,7 @@ function schiesser_mq_rendu_savoir_faire( $a, $content, $block ) {
 	$liste = '';
 	foreach ( $etapes as $i => $c ) {
 		$e      = $c->attributes;
-		$pile  .= schiesser_mq_image( $e, 'image', 'large', array( 'alt' => '', 'data-s' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '(min-width: 900px) 50vw, 100vw' ) );
+		$pile  .= schiesser_mq_image( $e, 'image', 'large', array( 'data-s' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '(min-width: 900px) 50vw, 100vw' ) );
 		$liste .= '<div class="cstep' . ( 0 === $i ? ' active' : '' ) . '" data-s="' . $i . '"><div class="cn">' . schiesser_mq_num( $i + 1 ) . '</div>'
 			. '<h3>' . esc_html( schiesser_mq_brut( $e['titre'] ) ) . '</h3>'
 			. ( '' !== trim( $e['texte'] ) ? '<p>' . schiesser_mq_texte( $e['texte'] ) . '</p>' : '' )
@@ -784,7 +821,7 @@ function schiesser_mq_rendu_savoir_faire( $a, $content, $block ) {
 			. '</div>';
 	}
 	$contenu = '<div class="craft-grid"><div class="craft-media" aria-hidden="true"><div class="cm-stack ph" data-label="Atelier">' . $pile . '</div>'
-		. '<div class="cm-num"><span class="js-cm-num">01</span> / ' . schiesser_mq_num( count( $etapes ) ) . '</div></div>'
+		. '<div class="cm-num"><span class="cm-n js-cm-num">01</span> / ' . schiesser_mq_num( count( $etapes ) ) . '</div></div>'
 		. '<div class="craft-steps">' . $liste . '</div></div>';
 	return schiesser_mq_section( $a, $contenu );
 }
@@ -806,7 +843,7 @@ function schiesser_mq_rendu_frise( $a, $content, $block ) {
 		foreach ( $dates as $c ) {
 			$e       = $c->attributes;
 			$cartes .= '<div class="tl-card ph" data-label="' . esc_attr( schiesser_mq_brut( $e['annee'] ) ) . '">'
-				. schiesser_mq_image( $e, 'image', 'medium_large', array( 'alt' => '' ) )
+				. schiesser_mq_image( $e, 'image', 'medium_large' )
 				. '<div class="tc"><div class="ty">' . schiesser_mq_annee( $e['annee'] ) . '</div>'
 				. '<div class="tt">' . esc_html( schiesser_mq_brut( $e['titre'] ) ) . '</div>'
 				. ( '' !== trim( $e['texte'] ) ? '<div class="tx">' . schiesser_mq_texte( $e['texte'] ) . '</div>' : '' )
@@ -824,7 +861,7 @@ function schiesser_mq_rendu_frise( $a, $content, $block ) {
 	foreach ( $dates as $i => $c ) {
 		$e       = $c->attributes;
 		$annee   = schiesser_mq_brut( $e['annee'] );
-		$images .= schiesser_mq_image( $e, 'image', 'large', array( 'alt' => '', 'data-e' => (string) $i, 'class' => 0 === $i ? 'on' : '' ) );
+		$images .= schiesser_mq_image( $e, 'image', 'large', array( 'data-e' => (string) $i, 'class' => 0 === $i ? 'on' : '' ) );
 		$textes .= '<div class="tl-txt rv' . ( $i ? ' is-off' : '' ) . '" data-e="' . $i . '"><div class="ty">' . schiesser_mq_annee( $annee ) . '</div>'
 			. '<div class="tt">' . esc_html( schiesser_mq_brut( $e['titre'] ) ) . '</div>'
 			. ( '' !== trim( $e['texte'] ) ? '<div class="td">' . schiesser_mq_texte( $e['texte'] ) . '</div>' : '' )
@@ -835,7 +872,7 @@ function schiesser_mq_rendu_frise( $a, $content, $block ) {
 	}
 	$premiere = schiesser_mq_brut( $dates[0]->attributes['annee'] );
 	return '<section ' . get_block_wrapper_attributes( $attrs ) . '><div class="sec wrap">' . $tete
-		. '<div class="tl-stage"><div class="tl-media ph rv" data-label="Archive">' . $images . '<span class="stamp js-tl-stamp">' . esc_html( $premiere ) . '</span></div>' . $textes . '</div>'
+		. '<div class="tl-stage"><div class="tl-media ph rv" data-label="Archive" aria-hidden="true">' . $images . '<span class="stamp js-tl-stamp">' . esc_html( $premiere ) . '</span></div>' . $textes . '</div>'
 		. '<div class="tl-rail rv"><div class="tl-track">' . $noeuds . '</div>'
 		. '<div class="tl-nav"><span class="hint">' . esc_html( schiesser_mq_brut( $a['indication'] ) ) . '</span><div class="arrows"><button type="button" class="ar js-tl-prec" aria-label="Date précédente">←</button><button type="button" class="ar js-tl-suiv" aria-label="Date suivante">→</button></div></div></div>'
 		. '</div></section>';
@@ -863,7 +900,7 @@ function schiesser_mq_rendu_adresse( $a, $content, $block ) {
 	$lieu    = trim( (string) $a['lieu'] ) ?: trim( schiesser_reglage( 'rue' ) . ', ' . schiesser_reglage( 'ville' ), ', ' );
 	$boutons = schiesser_mq_bouton( $a['b1Texte'], $a['b1Lien'] ?: $liens['email'], 'btn-kir', true ) . schiesser_mq_bouton( $a['b2Texte'], $a['b2Lien'] ?: $liens['itineraire'], 'btn-line' );
 	$carte   = $a['carte']
-		? '<div class="vmap js-carte"' . schiesser_mq_carte_attrs( 16, 'osm' ) . '><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">Ouvrir dans Google Maps →</a></div>'
+		? '<div class="vmap js-carte"' . schiesser_mq_carte_attrs( 16, 'carto' === $a['fondCarte'] ? 'carto' : 'osm' ) . '><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">Ouvrir dans Google Maps →</a></div>'
 		: '<div class="vmap"><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">Ouvrir dans Google Maps →</a></div>';
 	$contenu = '<div class="visit rv">' . $carte . '<div class="vinfo"><h3>' . esc_html( $lieu ) . '</h3>' . $lignes
 		. ( $boutons ? '<div class="vcta">' . $boutons . '</div>' : '' ) . '</div></div>';
@@ -950,7 +987,7 @@ function schiesser_mq_rendu_ascension( $a, $content, $block ) {
 	$textes  = '';
 	foreach ( $paliers as $i => $c ) {
 		$e       = $c->attributes;
-		$images .= schiesser_mq_image( $e, 'image', 'full', array( 'alt' => '', 'data-a' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '100vw' ) );
+		$images .= schiesser_mq_image( $e, 'image', 'full', array( 'data-a' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '100vw' ) );
 		$haut    = $n > 1 ? round( $i / ( $n - 1 ) * 100, 2 ) : 0;
 		$noeuds .= '<button type="button" class="asc-node' . ( 0 === $i ? ' on' : '' ) . '" data-a="' . $i . '" style="top:' . $haut . '%" aria-label="' . esc_attr( schiesser_mq_brut( $e['libelle'] ?: $e['titre'] ) ) . '">'
 			. '<span class="dot">' . esc_html( schiesser_mq_brut( $e['niveau'] ) ) . '</span><span class="lb">' . esc_html( schiesser_mq_brut( $e['libelle'] ) ) . '</span></button>';
@@ -959,7 +996,7 @@ function schiesser_mq_rendu_ascension( $a, $content, $block ) {
 			. ( '' !== trim( $e['texte'] ) ? '<p>' . schiesser_mq_texte( $e['texte'] ) . '</p>' : '' ) . '</div>';
 	}
 	return '<section ' . get_block_wrapper_attributes( array( 'class' => 'sec sec--suite' ) ) . '><div class="wrap"><div class="ascend js-ascend">'
-		. '<div class="asc-stage"><div class="asc-layers">' . $images . '</div><div class="asc-veil"></div><div class="asc-grain"></div>'
+		. '<div class="asc-stage"><div class="asc-layers" aria-hidden="true">' . $images . '</div><div class="asc-veil"></div><div class="asc-grain"></div>'
 		. '<div class="asc-in"><div class="asc-rail"><span class="track"></span><span class="fill js-asc-fill"></span><span class="cab js-asc-cab"></span>' . $noeuds . '</div>'
 		. '<div class="asc-copies">' . $textes . '</div></div>'
 		. '<div class="asc-hint js-asc-hint"><span>' . esc_html( schiesser_mq_brut( $a['indication'] ) ) . '</span><span class="arw"></span></div>'
@@ -1045,7 +1082,7 @@ function schiesser_mq_rendu_moments( $a, $content, $block ) {
 	$noeuds = '';
 	foreach ( $moments as $i => $c ) {
 		$e       = $c->attributes;
-		$images .= schiesser_mq_image( $e, 'image', 'large', array( 'alt' => '', 'data-m' => (string) $i, 'class' => 0 === $i ? 'on' : '' ) );
+		$images .= schiesser_mq_image( $e, 'image', 'large', array( 'data-m' => (string) $i, 'class' => 0 === $i ? 'on' : '' ) );
 		$textes .= '<div class="mo-txt' . ( $i ? ' is-off' : '' ) . '" data-m="' . $i . '"><div class="mh">' . esc_html( schiesser_mq_brut( $e['titre'] ) ) . '</div>'
 			. ( '' !== trim( $e['sousTitre'] ) ? '<div class="ms">' . esc_html( schiesser_mq_brut( $e['sousTitre'] ) ) . '</div>' : '' )
 			. ( '' !== trim( $e['texte'] ) ? '<div class="md">' . schiesser_mq_texte( $e['texte'] ) . '</div>' : '' )
@@ -1054,7 +1091,7 @@ function schiesser_mq_rendu_moments( $a, $content, $block ) {
 		$noeuds .= '<button type="button" class="mo-node' . ( 0 === $i ? ' on' : '' ) . '" data-m="' . $i . '" data-heure="' . esc_attr( schiesser_mq_brut( $e['heure'] ) ) . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '">'
 			. '<span class="bar"></span><span class="nh">' . esc_html( schiesser_mq_brut( $e['heure'] ) ) . '</span><span class="nl">' . esc_html( schiesser_mq_brut( $e['libelle'] ) ) . '</span></button>';
 	}
-	$contenu = '<div class="js-moments"><div class="mo rv"><div class="mo-media ph" data-label="Le salon">' . $images . '<span class="mo-clock js-mo-heure">' . esc_html( schiesser_mq_brut( $moments[0]->attributes['heure'] ) ) . '</span></div>'
+	$contenu = '<div class="js-moments"><div class="mo rv"><div class="mo-media ph" data-label="Le salon" aria-hidden="true">' . $images . '<span class="mo-clock js-mo-heure">' . esc_html( schiesser_mq_brut( $moments[0]->attributes['heure'] ) ) . '</span></div>'
 		. $textes . '</div><div class="mo-rail rv">' . $noeuds . '</div></div>';
 	return schiesser_mq_section( $a, $contenu );
 }
@@ -1178,7 +1215,7 @@ function schiesser_mq_rendu_plan_horaires( $a ) {
 	$adr   = schiesser_adresse_lignes();
 	$etat  = schiesser_mq_etat();
 	$carte = '<div class="mapbox">'
-		. '<div class="mapel' . ( $a['carte'] ? ' js-carte' : '' ) . '"' . ( $a['carte'] ? schiesser_mq_carte_attrs( 17, 'carto' ) . ' data-zoom-perso="1"' : '' ) . '><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">Ouvrir dans Google Maps →</a></div>'
+		. '<div class="mapel' . ( $a['carte'] ? ' js-carte' : '' ) . '"' . ( $a['carte'] ? schiesser_mq_carte_attrs( 17, 'osm' === $a['fondCarte'] ? 'osm' : 'carto' ) . ' data-zoom-perso="1"' : '' ) . '><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">Ouvrir dans Google Maps →</a></div>'
 		. '<div class="mapcard"><div class="mt">' . esc_html( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ) . '</div>'
 		. '<div class="ma">' . esc_html( $adr[0] ) . '<br>' . esc_html( $adr[1] ) . '</div>'
 		. '<div class="ms js-etat-plage' . ( $etat['ouvert'] ? '' : ' shut' ) . '" data-nosnippet><i></i><span>' . esc_html( schiesser_mq_etat_plage() ) . '</span></div>'
@@ -1330,6 +1367,7 @@ function schiesser_mq_rendu_formulaire( $a, $content, $block ) {
 		. '<div class="xf-ok' . ( 'ok' === $etat ? ' on' : '' ) . '" role="status"><span class="ck" aria-hidden="true">✓</span><div><b>' . esc_html( schiesser_mq_brut( $a['okTitre'] ) ) . '</b><p>' . esc_html( schiesser_mq_brut( $a['okTexte'] ) ) . '</p></div></div>'
 		. ( 'erreur' === $etat ? '<div class="xf-err" role="alert">Le message n’a pas pu être envoyé. Écrivez-nous directement à ' . esc_html( schiesser_reglage( 'email' ) ) . ' ou appelez-nous.</div>' : '' )
 		. ( 'incomplet' === $etat ? '<div class="xf-err" role="alert">Merci de renseigner votre nom, une adresse e-mail valide et votre message.</div>' : '' )
+		. ( 'attente' === $etat ? '<div class="xf-err" role="alert">Un message vient d’être envoyé depuis cette connexion. Merci de patienter une minute avant d’en envoyer un autre.</div>' : '' )
 		. '</form>';
 	$cote = schiesser_mq_lignes( $block, 'xs' );
 	return schiesser_mq_section( $a, '<div class="xf rv">' . $form . ( $cote ? '<aside class="xf-side">' . $cote . '</aside>' : '' ) . '</div>' );
@@ -1372,17 +1410,20 @@ function schiesser_mq_envoi_contact() {
 	if ( '' === $nom || ! is_email( $email ) || '' === $msg ) {
 		$aller( 'incomplet' );
 	}
+	// Un seul message par minute et par connexion (après un envoi réussi) : évite les envois en rafale.
 	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 	$cle = 'schiesser_contact_' . md5( $ip );
 	if ( get_transient( $cle ) ) {
-		$aller( 'ok' );
+		$aller( 'attente' );
 	}
-	set_transient( $cle, 1, MINUTE_IN_SECONDS );
 
 	$dest  = schiesser_reglage( 'email' ) ?: get_option( 'admin_email' );
 	$sujet = 'Message depuis le site · ' . $nom;
 	$corps = "Nom : $nom\nE-mail : $email\n" . ( $tel ? "Téléphone : $tel\n" : '' ) . "\nMessage :\n$msg\n\n--\nEnvoyé depuis " . home_url( '/' );
 	$ok    = wp_mail( $dest, $sujet, $corps, array( 'Reply-To: ' . $nom . ' <' . $email . '>' ) );
+	if ( $ok ) {
+		set_transient( $cle, 1, MINUTE_IN_SECONDS );
+	}
 	$aller( $ok ? 'ok' : 'erreur' );
 }
 add_action( 'admin_post_nopriv_schiesser_contact', 'schiesser_mq_envoi_contact' );

@@ -364,7 +364,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
   font-family:var(--serif);font-weight:500;font-size:clamp(64px,13vw,210px);line-height:.8;letter-spacing:.05em;text-transform:uppercase;
   color:color-mix(in srgb,var(--text) 6.5%,transparent);white-space:nowrap;pointer-events:none}
 .fgrid{position:relative;z-index:1;display:grid;grid-template-columns:1fr;gap:40px}
-@media(min-width:760px){.fgrid{grid-template-columns:1.6fr 1fr 1fr}}
+@media(min-width:760px){.fgrid{grid-template-columns:1.6fr 1fr 1fr}.fgrid--4{grid-template-columns:repeat(3,1fr)}.fgrid--4 .fbrand{grid-column:1/-1}}
+@media(min-width:1100px){.fgrid--4{grid-template-columns:1.45fr 1fr 1fr 1fr}.fgrid--4 .fbrand{grid-column:auto}}
 .fbrand p{color:var(--ink-soft);font-size:14.5px;margin-top:22px;max-width:36ch}
 .fcol :is(h5,.fcol-titre){display:flex;align-items:center;gap:10px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--vert);margin-bottom:18px;font-weight:600}
 .fcol :is(h5,.fcol-titre)::before{content:"";width:5px;height:5px;background:currentColor;transform:rotate(45deg)}
@@ -397,6 +398,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .leaflet-bar a{border-radius:0!important;color:var(--ink)!important}
 .leaflet-popup-content-wrapper,.leaflet-popup-tip{border-radius:0!important;box-shadow:0 14px 30px -14px rgba(0,0,0,.4)!important}
 .leaflet-popup-content{font:500 13px/1.4 var(--sans);margin:12px 16px!important;color:var(--ink)}
+.leaflet-container .leaflet-control-attribution{color:var(--ink-soft);background:rgba(247,243,237,.9)}
+.leaflet-container .leaflet-control-attribution a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
 .kir-pin span{display:block;width:20px;height:20px;background:var(--vert);border:2px solid var(--paper);transform:rotate(45deg);box-shadow:0 4px 12px rgba(0,0,0,.35)}
 .mapfallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;height:100%;min-height:420px;padding:24px;text-align:center;
   text-decoration:none;color:var(--vert);font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
@@ -433,8 +436,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .cat-preview .pv img{position:absolute;inset:0;opacity:0;transform:scale(1.05);transition:opacity .7s var(--ease),transform 1.4s var(--ease-out)}
 .cat-preview .pv img.on{opacity:1;transform:scale(1)}
 .cat-preview .cap{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
-#capName{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink)}
-#capNo{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--vert);white-space:nowrap}
+.cap-nom{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--ink)}
+.cap-no{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--vert);white-space:nowrap}
 
 /* deux maisons, une adresse */
 .x-floors{display:grid;grid-template-columns:1fr;gap:clamp(14px,1.6vw,22px)}
@@ -463,11 +466,11 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .cm-stack img{position:absolute;inset:0;opacity:0;transform:scale(1.05);transition:opacity 1s var(--ease),transform 1.8s var(--ease-out)}
 .cm-stack img.on{opacity:1;transform:scale(1)}
 .cm-num{display:flex;align-items:baseline;gap:8px;margin-top:14px;font-family:var(--serif);font-size:15px;color:var(--ink-soft)}
-.cm-num #cmNum{font-size:30px;font-style:italic;color:var(--vert)}
+.cm-num .cm-n{font-size:30px;font-style:italic;color:var(--vert)}
 .craft-steps{display:flex;flex-direction:column}
 .cstep{padding:clamp(30px,4vw,44px) 0;border-top:1px solid var(--line)}
 .cstep:first-child{border-top:0;padding-top:0}
-.cstep .cn{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(58px,7vw,108px);line-height:.9;color:var(--vert);opacity:.3;transition:opacity .7s}
+.cstep .cn{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(58px,7vw,108px);line-height:.9;color:var(--vert);opacity:.6;transition:opacity .7s}
 .cstep.active .cn{opacity:1}
 .cstep h3{font-family:var(--serif);font-weight:500;font-size:clamp(28px,3.2vw,42px);line-height:1.05;margin:18px 0 14px;color:var(--ink);transition:opacity .7s}
 .cstep p{color:var(--ink-soft);max-width:40ch;font-size:16.5px;transition:opacity .7s}
@@ -477,7 +480,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
   .cstep:first-child{padding-top:0}
   .cstep::before{content:"";position:absolute;left:-1px;top:50%;width:1px;height:0;background:var(--vert);transform:translateY(-50%);transition:height .9s var(--ease-out)}
   .cstep.active::before{height:44%}
-  .cstep:not(.active) h3,.cstep:not(.active) p{opacity:.45}
+  .cstep:not(.active) h3{opacity:.55}
+  .cstep:not(.active) p{opacity:.9}
   .cstep .cthumb{display:none}
 }
 
@@ -639,7 +643,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 /* =====================================================================
    PAGE · TEA ROOM
    ===================================================================== */
-#salon{padding-bottom:0}
+
 .asc-intro{display:grid;grid-template-columns:1fr;gap:clamp(24px,3vw,64px);align-items:start;margin-bottom:clamp(44px,5vw,72px)}
 @media(min-width:900px){.asc-intro{grid-template-columns:1.1fr .9fr}}
 .asc-intro .lead{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(25px,2.9vw,38px);line-height:1.26;max-width:22ch;color:var(--ink)}
@@ -690,7 +694,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .asc-bar span{display:block;height:100%;width:0;background:var(--mint);transition:width .12s linear}
 
 /* la doyenne */
-#doyenne .dy{border:1px solid var(--line-dark);overflow:hidden}
+.dy{border:1px solid var(--line-dark);overflow:hidden}
 .dy-top{display:grid;grid-template-columns:1fr}
 @media(min-width:940px){.dy-top{grid-template-columns:1.05fr .95fr}}
 .dy-im{position:relative;aspect-ratio:16/11;overflow:hidden;background:var(--dark-2)}
@@ -1516,4 +1520,4 @@ details.fq[open] .ans{animation:fadeIn .45s var(--ease) both}
 .xf-side .xs .v a,.dlines .dl a,.vn-row .v a,.vinfo .v a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
 .xf-side .xs .v a:hover,.dlines .dl a:hover,.vn-row .v a:hover,.vinfo .v a:hover{border-color:var(--vert);color:var(--vert)}
 /* textes des blocs : liens discrets */
-:is(.cstep,.tl-txt,.gv-cap,.pcell,.oc,.val,.dy-tx,.mi-d,.gp-d,.mo-txt,.vn-tx,.x-frd,.ld,.jp-tip,.asc-copy,.lead,.x-plate) a{color:inherit;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px}
+:is(.cstep,.tl-txt,.gv-cap,.pcell,.oc,.val,.dy-tx,.mi-d,.gp-d,.mo-txt,.vn-tx,.x-frd,.ld,.jp-tip,.asc-copy,.lead,.x-plate) a:not(.btn){color:inherit;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px}

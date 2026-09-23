@@ -143,8 +143,15 @@ function schiesser_page_guide() {
 			'Les réglages d\'un bloc (hauteur, style des boutons, fond de section…) sont dans le panneau de droite. S\'il est caché : icône en haut à droite.',
 			'Cliquez sur <strong>Mettre à jour</strong> en haut à droite.',
 		) ),
+		array( 'screenoptions', 'Les blocs de la maquette', array(
+			'Chaque partie des pages (catalogue, étages, carte du salon, archives, itinéraires…) est un bloc de la catégorie <strong>Schiesser</strong> : il s\'affiche dans l\'éditeur comme sur le site.',
+			'Pour ajouter un élément (une date, un plat, une question, un palier…), cliquez dans le bloc puis sur le <strong>+</strong> qui suit les éléments. Pour en retirer un : sélectionnez-le, menu ⋮ → « Supprimer ».',
+			'Les parties animées (montée à l\'étage, savoir-faire, moments de la journée, ligne du temps) s\'affichent en fiches dans l\'éditeur : tout s\'y modifie, l\'animation se voit sur le site.',
+			'Panneau de droite : fond de la section, numéro, ancre (elle crée aussi le lien « Sur cette page » du pied de page), photo et texte alternatif, liens des boutons, fond de carte.',
+			'Accueil : les produits du catalogue se choisissent dans le panneau de droite du bloc « Catalogue des créations » ; leur photo et leur accroche viennent du menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT ), 'Produits' ) . '.',
+		) ),
 		array( 'plus-alt', 'Ajouter une section', array(
-			'Dans une page, cliquez sur le <strong>+</strong> entre deux sections, cherchez « Section » (catégorie Schiesser).',
+			'Dans une page, cliquez sur le <strong>+</strong> entre deux sections et choisissez un bloc de la catégorie Schiesser (Questions fréquentes, Galerie, Cartes numérotées…) ou « Section » pour une section libre.',
 			'Choisissez le fond (clair, sable, sombre…) à droite, écrivez le titre, puis ajoutez du contenu avec le <strong>+</strong> : paragraphes, images, colonnes, boutons, questions fréquentes…',
 			'Plus rapide : onglet « Compositions » de l\'outil d\'ajout, catégorie Schiesser, pour insérer une section toute prête.',
 		) ),
