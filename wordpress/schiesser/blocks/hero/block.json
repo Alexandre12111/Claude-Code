@@ -95,6 +95,14 @@
 				"remove": true,
 				"move": false
 			}
+		},
+		"filtre": {
+			"type": "string",
+			"default": ""
+		},
+		"progression": {
+			"type": "boolean",
+			"default": false
 		}
 	},
 	"editorScript": "file:./index.js",

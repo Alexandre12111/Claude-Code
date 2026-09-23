@@ -84,6 +84,21 @@
       if (b.name === 'schiesser/produits') {
         return (a.titre ? '<h2>' + txt(a.titre) + '</h2>' : '') + (a.note ? '<p>' + txt(a.note) + '</p>' : '');
       }
+      if (b.name.indexOf('schiesser/') === 0) {
+        // Blocs de la maquette : titre de section (H2), titres d'éléments (H3), textes et photos.
+        var section = !!(b.attributes && Object.prototype.hasOwnProperty.call(b.attributes, 'fond')) || b.name === 'schiesser/frise' || b.name === 'schiesser/avant-apres' || b.name === 'schiesser/appel';
+        var h = '';
+        if (a.titre) h += section ? '<h2>' + txt(a.titre) + '</h2>' : '<h3>' + txt(a.titre) + '</h3>';
+        if (a.encartTitre) h += '<h3>' + txt(a.encartTitre) + '</h3>';
+        if (a.question) h += '<h3>' + txt(a.question) + '</h3>';
+        ['note', 'lead', 'surtitre', 'sousTitre', 'texte', 'reponse', 'description', 'retenir', 'conseil', 'valeur', 'libelle', 'nom', 'sTitre', 'sTexte'].forEach(function (k) {
+          if (a[k] && typeof a[k] === 'string') h += '<p>' + txt(a[k]) + '</p>';
+        });
+        ['image', 'avant', 'apres', 's'].forEach(function (p) {
+          if (a[p + 'Url']) h += '<img src="' + attr(a[p + 'Url']) + '" alt="' + attr(a[p + 'Alt'] || '') + '">';
+        });
+        return h + contenu(b.innerBlocks || []);
+      }
       try { return blocks.getBlockContent(b); } catch (e) { return ''; }
     }).join('\n');
   }

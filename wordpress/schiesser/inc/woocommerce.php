@@ -103,6 +103,7 @@ function schiesser_donnees_produit_wc( $produit ) {
 		'badge_style' => (string) $produit->get_meta( '_s_badge_style' ) ?: 'vert',
 		'description' => trim( wp_strip_all_tags( $produit->get_short_description() ) ),
 		'accord'      => (string) $produit->get_meta( '_s_accord' ),
+		'accroche'    => (string) $produit->get_meta( '_s_accroche' ),
 		'origine'     => (string) $produit->get_meta( '_s_origine' ),
 		'fiche'       => $fiche,
 		'categories'  => $categories,
@@ -194,7 +195,7 @@ function schiesser_transferer_vers_woo() {
 			$wc->set_attributes( $attributs );
 		}
 
-		foreach ( array( 'prix', 'unite', 'badge', 'badge_style', 'accord', 'origine' ) as $cle ) {
+		foreach ( array( 'prix', 'unite', 'badge', 'badge_style', 'accord', 'origine', 'accroche' ) as $cle ) {
 			if ( '' !== $d[ $cle ] ) {
 				$wc->update_meta_data( '_s_' . $cle, $d[ $cle ] ); // « prix » garde le texte d'origine (ex. « Sur commande »)
 			}

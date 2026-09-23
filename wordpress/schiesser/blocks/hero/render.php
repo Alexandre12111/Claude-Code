@@ -33,8 +33,10 @@ foreach ( array( 1, 2 ) as $n ) {
 	);
 }
 
-$classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent;
+$filtre  = in_array( $a['filtre'] ?? '', array( 'sepia-leger', 'sepia' ), true ) ? ' hero--' . $a['filtre'] : '';
+$classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 ?>
+<?php if ( ! empty( $a['progression'] ) ) : ?><div class="prog" aria-hidden="true"></div><?php endif; ?>
 <section <?php echo get_block_wrapper_attributes( array( 'class' => $classes ) ); ?>>
 	<div class="hero-media">
 		<?php

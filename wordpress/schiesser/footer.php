@@ -58,6 +58,7 @@ $mention = get_page_by_path( 'mentions-legales' ) ?: get_page_by_path( 'impressu
 		</div>
 	</div>
 </footer>
+<div class="x-cursor" aria-hidden="true"></div>
 
 </div><!-- .pg -->
 <?php wp_footer(); ?>

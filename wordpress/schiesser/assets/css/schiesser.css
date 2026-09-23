@@ -190,8 +190,8 @@ header:has(nav.main.open) .burger i:nth-child(3){transform:translateY(-7.5px) ro
 .hero-media{position:relative;height:min(78vh,720px);min-height:500px;overflow:hidden;background:var(--dark)}
 .hero-media img{transform:scale(1.06);animation:heroZoom 16s var(--ease-out) forwards}
 @keyframes heroZoom{to{transform:scale(1)}}
-#page-tearoom .hero-media img{filter:sepia(.12)}
-#page-story .hero-media img{filter:sepia(.22) contrast(.98)}
+.hero--sepia-leger .hero-media img{filter:sepia(.12)}
+.hero--sepia .hero-media img{filter:sepia(.22) contrast(.98)}
 .hero-media::after{content:"";position:absolute;inset:0;z-index:1;background:
   linear-gradient(180deg,color-mix(in srgb,var(--voile) 50%,transparent) 0%,color-mix(in srgb,var(--voile) 8%,transparent) 26%,color-mix(in srgb,var(--voile) 20%,transparent) 52%,color-mix(in srgb,var(--voile) 88%,transparent) 100%),
   radial-gradient(120% 90% at 0% 100%,color-mix(in srgb,var(--voile) 50%,transparent) 0%,color-mix(in srgb,var(--voile) 0%,transparent) 60%)}
@@ -411,8 +411,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
    PAGE · ACCUEIL
    ===================================================================== */
 /* créations */
-#page-home .cat{display:grid;grid-template-columns:1fr;gap:40px}
-@media(min-width:900px){#page-home .cat{grid-template-columns:minmax(0,1fr) clamp(340px,32vw,440px);gap:clamp(40px,5vw,88px);align-items:start}}
+.cat{display:grid;grid-template-columns:1fr;gap:40px}
+@media(min-width:900px){.cat{grid-template-columns:minmax(0,1fr) clamp(340px,32vw,440px);gap:clamp(40px,5vw,88px);align-items:start}}
 .cat-list{border-top:1px solid var(--ink)}
 .cat-row{position:relative;display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:18px;align-items:center;padding:24px 0;border-bottom:1px solid var(--line);
   text-decoration:none;color:var(--ink);transition:padding .5s var(--ease-out)}
@@ -483,11 +483,11 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 
 /* la ligne du temps (galerie horizontale) */
 .sec.tl-sec{padding-bottom:clamp(56px,7vw,96px)}
-#page-home .tl-scroll{display:flex;gap:clamp(14px,1.8vw,24px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:22px;cursor:grab;
+.tl-scroll{display:flex;gap:clamp(14px,1.8vw,24px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:22px;cursor:grab;
   overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--paper) 30%,transparent) transparent}
-#page-home .tl-scroll.drag{cursor:grabbing;scroll-snap-type:none}
-#page-home .tl-scroll::-webkit-scrollbar{height:4px}
-#page-home .tl-scroll::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--paper) 30%,transparent)}
+.tl-scroll.drag{cursor:grabbing;scroll-snap-type:none}
+.tl-scroll::-webkit-scrollbar{height:4px}
+.tl-scroll::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--paper) 30%,transparent)}
 .tl-card{position:relative;flex:0 0 auto;width:clamp(272px,31vw,420px);height:clamp(420px,62vh,580px);scroll-snap-align:start;overflow:hidden;background:var(--dark-2)}
 .tl-card img{filter:sepia(.24) contrast(.97) brightness(.86);transition:transform 1.4s var(--ease-out),filter .7s}
 .tl-card:hover img{transform:scale(1.05);filter:sepia(.05) brightness(.95)}
@@ -505,12 +505,12 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .tl-arrows{display:flex;gap:10px}
 
 /* nous trouver */
-#page-home .visit{display:grid;grid-template-columns:1fr;border:1px solid var(--line);background:var(--paper-3)}
-@media(min-width:900px){#page-home .visit{grid-template-columns:1.2fr .8fr}}
-#page-home .vmap{position:relative;min-height:440px;background:var(--paper-deep);z-index:0}
-@media(min-width:900px){#page-home .vmap{border-right:1px solid var(--line)}}
-#page-home .vinfo{padding:clamp(28px,3.4vw,48px)}
-#page-home .vinfo h3{font-family:var(--serif);font-weight:500;font-size:clamp(26px,2.8vw,36px);line-height:1.1;margin-bottom:22px;color:var(--ink)}
+.visit{display:grid;grid-template-columns:1fr;border:1px solid var(--line);background:var(--paper-3)}
+@media(min-width:900px){.visit{grid-template-columns:1.2fr .8fr}}
+.vmap{position:relative;min-height:440px;background:var(--paper-deep);z-index:0}
+@media(min-width:900px){.vmap{border-right:1px solid var(--line)}}
+.vinfo{padding:clamp(28px,3.4vw,48px)}
+.vinfo h3{font-family:var(--serif);font-weight:500;font-size:clamp(26px,2.8vw,36px);line-height:1.1;margin-bottom:22px;color:var(--ink)}
 .vrow{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:15px 0;border-top:1px solid var(--line);align-items:baseline}
 .vrow .k{font-size:10.5px;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600}
 .vrow .v{font-size:15px;color:var(--ink)}
@@ -802,11 +802,11 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .mo-node.on .bar,.tl-node.on .bar{transform:scaleX(1)}
 
 /* passer nous voir */
-#page-tearoom .vn{display:grid;grid-template-columns:1fr;gap:clamp(30px,3.6vw,72px);align-items:center}
-@media(min-width:900px){#page-tearoom .vn{grid-template-columns:1fr 1fr}}
+.vn{display:grid;grid-template-columns:1fr;gap:clamp(30px,3.6vw,72px);align-items:center}
+@media(min-width:900px){.vn{grid-template-columns:1fr 1fr}}
 .vn-im{position:relative;aspect-ratio:5/4;overflow:hidden;background:var(--paper-deep)}
 .vn-im img{filter:sepia(.14);transition:transform 1.5s var(--ease-out)}
-#page-tearoom .vn:hover .vn-im img{transform:scale(1.03)}
+.vn:hover .vn-im img{transform:scale(1.03)}
 .vn-tx h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.4vw,46px);line-height:1.05;margin-bottom:16px;color:var(--ink)}
 .vn-tx p{color:var(--ink-soft);max-width:44ch;font-size:16px}
 .vn-rows{margin-top:26px}
@@ -1480,3 +1480,40 @@ h3.card-name{font-size:clamp(17px,1.6vw,21px)}
   .produit-barre .btn:first-child{margin-left:auto}
   .single-schiesser_produit .site-footer{padding-bottom:calc(clamp(96px,13vw,200px) + 72px)}
 }
+
+/* =====================================================================
+   BLOCS DE LA MAQUETTE (WordPress)
+   ===================================================================== */
+/* sections enchaînées (introduction puis montée à l'étage) */
+.sec--suivi{padding-bottom:0}
+.sec--suite{padding-top:0}
+/* panneaux à onglets : un seul visible quand le JavaScript est actif, tous visibles sinon */
+.js .mn-list.is-off,.js .mo-txt.is-off,.js .tl-txt.is-off,.js .asc-copy.is-off,.js .jp-main.is-off{display:none}
+.gv-cap.is-off{display:none}
+.jp>.jp-main~.jp-main{grid-column:-2/-1}
+/* éléments en <span> dans des boutons (HTML valide) */
+.tl-node .ny,.tl-node .nl,.mo-node .nh,.mo-node .nl,.arch .aim,.arch .acap{display:block}
+.tl-scroll:focus-visible{outline:2px solid var(--mint);outline-offset:4px}
+/* questions fréquentes : <details> (lisibles sans JavaScript) */
+.fq>summary{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px 0;cursor:pointer;list-style:none;color:var(--ink);transition:color .25s}
+.fq>summary::-webkit-details-marker{display:none}
+.fq>summary:hover{color:var(--vert)}
+.fq>summary:hover .pm{border-color:var(--vert)}
+.fq[open] .pm{transform:rotate(45deg);background:var(--vert);border-color:var(--vert);color:#fff}
+details.fq .ans{max-height:none;overflow:visible;padding-bottom:28px}
+details.fq[open] .ans{animation:fadeIn .45s var(--ease) both}
+.fq .ans p a{color:var(--vert)}
+:is(.bg-ink,.tl) .fq>summary{color:var(--on-dark)}
+/* comparateur : photo d'hier vieillie */
+.compare .clip img.is-vieilli{filter:sepia(.42) contrast(.94) brightness(.94)}
+/* sélecteur de langue (Polylang) */
+.lang a{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 8px;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--ink-soft);text-decoration:none;transition:background-color .25s,color .25s}
+.lang a:hover{color:var(--vert)}
+.lang a.on{background:var(--vert);color:#fff}
+/* formulaire de contact */
+.xf-hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.xf-err{margin-top:18px;padding:14px 18px;border:1px solid #d9a3a3;background:#fbf1f1;color:#8a2b2b;font-size:14px}
+.xf-side .xs .v a,.dlines .dl a,.vn-row .v a,.vinfo .v a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+.xf-side .xs .v a:hover,.dlines .dl a:hover,.vn-row .v a:hover,.vinfo .v a:hover{border-color:var(--vert);color:var(--vert)}
+/* textes des blocs : liens discrets */
+:is(.cstep,.tl-txt,.gv-cap,.pcell,.oc,.val,.dy-tx,.mi-d,.gp-d,.mo-txt,.vn-tx,.x-frd,.ld,.jp-tip,.asc-copy,.lead,.x-plate) a{color:inherit;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px}

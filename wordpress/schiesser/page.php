@@ -9,7 +9,7 @@ get_header();
 while ( have_posts() ) {
 	the_post();
 	$avec_hero = has_block( 'schiesser/hero' );
-	$maison    = $avec_hero || has_block( 'schiesser/section' ) || has_block( 'schiesser/produits' );
+	$maison    = false !== strpos( (string) get_post_field( 'post_content' ), '<!-- wp:schiesser/' ); // blocs de la maison
 
 	if ( ! $avec_hero ) {
 		get_template_part( 'parts/titre-page', null, array(

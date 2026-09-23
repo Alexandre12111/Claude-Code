@@ -361,10 +361,16 @@ function schiesser_schema_produit( $post ) {
 /** Liste des produits présentés sur la page (bloc « Grille des produits »). */
 function schiesser_schema_liste_produits( $post ) {
 	$bloc = schiesser_trouver_bloc( 'schiesser/produits', schiesser_blocs_page( $post ) );
-	if ( ! $bloc ) {
-		return null;
+	if ( $bloc ) {
+		$produits = schiesser_liste_produits( $bloc['attrs']['source'] ?? 'auto', (int) ( $bloc['attrs']['limite'] ?? 0 ) );
+	} else {
+		// Catalogue des créations (accueil) : la sélection du bloc, ou 6 produits par défaut.
+		$bloc = schiesser_trouver_bloc( 'schiesser/catalogue', schiesser_blocs_page( $post ) );
+		if ( ! $bloc || ! function_exists( 'schiesser_mq_produits_catalogue' ) ) {
+			return null;
+		}
+		$produits = schiesser_mq_produits_catalogue( $bloc['attrs'] );
 	}
-	$produits = schiesser_liste_produits( $bloc['attrs']['source'] ?? 'auto', (int) ( $bloc['attrs']['limite'] ?? 0 ) );
 	if ( ! $produits ) {
 		return null;
 	}
@@ -399,6 +405,21 @@ function schiesser_schema_faq( $post ) {
 		}
 		$question = schiesser_texte_brut( $m[1] );
 		$reponse  = schiesser_texte_brut( $reponse );
+		if ( '' !== $question && '' !== $reponse ) {
+			$questions[] = array(
+				'@type'          => 'Question',
+				'name'           => $question,
+				'acceptedAnswer' => array(
+					'@type' => 'Answer',
+					'text'  => $reponse,
+				),
+			);
+		}
+	}
+	// Bloc « Questions fréquentes » de la maquette.
+	foreach ( schiesser_tous_les_blocs( 'schiesser/question', schiesser_blocs_page( $post ) ) as $b ) {
+		$question = schiesser_texte_brut( $b['attrs']['question'] ?? '' );
+		$reponse  = schiesser_texte_brut( do_shortcode( (string) ( $b['attrs']['reponse'] ?? '' ) ) );
 		if ( '' !== $question && '' !== $reponse ) {
 			$questions[] = array(
 				'@type'          => 'Question',

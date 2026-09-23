@@ -1,0 +1,69 @@
+/*
+ * Blocs de la maquette : présentation dans l'éditeur.
+ * Le site reste rendu à l'identique de la maquette ; ici on ajoute seulement
+ * de quoi voir et modifier les éléments animés (fiches, photos, numéros).
+ */
+.sch-ed-note{font-size:13px;line-height:1.5;color:var(--ink-soft);background:color-mix(in srgb,var(--vert) 7%,transparent);border-left:2px solid var(--vert);padding:10px 14px;margin:0 0 22px;max-width:none}
+:is(.bg-ink,.tl,.cta) .sch-ed-note{color:var(--on-dark-2);background:color-mix(in srgb,var(--paper) 6%,transparent);border-color:var(--mint)}
+
+.sch-ed-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;align-items:start}
+.sch-ed-grille--2{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.sch-ed-carte{position:relative;display:flex;flex-direction:column;gap:8px;padding:14px;background:var(--paper-3);border:1px solid var(--line);color:var(--text)}
+.sch-ed-sombre .sch-ed-carte{background:color-mix(in srgb,var(--paper) 6%,transparent);border-color:var(--line-dark);color:var(--on-dark)}
+.sch-ed-carte h3{font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.2;color:inherit;margin:0}
+.sch-ed-carte p{font-size:14px;line-height:1.55;margin:0;color:inherit;opacity:.9}
+.sch-ed-vignette{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.sch-ed-vignette.is-vieilli{filter:sepia(.42) contrast(.94) brightness(.94)}
+.sch-ed-img{cursor:pointer}
+.sch-ed-photo-vide{display:flex;align-items:center;justify-content:center;width:100%;min-height:120px;aspect-ratio:4/3;border:1px dashed var(--line);
+  background:repeating-linear-gradient(45deg,var(--paper-deep) 0 11px,var(--paper) 11px 22px);font:600 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer}
+:is(.x-floor,.dy-im,.vn-im,.x-front,.origin-fig .im,.aim,.si) .sch-ed-photo-vide{position:absolute;inset:0;height:100%;aspect-ratio:auto;min-height:0;z-index:0}
+.sch-ed-annee{font-family:var(--serif);font-size:30px;line-height:1;color:var(--vert)}
+.sch-ed-sombre .sch-ed-annee{color:var(--mint)}
+.sch-ed-petit{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--ink-soft)}
+.sch-ed-sombre .sch-ed-petit{color:var(--on-dark-3)}
+.sch-ed-italique{font-family:var(--serif);font-style:italic;color:var(--vert)}
+.sch-ed-sombre .sch-ed-italique{color:var(--mint)}
+.sch-ed-titre{font-family:var(--serif);font-size:18px;line-height:1.2}
+.sch-ed-ligne{display:flex;align-items:center;gap:12px}
+.sch-ed-deux{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sch-ed-kpis{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;opacity:.85}
+.sch-ed-etapes{display:flex;flex-direction:column;gap:10px;padding-left:12px;border-left:1px solid var(--line-dark)}
+.sch-ed-etape{display:flex;gap:10px;align-items:flex-start}
+.sch-ed-picto{display:inline-flex;flex-shrink:0}
+.sch-ed-picto svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.sch-ed-auto{border-bottom:1px dotted currentColor}
+.sch-ed-tag{display:inline-block;min-width:40px}
+
+/* numéros automatiques (01, 02…) */
+.sch-ed-numeros{counter-reset:schnum}
+.sch-ed-numeros>*{counter-increment:schnum}
+.sch-ed-numeros .oc .on::before,.sch-ed-numeros .val .vn::before{content:counter(schnum,decimal-leading-zero)}
+.sch-ed-grille.sch-ed-numeros .sch-ed-carte::before{content:counter(schnum,decimal-leading-zero);font-family:var(--serif);font-style:italic;font-size:22px;color:var(--vert)}
+
+/* carte du salon */
+.sch-ed-rubrique{padding:16px;margin-bottom:16px;background:var(--paper-3);border:1px solid var(--line)}
+.sch-ed-rubrique-tete{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.sch-ed-rubrique-tete .mtab{margin:0;padding:0;border:0;font-size:12px}
+.sch-ed-vignette-petite{width:88px;height:58px;object-fit:cover;flex-shrink:0}
+.sch-ed-rubrique-tete .sch-ed-photo-vide{width:88px;height:58px;min-height:0;aspect-ratio:auto;font-size:9px}
+
+/* questions */
+.faq .fq .ans{max-height:none;padding-bottom:22px}
+.sch-ed-q{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:20px 0}
+
+/* carte (plan) */
+.sch-ed-carte-plan{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:280px;
+  background:linear-gradient(var(--line-2) 1px,transparent 1px) 0 0/28px 28px,linear-gradient(90deg,var(--line-2) 1px,transparent 1px) 0 0/28px 28px,var(--paper-deep);
+  font:600 11px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+.sch-ed-carte-plan small{font:400 13px var(--sans);letter-spacing:0;text-transform:none}
+
+/* aperçus calculés par le site */
+.sch-ed-ssr{pointer-events:none}
+.sch-ed-ssr .rv{opacity:1;transform:none}
+
+/* montée à l'étage : pas de scène de 320 % de hauteur dans l'éditeur */
+.sch-ed .ascend{height:auto;width:auto;margin:0}
+
+/* formulaire */
+.xf-form .xg input[disabled],.xf-form .xg textarea[disabled]{background:transparent;pointer-events:none}

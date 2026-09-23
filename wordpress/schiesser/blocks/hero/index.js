@@ -42,7 +42,7 @@
         var ed = select('core/editor');
         return ed ? ed.getEditedPostAttribute('title') : '';
       }, []);
-      var blockProps = be.useBlockProps({ className: 'hero hero--' + a.hauteur + ' hero--accent-' + (a.accent || 'creme') });
+      var blockProps = be.useBlockProps({ className: 'hero hero--' + a.hauteur + ' hero--accent-' + (a.accent || 'creme') + (a.filtre ? ' hero--' + a.filtre : '') });
 
       function choisirImage(m) {
         var url = (m.sizes && m.sizes.full) ? m.sizes.full.url : m.url;
@@ -92,6 +92,22 @@
             label: 'Afficher le sceau tournant',
             checked: a.sceau,
             onChange: function (v) { set({ sceau: v }); }
+          }),
+          el(c.SelectControl, {
+            label: 'Teinte de la photo',
+            value: a.filtre || '',
+            options: [
+              { label: 'Naturelle', value: '' },
+              { label: 'Légèrement ancienne', value: 'sepia-leger' },
+              { label: 'Ancienne (archives)', value: 'sepia' }
+            ],
+            onChange: function (v) { set({ filtre: v }); }
+          }),
+          el(c.ToggleControl, {
+            label: 'Barre de progression de lecture (en haut de l’écran)',
+            checked: !!a.progression,
+            help: 'Utile sur les pages longues comme « Notre histoire ».',
+            onChange: function (v) { set({ progression: v }); }
           })
         ),
         el(c.PanelBody, { title: 'Boutons', initialOpen: true },

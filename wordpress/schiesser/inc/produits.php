@@ -99,6 +99,7 @@ function schiesser_champs_produit() {
 		'badge'       => array( 'Badge', 'Petite étiquette sur la photo : « Signature », « En saison »… Laisser vide pour ne rien afficher.', 'text' ),
 		'badge_style' => array( 'Couleur du badge', '', 'select' ),
 		'description' => array( 'Description courte', 'Deux ou trois phrases : affichées dans la fiche rapide de la boutique et en tête de la page du produit.', 'textarea' ),
+		'accroche'    => array( 'Accroche', 'Une ligne sous le nom, dans le catalogue de l’accueil. Ex. « Miel, amandes, épices, kirsch ».', 'text' ),
 		'accord'      => array( 'Accord', 'Ex. « Un thé noir corsé ou un café crème ».', 'text' ),
 		'origine'     => array( 'Origine', 'Ex. « Miel et amandes de la région ».', 'text' ),
 	);
