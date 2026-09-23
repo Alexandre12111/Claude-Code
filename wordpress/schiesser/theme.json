@@ -1,0 +1,32 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.4/theme.json",
+	"version": 2,
+	"settings": {
+		"appearanceTools": false,
+		"layout": {
+			"contentSize": "780px",
+			"wideSize": "1320px"
+		},
+		"color": {
+			"custom": false,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{ "slug": "encre", "name": "Encre", "color": "#2A1C12" },
+				{ "slug": "vert", "name": "Vert maison", "color": "#23503B" },
+				{ "slug": "menthe", "name": "Menthe", "color": "#8CC5A6" },
+				{ "slug": "papier", "name": "Papier", "color": "#F1EADE" }
+			]
+		},
+		"typography": {
+			"customFontSize": false,
+			"dropCap": false,
+			"fontSizes": []
+		},
+		"spacing": {
+			"padding": false,
+			"margin": false
+		}
+	}
+}

@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "schiesser/produits",
+	"title": "Grille des produits",
+	"category": "schiesser",
+	"icon": "grid-view",
+	"description": "Affiche automatiquement les produits saisis dans le menu « Produits », avec filtres par catégorie et fiche détaillée.",
+	"keywords": [ "boutique", "produits", "catalogue" ],
+	"textdomain": "schiesser",
+	"supports": {
+		"html": false,
+		"align": [ "full" ]
+	},
+	"attributes": {
+		"align": { "type": "string", "default": "full" },
+		"numero": { "type": "string", "default": "01" },
+		"titre": { "type": "string", "default": "Les produits de la boutique" },
+		"note": { "type": "string", "default": "Cliquez un produit pour ouvrir sa fiche détaillée." },
+		"ancre": { "type": "string", "default": "catalogue" },
+		"apercu": { "type": "boolean", "default": false }
+	},
+	"editorScript": "file:./index.js",
+	"style": "schiesser-site",
+	"viewScript": "schiesser-boutique",
+	"render": "file:./render.php"
+}

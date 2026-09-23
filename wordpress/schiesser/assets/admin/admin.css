@@ -1,0 +1,12 @@
+/* Formulaire produit */
+.schiesser-champs{display:grid;grid-template-columns:1fr 1fr;gap:4px 24px}
+.schiesser-champ{margin:8px 0}
+.schiesser-champ label{display:block;margin-bottom:4px}
+.schiesser-champ input,.schiesser-champ select,.schiesser-champ textarea{width:100%}
+.schiesser-champ .description{display:block;margin-top:4px}
+.schiesser-champs .schiesser-champ:has(textarea),.schiesser-fiche,.schiesser-champs>p.description{grid-column:1/-1}
+.schiesser-fiche{margin-top:12px}
+.schiesser-fiche>.description{display:block;margin:2px 0 8px}
+.schiesser-fiche input{width:100%}
+.schiesser-fiche .js-fiche-retirer{color:#b32d2e;font-size:14px;text-decoration:none}
+@media (max-width:782px){.schiesser-champs{grid-template-columns:1fr}}

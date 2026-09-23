@@ -1,0 +1,13 @@
+/*
+Theme Name: Schiesser
+Theme URI: https://www.confiserie-schiesser.ch
+Author: Aurea Media
+Description: Thème sur mesure pour la Confiserie Schiesser (Bâle). Le design est figé dans le code, le contenu se modifie depuis l'administration : Réglages de la maison, Produits et blocs de page dédiés.
+Version: 0.1.0
+Requires at least: 6.4
+Requires PHP: 7.4
+License: Propriétaire
+Text Domain: schiesser
+*/
+
+/* Les styles du site sont dans assets/css/schiesser.css. */
