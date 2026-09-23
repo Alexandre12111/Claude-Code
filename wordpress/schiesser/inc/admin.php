@@ -134,7 +134,7 @@ function schiesser_page_guide() {
 		array( 'cart', 'Ajouter ou modifier un produit', array(
 			'Menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT ), 'Produits' ) . ', puis « Ajouter un produit » (ou cliquez sur un produit existant).',
 			'Nom, prix, unité, catégorie (à droite), photo (« Photo du produit », à droite), description courte et fiche détaillée.',
-			'Le texte long (zone d\'édition du haut) apparaît sur la page du produit : 2 ou 3 paragraphes suffisent.',
+			'Le texte long (zone d\'édition du haut) apparaît sur la page du produit : quelques paragraphes avec des intertitres (liste « Paragraphe » → « Titre 3 ») pour la préparation, la conservation, les formats et prix, les allergènes.',
 			'Ordre d\'affichage : champ « Ordre » (1 = premier). Cliquez sur <strong>Publier</strong> ou <strong>Mettre à jour</strong>.',
 		) ),
 		array( 'edit-page', 'Modifier le texte ou la photo d\'une page', array(
@@ -147,6 +147,11 @@ function schiesser_page_guide() {
 			'Dans une page, cliquez sur le <strong>+</strong> entre deux sections, cherchez « Section » (catégorie Schiesser).',
 			'Choisissez le fond (clair, sable, sombre…) à droite, écrivez le titre, puis ajoutez du contenu avec le <strong>+</strong> : paragraphes, images, colonnes, boutons, questions fréquentes…',
 			'Plus rapide : onglet « Compositions » de l\'outil d\'ajout, catégorie Schiesser, pour insérer une section toute prête.',
+		) ),
+		array( 'shortcode', 'Écrire les horaires ou l\'adresse dans un texte', array(
+			'Tapez un code court entre crochets dans un paragraphe, par exemple <code>[schiesser_horaires_phrase]</code> : il affiche «&nbsp;du lundi au vendredi de 7&nbsp;h&nbsp;30 à 18&nbsp;h&nbsp;30, …&nbsp;».',
+			'Autres codes : <code>[schiesser_horaires]</code> (tableau), <code>[schiesser_adresse]</code>, <code>[schiesser_telephone]</code>, <code>[schiesser_email]</code>, <code>[schiesser_statut]</code> (ouvert ou fermé).',
+			'Ils se mettent à jour tout seuls quand les Réglages maison changent : rien à retoucher dans les pages.',
 		) ),
 		array( 'art', 'Changer la couleur d\'un mot ou d\'un bouton', array(
 			'Un mot : sélectionnez-le, puis dans la barre d\'outils flèche ▾ → « Surligner » : seules les couleurs de la maison sont proposées.',

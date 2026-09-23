@@ -63,7 +63,8 @@
         action.href = f.panier;
         texte.textContent = 'Ajouter au panier';
       } else {
-        action.href = 'mailto:' + email + '?subject=' + encodeURIComponent('Commande : ' + f.nom);
+        var corps = 'Bonjour,\r\n\r\nJe souhaite commander : ' + f.nom + '\r\nQuantité ou format :\r\nDate de retrait souhaitée :\r\nNom et téléphone :\r\n\r\nMerci et à bientôt,\r\n';
+        action.href = 'mailto:' + email + '?subject=' + encodeURIComponent('Commande : ' + f.nom) + '&body=' + encodeURIComponent(corps);
         texte.textContent = 'Commander';
       }
       action.hidden = !f.panier && !email;

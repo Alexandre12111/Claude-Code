@@ -7,7 +7,7 @@
  * - charte.php        : couleurs et typographie modifiables
  * - reglages.php      : données des « Réglages maison » (horaires, contacts…)
  * - page-reglages.php : l'écran « Réglages maison » de l'administration
- * - shortcodes.php    : codes courts [schiesser_horaires], [schiesser_adresse]…
+ * - shortcodes.php    : codes courts [schiesser_horaires], [schiesser_horaires_phrase], [schiesser_adresse]…
  * - produits.php      : type de contenu « Produits », ses champs et ses pages
  * - blocs.php         : blocs sur mesure (Hero, Section, Grille) et styles des blocs
  * - compositions.php  : sections toutes prêtes de l'éditeur
@@ -19,7 +19,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.2.0' );
+define( 'SCHIESSER_VERSION', '0.2.1' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 

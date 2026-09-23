@@ -125,6 +125,7 @@ function schiesser_donnees_produit( $post ) {
 		'alt'        => $thumb ? (string) get_post_meta( $thumb, '_wp_attachment_image_alt', true ) : '',
 		'panier'     => '',
 		'achetable'  => false,
+		'ordre'      => (int) $post->menu_order,
 	);
 	foreach ( schiesser_champs_produit() as $cle => $c ) {
 		$d[ $cle ] = (string) get_post_meta( $post->ID, '_s_' . $cle, true );
@@ -173,6 +174,31 @@ function schiesser_liste_produits( $source = 'auto', $limite = 0, $exclure = arr
 	return array_map( 'schiesser_donnees_produit', $requete->posts );
 }
 
+/**
+ * Lien e-mail prérempli : objet et trame du message, pour que le client sache quoi écrire.
+ *
+ * @param string $sujet Objet du message.
+ * @param array  $lignes Lignes à compléter (ex. « Quantité : »).
+ */
+function schiesser_mailto( $sujet, $lignes = array() ) {
+	$email = schiesser_reglage( 'email' );
+	if ( ! $email ) {
+		return '';
+	}
+	$corps = "Bonjour,\r\n\r\n" . implode( "\r\n", $lignes ) . "\r\n\r\nMerci et à bientôt,\r\n";
+	return 'mailto:' . $email . '?subject=' . rawurlencode( $sujet ) . '&body=' . rawurlencode( $corps );
+}
+
+/** Lien de commande d'un produit par e-mail. */
+function schiesser_mailto_commande( $nom ) {
+	return schiesser_mailto( 'Commande : ' . $nom, array(
+		'Je souhaite commander : ' . $nom,
+		'Quantité ou format :',
+		'Date de retrait souhaitée :',
+		'Nom et téléphone :',
+	) );
+}
+
 /** Produits liés : d'abord ceux de la même catégorie, puis les autres. */
 function schiesser_produits_lies( $post_id, $nombre = 4 ) {
 	$termes = wp_get_post_terms( $post_id, SCHIESSER_CATEGORIE, array( 'fields' => 'ids' ) );
@@ -189,14 +215,20 @@ function schiesser_produits_lies( $post_id, $nombre = 4 ) {
 		) );
 	}
 	if ( count( $ids ) < $nombre ) {
-		$ids = array_merge( $ids, get_posts( array(
-			'post_type'    => SCHIESSER_PRODUIT,
-			'numberposts'  => $nombre - count( $ids ),
-			'post__not_in' => array_merge( array( $post_id ), $ids ),
-			'fields'       => 'ids',
-			'orderby'      => 'menu_order',
-			'order'        => 'ASC',
+		// Les autres produits, en partant de celui qui suit dans l'ordre d'affichage :
+		// chaque page propose ainsi une sélection différente, jusqu'aux derniers de la liste.
+		$autres = array_map( 'intval', get_posts( array(
+			'post_type'   => SCHIESSER_PRODUIT,
+			'numberposts' => 100,
+			'fields'      => 'ids',
+			'orderby'     => array( 'menu_order' => 'ASC', 'title' => 'ASC' ),
 		) ) );
+		$pos = array_search( (int) $post_id, $autres, true );
+		if ( false !== $pos ) {
+			$autres = array_merge( array_slice( $autres, $pos + 1 ), array_slice( $autres, 0, $pos ) );
+		}
+		$autres = array_values( array_diff( $autres, array_map( 'intval', $ids ) ) );
+		$ids    = array_merge( $ids, array_slice( $autres, 0, $nombre - count( $ids ) ) );
 	}
 	return array_map( 'schiesser_donnees_produit', $ids );
 }
@@ -230,7 +262,7 @@ function schiesser_carte_produit( $p, $i, $fiche_rapide = true ) {
 			<span class="card-see" aria-hidden="true"><?php echo $fiche_rapide ? 'Voir la fiche' : 'Découvrir'; ?></span>
 		</span>
 		<span class="card-body">
-			<span class="card-plate" aria-hidden="true">Pl. <?php echo esc_html( str_pad( (string) ( $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+			<span class="card-plate" aria-hidden="true">Pl. <?php echo esc_html( str_pad( (string) ( ! empty( $p['ordre'] ) ? $p['ordre'] : $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 			<h3 class="card-name"><?php echo esc_html( $p['nom'] ); ?></h3>
 			<?php if ( $p['prix'] ) : ?><span class="card-price"><?php echo esc_html( $p['prix'] ); ?></span><?php endif; ?>
 			<?php if ( $p['unite'] ) : ?><span class="card-unit"><?php echo esc_html( $p['unite'] ); ?></span><?php endif; ?>

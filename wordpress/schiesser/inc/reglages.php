@@ -67,14 +67,14 @@ function schiesser_reglages_defaut() {
 		'ville'              => 'Basel',
 		'region'             => 'Basel-Stadt',
 		'pays'               => 'CH',
-		'mention'            => 'Confiserie fondée à Bâle · Marktplatz',
+		'mention'            => 'Confiserie à Bâle · Marktplatz · depuis 1870',
 		'lien_maps'          => 'https://www.google.com/maps/search/?api=1&query=Confiserie+Schiesser+Marktplatz+Basel',
 		// Horaires
 		'horaires'           => $horaires,
 		'horaires_note'      => 'Les horaires peuvent varier les jours fériés. En cas de doute, un appel suffit.',
 		// Accueil et pied de page
 		'vitrine'            => array( 'Läckerli', 'Truffes', 'Tarte du jour' ),
-		'presentation'       => "Confiserie fondée à Bâle. Une maison, un savoir-faire, la même place depuis plus d'un siècle.",
+		'presentation'       => 'La Confiserie Schiesser est une confiserie artisanale fondée en 1870 sur le Marktplatz de Bâle. Läckerli de Bâle, truffes, pralinés et coffrets y sont préparés à la main, et son salon de thé accueille les visiteurs au premier étage.',
 		'instagram'          => '',
 		'facebook'           => '',
 		// Établissement (SEO)
@@ -135,12 +135,15 @@ function schiesser_horaires_du_jour() {
 	return ( ! $h || ! empty( $h['ferme'] ) ) ? 'Fermé aujourd’hui' : $h['ouverture'] . '–' . $h['fermeture'];
 }
 
-/** Heure à la française : « 07:30 » → « 7 h 30 », « 08:00 » → « 8 h ». */
+/**
+ * Heure à la française : « 07:30 » → « 7 h 30 », « 08:00 » → « 8 h ».
+ * Espaces insécables : l'heure n'est jamais coupée en fin de ligne.
+ */
 function schiesser_heure_fr( $hhmm ) {
 	$p = explode( ':', (string) $hhmm );
 	$h = (int) $p[0];
 	$m = isset( $p[1] ) ? (int) $p[1] : 0;
-	return $m ? sprintf( '%d h %02d', $h, $m ) : sprintf( '%d h', $h );
+	return $m ? sprintf( "%d\u{00A0}h\u{00A0}%02d", $h, $m ) : sprintf( "%d\u{00A0}h", $h );
 }
 
 /**

@@ -43,7 +43,7 @@ $mention = get_page_by_path( 'mentions-legales' ) ?: get_page_by_path( 'impressu
 			</div>
 			<div class="fcol">
 				<h2 class="fcol-titre">Explorer</h2>
-				<?php foreach ( schiesser_liens_menu() as $lien ) : ?>
+				<?php foreach ( schiesser_liens_menu( 'pied' ) as $lien ) : ?>
 					<a href="<?php echo esc_url( $lien['url'] ); ?>"><?php echo esc_html( $lien['titre'] ); ?></a>
 				<?php endforeach; ?>
 			</div>

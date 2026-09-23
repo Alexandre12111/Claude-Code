@@ -72,7 +72,7 @@ while ( have_posts() ) :
 
 				<div class="produit-actions">
 					<?php if ( $email ) : ?>
-						<a class="btn btn-kir" href="<?php echo esc_url( 'mailto:' . $email . '?subject=' . rawurlencode( 'Commande : ' . $p['nom'] ) ); ?>"><span>Commander</span> <span class="a" aria-hidden="true">→</span></a>
+						<a class="btn btn-kir" href="<?php echo esc_url( schiesser_mailto_commande( $p['nom'] ) ); ?>"><span>Commander</span> <span class="a" aria-hidden="true">→</span></a>
 					<?php endif; ?>
 					<?php if ( $tel ) : ?>
 						<a class="btn btn-line" href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><span>Appeler</span></a>
@@ -82,6 +82,21 @@ while ( have_posts() ) :
 			</div>
 		</div>
 	</section>
+
+	<?php if ( $email || $tel ) : ?>
+		<?php // Sur mobile : prix et commande toujours à portée de pouce, tant que les boutons de la fiche ne sont pas à l'écran. ?>
+		<div class="produit-barre js-produit-barre">
+			<?php if ( $p['prix'] ) : ?>
+				<span class="produit-barre-prix"><span class="pv"><?php echo esc_html( $p['prix'] ); ?></span><?php if ( $p['unite'] ) : ?><span class="pk"><?php echo esc_html( $p['unite'] ); ?></span><?php endif; ?></span>
+			<?php endif; ?>
+			<?php if ( $email ) : ?>
+				<a class="btn btn-kir" href="<?php echo esc_url( schiesser_mailto_commande( $p['nom'] ) ); ?>"><span>Commander</span></a>
+			<?php endif; ?>
+			<?php if ( $tel ) : ?>
+				<a class="btn btn-line" href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><span>Appeler</span></a>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
 
 	<?php if ( '' !== trim( wp_strip_all_tags( get_the_content() ) ) ) : ?>
 		<section class="sec bg-soft">

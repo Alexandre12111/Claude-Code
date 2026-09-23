@@ -25,6 +25,7 @@ add_action( 'after_setup_theme', function () {
 
 	register_nav_menus( array(
 		'principal' => 'Menu principal (en-tête)',
+		'pied'      => 'Menu du pied de page (colonne « Explorer »)',
 	) );
 } );
 
@@ -141,13 +142,16 @@ function schiesser_url_boutique() {
  *
  * @return array Liste de [ 'titre' => …, 'url' => …, 'actif' => bool ].
  */
-function schiesser_liens_menu() {
+function schiesser_liens_menu( $position = 'principal' ) {
 	$liens     = array();
 	$courant   = get_queried_object_id();
 	$positions = get_nav_menu_locations();
+	if ( empty( $positions[ $position ] ) ) {
+		$position = 'principal'; // Pas de menu de pied de page : on reprend le menu principal.
+	}
 
-	if ( ! empty( $positions['principal'] ) ) {
-		$elements = wp_get_nav_menu_items( $positions['principal'] );
+	if ( ! empty( $positions[ $position ] ) ) {
+		$elements = wp_get_nav_menu_items( $positions[ $position ] );
 		foreach ( (array) $elements as $el ) {
 			if ( (int) $el->menu_item_parent ) {
 				continue;
@@ -233,3 +237,42 @@ add_action( 'template_redirect', function () {
 		exit;
 	}
 }, 5 );
+
+/**
+ * Typographie française : espace insécable avant « : ; ? ! », à l'intérieur des guillemets « »,
+ * dans les prix (« CHF 6.50 ») et entre un nombre et son unité (« 100 g », « 7 h 30 »).
+ * Un deux-points ou un prix ne se retrouve ainsi jamais coupé en fin de ligne.
+ * Seul le texte est modifié, jamais les balises, les scripts, les styles ni le code.
+ */
+function schiesser_typographie_fr( $html ) {
+	if ( ! is_string( $html ) || ! preg_match( '/ [:;?!»]|« |CHF \d|\d (g|kg|h)\b/u', $html ) ) {
+		return $html;
+	}
+	$parties = preg_split( '/(<[^>]*>)/u', $html, -1, PREG_SPLIT_DELIM_CAPTURE );
+	if ( false === $parties ) {
+		return $html; // texte mal encodé : laissé tel quel
+	}
+	$code = 0;
+	foreach ( $parties as $i => $partie ) {
+		if ( '' === $partie ) {
+			continue;
+		}
+		if ( '<' === $partie[0] ) {
+			if ( preg_match( '#^<(script|style|pre|code|textarea|kbd|samp)\b#i', $partie ) ) {
+				$code++;
+			} elseif ( $code && preg_match( '#^</(script|style|pre|code|textarea|kbd|samp)\s*>#i', $partie ) ) {
+				$code--;
+			}
+			continue;
+		}
+		if ( ! $code ) {
+			$parties[ $i ] = preg_replace(
+				array( '/ ([:;?!»])/u', '/« /u', '/\bCHF (?=\d)/u', '/(\d) h (?=\d)/u', '/(\d) (g|kg|h)\b/u' ),
+				array( "\u{00A0}" . '$1', "«\u{00A0}", "CHF\u{00A0}", '$1' . "\u{00A0}h\u{00A0}", '$1' . "\u{00A0}" . '$2' ),
+				$partie
+			);
+		}
+	}
+	return implode( '', $parties );
+}
+add_filter( 'the_content', 'schiesser_typographie_fr', 20 );

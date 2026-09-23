@@ -33,6 +33,15 @@
     document.querySelectorAll('.rv').forEach(function (el) { el.classList.add('in'); });
   }
 
+  /* page produit sur mobile : la barre de commande s'efface quand les boutons de la fiche sont visibles */
+  var barre = document.querySelector('.js-produit-barre');
+  var actions = document.querySelector('.produit-actions');
+  if (barre && actions && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      barre.classList.toggle('is-cachee', es[0].isIntersecting);
+    }).observe(actions);
+  }
+
   /* ouvert / fermé, d'après les horaires des Réglages de la maison (heure de la boutique) */
   var H = S.horaires || {};
   var fuseau = (S.fuseau && S.fuseau.indexOf('/') > 0) ? S.fuseau : null;

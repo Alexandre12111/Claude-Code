@@ -107,6 +107,7 @@ function schiesser_donnees_produit_wc( $produit ) {
 		'fiche'       => $fiche,
 		'categories'  => $categories,
 		'categorie'   => $categories ? reset( $categories ) : '',
+		'ordre'       => (int) get_post_field( 'menu_order', $id ),
 	);
 }
 
@@ -279,6 +280,17 @@ add_action( 'template_redirect', function () {
 		}
 		if ( preg_match( '#^produits/([^/]+)$#', $chemin, $m ) ) {
 			$post = get_page_by_path( sanitize_title( $m[1] ), OBJECT, SCHIESSER_PRODUIT );
+			if ( ! $post ) {
+				// Ancienne adresse d'un produit renommé (ex. /produits/truffes-maison/) : WordPress la garde en mémoire.
+				$anciens = get_posts( array(
+					'post_type'   => SCHIESSER_PRODUIT,
+					'post_status' => 'any',
+					'numberposts' => 1,
+					'meta_key'    => '_wp_old_slug', // phpcs:ignore WordPress.DB.SlowDBQuery
+					'meta_value'  => sanitize_title( $m[1] ), // phpcs:ignore WordPress.DB.SlowDBQuery
+				) );
+				$post = $anciens ? $anciens[0] : null;
+			}
 		}
 	}
 	if ( ! $post ) {

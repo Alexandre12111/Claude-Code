@@ -395,7 +395,7 @@ function schiesser_schema_faq( $post ) {
 		}
 		$reponse = '';
 		foreach ( $b['innerBlocks'] as $enfant ) {
-			$reponse .= ' ' . render_block( $enfant );
+			$reponse .= ' ' . do_shortcode( render_block( $enfant ) );
 		}
 		$question = schiesser_texte_brut( $m[1] );
 		$reponse  = schiesser_texte_brut( $reponse );

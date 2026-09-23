@@ -13,20 +13,24 @@ Le design de la maquette est figé dans le code ; tout le contenu se modifie dep
 - **SEO complet** : intégration Rank Math, données structurées (établissement, fil d'Ariane, produits, liste de produits, questions), titres et descriptions optimisés pour chaque page du contenu de démonstration.
 - **Prêt pour WooCommerce** : transfert des produits en un clic, redirections automatiques, panier dans l'en-tête, pages boutique aux couleurs de la maison.
 - **Administration repensée** : réglages en onglets, tableau de bord avec raccourcis, Guide du site, page de connexion à la marque, rôle « Gérant(e) du site ».
+- **Optimisation SEO complète (0.2.1)** : textes réécrits après un audit en six volets, fiches produits enrichies, nouvelle page « Cadeaux d’entreprise », menu de pied de page, allergènes précisés. Détail dans `SEO-RAPPORT.md`.
+- **Commande facilitée** : bouton « Commander » avec un e-mail prérempli, et sur mobile une barre de commande fixe sur chaque fiche produit.
+- **Typographie française** : espaces insécables automatiques avant « : ; ? ! » et dans les heures.
 
 ## Installation
 
 ### Première installation (site de test)
 
 1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir `schiesser.zip`, puis **Activer**.
-2. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 6 pages, menu, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
-3. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
+2. **Réglages → Général** : Langue du site « Français », Fuseau horaire « Zurich », Titre du site « Confiserie Schiesser », puis Enregistrer. Ces trois réglages sont lus par Google et par le bandeau « Ouvert / Fermé ».
+3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
+4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
 
-### Mise à jour depuis la version 0.1
+### Mise à jour depuis une version précédente (0.1 ou 0.2.0)
 
 1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir le nouveau `schiesser.zip`, puis **Remplacer la version installée**.
-2. Sur le tableau de bord, cliquer sur **Mettre à jour le contenu de démonstration**. Attention : cela remplace le contenu des 6 pages et des 8 produits de démonstration (sur un site de test, c'est ce que l'on veut).
-3. L'ancienne adresse `/tea-room/` redirige automatiquement vers `/salon-de-the/`.
+2. Sur le tableau de bord, cliquer sur **Mettre à jour le contenu de démonstration**. Attention : cela remplace le contenu des pages et des 8 produits de démonstration (sur un site de test, c'est ce que l'on veut). La page « Cadeaux d’entreprise » et le menu du pied de page sont créés.
+3. Les anciennes adresses redirigent automatiquement vers les nouvelles : `/tea-room/` vers `/salon-de-the/`, et les produits renommés (par exemple `/produits/truffes-maison/` vers `/produits/truffes-au-chocolat/`).
 
 Prérequis : WordPress 6.4 ou plus récent (conseillé : la dernière version), PHP 7.4 ou plus récent.
 Elementor et Code Snippets ne sont pas utilisés : ils peuvent être désactivés.
@@ -47,7 +51,7 @@ Elementor et Code Snippets ne sont pas utilisés : ils peuvent être désactivé
 | Contenu | Où | Effet |
 |---|---|---|
 | Téléphone, e-mail, adresse, horaires, vitrine du jour, pied de page, réseaux sociaux | **Réglages maison** | Mis à jour partout : bandeau « Ouvert / Fermé », pied de page, pages Visiter et Contact, fiche Google |
-| Fiche Google (type d'établissement, position, année de fondation) | **Réglages maison → Fiche Google et SEO** | Données structurées lues par Google |
+| Fiche Google (type d'établissement, position, année de fondation, canton, raison sociale, numéro IDE, profils officiels) | **Réglages maison → Fiche Google et SEO** | Données structurées lues par Google et les moteurs d'IA |
 | Produits (nom, photo, catégorie, prix, badge, fiche, présentation) | **Produits** | Grille de la boutique, fiche rapide et page du produit |
 | Ordre des produits | **Produits → Modifier → Ordre d'affichage** | 1 = premier |
 | Catégories (filtres de la boutique) | **Produits → Catégories** | Les filtres apparaissent automatiquement |
@@ -56,7 +60,7 @@ Elementor et Code Snippets ne sont pas utilisés : ils peuvent être désactivé
 | Couleurs et polices du site | **Réglages maison → Charte graphique** (administrateur) | Tout le site et l'éditeur suivent |
 | Code sur toutes les pages (statistiques, pixel) | **Réglages maison → Avancé** (administrateur) | Ajouté dans l'en-tête ou en fin de page |
 | Code sur une seule page (widget de réservation, carte, avis) | Bloc **HTML personnalisé** dans une Section | Le reste de la page reste modifiable normalement |
-| Menu | **Apparence → Menus** | En-tête et pied de page |
+| Menus | **Apparence → Menus** | « Menu principal » pour l'en-tête, « Menu du pied de page » pour la colonne Explorer (sans lui, le pied de page reprend le menu principal) |
 
 Un **Guide du site** pas à pas se trouve dans le menu Réglages maison.
 
@@ -66,7 +70,17 @@ Un **Guide du site** pas à pas se trouve dans le menu Réglages maison.
 - **Section** : fond (papier, clair, crème, sable, chocolat), largeur (large ou lecture), en-tête facultatif, ancre pour les liens directs, contenu libre.
 - **Grille des produits** : titre et note modifiables, nombre de produits, filtres, source (produits du site ou WooCommerce), bouton « Voir toute la boutique ».
 
-Codes courts utilisables partout (bloc « Code court » ou dans un paragraphe) : `[schiesser_horaires]`, `[schiesser_statut]`, `[schiesser_adresse]`, `[schiesser_telephone]`, `[schiesser_email]`, `[schiesser_itineraire texte="Itinéraire"]`.
+Codes courts utilisables partout (bloc « Code court » ou dans un paragraphe). Ils se mettent à jour tout seuls quand les Réglages maison changent :
+
+| Code court | Affiche |
+|---|---|
+| `[schiesser_horaires]` | Le tableau des horaires, jour courant mis en avant |
+| `[schiesser_horaires_phrase]` | Les horaires dans une phrase : « du lundi au vendredi de 7 h 30 à 18 h 30, … » |
+| `[schiesser_statut]` | « Ouvert » ou « Fermé » en direct |
+| `[schiesser_adresse]` | L'adresse sur deux lignes |
+| `[schiesser_telephone]` | Le numéro, cliquable |
+| `[schiesser_email]` | L'adresse e-mail, cliquable |
+| `[schiesser_itineraire texte="Itinéraire"]` | Un bouton vers Google Maps |
 
 ## Rank Math : réglages conseillés
 
@@ -97,13 +111,15 @@ Ce parcours a été testé ici avec une imitation de WooCommerce (l'extension ne
 
 ## Avant la mise en ligne
 
-- Relire tous les textes de démonstration (dates, chiffres, prix, affirmations historiques) et les faire valider par la maison.
+- Vérifier **Réglages → Général** (langue Français, fuseau Zurich, titre « Confiserie Schiesser ») et, le jour du lancement, décocher « Demander aux moteurs de recherche de ne pas indexer ce site » dans **Réglages → Lecture**.
+- Relire tous les textes de démonstration (dates, chiffres, prix, allergènes, affirmations historiques) et les faire valider par la maison : la liste des faits à vérifier est dans `SEO-RAPPORT.md`, section 7.
 - Remplacer les photos par les photos de la maison, avec un texte alternatif descriptif pour chacune.
 - Saisir les vraies coordonnées et les horaires dans Réglages maison, ainsi que la position exacte (latitude, longitude).
 - Compléter et publier la page **Mentions légales** (brouillon créé par l'import) et la **Politique de confidentialité** (nLPD).
 - Créer ou mettre à jour la fiche **Google Business Profile** avec exactement le même nom, la même adresse et le même téléphone.
 - Mettre le site en HTTPS, activer un cache, programmer des sauvegardes.
 - Relier Google Search Console et envoyer le plan du site.
+- Si le site remplace le site actuel : redirections 301 de toutes les anciennes adresses (voir `SEO-RAPPORT.md`, section 9).
 
 ## Organisation du code
 

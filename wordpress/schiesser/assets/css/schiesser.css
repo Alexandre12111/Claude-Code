@@ -1453,3 +1453,30 @@ h3.card-name{font-size:clamp(17px,1.6vw,21px)}
   .sh-im img{position:absolute;inset:0}
   .sh-tx{min-height:0}
 }
+
+/* page produit sur mobile : le prix et les boutons de commande passent avant la fiche détaillée */
+@media(max-width:899px){
+  .produit-photo{aspect-ratio:4/3}
+  .produit-texte{display:flex;flex-direction:column}
+  .produit-texte>.crumb{order:0}
+  .produit-texte>.sh-k{order:1;align-self:flex-start}
+  .produit-texte>h1{order:2}
+  .produit-texte>.produit-desc{order:3}
+  .produit-texte>.sh-price{order:4;margin-top:18px}
+  .produit-texte>.produit-actions{order:5;margin-top:20px}
+  .produit-texte>.sh-rows{order:6;margin-top:30px}
+  .produit-texte>.produit-note{order:7}
+}
+
+/* page produit sur mobile : barre de commande fixe, effacée quand les boutons de la fiche sont à l'écran */
+.produit-barre{display:none}
+@media(max-width:899px){
+  .produit-barre{position:fixed;left:0;right:0;bottom:0;z-index:950;display:flex;align-items:center;gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px));background:var(--paper-3);border-top:1px solid var(--line);box-shadow:0 -10px 30px color-mix(in srgb,var(--ink) 8%,transparent);transition:transform .35s var(--ease-out),visibility .35s}
+  .produit-barre.is-cachee{transform:translateY(110%);visibility:hidden}
+  .produit-barre-prix{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;line-height:1.1}
+  .produit-barre-prix .pv{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--vert);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .produit-barre-prix .pk{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .produit-barre .btn{min-height:44px;padding:0 16px;font-size:11px}
+  .produit-barre .btn:first-child{margin-left:auto}
+  .single-schiesser_produit .site-footer{padding-bottom:calc(clamp(96px,13vw,200px) + 72px)}
+}
