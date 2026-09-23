@@ -609,9 +609,9 @@ function schiesser_demo_pages() {
 		array( 'titre' => 'Notre histoire', 'slug' => 'notre-histoire', 'anciens' => array(), 'contenu' => $histoire,
 			'seo' => array( 'titre' => 'Confiserie historique à Bâle | Depuis 1870 – Schiesser', 'description' => 'Confiserie historique à Bâle fondée en 1870 sur le Marktplatz : cinq générations, une seule adresse et des gestes transmis à la main. Notre histoire.', 'mots_cles' => array( 'confiserie historique à Bâle', 'histoire Confiserie Schiesser' ) ) ),
 		array( 'titre' => 'Nous visiter', 'slug' => 'nous-visiter', 'anciens' => array(), 'contenu' => $visiter,
-			'seo' => array( 'titre' => 'Confiserie au Marktplatz | Horaires et accès – Schiesser', 'description' => 'Confiserie au Marktplatz de Bâle, à deux pas du tram : horaires d’ouverture à jour, adresse, accès et conseils pratiques pour votre visite.', 'mots_cles' => array( 'confiserie au Marktplatz', 'horaires Confiserie Schiesser', 'Marktplatz Bâle' ) ) ),
+			'seo' => array( 'titre' => 'Confiserie au Marktplatz | Horaires et accès – Schiesser', 'description' => 'Confiserie au Marktplatz de Bâle, à deux pas du tram : horaires d’ouverture à jour, adresse, accès et conseils pratiques pour préparer votre visite.', 'mots_cles' => array( 'confiserie au Marktplatz', 'horaires Confiserie Schiesser', 'Marktplatz Bâle' ) ) ),
 		array( 'titre' => 'Contact', 'slug' => 'contact', 'anciens' => array(), 'contenu' => $contact,
-			'seo' => array( 'titre' => 'Contacter la Confiserie Schiesser | Commandes et questions', 'description' => 'Contacter la Confiserie Schiesser à Bâle : commande de gâteau, coffret cadeau, réservation de groupe ou simple question. Écrivez-nous ou appelez-nous.', 'mots_cles' => array( 'contacter la Confiserie Schiesser', 'commande gâteau Bâle' ) ) ),
+			'seo' => array( 'titre' => 'Contacter la Confiserie Schiesser | Commandes à Bâle', 'description' => 'Contacter la Confiserie Schiesser à Bâle : commande de gâteau, coffret cadeau, réservation de groupe ou simple question. Écrivez-nous ou appelez-nous.', 'mots_cles' => array( 'contacter la Confiserie Schiesser', 'commande gâteau Bâle' ) ) ),
 		array( 'titre' => 'Mentions légales', 'slug' => 'mentions-legales', 'anciens' => array(), 'contenu' => $mentions, 'statut' => 'draft',
 			'seo' => array( 'titre' => 'Mentions légales | Confiserie Schiesser', 'description' => 'Mentions légales du site de la Confiserie Schiesser, confiserie et salon de thé au Marktplatz de Bâle : éditeur, hébergement et crédits.', 'mots_cles' => array( 'mentions légales' ) ) ),
 	);
@@ -701,7 +701,7 @@ function schiesser_importer_demo( $remplacer = false ) {
 		if ( $page ) {
 			$donnees['ID']          = $page->ID;
 			$donnees['post_status'] = $page->post_status;
-			if ( $page->post_name !== $p['slug'] ) {
+			if ( $page->post_name !== $p['slug'] && ! in_array( $page->post_name, (array) get_post_meta( $page->ID, '_schiesser_ancien_slug' ), true ) ) {
 				// L'ancienne adresse (ex. /tea-room/) redirigera vers la nouvelle.
 				add_post_meta( $page->ID, '_schiesser_ancien_slug', $page->post_name );
 			}
@@ -711,6 +711,12 @@ function schiesser_importer_demo( $remplacer = false ) {
 		}
 		if ( $ids[ $p['slug'] ] && ! is_wp_error( $ids[ $p['slug'] ] ) ) {
 			schiesser_demo_seo( $ids[ $p['slug'] ], $p['seo'] );
+			// Anciennes adresses connues (ex. /tea-room/ de la version 0.1) : elles redirigent vers la page.
+			foreach ( $p['anciens'] as $ancien ) {
+				if ( ! in_array( $ancien, (array) get_post_meta( $ids[ $p['slug'] ], '_schiesser_ancien_slug' ), true ) ) {
+					add_post_meta( $ids[ $p['slug'] ], '_schiesser_ancien_slug', $ancien );
+				}
+			}
 		}
 	}
 
@@ -723,6 +729,13 @@ function schiesser_importer_demo( $remplacer = false ) {
 		if ( $p && $p->post_modified_gmt === $p->post_date_gmt ) {
 			wp_delete_post( $p->ID, true );
 		}
+	}
+
+	/* Gamme de prix : l'ancienne valeur par défaut « CHF » (sans chiffres) devient une vraie fourchette. */
+	$reglages = (array) get_option( SCHIESSER_OPTION, array() );
+	if ( isset( $reglages['gamme_prix'] ) && 'CHF' === trim( $reglages['gamme_prix'] ) ) {
+		$reglages['gamme_prix'] = schiesser_reglages_defaut()['gamme_prix'];
+		update_option( SCHIESSER_OPTION, $reglages );
 	}
 
 	/* Slogan du site (titre de l'onglet, données pour Google), s'il n'a jamais été changé */

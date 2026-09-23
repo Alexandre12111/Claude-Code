@@ -67,6 +67,18 @@ add_action( 'wp_head', function () {
 	}
 }, 1 );
 
+/*
+ * Images : toutes celles du contenu se chargent au défilement (« lazy »).
+ * Les photos visibles dès l'ouverture (grande photo du Hero, photo d'une page produit)
+ * demandent elles-mêmes un chargement immédiat et prioritaire.
+ */
+add_filter( 'wp_omit_loading_attr_threshold', '__return_zero' );
+
+/* En-tête HTML allégé : version de WordPress, liens techniques inutiles pour ce site. */
+remove_action( 'wp_head', 'wp_generator' );
+remove_action( 'wp_head', 'rsd_link' );
+remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+
 /* Allègement : les émojis de WordPress ne servent pas ici (un script et un style en moins). */
 add_action( 'init', function () {
 	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );

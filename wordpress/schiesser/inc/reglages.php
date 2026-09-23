@@ -65,6 +65,7 @@ function schiesser_reglages_defaut() {
 		'rue'                => 'Marktplatz',
 		'code_postal'        => '4001',
 		'ville'              => 'Basel',
+		'region'             => 'Basel-Stadt',
 		'pays'               => 'CH',
 		'mention'            => 'Confiserie fondée à Bâle · Marktplatz',
 		'lien_maps'          => 'https://www.google.com/maps/search/?api=1&query=Confiserie+Schiesser+Marktplatz+Basel',
@@ -79,7 +80,7 @@ function schiesser_reglages_defaut() {
 		// Établissement (SEO)
 		'nom_etablissement'  => 'Confiserie Schiesser',
 		'type_etablissement' => 'Bakery,CafeOrCoffeeShop',
-		'gamme_prix'         => 'CHF',
+		'gamme_prix'         => 'CHF 2–30',
 		'annee_fondation'    => '1870',
 		'latitude'           => '47.5584',
 		'longitude'          => '7.5878',
@@ -171,7 +172,7 @@ function schiesser_nettoyer_reglages( $entree ) {
 	}
 	$propre = $defaut;
 
-	$textes = array( 'telephone', 'rue', 'code_postal', 'ville', 'mention', 'horaires_note', 'nom_etablissement', 'gamme_prix', 'annee_fondation' );
+	$textes = array( 'telephone', 'rue', 'code_postal', 'ville', 'region', 'mention', 'horaires_note', 'nom_etablissement', 'gamme_prix', 'annee_fondation' );
 	foreach ( $textes as $cle ) {
 		$propre[ $cle ] = isset( $entree[ $cle ] ) ? sanitize_text_field( $entree[ $cle ] ) : '';
 	}

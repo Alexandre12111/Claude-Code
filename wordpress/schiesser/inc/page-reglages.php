@@ -164,6 +164,7 @@ function schiesser_page_reglages() {
 					schiesser_champ( $o, 'rue', $r['rue'], array( 'libelle' => 'Rue et numéro', 'placeholder' => 'Marktplatz 19' ) );
 					schiesser_champ( $o, 'code_postal', $r['code_postal'], array( 'libelle' => 'Code postal', 'classe' => 's-court' ) );
 					schiesser_champ( $o, 'ville', $r['ville'], array( 'libelle' => 'Ville' ) );
+					schiesser_champ( $o, 'region', $r['region'], array( 'libelle' => 'Canton ou région', 'placeholder' => 'Basel-Stadt' ) );
 					schiesser_champ( $o, 'pays', $r['pays'], array( 'libelle' => 'Pays', 'type' => 'select', 'options' => schiesser_pays() ) );
 					schiesser_champ( $o, 'lien_maps', $r['lien_maps'], array( 'libelle' => 'Lien Google Maps', 'type' => 'url', 'aide' => 'Utilisé par les boutons « Itinéraire ». Astuce : sur Google Maps, cherchez la confiserie, puis « Partager » et copiez le lien.', 'classe' => 's-large' ) );
 					schiesser_champ( $o, 'mention', $r['mention'], array( 'libelle' => 'Mention du bandeau du haut', 'aide' => 'Petit texte affiché à droite du bandeau sombre, tout en haut du site.', 'classe' => 's-large' ) );
@@ -223,7 +224,7 @@ function schiesser_page_reglages() {
 					<?php
 					schiesser_champ( $o, 'nom_etablissement', $r['nom_etablissement'], array( 'libelle' => 'Nom de l\'établissement' ) );
 					schiesser_champ( $o, 'type_etablissement', $r['type_etablissement'], array( 'libelle' => 'Type d\'établissement', 'type' => 'select', 'options' => schiesser_types_etablissement() ) );
-					schiesser_champ( $o, 'gamme_prix', $r['gamme_prix'], array( 'libelle' => 'Gamme de prix', 'aide' => 'Ex. « CHF » ou « CHF 5–30 ».', 'classe' => 's-court' ) );
+					schiesser_champ( $o, 'gamme_prix', $r['gamme_prix'], array( 'libelle' => 'Gamme de prix', 'aide' => 'Prix habituels, ex. « CHF 2–30 ». Laisser vide si vous préférez ne rien indiquer.', 'classe' => 's-court' ) );
 					schiesser_champ( $o, 'annee_fondation', $r['annee_fondation'], array( 'libelle' => 'Année de fondation', 'classe' => 's-court' ) );
 					schiesser_champ( $o, 'latitude', $r['latitude'], array( 'libelle' => 'Latitude', 'aide' => 'Sur Google Maps : clic droit sur la boutique, le premier chiffre.', 'classe' => 's-court' ) );
 					schiesser_champ( $o, 'longitude', $r['longitude'], array( 'libelle' => 'Longitude', 'aide' => 'Le second chiffre.', 'classe' => 's-court' ) );
@@ -237,6 +238,10 @@ function schiesser_page_reglages() {
 				<?php schiesser_carte_fin(); ?>
 
 				<?php schiesser_carte_debut( 'Référencement (SEO)', '', 'chart-line' ); ?>
+				<?php if ( 0 !== strpos( get_locale(), 'fr' ) ) : ?>
+					<p class="s-etat s-etat--alerte"><span class="dashicons dashicons-translation" aria-hidden="true"></span> <strong>La langue du site n'est pas le français</strong> (<?php echo esc_html( get_locale() ); ?>) : Google risque de mal comprendre les pages.
+					<?php if ( current_user_can( 'manage_options' ) ) : ?><a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">Réglages → Général → Langue du site : Français</a><?php endif; ?></p>
+				<?php endif; ?>
 				<?php if ( schiesser_rank_math_actif() ) : ?>
 					<p class="s-etat s-etat--ok"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span> <strong>Rank Math SEO est actif.</strong> Titres, descriptions et mots-clés se règlent dans chaque page (panneau Rank Math de l'éditeur). Le thème complète automatiquement les données structurées de Rank Math avec cette fiche, les produits et les questions fréquentes.</p>
 				<?php else : ?>

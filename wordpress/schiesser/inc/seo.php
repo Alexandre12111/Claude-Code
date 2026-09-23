@@ -31,17 +31,20 @@ function schiesser_devise() {
 /* Fiche établissement                                                 */
 /* ------------------------------------------------------------------ */
 
-/** Image représentative de la maison : logo, sinon icône du site, sinon photo du Hero de l'accueil. */
-function schiesser_image_maison() {
+/** Logo de la maison : logo du site (Apparence → Personnaliser → Identité du site), sinon icône du site. */
+function schiesser_logo_maison() {
 	$logo = (int) get_theme_mod( 'custom_logo' );
 	if ( $logo && wp_get_attachment_image_url( $logo, 'full' ) ) {
 		return wp_get_attachment_image_url( $logo, 'full' );
 	}
-	if ( get_site_icon_url( 512 ) ) {
-		return get_site_icon_url( 512 );
-	}
+	return (string) get_site_icon_url( 512 );
+}
+
+/** Image représentative de la maison : photo du Hero de l'accueil, sinon le logo. */
+function schiesser_image_maison() {
 	$accueil = (int) get_option( 'page_on_front' );
-	return $accueil ? schiesser_image_page( $accueil ) : '';
+	$photo   = $accueil ? schiesser_image_page( $accueil ) : '';
+	return $photo ?: schiesser_logo_maison();
 }
 
 /**
@@ -65,7 +68,10 @@ function schiesser_schema_etablissement() {
 	$image = schiesser_image_maison();
 	if ( $image ) {
 		$schema['image'] = $image;
-		$schema['logo']  = $image;
+	}
+	$logo = schiesser_logo_maison();
+	if ( $logo ) {
+		$schema['logo'] = $logo;
 	}
 	if ( $r['telephone'] ) {
 		$schema['telephone'] = $r['telephone'];
@@ -78,6 +84,7 @@ function schiesser_schema_etablissement() {
 		'streetAddress'   => $r['rue'],
 		'postalCode'      => $r['code_postal'],
 		'addressLocality' => $r['ville'],
+		'addressRegion'   => $r['region'] ?? '',
 		'addressCountry'  => $r['pays'],
 	) );
 	if ( is_numeric( $r['latitude'] ) && is_numeric( $r['longitude'] ) ) {
@@ -112,7 +119,8 @@ function schiesser_schema_etablissement() {
 		);
 	}
 
-	if ( $r['gamme_prix'] ) {
+	// Gamme de prix : une fourchette (« CHF 2–30 ») ou des symboles (« $$ ») ; un code devise seul ne veut rien dire.
+	if ( preg_match( '/\d|\$/', (string) $r['gamme_prix'] ) ) {
 		$schema['priceRange'] = $r['gamme_prix'];
 	}
 	if ( 'CH' === $r['pays'] ) {
@@ -295,18 +303,33 @@ function schiesser_schema_produit( $post ) {
 			);
 		}
 	}
+	// Google exige un prix pour décrire un produit : sans prix chiffré (« Sur commande »), pas de données Product.
+	// Astuce pour le client : saisir « Dès CHF 45 » active les données avec un prix de départ.
 	$prix = schiesser_prix_numerique( $p['prix'] );
-	if ( null !== $prix && $prix > 0 ) {
-		$schema['offers'] = array(
-			'@type'         => 'Offer',
+	if ( null === $prix || $prix <= 0 ) {
+		return null;
+	}
+	$offre = array(
+		'@type'         => 'Offer',
+		'url'           => $p['url'],
+		'price'         => number_format( $prix, 2, '.', '' ),
+		'priceCurrency' => schiesser_devise(),
+		'availability'  => 'https://schema.org/InStock',
+		'itemCondition' => 'https://schema.org/NewCondition',
+		'seller'        => array( '@id' => home_url( '/#organization' ) ),
+	);
+	if ( preg_match( '/\b(dès|des|à partir|a partir|ab)\b/iu', (string) $p['prix'] ) ) {
+		// prix de départ : « Dès CHF 45 »
+		$offre = array(
+			'@type'         => 'AggregateOffer',
 			'url'           => $p['url'],
-			'price'         => number_format( $prix, 2, '.', '' ),
+			'lowPrice'      => number_format( $prix, 2, '.', '' ),
 			'priceCurrency' => schiesser_devise(),
+			'offerCount'    => 1,
 			'availability'  => 'https://schema.org/InStock',
-			'itemCondition' => 'https://schema.org/NewCondition',
-			'seller'        => array( '@id' => home_url( '/#organization' ) ),
 		);
 	}
+	$schema['offers'] = $offre;
 	return $schema;
 }
 
@@ -372,6 +395,28 @@ function schiesser_schema_faq( $post ) {
 	);
 }
 
+/** Informations de base du nœud « page » (utilisées sans Rank Math, et pour compléter Rank Math). */
+function schiesser_schema_page_complements() {
+	if ( ! is_singular() ) {
+		return array();
+	}
+	$id    = get_queried_object_id();
+	$desc  = schiesser_description_page( $id );
+	$image = schiesser_image_page( $id );
+	$page  = array(
+		'isPartOf'   => array( '@id' => home_url( '/#website' ) ),
+		'about'      => array( '@id' => home_url( '/#organization' ) ),
+		'inLanguage' => get_bloginfo( 'language' ),
+	);
+	if ( $desc ) {
+		$page['description'] = $desc;
+	}
+	if ( $image ) {
+		$page['primaryImageOfPage'] = array( '@type' => 'ImageObject', 'url' => $image );
+	}
+	return $page;
+}
+
 /** Toutes les données propres à la page affichée. */
 function schiesser_schemas_page() {
 	$sortie = array();
@@ -385,7 +430,10 @@ function schiesser_schemas_page() {
 		$sortie['breadcrumb'] = $ariane;
 	}
 	if ( is_singular( SCHIESSER_PRODUIT ) ) {
-		$sortie['product'] = schiesser_schema_produit( $post );
+		$produit = schiesser_schema_produit( $post );
+		if ( $produit ) {
+			$sortie['product'] = $produit;
+		}
 	}
 	$liste = schiesser_schema_liste_produits( $post );
 	if ( $liste ) {
@@ -471,6 +519,8 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 
 	if ( null !== $page_cle ) {
 		$data[ $page_cle ]['@type'] = schiesser_type_page();
+		// Rank Math garde ses valeurs ; le thème ne comble que les informations manquantes.
+		$data[ $page_cle ] += schiesser_schema_page_complements();
 		if ( ! $deja_ariane && isset( $data['schiesser_breadcrumb'] ) ) {
 			$data[ $page_cle ]['breadcrumb'] = array( '@id' => $data['schiesser_breadcrumb']['@id'] );
 		}
@@ -566,9 +616,11 @@ add_action( 'wp_head', function () {
 	echo '<script type="application/ld+json">' . wp_json_encode( array( '@context' => 'https://schema.org', '@graph' => $graphe ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . "</script>\n";
 }, 2 );
 
-/* Pages sans intérêt pour Google : résultats de recherche interne et page introuvable. */
+/* Pages sans intérêt pour Google : recherche interne, page introuvable, archives vides. */
 add_filter( 'wp_robots', function ( $robots ) {
-	if ( ! schiesser_rank_math_actif() && ( is_search() || is_404() ) ) {
+	global $wp_query;
+	$archive_vide = is_archive() && $wp_query && 0 === (int) $wp_query->post_count;
+	if ( ! schiesser_rank_math_actif() && ( is_search() || is_404() || $archive_vide ) ) {
 		$robots['noindex'] = true;
 		$robots['follow']  = true;
 	}
