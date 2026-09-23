@@ -228,6 +228,9 @@ function schiesser_page_reglages() {
 					schiesser_champ( $o, 'annee_fondation', $r['annee_fondation'], array( 'libelle' => 'Année de fondation', 'classe' => 's-court' ) );
 					schiesser_champ( $o, 'latitude', $r['latitude'], array( 'libelle' => 'Latitude', 'aide' => 'Sur Google Maps : clic droit sur la boutique, le premier chiffre.', 'classe' => 's-court' ) );
 					schiesser_champ( $o, 'longitude', $r['longitude'], array( 'libelle' => 'Longitude', 'aide' => 'Le second chiffre.', 'classe' => 's-court' ) );
+					schiesser_champ( $o, 'raison_sociale', $r['raison_sociale'], array( 'libelle' => 'Raison sociale', 'placeholder' => 'Ex. Confiserie Schiesser AG', 'aide' => 'Nom officiel inscrit au registre du commerce.' ) );
+					schiesser_champ( $o, 'numero_ide', $r['numero_ide'], array( 'libelle' => 'Numéro IDE', 'placeholder' => 'CHE-123.456.789', 'classe' => 's-court' ) );
+					schiesser_champ( $o, 'profils', $r['profils'], array( 'libelle' => 'Profils officiels de la maison', 'type' => 'textarea', 'classe' => 's-large', 'placeholder' => "https://maps.google.com/?cid=…\nhttps://www.tripadvisor.fr/…", 'aide' => 'Une adresse par ligne : fiche Google, Tripadvisor, local.ch, Wikidata… Google relie ainsi ces profils au site. Instagram et Facebook se saisissent dans l\'onglet Accueil et pied de page.' ) );
 					$pages = array( 0 => 'Automatique (page « boutique »)' );
 					foreach ( get_pages() as $p ) {
 						$pages[ $p->ID ] = $p->post_title;

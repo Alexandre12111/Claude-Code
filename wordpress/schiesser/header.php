@@ -19,8 +19,8 @@ defined( 'ABSPATH' ) || exit;
 <div class="meta" role="region" aria-label="Ouverture du jour">
 	<div class="wrap">
 		<div class="l">
-			<span class="status"><span class="led js-led"></span><span class="js-statut">Ouvert</span> · <span class="js-heures"></span></span>
-			<span class="js-date"></span>
+			<span class="status" data-nosnippet><span class="led js-led"></span><span class="js-statut">Aujourd’hui</span> · <span class="js-heures"><?php echo esc_html( schiesser_horaires_du_jour() ); ?></span></span>
+			<span class="js-date" data-nosnippet></span>
 		</div>
 		<div class="r"><?php echo esc_html( schiesser_reglage( 'mention' ) ); ?></div>
 	</div>

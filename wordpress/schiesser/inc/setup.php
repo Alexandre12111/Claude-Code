@@ -50,6 +50,11 @@ add_action( 'wp_enqueue_scripts', function () {
 	) );
 } );
 
+/* JavaScript disponible : les effets d'apparition peuvent masquer les éléments en attendant leur arrivée. */
+add_action( 'wp_head', function () {
+	echo "<script>document.documentElement.classList.add('js')</script>\n";
+}, 0 );
+
 add_action( 'wp_head', function () {
 	echo '<meta name="theme-color" content="' . esc_attr( schiesser_charte()['couleurs']['dark'] ) . '">' . "\n";
 
@@ -183,7 +188,7 @@ function schiesser_logo( $sous_titre = 'Seit 1870' ) {
 	?>
 	<span class="x-lg-over">Confiserie <i class="x-diamond x-lg-dia"></i> Tea-Room</span>
 	<span class="x-lg-name">Schiesser</span>
-	<span class="x-lg-under"><?php echo esc_html( $sous_titre ); ?></span>
+	<span class="x-lg-under" lang="de"><?php echo esc_html( $sous_titre ); ?></span>
 	<?php
 }
 

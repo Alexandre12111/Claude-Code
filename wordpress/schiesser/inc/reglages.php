@@ -85,6 +85,9 @@ function schiesser_reglages_defaut() {
 		'latitude'           => '47.5584',
 		'longitude'          => '7.5878',
 		'page_boutique'      => 0,
+		'raison_sociale'     => '',
+		'numero_ide'         => '',
+		'profils'            => '',
 	);
 }
 
@@ -124,6 +127,47 @@ function schiesser_horaires_js() {
 function schiesser_heure_decimale( $hhmm ) {
 	$p = explode( ':', (string) $hhmm );
 	return (int) $p[0] + ( isset( $p[1] ) ? (int) $p[1] / 60 : 0 );
+}
+
+/** Horaires du jour dans le fuseau du site, ex. « 07:30–18:30 », ou « Fermé aujourd'hui ». */
+function schiesser_horaires_du_jour() {
+	$h = schiesser_reglage( 'horaires' )[ (int) wp_date( 'w' ) ] ?? null;
+	return ( ! $h || ! empty( $h['ferme'] ) ) ? 'Fermé aujourd’hui' : $h['ouverture'] . '–' . $h['fermeture'];
+}
+
+/** Heure à la française : « 07:30 » → « 7 h 30 », « 08:00 » → « 8 h ». */
+function schiesser_heure_fr( $hhmm ) {
+	$p = explode( ':', (string) $hhmm );
+	$h = (int) $p[0];
+	$m = isset( $p[1] ) ? (int) $p[1] : 0;
+	return $m ? sprintf( '%d h %02d', $h, $m ) : sprintf( '%d h', $h );
+}
+
+/**
+ * Horaires en une phrase, ex. « du lundi au vendredi de 7 h 30 à 18 h 30, le samedi de 8 h à 18 h
+ * et le dimanche de 9 h à 17 h ». Toujours à jour : elle est calculée depuis les réglages.
+ */
+function schiesser_horaires_phrase() {
+	$noms    = array( 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi', 0 => 'dimanche' );
+	$tous    = schiesser_reglage( 'horaires' );
+	$groupes = array();
+	foreach ( schiesser_jours() as $n => $nom ) {
+		$h     = $tous[ $n ];
+		$texte = ! empty( $h['ferme'] ) ? 'fermé' : 'de ' . schiesser_heure_fr( $h['ouverture'] ) . ' à ' . schiesser_heure_fr( $h['fermeture'] );
+		$der   = count( $groupes ) - 1;
+		if ( $der >= 0 && $groupes[ $der ]['texte'] === $texte ) {
+			$groupes[ $der ]['fin'] = $noms[ $n ];
+		} else {
+			$groupes[] = array( 'debut' => $noms[ $n ], 'fin' => null, 'texte' => $texte );
+		}
+	}
+	$parties = array();
+	foreach ( $groupes as $g ) {
+		$jours     = $g['fin'] ? 'du ' . $g['debut'] . ' au ' . $g['fin'] : 'le ' . $g['debut'];
+		$parties[] = $jours . ' ' . $g['texte'];
+	}
+	$dernier = array_pop( $parties );
+	return $parties ? implode( ', ', $parties ) . ' et ' . $dernier : (string) $dernier;
 }
 
 /** Résumé lisible, par ex. « Lun–Ven 07:30–18:30 · Sam 08:00–18:00 ». */
@@ -172,12 +216,21 @@ function schiesser_nettoyer_reglages( $entree ) {
 	}
 	$propre = $defaut;
 
-	$textes = array( 'telephone', 'rue', 'code_postal', 'ville', 'region', 'mention', 'horaires_note', 'nom_etablissement', 'gamme_prix', 'annee_fondation' );
+	$textes = array( 'telephone', 'rue', 'code_postal', 'ville', 'region', 'mention', 'horaires_note', 'nom_etablissement', 'gamme_prix', 'annee_fondation', 'raison_sociale', 'numero_ide' );
 	foreach ( $textes as $cle ) {
 		$propre[ $cle ] = isset( $entree[ $cle ] ) ? sanitize_text_field( $entree[ $cle ] ) : '';
 	}
 	$propre['email']        = isset( $entree['email'] ) ? sanitize_email( $entree['email'] ) : '';
 	$propre['presentation'] = isset( $entree['presentation'] ) ? sanitize_textarea_field( $entree['presentation'] ) : '';
+	// Profils officiels : une adresse par ligne (Google, Tripadvisor, Wikidata…).
+	$profils = array();
+	foreach ( preg_split( '/\r\n|\r|\n/', (string) ( $entree['profils'] ?? '' ) ) as $ligne ) {
+		$url = esc_url_raw( trim( $ligne ) );
+		if ( $url ) {
+			$profils[] = $url;
+		}
+	}
+	$propre['profils'] = implode( "\n", $profils );
 	foreach ( array( 'instagram', 'facebook', 'lien_maps' ) as $cle ) {
 		$propre[ $cle ] = isset( $entree[ $cle ] ) ? esc_url_raw( $entree[ $cle ] ) : '';
 	}

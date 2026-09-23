@@ -78,7 +78,7 @@ while ( have_posts() ) :
 						<a class="btn btn-line" href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><span>Appeler</span></a>
 					<?php endif; ?>
 				</div>
-				<p class="produit-note"><i class="x-diamond" aria-hidden="true"></i> Retrait en boutique, <?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?> · <?php echo esc_html( schiesser_horaires_resume() ); ?></p>
+				<p class="produit-note"><i class="x-diamond" aria-hidden="true"></i> Fait main par la <?php echo esc_html( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?>. Retrait en boutique, <?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?> · <?php echo esc_html( schiesser_horaires_resume() ); ?></p>
 			</div>
 		</div>
 	</section>
@@ -88,7 +88,7 @@ while ( have_posts() ) :
 			<div class="wrap">
 				<div class="sec-head rv">
 					<span class="idx"><i class="x-diamond"></i>01</span>
-					<h2>En <em>détail</em></h2>
+					<h2><?php echo esc_html( $p['nom'] ); ?>, <em>en détail</em></h2>
 				</div>
 				<div class="sec-body sec-body--lecture">
 					<?php the_content(); ?>

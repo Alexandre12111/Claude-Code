@@ -129,11 +129,35 @@ function schiesser_schema_etablissement() {
 	if ( $r['annee_fondation'] ) {
 		$schema['foundingDate'] = $r['annee_fondation'];
 	}
-	$reseaux = array_values( array_filter( array( $r['instagram'], $r['facebook'] ) ) );
+	// Profils officiels (réseaux sociaux, fiche Google, Tripadvisor, Wikidata…) : ils relient le site à la marque.
+	$profils = preg_split( '/\r\n|\r|\n/', (string) ( $r['profils'] ?? '' ) );
+	$reseaux = array_values( array_unique( array_filter( array_merge( array( $r['instagram'], $r['facebook'] ), $profils ) ) ) );
 	if ( $reseaux ) {
 		$schema['sameAs'] = $reseaux;
 	}
+	if ( ! empty( $r['raison_sociale'] ) ) {
+		$schema['legalName'] = $r['raison_sociale'];
+	}
+	if ( ! empty( $r['numero_ide'] ) ) {
+		$schema['vatID'] = $r['numero_ide'];
+	}
+	// Carte du salon de thé (section dont l'ancre est « carte »).
+	$carte = schiesser_url_carte();
+	if ( $carte ) {
+		$schema['hasMenu'] = $carte;
+	}
 	return $schema;
+}
+
+/** Adresse de la carte du salon : page contenant une section avec l'ancre « carte ». */
+function schiesser_url_carte() {
+	foreach ( array( 'salon-de-the', 'tea-room' ) as $slug ) {
+		$page = get_page_by_path( $slug );
+		if ( $page && 'publish' === $page->post_status && false !== strpos( $page->post_content, '"ancre":"carte"' ) ) {
+			return get_permalink( $page ) . '#carte';
+		}
+	}
+	return '';
 }
 
 /* ------------------------------------------------------------------ */
@@ -287,6 +311,7 @@ function schiesser_schema_produit( $post ) {
 			'@type' => 'Brand',
 			'name'  => schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ),
 		),
+		'manufacturer' => array( '@id' => home_url( '/#organization' ) ),
 	);
 	if ( $p['image_id'] ) {
 		$schema['image'] = wp_get_attachment_image_url( $p['image_id'], 'full' );
@@ -314,7 +339,7 @@ function schiesser_schema_produit( $post ) {
 		'url'           => $p['url'],
 		'price'         => number_format( $prix, 2, '.', '' ),
 		'priceCurrency' => schiesser_devise(),
-		'availability'  => 'https://schema.org/InStock',
+		'availability'  => 'https://schema.org/InStoreOnly', // vente en boutique (WooCommerce décrira ses propres produits)
 		'itemCondition' => 'https://schema.org/NewCondition',
 		'seller'        => array( '@id' => home_url( '/#organization' ) ),
 	);
@@ -326,7 +351,7 @@ function schiesser_schema_produit( $post ) {
 			'lowPrice'      => number_format( $prix, 2, '.', '' ),
 			'priceCurrency' => schiesser_devise(),
 			'offerCount'    => 1,
-			'availability'  => 'https://schema.org/InStock',
+			'availability'  => 'https://schema.org/InStoreOnly',
 		);
 	}
 	$schema['offers'] = $offre;
@@ -404,9 +429,11 @@ function schiesser_schema_page_complements() {
 	$desc  = schiesser_description_page( $id );
 	$image = schiesser_image_page( $id );
 	$page  = array(
-		'isPartOf'   => array( '@id' => home_url( '/#website' ) ),
-		'about'      => array( '@id' => home_url( '/#organization' ) ),
-		'inLanguage' => get_bloginfo( 'language' ),
+		'isPartOf'      => array( '@id' => home_url( '/#website' ) ),
+		'about'         => array( '@id' => home_url( '/#organization' ) ),
+		'inLanguage'    => get_bloginfo( 'language' ),
+		'datePublished' => get_the_date( 'c', $id ),
+		'dateModified'  => get_the_modified_date( 'c', $id ),
 	);
 	if ( $desc ) {
 		$page['description'] = $desc;
@@ -587,21 +614,12 @@ add_action( 'wp_head', function () {
 	);
 	$propres = schiesser_schemas_page();
 	if ( is_singular() ) {
-		$page = array(
-			'@type'      => schiesser_type_page(),
-			'@id'        => $url . '#webpage',
-			'url'        => $url,
-			'name'       => $titre,
-			'isPartOf'   => array( '@id' => home_url( '/#website' ) ),
-			'about'      => array( '@id' => home_url( '/#organization' ) ),
-			'inLanguage' => get_bloginfo( 'language' ),
-		);
-		if ( $desc ) {
-			$page['description'] = $desc;
-		}
-		if ( $image ) {
-			$page['primaryImageOfPage'] = array( '@type' => 'ImageObject', 'url' => $image );
-		}
+		$page = array_merge( array(
+			'@type' => schiesser_type_page(),
+			'@id'   => $url . '#webpage',
+			'url'   => $url,
+			'name'  => $titre,
+		), schiesser_schema_page_complements() );
 		if ( isset( $propres['breadcrumb'] ) ) {
 			$page['breadcrumb'] = array( '@id' => $propres['breadcrumb']['@id'] );
 		}

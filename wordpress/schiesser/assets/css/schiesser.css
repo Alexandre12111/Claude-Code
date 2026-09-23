@@ -286,8 +286,9 @@ section.live .wrap{display:grid;grid-template-columns:1fr;gap:0;padding-top:clam
 :is(.bg-ink,.tl,.cta) .sec-head .note{color:var(--on-dark-2)}
 
 /* apparition au défilement */
-.rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s var(--ease-out),transform 1.1s var(--ease-out)}
-.rv.in{opacity:1;transform:none}
+/* sans JavaScript (ou s'il échoue), tout reste visible : l'effet n'est activé que si <html> porte la classe « js » */
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity 1.1s var(--ease-out),transform 1.1s var(--ease-out)}
+.js .rv.in{opacity:1;transform:none}
 
 /* images manquantes */
 .ph{position:relative}

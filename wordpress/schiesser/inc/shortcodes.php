@@ -6,6 +6,7 @@
  *
  * [schiesser_horaires]   tableau des horaires, jour courant mis en avant
  * [schiesser_statut]     « Ouvert · 07:30–18:30 » en direct
+ * [schiesser_horaires_phrase] « du lundi au vendredi de 7 h 30 à 18 h 30, … » (pour un texte)
  * [schiesser_adresse]    adresse sur deux lignes
  * [schiesser_telephone]  numéro cliquable
  * [schiesser_email]      adresse e-mail cliquable
@@ -17,6 +18,7 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'init', function () {
 	add_shortcode( 'schiesser_horaires', 'schiesser_sc_horaires' );
 	add_shortcode( 'schiesser_statut', 'schiesser_sc_statut' );
+	add_shortcode( 'schiesser_horaires_phrase', 'schiesser_sc_horaires_phrase' );
 	add_shortcode( 'schiesser_adresse', 'schiesser_sc_adresse' );
 	add_shortcode( 'schiesser_telephone', 'schiesser_sc_telephone' );
 	add_shortcode( 'schiesser_email', 'schiesser_sc_email' );
@@ -26,14 +28,16 @@ add_action( 'init', function () {
 function schiesser_sc_horaires() {
 	$aujourdhui = (int) wp_date( 'w' );
 	$tous       = schiesser_reglage( 'horaires' );
-	$html       = '<div class="s-horaires-liste">';
+	$html       = '<dl class="s-horaires-liste">';
 	foreach ( schiesser_jours() as $n => $jour ) {
 		$h      = $tous[ $n ];
 		$classe = $n === $aujourdhui ? ' is-aujourdhui' : '';
-		$texte  = ! empty( $h['ferme'] ) ? 'Fermé' : $h['ouverture'] . ' – ' . $h['fermeture'];
-		$html  .= '<div class="hrow' . $classe . '"><span class="d"' . ( $classe ? ' data-today="Aujourd\'hui"' : '' ) . '>' . esc_html( $jour ) . '</span><span class="h">' . esc_html( $texte ) . '</span></div>';
+		$texte  = ! empty( $h['ferme'] )
+			? 'Fermé'
+			: '<time>' . esc_html( $h['ouverture'] ) . '</time> – <time>' . esc_html( $h['fermeture'] ) . '</time>';
+		$html  .= '<div class="hrow' . $classe . '"><dt class="d"' . ( $classe ? ' data-today="Aujourd\'hui"' : '' ) . '>' . esc_html( $jour ) . '</dt><dd class="h">' . $texte . '</dd></div>';
 	}
-	$html .= '</div>';
+	$html .= '</dl>';
 	if ( schiesser_reglage( 'horaires_note' ) ) {
 		$html .= '<p class="s-horaires-note">' . esc_html( schiesser_reglage( 'horaires_note' ) ) . '</p>';
 	}
@@ -41,7 +45,11 @@ function schiesser_sc_horaires() {
 }
 
 function schiesser_sc_statut() {
-	return '<span class="s-statut"><span class="led js-led"></span><span class="js-statut">Ouvert</span> · <span class="js-heures"></span></span>';
+	return '<span class="s-statut" data-nosnippet><span class="led js-led"></span><span class="js-statut">Aujourd’hui</span> · <span class="js-heures">' . esc_html( schiesser_horaires_du_jour() ) . '</span></span>';
+}
+
+function schiesser_sc_horaires_phrase() {
+	return esc_html( schiesser_horaires_phrase() );
 }
 
 function schiesser_sc_adresse() {
