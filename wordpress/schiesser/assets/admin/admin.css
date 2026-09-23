@@ -158,5 +158,14 @@
 .schiesser-titre-editeur{margin:26px 0 10px!important;padding:0!important;font-family:var(--s-serif)!important;font-size:20px!important;font-weight:500!important;color:var(--s-encre)}
 .schiesser-titre-editeur span{display:block;margin-top:4px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:12.5px;font-weight:400;color:var(--s-doux)}
 .s-sans-photo{display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:4px;background:#f3efe8;color:var(--s-doux)}
+.s-suggestion{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:10px;background:var(--s-vert);color:#fff;font-size:11px;font-weight:600;white-space:nowrap}
+.schiesser-champ--suggestion label{display:flex!important;align-items:center;gap:8px}
+.schiesser-champ--suggestion input{width:auto!important;margin:0}
 .column-s_photo{width:72px}
+.column-t_photo{width:64px}.column-t_ordre{width:60px}
 @media(max-width:782px){.schiesser-champs{grid-template-columns:1fr}}
+/* Rubriques du Tea Room : seulement le nom, la photo et l'ordre */
+.taxonomy-schiesser_rubrique .term-parent-wrap,.taxonomy-schiesser_rubrique .term-description-wrap,.taxonomy-schiesser_rubrique .term-slug-wrap{display:none}
+.taxonomy-schiesser_rubrique .column-description,.taxonomy-schiesser_rubrique .column-slug{display:none}
+.schiesser-champ--description{grid-column:1/-1}
+.schiesser-champ--description .wp-editor-wrap{margin-top:2px}

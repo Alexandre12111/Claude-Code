@@ -71,6 +71,7 @@ function schiesser_charte_defaut() {
 		'commentaires_off' => 1,
 		'code_head'        => '',
 		'code_footer'      => '',
+		'css_perso'        => '',
 	);
 }
 
@@ -177,6 +178,8 @@ function schiesser_nettoyer_charte( $entree ) {
 	if ( current_user_can( 'unfiltered_html' ) ) {
 		$propre['code_head']   = (string) ( $entree['code_head'] ?? '' );
 		$propre['code_footer'] = (string) ( $entree['code_footer'] ?? '' );
+		// Feuille de style seulement : pas de balise HTML (on ne peut pas sortir du bloc <style>).
+		$propre['css_perso'] = trim( str_ireplace( array( '</style', '<style', '<script', '</script' ), '', (string) ( $entree['css_perso'] ?? '' ) ) );
 	}
 
 	foreach ( schiesser_verifier_contrastes( $propre['couleurs'] ) as $i => $alerte ) {
@@ -234,6 +237,11 @@ add_action( 'init', function () {
 	$css = schiesser_css_charte();
 	if ( $css ) {
 		wp_add_inline_style( 'schiesser-site', $css );
+	}
+	// CSS personnalisé (Réglages maison → Avancé) : après la feuille du thème, sur le site et dans l'éditeur.
+	$perso = trim( (string) schiesser_charte()['css_perso'] );
+	if ( '' !== $perso ) {
+		wp_add_inline_style( 'schiesser-site', "/* CSS personnalisé (Réglages maison) */\n" . $perso );
 	}
 }, 20 );
 

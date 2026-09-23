@@ -184,14 +184,16 @@ header:has(nav.main.open) .burger i:nth-child(3){transform:translateY(-7.5px) ro
 .sh-close,.lb-close{border:1px solid color-mix(in srgb,var(--paper) 60%,transparent);background:color-mix(in srgb,var(--dark) 45%,transparent);color:var(--on-dark);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 .sh-close:hover,.lb-close:hover{background:var(--paper);color:var(--ink);transform:rotate(90deg)}
 
+/* Photo assombrie (réglage « Assombrir la photo » des blocs) */
+img[style*="--lum"]{filter:brightness(var(--lum))}
 /* ---------- 6 · Hero ---------- */
 .hero{position:relative;background:var(--dark);isolation:isolate}
 .hero::after{content:"";position:absolute;inset:var(--frame);border:1px solid color-mix(in srgb,var(--paper) 24%,transparent);pointer-events:none;z-index:3}
 .hero-media{position:relative;height:min(78vh,720px);min-height:500px;overflow:hidden;background:var(--dark)}
 .hero-media img{transform:scale(1.06);animation:heroZoom 16s var(--ease-out) forwards}
 @keyframes heroZoom{to{transform:scale(1)}}
-.hero--sepia-leger .hero-media img{filter:sepia(.12)}
-.hero--sepia .hero-media img{filter:sepia(.22) contrast(.98)}
+.hero--sepia-leger .hero-media img{filter:sepia(.12) brightness(var(--lum,1))}
+.hero--sepia .hero-media img{filter:sepia(.22) contrast(.98) brightness(var(--lum,1))}
 .hero-media::after{content:"";position:absolute;inset:0;z-index:1;background:
   linear-gradient(180deg,color-mix(in srgb,var(--voile) 50%,transparent) 0%,color-mix(in srgb,var(--voile) 8%,transparent) 26%,color-mix(in srgb,var(--voile) 20%,transparent) 52%,color-mix(in srgb,var(--voile) 88%,transparent) 100%),
   radial-gradient(120% 90% at 0% 100%,color-mix(in srgb,var(--voile) 50%,transparent) 0%,color-mix(in srgb,var(--voile) 0%,transparent) 60%)}
@@ -444,8 +446,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 @media(min-width:820px){.x-floors{grid-template-columns:1fr 1fr}}
 .x-floor{position:relative;display:block;overflow:hidden;min-height:clamp(400px,54vh,560px);text-decoration:none;color:var(--on-dark);background:var(--dark)}
 .x-floor:hover::before{inset:calc(var(--frame) + 8px);border-color:color-mix(in srgb,var(--paper) 60%,transparent)}
-.x-floor img{position:absolute;inset:0;filter:sepia(.1) brightness(.86);transition:transform 1.4s var(--ease-out),filter .7s}
-.x-floor:hover img{transform:scale(1.05);filter:sepia(0) brightness(.95)}
+.x-floor img{position:absolute;inset:0;filter:sepia(.1) brightness(calc(.86 * var(--lum,1)));transition:transform 1.4s var(--ease-out),filter .7s}
+.x-floor:hover img{transform:scale(1.05);filter:sepia(0) brightness(calc(.95 * var(--lum,1)))}
 .x-floor::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,color-mix(in srgb,var(--voile) 90%,transparent) 0%,color-mix(in srgb,var(--voile) 30%,transparent) 50%,color-mix(in srgb,var(--voile) 8%,transparent) 100%)}
 .x-floor .x-fc{position:relative;z-index:2;min-height:inherit;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(34px,3.8vw,56px)}
 .x-floor .x-lv{font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--mint)}
@@ -493,8 +495,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .tl-scroll::-webkit-scrollbar{height:4px}
 .tl-scroll::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--paper) 30%,transparent)}
 .tl-card{position:relative;flex:0 0 auto;width:clamp(272px,31vw,420px);height:clamp(420px,62vh,580px);scroll-snap-align:start;overflow:hidden;background:var(--dark-2)}
-.tl-card img{filter:sepia(.24) contrast(.97) brightness(.86);transition:transform 1.4s var(--ease-out),filter .7s}
-.tl-card:hover img{transform:scale(1.05);filter:sepia(.05) brightness(.95)}
+.tl-card img{filter:sepia(.24) contrast(.97) brightness(calc(.86 * var(--lum,1)));transition:transform 1.4s var(--ease-out),filter .7s}
+.tl-card:hover img{transform:scale(1.05);filter:sepia(.05) brightness(calc(.95 * var(--lum,1)))}
 .tl-card::after{content:"";position:absolute;inset:0;z-index:1;outline:1px solid color-mix(in srgb,var(--paper) 30%,transparent);outline-offset:calc(-1 * var(--frame));
   background:linear-gradient(0deg,color-mix(in srgb,var(--voile) 90%,transparent) 0%,color-mix(in srgb,var(--voile) 20%,transparent) 48%,transparent 72%)}
 .tl-card .tc{position:absolute;left:clamp(26px,2.6vw,36px);right:clamp(26px,2.6vw,36px);bottom:clamp(26px,2.6vw,36px);z-index:2}
@@ -604,7 +606,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .gv-main{position:relative;aspect-ratio:21/9;max-height:66vh;overflow:hidden;background:var(--dark-2)}
 @media(max-width:900px){.gv-main{aspect-ratio:16/10}}
 @media(max-width:640px){.gv-main{aspect-ratio:4/5;max-height:none}}
-.gv-main img{position:absolute;inset:0;opacity:0;transform:scale(1.06);filter:sepia(.08) brightness(.98);transition:opacity 1s var(--ease),transform 2s var(--ease-out)}
+.gv-main img{position:absolute;inset:0;opacity:0;transform:scale(1.06);filter:sepia(.08) brightness(calc(.98 * var(--lum,1)));transition:opacity 1s var(--ease),transform 2s var(--ease-out)}
 .gv-main img.on{opacity:1;transform:scale(1)}
 .gv-veil{position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,color-mix(in srgb,var(--voile) 84%,transparent) 0%,color-mix(in srgb,var(--voile) 12%,transparent) 50%,transparent 74%)}
 .gv-cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:clamp(28px,3.4vw,48px)}
@@ -618,9 +620,9 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .gv-thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1vw,14px)}
 @media(min-width:560px){.gv-thumbs{grid-template-columns:repeat(6,1fr)}}
 .gv-th{position:relative;aspect-ratio:16/10;overflow:hidden;background:var(--dark-2);cursor:pointer;padding:0;border:0}
-.gv-th img{filter:sepia(.2) brightness(.55);transition:filter .5s,transform .9s var(--ease-out)}
-.gv-th:hover img{filter:sepia(.05) brightness(.85);transform:scale(1.04)}
-.gv-th.on img{filter:none}
+.gv-th img{filter:sepia(.2) brightness(calc(.55 * var(--lum,1)));transition:filter .5s,transform .9s var(--ease-out)}
+.gv-th:hover img{filter:sepia(.05) brightness(calc(.85 * var(--lum,1)));transform:scale(1.04)}
+.gv-th.on img{filter:brightness(var(--lum,1))}
 .gv-th::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--mint);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease-out)}
 .gv-th.on::after{transform:scaleX(1)}
 
@@ -646,7 +648,9 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 
 .asc-intro{display:grid;grid-template-columns:1fr;gap:clamp(24px,3vw,64px);align-items:start;margin-bottom:clamp(44px,5vw,72px)}
 @media(min-width:900px){.asc-intro{grid-template-columns:1.1fr .9fr}}
-.asc-intro .lead{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(25px,2.9vw,38px);line-height:1.26;max-width:22ch;color:var(--ink)}
+.asc-intro .lead{font-family:var(--sans);font-style:normal;font-weight:400;font-size:clamp(18px,1.55vw,21px);line-height:1.6;max-width:36ch;color:var(--ink);padding-left:22px;border-left:2px solid var(--vert)}
+/* Style « italique élégante » de la maquette, au choix dans le bloc Introduction */
+.asc-intro--italique .lead{font-family:var(--serif);font-style:italic;font-size:clamp(25px,2.9vw,38px);line-height:1.26;max-width:22ch;padding-left:0;border-left:0}
 .asc-intro .body p{color:var(--ink-soft);font-size:16px;margin-bottom:16px;max-width:48ch}
 .asc-intro .body p:last-child{margin-bottom:0}
 /* l'ascension, pleine largeur */
@@ -655,7 +659,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .asc-stage{position:sticky;top:var(--hh);height:calc(100vh - var(--hh));min-height:520px;overflow:hidden;
   background:var(--dark) url("https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1600&auto=format&fit=crop") center/cover no-repeat}
 .asc-layers{position:absolute;inset:0}
-.asc-layers img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);filter:sepia(.08) contrast(1.02);
+.asc-layers img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);filter:sepia(.08) contrast(1.02) brightness(var(--lum,1));
   transition:opacity 1.3s var(--ease),transform 2s var(--ease-out);will-change:opacity,transform}
 .asc-layers img.on{opacity:1;transform:scale(1)}
 .asc-veil{position:absolute;inset:0;
@@ -699,7 +703,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 @media(min-width:940px){.dy-top{grid-template-columns:1.05fr .95fr}}
 .dy-im{position:relative;aspect-ratio:16/11;overflow:hidden;background:var(--dark-2)}
 @media(min-width:940px){.dy-im{aspect-ratio:auto;height:100%;min-height:460px}}
-.dy-im img{filter:sepia(.14);transform:scale(1.04);transition:transform 1.8s var(--ease-out)}
+.dy-im img{filter:sepia(.14) brightness(var(--lum,1));transform:scale(1.04);transition:transform 1.8s var(--ease-out)}
 .dy:hover .dy-im img{transform:scale(1)}
 .dy-tx{padding:clamp(32px,4.2vw,64px);display:flex;flex-direction:column;justify-content:center;background:color-mix(in srgb,var(--paper) 3.5%,transparent)}
 .dy-k{display:inline-flex;align-items:center;gap:12px;align-self:flex-start;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--mint)}
@@ -718,7 +722,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 
 /* la carte */
 .x-menupic{position:relative;width:100%;aspect-ratio:21/8;max-height:42vh;min-height:220px;overflow:hidden;background:var(--paper-deep);margin-bottom:clamp(28px,3vw,44px)}
-.x-menupic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.05);filter:sepia(.08);transition:opacity .8s var(--ease),transform 1.6s var(--ease-out)}
+.x-menupic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.05);filter:sepia(.08) brightness(var(--lum,1));transition:opacity .8s var(--ease),transform 1.6s var(--ease-out)}
 .x-menupic img.on{opacity:1;transform:scale(1)}
 .x-menupic::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,color-mix(in srgb,var(--voile) 66%,transparent),transparent 60%)}
 .x-menupic .x-mc{position:absolute;left:0;bottom:0;z-index:2;padding:clamp(26px,2.8vw,38px);color:var(--on-dark);font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(26px,3vw,38px)}
@@ -743,7 +747,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 @media(max-width:959px){.mn-side{position:static}}
 .sugg{background:var(--paper-3);border:1px solid var(--line);overflow:hidden}
 .sugg .si{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--paper-deep)}
-.sugg .si img{filter:sepia(.14);transition:transform 1.3s var(--ease-out)}
+.sugg .si img{filter:sepia(.14) brightness(var(--lum,1));transition:transform 1.3s var(--ease-out)}
 .sugg:hover .si img{transform:scale(1.04)}
 .sugg .sb{padding:clamp(24px,2.4vw,32px)}
 .sugg .sk{display:inline-flex;align-items:center;gap:10px;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--vert);font-weight:600}
@@ -758,8 +762,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .gal{display:flex;gap:clamp(8px,.8vw,12px);height:clamp(400px,62vh,580px)}
 .gp{flex:1;position:relative;overflow:hidden;background:var(--paper-deep);cursor:pointer;transition:flex 1s var(--ease-out)}
 .gp.on{flex:3.4}
-.gp img{filter:sepia(.2) brightness(.8);transform:scale(1.06);transition:filter .8s,transform 1.6s var(--ease-out)}
-.gp.on img{filter:sepia(.04) brightness(1);transform:scale(1)}
+.gp img{filter:sepia(.2) brightness(calc(.8 * var(--lum,1)));transform:scale(1.06);transition:filter .8s,transform 1.6s var(--ease-out)}
+.gp.on img{filter:sepia(.04) brightness(calc(1 * var(--lum,1)));transform:scale(1)}
 .gp::after{content:"";position:absolute;inset:0;z-index:1;outline:1px solid color-mix(in srgb,var(--paper) 30%,transparent);outline-offset:calc(-1 * var(--frame));
   background:linear-gradient(0deg,color-mix(in srgb,var(--voile) 86%,transparent),color-mix(in srgb,var(--voile) 10%,transparent) 55%,transparent)}
 .gp-c{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:clamp(26px,2.6vw,36px);color:var(--on-dark)}
@@ -779,7 +783,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .mo{display:grid;grid-template-columns:1fr;gap:clamp(30px,3.6vw,72px);align-items:center}
 @media(min-width:960px){.mo{grid-template-columns:1.1fr .9fr}}
 .mo-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--dark-2)}
-.mo-media img{position:absolute;inset:0;opacity:0;filter:sepia(.16) brightness(.95);transition:opacity 1s var(--ease)}
+.mo-media img{position:absolute;inset:0;opacity:0;filter:sepia(.16) brightness(calc(.95 * var(--lum,1)));transition:opacity 1s var(--ease)}
 .mo-media img.on{opacity:1}
 .mo-clock{position:absolute;right:calc(var(--frame) + 12px);top:calc(var(--frame) + 12px);z-index:4;padding:9px 16px;background:color-mix(in srgb,var(--dark) 60%,transparent);border:1px solid color-mix(in srgb,var(--paper) 45%,transparent);
   font-family:var(--serif);font-size:20px;font-weight:500;color:var(--on-dark);font-variant-numeric:tabular-nums;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
@@ -809,7 +813,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .vn{display:grid;grid-template-columns:1fr;gap:clamp(30px,3.6vw,72px);align-items:center}
 @media(min-width:900px){.vn{grid-template-columns:1fr 1fr}}
 .vn-im{position:relative;aspect-ratio:5/4;overflow:hidden;background:var(--paper-deep)}
-.vn-im img{filter:sepia(.14);transition:transform 1.5s var(--ease-out)}
+.vn-im img{filter:sepia(.14) brightness(var(--lum,1));transition:transform 1.5s var(--ease-out)}
 .vn:hover .vn-im img{transform:scale(1.03)}
 .vn-tx h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3.4vw,46px);line-height:1.05;margin-bottom:16px;color:var(--ink)}
 .vn-tx p{color:var(--ink-soft);max-width:44ch;font-size:16px}
@@ -861,8 +865,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .origin-fig{position:sticky;top:calc(var(--hh) + 32px)}
 @media(max-width:899px){.origin-fig{position:static}}
 .origin-fig .im{position:relative;aspect-ratio:4/5;overflow:hidden;background:var(--paper-deep)}
-.origin-fig .im img{filter:sepia(.22) contrast(.97);transition:filter .9s,transform 1.5s var(--ease-out)}
-.origin-fig:hover .im img{filter:sepia(0);transform:scale(1.03)}
+.origin-fig .im img{filter:sepia(.22) contrast(.97) brightness(var(--lum,1));transition:filter .9s,transform 1.5s var(--ease-out)}
+.origin-fig:hover .im img{filter:sepia(0) brightness(var(--lum,1));transform:scale(1.03)}
 .origin-fig figcaption{display:flex;justify-content:space-between;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
   font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ink-soft)}
 
@@ -870,7 +874,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .tl-stage{display:grid;grid-template-columns:1fr;gap:clamp(30px,4vw,80px);align-items:center}
 @media(min-width:900px){.tl-stage{grid-template-columns:1.05fr .95fr}}
 .tl-media{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--dark-2)}
-.tl-media img{position:absolute;inset:0;opacity:0;transform:scale(1.04);filter:sepia(.24) contrast(.97) brightness(.92);transition:opacity 1s var(--ease),transform 1.8s var(--ease-out)}
+.tl-media img{position:absolute;inset:0;opacity:0;transform:scale(1.04);filter:sepia(.24) contrast(.97) brightness(calc(.92 * var(--lum,1)));transition:opacity 1s var(--ease),transform 1.8s var(--ease-out)}
 .tl-media img.on{opacity:1;transform:scale(1)}
 .tl-media .stamp{position:absolute;left:calc(var(--frame) + 12px);bottom:calc(var(--frame) + 12px);z-index:4;padding:8px 14px;background:color-mix(in srgb,var(--dark) 60%,transparent);border:1px solid color-mix(in srgb,var(--paper) 40%,transparent);
   font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--on-dark);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
@@ -897,8 +901,8 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .arch-grid .arch.rv:nth-child(4n){transition-delay:.18s}
 .arch .aim{position:relative;aspect-ratio:1;overflow:hidden;background:var(--paper-deep);border:8px solid var(--paper);outline:1px solid var(--line);transition:transform .6s var(--ease-out),box-shadow .6s var(--ease-out)}
 .arch:hover .aim{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 26px 40px -30px color-mix(in srgb,var(--dark) 60%,transparent)}
-.arch .aim img{filter:sepia(.28) contrast(.96);transition:transform 1.2s var(--ease-out),filter .7s}
-.arch:hover .aim img{transform:scale(1.06);filter:sepia(.06)}
+.arch .aim img{filter:sepia(.28) contrast(.96) brightness(var(--lum,1));transition:transform 1.2s var(--ease-out),filter .7s}
+.arch:hover .aim img{transform:scale(1.06);filter:sepia(.06) brightness(var(--lum,1))}
 .arch .aim::after{content:"+";position:absolute;right:10px;bottom:10px;z-index:2;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   background:var(--paper);color:var(--vert);font-size:18px;transition:all .45s var(--ease-out)}
 .arch:hover .aim::after{background:var(--vert);color:#fff;transform:rotate(90deg)}
@@ -929,7 +933,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .x-cmptabs{display:flex;flex-wrap:wrap;gap:0 32px;margin-bottom:clamp(24px,2.6vw,34px);border-bottom:1px solid var(--line)}
 .compare{position:relative;aspect-ratio:21/9;max-height:66vh;overflow:hidden;user-select:none;cursor:ew-resize;touch-action:pan-y;background:var(--paper-deep)}
 .compare img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.compare .after{filter:sepia(.06)}
+.compare .after{filter:sepia(.06) brightness(var(--lum,1))}
 .compare .clip{position:absolute;inset:0 auto 0 0;width:50%;overflow:hidden;z-index:1;border-right:2px solid var(--paper)}
 .compare .clip img{max-width:none;height:100%}
 .cmp-handle{position:absolute;top:50%;left:50%;z-index:3;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:var(--paper);color:var(--vert);
@@ -983,6 +987,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .hrow.today{background:var(--paper);box-shadow:inset 2px 0 0 var(--vert);padding-left:16px}
 .hrow .d{font-family:var(--serif);font-weight:500;font-size:19px;color:var(--ink)}
 .hrow.today .d::after{content:attr(data-today);margin-left:10px;padding:3px 7px;vertical-align:middle;background:var(--vert);color:#fff;font:600 9.5px var(--sans);letter-spacing:.16em;text-transform:uppercase}
+@media(max-width:480px){.hrow.today .d::after{display:block;width:max-content;margin:6px 0 0}}
 .hrow .h{font-size:15px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
 .hrow.today .h{color:var(--ink);font-weight:600}
 .hnote{margin-top:auto;padding-top:20px;font-size:13px;color:var(--ink-soft);font-style:italic}
@@ -1509,7 +1514,7 @@ details.fq[open] .ans{animation:fadeIn .45s var(--ease) both}
 .fq .ans p a{color:var(--vert)}
 :is(.bg-ink,.tl) .fq>summary{color:var(--on-dark)}
 /* comparateur : photo d'hier vieillie */
-.compare .clip img.is-vieilli{filter:sepia(.42) contrast(.94) brightness(.94)}
+.compare .clip img.is-vieilli{filter:sepia(.42) contrast(.94) brightness(calc(.94 * var(--lum,1)))}
 /* sélecteur de langue (Polylang) */
 .lang a{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 8px;font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--ink-soft);text-decoration:none;transition:background-color .25s,color .25s}
 .lang a:hover{color:var(--vert)}
@@ -1521,3 +1526,22 @@ details.fq[open] .ans{animation:fadeIn .45s var(--ease) both}
 .xf-side .xs .v a:hover,.dlines .dl a:hover,.vn-row .v a:hover,.vinfo .v a:hover{border-color:var(--vert);color:var(--vert)}
 /* textes des blocs : liens discrets */
 :is(.cstep,.tl-txt,.gv-cap,.pcell,.oc,.val,.dy-tx,.mi-d,.gp-d,.mo-txt,.vn-tx,.x-frd,.ld,.jp-tip,.asc-copy,.lead,.x-plate) a:not(.btn){color:inherit;text-decoration-color:color-mix(in srgb,currentColor 40%,transparent);text-underline-offset:3px}
+/* ---------- Typographie et couleur choisies dans l'éditeur (bouton « Aa ») ---------- */
+.f-titres{font-family:var(--serif)}
+.f-texte{font-family:var(--sans)}
+.t-petite{font-size:.82em}
+.t-grande{font-size:1.25em}
+.t-tres-grande{font-size:1.6em;line-height:1.1}
+.f-maj{text-transform:uppercase;letter-spacing:.14em;font-size:.86em}
+mark.has-inline-color{background-color:transparent}
+/* ---------- Carte Google Maps intégrée ---------- */
+.gmap{position:absolute;inset:0;display:block;width:100%;height:100%;border:0}
+.mapbox--google{display:flex;flex-direction:column}
+.mapbox--google .mapel{position:relative;flex:1 1 auto;height:auto;min-height:clamp(340px,46vh,460px)}
+.mapbox--google .mapcard{flex:none;position:static;max-width:none;display:grid;grid-template-columns:1fr auto;gap:0 28px;align-items:center;border:0;border-top:1px solid var(--line);box-shadow:none}
+.mapbox--google .mapcard .mb{grid-column:2;grid-row:1/4;margin-top:0}
+@media(max-width:640px){.mapbox--google .mapcard{grid-template-columns:1fr}.mapbox--google .mapcard .mb{grid-column:auto;grid-row:auto;margin-top:18px}}
+.gmap-consent{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:28px;text-align:center;background:var(--paper-deep)}
+.gmap-consent p{max-width:38ch;font-size:13.5px;color:var(--ink-soft)}
+.gmap-consent .mapfallback{min-height:0;height:auto;padding:0;gap:0;background:none}
+.gmap-consent .mapfallback::before{display:none}

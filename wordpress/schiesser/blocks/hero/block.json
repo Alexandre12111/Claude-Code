@@ -103,6 +103,10 @@
 		"progression": {
 			"type": "boolean",
 			"default": false
+		},
+		"sombre": {
+			"type": "number",
+			"default": 0
 		}
 	},
 	"editorScript": "file:./index.js",

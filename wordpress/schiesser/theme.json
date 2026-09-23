@@ -8,7 +8,7 @@
 			"wideSize": "1320px"
 		},
 		"color": {
-			"custom": false,
+			"custom": true,
 			"customGradient": false,
 			"defaultPalette": false,
 			"defaultGradients": false,
@@ -36,7 +36,7 @@
 			]
 		},
 		"typography": {
-			"customFontSize": false,
+			"customFontSize": true,
 			"dropCap": false,
 			"fontSizes": [
 				{
@@ -58,9 +58,36 @@
 					"slug": "tres-grand",
 					"name": "Très grand",
 					"size": "clamp(24px, 2.6vw, 32px)"
+				},
+				{
+					"slug": "titre",
+					"name": "Titre",
+					"size": "clamp(32px, 4vw, 48px)"
+				},
+				{
+					"slug": "geant",
+					"name": "Géant",
+					"size": "clamp(42px, 6vw, 72px)"
 				}
 			],
-			"defaultFontSizes": false
+			"defaultFontSizes": false,
+			"fontFamilies": [
+				{
+					"slug": "titres",
+					"name": "Police des titres",
+					"fontFamily": "var(--serif)"
+				},
+				{
+					"slug": "texte",
+					"name": "Police du texte",
+					"fontFamily": "var(--sans)"
+				}
+			],
+			"fontStyle": true,
+			"fontWeight": true,
+			"textTransform": true,
+			"letterSpacing": true,
+			"lineHeight": true
 		},
 		"spacing": {
 			"padding": false,

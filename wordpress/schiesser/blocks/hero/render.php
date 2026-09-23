@@ -34,6 +34,7 @@ foreach ( array( 1, 2 ) as $n ) {
 }
 
 $filtre  = in_array( $a['filtre'] ?? '', array( 'sepia-leger', 'sepia' ), true ) ? ' hero--' . $a['filtre'] : '';
+$sombre  = function_exists( 'schiesser_mq_style_sombre' ) ? schiesser_mq_style_sombre( $a['sombre'] ?? 0 ) : '';
 $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 ?>
 <?php if ( ! empty( $a['progression'] ) ) : ?><div class="prog" aria-hidden="true"></div><?php endif; ?>
@@ -42,15 +43,16 @@ $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 		<?php
 		if ( ! empty( $a['imageId'] ) && wp_attachment_is_image( $a['imageId'] ) ) {
 			// Image responsive : le navigateur choisit la bonne taille (bien plus léger sur mobile).
-			echo wp_get_attachment_image( $a['imageId'], 'full', false, array(
+			echo wp_get_attachment_image( $a['imageId'], 'full', false, array_filter( array(
 				'alt'           => $alt,
 				'sizes'         => '100vw',
 				'loading'       => 'eager',
 				'fetchpriority' => 'high',
 				'decoding'      => 'async',
-			) );
+				'style'         => $sombre, // photo assombrie (réglage « Assombrir la photo »)
+			) ) );
 		} elseif ( ! empty( $a['imageUrl'] ) ) {
-			echo '<img src="' . esc_url( $a['imageUrl'] ) . '" alt="' . esc_attr( $alt ) . '" fetchpriority="high">';
+			echo '<img src="' . esc_url( $a['imageUrl'] ) . '" alt="' . esc_attr( $alt ) . '" fetchpriority="high"' . ( $sombre ? ' style="' . esc_attr( $sombre ) . '"' : '' ) . '>';
 		}
 		?>
 	</div>
@@ -65,7 +67,7 @@ $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 			<?php endif; ?>
 
 			<?php if ( ! empty( $a['surtitre'] ) ) : ?>
-				<p class="eyebrow"><?php echo esc_html( wp_strip_all_tags( $a['surtitre'] ) ); ?></p>
+				<p class="eyebrow"><?php echo schiesser_kses_titre( $a['surtitre'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
 			<?php endif; ?>
 
 			<h1><?php echo schiesser_kses_titre( $a['titre'] ?: get_the_title() ); // phpcs:ignore WordPress.Security.EscapeOutput ?></h1>

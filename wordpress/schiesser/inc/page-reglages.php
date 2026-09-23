@@ -166,7 +166,9 @@ function schiesser_page_reglages() {
 					schiesser_champ( $o, 'ville', $r['ville'], array( 'libelle' => 'Ville' ) );
 					schiesser_champ( $o, 'region', $r['region'], array( 'libelle' => 'Canton ou région', 'placeholder' => 'Basel-Stadt' ) );
 					schiesser_champ( $o, 'pays', $r['pays'], array( 'libelle' => 'Pays', 'type' => 'select', 'options' => schiesser_pays() ) );
-					schiesser_champ( $o, 'lien_maps', $r['lien_maps'], array( 'libelle' => 'Lien Google Maps', 'type' => 'url', 'aide' => 'Utilisé par les boutons « Itinéraire ». Astuce : sur Google Maps, cherchez la confiserie, puis « Partager » et copiez le lien.', 'classe' => 's-large' ) );
+					schiesser_champ( $o, 'lien_maps', $r['lien_maps'], array( 'libelle' => 'Lien Google Maps', 'type' => 'url', 'aide' => 'Utilisé par les boutons « Ouvrir dans Google Maps » et « Agrandir ». Astuce : sur Google Maps, ouvrez la fiche de la confiserie, puis « Partager » et copiez le lien. Un lien de recherche Google est aussi accepté : il est nettoyé automatiquement.', 'classe' => 's-large' ) );
+					schiesser_champ( $o, 'carte_google', $r['carte_google'], array( 'libelle' => 'Carte Google Maps du site (facultatif)', 'type' => 'textarea', 'aide' => 'Sans rien saisir ici, la carte du site montre la fiche Google de la confiserie d’après son nom et son adresse. Pour choisir exactement la vue : sur Google Maps, fiche de la confiserie, « Partager » puis « Intégrer une carte » et « Copier le contenu HTML », puis collez ici.', 'classe' => 's-large', 'placeholder' => '<iframe src="https://www.google.com/maps/embed?pb=…"></iframe>' ) );
+					schiesser_champ( $o, 'carte_au_clic', $r['carte_au_clic'], array( 'libelle' => 'Afficher la carte Google seulement après un clic', 'type' => 'toggle', 'aide' => 'Protection des données : tant que le visiteur n’a pas cliqué sur « Afficher la carte », rien n’est envoyé à Google.', 'classe' => 's-large' ) );
 					schiesser_champ( $o, 'mention', $r['mention'], array( 'libelle' => 'Mention du bandeau du haut', 'aide' => 'Petit texte affiché à droite du bandeau sombre, tout en haut du site.', 'classe' => 's-large' ) );
 					?>
 				</div>
@@ -331,6 +333,7 @@ function schiesser_page_reglages() {
 						<?php
 						schiesser_champ( $ch, 'code_head', $c['code_head'], array( 'libelle' => 'Code dans l\'en-tête (<head>)', 'type' => 'code', 'classe' => 's-large', 'placeholder' => '<!-- Collez ici le code fourni par l\'outil -->' ) );
 						schiesser_champ( $ch, 'code_footer', $c['code_footer'], array( 'libelle' => 'Code en fin de page (avant </body>)', 'type' => 'code', 'classe' => 's-large' ) );
+						schiesser_champ( $ch, 'css_perso', $c['css_perso'], array( 'libelle' => 'CSS personnalisé (retouches de style)', 'type' => 'code', 'classe' => 's-large', 'aide' => 'Appliqué sur tout le site et dans l’éditeur, après le style du thème. Il est conservé lors des mises à jour du thème.', 'placeholder' => '/* Exemple : .hero h1 { letter-spacing: 0; } */' ) );
 						?>
 					</div>
 					<p class="s-aide"><span class="dashicons dashicons-shield" aria-hidden="true"></span> Collez uniquement du code provenant d'un service de confiance : il s'exécute sur toutes les pages.</p>

@@ -97,6 +97,14 @@ add_action( 'init', function () {
  * (boutons arrondis, images rondes…) et transmet à Rank Math le texte des blocs maison.
  */
 add_action( 'enqueue_block_editor_assets', function () {
+	// Typographie et couleur au clic sur le texte (tous les blocs) : chargé en premier.
+	wp_enqueue_script(
+		'schiesser-typographie',
+		SCHIESSER_URI . '/assets/js/typographie.js',
+		array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-hooks' ),
+		SCHIESSER_VERSION,
+		false
+	);
 	wp_enqueue_script(
 		'schiesser-editeur',
 		SCHIESSER_URI . '/assets/js/editeur.js',
@@ -145,7 +153,32 @@ function schiesser_sceau_svg() {
  * Balises autorisées dans les titres modifiables (italique et retour à la ligne).
  */
 function schiesser_kses_titre( $html ) {
-	return wp_kses( $html, array( 'em' => array(), 'br' => array(), 'strong' => array() ) );
+	return wp_kses( (string) $html, schiesser_kses_mise_en_forme( false ) );
+}
+
+/**
+ * Balises de mise en forme permises dans les textes des blocs maison.
+ * Typographie (police, taille, majuscules) : <span class="…"> ; couleur : <mark> de l'éditeur.
+ *
+ * @param bool $liens Autoriser les liens (textes longs uniquement).
+ */
+function schiesser_kses_mise_en_forme( $liens = false ) {
+	$balises = array(
+		'em'     => array( 'class' => true ),
+		'strong' => array( 'class' => true ),
+		'b'      => array(),
+		'i'      => array(),
+		'br'     => array(),
+		's'      => array(),
+		'sub'    => array(),
+		'sup'    => array(),
+		'mark'   => array( 'class' => true, 'style' => true ),
+		'span'   => array( 'class' => true, 'style' => true ),
+	);
+	if ( $liens ) {
+		$balises['a'] = array( 'href' => true, 'target' => true, 'rel' => true, 'class' => true );
+	}
+	return $balises;
 }
 
 /**

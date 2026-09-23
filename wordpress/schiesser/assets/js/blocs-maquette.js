@@ -44,27 +44,39 @@
   /* Champs                                                              */
   /* ------------------------------------------------------------------ */
 
-  // Texte simple (sans mise en forme).
-  function T(props, cle, tag, className, placeholder) {
+  // Mises en forme « Aa » (police, taille, couleur) : voir typographie.js.
+  function typo() { return window.SCHIESSER_TYPO || []; }
+
+  // Valeur simple, sans mise en forme : chiffre, heure, prix, durée…
+  function P(props, cle, tag, className, placeholder) {
     return el(RichText, {
-      tagName: tag || 'span', className: className, value: props.attributes[cle] || '',
+      identifier: cle, tagName: tag || 'span', className: className, value: props.attributes[cle] || '',
       placeholder: placeholder || '', allowedFormats: [], withoutInteractiveFormatting: true,
       onChange: maj(props.setAttributes, cle)
     });
   }
-  // Titre : italique autorisé (les mots en italique prennent la couleur d'accent).
-  function I(props, cle, tag, className, placeholder) {
+  // Texte court (surtitre, nom, légende…) : gras, italique, police, taille et couleur.
+  function T(props, cle, tag, className, placeholder) {
     return el(RichText, {
-      tagName: tag || 'span', className: className, value: props.attributes[cle] || '',
-      placeholder: placeholder || '', allowedFormats: ['core/italic'],
+      identifier: cle, tagName: tag || 'span', className: className, value: props.attributes[cle] || '',
+      placeholder: placeholder || '', allowedFormats: ['core/bold', 'core/italic'].concat(typo()),
+      withoutInteractiveFormatting: true,
       onChange: maj(props.setAttributes, cle)
     });
   }
-  // Texte : gras, italique et liens autorisés.
+  // Titre : les mots en italique prennent la couleur d'accent ; police, taille et couleur au choix.
+  function I(props, cle, tag, className, placeholder) {
+    return el(RichText, {
+      identifier: cle, tagName: tag || 'span', className: className, value: props.attributes[cle] || '',
+      placeholder: placeholder || '', allowedFormats: ['core/italic', 'core/bold'].concat(typo()),
+      onChange: maj(props.setAttributes, cle)
+    });
+  }
+  // Texte : gras, italique, liens, police, taille et couleur.
   function R(props, cle, tag, className, placeholder) {
     return el(RichText, {
-      tagName: tag || 'p', className: className, value: props.attributes[cle] || '',
-      placeholder: placeholder || '', allowedFormats: ['core/bold', 'core/italic', 'core/link'],
+      identifier: cle, tagName: tag || 'p', className: className, value: props.attributes[cle] || '',
+      placeholder: placeholder || '', allowedFormats: ['core/bold', 'core/italic', 'core/link'].concat(typo()),
       onChange: maj(props.setAttributes, cle)
     });
   }
@@ -99,7 +111,7 @@
         onSelect: choisir(props, p), allowedTypes: ['image'], value: a[p + 'Id'],
         render: function (o) {
           return a[p + 'Url']
-            ? el('img', { src: a[p + 'Url'], alt: '', className: (className || '') + ' sch-ed-img', onClick: o.open, title: 'Cliquez pour changer la photo' })
+            ? el('img', { src: a[p + 'Url'], alt: '', className: (className || '') + ' sch-ed-img', style: styleSombre(a, p), onClick: o.open, title: 'Cliquez pour changer la photo' })
             : el('button', { type: 'button', className: 'sch-ed-photo-vide ' + (className || ''), onClick: o.open }, 'Choisir une photo');
         }
       }));
@@ -129,12 +141,23 @@
         variant: 'link', isDestructive: true,
         onClick: function () { var o = {}; o[p + 'Id'] = 0; o[p + 'Url'] = ''; set(o); }
       }, 'Retirer la photo') : null,
+      a[p + 'Url'] ? el(c.RangeControl, {
+        label: 'Assombrir la photo', value: a[p + 'Sombre'] || 0, min: 0, max: 80, step: 5,
+        help: 'Pour que le texte posé sur la photo ressorte mieux. 0 = photo d’origine.',
+        onChange: function (v) { var o = {}; o[p + 'Sombre'] = v || 0; set(o); }
+      }) : null,
       el(c.TextareaControl, {
         label: 'Texte alternatif', value: a[p + 'Alt'] || '',
         help: 'Décrivez la photo en une phrase : il est lu par Google et par les lecteurs d’écran.',
         onChange: maj(set, p + 'Alt')
       })
     );
+  }
+
+  // Aperçu d'une photo assombrie (même réglage que sur le site).
+  function styleSombre(a, p) {
+    var v = a[p + 'Sombre'] || 0;
+    return v ? { '--lum': String(1 - v / 100), filter: 'brightness(' + (1 - v / 100) + ')' } : undefined;
   }
 
   /* Liens et boutons ---------------------------------------------------- */
@@ -304,7 +327,7 @@
     var encart = parent.nom === 'schiesser/encart';
     var bp = be.useBlockProps({ className: encart ? 'dy-d' : 'sb' });
     return el('div', bp,
-      T(props, 'valeur', 'div', encart ? 'y' : 'n', encart ? '1870' : 'Chiffre'),
+      P(props, 'valeur', 'div', encart ? 'y' : 'n', encart ? '1870' : 'Chiffre'),
       T(props, 'libelle', 'div', encart ? 't' : 'l', 'Libellé'));
   });
 
@@ -312,7 +335,7 @@
     var bp = be.useBlockProps({ className: 'sec-plate' });
     return el('section', bp, el('div', { className: 'wrap' }, el('div', { className: 'x-plate' },
       el('div', { className: 'rule' }, el('span', { className: 'x-seal', 'aria-hidden': true, dangerouslySetInnerHTML: { __html: '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1 3"/><text x="32" y="42.5" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="600" font-size="30" fill="currentColor">S</text></svg>' } })),
-      T(props, 'nombre', 'div', 'n', '150'),
+      P(props, 'nombre', 'div', 'n', '150'),
       T(props, 'libelle', 'div', 'l', 'ans de maison'),
       T(props, 'dates', 'div', 'd', '1870 · 2020'),
       R(props, 'texte', 'p', '', 'Texte de la plaque'))));
@@ -403,7 +426,7 @@
       el(be.InspectorControls, null, panneauPhoto(props, 'image'), el(c.PanelBody, { title: 'Lien', initialOpen: true }, champLien(props, 'lienUrl', 'Page ouverte au clic'))),
       el('div', bp,
         photo(props, 'image', ''),
-        T(props, 'numero', 'span', 'x-num', '0'),
+        P(props, 'numero', 'span', 'x-num', '0'),
         el('span', { className: 'x-fc' },
           T(props, 'surtitre', 'span', 'x-lv', 'Rez-de-chaussée'),
           T(props, 'titre', 'span', 'x-ft', 'Titre'),
@@ -442,7 +465,7 @@
     return el(Fragment, null, barrePhoto(props, 'image'), el(be.InspectorControls, null, panneauPhoto(props, 'image')),
       el('div', bp,
         photo(props, 'image', 'sch-ed-vignette'),
-        T(props, 'annee', 'div', 'sch-ed-annee', 'Année (ex. 1870)'),
+        P(props, 'annee', 'div', 'sch-ed-annee', 'Année (ex. 1870)'),
         onglets ? T(props, 'libelle', 'div', 'sch-ed-petit', 'Libellé court (onglet)') : null,
         T(props, 'titre', 'h3', '', 'Titre'),
         R(props, 'texte', 'p', '', 'Texte'),
@@ -459,19 +482,27 @@
         champLien(props, 'b1Lien', 'Lien du bouton 1', 'Vide : e-mail de la maison.'),
         champLien(props, 'b2Lien', 'Lien du bouton 2', 'Vide : itinéraire Google Maps.'))
     }, el('div', { className: 'visit' },
-      el('div', { className: 'vmap sch-ed-carte-plan' }, el('span', null, 'Carte interactive'), el('small', null, ED.rue ? ED.rue + ', ' + ED.ville : '')),
+      a.carte !== false && (a.fondCarte || 'google') === 'google' && ED.gmap
+        ? el('div', { className: 'vmap vmap--google sch-ed-ssr' }, el('iframe', { className: 'gmap', src: ED.gmap, title: 'Aperçu de la carte Google Maps', loading: 'lazy', tabIndex: -1 }))
+        : el('div', { className: 'vmap sch-ed-carte-plan' }, el('span', null, 'Carte interactive'), el('small', null, ED.rue ? ED.rue + ', ' + ED.ville : '')),
       el('div', { className: 'vinfo' },
         T(props, 'lieu', 'h3', '', ED.rue ? ED.rue + ', ' + ED.ville : 'Lieu'),
         Liste('sch-ed-lignes', 'schiesser/ligne', [['schiesser/ligne', { libelle: 'Adresse', auto: 'adresse' }], ['schiesser/ligne', { libelle: 'Horaires', auto: 'horaires' }], ['schiesser/ligne', { libelle: 'Contact', auto: 'contact' }]], 'vertical'),
         el('div', { className: 'vcta' }, bouton(props, 'b1Texte', 'btn-kir', 'Nous écrire', true), bouton(props, 'b2Texte', 'btn-line', 'Itinéraire')))));
   }, true);
 
-  // Fond de la carte interactive (les deux sont gratuits avec la mention des sources, affichée sur la carte).
+  // Fond de la carte interactive : Google Maps (fiche de la confiserie), OpenStreetMap ou CARTO.
   function choixFondCarte(a, set) {
+    var aides = {
+      google: 'La fiche Google de la confiserie (nom, avis, itinéraire). Réglable dans Réglages maison → Coordonnées.',
+      osm: 'Carte libre, aux couleurs du site. Rien n’est envoyé à Google.',
+      carto: 'Carte épurée, aux couleurs du site. Vérifiez les conditions de CARTO pour un site commercial (voir LISEZMOI).'
+    };
+    var f = a.fondCarte || 'google';
     return a.carte ? el(c.SelectControl, {
-      label: 'Fond de carte', value: a.fondCarte || 'osm',
-      options: [{ label: 'OpenStreetMap', value: 'osm' }, { label: 'CARTO Voyager (plus épuré)', value: 'carto' }],
-      help: 'CARTO : vérifiez ses conditions d’utilisation pour un site commercial (voir LISEZMOI).',
+      label: 'Fond de carte', value: f,
+      options: [{ label: 'Google Maps (fiche de la confiserie)', value: 'google' }, { label: 'OpenStreetMap', value: 'osm' }, { label: 'CARTO Voyager (plus épuré)', value: 'carto' }],
+      help: aides[f] || '',
       onChange: maj(set, 'fondCarte')
     }) : null;
   }
@@ -570,9 +601,16 @@
   enregistrer('intro', function (props) {
     var a = props.attributes;
     return Section(props, {
-      panneaux: el(c.PanelBody, { title: 'Enchaînement', initialOpen: false },
-        el(c.ToggleControl, { label: 'Collée à la section suivante', checked: !!a.suite, help: 'Pour enchaîner directement avec la montée à l’étage.', onChange: maj(props.setAttributes, 'suite') }))
-    }, el('div', { className: 'asc-intro' },
+      panneaux: el(Fragment, null,
+        el(c.PanelBody, { title: 'Phrase d’accroche', initialOpen: true },
+          el(c.SelectControl, {
+            label: 'Style de l’accroche', value: a.styleAccroche || 'lisible',
+            options: [{ label: 'Lisible : police du texte, taille modérée', value: 'lisible' }, { label: 'Italique élégante (grande, police des titres)', value: 'italique' }],
+            onChange: maj(props.setAttributes, 'styleAccroche')
+          })),
+        el(c.PanelBody, { title: 'Enchaînement', initialOpen: false },
+          el(c.ToggleControl, { label: 'Collée à la section suivante', checked: !!a.suite, help: 'Pour enchaîner directement avec la montée à l’étage.', onChange: maj(props.setAttributes, 'suite') })))
+    }, el('div', { className: 'asc-intro' + (a.styleAccroche === 'italique' ? ' asc-intro--italique' : '') },
       R(props, 'lead', 'p', 'lead', 'Grande phrase d’accroche'),
       el('div', be.useInnerBlocksProps({ className: 'body' }, {
         allowedBlocks: ['core/paragraph', 'core/list'],
@@ -595,7 +633,7 @@
     var bp = be.useBlockProps({ className: 'sch-ed-carte' });
     return el(Fragment, null, barrePhoto(props, 'image'), el(be.InspectorControls, null, panneauPhoto(props, 'image')),
       el('div', bp, photo(props, 'image', 'sch-ed-vignette'),
-        el('div', { className: 'sch-ed-ligne' }, T(props, 'niveau', 'span', 'sch-ed-annee', '0'), T(props, 'libelle', 'span', 'sch-ed-petit', 'Libellé court (Boutique)')),
+        el('div', { className: 'sch-ed-ligne' }, P(props, 'niveau', 'span', 'sch-ed-annee', '0'), T(props, 'libelle', 'span', 'sch-ed-petit', 'Libellé court (Boutique)')),
         T(props, 'surtitre', 'div', 'sch-ed-petit', 'Surtitre (Rez-de-chaussée)'),
         T(props, 'titre', 'h3', '', 'Titre'),
         R(props, 'texte', 'p', '', 'Texte')));
@@ -616,7 +654,42 @@
   }, true);
 
   enregistrer('carte-salon', function (props) {
-    return Section(props, { panneaux: panneauPhoto(props, 's', 'Photo de la suggestion') },
+    var a = props.attributes;
+    var set = props.setAttributes;
+    var TR = ED.tearoom || {};
+    var menu = a.source !== 'page' && TR.rubriques > 0;
+    var aideStyle = { fontSize: '12px', color: '#757575', margin: '8px 0 12px' };
+    var reglages = el(c.PanelBody, { title: 'Contenu de la carte', initialOpen: true },
+      el(c.SelectControl, {
+        label: 'La carte affiche', value: a.source || 'auto',
+        options: [{ label: 'Le menu « Produits Tea Room »', value: 'auto' }, { label: 'Les rubriques saisies dans cette page', value: 'page' }],
+        onChange: maj(set, 'source')
+      }),
+      el('p', { style: aideStyle }, TR.rubriques > 0
+        ? 'Produits Tea Room : ' + TR.nombre + ' produits dans ' + TR.rubriques + ' rubriques. Prix, descriptions, photos des rubriques et suggestion du jour se modifient dans ce menu.'
+        : 'Le menu « Produits Tea Room » est encore vide : la carte affiche les rubriques saisies dans cette page.'),
+      el(c.Button, { variant: 'secondary', href: TR.liste, target: '_blank' }, 'Ouvrir Produits Tea Room ↗'),
+      !TR.rubriques && TR.transfert ? el('div', { style: { marginTop: '16px' } },
+        el('p', { style: aideStyle }, 'Pour gérer cette carte comme les produits de la boutique, transférez ses rubriques dans le menu « Produits Tea Room ». Mettez d’abord la page à jour.'),
+        el(c.Button, { variant: 'primary', href: TR.transfert }, 'Transférer ces rubriques')) : null);
+
+    if (menu) {
+      // La carte vient du menu « Produits Tea Room » : aperçu fidèle, et les textes propres à la page à droite.
+      return Section(props, {
+        panneaux: el(Fragment, null, reglages,
+          el(c.PanelBody, { title: 'Suggestion du jour et mention', initialOpen: true },
+            el('p', { style: aideStyle }, TR.suggestion
+              ? 'Suggestion affichée : « ' + TR.suggestion + ' » (cochée « Suggestion du jour » dans Produits Tea Room).'
+              : 'Cochez « Suggestion du jour » sur un produit du Tea Room pour l’afficher dans l’encadré.'),
+            el(c.TextControl, { label: 'Surtitre de l’encadré', value: a.sSurtitre || '', onChange: maj(set, 'sSurtitre') }),
+            el(c.TextControl, { label: 'Pied de l’encadré (ex. Servi toute la journée)', value: a.sPied || '', onChange: maj(set, 'sPied') }),
+            el(c.TextControl, { label: 'Mention sous la carte', value: a.mention || '', onChange: maj(set, 'mention') })))
+      }, el(Fragment, null,
+        aide('Carte du menu « Produits Tea Room » : pour changer un prix, un produit ou une rubrique, ouvrez ce menu (panneau de droite).'),
+        apercu('carte-salon', props)));
+    }
+
+    return Section(props, { panneaux: el(Fragment, null, reglages, panneauPhoto(props, 's', 'Photo de la suggestion')) },
       el('div', { className: 'mn' },
         el('div', null,
           aide('Sur le site : une photo et un onglet par rubrique.'),
@@ -628,7 +701,7 @@
               T(props, 'sSurtitre', 'div', 'sk', 'La suggestion du jour'),
               T(props, 'sTitre', 'div', 'sh', 'Titre de la suggestion (vide : pas de suggestion)'),
               R(props, 'sTexte', 'p', 'sp', 'Texte'),
-              el('div', { className: 'sf' }, T(props, 'sPied', 'span', '', 'Servi toute la journée'), T(props, 'sPrix', 'b', '', 'CHF 0.00')))),
+              el('div', { className: 'sf' }, T(props, 'sPied', 'span', '', 'Servi toute la journée'), P(props, 'sPrix', 'b', '', 'CHF 0.00')))),
           T(props, 'mention', 'p', 'mn-note', 'Mention sous la carte (facultatif)'))));
   }, true);
 
@@ -643,7 +716,7 @@
   enregistrer('plat', function (props) {
     var bp = be.useBlockProps({ className: 'mi' });
     return el('div', bp,
-      el('div', { className: 'mi-top' }, T(props, 'nom', 'span', 'mi-nm', 'Nom du plat'), el('span', { className: 'mi-dots' }), T(props, 'prix', 'span', 'mi-pr', 'CHF 0.00')),
+      el('div', { className: 'mi-top' }, T(props, 'nom', 'span', 'mi-nm', 'Nom du plat'), el('span', { className: 'mi-dots' }), P(props, 'prix', 'span', 'mi-pr', 'CHF 0.00')),
       R(props, 'description', 'div', 'mi-d', 'Description'),
       T(props, 'mention', 'span', 'mi-tag sch-ed-tag', 'Mention (Signature…)'));
   });
@@ -678,7 +751,7 @@
     var bp = be.useBlockProps({ className: 'sch-ed-carte' });
     return el(Fragment, null, barrePhoto(props, 'image'), el(be.InspectorControls, null, panneauPhoto(props, 'image')),
       el('div', bp, photo(props, 'image', 'sch-ed-vignette'),
-        el('div', { className: 'sch-ed-ligne' }, T(props, 'heure', 'span', 'sch-ed-annee', '07:30'), T(props, 'libelle', 'span', 'sch-ed-petit', 'Le matin')),
+        el('div', { className: 'sch-ed-ligne' }, P(props, 'heure', 'span', 'sch-ed-annee', '07:30'), T(props, 'libelle', 'span', 'sch-ed-petit', 'Le matin')),
         T(props, 'titre', 'h3', '', 'Titre'),
         T(props, 'sousTitre', 'div', 'sch-ed-italique', 'Sous-titre'),
         R(props, 'texte', 'p', '', 'Texte'),
@@ -760,8 +833,8 @@
       el('div', bp,
         T(props, 'onglet', 'div', 'sch-ed-petit', 'Nom de l’onglet (La façade…)'),
         el('div', { className: 'sch-ed-deux' },
-          el('div', null, photo(props, 'avant', 'sch-ed-vignette' + (a.vieillir ? ' is-vieilli' : '')), T(props, 'avantLibelle', 'div', 'sch-ed-petit', '1870')),
-          el('div', null, photo(props, 'apres', 'sch-ed-vignette'), T(props, 'apresLibelle', 'div', 'sch-ed-petit', 'Aujourd’hui')))));
+          el('div', null, photo(props, 'avant', 'sch-ed-vignette' + (a.vieillir ? ' is-vieilli' : '')), P(props, 'avantLibelle', 'div', 'sch-ed-petit', '1870')),
+          el('div', null, photo(props, 'apres', 'sch-ed-vignette'), P(props, 'apresLibelle', 'div', 'sch-ed-petit', 'Aujourd’hui')))));
   });
 
   /* ------------------------------------------------------------------ */
@@ -836,9 +909,9 @@
         T(props, 'titre', 'h3', '', 'Titre de l’itinéraire'),
         T(props, 'sousTitre', 'div', 'sch-ed-italique', 'Sous-titre'),
         el('div', { className: 'sch-ed-kpis' },
-          el('span', null, 'Durée ', T(props, 'duree', 'b', '', '12'), ' min'),
-          el('span', null, 'Changements ', T(props, 'changements', 'b', '', '0')),
-          el('span', null, 'Marche ', T(props, 'marche', 'b', '', '4'), ' min')),
+          el('span', null, 'Durée ', P(props, 'duree', 'b', '', '12'), ' min'),
+          el('span', null, 'Changements ', P(props, 'changements', 'b', '', '0')),
+          el('span', null, 'Marche ', P(props, 'marche', 'b', '', '4'), ' min')),
         el('div', be.useInnerBlocksProps({ className: 'sch-ed-etapes' }, { allowedBlocks: ['schiesser/etape'], template: [['schiesser/etape'], ['schiesser/etape'], ['schiesser/etape']], orientation: 'vertical' })),
         R(props, 'astuce', 'p', 'sch-ed-petit', 'Astuce (facultatif)')));
   }, true);
@@ -850,7 +923,7 @@
       el(be.InspectorControls, null, el(c.PanelBody, { title: 'Pictogramme', initialOpen: true },
         el(c.SelectControl, { label: 'Pictogramme', value: a.icone, options: optionsPictos(), help: '« Marche » trace un chemin en pointillés.', onChange: maj(props.setAttributes, 'icone') }))),
       el('div', bp, el('span', { className: 'sch-ed-picto' }, picto(a.icone)),
-        el('div', null, T(props, 'titre', 'div', 'sch-ed-titre', 'Étape'), R(props, 'texte', 'div', '', 'Texte'), T(props, 'duree', 'div', 'sch-ed-petit', 'Durée (≈ 8 min)'))));
+        el('div', null, T(props, 'titre', 'div', 'sch-ed-titre', 'Étape'), R(props, 'texte', 'div', '', 'Texte'), P(props, 'duree', 'div', 'sch-ed-petit', 'Durée (≈ 8 min)'))));
   });
 
   enregistrer('devanture', function (props) {

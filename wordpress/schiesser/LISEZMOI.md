@@ -1,7 +1,18 @@
-# Thème Schiesser 0.3
+# Thème Schiesser 0.4
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.4
+
+- **Deux menus de produits** dans l'administration : « Produits boutique » (inchangé) et **« Produits Tea Room »**, la carte du salon de thé : nom, prix, description, mention (Signature, En saison…), rubrique, photo, et une case « Suggestion du jour ». Les rubriques (onglets de la carte) ont leur photo et leur ordre. La page Salon de thé affiche automatiquement cette carte, et Google reçoit la carte avec ses prix (données structurées « Menu »).
+- **Typographie et couleur au clic** : on sélectionne des mots, puis bouton **Aa** de la barre d'outils : police des titres ou du texte, plus petit, plus grand, majuscules espacées, couleur de la charte. Fonctionne dans tous les textes : blocs de la maquette, grande photo, paragraphes et titres. Pour un paragraphe entier, le panneau de droite propose aussi police, taille, graisse et couleur.
+- **Cartes Google Maps** : les cartes de l'accueil et de la page Nous visiter montrent la fiche Google de la confiserie (sans clé ni compte). Une vue précise peut être collée depuis Google Maps (« Intégrer une carte »), et la carte peut ne s'afficher qu'après un clic (protection des données). OpenStreetMap et CARTO restent disponibles dans chaque bloc.
+- **« Assombrir la photo »** : un curseur pour chaque photo (grande photo du haut comprise), pour que le texte posé dessus ressorte mieux.
+- **Accroches plus lisibles** : la phrase d'accroche du bloc Introduction passe dans la police du texte, en plus petit (le style italique de la maquette reste disponible dans le bloc).
+- **CSS personnalisé** : Réglages maison → Avancé, pour les retouches de style, conservé lors des mises à jour.
+- **Adresse par défaut** alignée sur les annuaires : Marktplatz 19, 4051 Basel (à confirmer avec la fiche Google).
+- Corrigé : le badge « Aujourd'hui » des horaires ne chevauche plus l'heure sur téléphone.
 
 ## Nouveautés de la version 0.3 : la maquette, section par section
 
@@ -39,14 +50,21 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
 
-### Mise à jour depuis une version précédente (0.1 ou 0.2)
+### Mise à jour depuis la version 0.3
+
+1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir le nouveau `schiesser.zip`, puis **Remplacer la version installée**. Les pages, produits, photos, menus et réglages ne sont pas touchés.
+2. Sur le tableau de bord, cliquer sur **Transférer la carte dans Produits Tea Room** : les rubriques et les plats du bloc « Carte du salon » deviennent des produits du Tea Room (mêmes textes, prix et photos). Sans ce clic, la carte reste saisie dans la page, comme avant.
+3. Les cartes passent automatiquement sur Google Maps, et le nouveau bouton **Aa** est disponible dans l'éditeur.
+4. Dans **Réglages maison → Coordonnées**, vérifier l'adresse (« Marktplatz 19 », code postal « 4051 » selon les annuaires) pour qu'elle soit identique à la fiche Google.
+
+### Mise à jour depuis une version plus ancienne (0.1 ou 0.2)
 
 1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir le nouveau `schiesser.zip`, puis **Remplacer la version installée**.
-2. Sur le tableau de bord, cliquer sur **Mettre à jour le contenu de démonstration**. Les pages sont alors recomposées avec les blocs de la maquette. Attention : cela remplace le contenu des pages et des 8 produits de démonstration. Sur un site de test, c'est ce que l'on veut ; si des textes ont déjà été retouchés, notez-les avant.
+2. Sur le tableau de bord, cliquer sur **Mettre à jour le contenu de démonstration**. Les pages sont alors recomposées avec les blocs de la maquette et la carte du Tea Room est créée. Attention : cela remplace le contenu des pages et des produits de démonstration. Sur un site de test, c'est ce que l'on veut ; si des textes ont déjà été retouchés, notez-les avant.
 3. Les anciennes adresses redirigent automatiquement vers les nouvelles : `/tea-room/` vers `/salon-de-the/`, et les produits renommés (par exemple `/produits/truffes-maison/` vers `/produits/truffes-au-chocolat/`).
 
 Prérequis : WordPress 6.4 ou plus récent (conseillé : la dernière version), PHP 7.4 ou plus récent.
-Elementor et Code Snippets ne sont pas utilisés : ils peuvent être désactivés.
+Elementor n'est pas utilisé : il peut être désactivé. **Code Snippets** peut rester installé : c'est l'endroit prévu pour les petits ajouts de code (voir « Faire évoluer le site »).
 
 ## Extensions
 
@@ -55,6 +73,7 @@ Elementor et Code Snippets ne sont pas utilisés : ils peuvent être désactivé
 | **Rank Math SEO** (gratuit) | Maintenant | Titres, descriptions, mots-clés, plan du site, redirections. Le thème le complète automatiquement. |
 | **Une extension d'envoi d'e-mails** (par exemple FluentSMTP ou WP Mail SMTP, gratuites) | Avant d'utiliser le formulaire de contact | Les messages du formulaire partent alors par la messagerie de la maison : sans elle, certains hébergeurs bloquent les envois ou les messages arrivent en courrier indésirable. |
 | **WooCommerce** (gratuit) | Le jour où la vente en ligne démarre | Panier, paiement, stock. Tout est déjà préparé dans le thème. |
+| **Code Snippets** (gratuit) | Quand un petit ajout de code vous est fourni | Ajouter une fonctionnalité sans toucher au thème ; conservé lors des mises à jour. |
 | Une extension de cache (selon l'hébergeur) | À la mise en ligne | Vitesse d'affichage. |
 | Une extension de sauvegarde (par exemple UpdraftPlus) | À la mise en ligne | Sauvegardes automatiques. |
 | Polylang | Si le site passe en allemand et en anglais | Versions linguistiques ; le sélecteur FR · DE · EN de la maquette apparaît alors dans l'en-tête. |
@@ -66,15 +85,19 @@ Aucune extension de formulaire n'est nécessaire : le formulaire de la maquette 
 | Contenu | Où | Effet |
 |---|---|---|
 | Téléphone, e-mail, adresse, horaires, vitrine du jour, pied de page, réseaux sociaux | **Réglages maison** | Mis à jour partout : bandeaux « Ouvert / Fermé », fiches d'adresse, tableau des horaires, pied de page, formulaire de contact, fiche Google |
-| Position de la carte (latitude, longitude) | **Réglages maison → Fiche Google et SEO** | Cartes de l'accueil et de la page Nous visiter |
+| Position (latitude, longitude) | **Réglages maison → Fiche Google et SEO** | Données pour Google ; cartes OpenStreetMap et CARTO |
 | Fiche Google (type d'établissement, année de fondation, canton, raison sociale, numéro IDE, profils officiels) | **Réglages maison → Fiche Google et SEO** | Données structurées lues par Google et les moteurs d'IA |
-| Produits (nom, photo, catégorie, prix, badge, accroche, fiche, présentation) | **Produits** | Catalogue de l'accueil, grille de la boutique, fiche rapide et page du produit |
-| Ordre des produits | **Produits → Modifier → Ordre d'affichage** | 1 = premier |
+| Produits de la boutique (nom, photo, catégorie, prix, badge, accroche, fiche, présentation) | **Produits boutique** | Catalogue de l'accueil, grille de la boutique, fiche rapide et page du produit |
+| Ordre des produits | **Produits boutique → Modifier → Ordre d'affichage** | 1 = premier |
+| Carte du salon de thé (produits, prix, descriptions, mentions, suggestion du jour) | **Produits Tea Room** | Carte en onglets de la page Salon de thé, données « Menu » pour Google |
+| Onglets de la carte (nom, grande photo, ordre) | **Produits Tea Room → Rubriques** | Onglets et photo de la carte |
+| Police, taille, couleur d'un mot ou d'une phrase | Sélectionner le texte, puis bouton **Aa** | Uniquement ce texte ; « Retirer police, taille et couleur » pour revenir au style d'origine |
+| Photo plus sombre (texte plus lisible) | Panneau de droite du bloc → **Photo** → « Assombrir la photo » | Uniquement cette photo |
+| Carte Google Maps | **Réglages maison → Coordonnées** (lien, carte, affichage après un clic) ; « Fond de carte » dans le bloc | Cartes de l'accueil et de la page Nous visiter |
 | Produits du catalogue de l'accueil | Bloc **Catalogue des créations** → panneau de droite → « Choisir les produits un par un » | Seuls ces produits, dans cet ordre (sinon : les premiers du menu Produits) |
 | Catégories (filtres de la boutique) | **Produits → Catégories** | Les filtres apparaissent automatiquement |
 | Textes, photos et sections des pages | **Pages → Modifier** | Clic direct sur le texte ; clic sur une photo (ou bouton « Photo » de la barre du bloc) ; bouton + pour ajouter un élément ou une section |
 | Fond, numéro, ancre d'une section | Panneau de droite du bloc | L'ancre crée aussi le lien « Sur cette page » du pied de page |
-| Carte du salon (rubriques, plats, prix, suggestion du jour) | Page **Salon de thé** → bloc **Carte du salon** | Onglets de la carte sur le site |
 | Affluence par jour et par heure | Page **Nous visiter** → bloc **Affluence** → panneau de droite | Graphique, heures calmes et animées calculées automatiquement |
 | Style d'un bouton, d'un paragraphe, d'une image | Panneau de droite → onglet **Styles** | Uniquement des styles aux couleurs de la maison |
 | Couleurs et polices du site | **Réglages maison → Charte graphique** (administrateur) | Tout le site et l'éditeur suivent |
@@ -95,7 +118,7 @@ Chaque bloc reproduit une section de la maquette. Les éléments (dates, plats, 
 | Toutes les pages | **Bandeau « ouvert / fermé »** (état en direct et deux informations), **Séparateur losanges**, **Questions fréquentes** (aussi transmises à Google), **Introduction** (accroche en italique et texte), **Appel final** (section sombre et deux boutons) |
 | Accueil | **Vitrine du jour**, **Catalogue des créations** (aperçu photo au survol), **Deux étages** (cartes photo 0 et 1), **Savoir-faire** (la photo change au défilement), **Ligne du temps** (cartes à faire glisser), **Nous trouver** (carte et adresse) |
 | La boutique | **Grille des produits**, **Galerie** (visionneuse avec vignettes), **Bon à savoir** (pictogrammes), **Cartes numérotées** (« Passer commande ») |
-| Salon de thé | **Montée à l’étage** (scène au défilement), **Encart d’exception** (« La doyenne »), **Carte du salon** (onglets, plats, suggestion du jour), **Panneaux photo**, **Moments de la journée**, **Passer nous voir** |
+| Salon de thé | **Montée à l’étage** (scène au défilement), **Encart d’exception** (« La doyenne »), **Carte du salon** (onglets, prix et suggestion du jour, tirés du menu « Produits Tea Room »), **Panneaux photo**, **Moments de la journée**, **Passer nous voir** |
 | Notre histoire | **Chiffres clés**, **Plaque anniversaire**, **Récit avec lettrine** (et citation en exergue), **Ligne du temps** en mode chronologie à onglets, **Archives** (agrandies au clic), **Hier et aujourd’hui** (comparateur à curseur), **Cartes numérotées** (« Principes ») |
 | Nous visiter | **Plan et horaires**, **Affluence**, **Composez votre trajet** (départs et étapes), **Grande photo légendée** (« Reconnaître la maison ») |
 | Contact | **Formulaire de contact**, **Fiche de contact** |
@@ -104,7 +127,7 @@ Les lignes d'information (adresse, horaires, téléphone, e-mail) peuvent se rem
 
 ### Blocs de mise en page
 
-- **Hero (grande photo)** : surtitre, titre (H1 de la page, italique possible), texte, deux boutons avec leur style, photo et texte alternatif, hauteur, teinte de la photo (sépia pour l'histoire), barre de progression de lecture, couleur des mots en italique, sceau tournant. Protégé contre la suppression.
+- **Hero (grande photo)** : surtitre, titre (H1 de la page, italique possible), texte, deux boutons avec leur style, photo et texte alternatif, « Assombrir la photo », hauteur, teinte de la photo (sépia pour l'histoire), barre de progression de lecture, couleur des mots en italique, sceau tournant. Protégé contre la suppression.
 - **Section** : fond (papier, clair, crème, sable, chocolat), largeur (large ou lecture), en-tête facultatif, ancre pour les liens directs, contenu libre.
 - **Grille des produits** : titre et note modifiables, nombre de produits, filtres, source (produits du site ou WooCommerce), bouton « Voir toute la boutique ».
 
@@ -122,9 +145,26 @@ Codes courts utilisables partout (bloc « Code court » ou dans un paragraphe). 
 
 ## Carte, formulaire et vie privée (nLPD)
 
-- **Carte** : la bibliothèque Leaflet est incluse dans le thème et ne se charge que sur les pages qui ont une carte. Les fonds de carte viennent d'OpenStreetMap (accueil) et de CARTO (page Nous visiter), comme dans la maquette ; le réglage « Fond de carte » du bloc permet de choisir l'un ou l'autre. OpenStreetMap est gratuit pour un usage raisonnable, avec la mention des sources affichée sur la carte. CARTO est gratuit dans certaines limites : vérifiez ses conditions pour un site commercial, ou choisissez « OpenStreetMap ». À l'affichage de la carte, le navigateur du visiteur contacte ces serveurs (son adresse IP leur est transmise) : à mentionner dans la politique de confidentialité.
+- **Carte Google Maps** (par défaut) : la carte intégrée montre la fiche Google de la confiserie, trouvée d'après le nom et l'adresse des Réglages maison ; elle ne demande ni clé ni compte Google. Pour une vue précise, collez le code « Intégrer une carte » de Google Maps dans **Réglages maison → Coordonnées → Carte Google Maps du site**. La carte se charge quand le visiteur arrive à sa hauteur ; à ce moment, son navigateur contacte Google (adresse IP transmise, cookies possibles) : à mentionner dans la politique de confidentialité. L'option **« Afficher la carte Google seulement après un clic »** évite tout envoi à Google avant l'accord du visiteur.
+- **Lien Google Maps** : le lien « Partager » de la fiche Google Maps est le meilleur. Un lien de recherche Google (celui de la barre d'adresse quand la fiche s'affiche dans les résultats) est accepté : le thème le transforme en lien Google Maps propre, sans les paramètres de suivi.
+- **OpenStreetMap et CARTO** (au choix, « Fond de carte » dans le bloc) : la bibliothèque Leaflet, incluse dans le thème, ne se charge que si l'une de ces cartes est affichée. OpenStreetMap est gratuit pour un usage raisonnable, avec la mention des sources affichée sur la carte. CARTO est gratuit dans certaines limites : vérifiez ses conditions pour un site commercial. Là aussi, l'adresse IP du visiteur est transmise au serveur de la carte.
 - **Formulaire de contact** : les messages ne sont pas enregistrés dans le site, ils sont envoyés par e-mail à l'adresse des Réglages maison (réponse possible directement au visiteur). Protection sans captcha ni service extérieur : champ piège invisible, délai minimal avant l'envoi, un message par minute depuis une même connexion. À mentionner dans la politique de confidentialité.
 - **Polices** : Bodoni Moda et Inter sont hébergées dans le thème, aucun appel à Google Fonts tant que la charte d'origine est conservée.
+
+## Faire évoluer le site sans renvoyer tout le thème
+
+Le thème ne contient que la mise en page et les fonctionnalités. **Tout le contenu est dans la base de données** : pages, produits de la boutique et du Tea Room, photos, menus, Réglages maison, réglages Rank Math. Remplacer le thème par une nouvelle version (« Remplacer la version installée ») ne touche donc à rien de tout cela. Seul le bouton « Mettre à jour le contenu de démonstration » remplace des pages : il n'est utile que sur un site de test.
+
+Pour les ajouts futurs, trois façons de faire, de la plus légère à la plus complète :
+
+| Besoin | Comment | Conservé lors d'une mise à jour du thème |
+|---|---|---|
+| Retouche de style (couleur, espacement, taille d'un élément) | Quelques lignes de CSS dans **Réglages maison → Avancé → CSS personnalisé** | Oui |
+| Petite fonctionnalité (code court, champ, redirection, ajout dans une page) | Un extrait de code PHP dans l'extension gratuite **Code Snippets** : Extraits → Ajouter, coller, « Enregistrer et activer ». En cas d'erreur, Code Snippets désactive l'extrait tout seul. | Oui |
+| Outil externe sur toutes les pages (statistiques, pixel) | **Réglages maison → Avancé → Code dans l'en-tête** | Oui |
+| Nouveau bloc, nouvelle page type, changement de mise en page | Nouvelle version du thème (`schiesser.zip`), installée en trois clics | Le contenu reste en place |
+
+Règle d'or : ne jamais modifier les fichiers du thème directement (Apparence → Éditeur de fichiers) : ces modifications seraient perdues à la mise à jour suivante. Tout ajout passe par l'un des trois emplacements ci-dessus.
 
 ## Rank Math : réglages conseillés
 
@@ -160,6 +200,7 @@ Ce parcours a été testé ici avec une imitation de WooCommerce (l'extension ne
 - Remplacer les photos par les photos de la maison, avec un texte alternatif descriptif pour chacune ; les archives et les comparaisons « hier et aujourd’hui » attendent le fonds photographique de la maison.
 - Saisir les vraies coordonnées et les horaires dans Réglages maison, ainsi que la position exacte (latitude, longitude).
 - Installer une extension d'envoi d'e-mails (SMTP) et **envoyer un message de test** avec le formulaire de contact.
+- Vérifier que l'adresse des Réglages maison est exactement celle de la fiche Google (les annuaires indiquent Marktplatz 19, 4051 Basel), puis contrôler la carte Google Maps et les boutons « Itinéraire ».
 - Compléter et publier la page **Mentions légales** (brouillon créé par l'import) et la **Politique de confidentialité** (nLPD), en y mentionnant la carte et le formulaire (voir plus haut).
 - Créer ou mettre à jour la fiche **Google Business Profile** avec exactement le même nom, la même adresse et le même téléphone.
 - Mettre le site en HTTPS, activer un cache, programmer des sauvegardes.
@@ -181,7 +222,8 @@ schiesser/
 │   ├── reglages.php       données des Réglages maison
 │   ├── page-reglages.php  écran des Réglages maison
 │   ├── shortcodes.php     codes courts
-│   ├── produits.php       type de contenu Produits, champs, cartes, produits liés
+│   ├── produits.php       type de contenu Produits boutique, champs, cartes, produits liés
+│   ├── tea-room.php       type de contenu Produits Tea Room (carte du salon), rubriques, transfert, données « Menu »
 │   ├── blocs.php          blocs maison et styles des blocs WordPress
 │   ├── maquette.php       blocs de la maquette : déclaration, rendu du site, formulaire de contact
 │   ├── compositions.php   compositions de l'éditeur et outils d'écriture des blocs
@@ -192,7 +234,7 @@ schiesser/
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)
 └── assets/
     ├── css/     schiesser.css (site), editeur-maquette.css (éditeur), WooCommerce
-    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), boutique, éditeur
+    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (bouton Aa), boutique, éditeur
     ├── vendor/leaflet/   bibliothèque de carte (licence BSD)
     └── admin/, fonts/
 ```

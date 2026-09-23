@@ -491,6 +491,11 @@ function schiesser_schemas_page() {
 	if ( $faq ) {
 		$sortie['faq'] = $faq;
 	}
+	// Carte du salon de thé : rubriques et produits avec leur prix.
+	$menu = function_exists( 'schiesser_schema_menu' ) ? schiesser_schema_menu( $post ) : null;
+	if ( $menu ) {
+		$sortie['menu'] = $menu;
+	}
 	return $sortie;
 }
 

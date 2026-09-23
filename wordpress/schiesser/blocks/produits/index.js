@@ -80,11 +80,11 @@
             el('div', { className: 'sec-head' },
               el('span', { className: 'idx' + (a.numero ? '' : ' idx--vide') }, el('i', { className: 'x-diamond' }), a.numero),
               el(be.RichText, {
-                tagName: 'h2', value: a.titre, allowedFormats: ['core/italic'], placeholder: 'Titre de la section',
+                identifier: 'titre', tagName: 'h2', value: a.titre, allowedFormats: ['core/italic', 'core/bold'].concat(window.SCHIESSER_TYPO || []), placeholder: 'Titre de la section',
                 onChange: function (v) { set({ titre: v }); }
               }),
               el(be.RichText, {
-                tagName: 'p', className: 'note', value: a.note, allowedFormats: [], placeholder: 'Petite note (facultatif)',
+                identifier: 'note', tagName: 'p', className: 'note', value: a.note, allowedFormats: ['core/italic', 'core/bold'].concat(window.SCHIESSER_TYPO || []), placeholder: 'Petite note (facultatif)',
                 onChange: function (v) { set({ note: v }); }
               })
             ),

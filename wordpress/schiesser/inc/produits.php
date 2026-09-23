@@ -1,8 +1,8 @@
 <?php
 /**
- * Type de contenu « Produits » (boutique) et ses champs.
+ * Type de contenu « Produits boutique » et ses champs.
  *
- * Le client ajoute ou modifie un produit depuis le menu « Produits » :
+ * Le client ajoute ou modifie un produit depuis le menu « Produits boutique » :
  * nom, photo (image mise en avant), catégorie, prix, fiche détaillée,
  * texte long pour la page du produit. Chaque produit a sa propre page
  * (/produits/nom-du-produit/), indexable par Google, et la grille de la
@@ -21,9 +21,9 @@ const SCHIESSER_CATEGORIE = 'schiesser_categorie';
 add_action( 'init', function () {
 	register_post_type( SCHIESSER_PRODUIT, array(
 		'labels'              => array(
-			'name'                  => 'Produits',
+			'name'                  => 'Produits boutique',
 			'singular_name'         => 'Produit',
-			'menu_name'             => 'Produits',
+			'menu_name'             => 'Produits boutique',
 			'add_new'               => 'Ajouter un produit',
 			'add_new_item'          => 'Ajouter un produit',
 			'edit_item'             => 'Modifier le produit',

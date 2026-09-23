@@ -131,7 +131,13 @@
             onChange: function (v) { set({ bouton2Lien: v }); }
           })
         ),
-        el(c.PanelBody, { title: 'Photo', initialOpen: false },
+        el(c.PanelBody, { title: 'Photo', initialOpen: true },
+          el(c.RangeControl, {
+            label: 'Assombrir la photo',
+            help: 'Pour que le texte ressorte mieux sur une photo claire. 0 = photo d’origine.',
+            value: a.sombre || 0, min: 0, max: 80, step: 5,
+            onChange: function (v) { set({ sombre: v || 0 }); }
+          }),
           el(c.TextareaControl, {
             label: 'Texte alternatif (description de la photo)',
             help: 'Décrit l’image pour Google et les personnes malvoyantes. Ex. « Vitrine de pralinés de la Confiserie Schiesser à Bâle ».',
@@ -142,7 +148,7 @@
       );
 
       var media = a.imageUrl
-        ? el('img', { src: a.imageUrl, alt: '' })
+        ? el('img', { src: a.imageUrl, alt: '', style: a.sombre ? { '--lum': String(1 - a.sombre / 100) } : undefined })
         : el('div', { className: 'hero-vide' },
             el(be.MediaUploadCheck, null,
               el(be.MediaUpload, {
@@ -162,29 +168,29 @@
             el('div', { className: 'hero-inner' },
               a.ariane ? el('div', { className: 'crumb' }, el('span', null, 'Accueil'), ' · ', el('span', null, titrePage || 'Page')) : null,
               el(be.RichText, {
-                tagName: 'p', className: 'eyebrow', value: a.surtitre, allowedFormats: [],
+                identifier: 'surtitre', tagName: 'p', className: 'eyebrow', value: a.surtitre, allowedFormats: ['core/italic', 'core/bold'].concat(window.SCHIESSER_TYPO || []),
                 placeholder: 'Surtitre (ex. Confiserie et tea room à Bâle)',
                 onChange: function (v) { set({ surtitre: v }); }
               }),
               el(be.RichText, {
-                tagName: 'h1', value: a.titre, allowedFormats: ['core/italic'],
+                identifier: 'titre', tagName: 'h1', value: a.titre, allowedFormats: ['core/italic', 'core/bold'].concat(window.SCHIESSER_TYPO || []),
                 placeholder: 'Titre de la page (Maj + Entrée pour aller à la ligne)',
                 onChange: function (v) { set({ titre: v }); }
               }),
               el(be.RichText, {
-                tagName: 'p', className: 'hero-sub', value: a.texte, allowedFormats: ['core/italic'],
+                identifier: 'texte', tagName: 'p', className: 'hero-sub', value: a.texte, allowedFormats: ['core/italic', 'core/bold'].concat(window.SCHIESSER_TYPO || []),
                 placeholder: 'Texte d’introduction',
                 onChange: function (v) { set({ texte: v }); }
               }),
               el('div', { className: 'hero-actions' },
                 el('span', { className: CLASSES_BOUTON[a.bouton1Style || 'creme'] },
                   el(be.RichText, {
-                    tagName: 'span', value: a.bouton1Texte, allowedFormats: [], placeholder: 'Bouton 1',
+                    identifier: 'bouton1Texte', tagName: 'span', value: a.bouton1Texte, allowedFormats: [], placeholder: 'Bouton 1',
                     onChange: function (v) { set({ bouton1Texte: v }); }
                   }), ' ', el('span', { className: 'a' }, '→')),
                 el('span', { className: CLASSES_BOUTON[a.bouton2Style || 'contour'] },
                   el(be.RichText, {
-                    tagName: 'span', value: a.bouton2Texte, allowedFormats: [], placeholder: 'Bouton 2 (facultatif)',
+                    identifier: 'bouton2Texte', tagName: 'span', value: a.bouton2Texte, allowedFormats: [], placeholder: 'Bouton 2 (facultatif)',
                     onChange: function (v) { set({ bouton2Texte: v }); }
                   }))
               ),

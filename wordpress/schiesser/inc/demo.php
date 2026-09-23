@@ -51,7 +51,7 @@ add_action( 'admin_notices', function () {
 	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_import_demo&remplacer=1' ), 'schiesser_import_demo' );
 	?>
 	<div class="notice notice-info">
-		<p><strong>Thème Schiesser 0.3 :</strong> les pages sont maintenant composées avec les blocs de la maquette (bandeau « Ouvert maintenant », catalogue, étages, ligne du temps, carte, carte du salon, archives, avant et après, itinéraires, formulaire de contact…). La mise à jour <strong>remplace le contenu</strong> des pages et des 8 produits de démonstration : les textes et réglages SEO optimisés sont conservés.</p>
+		<p><strong>Thème Schiesser :</strong> un nouveau contenu de démonstration est disponible : pages composées avec les blocs de la maquette (bandeau « Ouvert maintenant », catalogue, étages, ligne du temps, carte Google Maps, archives, avant et après, itinéraires, formulaire de contact…) et carte du Tea Room dans le menu « Produits Tea Room ». La mise à jour <strong>remplace le contenu</strong> des pages et des produits de démonstration : les textes et réglages SEO optimisés sont conservés.</p>
 		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>" onclick="return confirm('Remplacer le contenu des pages et produits de démonstration ?');">Mettre à jour le contenu de démonstration</a></p>
 	</div>
 	<?php
@@ -333,6 +333,118 @@ function schiesser_demo_produits() {
 
 
 /* ------------------------------------------------------------------ */
+/* Carte du Tea Room                                                   */
+/* ------------------------------------------------------------------ */
+
+/**
+ * La carte du salon de thé (menu « Produits Tea Room ») : rubriques avec leur photo,
+ * produits [ nom, prix, description, mention ], et la suggestion du jour.
+ */
+function schiesser_demo_tearoom() {
+	$l  = 'schiesser_demo_lien';
+	$pr = 'schiesser_demo_url_produit';
+	return array(
+		'rubriques'  => array(
+			array( 'nom' => 'Cafés & chocolats', 'photo' => '1556910103-1c02745aae4d', 'fichier' => 'biscuits-aux-amandes', 'alt' => 'Cafés et chocolats chauds servis au salon', 'plats' => array(
+				array( 'Café crème', 'CHF 5.20', 'Torréfaction sélectionnée pour la maison, servi en porcelaine.' ),
+				array( 'Chocolat chaud maison', 'CHF 7.50', 'Préparé à partir de notre chocolat de couverture, à l’ancienne. En hiver, avec un ' . $l( $pr( 'Marrons glacés' ), 'marron glacé' ) . '.', 'Signature' ),
+				array( 'Cappuccino', 'CHF 6.—', 'Mousse dense, servi avec un praliné de la boutique.' ),
+				array( 'Espresso', 'CHF 4.50', 'Court et franc, comme il se doit.' ),
+			) ),
+			array( 'nom' => 'Thés & infusions', 'photo' => '1445116572660-236099ec97a0', 'fichier' => 'salon-de-the-bale', 'alt' => 'Théières et service à thé du salon', 'plats' => array(
+				array( 'Thé noir de saison', 'CHF 6.50', 'Sélection changeante, servie en théière.' ),
+				array( 'Thé vert', 'CHF 6.50', 'Infusion douce, à l’eau frémissante.' ),
+				array( 'Infusion maison', 'CHF 6.—', 'Mélange de plantes composé pour le salon.' ),
+			) ),
+			array( 'nom' => 'Pâtisseries', 'photo' => '1565958011703-44f9829ba187', 'fichier' => 'gateau-sur-commande', 'alt' => 'Pâtisseries du jour présentées à l’étage', 'plats' => array(
+				array( 'Part du jour', 'CHF 7.80', 'La pâtisserie sortie du four le matin même.', 'Chaque jour' ),
+				array( 'Gâteau au chocolat', 'CHF 8.20', 'Dense et peu sucré, servi à température.' ),
+				array( 'Tarte de saison', 'CHF 7.50', 'Selon les fruits du marché, juste en face.' ),
+				array( 'Assortiment de pralinés', 'CHF 9.—', 'Trois ' . $l( $pr( 'Pralinés artisanaux' ), 'pralinés artisanaux' ) . ' choisis dans la vitrine du bas.' ),
+			) ),
+			array( 'nom' => 'Salé & glaces', 'photo' => '1519915028121-7d3463d20b13', 'fichier' => 'marrons-glaces', 'alt' => 'Assiettes salées et coupes glacées du salon', 'plats' => array(
+				array( 'Petite salade', 'CHF 12.50', 'Feuilles de saison, vinaigrette maison.' ),
+				array( 'Croque du salon', 'CHF 14.—', 'Pain de campagne, servi chaud.' ),
+				array( 'Coupe glacée', 'CHF 10.50', 'Glaces maison, chantilly montée à la commande.', 'En saison' ),
+				array( 'Boule de glace', 'CHF 3.80', 'À l’unité, parfums du jour.' ),
+			) ),
+		),
+		'suggestion' => array(
+			'nom'         => 'Chocolat chaud & part du jour',
+			'prix'        => 'CHF 14.—',
+			'description' => 'Notre chocolat chaud maison, accompagné de la pâtisserie sortie du four le matin même.',
+			'photo'       => '1565958011703-44f9829ba187',
+			'fichier'     => 'gateau-sur-commande',
+			'alt'         => 'Chocolat chaud et part du jour au salon de thé',
+		),
+	);
+}
+
+/**
+ * Remplit le menu « Produits Tea Room ».
+ *
+ * @param bool $remplacer Remplace les produits de démonstration (ceux ajoutés à la main restent).
+ */
+function schiesser_importer_tearoom( $remplacer = false ) {
+	if ( ! function_exists( 'schiesser_tearoom_creer' ) ) {
+		return;
+	}
+	$existants = get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids' ) );
+	if ( $existants && ! $remplacer ) {
+		return; // la carte est déjà remplie (import précédent ou saisie à la main)
+	}
+	if ( $remplacer ) {
+		foreach ( get_posts( array(
+			'post_type'   => SCHIESSER_TEAROOM,
+			'post_status' => 'any',
+			'numberposts' => -1,
+			'fields'      => 'ids',
+			'meta_key'    => '_t_demo', // phpcs:ignore WordPress.DB.SlowDBQuery
+		) ) as $id ) {
+			wp_delete_post( $id, true );
+		}
+	}
+	$d = schiesser_demo_tearoom();
+	foreach ( $d['rubriques'] as $i => $r ) {
+		$t = term_exists( $r['nom'], SCHIESSER_RUBRIQUE );
+		$t = $t ?: wp_insert_term( $r['nom'], SCHIESSER_RUBRIQUE );
+		if ( is_wp_error( $t ) ) {
+			continue;
+		}
+		$term_id = (int) ( is_array( $t ) ? $t['term_id'] : $t );
+		update_term_meta( $term_id, 'ordre', $i + 1 );
+		$photo = schiesser_demo_image( $r['photo'], $r['fichier'], $r['alt'] );
+		if ( $photo ) {
+			update_term_meta( $term_id, 'photo', $photo );
+		}
+		foreach ( $r['plats'] as $k => $p ) {
+			schiesser_tearoom_creer( array(
+				'nom'         => $p[0],
+				'prix'        => $p[1],
+				'description' => $p[2],
+				'mention'     => $p[3] ?? '',
+				'ordre'       => $k + 1,
+				'rubrique'    => $term_id,
+				'demo'        => true,
+			) );
+		}
+	}
+	$sg = $d['suggestion'];
+	$id = schiesser_tearoom_creer( array(
+		'nom'         => $sg['nom'],
+		'prix'        => $sg['prix'],
+		'description' => $sg['description'],
+		'photo'       => schiesser_demo_image( $sg['photo'], $sg['fichier'], $sg['alt'] ),
+		'demo'        => true,
+	) );
+	if ( $id ) {
+		schiesser_tearoom_definir_suggestion( $id, true );
+	}
+	schiesser_carte_tearoom( true );
+}
+
+
+/* ------------------------------------------------------------------ */
 /* Pages                                                               */
 /* ------------------------------------------------------------------ */
 
@@ -513,13 +625,6 @@ function schiesser_demo_pages() {
 		. $q( 'Vos produits conviennent-ils aux allergies ?', 'Nos ateliers travaillent les fruits à coque, le lait, le soja, le gluten et l’œuf : nous ne pouvons donc exclure les traces. La liste des ingrédients de chaque produit est disponible au comptoir.' ) );
 
 	/* ================= Salon de thé ================= */
-	$menu = function ( $nom, $photo, $fichier, $alt, $plats ) use ( $img ) {
-		$html = '';
-		foreach ( $plats as $p ) {
-			$html .= schiesser_bm( 'schiesser/plat', array_filter( array( 'nom' => $p[0], 'prix' => $p[1], 'description' => $p[2], 'mention' => $p[3] ?? '' ) ) ) . "\n";
-		}
-		return schiesser_bm( 'schiesser/rubrique', array( 'nom' => $nom ) + $img( $photo, $fichier, $alt ), $html ) . "\n";
-	};
 	$salon = schiesser_demo_hero( array(
 		'hauteur'      => 'page',
 		'filtre'       => 'sepia-leger',
@@ -547,30 +652,7 @@ function schiesser_demo_pages() {
 			array( 'valeur' => '1920', 'libelle' => 'Le salon prend sa forme actuelle à l’étage' ),
 			array( 'valeur' => 'Auj.', 'libelle' => 'Des générations plus tard, les habitués sont toujours là' ),
 		) ) )
-	. $b( 'schiesser/carte-salon', array( 'numero' => '03', 'titre' => 'La carte du salon de thé', 'note' => 'Ce qui se déguste à l’étage, assis, sans se presser.', 'fond' => 'alterne', 'ancre' => 'carte', 'mention' => 'Carte susceptible d’évoluer selon la saison et les arrivages.', 'sSurtitre' => 'La suggestion du jour', 'sTitre' => 'Chocolat chaud & part du jour', 'sTexte' => 'Notre chocolat chaud maison, accompagné de la pâtisserie sortie du four le matin même.', 'sPied' => 'Servi toute la journée', 'sPrix' => 'CHF 14.—' ) + $img( $P['cake'], 'gateau-sur-commande', 'Chocolat chaud et part du jour au salon de thé', 's' ),
-		$menu( 'Cafés & chocolats', $P['bisc'], 'biscuits-aux-amandes', 'Cafés et chocolats chauds servis au salon', array(
-			array( 'Café crème', 'CHF 5.20', 'Torréfaction sélectionnée pour la maison, servi en porcelaine.' ),
-			array( 'Chocolat chaud maison', 'CHF 7.50', 'Préparé à partir de notre chocolat de couverture, à l’ancienne. En hiver, avec un ' . $l( $pr( 'Marrons glacés' ), 'marron glacé' ) . '.', 'Signature' ),
-			array( 'Cappuccino', 'CHF 6.—', 'Mousse dense, servi avec un praliné de la boutique.' ),
-			array( 'Espresso', 'CHF 4.50', 'Court et franc, comme il se doit.' ),
-		) )
-		. $menu( 'Thés & infusions', $P['salon'], 'salon-de-the-bale', 'Théières et service à thé du salon', array(
-			array( 'Thé noir de saison', 'CHF 6.50', 'Sélection changeante, servie en théière.' ),
-			array( 'Thé vert', 'CHF 6.50', 'Infusion douce, à l’eau frémissante.' ),
-			array( 'Infusion maison', 'CHF 6.—', 'Mélange de plantes composé pour le salon.' ),
-		) )
-		. $menu( 'Pâtisseries', $P['cake'], 'gateau-sur-commande', 'Pâtisseries du jour présentées à l’étage', array(
-			array( 'Part du jour', 'CHF 7.80', 'La pâtisserie sortie du four le matin même.', 'Chaque jour' ),
-			array( 'Gâteau au chocolat', 'CHF 8.20', 'Dense et peu sucré, servi à température.' ),
-			array( 'Tarte de saison', 'CHF 7.50', 'Selon les fruits du marché, juste en face.' ),
-			array( 'Assortiment de pralinés', 'CHF 9.—', 'Trois ' . $l( $pr( 'Pralinés artisanaux' ), 'pralinés artisanaux' ) . ' choisis dans la vitrine du bas.' ),
-		) )
-		. $menu( 'Salé & glaces', $P['marr'], 'marrons-glaces', 'Assiettes salées et coupes glacées du salon', array(
-			array( 'Petite salade', 'CHF 12.50', 'Feuilles de saison, vinaigrette maison.' ),
-			array( 'Croque du salon', 'CHF 14.—', 'Pain de campagne, servi chaud.' ),
-			array( 'Coupe glacée', 'CHF 10.50', 'Glaces maison, chantilly montée à la commande.', 'En saison' ),
-			array( 'Boule de glace', 'CHF 3.80', 'À l’unité, parfums du jour.' ),
-		) ) )
+	. $b( 'schiesser/carte-salon', array( 'numero' => '03', 'titre' => 'La carte du salon de thé', 'note' => 'Ce qui se déguste à l’étage, assis, sans se presser.', 'fond' => 'alterne', 'ancre' => 'carte', 'mention' => 'Carte susceptible d’évoluer selon la saison et les arrivages.', 'sSurtitre' => 'La suggestion du jour', 'sPied' => 'Servi toute la journée' ) )
 	. $b( 'schiesser/panneaux', array( 'numero' => '04', 'titre' => 'Le salon en détail', 'note' => 'Survolez chaque panneau pour l’ouvrir.' ),
 		$enfants( 'schiesser/panneau', array(
 			array( 'titre' => 'Les fenêtres', 'texte' => 'Elles donnent directement sur le Marktplatz. Les meilleures tables sont celles qui les longent.' ) + $img( $P['salon'], 'salon-de-the-bale', 'Les fenêtres du salon sur le Marktplatz' ),
@@ -878,6 +960,9 @@ function schiesser_importer_demo( $remplacer = false ) {
 			set_post_thumbnail( $id, $img );
 		}
 	}
+
+	/* Carte du Tea Room (menu « Produits Tea Room ») */
+	schiesser_importer_tearoom( $remplacer );
 
 	/* Pages */
 	$ids = array();

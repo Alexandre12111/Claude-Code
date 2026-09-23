@@ -97,6 +97,9 @@
         ['image', 'avant', 'apres', 's'].forEach(function (p) {
           if (a[p + 'Url']) h += '<img src="' + attr(a[p + 'Url']) + '" alt="' + attr(a[p + 'Alt'] || '') + '">';
         });
+        // Carte du salon tirée du menu « Produits Tea Room » : son texte compte aussi pour Rank Math.
+        var TR = (window.SCHIESSER_ED || {}).tearoom || {};
+        if (b.name === 'schiesser/carte-salon' && a.source !== 'page' && TR.rubriques > 0 && TR.texte) h += TR.texte;
         return h + contenu(b.innerBlocks || []);
       }
       try { return blocks.getBlockContent(b); } catch (e) { return ''; }

@@ -62,13 +62,15 @@ function schiesser_reglages_defaut() {
 		// Coordonnées
 		'telephone'          => '+41 61 261 60 77',
 		'email'              => 'info@confiserie-schiesser.ch',
-		'rue'                => 'Marktplatz',
-		'code_postal'        => '4001',
+		'rue'                => 'Marktplatz 19',
+		'code_postal'        => '4051',
 		'ville'              => 'Basel',
 		'region'             => 'Basel-Stadt',
 		'pays'               => 'CH',
 		'mention'            => 'Confiserie à Bâle · Marktplatz · depuis 1870',
-		'lien_maps'          => 'https://www.google.com/maps/search/?api=1&query=Confiserie+Schiesser+Marktplatz+Basel',
+		'lien_maps'          => 'https://www.google.com/maps/search/?api=1&query=Confiserie+Schiesser%2C+Marktplatz+19%2C+4051+Basel',
+		'carte_google'       => '', // adresse d'intégration Google Maps (facultatif)
+		'carte_au_clic'      => 0,  // carte Google affichée seulement après un clic
 		// Horaires
 		'horaires'           => $horaires,
 		'horaires_note'      => 'Les horaires peuvent varier les jours fériés. En cas de doute, un appel suffit.',
@@ -234,9 +236,12 @@ function schiesser_nettoyer_reglages( $entree ) {
 		}
 	}
 	$propre['profils'] = implode( "\n", $profils );
-	foreach ( array( 'instagram', 'facebook', 'lien_maps' ) as $cle ) {
+	foreach ( array( 'instagram', 'facebook' ) as $cle ) {
 		$propre[ $cle ] = isset( $entree[ $cle ] ) ? esc_url_raw( $entree[ $cle ] ) : '';
 	}
+	$propre['lien_maps']     = schiesser_nettoyer_lien_maps( $entree['lien_maps'] ?? '', $propre['ville'] );
+	$propre['carte_google']  = schiesser_nettoyer_carte_google( $entree['carte_google'] ?? '' );
+	$propre['carte_au_clic'] = empty( $entree['carte_au_clic'] ) ? 0 : 1;
 	$propre['pays']               = isset( schiesser_pays()[ $entree['pays'] ?? '' ] ) ? $entree['pays'] : 'CH';
 	$propre['type_etablissement'] = isset( schiesser_types_etablissement()[ $entree['type_etablissement'] ?? '' ] ) ? $entree['type_etablissement'] : $defaut['type_etablissement'];
 	$propre['page_boutique']      = absint( $entree['page_boutique'] ?? 0 );
@@ -263,6 +268,50 @@ function schiesser_nettoyer_reglages( $entree ) {
 		);
 	}
 	return $propre;
+}
+
+/**
+ * Lien Google Maps : un lien de recherche Google (google.com/search?q=…, copié depuis
+ * la fiche affichée dans les résultats) devient un lien Google Maps propre, sans
+ * les paramètres de suivi. Les liens « Partager » de Google Maps sont gardés tels quels.
+ */
+function schiesser_nettoyer_lien_maps( $url, $ville = '' ) {
+	$url = esc_url_raw( trim( (string) $url ) );
+	if ( '' === $url ) {
+		return '';
+	}
+	$parties = wp_parse_url( $url );
+	$hote    = strtolower( $parties['host'] ?? '' );
+	if ( preg_match( '/(^|\.)google\.[a-z.]+$/', $hote ) && '/search' === ( $parties['path'] ?? '' ) ) {
+		parse_str( (string) ( $parties['query'] ?? '' ), $params );
+		$q = trim( (string) ( $params['q'] ?? '' ) );
+		if ( '' !== $q ) {
+			if ( $ville && false === stripos( $q, $ville ) ) {
+				$q .= ' ' . $ville;
+			}
+			return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( $q );
+		}
+	}
+	return $url;
+}
+
+/**
+ * Carte Google Maps à intégrer : on accepte le code « Intégrer une carte » de Google Maps
+ * (<iframe src="https://www.google.com/maps/embed?pb=…">) ou son adresse seule.
+ */
+function schiesser_nettoyer_carte_google( $code ) {
+	$code = trim( (string) $code );
+	if ( preg_match( '/src=["\']([^"\']+)["\']/i', $code, $m ) ) {
+		$code = html_entity_decode( $m[1], ENT_QUOTES, 'UTF-8' );
+	}
+	$url     = esc_url_raw( $code );
+	$parties = wp_parse_url( $url );
+	$hote    = strtolower( $parties['host'] ?? '' );
+	$chemin  = (string) ( $parties['path'] ?? '' );
+	if ( 'https' === ( $parties['scheme'] ?? '' ) && preg_match( '/(^|\.)google\.[a-z.]+$/', $hote ) && 0 === strpos( $chemin, '/maps' ) ) {
+		return $url;
+	}
+	return '';
 }
 
 function schiesser_nettoyer_heure( $valeur, $defaut ) {

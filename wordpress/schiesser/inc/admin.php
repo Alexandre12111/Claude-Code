@@ -85,7 +85,8 @@ function schiesser_widget_accueil() {
 
 	$tuiles = array(
 		array( 'clock', 'Modifier les horaires', 'Horaires, fermetures, téléphone', admin_url( 'admin.php?page=schiesser-reglages#coordonnees' ), 'edit_pages' ),
-		array( 'plus-alt', 'Ajouter un produit', $nb . ' produit' . ( $nb > 1 ? 's' : '' ) . ' en ligne', admin_url( 'post-new.php?post_type=' . SCHIESSER_PRODUIT ), 'edit_posts' ),
+		array( 'plus-alt', 'Ajouter un produit', 'Boutique : ' . $nb . ' produit' . ( $nb > 1 ? 's' : '' ) . ' en ligne', admin_url( 'post-new.php?post_type=' . SCHIESSER_PRODUIT ), 'edit_posts' ),
+		array( 'coffee', 'Carte du Tea Room', 'Prix, rubriques, suggestion du jour', admin_url( 'edit.php?post_type=' . SCHIESSER_TEAROOM ), 'edit_posts' ),
 		array( 'admin-home', 'Modifier la page d\'accueil', 'Textes, photos, sections', $accueil ? get_edit_post_link( $accueil, 'raw' ) : admin_url( 'edit.php?post_type=page' ), 'edit_pages' ),
 		array( 'admin-page', 'Toutes les pages', 'Boutique, Tea Room, Histoire…', admin_url( 'edit.php?post_type=page' ), 'edit_pages' ),
 		array( 'menu', 'Modifier le menu', 'Ordre et noms des liens', admin_url( 'nav-menus.php' ), 'edit_theme_options' ),
@@ -131,11 +132,18 @@ function schiesser_page_guide() {
 			'Modifiez les heures, cochez « Fermé » pour un jour de fermeture, puis <strong>Enregistrer les réglages</strong>.',
 			'Tout le site se met à jour : bandeau « Ouvert / Fermé », pied de page, pages Visiter et Contact, fiche Google.',
 		) ),
-		array( 'cart', 'Ajouter ou modifier un produit', array(
-			'Menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT ), 'Produits' ) . ', puis « Ajouter un produit » (ou cliquez sur un produit existant).',
+		array( 'cart', 'Ajouter ou modifier un produit de la boutique', array(
+			'Menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT ), 'Produits boutique' ) . ', puis « Ajouter un produit » (ou cliquez sur un produit existant).',
 			'Nom, prix, unité, catégorie (à droite), photo (« Photo du produit », à droite), description courte et fiche détaillée.',
 			'Le texte long (zone d\'édition du haut) apparaît sur la page du produit : quelques paragraphes avec des intertitres (liste « Paragraphe » → « Titre 3 ») pour la préparation, la conservation, les formats et prix, les allergènes.',
 			'Ordre d\'affichage : champ « Ordre » (1 = premier). Cliquez sur <strong>Publier</strong> ou <strong>Mettre à jour</strong>.',
+		) ),
+		array( 'coffee', 'Modifier la carte du Tea Room', array(
+			'Menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_TEAROOM ), 'Produits Tea Room' ) . ' : cliquez sur un produit pour changer son prix, sa description ou sa mention (Signature, En saison…), ou « Ajouter un produit ».',
+			'Rubrique (onglet de la carte) : cases à droite. Ordre dans la rubrique : champ « Ordre » (1 = premier).',
+			'Les onglets eux-mêmes : Produits Tea Room → ' . $lien( admin_url( 'edit-tags.php?taxonomy=' . SCHIESSER_RUBRIQUE . '&post_type=' . SCHIESSER_TEAROOM ), 'Rubriques' ) . ' (nom, grande photo, ordre).',
+			'Suggestion du jour : cochez la case sur le produit à mettre en avant ; l’ancienne suggestion est décochée toute seule.',
+			'La page Salon de thé se met à jour automatiquement : rien à modifier dans la page.',
 		) ),
 		array( 'edit-page', 'Modifier le texte ou la photo d\'une page', array(
 			'Menu ' . $lien( admin_url( 'edit.php?post_type=page' ), 'Pages' ) . ', survolez la page puis « Modifier ».',
@@ -160,8 +168,24 @@ function schiesser_page_guide() {
 			'Autres codes : <code>[schiesser_horaires]</code> (tableau), <code>[schiesser_adresse]</code>, <code>[schiesser_telephone]</code>, <code>[schiesser_email]</code>, <code>[schiesser_statut]</code> (ouvert ou fermé).',
 			'Ils se mettent à jour tout seuls quand les Réglages maison changent : rien à retoucher dans les pages.',
 		) ),
-		array( 'art', 'Changer la couleur d\'un mot ou d\'un bouton', array(
-			'Un mot : sélectionnez-le, puis dans la barre d\'outils flèche ▾ → « Surligner » : seules les couleurs de la maison sont proposées.',
+		array( 'editor-textcolor', 'Changer la police, la taille ou la couleur d\'un texte', array(
+			'Sélectionnez les mots (ou toute la phrase), puis bouton <strong>Aa</strong> de la petite barre d\'outils : « Police des titres » ou « Police du texte », « Plus petit », « Plus grand », « Majuscules espacées », ou une couleur de la charte.',
+			'Pour annuler : sélectionnez à nouveau le texte, <strong>Aa</strong> → « Retirer police, taille et couleur ».',
+			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
+			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
+		) ),
+		array( 'format-image', 'Assombrir une photo', array(
+			'Pour que le texte posé sur une photo ressorte mieux : cliquez sur le bloc (ou sur l\'élément : un étage, une date…), puis panneau de droite → « Photo » → curseur « Assombrir la photo ».',
+			'Grande photo en haut de page (Hero) : même curseur, dans le panneau « Photo » du bloc.',
+			'0 = la photo d\'origine. Le réglage est enregistré avec la page, la photo de la médiathèque n\'est pas modifiée.',
+		) ),
+		array( 'location', 'La carte Google Maps', array(
+			'Les cartes de l\'accueil et de la page Nous visiter montrent la fiche Google de la confiserie, trouvée d\'après son nom et son adresse (Réglages maison → Coordonnées).',
+			'Pour une vue précise : sur Google Maps, fiche de la confiserie → « Partager » → « Intégrer une carte » → « Copier le contenu HTML », puis collez dans Réglages maison → Coordonnées → « Carte Google Maps du site ».',
+			'Option « Afficher la carte Google seulement après un clic » : rien n\'est envoyé à Google tant que le visiteur n\'a pas cliqué (protection des données).',
+			'Dans chaque bloc de carte, « Fond de carte » permet aussi de choisir OpenStreetMap ou CARTO.',
+		) ),
+		array( 'art', 'Changer la couleur d\'un bouton', array(
 			'Un bouton : cliquez dessus, panneau de droite → « Styles » : Vert maison, Contour, Crème (sur fond sombre) ou Lien fléché.',
 			'Un paragraphe, une liste, des colonnes, une image : même rubrique « Styles » (chapeau, surtitre, grille à filets, cartes, cadre vitrine…).',
 			'La grande photo (bloc Hero) : panneau de droite → « Boutons » pour leur style, « Mise en page » pour la couleur des mots en italique du titre.',
@@ -171,6 +195,7 @@ function schiesser_page_guide() {
 			'Dans une page : bouton <strong>+</strong> → « HTML personnalisé » pour coller un code fourni par un service (réservation, carte, avis…).',
 			'Pour une vidéo YouTube ou un lien Instagram : bloc « Intégrer », collez simplement l\'adresse.',
 			'Pour un code à placer sur toutes les pages (statistiques) : Réglages maison → Avancé (administrateur).',
+			'Une retouche de style (CSS) : Réglages maison → Avancé → « CSS personnalisé ». Une petite fonctionnalité en PHP fournie par l\'agence : extension <strong>Code Snippets</strong> → « Ajouter », collez le code, « Enregistrer et activer ». Ces ajouts sont conservés quand le thème est mis à jour.',
 			'Astuce : pour qu\'un texte reste modifiable sans code, écrivez-le dans des blocs Paragraphe, pas dans le HTML.',
 		) ),
 		array( 'search', 'Référencement (Rank Math)', array(

@@ -408,6 +408,22 @@
     if (window.L) carte(el);
     else window.addEventListener('load', function () { carte(el); });
   }
+  /* ---------- carte Google Maps affichée après un clic (Réglages maison) ---------- */
+  tous('.js-gmap').forEach(function (bloc) {
+    var bouton = un('.js-gmap-charger', bloc);
+    if (!bouton) return;
+    bouton.addEventListener('click', function () {
+      var cadre = document.createElement('iframe');
+      cadre.className = 'gmap';
+      cadre.src = bloc.getAttribute('data-src');
+      cadre.title = bloc.getAttribute('data-titre') || 'Carte Google Maps';
+      cadre.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+      cadre.setAttribute('allowfullscreen', '');
+      bloc.parentNode.replaceChild(cadre, bloc);
+      cadre.focus();
+    });
+  });
+
   var cartes = tous('.js-carte');
   if (cartes.length) {
     if ('IntersectionObserver' in window) {

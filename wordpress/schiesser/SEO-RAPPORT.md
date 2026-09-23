@@ -2,6 +2,8 @@
 
 Thème Schiesser 0.2.1. Audit réalisé le 23 septembre 2026 sur le site de test (WordPress 6.5, contenu de démonstration), suivi des corrections et d'une nouvelle vérification complète.
 
+**Version 0.4** : la carte du salon de thé est publiée en données structurées « Menu » (rubriques, plats et prix) sur la page Salon de thé ; les cartes du site affichent la fiche Google de la confiserie ; l'adresse par défaut suit les annuaires (Marktplatz 19, 4051 Basel), à aligner exactement sur la fiche Google (section 7, point 1).
+
 **Version 0.3 (pages fidèles à la maquette v3)** : les pages sont recomposées avec les blocs de la maquette. Les titres SEO, descriptions, mots-clés, H1, textes, questions fréquentes, liens internes et données structurées de ce rapport sont conservés à l'identique, et ont été vérifiés de nouveau après la refonte : un seul H1 par page, titres de 52 à 57 caractères, descriptions de 143 à 155 caractères, FAQPage sur les six pages concernées, ItemList sur l'accueil (dans l'ordre choisi dans le catalogue) et la boutique, 0 erreur d'accessibilité. Nouveau : textes alternatifs sur les photos des scènes animées (montée à l'étage, moments de la journée, chronologie) et liens « Sur cette page » dans le pied de page.
 
 ## 1. En résumé
@@ -98,7 +100,7 @@ Les adresses restent courtes et lisibles. Le mot-clé n'y figure que lorsque c'e
 | Toutes les pages | Établissement (Bakery et CafeOrCoffeeShop), site (WebSite) |
 | Accueil | WebPage, liste de produits (ItemList), questions (FAQPage) |
 | Boutique | CollectionPage, fil d'Ariane, liste de produits, questions |
-| Salon de thé | WebPage, fil d'Ariane, questions ; la fiche établissement pointe vers la carte du salon |
+| Salon de thé | WebPage, fil d'Ariane, questions, carte (Menu : rubriques, plats et prix) ; la fiche établissement pointe vers la carte du salon |
 | Notre histoire | AboutPage, fil d'Ariane |
 | Nous visiter | WebPage, fil d'Ariane, questions |
 | Contact | ContactPage, fil d'Ariane, questions |
