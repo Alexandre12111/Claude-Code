@@ -1,12 +1,18 @@
-# Thème Schiesser 0.4
+# Thème Schiesser 0.5
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Nouveautés de la version 0.5 : modifier les textes comme dans Elementor
+
+- **Panneau texte « Aa »** : on clique dans un texte, puis bouton **Aa** de la barre d'outils. Un panneau s'ouvre : police (titres ou texte de la charte), taille sans limite de pas (curseur de 30 à 400 %, boutons − et +, saisie directe, tailles rapides S, M, L, XL, XXL), graisse (fin, normal, moyen, gras), italique, majuscules, souligné, espacement des lettres, couleur (charte ou couleur libre), copier et coller le style, tout remettre par défaut. Le texte change en direct. Sans sélection, le réglage vaut pour tout le champ ; avec une sélection, seulement pour ces mots. Fonctionne dans tous les textes : blocs de la maquette, grande photo, paragraphes et titres. Pour un paragraphe entier, le panneau de droite propose aussi police, taille, graisse et couleur.
+- **Les tailles ne sont plus limitées à un cran** : chaque clic sur − ou + réduit ou agrandit de 10 %, autant de fois que l'on veut, et la valeur peut se taper directement. Les tailles sont relatives (100 % = taille normale), donc elles restent proportionnées sur téléphone.
+- Les textes mis en forme avec la version 0.4 (Plus petit, Plus grand, Majuscules espacées…) restent tels quels et se retouchent dans le nouveau panneau.
+
 ## Nouveautés de la version 0.4
 
 - **Deux menus de produits** dans l'administration : « Produits boutique » (inchangé) et **« Produits Tea Room »**, la carte du salon de thé : nom, prix, description, mention (Signature, En saison…), rubrique, photo, et une case « Suggestion du jour ». Les rubriques (onglets de la carte) ont leur photo et leur ordre. La page Salon de thé affiche automatiquement cette carte, et Google reçoit la carte avec ses prix (données structurées « Menu »).
-- **Typographie et couleur au clic** : on sélectionne des mots, puis bouton **Aa** de la barre d'outils : police des titres ou du texte, plus petit, plus grand, majuscules espacées, couleur de la charte. Fonctionne dans tous les textes : blocs de la maquette, grande photo, paragraphes et titres. Pour un paragraphe entier, le panneau de droite propose aussi police, taille, graisse et couleur.
+- **Typographie et couleur au clic** : bouton **Aa** de la barre d'outils, dans tous les textes (remplacé en 0.5 par un panneau complet, voir plus haut).
 - **Cartes Google Maps** : les cartes de l'accueil et de la page Nous visiter montrent la fiche Google de la confiserie (sans clé ni compte). Une vue précise peut être collée depuis Google Maps (« Intégrer une carte »), et la carte peut ne s'afficher qu'après un clic (protection des données). OpenStreetMap et CARTO restent disponibles dans chaque bloc.
 - **« Assombrir la photo »** : un curseur pour chaque photo (grande photo du haut comprise), pour que le texte posé dessus ressorte mieux.
 - **Accroches plus lisibles** : la phrase d'accroche du bloc Introduction passe dans la police du texte, en plus petit (le style italique de la maquette reste disponible dans le bloc).
@@ -50,6 +56,10 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
 
+### Mise à jour depuis la version 0.4
+
+Remplacer le thème par le nouveau zip (Apparence → Thèmes → Ajouter → Téléverser, puis « Remplacer la version installée »). Rien d’autre à faire : le bouton **Aa** ouvre désormais le nouveau panneau.
+
 ### Mise à jour depuis la version 0.3
 
 1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir le nouveau `schiesser.zip`, puis **Remplacer la version installée**. Les pages, produits, photos, menus et réglages ne sont pas touchés.
@@ -91,7 +101,7 @@ Aucune extension de formulaire n'est nécessaire : le formulaire de la maquette 
 | Ordre des produits | **Produits boutique → Modifier → Ordre d'affichage** | 1 = premier |
 | Carte du salon de thé (produits, prix, descriptions, mentions, suggestion du jour) | **Produits Tea Room** | Carte en onglets de la page Salon de thé, données « Menu » pour Google |
 | Onglets de la carte (nom, grande photo, ordre) | **Produits Tea Room → Rubriques** | Onglets et photo de la carte |
-| Police, taille, couleur d'un mot ou d'une phrase | Sélectionner le texte, puis bouton **Aa** | Uniquement ce texte ; « Retirer police, taille et couleur » pour revenir au style d'origine |
+| Police, taille, couleur d'un mot ou d'une phrase | Cliquer dans le texte (ou sélectionner des mots), puis bouton **Aa** | Tout le champ, ou uniquement les mots sélectionnés ; « Tout remettre par défaut » pour revenir au style d'origine |
 | Photo plus sombre (texte plus lisible) | Panneau de droite du bloc → **Photo** → « Assombrir la photo » | Uniquement cette photo |
 | Carte Google Maps | **Réglages maison → Coordonnées** (lien, carte, affichage après un clic) ; « Fond de carte » dans le bloc | Cartes de l'accueil et de la page Nous visiter |
 | Produits du catalogue de l'accueil | Bloc **Catalogue des créations** → panneau de droite → « Choisir les produits un par un » | Seuls ces produits, dans cet ordre (sinon : les premiers du menu Produits) |
@@ -234,7 +244,7 @@ schiesser/
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)
 └── assets/
     ├── css/     schiesser.css (site), editeur-maquette.css (éditeur), WooCommerce
-    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (bouton Aa), boutique, éditeur
+    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), boutique, éditeur
     ├── vendor/leaflet/   bibliothèque de carte (licence BSD)
     └── admin/, fonts/
 ```

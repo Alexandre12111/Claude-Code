@@ -169,8 +169,9 @@ function schiesser_page_guide() {
 			'Ils se mettent à jour tout seuls quand les Réglages maison changent : rien à retoucher dans les pages.',
 		) ),
 		array( 'editor-textcolor', 'Changer la police, la taille ou la couleur d\'un texte', array(
-			'Sélectionnez les mots (ou toute la phrase), puis bouton <strong>Aa</strong> de la petite barre d\'outils : « Police des titres » ou « Police du texte », « Plus petit », « Plus grand », « Majuscules espacées », ou une couleur de la charte.',
-			'Pour annuler : sélectionnez à nouveau le texte, <strong>Aa</strong> → « Retirer police, taille et couleur ».',
+			'Cliquez dans le texte, puis bouton <strong>Aa</strong> de la petite barre d\'outils : un panneau s\'ouvre avec la police, la taille (curseur, boutons − et +, ou tailles rapides S à XXL), la graisse, italique, majuscules, souligné, l\'espacement des lettres et la couleur. Le texte change en direct.',
+			'Sans sélection, le réglage s\'applique à tout le texte du champ ; pour ne changer que quelques mots, sélectionnez les d\'abord. « Copier le style » puis « Coller le style » reproduit une mise en forme ailleurs.',
+			'Pour annuler : <strong>Aa</strong> → « Tout remettre par défaut ».',
 			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
 			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
 		) ),
