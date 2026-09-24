@@ -172,8 +172,25 @@ function schiesser_page_guide() {
 			'Cliquez dans le texte, puis bouton <strong>Aa</strong> de la petite barre d\'outils : un panneau s\'ouvre avec la police, la taille (curseur, boutons − et +, ou tailles rapides S à XXL), la graisse, italique, majuscules, souligné, l\'espacement des lettres et la couleur. Le texte change en direct.',
 			'Sans sélection, le réglage s\'applique à tout le texte du champ ; pour ne changer que quelques mots, sélectionnez les d\'abord. « Copier le style » puis « Coller le style » reproduit une mise en forme ailleurs.',
 			'Pour annuler : <strong>Aa</strong> → « Tout remettre par défaut ».',
+			'<strong>Taille sur téléphone</strong> : dans « Taille », cliquez sur l\'icône du téléphone. L\'aperçu passe en mode téléphone et la taille réglée ne vaut que sur les petits écrans.',
+			'<strong>Styles enregistrés</strong> : réglez un texte, puis « + Enregistrer ces réglages comme nouveau style » et donnez lui un nom (ex. « Accroche verte »). Il s\'applique ensuite en un clic partout. « Mettre à jour » change tous les textes qui l\'utilisent, sur tout le site.',
 			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
 			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
+		) ),
+		array( 'image-flip-vertical', 'Espacements et boutons d\'une section', array(
+			'Cliquez sur la section, puis panneau de droite → « Espacements » : deux curseurs pour l\'espace au-dessus et en dessous. « Automatique » garde l\'espace prévu par le thème ; sur téléphone, l\'espace est réduit automatiquement.',
+			'Même panneau → « Boutons » (sections qui en ont) : couleur du bouton, couleur du texte, taille (petit, normal, grand) et arrondi des coins.',
+		) ),
+		array( 'admin-page', 'Copier une section vers une autre page', array(
+			'Cliquez sur la section, puis sur les trois points <strong>⋮</strong> de sa barre d\'outils → « Copier vers une autre page… ».',
+			'Choisissez la page et l\'emplacement (au début ou à la fin) : la copie est ajoutée avec ses textes, photos et réglages, sans quitter la page en cours. Un lien « Ouvrir la page » permet d\'aller la placer au bon endroit.',
+			'Dans la même page, « Dupliquer » (même menu) suffit.',
+		) ),
+		array( 'star-filled', 'Afficher les avis Google', array(
+			'Ajoutez le bloc « Avis clients (Google) » (bouton <strong>+</strong>, catégorie Schiesser) : note moyenne, étoiles et quelques avis, avec les boutons « Voir tous les avis » et « Laisser un avis ».',
+			'Automatique : Réglages maison → Fiche Google et SEO → carte « Avis Google », clé Google et identifiant du lieu. Les avis se mettent à jour tout seuls (toutes les 12 heures).',
+			'À la main : menu « Avis clients » → « Ajouter un avis » (nom, note, texte, date), et la note moyenne dans la carte « Avis Google ».',
+			'Dans le bloc, à droite : nombre d\'avis, note minimale affichée (par exemple 4 étoiles et plus), longueur des textes.',
 		) ),
 		array( 'format-image', 'Assombrir une photo', array(
 			'Pour que le texte posé sur une photo ressorte mieux : cliquez sur le bloc (ou sur l\'élément : un étage, une date…), puis panneau de droite → « Photo » → curseur « Assombrir la photo ».',

@@ -23,7 +23,11 @@
   var c = wp.components;
 
   var STYLE = 'schiesser/style';
+  var NOMME = 'schiesser/style-nomme';
   var COULEUR = 'core/text-color';
+  var DONNEES = window.SCHIESSER_STYLES || {};
+  var styles = DONNEES.liste || []; // styles enregistrés : [{ id, nom, css: {…} }]
+  var gerer = DONNEES.gerer === 'oui';
 
   // Anciennes mises en forme (versions 0.4) : toujours reconnues, remplacées dès qu'on retouche le texte.
   var ANCIENS = [
@@ -49,8 +53,19 @@
     });
   }
 
-  // Ordre d'écriture des propriétés dans l'attribut style.
-  var ORDRE = ['font-family', 'font-size', 'font-weight', 'font-style', 'text-transform', 'letter-spacing', 'text-decoration'];
+  // Style enregistré (« Accroche verte »…) : une classe .sty-…, dont le CSS vient des Réglages (inc/mise-en-page.php).
+  if (!RT.getFormatType || !RT.getFormatType(NOMME)) {
+    RT.registerFormatType(NOMME, {
+      title: 'Style enregistré',
+      tagName: 'span',
+      className: 'sch-sty',
+      attributes: { 'class': 'class' },
+      edit: function () { return null; }
+    });
+  }
+
+  // Ordre d'écriture des propriétés dans l'attribut style (--fs-m : taille sur téléphone).
+  var ORDRE = ['font-family', 'font-size', '--fs-m', 'font-weight', 'font-style', 'text-transform', 'letter-spacing', 'text-decoration'];
 
   var POLICES = [
     { titre: 'Par défaut', valeur: null },
@@ -99,8 +114,29 @@
     return { s: Math.min(s, e), e: Math.max(s, e), tout: false };
   }
 
-  // Ce qu'affiche le panneau : le style du premier caractère de la plage (anciens formats compris).
+  // Style enregistré posé sur un caractère (ou null).
+  function nommeA(value, i) {
+    var f = formatA(value, i, NOMME);
+    var m = f && f.attributes && /(?:^|\s)sty-([a-z0-9_-]+)/.exec(f.attributes['class'] || '');
+    if (!m) return null;
+    return styles.filter(function (x) { return x.id === m[1]; })[0] || { id: m[1], nom: m[1], css: {}, perdu: true };
+  }
+
+  // Ce qu'affiche le panneau : style enregistré, puis réglages propres au texte par-dessus.
   function styleActuel(value, p) {
+    var o = styleInline(value, p);
+    var n = nommeA(value, p.s);
+    var eff = Object.assign({}, n ? n.css : {}, o);
+    var col = formatA(value, p.s, COULEUR);
+    eff.couleur = col && col.attributes ? (lireStyle(col.attributes.style).color || null) : ((n && n.css.color) || null);
+    eff._nomme = n;
+    eff._couleurPropre = !!col;
+    delete eff.color;
+    return eff;
+  }
+
+  // Réglages propres au texte (balise sch-style), anciens formats 0.4 compris.
+  function styleInline(value, p) {
     var f = formatA(value, p.s, STYLE);
     var o = lireStyle(f && f.attributes && f.attributes.style);
     if (!o['font-family'] && formatA(value, p.s, 'schiesser/police-titres')) o['font-family'] = 'var(--serif)';
@@ -109,8 +145,6 @@
     if (!o['font-size'] && formatA(value, p.s, 'schiesser/taille-grande')) o['font-size'] = '1.25em';
     if (!o['font-size'] && formatA(value, p.s, 'schiesser/taille-tres-grande')) o['font-size'] = '1.6em';
     if (!o['text-transform'] && formatA(value, p.s, 'schiesser/majuscules')) { o['text-transform'] = 'uppercase'; o['letter-spacing'] = o['letter-spacing'] || '0.14em'; }
-    var col = formatA(value, p.s, COULEUR);
-    o.couleur = col && col.attributes ? (lireStyle(col.attributes.style).color || null) : null;
     return o;
   }
 
@@ -129,7 +163,7 @@
       }
       var o = lireStyle(cle);
       // Les anciennes classes sont reprises dans le style pour ne rien perdre.
-      var ancien = styleActuel(v, { s: i, e: j });
+      var ancien = styleInline(v, { s: i, e: j });
       ['font-family', 'font-size', 'text-transform', 'letter-spacing'].forEach(function (k) { if (!o[k] && ancien[k]) o[k] = ancien[k]; });
       Object.keys(changes).forEach(function (k) { if (changes[k] === null || changes[k] === '') delete o[k]; else o[k] = changes[k]; });
       ANCIENS.forEach(function (a) { v = RT.removeFormat(v, a.nom, i, j); });
@@ -182,7 +216,19 @@
       '.sch-taille .components-button{width:32px;height:32px;min-width:32px;justify-content:center;border:1px solid #ddd;border-radius:4px;font-size:18px;padding:0}',
       '.sch-panneau .components-range-control{margin-bottom:0}',
       '.sch-panneau__pied{display:flex;gap:6px;flex-wrap:wrap;padding:12px 16px}',
-      '.sch-panneau__pied .components-button{flex:1 1 auto;justify-content:center}'
+      '.sch-panneau__pied .components-button{flex:1 1 auto;justify-content:center}',
+      '.sch-panneau__aide{font-size:12px;color:#757575;margin:8px 0 0}',
+      '.sch-panneau__aide .components-button.is-link{font-size:12px}',
+      '.sch-panneau__titre .sch-panneau__nom{font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#1e1e1e}',
+      '.sch-ecrans{display:flex;gap:2px;margin-left:auto;margin-right:8px}',
+      '.sch-ecrans .components-button{width:28px;height:28px;min-width:28px;padding:2px;justify-content:center}',
+      '.sch-ecrans .components-button.is-pressed{background:#1e1e1e;color:#fff}',
+      '.sch-choix--styles .components-button{flex:0 1 auto;height:auto;min-height:34px;padding:4px 10px;white-space:normal;text-align:center}',
+      '.sch-choix--styles .components-button.is-pressed{background:#fff;border-color:#1e1e1e;box-shadow:inset 0 0 0 1px #1e1e1e;color:inherit}',
+      '.sch-large{width:100%;justify-content:center;margin-top:8px;height:auto;min-height:36px;white-space:normal;text-align:center;line-height:1.3;padding:6px 10px}',
+      '.sch-lien{display:block;margin-top:10px;font-size:12px}',
+      '.sch-nouveau{margin-top:10px}',
+      '.sch-nouveau__actions{display:flex;gap:6px;margin-top:8px}'
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -207,42 +253,190 @@
       contenu);
   }
 
+  /* ----- Styles enregistrés ----- */
+
+  // Même feuille de style que schiesser_styles_css() : mise à jour en direct dans l'éditeur.
+  function cssStyles(liste) {
+    var css = '', mobile = '';
+    liste.forEach(function (s) {
+      var d = [];
+      Object.keys(s.css || {}).forEach(function (k) {
+        if (k === '--fs-m') mobile += '.sty-' + s.id + '{font-size:' + s.css[k] + '}';
+        else d.push(k + ':' + s.css[k]);
+      });
+      if (d.length) css += '.sty-' + s.id + '{' + d.join(';') + '}';
+    });
+    return css + (mobile ? '@media(max-width:760px){' + mobile + '}' : '');
+  }
+  function injecterStyles() {
+    var css = cssStyles(styles);
+    var docs = [document];
+    Array.prototype.forEach.call(document.querySelectorAll('iframe[name="editor-canvas"], iframe.edit-site-visual-editor__editor-canvas'), function (f) {
+      try { if (f.contentDocument) docs.push(f.contentDocument); } catch (e) {}
+    });
+    docs.forEach(function (d) {
+      var s = d.getElementById('sch-styles-live');
+      if (!s) { s = d.createElement('style'); s.id = 'sch-styles-live'; (d.head || d.body).appendChild(s); }
+      s.textContent = css;
+    });
+  }
+  function sauverStyles(liste) {
+    return wp.apiFetch({ path: '/schiesser/v1/styles-texte', method: 'POST', data: { styles: liste } }).then(function (r) {
+      styles = r.styles || [];
+      injecterStyles();
+      return styles;
+    });
+  }
+  function avis(texte, erreur) {
+    try { wp.data.dispatch('core/notices')[erreur ? 'createErrorNotice' : 'createSuccessNotice'](texte, { type: 'snackbar' }); } catch (e) {}
+  }
+  function identifiant(nom) {
+    var id = String(nom).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'style';
+    var base = id, n = 2;
+    while (styles.some(function (x) { return x.id === id; })) id = base + '-' + n++;
+    return id;
+  }
+  // Propriétés CSS d'un style à partir de ce qu'affiche le panneau.
+  function cssDepuis(st) {
+    var o = {};
+    ORDRE.forEach(function (k) { if (st[k]) o[k] = st[k]; });
+    if (st.couleur) o.color = st.couleur;
+    return o;
+  }
+  // Pose un style enregistré sur la plage : les réglages propres au texte s'effacent devant lui.
+  function poserNomme(value, p, id) {
+    var v = appliquerStyle(value, p, { 'font-family': null, 'font-size': null, '--fs-m': null, 'font-weight': null, 'font-style': null, 'text-transform': null, 'letter-spacing': null, 'text-decoration': null });
+    v = RT.removeFormat(v, COULEUR, p.s, p.e);
+    v = RT.removeFormat(v, NOMME, p.s, p.e);
+    return id ? RT.applyFormat(v, { type: NOMME, attributes: { 'class': 'sty-' + id } }, p.s, p.e) : v;
+  }
+
+  function apercuStyle(s) {
+    var o = {};
+    var css = s.css || {};
+    if (css['font-family']) o.fontFamily = css['font-family'] === 'var(--serif)' ? 'var(--serif, Georgia), serif' : 'var(--sans, Arial), sans-serif';
+    if (css['font-weight']) o.fontWeight = css['font-weight'];
+    if (css['font-style']) o.fontStyle = css['font-style'];
+    if (css['text-transform']) { o.textTransform = 'uppercase'; o.fontSize = '11px'; o.letterSpacing = '.08em'; }
+    if (css['text-decoration']) o.textDecoration = css['text-decoration'];
+    if (css.color) o.color = css.color;
+    return o;
+  }
+
+  // Aperçu de l'éditeur : ordinateur ou téléphone (comme le sélecteur d'écran d'Elementor).
+  var ecranChoisi = 'ordi';
+  function changerApercu(mode) {
+    var type = mode === 'tel' ? 'Mobile' : 'Desktop';
+    try {
+      var ed = wp.data.dispatch('core/editor');
+      if (ed && ed.setDeviceType) { ed.setDeviceType(type); return; }
+      var ep = wp.data.dispatch('core/edit-post');
+      if (ep && ep.__experimentalSetPreviewDeviceType) ep.__experimentalSetPreviewDeviceType(type);
+    } catch (e) {}
+  }
+
   function Panneau(props) {
     var value = props.value;
     var onChange = props.onChange;
     var p = plage(value);
     var st = styleActuel(value, p);
-    var taille = st['font-size'] && /em$/.test(st['font-size']) ? Math.round(parseFloat(st['font-size']) * 100) : null;
+    var ecran = useState(ecranChoisi);
+    var tel = ecran[0] === 'tel';
+    var saisie = useState(null); // nom du style en cours d'enregistrement
+    function em(x) { return x && /em$/.test(x) ? Math.round(parseFloat(x) * 100) : null; }
+    var tailleOrdi = em(st['font-size']);
+    var tailleTel = em(st['--fs-m']);
+    var taille = tel ? (tailleTel || tailleOrdi) : tailleOrdi;
     var espace = st['letter-spacing'] && /em$/.test(st['letter-spacing']) ? Math.round(parseFloat(st['letter-spacing']) * 100) : 0;
     var vide = !value.text.length;
+    var nomme = st._nomme;
 
     function maj(changes) { onChange(appliquerStyle(value, p, changes)); }
     function majTaille(pct) {
-      if (pct === null || pct === undefined || isNaN(pct)) return maj({ 'font-size': null });
+      var prop = tel ? '--fs-m' : 'font-size';
+      var o = {};
+      if (pct === null || pct === undefined || isNaN(pct)) { o[prop] = null; return maj(o); }
       pct = Math.max(30, Math.min(500, Math.round(pct)));
-      maj({ 'font-size': pct === 100 ? null : (pct / 100) + 'em' });
+      o[prop] = (!tel && pct === 100) ? null : (pct / 100) + 'em';
+      maj(o);
     }
+    function choisirEcran(m) { ecranChoisi = m; ecran[1](m); changerApercu(m); }
     function bascule(prop, oui) { var o = {}; o[prop] = st[prop] === oui ? null : oui; maj(o); }
 
-    function toutRetirer() {
-      var v = appliquerStyle(value, p, { 'font-family': null, 'font-size': null, 'font-weight': null, 'font-style': null, 'text-transform': null, 'letter-spacing': null, 'text-decoration': null });
-      onChange(appliquerCouleur(v, p, null));
-    }
+    function toutRetirer() { onChange(poserNomme(value, p, null)); }
     function copier() {
       presse = Object.assign({}, st);
       props.rafraichir();
     }
     function coller() {
       if (!presse) return;
+      var v = poserNomme(value, p, presse._nomme && !presse._nomme.perdu ? presse._nomme.id : null);
       var changes = {};
-      ORDRE.forEach(function (k) { changes[k] = presse[k] || null; });
-      onChange(appliquerCouleur(appliquerStyle(value, p, changes), p, presse.couleur));
+      var base = presse._nomme ? presse._nomme.css : {};
+      ORDRE.forEach(function (k) { if (presse[k] && presse[k] !== base[k]) changes[k] = presse[k]; });
+      v = appliquerStyle(v, p, changes);
+      if (presse._couleurPropre && presse.couleur) v = appliquerCouleur(v, p, presse.couleur);
+      onChange(v);
     }
+
+    function enregistrerNouveau() {
+      var nom = String(saisie[0] || '').trim();
+      if (!nom) return;
+      var id = identifiant(nom);
+      var nouveau = { id: id, nom: nom, css: cssDepuis(st) };
+      sauverStyles(styles.concat([nouveau])).then(function (liste) {
+        var cree = liste.filter(function (x) { return x.nom === nom; }).pop() || nouveau;
+        saisie[1](null);
+        onChange(poserNomme(value, p, cree.id));
+        avis('Style « ' + nom + ' » enregistré. Il est disponible dans tous les textes du site.');
+      }).catch(function (e) { avis('Enregistrement impossible : ' + ((e && e.message) || 'erreur'), true); });
+    }
+    function mettreAJour() {
+      var id = nomme.id, css = cssDepuis(st);
+      sauverStyles(styles.map(function (x) { return x.id === id ? Object.assign({}, x, { css: css }) : x; })).then(function () {
+        onChange(poserNomme(value, p, id));
+        avis('Style « ' + nomme.nom + ' » mis à jour partout sur le site.');
+      }).catch(function (e) { avis('Mise à jour impossible : ' + ((e && e.message) || 'erreur'), true); });
+    }
+    function supprimer() {
+      if (!window.confirm('Supprimer le style « ' + nomme.nom + ' » ? Les textes qui l’utilisent reprendront leur apparence normale.')) return;
+      var id = nomme.id;
+      sauverStyles(styles.filter(function (x) { return x.id !== id; })).then(function () {
+        onChange(poserNomme(value, p, null));
+        avis('Style « ' + nomme.nom + ' » supprimé.');
+      }).catch(function (e) { avis('Suppression impossible : ' + ((e && e.message) || 'erreur'), true); });
+    }
+    var surcharge = nomme && (Object.keys(styleInline(value, p)).length > 0 || st._couleurPropre);
+
+    var zoneStyles = Zone('Styles enregistrés', nomme ? 'appliqué : ' + nomme.nom : null, el(Fragment, null,
+      styles.length ? el('div', { className: 'sch-choix sch-choix--styles', role: 'group', 'aria-label': 'Styles enregistrés' },
+        styles.map(function (s) {
+          var actif = nomme && nomme.id === s.id;
+          return el(c.Button, {
+            key: s.id, isPressed: !!actif, style: apercuStyle(s),
+            label: actif ? 'Retirer le style « ' + s.nom + ' »' : 'Appliquer le style « ' + s.nom + ' »', showTooltip: true,
+            onClick: function () { onChange(poserNomme(value, p, actif ? null : s.id)); }
+          }, s.nom);
+        })) : el('p', { className: 'sch-panneau__aide' }, 'Aucun style pour l’instant. Réglez un texte ci-dessous, puis enregistrez le pour le réutiliser partout.'),
+      gerer && nomme && !nomme.perdu && surcharge ? el(c.Button, { variant: 'secondary', className: 'sch-large', onClick: mettreAJour }, 'Mettre à jour « ' + nomme.nom + ' » avec ces réglages') : null,
+      gerer && saisie[0] === null ? el(c.Button, { variant: 'link', className: 'sch-lien', onClick: function () { saisie[1](''); } }, '+ Enregistrer ces réglages comme nouveau style') : null,
+      gerer && saisie[0] !== null ? el('div', { className: 'sch-nouveau' },
+        el(c.TextControl, {
+          label: 'Nom du style', value: saisie[0], placeholder: 'Ex. : Accroche verte', onChange: saisie[1],
+          onKeyDown: function (e) { if (e.key === 'Enter') { e.preventDefault(); enregistrerNouveau(); } },
+          __nextHasNoMarginBottom: true
+        }),
+        el('div', { className: 'sch-nouveau__actions' },
+          el(c.Button, { variant: 'primary', onClick: enregistrerNouveau, disabled: !String(saisie[0]).trim() }, 'Enregistrer'),
+          el(c.Button, { variant: 'tertiary', onClick: function () { saisie[1](null); } }, 'Annuler'))) : null,
+      gerer && nomme && !nomme.perdu ? el(c.Button, { variant: 'link', isDestructive: true, className: 'sch-lien', onClick: supprimer }, 'Supprimer le style « ' + nomme.nom + ' »') : null));
 
     var contenu = vide ? el('p', { className: 'sch-panneau__cible' }, 'Écrivez d’abord un texte dans ce champ.') : el(Fragment, null,
       el('p', { className: 'sch-panneau__cible' }, p.tout
         ? 'S’applique à tout le texte de ce champ. Pour ne modifier que quelques mots, sélectionnez-les d’abord.'
         : 'S’applique aux mots sélectionnés (' + (p.e - p.s) + ' caractères).'),
+
+      zoneStyles,
 
       Zone('Police', null, el(Choix, {
         label: 'Police',
@@ -251,11 +445,19 @@
         choisir: function (o) { maj({ 'font-family': o.valeur }); }
       })),
 
-      Zone('Taille', taille ? taille + ' %' : '100 % (normale)', el(Fragment, null,
+      el('div', { className: 'sch-panneau__zone' },
+        el('div', { className: 'sch-panneau__titre' },
+          el('span', { className: 'sch-panneau__nom' }, 'Taille'),
+          el('div', { className: 'sch-ecrans', role: 'group', 'aria-label': 'Écran' },
+            el(c.Button, { icon: 'desktop', size: 'small', label: 'Taille sur ordinateur', showTooltip: true, isPressed: !tel, onClick: function () { choisirEcran('ordi'); } }),
+            el(c.Button, { icon: 'smartphone', size: 'small', label: 'Taille sur téléphone', showTooltip: true, isPressed: tel, onClick: function () { choisirEcran('tel'); } })),
+          el('span', null, tel
+            ? (tailleTel ? tailleTel + ' % sur téléphone' : 'téléphone : comme sur ordinateur')
+            : (tailleOrdi ? tailleOrdi + ' %' : '100 % (normale)'))),
         el('div', { className: 'sch-taille' },
           el(c.Button, { label: 'Plus petit', showTooltip: true, onClick: function () { majTaille((taille || 100) - 10); } }, '−'),
           el(c.RangeControl, {
-            label: 'Taille en pourcentage de la taille normale',
+            label: tel ? 'Taille sur téléphone, en pourcentage' : 'Taille en pourcentage de la taille normale',
             hideLabelFromVision: true,
             value: taille || 100,
             min: 30, max: 400, step: 5,
@@ -270,7 +472,10 @@
           options: TAILLES,
           actif: function (o) { return (taille || 100) === o.valeur; },
           choisir: function (o) { majTaille(o.valeur); }
-        }))),
+        }),
+        tel ? el('p', { className: 'sch-panneau__aide' }, tailleTel
+          ? el(Fragment, null, 'Taille propre au téléphone. ', el(c.Button, { variant: 'link', onClick: function () { majTaille(null); } }, 'Reprendre la taille ordinateur'))
+          : 'L’aperçu est passé en mode téléphone. Réglez la taille : elle ne s’appliquera que sur les petits écrans.') : null),
 
       Zone('Graisse', null, el(Choix, {
         label: 'Graisse',
@@ -346,6 +551,7 @@
     function basculer() {
       if (!ouvert && Date.now() - fermeLe < 250) return; // le clic qui vient de fermer le panneau
       injecterCss();
+      injecterStyles();
       setOuvert(!ouvert);
     }
 
@@ -392,5 +598,5 @@
   }
 
   // Liste utilisée par les blocs maison pour autoriser ces mises en forme.
-  window.SCHIESSER_TYPO = ['schiesser/typographie', STYLE, COULEUR].concat(ANCIENS.map(function (f) { return f.nom; }));
+  window.SCHIESSER_TYPO = ['schiesser/typographie', STYLE, NOMME, COULEUR].concat(ANCIENS.map(function (f) { return f.nom; }));
 })(window.wp);

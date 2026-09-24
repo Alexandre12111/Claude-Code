@@ -90,6 +90,11 @@ function schiesser_reglages_defaut() {
 		'raison_sociale'     => '',
 		'numero_ide'         => '',
 		'profils'            => '',
+		// Avis Google (inc/avis.php)
+		'avis_cle'           => '', // clé API Google (Places API)
+		'avis_lieu'          => '', // identifiant du lieu (Place ID)
+		'avis_note'          => '', // note moyenne saisie à la main (sans clé API)
+		'avis_nombre'        => '', // nombre d'avis saisi à la main
 	);
 }
 
@@ -242,6 +247,13 @@ function schiesser_nettoyer_reglages( $entree ) {
 	$propre['lien_maps']     = schiesser_nettoyer_lien_maps( $entree['lien_maps'] ?? '', $propre['ville'] );
 	$propre['carte_google']  = schiesser_nettoyer_carte_google( $entree['carte_google'] ?? '' );
 	$propre['carte_au_clic'] = empty( $entree['carte_au_clic'] ) ? 0 : 1;
+	// Avis Google : la clé n'est affichée qu'aux administrateurs ; absente du formulaire, elle est conservée.
+	$avant                 = wp_parse_args( (array) get_option( SCHIESSER_OPTION, array() ), $defaut );
+	$propre['avis_cle']    = array_key_exists( 'avis_cle', $entree ) ? preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $entree['avis_cle'] ) : $avant['avis_cle'];
+	$propre['avis_lieu']   = array_key_exists( 'avis_lieu', $entree ) ? preg_replace( '/[^A-Za-z0-9_\-]/', '', (string) $entree['avis_lieu'] ) : $avant['avis_lieu'];
+	$note                  = str_replace( ',', '.', trim( (string) ( $entree['avis_note'] ?? '' ) ) );
+	$propre['avis_note']   = ( is_numeric( $note ) && $note >= 1 && $note <= 5 ) ? (string) round( (float) $note, 1 ) : '';
+	$propre['avis_nombre'] = absint( $entree['avis_nombre'] ?? 0 ) ?: '';
 	$propre['pays']               = isset( schiesser_pays()[ $entree['pays'] ?? '' ] ) ? $entree['pays'] : 'CH';
 	$propre['type_etablissement'] = isset( schiesser_types_etablissement()[ $entree['type_etablissement'] ?? '' ] ) ? $entree['type_etablissement'] : $defaut['type_etablissement'];
 	$propre['page_boutique']      = absint( $entree['page_boutique'] ?? 0 );

@@ -242,6 +242,8 @@ function schiesser_page_reglages() {
 				</div>
 				<?php schiesser_carte_fin(); ?>
 
+				<?php schiesser_carte_avis_reglages( $o, $r ); ?>
+
 				<?php schiesser_carte_debut( 'Référencement (SEO)', '', 'chart-line' ); ?>
 				<?php if ( 0 !== strpos( get_locale(), 'fr' ) ) : ?>
 					<p class="s-etat s-etat--alerte"><span class="dashicons dashicons-translation" aria-hidden="true"></span> <strong>La langue du site n'est pas le français</strong> (<?php echo esc_html( get_locale() ); ?>) : Google risque de mal comprendre les pages.

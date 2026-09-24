@@ -147,6 +147,8 @@ function schiesser_mq_blocs() {
 			$s() ),
 		'formulaire'     => array( 'Formulaire de contact', 'Formulaire (nom, e-mail, téléphone, message) envoyé à l’adresse des Réglages maison, et moyens de contact à côté.', 'email', null,
 			$s() + array( 'lNom' => 'Nom', 'lEmail' => 'E-mail', 'lTel' => 'Téléphone', 'lMessage' => 'Votre message', 'boutonTexte' => 'Envoyer', 'mentionLegale' => 'Vos informations servent uniquement à traiter votre demande.', 'okTitre' => 'Votre message est envoyé', 'okTexte' => 'Merci. Nous vous répondons sous un à deux jours ouvrés.' ) ),
+		'avis'           => array( 'Avis clients (Google)', 'Note moyenne, étoiles et quelques avis : ceux de la fiche Google, ou ceux du menu « Avis clients ».', 'star-filled', null,
+			$s( 'clair' ) + array( 'nombre' => 3, 'noteMin' => 4, 'resume' => true, 'longueur' => 260, 'lienTexte' => 'Voir tous les avis', 'avisTexte' => 'Laisser un avis', 'apercu' => false ) ),
 		'fiche-contact'  => array( 'Fiche de contact', 'Encadré : surtitre, nom, texte et lignes (e-mail, téléphone, adresse…).', 'id', null,
 			$s( 'sable' ) + array( 'surtitre' => '', 'encartTitre' => '', 'texte' => '' ) ),
 

@@ -255,7 +255,7 @@ section.live .wrap{display:grid;grid-template-columns:1fr;gap:0;padding-top:clam
 .lv-cell .v a:hover{border-color:var(--mint)}
 
 /* ---------- 8 · Sections ---------- */
-.sec{padding-top:var(--sec-y);padding-bottom:var(--sec-y);position:relative}
+.sec{padding-top:var(--esp-h,var(--sec-y));padding-bottom:var(--esp-b,var(--sec-y));position:relative}
 .bg-alt{--sec-bg:var(--paper-2);background:var(--paper-2)}
 .bg-soft{--sec-bg:var(--paper-3);background:var(--paper-3)}
 .bg-deep{--sec-bg:var(--paper-deep);background:var(--paper-deep)}
@@ -352,7 +352,7 @@ section.live .wrap{display:grid;grid-template-columns:1fr;gap:0;padding-top:clam
 
 /* appel final */
 .cta{text-align:center}
-section.cta:not(.sec) .wrap{padding-top:var(--sec-y);padding-bottom:var(--sec-y)}
+section.cta:not(.sec) .wrap{padding-top:var(--esp-h,var(--sec-y));padding-bottom:var(--esp-b,var(--sec-y))}
 .cta .eyebrow{display:inline-flex;align-items:center;gap:14px;color:var(--mint)}
 .cta .eyebrow::before,.cta .eyebrow::after{content:"";width:28px;height:1px;background:currentColor;opacity:.7}
 .cta h2{font-family:var(--serif);font-weight:500;font-size:calc(clamp(34px,5vw,68px) * var(--echelle-titres));line-height:1.02;letter-spacing:-.018em;max-width:18ch;margin:24px auto 0;color:var(--on-dark)}
@@ -488,7 +488,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 }
 
 /* la ligne du temps (galerie horizontale) */
-.sec.tl-sec{padding-bottom:clamp(56px,7vw,96px)}
+.sec.tl-sec{padding-bottom:var(--esp-b,clamp(56px,7vw,96px))}
 .tl-scroll{display:flex;gap:clamp(14px,1.8vw,24px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:22px;cursor:grab;
   overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--paper) 30%,transparent) transparent}
 .tl-scroll.drag{cursor:grabbing;scroll-snap-type:none}
@@ -837,7 +837,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .sband .l{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);font-weight:600;margin-top:10px}
 
 /* plaque 150 ans */
-.sec-plate{--sec-bg:var(--paper-2);background:var(--paper-2);padding:clamp(56px,7vw,104px) 0}
+.sec-plate{--sec-bg:var(--paper-2);background:var(--paper-2);padding:var(--esp-h,clamp(56px,7vw,104px)) 0 var(--esp-b,clamp(56px,7vw,104px))}
 .x-plate{position:relative;max-width:760px;margin:0 auto;display:flex;flex-direction:column;align-items:center;text-align:center;
   padding:clamp(44px,5vw,76px) clamp(24px,3vw,56px);background:var(--paper-3);border:1px solid var(--line);outline:1px solid var(--line);outline-offset:-10px}
 .x-plate::before,.x-plate::after{content:"";position:absolute;top:50%;width:7px;height:7px;background:var(--vert);transform:translateY(-50%) rotate(45deg);opacity:.7}
@@ -1495,7 +1495,7 @@ h3.card-name{font-size:clamp(17px,1.6vw,21px)}
    ===================================================================== */
 /* sections enchaînées (introduction puis montée à l'étage) */
 .sec--suivi{padding-bottom:0}
-.sec--suite{padding-top:0}
+.sec--suite{padding-top:var(--esp-h,0)}
 /* panneaux à onglets : un seul visible quand le JavaScript est actif, tous visibles sinon */
 .js .mn-list.is-off,.js .mo-txt.is-off,.js .tl-txt.is-off,.js .asc-copy.is-off,.js .jp-main.is-off{display:none}
 .gv-cap.is-off{display:none}
@@ -1545,3 +1545,48 @@ mark.has-inline-color{background-color:transparent}
 .gmap-consent p{max-width:38ch;font-size:13.5px;color:var(--ink-soft)}
 .gmap-consent .mapfallback{min-height:0;height:auto;padding:0;gap:0;background:none}
 .gmap-consent .mapfallback::before{display:none}
+
+/* ---------- Mise en page sans code (inc/mise-en-page.php) ---------- */
+/* Espacements : chaque section garde les siens, sauf réglage (--esp-h, --esp-b posés sur le bloc). */
+[class*="wp-block-schiesser-"] [class*="wp-block-schiesser-"]{--esp-h:initial;--esp-b:initial}
+/* Boutons d'une section : couleur, texte, taille, arrondi. Les boutons pleins prennent la couleur en fond, les boutons à contour en bordure (et en fond au survol). */
+.a-btn-fond :is(.btn-solid,.btn-kir,.btn-dark,.wp-block-button__link){background:var(--btn-fond);border-color:var(--btn-fond);color:#fff}
+.a-btn-fond :is(.btn-line,.btn-ghost){border-color:var(--btn-fond)}
+.a-btn-fond :is(.btn-line,.btn-ghost):hover{background:var(--btn-fond);color:#fff}
+.a-btn-fond :is(.btn-solid,.btn-kir,.btn-dark,.wp-block-button__link):hover{background:var(--btn-fond);border-color:var(--btn-fond);filter:brightness(.88)}
+.a-btn-texte :is(.btn-solid,.btn-kir,.btn-dark,.wp-block-button__link),.a-btn-texte :is(.btn-solid,.btn-kir,.btn-dark,.wp-block-button__link):hover,.a-btn-texte :is(.btn-line,.btn-ghost):hover{color:var(--btn-texte)}
+.a-btn-rayon :is(.btn,.wp-block-button__link){border-radius:var(--btn-rayon)}
+.a-btn-petit :is(.btn,.wp-block-button__link){min-height:40px;padding:0 18px;font-size:11px;gap:8px}
+.a-btn-grand :is(.btn,.wp-block-button__link){min-height:62px;padding:0 38px;font-size:14px}
+/* Taille sur téléphone choisie dans le panneau « Aa » */
+@media(max-width:760px){.sch-style[style*="--fs-m"]{font-size:var(--fs-m)!important}}
+
+/* ---------- Avis clients (inc/avis.php) ---------- */
+.avis{--etoile:#C49A3C;display:grid;gap:clamp(28px,4vw,56px)}
+.avis-etoiles{display:inline-block;width:92px;height:17px;flex-shrink:0;
+  background:linear-gradient(90deg,var(--etoile) var(--note,100%),color-mix(in srgb,currentColor 18%,transparent) var(--note,100%));
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 19'%3E%3Cpath d='M10 0l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L10 14.8 4.1 18.1l1.3-6.6L.5 6.9l6.6-.8z'/%3E%3C/svg%3E") 0 0/18.4px 17px repeat-x;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 19'%3E%3Cpath d='M10 0l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L10 14.8 4.1 18.1l1.3-6.6L.5 6.9l6.6-.8z'/%3E%3C/svg%3E") 0 0/18.4px 17px repeat-x}
+.avis-etoiles--grand{width:130px;height:24px;-webkit-mask-size:26px 24px;mask-size:26px 24px}
+.avis-resume{display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px;padding-bottom:clamp(24px,3vw,36px);border-bottom:1px solid var(--line)}
+.avis-moyenne{display:flex;align-items:center;gap:16px;margin:0}
+.avis-chiffre{font-family:var(--serif);font-size:clamp(46px,6vw,72px);line-height:1;color:var(--ink)}
+.avis-nombre{margin:0;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.avis-actions{display:flex;flex-wrap:wrap;gap:12px;margin-left:auto}
+.avis-liste{list-style:none;margin:0;padding:0;display:grid;gap:clamp(16px,2vw,28px);grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.avis-carte{display:flex;flex-direction:column;gap:16px;padding:clamp(22px,2.4vw,32px);background:color-mix(in srgb,var(--paper) 55%,#fff);border:1px solid var(--line)}
+.avis-texte{margin:0;flex:1}
+.avis-texte p{margin:0;font-size:16px;line-height:1.65;color:var(--text)}
+.avis-texte p::before{content:"« "}.avis-texte p::after{content:" »"}
+.avis-suite{align-self:flex-start;font-size:13px;color:var(--vert);text-underline-offset:3px}
+.avis-auteur{display:flex;align-items:center;gap:12px;margin:0;padding-top:16px;border-top:1px solid var(--line);font-size:14px}
+.avis-auteur strong{display:block;font-weight:600;color:var(--ink)}
+.avis-date{display:block;font-size:12px;color:var(--ink-soft)}
+.avis-initiale{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:50%;background:var(--vert);color:#fff;font-family:var(--serif);font-size:17px;flex-shrink:0}
+.avis-mention{margin:0;font-size:12px;color:var(--ink-soft)}
+.bg-ink .avis-chiffre,.bg-ink .avis-auteur strong,.bg-ink .avis-texte p{color:var(--on-dark)}
+.bg-ink :is(.avis-nombre,.avis-date,.avis-mention){color:var(--on-dark-3,rgba(255,255,255,.6))}
+.bg-ink .avis-carte{background:color-mix(in srgb,var(--paper) 6%,transparent);border-color:var(--line-dark)}
+.bg-ink :is(.avis-resume,.avis-auteur){border-color:var(--line-dark)}
+.bg-ink .avis-suite{color:var(--mint)}
+@media(max-width:700px){.avis-actions{margin-left:0;width:100%}.avis-actions .btn{flex:1 1 auto}}

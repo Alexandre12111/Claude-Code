@@ -1,7 +1,16 @@
-# Thème Schiesser 0.5
+# Thème Schiesser 0.6
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.6 : mise en page sans code et avis Google
+
+- **Styles de texte enregistrés** : dans le panneau **Aa**, « + Enregistrer ces réglages comme nouveau style » (ex. « Accroche verte », « Petit label »). Le style s'applique ensuite en un clic dans n'importe quel texte du site. « Mettre à jour » modifie tous les textes qui l'utilisent, partout ; « Supprimer » les ramène à leur apparence normale. Deux styles d'exemple sont fournis.
+- **Taille sur téléphone** : dans la rubrique « Taille » du panneau **Aa**, les icônes ordinateur et téléphone. En mode téléphone, l'aperçu de l'éditeur passe en largeur mobile et la taille réglée ne vaut que sur les petits écrans (moins de 760 px).
+- **Espacements des sections** : panneau de droite → « Espacements », un curseur pour l'espace au-dessus et un pour l'espace en dessous (0 à 320 px). « Automatique » garde l'espace prévu ; sur téléphone, l'espace est réduit proportionnellement.
+- **Boutons d'une section** : panneau de droite → « Boutons » : couleur du bouton, couleur du texte, taille (petit, normal, grand), arrondi des coins. Disponible sur la grande photo, les sections libres, l'appel final, Nous trouver, Passer nous voir, Plan et horaires, Cartes numérotées, Trajets, Formulaire et Avis.
+- **Copier une section vers une autre page** : menu **⋮** du bloc → « Copier vers une autre page… », choix de la page et de l'emplacement (début ou fin). La copie garde textes, photos et réglages.
+- **Avis Google** : nouveau bloc « Avis clients (Google) » avec la note moyenne, les étoiles, quelques avis et les boutons « Voir tous les avis » et « Laisser un avis ». Les avis viennent de la fiche Google (clé Google Places API et identifiant du lieu dans Réglages maison → Fiche Google et SEO, mise à jour toutes les 12 heures), ou du nouveau menu « Avis clients » pour les saisir à la main. Si Google ne répond pas, le site affiche les avis saisis à la main. Réglages du bloc : nombre d'avis, note minimale, longueur des textes. Aucune donnée structurée « avis » n'est ajoutée : Google ignore les avis qu'une entreprise publie sur son propre site.
 
 ## Nouveautés de la version 0.5 : modifier les textes comme dans Elementor
 
@@ -55,6 +64,10 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 2. **Réglages → Général** : Langue du site « Français », Fuseau horaire « Zurich », Titre du site « Confiserie Schiesser », puis Enregistrer. Ces trois réglages sont lus par Google et par le bandeau « Ouvert / Fermé ».
 3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
+
+### Mise à jour depuis la version 0.5
+
+Remplacer le thème par le nouveau zip (Apparence → Thèmes → Ajouter → Téléverser, puis « Remplacer la version installée »). Les nouveaux réglages apparaissent d'eux-mêmes. Pour les avis automatiques, saisir la clé Google et l'identifiant du lieu (Réglages maison → Fiche Google et SEO → Avis Google).
 
 ### Mise à jour depuis la version 0.4
 
@@ -132,6 +145,7 @@ Chaque bloc reproduit une section de la maquette. Les éléments (dates, plats, 
 | Notre histoire | **Chiffres clés**, **Plaque anniversaire**, **Récit avec lettrine** (et citation en exergue), **Ligne du temps** en mode chronologie à onglets, **Archives** (agrandies au clic), **Hier et aujourd’hui** (comparateur à curseur), **Cartes numérotées** (« Principes ») |
 | Nous visiter | **Plan et horaires**, **Affluence**, **Composez votre trajet** (départs et étapes), **Grande photo légendée** (« Reconnaître la maison ») |
 | Contact | **Formulaire de contact**, **Fiche de contact** |
+| Où vous voulez | **Avis clients (Google)** : note moyenne, étoiles et avis |
 
 Les lignes d'information (adresse, horaires, téléphone, e-mail) peuvent se remplir **automatiquement** depuis les Réglages maison : panneau de droite de la ligne → liste « Contenu ».
 
@@ -236,6 +250,8 @@ schiesser/
 │   ├── tea-room.php       type de contenu Produits Tea Room (carte du salon), rubriques, transfert, données « Menu »
 │   ├── blocs.php          blocs maison et styles des blocs WordPress
 │   ├── maquette.php       blocs de la maquette : déclaration, rendu du site, formulaire de contact
+│   ├── avis.php           avis clients : menu « Avis clients », avis Google (Places API), bloc Avis
+│   ├── mise-en-page.php   styles de texte enregistrés, espacements des sections, réglages des boutons
 │   ├── compositions.php   compositions de l'éditeur et outils d'écriture des blocs
 │   ├── seo.php            Rank Math et données structurées
 │   ├── woocommerce.php    préparation de la vente en ligne
@@ -244,7 +260,7 @@ schiesser/
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)
 └── assets/
     ├── css/     schiesser.css (site), editeur-maquette.css (éditeur), WooCommerce
-    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), boutique, éditeur
+    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), mise-en-page.js (espacements, boutons, copie de section), boutique, éditeur
     ├── vendor/leaflet/   bibliothèque de carte (licence BSD)
     └── admin/, fonts/
 ```

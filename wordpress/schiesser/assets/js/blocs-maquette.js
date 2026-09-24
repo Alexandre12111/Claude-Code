@@ -855,6 +855,25 @@
     }, apercu('plan-horaires', props));
   });
 
+  enregistrer('avis', function (props) {
+    var a = props.attributes;
+    var set = props.setAttributes;
+    return Section(props, {
+      panneaux: el(c.PanelBody, { title: 'Avis affichés', initialOpen: true },
+        el(c.RangeControl, { label: 'Nombre d’avis', value: a.nombre, min: 1, max: 12, onChange: maj(set, 'nombre') }),
+        el(c.SelectControl, {
+          label: 'Afficher les avis à partir de', value: String(a.noteMin),
+          options: [{ label: '5 étoiles', value: '5' }, { label: '4 étoiles', value: '4' }, { label: '3 étoiles', value: '3' }, { label: 'Tous les avis', value: '1' }],
+          onChange: function (v) { set({ noteMin: parseInt(v, 10) }); }
+        }),
+        el(c.RangeControl, { label: 'Longueur maximale d’un avis (caractères)', value: a.longueur, min: 100, max: 800, step: 20, onChange: maj(set, 'longueur'), help: 'Au-delà, le texte est coupé avec un lien « Lire la suite ».' }),
+        el(c.ToggleControl, { label: 'Note moyenne et boutons', checked: !!a.resume, onChange: maj(set, 'resume') }),
+        a.resume ? el(c.TextControl, { label: 'Bouton « tous les avis »', value: a.lienTexte, onChange: maj(set, 'lienTexte') }) : null,
+        a.resume ? el(c.TextControl, { label: 'Bouton « laisser un avis »', value: a.avisTexte, onChange: maj(set, 'avisTexte'), help: 'Affiché si l’identifiant du lieu Google est saisi.' }) : null,
+        aide('Les avis viennent de la fiche Google (Réglages maison → Fiche Google et SEO) ou du menu « Avis clients ».'))
+    }, apercu('avis', props));
+  });
+
   enregistrer('affluence', function (props) {
     var a = props.attributes;
     var set = props.setAttributes;

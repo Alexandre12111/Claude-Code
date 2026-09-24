@@ -11,6 +11,8 @@
  * - produits.php      : type de contenu « Produits boutique », ses champs et ses pages
  * - tea-room.php      : type de contenu « Produits Tea Room » (la carte du salon de thé)
  * - blocs.php         : blocs sur mesure (Hero, Section, Grille) et styles des blocs
+ * - avis.php          : avis Google (bloc « Avis clients », API Google ou saisie manuelle)
+ * - mise-en-page.php  : styles de texte enregistrés, espacements des sections, boutons
  * - compositions.php  : sections toutes prêtes de l'éditeur
  * - seo.php           : Rank Math et données structurées
  * - woocommerce.php   : préparation de la vente en ligne
@@ -20,7 +22,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.5.0' );
+define( 'SCHIESSER_VERSION', '0.6.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
@@ -33,6 +35,8 @@ require SCHIESSER_DIR . '/inc/produits.php';
 require SCHIESSER_DIR . '/inc/tea-room.php';
 require SCHIESSER_DIR . '/inc/blocs.php';
 require SCHIESSER_DIR . '/inc/maquette.php';
+require SCHIESSER_DIR . '/inc/avis.php';
+require SCHIESSER_DIR . '/inc/mise-en-page.php';
 require SCHIESSER_DIR . '/inc/compositions.php';
 require SCHIESSER_DIR . '/inc/seo.php';
 require SCHIESSER_DIR . '/inc/woocommerce.php';
