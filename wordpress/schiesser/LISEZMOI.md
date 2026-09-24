@@ -1,7 +1,20 @@
-# Thème Schiesser 0.6
+# Thème Schiesser 0.7
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.7 : horaires, allergènes et sécurité
+
+- **Jours fériés de Bâle calculés tout seuls**, chaque année : Nouvel An, Fasnacht (lundi, mardi, mercredi), Vendredi saint, Pâques, Lundi de Pâques, 1er mai, Ascension, Pentecôte, Lundi de Pentecôte, 1er août, Veille de Noël, Noël, Saint-Étienne, Saint-Sylvestre. Pour chacun : horaires habituels, fermé ou horaires spéciaux (Réglages maison → Coordonnées et horaires). Les réglages proposés sont une base à vérifier avec la maison.
+- **Dates exceptionnelles** : vacances, inventaire, horaires réduits, avec un motif affiché sur le site. Les périodes passées s'effacent toutes seules.
+- Tout le site en tient compte : statut « Ouvert / Fermé » en direct, bandeau du haut, compte à rebours, « Jours particuliers à venir » sous les tableaux d'horaires, et horaires spéciaux transmis à Google (données structurées).
+- **Bandeau d'annonce programmable** (Réglages maison → Accueil et pied de page) : message, lien, dates de début et de fin, couleur. Il apparaît et disparaît tout seul ; le visiteur peut le masquer. Option : annonce automatique des jours fériés et fermetures 7 jours avant.
+- **Barre du téléphone** : « Appeler », « Itinéraire » et « Ouvert jusqu'à 18 h 30 » (ou « Fermé · ouvre demain à 8 h ») fixés en bas de l'écran. Désactivable ; absente des fiches produits, qui ont leur propre barre.
+- **Allergènes et régimes** : boîte « Allergènes et régimes » dans chaque produit et chaque plat du Tea Room (14 allergènes à déclarer, alcool, végétarien, végane, sans gluten, sans lactose, traces possibles). Pictogrammes sur la page du produit, dans la fiche rapide et dans la carte du salon ; filtres « Sans gluten », « Sans fruits à coque », « Végane »… sur la boutique et la carte. Un produit non renseigné est masqué dès qu'un filtre est actif, pour ne jamais promettre « sans » par erreur. Remarque générale modifiable dans Réglages maison.
+- **Messages reçus** : chaque message du formulaire est gardé dans l'administration (Nouveau, Lu, Traité), avec un bouton « Répondre ». Aucun message perdu si l'e-mail ne part pas. Effacement automatique après 12 mois (protection des données) : pensez à le mentionner dans la politique de confidentialité.
+- **Anti spam renforcé**, sans captcha : champ piège, délai minimum, geste du visiteur obligatoire, 5 envois par heure au plus. Les envois suspects sont classés « Spam probable » (visibles, sans e-mail) plutôt que perdus.
+- **Connexion protégée** : 5 mots de passe faux en 15 minutes bloquent la connexion depuis cette adresse pendant 15 minutes ; messages d'erreur neutres ; liste des comptes cachée ; XML-RPC fermé ; en-têtes de sécurité ; version de WordPress masquée.
+- **Affichage plus rapide** : la grande photo du haut de page est préchargée dès le début du chargement (les polices l'étaient déjà).
 
 ## Nouveautés de la version 0.6 : mise en page sans code et avis Google
 
@@ -64,6 +77,10 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 2. **Réglages → Général** : Langue du site « Français », Fuseau horaire « Zurich », Titre du site « Confiserie Schiesser », puis Enregistrer. Ces trois réglages sont lus par Google et par le bandeau « Ouvert / Fermé ».
 3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
+
+### Mise à jour depuis la version 0.6
+
+Remplacer le thème par le nouveau zip. Les jours fériés fonctionnent aussitôt avec les réglages proposés. À vérifier ensuite : les jours fériés (onglet Coordonnées et horaires) et les allergènes de chaque produit. Si le site utilise une application ou un service qui passe par XML-RPC (rare), le signaler : il est désormais fermé.
 
 ### Mise à jour depuis la version 0.5
 
@@ -244,12 +261,17 @@ schiesser/
 │   ├── setup.php          réglages du thème, styles, scripts, navigation, redirections de pages
 │   ├── charte.php         couleurs et typographie
 │   ├── reglages.php       données des Réglages maison
+│   ├── horaires.php       jours fériés de Bâle (Fasnacht comprise), dates exceptionnelles
+│   ├── annonces.php       bandeau d'annonce programmable, barre du téléphone
 │   ├── page-reglages.php  écran des Réglages maison
 │   ├── shortcodes.php     codes courts
 │   ├── produits.php       type de contenu Produits boutique, champs, cartes, produits liés
 │   ├── tea-room.php       type de contenu Produits Tea Room (carte du salon), rubriques, transfert, données « Menu »
 │   ├── blocs.php          blocs maison et styles des blocs WordPress
 │   ├── maquette.php       blocs de la maquette : déclaration, rendu du site, formulaire de contact
+│   ├── allergenes.php     allergènes et régimes : saisie, pictogrammes, filtres
+│   ├── messages.php       messages reçus du formulaire, statuts, effacement après 12 mois
+│   ├── securite.php       connexion protégée, en-têtes de sécurité, préchargement de la photo
 │   ├── avis.php           avis clients : menu « Avis clients », avis Google (Places API), bloc Avis
 │   ├── mise-en-page.php   styles de texte enregistrés, espacements des sections, réglages des boutons
 │   ├── compositions.php   compositions de l'éditeur et outils d'écriture des blocs

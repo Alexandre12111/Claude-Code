@@ -37,7 +37,7 @@ function schiesser_sc_horaires() {
 			: '<time>' . esc_html( $h['ouverture'] ) . '</time> – <time>' . esc_html( $h['fermeture'] ) . '</time>';
 		$html  .= '<div class="hrow' . $classe . '"><dt class="d"' . ( $classe ? ' data-today="Aujourd\'hui"' : '' ) . '>' . esc_html( $jour ) . '</dt><dd class="h">' . $texte . '</dd></div>';
 	}
-	$html .= '</dl>';
+	$html .= '</dl>' . schiesser_html_jours_particuliers();
 	if ( schiesser_reglage( 'horaires_note' ) ) {
 		$html .= '<p class="s-horaires-note">' . esc_html( schiesser_reglage( 'horaires_note' ) ) . '</p>';
 	}

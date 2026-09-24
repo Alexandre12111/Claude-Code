@@ -129,4 +129,10 @@
       signaler();
     });
   }
+
+  /* ---------- jours fériés et dates exceptionnelles : heures actives seulement pour « Horaires spéciaux » ---------- */
+  document.querySelectorAll('.js-ferie-mode').forEach(function (sel) {
+    function maj() { sel.closest('tr').classList.toggle('is-special', sel.value === 'special'); }
+    sel.addEventListener('change', maj); maj();
+  });
 })(jQuery);

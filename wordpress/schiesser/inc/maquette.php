@@ -517,10 +517,15 @@ function schiesser_mq_etat() {
 	if ( null !== $memo ) {
 		return $memo;
 	}
-	$h    = schiesser_horaires_js();
 	$now  = current_datetime();
-	$jour = (int) $now->format( 'w' );
 	$heure = (int) $now->format( 'G' ) + (int) $now->format( 'i' ) / 60;
+	// Horaires des 8 prochains jours, jours fériés et dates exceptionnelles compris (inc/horaires.php).
+	$h = array();
+	for ( $k = 0; $k <= 7; $k++ ) {
+		$h[ $k ] = schiesser_horaires_date( $now->modify( '+' . $k . ' days' )->format( 'Y-m-d' ) );
+	}
+	$jour = 0;
+	$part = schiesser_jour_particulier( $now->format( 'Y-m-d' ) );
 	$fmt  = function ( $x ) {
 		return sprintf( '%02d:%02d', floor( $x ), round( fmod( $x, 1 ) * 60 ) );
 	};
@@ -535,7 +540,7 @@ function schiesser_mq_etat() {
 			$minutes = (int) round( ( $plage[0] - $heure ) * 60 );
 		} else {
 			for ( $k = 1; $k <= 7; $k++ ) {
-				$suivant = $h[ ( $jour + $k ) % 7 ] ?? null;
+				$suivant = $h[ $k ] ?? null;
 				if ( $suivant ) {
 					$minutes = (int) round( ( 24 - $heure + 24 * ( $k - 1 ) + $suivant[0] ) * 60 );
 					break;
@@ -549,12 +554,13 @@ function schiesser_mq_etat() {
 		$hh    = intdiv( $minutes, 60 );
 		$duree = $hh ? $hh . 'h' . sprintf( '%02d', $minutes % 60 ) : ( $minutes % 60 ) . ' min';
 	}
-	$demain = $h[ ( $jour + 1 ) % 7 ] ?? null;
+	$demain = $h[1] ?? null;
 	return $memo = array(
 		'ouvert'     => (bool) $ouvert,
 		'texte'      => $texte,
 		'duree'      => $duree,
-		'aujourdhui' => $plage ? $fmt( $plage[0] ) . ' – ' . $fmt( $plage[1] ) : 'Fermé aujourd’hui',
+		'aujourdhui' => ( $plage ? $fmt( $plage[0] ) . ' – ' . $fmt( $plage[1] ) : 'Fermé aujourd’hui' ) . ( $part ? ' · ' . $part['motif'] : '' ),
+		'motif'      => $part ? $part['motif'] : '',
 		'demain'     => 'Demain · ' . ( $demain ? $fmt( $demain[0] ) . ' – ' . $fmt( $demain[1] ) : 'fermé' ),
 		'fermeture'  => $plage ? $fmt( $plage[1] ) : '',
 		'plage'      => $plage ? $fmt( $plage[0] ) . '–' . $fmt( $plage[1] ) : '',
@@ -1167,13 +1173,16 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	$photos  = '';
 	$onglets = '';
 	$listes  = '';
+	$tous_al = array();
 	foreach ( $rubriques as $i => $r ) {
 		$nom      = schiesser_mq_brut( $r['nom'] );
 		$photos  .= schiesser_mq_image( $r, 'image', 'full', array( 'data-c' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '(min-width: 1200px) 1140px, 100vw' ) );
 		$onglets .= '<button type="button" class="mtab' . ( 0 === $i ? ' on' : '' ) . '" data-c="' . $i . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '">' . esc_html( $nom ) . '</button>';
 		$plats    = '';
 		foreach ( $r['plats'] as $k => $q ) {
-			$plats .= '<div class="mi" style="animation-delay:' . esc_attr( round( $k * 0.05, 2 ) ) . 's"><div class="mi-top"><span class="mi-nm">' . schiesser_mq_riche( $q['nom'] ) . '</span><span class="mi-dots"></span><span class="mi-pr">' . esc_html( schiesser_mq_brut( $q['prix'] ) ) . '</span></div>'
+			$al     = $q['al'] ?? null;
+			$tous_al[] = $al ?: array();
+			$plats .= '<div class="mi"' . ( $al ? schiesser_allergenes_attrs( $al ) : '' ) . ' style="animation-delay:' . esc_attr( round( $k * 0.05, 2 ) ) . 's"><div class="mi-top"><span class="mi-nm">' . schiesser_mq_riche( $q['nom'] ) . '</span>' . ( $al ? schiesser_allergenes_pictos( $al ) : '' ) . '<span class="mi-dots"></span><span class="mi-pr">' . esc_html( schiesser_mq_brut( $q['prix'] ) ) . '</span></div>'
 				. ( '' !== trim( $q['description'] ) ? '<div class="mi-d">' . schiesser_mq_texte( $q['description'] ) . '</div>' : '' )
 				. ( '' !== trim( $q['mention'] ) ? '<span class="mi-tag">' . schiesser_mq_riche( $q['mention'] ) . '</span>' : '' ) . '</div>';
 		}
@@ -1203,7 +1212,8 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	$contenu = '<div class="rv js-carte-salon">'
 		. '<div class="x-menupic">' . $photos . '<span class="x-mc js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></div>'
 		. '<div class="mn-tabs">' . $onglets . '</div>'
-		. '<div class="mn"><div class="mn-listes">' . $listes . '</div><aside class="mn-side">' . $suggestion
+		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">' . $suggestion
+		. ( array_filter( $tous_al ) ? schiesser_allergenes_note() : '' )
 		. ( '' !== trim( $a['mention'] ) ? '<p class="mn-note">' . schiesser_mq_riche( $a['mention'] ) . '</p>' : '' ) . '</aside></div></div>';
 	return schiesser_mq_section( $a, $contenu );
 }
@@ -1389,6 +1399,7 @@ function schiesser_mq_rendu_plan_horaires( $a ) {
 	$note     = schiesser_reglage( 'horaires_note' );
 	$horaires = '<div class="hourspanel"><div class="hp-head"><span class="hp-k">' . esc_html( schiesser_mq_brut( $a['titreHoraires'] ) ) . '</span><span class="hp-live js-etat-plage' . ( $etat['ouvert'] ? '' : ' shut' ) . '" data-nosnippet><span>' . esc_html( schiesser_mq_etat_plage() ) . '</span></span></div>'
 		. '<div class="htable js-htable">' . $lignes . '</div>'
+		. schiesser_html_jours_particuliers()
 		. ( $note ? '<p class="hnote">' . esc_html( $note ) . '</p>' : '' ) . '</div>';
 	return schiesser_mq_section( $a, '<div class="findus rv">' . $carte . $horaires . '</div>' );
 }
@@ -1514,6 +1525,7 @@ function schiesser_mq_rendu_formulaire( $a, $content, $block ) {
 		. '<input type="hidden" name="action" value="schiesser_contact"><input type="hidden" name="jeton" value="' . esc_attr( $jeton ) . '">'
 		. '<input type="hidden" name="retour" value="' . esc_url( get_permalink() ) . '">'
 		. '<div class="xf-hp" aria-hidden="true"><label>Laissez ce champ vide <input type="text" name="site_web" tabindex="-1" autocomplete="off"></label></div>'
+		. '<input type="hidden" name="humain" value="" class="js-humain">' // rempli au premier geste du visiteur (clavier, souris, doigt)
 		. '<div class="xrow two">' . $champ( 'nom', 'text', $a['lNom'], true, 'name' ) . $champ( 'email', 'email', $a['lEmail'], true, 'email' ) . '</div>'
 		. $champ( 'telephone', 'tel', $a['lTel'], false, 'tel' )
 		. $champ( 'message', 'textarea', $a['lMessage'], true, 'off' )
@@ -1555,6 +1567,7 @@ function schiesser_mq_envoi_contact() {
 	$email = isset( $_POST['email'] ) ? sanitize_email( wp_unslash( $_POST['email'] ) ) : '';
 	$tel   = isset( $_POST['telephone'] ) ? sanitize_text_field( wp_unslash( $_POST['telephone'] ) ) : '';
 	$msg   = isset( $_POST['message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['message'] ) ) : '';
+	$geste = isset( $_POST['humain'] ) ? (string) wp_unslash( $_POST['humain'] ) : '';
 	// phpcs:enable
 
 	// Robot : champ piège rempli, ou formulaire envoyé en moins de 3 secondes. On fait comme si tout allait bien.
@@ -1565,21 +1578,50 @@ function schiesser_mq_envoi_contact() {
 	if ( '' === $nom || ! is_email( $email ) || '' === $msg ) {
 		$aller( 'incomplet' );
 	}
-	// Un seul message par minute et par connexion (après un envoi réussi) : évite les envois en rafale.
-	$ip  = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
-	$cle = 'schiesser_contact_' . md5( $ip );
-	if ( get_transient( $cle ) ) {
+	// Un seul message par minute, et 5 par heure, par connexion : évite les envois en rafale.
+	$ip     = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	$cle    = 'schiesser_contact_' . md5( $ip );
+	$heure  = 'schiesser_contact_h_' . md5( $ip );
+	$nb_h   = (int) get_transient( $heure );
+	if ( get_transient( $cle ) || $nb_h >= 5 ) {
 		$aller( 'attente' );
+	}
+	set_transient( $cle, 1, MINUTE_IN_SECONDS );
+	set_transient( $heure, $nb_h + 1, HOUR_IN_SECONDS );
+
+	// Envoi suspect : gardé dans « Messages reçus » (Spam probable) pour contrôle, sans e-mail.
+	$raison = '';
+	if ( '' === $geste ) {
+		$raison = 'envoyé sans aucun geste du visiteur (ni clavier, ni souris)';
+	} elseif ( preg_match_all( '~https?://|www\.~i', $msg ) > 2 ) {
+		$raison = 'plus de deux liens dans le message';
+	} elseif ( preg_match( '/[\x{0400}-\x{04FF}\x{4E00}-\x{9FFF}]{12,}/u', $msg ) ) {
+		$raison = 'texte dans un alphabet inattendu';
+	}
+	$retour_page = wp_get_referer() ?: $retour;
+	$id = function_exists( 'schiesser_message_enregistrer' ) ? schiesser_message_enregistrer( array(
+		'nom'       => $nom,
+		'email'     => $email,
+		'telephone' => $tel,
+		'message'   => $msg,
+		'page'      => $retour_page,
+		'statut'    => $raison ? 'spam' : 'nouveau',
+		'raison'    => $raison,
+	) ) : 0;
+	if ( $raison ) {
+		$aller( 'ok' );
 	}
 
 	$dest  = schiesser_reglage( 'email' ) ?: get_option( 'admin_email' );
 	$sujet = 'Message depuis le site · ' . $nom;
-	$corps = "Nom : $nom\nE-mail : $email\n" . ( $tel ? "Téléphone : $tel\n" : '' ) . "\nMessage :\n$msg\n\n--\nEnvoyé depuis " . home_url( '/' );
+	$corps = "Nom : $nom\nE-mail : $email\n" . ( $tel ? "Téléphone : $tel\n" : '' ) . "\nMessage :\n$msg\n\n--\nEnvoyé depuis " . home_url( '/' )
+		. ( $id ? "\nTous les messages : " . admin_url( 'edit.php?post_type=schiesser_message' ) : '' );
 	$ok    = wp_mail( $dest, $sujet, $corps, array( 'Reply-To: ' . $nom . ' <' . $email . '>' ) );
-	if ( $ok ) {
-		set_transient( $cle, 1, MINUTE_IN_SECONDS );
+	if ( $id ) {
+		update_post_meta( $id, '_m_mail', $ok ? '1' : '0' );
 	}
-	$aller( $ok ? 'ok' : 'erreur' );
+	// Le message est gardé dans l'administration : même si l'e-mail ne part pas, il n'est pas perdu.
+	$aller( ( $ok || $id ) ? 'ok' : 'erreur' );
 }
 add_action( 'admin_post_nopriv_schiesser_contact', 'schiesser_mq_envoi_contact' );
 add_action( 'admin_post_schiesser_contact', 'schiesser_mq_envoi_contact' );

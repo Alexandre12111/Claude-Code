@@ -177,6 +177,21 @@ function schiesser_page_guide() {
 			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
 			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
 		) ),
+		array( 'calendar-alt', 'Jours fériés, fermetures et annonces', array(
+			'Les jours fériés de Bâle et la Fasnacht sont calculés tout seuls. Réglages maison → Coordonnées et horaires → « Jours fériés et fermetures exceptionnelles » : pour chacun, horaires habituels, fermé ou horaires spéciaux.',
+			'Vacances ou inventaire : même carte, « Dates exceptionnelles », une ligne par période avec son motif. Le statut « Ouvert / Fermé », les tableaux d\'horaires et Google suivent.',
+			'Un message en haut du site (« Commandes de Pâques ouvertes ») : Réglages maison → Accueil et pied de page → « Bandeau d\'annonce », avec ses dates. Il disparaît tout seul après la date de fin.',
+		) ),
+		array( 'carrot', 'Allergènes et régimes', array(
+			'Dans chaque produit (boutique ou Tea Room), boîte « Allergènes et régimes » : cochez ce que contient le produit, ou « Ne contient aucun de ces allergènes ».',
+			'Les pictogrammes et les filtres « Sans gluten », « Végane »… apparaissent sur le site dès qu\'un produit est renseigné. Un produit non renseigné est masqué quand un filtre est actif.',
+			'La remarque générale (traces possibles dans l\'atelier) se modifie dans Réglages maison → Accueil et pied de page → « Allergènes ».',
+		) ),
+		array( 'email-alt', 'Messages reçus', array(
+			'Chaque message du formulaire de contact arrive par e-mail et reste dans le menu « Messages reçus » : le chiffre à côté du menu indique les nouveaux.',
+			'Ouvrir un message le marque comme lu ; « Répondre par e-mail » prépare la réponse. Passez le en « Traité » une fois la demande réglée.',
+			'Les envois suspects sont rangés dans « Spam probable » (lien au-dessus de la liste) : à regarder de temps en temps. Les messages sont effacés automatiquement après 12 mois.',
+		) ),
 		array( 'image-flip-vertical', 'Espacements et boutons d\'une section', array(
 			'Cliquez sur la section, puis panneau de droite → « Espacements » : deux curseurs pour l\'espace au-dessus et en dessous. « Automatique » garde l\'espace prévu par le thème ; sur téléphone, l\'espace est réduit automatiquement.',
 			'Même panneau → « Boutons » (sections qui en ont) : couleur du bouton, couleur du texte, taille (petit, normal, grand) et arrondi des coins.',

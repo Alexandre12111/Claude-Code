@@ -1590,3 +1590,68 @@ mark.has-inline-color{background-color:transparent}
 .bg-ink :is(.avis-resume,.avis-auteur){border-color:var(--line-dark)}
 .bg-ink .avis-suite{color:var(--mint)}
 @media(max-width:700px){.avis-actions{margin-left:0;width:100%}.avis-actions .btn{flex:1 1 auto}}
+
+/* ---------- Jours particuliers à venir (inc/horaires.php) ---------- */
+.h-particuliers{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+.h-part-titre{margin:0 0 8px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--vert)}
+.h-particuliers ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.h-particuliers li{display:flex;justify-content:space-between;gap:16px;font-size:14px;line-height:1.4}
+.h-part-jour strong{font-weight:600}
+.h-part-h{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--ink)}
+.bg-ink .h-part-h{color:var(--on-dark)}.bg-ink .h-part-titre{color:var(--mint)}.bg-ink .h-particuliers{border-color:var(--line-dark)}
+
+/* ---------- Bandeau d'annonce (inc/annonces.php) ---------- */
+.annonce{position:relative;z-index:1002;font-size:14px;line-height:1.4}
+.annonce .wrap{display:flex;align-items:center;justify-content:center;gap:12px;min-height:42px;padding-top:8px;padding-bottom:8px;text-align:center}
+.annonce p{margin:0;flex:1}
+.annonce a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.annonce-k{display:inline-block;margin-right:6px;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+.annonce-fermer{flex-shrink:0;width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center;background:none;border:0;color:inherit;font-size:22px;line-height:1;cursor:pointer;opacity:.75}
+.annonce-fermer:hover{opacity:1}
+.annonce--vert{background:var(--vert);color:#fff}
+.annonce--sombre{background:var(--dark);color:var(--on-dark);border-bottom:1px solid var(--line-dark)}
+.annonce--sable{background:var(--paper-3);color:var(--ink);border-bottom:1px solid var(--line)}
+.annonce--vert :focus-visible,.annonce--sombre :focus-visible{outline-color:#fff}
+
+/* ---------- Barre d'action du téléphone (inc/annonces.php) ---------- */
+.barre-mobile{display:none}
+@media(max-width:760px){
+  .barre-mobile{position:fixed;left:0;right:0;bottom:0;z-index:950;display:grid;grid-template-columns:auto auto 1fr;align-items:stretch;
+    background:color-mix(in srgb,var(--paper) 96%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);box-shadow:0 -10px 30px color-mix(in srgb,var(--ink) 8%,transparent);padding-bottom:env(safe-area-inset-bottom,0px);
+    transition:transform .35s var(--ease-out),visibility .35s}
+  .barre-mobile.is-cachee{transform:translateY(110%);visibility:hidden}
+  .bm-lien{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 16px;color:var(--ink);text-decoration:none;
+    font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;border-right:1px solid var(--line)}
+  .bm-lien:first-child{color:var(--vert)}
+  .bm-etat{display:flex;align-items:center;justify-content:center;gap:9px;padding:6px 14px;font-size:13px;line-height:1.25;color:var(--ink);text-decoration:none;text-align:left}
+  .bm-led{width:8px;height:8px;border-radius:50%;background:var(--vert);box-shadow:0 0 0 3px color-mix(in srgb,var(--vert) 18%,transparent);flex-shrink:0}
+  .bm-led.shut{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink-soft)}
+  .a-barre-mobile .site-footer{padding-bottom:calc(clamp(96px,13vw,200px) + 64px)}
+}
+
+/* ---------- Allergènes et régimes (inc/allergenes.php) ---------- */
+.al-masque{display:none!important}
+.al-liste{display:inline-flex;flex-wrap:wrap;gap:4px;list-style:none;margin:0;padding:0;color:var(--vert)}
+.al{display:inline-flex;align-items:center}
+.al-svg{display:block;width:17px;height:17px}
+.al--regime{color:var(--vert)}
+.al-liste--detail{display:flex;gap:8px;margin:10px 0 0}
+.al-liste--detail .al{gap:7px;padding:6px 11px 6px 8px;border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 60%,#fff);font-size:13px;color:var(--ink)}
+.al-liste--detail .al-svg{width:20px;height:20px;color:var(--vert)}
+.al-liste--detail .al--regime{border-color:color-mix(in srgb,var(--vert) 40%,transparent);background:color-mix(in srgb,var(--vert) 7%,transparent)}
+.produit-al{margin:22px 0 4px;padding-top:18px;border-top:1px solid var(--line)}
+.produit-al-k{margin:0;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--vert)}
+.produit-al-t{margin:10px 0 0;font-size:14px;color:var(--text)}
+.al-note{margin:10px 0 0;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}
+.al-filtres{margin:0 0 22px}
+.al-filtres-in{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.al-filtres-k{font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-right:4px}
+.fchip--al{display:inline-flex;align-items:center;gap:6px}
+.fchip--al .al-svg{width:15px;height:15px}
+.al-filtres-vide{margin:14px 0 0;font-size:14px;color:var(--ink-soft)}
+.mi-top .al-liste{margin:0 6px;flex-shrink:0;align-self:center;gap:2px;opacity:.85}
+.mi-top .al-svg{width:15px;height:15px}
+.bg-ink .al-liste,.bg-ink .al--regime{color:var(--mint)}
+.mn .al-filtres{margin-bottom:18px}
+.mn.al-actif .mn-list:not(.is-off):not(:has(.mi:not(.al-masque)))::after{content:"Aucun plat de cette rubrique ne correspond à ces filtres.";display:block;padding:18px 0;font-size:14px;color:var(--ink-soft)}

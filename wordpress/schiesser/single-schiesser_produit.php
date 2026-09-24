@@ -66,6 +66,22 @@ while ( have_posts() ) :
 					</div>
 				<?php endif; ?>
 
+				<?php if ( ! empty( $p['al'] ) && ( $p['al']['renseigne'] || $p['al']['regimes'] ) ) : ?>
+					<div class="produit-al">
+						<p class="produit-al-k">Allergènes et régimes</p>
+						<?php
+						echo schiesser_allergenes_pictos( $p['al'], true ); // phpcs:ignore WordPress.Security.EscapeOutput
+						if ( $p['al']['renseigne'] && ! $p['al']['allergenes'] ) {
+							echo '<p class="produit-al-t">Ne contient aucun des 14 allergènes à déclarer.</p>';
+						}
+						if ( '' !== $p['al']['traces'] ) {
+							echo '<p class="produit-al-t">' . esc_html( $p['al']['traces'] ) . '</p>';
+						}
+						echo schiesser_allergenes_note(); // phpcs:ignore WordPress.Security.EscapeOutput
+						?>
+					</div>
+				<?php endif; ?>
+
 				<?php if ( $p['prix'] ) : ?>
 					<div class="sh-price"><span class="pk">Prix<?php echo $p['unite'] ? ' · ' . esc_html( $p['unite'] ) : ''; ?></span><span class="pv"><?php echo esc_html( $p['prix'] ); ?></span></div>
 				<?php endif; ?>

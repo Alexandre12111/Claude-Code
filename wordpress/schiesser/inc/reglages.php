@@ -74,6 +74,12 @@ function schiesser_reglages_defaut() {
 		// Horaires
 		'horaires'           => $horaires,
 		'horaires_note'      => 'Les horaires peuvent varier les jours fériés. En cas de doute, un appel suffit.',
+		'feries'             => schiesser_feries_defaut(), // jours fériés de Bâle (inc/horaires.php)
+		'exceptions'         => array(),                  // fermetures et horaires exceptionnels datés
+		'annonces'           => array(),                  // bandeau d'annonce (inc/annonces.php)
+		'annonce_feries'     => 1,
+		'barre_mobile'       => 1,
+		'allergenes_note'    => 'Nos créations sont préparées dans un atelier qui travaille aussi le gluten, les fruits à coque, le lait et les œufs : des traces sont possibles. Notre équipe vous renseigne volontiers.',
 		// Accueil et pied de page
 		'vitrine'            => array( 'Läckerli', 'Truffes', 'Tarte du jour' ),
 		'presentation'       => 'La Confiserie Schiesser est une confiserie artisanale fondée en 1870 sur le Marktplatz de Bâle. Läckerli de Bâle, truffes, pralinés et coffrets y sont préparés à la main, et son salon de thé accueille les visiteurs au premier étage.',
@@ -138,8 +144,14 @@ function schiesser_heure_decimale( $hhmm ) {
 
 /** Horaires du jour dans le fuseau du site, ex. « 07:30–18:30 », ou « Fermé aujourd'hui ». */
 function schiesser_horaires_du_jour() {
-	$h = schiesser_reglage( 'horaires' )[ (int) wp_date( 'w' ) ] ?? null;
-	return ( ! $h || ! empty( $h['ferme'] ) ) ? 'Fermé aujourd’hui' : $h['ouverture'] . '–' . $h['fermeture'];
+	$p = schiesser_horaires_date( current_datetime()->format( 'Y-m-d' ) ); // jours fériés compris
+	return $p ? schiesser_heure_hhmm( $p[0] ) . '–' . schiesser_heure_hhmm( $p[1] ) : 'Fermé aujourd’hui';
+}
+
+/** 7.5 → « 07:30 » */
+function schiesser_heure_hhmm( $x ) {
+	$m = (int) round( fmod( $x, 1 ) * 60 );
+	return sprintf( '%02d:%02d', floor( $x ) + intdiv( $m, 60 ), $m % 60 );
 }
 
 /**
@@ -279,6 +291,12 @@ function schiesser_nettoyer_reglages( $entree ) {
 			'ferme'     => empty( $h['ferme'] ) ? 0 : 1,
 		);
 	}
+	$propre['feries']     = schiesser_nettoyer_feries( $entree['feries'] ?? array() );
+	$propre['exceptions'] = schiesser_nettoyer_exceptions( $entree['exceptions'] ?? array() );
+	$propre['annonces']       = schiesser_nettoyer_annonces( $entree['annonces'] ?? array() );
+	$propre['annonce_feries'] = empty( $entree['annonce_feries'] ) ? 0 : 1;
+	$propre['barre_mobile']   = empty( $entree['barre_mobile'] ) ? 0 : 1;
+	$propre['allergenes_note'] = sanitize_textarea_field( $entree['allergenes_note'] ?? '' );
 	return $propre;
 }
 

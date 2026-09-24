@@ -31,15 +31,22 @@
             n++;
           }
         });
-        if (nombre) nombre.textContent = n;
-        if (libelle) libelle.textContent = n > 1 ? 'produits' : 'produit';
+        compter();
+        root.dispatchEvent(new CustomEvent('schiesser:categorie'));
       });
     });
+    // Nombre de produits affichés (catégorie et filtres allergènes).
+    function compter() {
+      var n = cartes.filter(function (c) { return !c.hidden && !c.classList.contains('al-masque'); }).length;
+      if (nombre) nombre.textContent = n;
+      if (libelle) libelle.textContent = n > 1 ? 'produits' : 'produit';
+    }
+    root.addEventListener('schiesser:filtre', compter);
 
     /* ---------- fiche rapide ---------- */
     function q(s) { return sheet.querySelector(s); }
     function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
-    function visibles() { return cartes.filter(function (c) { return !c.hidden; }).map(function (c) { return +c.getAttribute('data-i'); }); }
+    function visibles() { return cartes.filter(function (c) { return !c.hidden && !c.classList.contains('al-masque'); }).map(function (c) { return +c.getAttribute('data-i'); }); }
 
     function remplir(i) {
       courant = i;

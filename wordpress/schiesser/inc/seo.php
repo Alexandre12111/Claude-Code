@@ -119,6 +119,12 @@ function schiesser_schema_etablissement() {
 		);
 	}
 
+	// Jours fériés et fermetures exceptionnelles des 90 prochains jours.
+	$speciaux = schiesser_schema_horaires_speciaux();
+	if ( $speciaux ) {
+		$schema['specialOpeningHoursSpecification'] = $speciaux;
+	}
+
 	// Gamme de prix : une fourchette (« CHF 2–30 ») ou des symboles (« $$ ») ; un code devise seul ne veut rien dire.
 	if ( preg_match( '/\d|\$/', (string) $r['gamme_prix'] ) ) {
 		$schema['priceRange'] = $r['gamme_prix'];

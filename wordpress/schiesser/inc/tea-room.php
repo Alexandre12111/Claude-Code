@@ -373,6 +373,7 @@ function schiesser_donnees_tearoom( $post ) {
 		'imageId'     => $photo,
 		'imageUrl'    => '',
 		'imageAlt'    => $photo ? (string) get_post_meta( $photo, '_wp_attachment_image_alt', true ) : '',
+		'al'          => schiesser_allergenes_de( $post->ID, '_t_' ), // allergènes et régimes (inc/allergenes.php)
 	);
 }
 
@@ -697,6 +698,13 @@ function schiesser_schema_menu( $post ) {
 				continue;
 			}
 			$plat = array( '@type' => 'MenuItem', 'name' => $nom );
+			// Régimes compris par Google (schema.org RestrictedDiet).
+			$diete = array( 'vegetarien' => 'VegetarianDiet', 'vegane' => 'VeganDiet', 'sans-gluten' => 'GlutenFreeDiet', 'sans-lactose' => 'LowLactoseDiet' );
+			foreach ( (array) ( $p['al']['regimes'] ?? array() ) as $k ) {
+				if ( isset( $diete[ $k ] ) ) {
+					$plat['suitableForDiet'][] = 'https://schema.org/' . $diete[ $k ];
+				}
+			}
 			$desc = schiesser_texte_brut( $p['description'] );
 			if ( '' !== $desc ) {
 				$plat['description'] = $desc;

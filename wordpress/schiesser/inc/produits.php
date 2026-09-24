@@ -132,6 +132,7 @@ function schiesser_donnees_produit( $post ) {
 		$d[ $cle ] = (string) get_post_meta( $post->ID, '_s_' . $cle, true );
 	}
 	$d['fiche'] = array_values( array_filter( (array) get_post_meta( $post->ID, '_s_fiche', true ) ) );
+	$d['al']    = schiesser_allergenes_de( $post->ID, '_s_' ); // allergènes et régimes (inc/allergenes.php)
 	if ( '' === $d['alt'] ) {
 		$d['alt'] = $d['nom'];
 	}
@@ -243,7 +244,7 @@ function schiesser_produits_lies( $post_id, $nombre = 4 ) {
  */
 function schiesser_carte_produit( $p, $i, $fiche_rapide = true ) {
 	?>
-	<a class="card" href="<?php echo esc_url( $p['url'] ); ?>"<?php if ( $fiche_rapide ) : ?> aria-haspopup="dialog" data-i="<?php echo (int) $i; ?>" data-categories="<?php echo esc_attr( implode( ' ', array_keys( $p['categories'] ) ) ); ?>"<?php endif; ?> style="animation-delay:<?php echo esc_attr( round( $i * 0.04, 2 ) ); ?>s">
+	<a class="card" href="<?php echo esc_url( $p['url'] ); ?>"<?php if ( $fiche_rapide ) : ?> aria-haspopup="dialog" data-i="<?php echo (int) $i; ?>" data-categories="<?php echo esc_attr( implode( ' ', array_keys( $p['categories'] ) ) ); ?>"<?php echo ! empty( $p['al'] ) ? schiesser_allergenes_attrs( $p['al'] ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?><?php endif; ?> style="animation-delay:<?php echo esc_attr( round( $i * 0.04, 2 ) ); ?>s">
 		<span class="card-im">
 			<?php
 			if ( $p['image_id'] ) {

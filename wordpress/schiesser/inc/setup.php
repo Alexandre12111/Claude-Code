@@ -46,6 +46,7 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_script( 'schiesser-site', SCHIESSER_URI . '/assets/js/site.js', array(), SCHIESSER_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 	wp_localize_script( 'schiesser-site', 'SCHIESSER', array(
 		'horaires' => schiesser_horaires_js(),
+		'particuliers' => schiesser_particuliers_js(), // jours fériés et dates exceptionnelles des prochaines semaines
 		'langue'   => substr( get_locale(), 0, 2 ),
 		'fuseau'   => wp_timezone_string(), // l'état « Ouvert / Fermé » suit l'heure de Bâle, où que soit le visiteur
 	) );

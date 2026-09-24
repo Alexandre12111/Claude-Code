@@ -169,3 +169,12 @@
 .taxonomy-schiesser_rubrique .column-description,.taxonomy-schiesser_rubrique .column-slug{display:none}
 .schiesser-champ--description{grid-column:1/-1}
 .schiesser-champ--description .wp-editor-wrap{margin-top:2px}
+
+/* Jours fériés et dates exceptionnelles */
+.s-feries,.s-exceptions{max-width:none}
+.s-feries tbody th{width:auto;min-width:200px}
+:is(.s-feries,.s-exceptions) tr:not(.is-special) input[type=time]{opacity:.3}
+.s-exceptions input[type=text]{width:100%;min-width:160px}
+.s-exceptions td{padding-right:8px}
+.s-sous-titre{font-size:14px;margin:28px 0 4px}
+@media(max-width:782px){.s-feries,.s-exceptions{display:block;overflow-x:auto}}

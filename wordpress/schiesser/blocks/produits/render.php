@@ -42,6 +42,19 @@ foreach ( $produits as $p ) {
 	if ( $p['origine'] ) {
 		$lignes[] = array( 'Origine', $p['origine'], 1 );
 	}
+	if ( ! empty( $p['al'] ) ) {
+		if ( $p['al']['renseigne'] ) {
+			$lignes[] = array( 'Allergènes', schiesser_allergenes_texte( $p['al'] ), 1 );
+		}
+		if ( $p['al']['regimes'] ) {
+			$lignes[] = array( 'Convient', implode( ', ', array_map( function ( $k ) {
+				return schiesser_regimes_liste()[ $k ][0];
+			}, $p['al']['regimes'] ) ), 1 );
+		}
+		if ( '' !== $p['al']['traces'] ) {
+			$lignes[] = array( 'Traces', $p['al']['traces'], 1 );
+		}
+	}
 	$fiches[] = array(
 		'nom'         => $p['nom'],
 		'url'         => $p['url'],
@@ -78,6 +91,11 @@ ob_start();
 			</div>
 		<?php endif; ?>
 
+		<?php
+		if ( ! $apercu ) {
+			echo schiesser_allergenes_filtres( array_filter( array_column( $produits, 'al' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		?>
 		<div class="shop-grid">
 			<?php foreach ( $produits as $i => $p ) { schiesser_carte_produit( $p, $i, ! $apercu ); } ?>
 		</div>

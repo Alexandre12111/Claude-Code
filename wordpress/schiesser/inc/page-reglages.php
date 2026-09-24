@@ -196,6 +196,8 @@ function schiesser_page_reglages() {
 					<?php schiesser_champ( $o, 'horaires_note', $r['horaires_note'], array( 'libelle' => 'Remarque sur les horaires', 'classe' => 's-large' ) ); ?>
 				</div>
 				<?php schiesser_carte_fin(); ?>
+
+				<?php schiesser_carte_jours_particuliers( $o, $r ); ?>
 			</section>
 
 			<!-- ============ Accueil et pied de page ============ -->
@@ -205,6 +207,14 @@ function schiesser_page_reglages() {
 					<?php for ( $i = 0; $i < 4; $i++ ) {
 						schiesser_champ( $o, 'vitrine][', $r['vitrine'][ $i ] ?? '', array( 'libelle' => 'Produit ' . ( $i + 1 ), 'placeholder' => 0 === $i ? 'Ex. Läckerli' : '', 'id' => 's-vitrine-' . $i ) );
 					} ?>
+				</div>
+				<?php schiesser_carte_fin(); ?>
+
+				<?php schiesser_carte_annonces( $o, $r ); ?>
+
+				<?php schiesser_carte_debut( 'Allergènes', 'Les allergènes de chaque produit et de chaque plat du Tea Room se cochent dans leur fiche (boîte « Allergènes et régimes »). Cette remarque s\'affiche sous les pictogrammes.', 'info-outline' ); ?>
+				<div class="s-grille">
+					<?php schiesser_champ( $o, 'allergenes_note', $r['allergenes_note'], array( 'libelle' => 'Remarque générale sur les allergènes', 'type' => 'textarea', 'classe' => 's-large' ) ); ?>
 				</div>
 				<?php schiesser_carte_fin(); ?>
 
