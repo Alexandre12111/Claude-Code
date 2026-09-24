@@ -1,7 +1,24 @@
-# Thème Schiesser 0.7
+# Thème Schiesser 0.8
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.8 : modifier plus vite, commander par téléphone
+
+**Pour l'équipe**
+- **Écran « Aujourd'hui »** (premier menu de l'administration, pratique sur téléphone) : état ouvert ou fermé, nouveaux messages, vitrine du jour, suggestion du Tea Room, produits « épuisés aujourd'hui » et bandeau d'annonce, enregistrés d'un seul clic. Les produits cochés « épuisés » redeviennent disponibles tout seuls le lendemain.
+- **Sections programmées** : sur chaque bloc, panneau de droite « Affichage programmé », afficher du … au …. La section apparaît et disparaît toute seule ; dans l'éditeur, elle est signalée par un cadre pointillé et une étiquette.
+- **« Modifier cette section »** : une fois connecté, un bouton apparaît au survol de chaque section du site et ouvre l'éditeur directement sur ce bloc.
+- **Point d'intérêt des photos** : dans la médiathèque (ou le panneau « Photo » d'un bloc), un clic sur l'endroit important de la photo. Les recadrages (téléphone, cartes, grande photo) le gardent visible, partout où la photo est utilisée.
+- **Menu épuré pour le rôle « Gérant(e) du site »** : Aujourd'hui, Pages, Produits boutique, Produits Tea Room, Messages reçus, Avis clients, Réglages maison. Le gérant arrive sur « Aujourd'hui » après la connexion ; médiathèque, menus du site et guide restent accessibles par les liens en bas de cet écran.
+
+**Pour les clients**
+- **« Appeler pour commander »** sur les pages produits, la fiche rapide et la barre du téléphone : ouvert, le bouton appelle la boutique ; fermé, il affiche « Fermé · ouvre demain à 7 h 30 » et propose « Laisser un message », avec le formulaire déjà rempli du nom du produit.
+- **« Ma sélection »** : un cœur pour mettre des produits de côté, avec les quantités. La liste s'ouvre depuis un bouton flottant : « Appeler pour commander », « Envoyer par message » (formulaire prérempli avec la liste), « Copier la liste ». Gardée dans le navigateur du visiteur, sans compte ni cookie.
+- **Recherche dans la boutique**, aussi par ingrédient (« praliné », « kirsch »), accents ignorés.
+- **« Épuisé aujourd'hui »** affiché sur la carte du produit, sa page et dans la carte du salon.
+- **Partage** : WhatsApp, e-mail, copier le lien (et le partage du téléphone quand il existe), sur les produits et la carte du salon.
+- **Navigation plus fluide** : fondu entre les pages et pages suivantes préparées à l'avance (navigateurs récents ; les autres naviguent comme avant).
 
 ## Nouveautés de la version 0.7 : horaires, allergènes et sécurité
 
@@ -77,6 +94,10 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 2. **Réglages → Général** : Langue du site « Français », Fuseau horaire « Zurich », Titre du site « Confiserie Schiesser », puis Enregistrer. Ces trois réglages sont lus par Google et par le bandeau « Ouvert / Fermé ».
 3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
+
+### Mise à jour depuis la version 0.7
+
+Remplacer le thème par le nouveau zip. Rien d'autre à faire. Pour que l'équipe profite du menu épuré, donnez lui le rôle « Gérant(e) du site » (Comptes → modifier le compte → Rôle).
 
 ### Mise à jour depuis la version 0.6
 
@@ -277,6 +298,9 @@ schiesser/
 │   ├── compositions.php   compositions de l'éditeur et outils d'écriture des blocs
 │   ├── seo.php            Rank Math et données structurées
 │   ├── woocommerce.php    préparation de la vente en ligne
+│   ├── aujourdhui.php     écran « Aujourd'hui », produits épuisés du jour
+│   ├── client.php         « Appeler pour commander », « Ma sélection », partage, navigation fluide
+│   ├── edition.php        sections programmées, « Modifier cette section », point d'intérêt, menu du gérant
 │   ├── admin.php          habillage de l'administration, tableau de bord, guide, rôle
 │   └── demo.php           contenu de démonstration
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)

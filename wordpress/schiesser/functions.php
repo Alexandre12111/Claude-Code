@@ -22,12 +22,15 @@
  * - seo.php           : Rank Math et données structurées
  * - woocommerce.php   : préparation de la vente en ligne
  * - admin.php         : habillage de l'administration, tableau de bord, guide
+ * - aujourdhui.php    : écran « Aujourd'hui » (vitrine, suggestion, épuisés, annonce, messages)
+ * - client.php        : « Appeler pour commander », « Ma sélection », partage, navigation fluide
+ * - edition.php       : sections programmées, « Modifier cette section », point d'intérêt des photos, menu du gérant
  * - demo.php          : import du contenu de démonstration
  */
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.7.0' );
+define( 'SCHIESSER_VERSION', '0.8.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
@@ -51,4 +54,7 @@ require SCHIESSER_DIR . '/inc/compositions.php';
 require SCHIESSER_DIR . '/inc/seo.php';
 require SCHIESSER_DIR . '/inc/woocommerce.php';
 require SCHIESSER_DIR . '/inc/admin.php';
+require SCHIESSER_DIR . '/inc/aujourdhui.php';
+require SCHIESSER_DIR . '/inc/client.php';
+require SCHIESSER_DIR . '/inc/edition.php';
 require SCHIESSER_DIR . '/inc/demo.php';

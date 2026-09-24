@@ -86,15 +86,14 @@ while ( have_posts() ) :
 					<div class="sh-price"><span class="pk">Prix<?php echo $p['unite'] ? ' · ' . esc_html( $p['unite'] ) : ''; ?></span><span class="pv"><?php echo esc_html( $p['prix'] ); ?></span></div>
 				<?php endif; ?>
 
+				<?php if ( schiesser_est_epuise( $p['id'] ) ) : ?>
+					<p class="produit-epuise"><strong>Épuisé aujourd’hui.</strong> De retour dès demain : appelez pour le réserver.</p>
+				<?php endif; ?>
 				<div class="produit-actions">
-					<?php if ( $email ) : ?>
-						<a class="btn btn-kir" href="<?php echo esc_url( schiesser_mailto_commande( $p['nom'] ) ); ?>"><span>Commander</span> <span class="a" aria-hidden="true">→</span></a>
-					<?php endif; ?>
-					<?php if ( $tel ) : ?>
-						<a class="btn btn-line" href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><span>Appeler</span></a>
-					<?php endif; ?>
+					<?php echo schiesser_boutons_commande( $p ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				</div>
 				<p class="produit-note"><i class="x-diamond" aria-hidden="true"></i> Fait main par la <?php echo esc_html( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?>. Retrait en boutique, <?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?> · <?php echo esc_html( schiesser_horaires_resume() ); ?></p>
+				<?php echo schiesser_partage( $p['url'], $p['nom'] . ' · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 			</div>
 		</div>
 	</section>
@@ -105,12 +104,7 @@ while ( have_posts() ) :
 			<?php if ( $p['prix'] ) : ?>
 				<span class="produit-barre-prix"><span class="pv"><?php echo esc_html( $p['prix'] ); ?></span><?php if ( $p['unite'] ) : ?><span class="pk"><?php echo esc_html( $p['unite'] ); ?></span><?php endif; ?></span>
 			<?php endif; ?>
-			<?php if ( $email ) : ?>
-				<a class="btn btn-kir" href="<?php echo esc_url( schiesser_mailto_commande( $p['nom'] ) ); ?>"><span>Commander</span></a>
-			<?php endif; ?>
-			<?php if ( $tel ) : ?>
-				<a class="btn btn-line" href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><span>Appeler</span></a>
-			<?php endif; ?>
+			<?php echo schiesser_boutons_commande( $p, 'barre' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 		</div>
 	<?php endif; ?>
 

@@ -111,7 +111,9 @@
         onSelect: choisir(props, p), allowedTypes: ['image'], value: a[p + 'Id'],
         render: function (o) {
           return a[p + 'Url']
-            ? el('img', { src: a[p + 'Url'], alt: '', className: (className || '') + ' sch-ed-img', style: styleSombre(a, p), onClick: o.open, title: 'Cliquez pour changer la photo' })
+            ? (window.SchiesserPhotoPoint
+              ? el(window.SchiesserPhotoPoint, { id: a[p + 'Id'], imgProps: { src: a[p + 'Url'], alt: '', className: (className || '') + ' sch-ed-img', style: styleSombre(a, p), onClick: o.open, title: 'Cliquez pour changer la photo' } })
+              : el('img', { src: a[p + 'Url'], alt: '', className: (className || '') + ' sch-ed-img', style: styleSombre(a, p), onClick: o.open, title: 'Cliquez pour changer la photo' }))
             : el('button', { type: 'button', className: 'sch-ed-photo-vide ' + (className || ''), onClick: o.open }, 'Choisir une photo');
         }
       }));
@@ -146,6 +148,7 @@
         help: 'Pour que le texte posé sur la photo ressorte mieux. 0 = photo d’origine.',
         onChange: function (v) { var o = {}; o[p + 'Sombre'] = v || 0; set(o); }
       }) : null,
+      a[p + 'Url'] && a[p + 'Id'] && window.SchiesserPointPhoto ? el(window.SchiesserPointPhoto, { id: a[p + 'Id'], url: a[p + 'Url'] }) : null,
       el(c.TextareaControl, {
         label: 'Texte alternatif', value: a[p + 'Alt'] || '',
         help: 'Décrivez la photo en une phrase : il est lu par Google et par les lecteurs d’écran.',

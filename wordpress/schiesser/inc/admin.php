@@ -177,6 +177,21 @@ function schiesser_page_guide() {
 			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
 			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
 		) ),
+		array( 'coffee', 'L\'écran « Aujourd\'hui »', array(
+			'Premier menu de l\'administration : l\'état de la boutique, les nouveaux messages, la vitrine du jour, la suggestion du Tea Room, les produits épuisés et le bandeau d\'annonce, sur un seul écran. Un seul bouton « Enregistrer » en bas.',
+			'« Épuisé aujourd\'hui » : cochez le produit le matin, il affiche « Épuisé aujourd\'hui » sur le site. Le lendemain, il redevient disponible tout seul.',
+		) ),
+		array( 'clock', 'Préparer une section à l\'avance', array(
+			'Cliquez sur le bloc, puis panneau de droite → « Affichage programmé » : « Afficher à partir du » et « Jusqu\'au ». Laissez vide pour toujours afficher.',
+			'Dans l\'éditeur, les sections programmées ont un cadre pointillé et une étiquette (« Programmé », « Affiché », « Période terminée »).',
+		) ),
+		array( 'edit', 'Modifier depuis le site', array(
+			'Connecté, passez la souris sur une section du site : le bouton « Modifier cette section » ouvre l\'éditeur directement sur ce bloc.',
+		) ),
+		array( 'format-image', 'Point d\'intérêt d\'une photo', array(
+			'Médiathèque → cliquez sur la photo → champ « Point d\'intérêt » : cliquez sur l\'endroit important (visage, vitrine). Aussi dans le panneau « Photo » des blocs.',
+			'Quand la photo est recadrée (téléphone, cartes, grande photo), cet endroit reste visible. Le réglage suit la photo partout sur le site.',
+		) ),
 		array( 'calendar-alt', 'Jours fériés, fermetures et annonces', array(
 			'Les jours fériés de Bâle et la Fasnacht sont calculés tout seuls. Réglages maison → Coordonnées et horaires → « Jours fériés et fermetures exceptionnelles » : pour chacun, horaires habituels, fermé ou horaires spéciaux.',
 			'Vacances ou inventaire : même carte, « Dates exceptionnelles », une ligne par période avec son motif. Le statut « Ouvert / Fermé », les tableaux d\'horaires et Google suivent.',

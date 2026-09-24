@@ -382,6 +382,17 @@
       ch.addEventListener('change', flotter);
       flotter();
     });
+    // Message prérempli : « Laisser un message » depuis un produit (?produit=…) ou « Ma sélection » (?selection=1).
+    var zone = un('textarea[name="message"]', f);
+    if (zone && !zone.value) {
+      var params = new URLSearchParams(location.search), produit = params.get('produit'), liste = '';
+      if (params.get('selection') && S.texteSelection) liste = S.texteSelection();
+      else if (produit) liste = '1 × ' + produit;
+      if (liste) {
+        zone.value = 'Bonjour,\n\nJe souhaite commander :\n' + liste + '\n\nDate de retrait souhaitée : \nMon numéro de téléphone : \n\nMerci !';
+        var xg = zone.closest('.xg'); if (xg) xg.classList.add('float');
+      }
+    }
     // Anti-spam discret : un vrai visiteur tape, clique ou touche l'écran avant d'envoyer.
     var humain = un('.js-humain', f);
     function geste() { if (humain && !humain.value) humain.value = '1'; }

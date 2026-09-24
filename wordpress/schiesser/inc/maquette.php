@@ -1184,7 +1184,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 			$tous_al[] = $al ?: array();
 			$plats .= '<div class="mi"' . ( $al ? schiesser_allergenes_attrs( $al ) : '' ) . ' style="animation-delay:' . esc_attr( round( $k * 0.05, 2 ) ) . 's"><div class="mi-top"><span class="mi-nm">' . schiesser_mq_riche( $q['nom'] ) . '</span>' . ( $al ? schiesser_allergenes_pictos( $al ) : '' ) . '<span class="mi-dots"></span><span class="mi-pr">' . esc_html( schiesser_mq_brut( $q['prix'] ) ) . '</span></div>'
 				. ( '' !== trim( $q['description'] ) ? '<div class="mi-d">' . schiesser_mq_texte( $q['description'] ) . '</div>' : '' )
-				. ( '' !== trim( $q['mention'] ) ? '<span class="mi-tag">' . schiesser_mq_riche( $q['mention'] ) . '</span>' : '' ) . '</div>';
+				. ( ! empty( $q['id'] ) && schiesser_est_epuise( $q['id'] ) ? '<span class="mi-tag mi-tag--epuise">Épuisé aujourd’hui</span>' : ( '' !== trim( $q['mention'] ) ? '<span class="mi-tag">' . schiesser_mq_riche( $q['mention'] ) . '</span>' : '' ) ) . '</div>';
 		}
 		$listes .= '<div class="mn-list' . ( $i ? ' is-off' : '' ) . '" data-c="' . $i . '"><h3 class="screen-reader-text">' . esc_html( $nom ) . '</h3>' . $plats . '</div>';
 	}
@@ -1214,6 +1214,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 		. '<div class="mn-tabs">' . $onglets . '</div>'
 		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">' . $suggestion
 		. ( array_filter( $tous_al ) ? schiesser_allergenes_note() : '' )
+		. ( empty( $a['apercu'] ) && is_singular() ? schiesser_partage( get_permalink(), 'La carte du salon de thé · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ), 'partage--carte' ) : '' )
 		. ( '' !== trim( $a['mention'] ) ? '<p class="mn-note">' . schiesser_mq_riche( $a['mention'] ) . '</p>' : '' ) . '</aside></div></div>';
 	return schiesser_mq_section( $a, $contenu );
 }
