@@ -31,15 +31,37 @@
             n++;
           }
         });
-        if (nombre) nombre.textContent = n;
-        if (libelle) libelle.textContent = n > 1 ? 'produits' : 'produit';
+        compter();
+        root.dispatchEvent(new CustomEvent('schiesser:categorie'));
       });
     });
+    // Recherche : nom, description, composition… (accents ignorés).
+    var recherche = root.querySelector('.js-recherche');
+    var rechercheVide = root.querySelector('.js-recherche-vide');
+    function sansAccents(t) { return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+    if (recherche) {
+      recherche.addEventListener('input', function () {
+        var mots = sansAccents(recherche.value).split(/\s+/).filter(Boolean);
+        cartes.forEach(function (c) {
+          var t = c.getAttribute('data-texte') || '';
+          c.classList.toggle('rech-masque', mots.some(function (m) { return t.indexOf(m) < 0; }));
+        });
+        compter();
+      });
+    }
+    // Nombre de produits affichés (catégorie, recherche et filtres allergènes).
+    function compter() {
+      var n = cartes.filter(function (c) { return !c.hidden && !c.classList.contains('al-masque') && !c.classList.contains('rech-masque'); }).length;
+      if (rechercheVide) rechercheVide.hidden = !(recherche && recherche.value.trim() && n === 0);
+      if (nombre) nombre.textContent = n;
+      if (libelle) libelle.textContent = n > 1 ? 'produits' : 'produit';
+    }
+    root.addEventListener('schiesser:filtre', compter);
 
     /* ---------- fiche rapide ---------- */
     function q(s) { return sheet.querySelector(s); }
     function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
-    function visibles() { return cartes.filter(function (c) { return !c.hidden; }).map(function (c) { return +c.getAttribute('data-i'); }); }
+    function visibles() { return cartes.filter(function (c) { return !c.hidden && !c.classList.contains('al-masque') && !c.classList.contains('rech-masque'); }).map(function (c) { return +c.getAttribute('data-i'); }); }
 
     function remplir(i) {
       courant = i;
@@ -57,17 +79,26 @@
       q('.js-sh-prix').textContent = f.prix || '';
       q('.sh-price').hidden = !f.prix;
 
+      // Vente en ligne (WooCommerce) : panier ; sinon commande par téléphone ou message (inc/client.php).
       var action = q('.js-sh-action');
-      var texte = q('.js-sh-action-texte');
-      if (f.panier) {
-        action.href = f.panier;
-        texte.textContent = 'Ajouter au panier';
-      } else {
-        var corps = 'Bonjour,\r\n\r\nJe souhaite commander : ' + f.nom + '\r\nQuantité ou format :\r\nDate de retrait souhaitée :\r\nNom et téléphone :\r\n\r\nMerci et à bientôt,\r\n';
-        action.href = 'mailto:' + email + '?subject=' + encodeURIComponent('Commande : ' + f.nom) + '&body=' + encodeURIComponent(corps);
-        texte.textContent = 'Commander';
+      action.hidden = !f.panier;
+      if (f.panier) action.href = f.panier;
+      var cmd = q('.js-cmd');
+      if (cmd) {
+        cmd.hidden = !!f.panier;
+        cmd.setAttribute('data-produit', f.nom);
+        var msg = q('.js-cmd-message');
+        if (msg && window.SCHIESSER && SCHIESSER.contact) msg.href = SCHIESSER.contact + (SCHIESSER.contact.indexOf('?') < 0 ? '?' : '&') + 'produit=' + encodeURIComponent(f.nom) + '#ecrire';
+        var sel = q('.js-sel');
+        if (sel) {
+          sel.setAttribute('data-id', f.id || ''); sel.setAttribute('data-nom', f.nom); sel.setAttribute('data-prix', f.prix || '');
+          sel.setAttribute('data-unite', f.unite || ''); sel.setAttribute('data-url', f.url || '');
+          if (window.SCHIESSER && SCHIESSER.majSelection) SCHIESSER.majSelection();
+        }
       }
-      action.hidden = !f.panier && !email;
+      q('.js-sh-epuise').hidden = !f.epuise;
+      var part = q('.js-partage');
+      if (part && window.SCHIESSER && SCHIESSER.majPartage) SCHIESSER.majPartage(part, f.url || location.href, f.nom);
       var page = q('.js-sh-page');
       page.href = f.url || '#';
       page.hidden = !f.url;

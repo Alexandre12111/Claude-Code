@@ -42,7 +42,22 @@ foreach ( $produits as $p ) {
 	if ( $p['origine'] ) {
 		$lignes[] = array( 'Origine', $p['origine'], 1 );
 	}
+	if ( ! empty( $p['al'] ) ) {
+		if ( $p['al']['renseigne'] ) {
+			$lignes[] = array( 'Allergènes', schiesser_allergenes_texte( $p['al'] ), 1 );
+		}
+		if ( $p['al']['regimes'] ) {
+			$lignes[] = array( 'Convient', implode( ', ', array_map( function ( $k ) {
+				return schiesser_regimes_liste()[ $k ][0];
+			}, $p['al']['regimes'] ) ), 1 );
+		}
+		if ( '' !== $p['al']['traces'] ) {
+			$lignes[] = array( 'Traces', $p['al']['traces'], 1 );
+		}
+	}
 	$fiches[] = array(
+		'id'          => $p['id'] ?? 0,
+		'epuise'      => ! empty( $p['id'] ) && schiesser_est_epuise( $p['id'] ),
 		'nom'         => $p['nom'],
 		'url'         => $p['url'],
 		'categorie'   => $p['categorie'],
@@ -78,6 +93,18 @@ ob_start();
 			</div>
 		<?php endif; ?>
 
+		<?php
+		if ( ! $apercu ) {
+			if ( count( $produits ) > 3 ) {
+				// Recherche : par nom, mais aussi par ingrédient (« praliné », « kirsch »).
+				echo '<div class="shop-recherche"><label class="screen-reader-text" for="' . esc_attr( $id_nom ) . '-recherche">Rechercher un produit</label>'
+					. '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z M16 16l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
+					. '<input type="search" id="' . esc_attr( $id_nom ) . '-recherche" class="js-recherche" placeholder="Rechercher : praliné, kirsch, coffret…" autocomplete="off">'
+					. '<p class="shop-recherche-vide js-recherche-vide" hidden>Aucun produit ne correspond à cette recherche. Essayez un autre mot, ou appelez-nous : nous préparons aussi sur demande.</p></div>';
+			}
+			echo schiesser_allergenes_filtres( array_filter( array_column( $produits, 'al' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		?>
 		<div class="shop-grid">
 			<?php foreach ( $produits as $i => $p ) { schiesser_carte_produit( $p, $i, ! $apercu ); } ?>
 		</div>
@@ -100,8 +127,11 @@ ob_start();
 							<div class="sh-price"><span class="pk js-sh-unite"></span><span class="pv js-sh-prix"></span></div>
 							<div class="sh-foot">
 								<div class="sh-actions">
-									<a class="btn btn-kir js-sh-action" href="<?php echo esc_url( 'mailto:' . $email ); ?>"><span class="js-sh-action-texte">Commander</span> <span class="a" aria-hidden="true">→</span></a>
+									<p class="produit-epuise js-sh-epuise" hidden><strong>Épuisé aujourd’hui.</strong> De retour dès demain.</p>
+									<a class="btn btn-kir js-sh-action" href="#" hidden><span class="js-sh-action-texte">Ajouter au panier</span> <span class="a" aria-hidden="true">→</span></a>
+									<?php echo schiesser_boutons_commande( array( 'nom' => '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 									<a class="sh-lien js-sh-page" href="#">Voir la page du produit</a>
+									<?php echo schiesser_partage( home_url( '/' ), '' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 								</div>
 								<div class="sh-nav">
 									<button type="button" class="js-sh-prec" aria-label="Produit précédent">←</button>

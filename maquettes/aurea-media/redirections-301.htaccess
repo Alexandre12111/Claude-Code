@@ -1,0 +1,18 @@
+# Redirections 301 de la refonte (à importer dans Rank Math > Redirections ou dans .htaccess)
+# Vérifier dans Search Console avant chaque fusion : l'URL cible doit être celle qui performe le mieux.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^agence-web-a-paris/?$ /a-propos/ [R=301,L]
+RewriteRule ^nos-services/?$ /creation-site-internet-paris/ [R=301,L]
+RewriteRule ^branding-identite-visuelle/?$ /branding-identite/ [R=301,L]
+RewriteRule ^logo-et-charte-graphique/?$ /logo-charte-graphique-identite-visuelle/ [R=301,L]
+RewriteRule ^google-my-business-artisans-tpe/?$ /optimiser-sa-fiche-google-my-business/ [R=301,L]
+RewriteRule ^creation-site-vitrine-tpe-paris/?$ /prix-site-vitrine-paris/ [R=301,L]
+RewriteRule ^agence-seo-clamart/?$ /creation-site-internet-clamart/ [R=301,L]
+RewriteRule ^creation-de-site-e-commerce-boulogne/?$ /site-internet-boulogne-billancourt/ [R=301,L]
+RewriteRule ^agence-web-collectivites-boulogne-billancourt/?$ /agence-web-hauts-de-seine/ [R=301,L]
+RewriteRule ^creation-site-web/?$ /nos-conseils-web/ [R=301,L]
+RewriteRule ^creation-site-vitrine/?$ /conseils/site-vitrine/ [R=301,L]
+RewriteRule ^creation-site-ecommerce/?$ /conseils/site-e-commerce/ [R=301,L]
+RewriteRule ^google-my-business-seo-local/?$ /conseils/seo-local/ [R=301,L]
+</IfModule>

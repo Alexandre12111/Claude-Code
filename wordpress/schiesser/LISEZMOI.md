@@ -1,12 +1,57 @@
-# Thème Schiesser 0.4
+# Thème Schiesser 0.8
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Nouveautés de la version 0.8 : modifier plus vite, commander par téléphone
+
+**Pour l'équipe**
+- **Écran « Aujourd'hui »** (premier menu de l'administration, pratique sur téléphone) : état ouvert ou fermé, nouveaux messages, vitrine du jour, suggestion du Tea Room, produits « épuisés aujourd'hui » et bandeau d'annonce, enregistrés d'un seul clic. Les produits cochés « épuisés » redeviennent disponibles tout seuls le lendemain.
+- **Sections programmées** : sur chaque bloc, panneau de droite « Affichage programmé », afficher du … au …. La section apparaît et disparaît toute seule ; dans l'éditeur, elle est signalée par un cadre pointillé et une étiquette.
+- **« Modifier cette section »** : une fois connecté, un bouton apparaît au survol de chaque section du site et ouvre l'éditeur directement sur ce bloc.
+- **Point d'intérêt des photos** : dans la médiathèque (ou le panneau « Photo » d'un bloc), un clic sur l'endroit important de la photo. Les recadrages (téléphone, cartes, grande photo) le gardent visible, partout où la photo est utilisée.
+- **Menu épuré pour le rôle « Gérant(e) du site »** : Aujourd'hui, Pages, Produits boutique, Produits Tea Room, Messages reçus, Avis clients, Réglages maison. Le gérant arrive sur « Aujourd'hui » après la connexion ; médiathèque, menus du site et guide restent accessibles par les liens en bas de cet écran.
+
+**Pour les clients**
+- **« Appeler pour commander »** sur les pages produits, la fiche rapide et la barre du téléphone : ouvert, le bouton appelle la boutique ; fermé, il affiche « Fermé · ouvre demain à 7 h 30 » et propose « Laisser un message », avec le formulaire déjà rempli du nom du produit.
+- **« Ma sélection »** : un cœur pour mettre des produits de côté, avec les quantités. La liste s'ouvre depuis un bouton flottant : « Appeler pour commander », « Envoyer par message » (formulaire prérempli avec la liste), « Copier la liste ». Gardée dans le navigateur du visiteur, sans compte ni cookie.
+- **Recherche dans la boutique**, aussi par ingrédient (« praliné », « kirsch »), accents ignorés.
+- **« Épuisé aujourd'hui »** affiché sur la carte du produit, sa page et dans la carte du salon.
+- **Partage** : WhatsApp, e-mail, copier le lien (et le partage du téléphone quand il existe), sur les produits et la carte du salon.
+- **Navigation plus fluide** : fondu entre les pages et pages suivantes préparées à l'avance (navigateurs récents ; les autres naviguent comme avant).
+
+## Nouveautés de la version 0.7 : horaires, allergènes et sécurité
+
+- **Jours fériés de Bâle calculés tout seuls**, chaque année : Nouvel An, Fasnacht (lundi, mardi, mercredi), Vendredi saint, Pâques, Lundi de Pâques, 1er mai, Ascension, Pentecôte, Lundi de Pentecôte, 1er août, Veille de Noël, Noël, Saint-Étienne, Saint-Sylvestre. Pour chacun : horaires habituels, fermé ou horaires spéciaux (Réglages maison → Coordonnées et horaires). Les réglages proposés sont une base à vérifier avec la maison.
+- **Dates exceptionnelles** : vacances, inventaire, horaires réduits, avec un motif affiché sur le site. Les périodes passées s'effacent toutes seules.
+- Tout le site en tient compte : statut « Ouvert / Fermé » en direct, bandeau du haut, compte à rebours, « Jours particuliers à venir » sous les tableaux d'horaires, et horaires spéciaux transmis à Google (données structurées).
+- **Bandeau d'annonce programmable** (Réglages maison → Accueil et pied de page) : message, lien, dates de début et de fin, couleur. Il apparaît et disparaît tout seul ; le visiteur peut le masquer. Option : annonce automatique des jours fériés et fermetures 7 jours avant.
+- **Barre du téléphone** : « Appeler », « Itinéraire » et « Ouvert jusqu'à 18 h 30 » (ou « Fermé · ouvre demain à 8 h ») fixés en bas de l'écran. Désactivable ; absente des fiches produits, qui ont leur propre barre.
+- **Allergènes et régimes** : boîte « Allergènes et régimes » dans chaque produit et chaque plat du Tea Room (14 allergènes à déclarer, alcool, végétarien, végane, sans gluten, sans lactose, traces possibles). Pictogrammes sur la page du produit, dans la fiche rapide et dans la carte du salon ; filtres « Sans gluten », « Sans fruits à coque », « Végane »… sur la boutique et la carte. Un produit non renseigné est masqué dès qu'un filtre est actif, pour ne jamais promettre « sans » par erreur. Remarque générale modifiable dans Réglages maison.
+- **Messages reçus** : chaque message du formulaire est gardé dans l'administration (Nouveau, Lu, Traité), avec un bouton « Répondre ». Aucun message perdu si l'e-mail ne part pas. Effacement automatique après 12 mois (protection des données) : pensez à le mentionner dans la politique de confidentialité.
+- **Anti spam renforcé**, sans captcha : champ piège, délai minimum, geste du visiteur obligatoire, 5 envois par heure au plus. Les envois suspects sont classés « Spam probable » (visibles, sans e-mail) plutôt que perdus.
+- **Connexion protégée** : 5 mots de passe faux en 15 minutes bloquent la connexion depuis cette adresse pendant 15 minutes ; messages d'erreur neutres ; liste des comptes cachée ; XML-RPC fermé ; en-têtes de sécurité ; version de WordPress masquée.
+- **Affichage plus rapide** : la grande photo du haut de page est préchargée dès le début du chargement (les polices l'étaient déjà).
+
+## Nouveautés de la version 0.6 : mise en page sans code et avis Google
+
+- **Styles de texte enregistrés** : dans le panneau **Aa**, « + Enregistrer ces réglages comme nouveau style » (ex. « Accroche verte », « Petit label »). Le style s'applique ensuite en un clic dans n'importe quel texte du site. « Mettre à jour » modifie tous les textes qui l'utilisent, partout ; « Supprimer » les ramène à leur apparence normale. Deux styles d'exemple sont fournis.
+- **Taille sur téléphone** : dans la rubrique « Taille » du panneau **Aa**, les icônes ordinateur et téléphone. En mode téléphone, l'aperçu de l'éditeur passe en largeur mobile et la taille réglée ne vaut que sur les petits écrans (moins de 760 px).
+- **Espacements des sections** : panneau de droite → « Espacements », un curseur pour l'espace au-dessus et un pour l'espace en dessous (0 à 320 px). « Automatique » garde l'espace prévu ; sur téléphone, l'espace est réduit proportionnellement.
+- **Boutons d'une section** : panneau de droite → « Boutons » : couleur du bouton, couleur du texte, taille (petit, normal, grand), arrondi des coins. Disponible sur la grande photo, les sections libres, l'appel final, Nous trouver, Passer nous voir, Plan et horaires, Cartes numérotées, Trajets, Formulaire et Avis.
+- **Copier une section vers une autre page** : menu **⋮** du bloc → « Copier vers une autre page… », choix de la page et de l'emplacement (début ou fin). La copie garde textes, photos et réglages.
+- **Avis Google** : nouveau bloc « Avis clients (Google) » avec la note moyenne, les étoiles, quelques avis et les boutons « Voir tous les avis » et « Laisser un avis ». Les avis viennent de la fiche Google (clé Google Places API et identifiant du lieu dans Réglages maison → Fiche Google et SEO, mise à jour toutes les 12 heures), ou du nouveau menu « Avis clients » pour les saisir à la main. Si Google ne répond pas, le site affiche les avis saisis à la main. Réglages du bloc : nombre d'avis, note minimale, longueur des textes. Aucune donnée structurée « avis » n'est ajoutée : Google ignore les avis qu'une entreprise publie sur son propre site.
+
+## Nouveautés de la version 0.5 : modifier les textes comme dans Elementor
+
+- **Panneau texte « Aa »** : on clique dans un texte, puis bouton **Aa** de la barre d'outils. Un panneau s'ouvre : police (titres ou texte de la charte), taille sans limite de pas (curseur de 30 à 400 %, boutons − et +, saisie directe, tailles rapides S, M, L, XL, XXL), graisse (fin, normal, moyen, gras), italique, majuscules, souligné, espacement des lettres, couleur (charte ou couleur libre), copier et coller le style, tout remettre par défaut. Le texte change en direct. Sans sélection, le réglage vaut pour tout le champ ; avec une sélection, seulement pour ces mots. Fonctionne dans tous les textes : blocs de la maquette, grande photo, paragraphes et titres. Pour un paragraphe entier, le panneau de droite propose aussi police, taille, graisse et couleur.
+- **Les tailles ne sont plus limitées à un cran** : chaque clic sur − ou + réduit ou agrandit de 10 %, autant de fois que l'on veut, et la valeur peut se taper directement. Les tailles sont relatives (100 % = taille normale), donc elles restent proportionnées sur téléphone.
+- Les textes mis en forme avec la version 0.4 (Plus petit, Plus grand, Majuscules espacées…) restent tels quels et se retouchent dans le nouveau panneau.
+
 ## Nouveautés de la version 0.4
 
 - **Deux menus de produits** dans l'administration : « Produits boutique » (inchangé) et **« Produits Tea Room »**, la carte du salon de thé : nom, prix, description, mention (Signature, En saison…), rubrique, photo, et une case « Suggestion du jour ». Les rubriques (onglets de la carte) ont leur photo et leur ordre. La page Salon de thé affiche automatiquement cette carte, et Google reçoit la carte avec ses prix (données structurées « Menu »).
-- **Typographie et couleur au clic** : on sélectionne des mots, puis bouton **Aa** de la barre d'outils : police des titres ou du texte, plus petit, plus grand, majuscules espacées, couleur de la charte. Fonctionne dans tous les textes : blocs de la maquette, grande photo, paragraphes et titres. Pour un paragraphe entier, le panneau de droite propose aussi police, taille, graisse et couleur.
+- **Typographie et couleur au clic** : bouton **Aa** de la barre d'outils, dans tous les textes (remplacé en 0.5 par un panneau complet, voir plus haut).
 - **Cartes Google Maps** : les cartes de l'accueil et de la page Nous visiter montrent la fiche Google de la confiserie (sans clé ni compte). Une vue précise peut être collée depuis Google Maps (« Intégrer une carte »), et la carte peut ne s'afficher qu'après un clic (protection des données). OpenStreetMap et CARTO restent disponibles dans chaque bloc.
 - **« Assombrir la photo »** : un curseur pour chaque photo (grande photo du haut comprise), pour que le texte posé dessus ressorte mieux.
 - **Accroches plus lisibles** : la phrase d'accroche du bloc Introduction passe dans la police du texte, en plus petit (le style italique de la maquette reste disponible dans le bloc).
@@ -50,6 +95,22 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
 
+### Mise à jour depuis la version 0.7
+
+Remplacer le thème par le nouveau zip. Rien d'autre à faire. Pour que l'équipe profite du menu épuré, donnez lui le rôle « Gérant(e) du site » (Comptes → modifier le compte → Rôle).
+
+### Mise à jour depuis la version 0.6
+
+Remplacer le thème par le nouveau zip. Les jours fériés fonctionnent aussitôt avec les réglages proposés. À vérifier ensuite : les jours fériés (onglet Coordonnées et horaires) et les allergènes de chaque produit. Si le site utilise une application ou un service qui passe par XML-RPC (rare), le signaler : il est désormais fermé.
+
+### Mise à jour depuis la version 0.5
+
+Remplacer le thème par le nouveau zip (Apparence → Thèmes → Ajouter → Téléverser, puis « Remplacer la version installée »). Les nouveaux réglages apparaissent d'eux-mêmes. Pour les avis automatiques, saisir la clé Google et l'identifiant du lieu (Réglages maison → Fiche Google et SEO → Avis Google).
+
+### Mise à jour depuis la version 0.4
+
+Remplacer le thème par le nouveau zip (Apparence → Thèmes → Ajouter → Téléverser, puis « Remplacer la version installée »). Rien d’autre à faire : le bouton **Aa** ouvre désormais le nouveau panneau.
+
 ### Mise à jour depuis la version 0.3
 
 1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir le nouveau `schiesser.zip`, puis **Remplacer la version installée**. Les pages, produits, photos, menus et réglages ne sont pas touchés.
@@ -91,7 +152,7 @@ Aucune extension de formulaire n'est nécessaire : le formulaire de la maquette 
 | Ordre des produits | **Produits boutique → Modifier → Ordre d'affichage** | 1 = premier |
 | Carte du salon de thé (produits, prix, descriptions, mentions, suggestion du jour) | **Produits Tea Room** | Carte en onglets de la page Salon de thé, données « Menu » pour Google |
 | Onglets de la carte (nom, grande photo, ordre) | **Produits Tea Room → Rubriques** | Onglets et photo de la carte |
-| Police, taille, couleur d'un mot ou d'une phrase | Sélectionner le texte, puis bouton **Aa** | Uniquement ce texte ; « Retirer police, taille et couleur » pour revenir au style d'origine |
+| Police, taille, couleur d'un mot ou d'une phrase | Cliquer dans le texte (ou sélectionner des mots), puis bouton **Aa** | Tout le champ, ou uniquement les mots sélectionnés ; « Tout remettre par défaut » pour revenir au style d'origine |
 | Photo plus sombre (texte plus lisible) | Panneau de droite du bloc → **Photo** → « Assombrir la photo » | Uniquement cette photo |
 | Carte Google Maps | **Réglages maison → Coordonnées** (lien, carte, affichage après un clic) ; « Fond de carte » dans le bloc | Cartes de l'accueil et de la page Nous visiter |
 | Produits du catalogue de l'accueil | Bloc **Catalogue des créations** → panneau de droite → « Choisir les produits un par un » | Seuls ces produits, dans cet ordre (sinon : les premiers du menu Produits) |
@@ -122,6 +183,7 @@ Chaque bloc reproduit une section de la maquette. Les éléments (dates, plats, 
 | Notre histoire | **Chiffres clés**, **Plaque anniversaire**, **Récit avec lettrine** (et citation en exergue), **Ligne du temps** en mode chronologie à onglets, **Archives** (agrandies au clic), **Hier et aujourd’hui** (comparateur à curseur), **Cartes numérotées** (« Principes ») |
 | Nous visiter | **Plan et horaires**, **Affluence**, **Composez votre trajet** (départs et étapes), **Grande photo légendée** (« Reconnaître la maison ») |
 | Contact | **Formulaire de contact**, **Fiche de contact** |
+| Où vous voulez | **Avis clients (Google)** : note moyenne, étoiles et avis |
 
 Les lignes d'information (adresse, horaires, téléphone, e-mail) peuvent se remplir **automatiquement** depuis les Réglages maison : panneau de droite de la ligne → liste « Contenu ».
 
@@ -220,21 +282,31 @@ schiesser/
 │   ├── setup.php          réglages du thème, styles, scripts, navigation, redirections de pages
 │   ├── charte.php         couleurs et typographie
 │   ├── reglages.php       données des Réglages maison
+│   ├── horaires.php       jours fériés de Bâle (Fasnacht comprise), dates exceptionnelles
+│   ├── annonces.php       bandeau d'annonce programmable, barre du téléphone
 │   ├── page-reglages.php  écran des Réglages maison
 │   ├── shortcodes.php     codes courts
 │   ├── produits.php       type de contenu Produits boutique, champs, cartes, produits liés
 │   ├── tea-room.php       type de contenu Produits Tea Room (carte du salon), rubriques, transfert, données « Menu »
 │   ├── blocs.php          blocs maison et styles des blocs WordPress
 │   ├── maquette.php       blocs de la maquette : déclaration, rendu du site, formulaire de contact
+│   ├── allergenes.php     allergènes et régimes : saisie, pictogrammes, filtres
+│   ├── messages.php       messages reçus du formulaire, statuts, effacement après 12 mois
+│   ├── securite.php       connexion protégée, en-têtes de sécurité, préchargement de la photo
+│   ├── avis.php           avis clients : menu « Avis clients », avis Google (Places API), bloc Avis
+│   ├── mise-en-page.php   styles de texte enregistrés, espacements des sections, réglages des boutons
 │   ├── compositions.php   compositions de l'éditeur et outils d'écriture des blocs
 │   ├── seo.php            Rank Math et données structurées
 │   ├── woocommerce.php    préparation de la vente en ligne
+│   ├── aujourdhui.php     écran « Aujourd'hui », produits épuisés du jour
+│   ├── client.php         « Appeler pour commander », « Ma sélection », partage, navigation fluide
+│   ├── edition.php        sections programmées, « Modifier cette section », point d'intérêt, menu du gérant
 │   ├── admin.php          habillage de l'administration, tableau de bord, guide, rôle
 │   └── demo.php           contenu de démonstration
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)
 └── assets/
     ├── css/     schiesser.css (site), editeur-maquette.css (éditeur), WooCommerce
-    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (bouton Aa), boutique, éditeur
+    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), mise-en-page.js (espacements, boutons, copie de section), boutique, éditeur
     ├── vendor/leaflet/   bibliothèque de carte (licence BSD)
     └── admin/, fonts/
 ```

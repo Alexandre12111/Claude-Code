@@ -169,10 +169,58 @@ function schiesser_page_guide() {
 			'Ils se mettent à jour tout seuls quand les Réglages maison changent : rien à retoucher dans les pages.',
 		) ),
 		array( 'editor-textcolor', 'Changer la police, la taille ou la couleur d\'un texte', array(
-			'Sélectionnez les mots (ou toute la phrase), puis bouton <strong>Aa</strong> de la petite barre d\'outils : « Police des titres » ou « Police du texte », « Plus petit », « Plus grand », « Majuscules espacées », ou une couleur de la charte.',
-			'Pour annuler : sélectionnez à nouveau le texte, <strong>Aa</strong> → « Retirer police, taille et couleur ».',
+			'Cliquez dans le texte, puis bouton <strong>Aa</strong> de la petite barre d\'outils : un panneau s\'ouvre avec la police, la taille (curseur, boutons − et +, ou tailles rapides S à XXL), la graisse, italique, majuscules, souligné, l\'espacement des lettres et la couleur. Le texte change en direct.',
+			'Sans sélection, le réglage s\'applique à tout le texte du champ ; pour ne changer que quelques mots, sélectionnez les d\'abord. « Copier le style » puis « Coller le style » reproduit une mise en forme ailleurs.',
+			'Pour annuler : <strong>Aa</strong> → « Tout remettre par défaut ».',
+			'<strong>Taille sur téléphone</strong> : dans « Taille », cliquez sur l\'icône du téléphone. L\'aperçu passe en mode téléphone et la taille réglée ne vaut que sur les petits écrans.',
+			'<strong>Styles enregistrés</strong> : réglez un texte, puis « + Enregistrer ces réglages comme nouveau style » et donnez lui un nom (ex. « Accroche verte »). Il s\'applique ensuite en un clic partout. « Mettre à jour » change tous les textes qui l\'utilisent, sur tout le site.',
 			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
 			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
+		) ),
+		array( 'coffee', 'L\'écran « Aujourd\'hui »', array(
+			'Premier menu de l\'administration : l\'état de la boutique, les nouveaux messages, la vitrine du jour, la suggestion du Tea Room, les produits épuisés et le bandeau d\'annonce, sur un seul écran. Un seul bouton « Enregistrer » en bas.',
+			'« Épuisé aujourd\'hui » : cochez le produit le matin, il affiche « Épuisé aujourd\'hui » sur le site. Le lendemain, il redevient disponible tout seul.',
+		) ),
+		array( 'clock', 'Préparer une section à l\'avance', array(
+			'Cliquez sur le bloc, puis panneau de droite → « Affichage programmé » : « Afficher à partir du » et « Jusqu\'au ». Laissez vide pour toujours afficher.',
+			'Dans l\'éditeur, les sections programmées ont un cadre pointillé et une étiquette (« Programmé », « Affiché », « Période terminée »).',
+		) ),
+		array( 'edit', 'Modifier depuis le site', array(
+			'Connecté, passez la souris sur une section du site : le bouton « Modifier cette section » ouvre l\'éditeur directement sur ce bloc.',
+		) ),
+		array( 'format-image', 'Point d\'intérêt d\'une photo', array(
+			'Médiathèque → cliquez sur la photo → champ « Point d\'intérêt » : cliquez sur l\'endroit important (visage, vitrine). Aussi dans le panneau « Photo » des blocs.',
+			'Quand la photo est recadrée (téléphone, cartes, grande photo), cet endroit reste visible. Le réglage suit la photo partout sur le site.',
+		) ),
+		array( 'calendar-alt', 'Jours fériés, fermetures et annonces', array(
+			'Les jours fériés de Bâle et la Fasnacht sont calculés tout seuls. Réglages maison → Coordonnées et horaires → « Jours fériés et fermetures exceptionnelles » : pour chacun, horaires habituels, fermé ou horaires spéciaux.',
+			'Vacances ou inventaire : même carte, « Dates exceptionnelles », une ligne par période avec son motif. Le statut « Ouvert / Fermé », les tableaux d\'horaires et Google suivent.',
+			'Un message en haut du site (« Commandes de Pâques ouvertes ») : Réglages maison → Accueil et pied de page → « Bandeau d\'annonce », avec ses dates. Il disparaît tout seul après la date de fin.',
+		) ),
+		array( 'carrot', 'Allergènes et régimes', array(
+			'Dans chaque produit (boutique ou Tea Room), boîte « Allergènes et régimes » : cochez ce que contient le produit, ou « Ne contient aucun de ces allergènes ».',
+			'Les pictogrammes et les filtres « Sans gluten », « Végane »… apparaissent sur le site dès qu\'un produit est renseigné. Un produit non renseigné est masqué quand un filtre est actif.',
+			'La remarque générale (traces possibles dans l\'atelier) se modifie dans Réglages maison → Accueil et pied de page → « Allergènes ».',
+		) ),
+		array( 'email-alt', 'Messages reçus', array(
+			'Chaque message du formulaire de contact arrive par e-mail et reste dans le menu « Messages reçus » : le chiffre à côté du menu indique les nouveaux.',
+			'Ouvrir un message le marque comme lu ; « Répondre par e-mail » prépare la réponse. Passez le en « Traité » une fois la demande réglée.',
+			'Les envois suspects sont rangés dans « Spam probable » (lien au-dessus de la liste) : à regarder de temps en temps. Les messages sont effacés automatiquement après 12 mois.',
+		) ),
+		array( 'image-flip-vertical', 'Espacements et boutons d\'une section', array(
+			'Cliquez sur la section, puis panneau de droite → « Espacements » : deux curseurs pour l\'espace au-dessus et en dessous. « Automatique » garde l\'espace prévu par le thème ; sur téléphone, l\'espace est réduit automatiquement.',
+			'Même panneau → « Boutons » (sections qui en ont) : couleur du bouton, couleur du texte, taille (petit, normal, grand) et arrondi des coins.',
+		) ),
+		array( 'admin-page', 'Copier une section vers une autre page', array(
+			'Cliquez sur la section, puis sur les trois points <strong>⋮</strong> de sa barre d\'outils → « Copier vers une autre page… ».',
+			'Choisissez la page et l\'emplacement (au début ou à la fin) : la copie est ajoutée avec ses textes, photos et réglages, sans quitter la page en cours. Un lien « Ouvrir la page » permet d\'aller la placer au bon endroit.',
+			'Dans la même page, « Dupliquer » (même menu) suffit.',
+		) ),
+		array( 'star-filled', 'Afficher les avis Google', array(
+			'Ajoutez le bloc « Avis clients (Google) » (bouton <strong>+</strong>, catégorie Schiesser) : note moyenne, étoiles et quelques avis, avec les boutons « Voir tous les avis » et « Laisser un avis ».',
+			'Automatique : Réglages maison → Fiche Google et SEO → carte « Avis Google », clé Google et identifiant du lieu. Les avis se mettent à jour tout seuls (toutes les 12 heures).',
+			'À la main : menu « Avis clients » → « Ajouter un avis » (nom, note, texte, date), et la note moyenne dans la carte « Avis Google ».',
+			'Dans le bloc, à droite : nombre d\'avis, note minimale affichée (par exemple 4 étoiles et plus), longueur des textes.',
 		) ),
 		array( 'format-image', 'Assombrir une photo', array(
 			'Pour que le texte posé sur une photo ressorte mieux : cliquez sur le bloc (ou sur l\'élément : un étage, une date…), puis panneau de droite → « Photo » → curseur « Assombrir la photo ».',

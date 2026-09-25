@@ -13,6 +13,7 @@ defined( 'ABSPATH' ) || exit;
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <a class="skip-link" href="#contenu">Aller au contenu</a>
+<?php do_action( 'schiesser_avant_entete' ); // bandeau d'annonce (inc/annonces.php) ?>
 
 <div class="pg on" id="page-<?php echo esc_attr( schiesser_cle_page() ); ?>">
 

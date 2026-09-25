@@ -138,6 +138,7 @@
             value: a.sombre || 0, min: 0, max: 80, step: 5,
             onChange: function (v) { set({ sombre: v || 0 }); }
           }),
+          a.imageId && a.imageUrl && window.SchiesserPointPhoto ? el(window.SchiesserPointPhoto, { id: a.imageId, url: a.imageUrl }) : null,
           el(c.TextareaControl, {
             label: 'Texte alternatif (description de la photo)',
             help: 'Décrit l’image pour Google et les personnes malvoyantes. Ex. « Vitrine de pralinés de la Confiserie Schiesser à Bâle ».',
@@ -148,7 +149,9 @@
       );
 
       var media = a.imageUrl
-        ? el('img', { src: a.imageUrl, alt: '', style: a.sombre ? { '--lum': String(1 - a.sombre / 100) } : undefined })
+        ? (window.SchiesserPhotoPoint
+          ? el(window.SchiesserPhotoPoint, { id: a.imageId, imgProps: { src: a.imageUrl, alt: '', style: a.sombre ? { '--lum': String(1 - a.sombre / 100) } : undefined } })
+          : el('img', { src: a.imageUrl, alt: '', style: a.sombre ? { '--lum': String(1 - a.sombre / 100) } : undefined }))
         : el('div', { className: 'hero-vide' },
             el(be.MediaUploadCheck, null,
               el(be.MediaUpload, {

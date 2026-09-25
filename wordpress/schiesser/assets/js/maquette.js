@@ -37,34 +37,46 @@
     if (fuseau && window.Intl) {
       try {
         var p = {};
-        new Intl.DateTimeFormat('en-US', { timeZone: fuseau, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+        new Intl.DateTimeFormat('en-US', { timeZone: fuseau, weekday: 'short', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
           .formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
         var jours = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-        if (p.weekday in jours) return { jour: jours[p.weekday], h: (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60 };
+        if (p.weekday in jours) return { jour: jours[p.weekday], h: (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60, y: +p.year, m: +p.month, dj: +p.day };
       } catch (e) { /* fuseau inconnu : heure de l'appareil */ }
     }
-    return { jour: d.getDay(), h: d.getHours() + d.getMinutes() / 60 };
+    return { jour: d.getDay(), h: d.getHours() + d.getMinutes() / 60, y: d.getFullYear(), m: d.getMonth() + 1, dj: d.getDate() };
   }
   function hh(h) { var m = Math.round((h % 1) * 60); return dd(Math.floor(h)) + ':' + dd(m); }
-  function plage(j) { var x = H[j]; return x ? hh(x[0]) + ' – ' + hh(x[1]) : null; }
+  var P = S.particuliers || {};
+  // Horaires dans k jours, jours fériés et dates exceptionnelles compris (même calcul que site.js).
+  function dateDans(t, k) { var x = new Date(Date.UTC(t.y, t.m - 1, t.dj + k)); return x.getUTCFullYear() + '-' + dd(x.getUTCMonth() + 1) + '-' + dd(x.getUTCDate()); }
+  function horairesDans(t, k) { var c = dateDans(t, k); return Object.prototype.hasOwnProperty.call(P, c) ? P[c].h : H[(t.jour + k) % 7]; }
+  function motif(t, k) { var c = dateDans(t, k); return Object.prototype.hasOwnProperty.call(P, c) ? P[c].m : ''; }
+  // Prochaine ouverture : { k: jours d'écart, h: heure } (pour « Ouvre demain à 8 h »).
+  function prochaineOuverture(t) {
+    for (var k = 0; k <= 14; k++) { var x = horairesDans(t, k); if (x && (k > 0 || t.h < x[0])) return { k: k, h: x[0] }; }
+    return null;
+  }
+  function plage(t, k) { var x = horairesDans(t, k); return x ? hh(x[0]) + ' – ' + hh(x[1]) : null; }
 
   /* ---------- états en direct : bandeau, fiches, tableau des horaires ---------- */
   var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
   function direct() {
-    var t = maintenant(), j = H[t.jour], ouvert = !!j && t.h >= j[0] && t.h < j[1];
+    var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1];
     var minutes = null, libelle;
     if (ouvert) { minutes = Math.round((j[1] - t.h) * 60); libelle = 'Fermeture dans'; }
     else {
       libelle = 'Ouverture dans';
       if (j && t.h < j[0]) minutes = Math.round((j[0] - t.h) * 60);
-      else for (var k = 1; k <= 7; k++) { var s = H[(t.jour + k) % 7]; if (s) { minutes = Math.round((24 - t.h + 24 * (k - 1) + s[0]) * 60); break; } }
+      else for (var k = 1; k <= 7; k++) { var s = horairesDans(t, k); if (s) { minutes = Math.round((24 - t.h + 24 * (k - 1) + s[0]) * 60); break; } }
     }
     var duree = minutes === null ? '' : (Math.floor(minutes / 60) ? Math.floor(minutes / 60) + 'h' + dd(minutes % 60) : (minutes % 60) + ' min');
     tous('.js-lv-dot').forEach(function (e) { e.classList.toggle('shut', !ouvert); });
     tous('.js-lv-etat').forEach(function (e) { e.textContent = ouvert ? 'Ouvert' : 'Fermé'; });
     tous('.js-lv-compte').forEach(function (e) { e.innerHTML = libelle + ' <b>' + duree + '</b>'; });
-    tous('.js-aujourdhui').forEach(function (e) { e.textContent = plage(t.jour) || 'Fermé aujourd’hui'; });
-    tous('.js-demain').forEach(function (e) { e.textContent = 'Demain · ' + (plage((t.jour + 1) % 7) || 'fermé'); });
+    var m0 = motif(t, 0), m1 = motif(t, 1);
+    tous('.js-aujourdhui').forEach(function (e) { e.textContent = (plage(t, 0) || 'Fermé aujourd’hui') + (m0 ? ' · ' + m0 : ''); });
+    tous('.js-demain').forEach(function (e) { e.textContent = 'Demain · ' + (plage(t, 1) || 'fermé') + (m1 ? ' (' + m1 + ')' : ''); });
+    S.etatDirect = { ouvert: ouvert, j: j, t: t, prochain: ouvert ? null : prochaineOuverture(t) };
     tous('.js-live-court').forEach(function (e) { e.textContent = ouvert ? 'Ouvert · ' + hh(j[1]) : 'Fermé'; e.classList.toggle('shut', !ouvert); });
     tous('.js-etat-plage').forEach(function (e) {
       var txt = (ouvert ? 'Ouvert' : 'Fermé') + (j ? ' · ' + hh(j[0]) + '–' + hh(j[1]) : '');
@@ -370,6 +382,21 @@
       ch.addEventListener('change', flotter);
       flotter();
     });
+    // Message prérempli : « Laisser un message » depuis un produit (?produit=…) ou « Ma sélection » (?selection=1).
+    var zone = un('textarea[name="message"]', f);
+    if (zone && !zone.value) {
+      var params = new URLSearchParams(location.search), produit = params.get('produit'), liste = '';
+      if (params.get('selection') && S.texteSelection) liste = S.texteSelection();
+      else if (produit) liste = '1 × ' + produit;
+      if (liste) {
+        zone.value = 'Bonjour,\n\nJe souhaite commander :\n' + liste + '\n\nDate de retrait souhaitée : \nMon numéro de téléphone : \n\nMerci !';
+        var xg = zone.closest('.xg'); if (xg) xg.classList.add('float');
+      }
+    }
+    // Anti-spam discret : un vrai visiteur tape, clique ou touche l'écran avant d'envoyer.
+    var humain = un('.js-humain', f);
+    function geste() { if (humain && !humain.value) humain.value = '1'; }
+    ['keydown', 'pointerdown', 'touchstart', 'focusin'].forEach(function (ev) { f.addEventListener(ev, geste, { passive: true, once: true }); });
     f.addEventListener('submit', function (e) {
       if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); }
     });

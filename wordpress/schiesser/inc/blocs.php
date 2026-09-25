@@ -101,7 +101,7 @@ add_action( 'enqueue_block_editor_assets', function () {
 	wp_enqueue_script(
 		'schiesser-typographie',
 		SCHIESSER_URI . '/assets/js/typographie.js',
-		array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-hooks' ),
+		array( 'wp-rich-text', 'wp-block-editor', 'wp-element', 'wp-components', 'wp-data', 'wp-hooks', 'wp-api-fetch' ),
 		SCHIESSER_VERSION,
 		false
 	);

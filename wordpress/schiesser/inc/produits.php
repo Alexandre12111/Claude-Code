@@ -105,6 +105,15 @@ function schiesser_champs_produit() {
 	);
 }
 
+/** Texte dans lequel cherche le champ « Rechercher » de la boutique : nom, description, composition… sans accents. */
+function schiesser_texte_recherche( $p ) {
+	$morceaux = array( $p['nom'] ?? '', $p['description'] ?? '', $p['accroche'] ?? '', $p['accord'] ?? '', $p['origine'] ?? '', $p['badge'] ?? '', implode( ' ', (array) ( $p['categories'] ?? array() ) ) );
+	foreach ( (array) ( $p['fiche'] ?? array() ) as $l ) {
+		$morceaux[] = implode( ' ', (array) $l );
+	}
+	return strtolower( remove_accents( wp_strip_all_tags( implode( ' ', $morceaux ) ) ) );
+}
+
 /** Prix numérique à partir du texte saisi : « CHF 6.50 » → 6.50 ; « Sur commande » → null. */
 function schiesser_prix_numerique( $texte ) {
 	if ( preg_match( '/(\d+)(?:[.,](\d{1,2}))?/', (string) $texte, $m ) ) {
@@ -132,6 +141,7 @@ function schiesser_donnees_produit( $post ) {
 		$d[ $cle ] = (string) get_post_meta( $post->ID, '_s_' . $cle, true );
 	}
 	$d['fiche'] = array_values( array_filter( (array) get_post_meta( $post->ID, '_s_fiche', true ) ) );
+	$d['al']    = schiesser_allergenes_de( $post->ID, '_s_' ); // allergènes et régimes (inc/allergenes.php)
 	if ( '' === $d['alt'] ) {
 		$d['alt'] = $d['nom'];
 	}
@@ -243,7 +253,7 @@ function schiesser_produits_lies( $post_id, $nombre = 4 ) {
  */
 function schiesser_carte_produit( $p, $i, $fiche_rapide = true ) {
 	?>
-	<a class="card" href="<?php echo esc_url( $p['url'] ); ?>"<?php if ( $fiche_rapide ) : ?> aria-haspopup="dialog" data-i="<?php echo (int) $i; ?>" data-categories="<?php echo esc_attr( implode( ' ', array_keys( $p['categories'] ) ) ); ?>"<?php endif; ?> style="animation-delay:<?php echo esc_attr( round( $i * 0.04, 2 ) ); ?>s">
+	<a class="card" href="<?php echo esc_url( $p['url'] ); ?>"<?php if ( $fiche_rapide ) : ?> aria-haspopup="dialog" data-i="<?php echo (int) $i; ?>" data-categories="<?php echo esc_attr( implode( ' ', array_keys( $p['categories'] ) ) ); ?>"<?php echo ! empty( $p['al'] ) ? schiesser_allergenes_attrs( $p['al'] ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput ?> data-texte="<?php echo esc_attr( schiesser_texte_recherche( $p ) ); ?>"<?php endif; ?> style="animation-delay:<?php echo esc_attr( round( $i * 0.04, 2 ) ); ?>s">
 		<span class="card-im">
 			<?php
 			if ( $p['image_id'] ) {
@@ -257,7 +267,9 @@ function schiesser_carte_produit( $p, $i, $fiche_rapide = true ) {
 			}
 			?>
 			<span class="tint"></span>
-			<?php if ( $p['badge'] ) : ?>
+			<?php if ( ! empty( $p['id'] ) && schiesser_est_epuise( $p['id'] ) ) : ?>
+				<span class="card-tag card-tag--epuise">Épuisé aujourd’hui</span>
+			<?php elseif ( $p['badge'] ) : ?>
 				<span class="card-tag<?php echo 'menthe' === $p['badge_style'] ? ' gold' : ''; ?>"><?php echo esc_html( $p['badge'] ); ?></span>
 			<?php endif; ?>
 			<span class="card-see" aria-hidden="true"><?php echo $fiche_rapide ? 'Voir la fiche' : 'Découvrir'; ?></span>
