@@ -1,0 +1,7 @@
+out/parts/
+out/stills/
+out/qa/
+out/video_silent.mp4
+out/*.log
+audio/stems/*.wav
+!audio/stems/vo/
