@@ -2,7 +2,7 @@
   const { h, S, P, Ease, lerp, clamp, words, chars, revealWords, hideWords, icon, spring } = E;
   const { el, slamChars } = C;
   let t = {};
-  const step = (n, label) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:23px;background:#EB6739;color:#fff;font-size:24px;font-weight:800;margin-right:16px">${n}</span>${label}`;
+  const step = (n, label) => `<span style="display:inline-flex;align-items:center;justify-content:center;width:46px;height:46px;border-radius:23px;background:#2E8BC0;color:#fff;font-size:24px;font-weight:800;margin-right:16px">${n}</span>${label}`;
 
   SCENES.push({
     id: 'titres',
@@ -12,9 +12,9 @@
       how.classList.add('nh');
       t.howW = words(how, [{ t: 'Comment' }, { t: 'ça' }, { t: 'marche', c: 'o' }, { t: '?', c: 'o' }]);
       t.how = how;
-      t.tag = el(root, { left: '60px', top: '48px', height: '58px', padding: '0 26px', borderRadius: '29px', background: 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '24px', fontWeight: '700', boxShadow: '0 12px 30px rgba(1,45,72,0.25)' }, `${icon('sparkles', 24, 2.2, '#F4A071')}Comment ça marche ?`);
+      t.tag = el(root, { left: '60px', top: '48px', height: '58px', padding: '0 26px', borderRadius: '29px', background: 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '24px', fontWeight: '700', boxShadow: '0 12px 30px rgba(2,36,70,0.25)' }, `${icon('sparkles', 24, 2.2, '#6BB8E6')}Comment ça marche ?`);
 
-      t.s1 = el(root, { left: '60px', top: '900px', height: '96px', padding: '0 40px 0 26px', borderRadius: '48px', background: '#fff', boxShadow: '0 20px 50px rgba(1,45,72,0.18)', display: 'flex', alignItems: 'center', fontSize: '40px', fontWeight: '700', color: 'var(--navy)' }, step(1, 'Décrivez votre besoin'));
+      t.s1 = el(root, { left: '60px', top: '900px', height: '96px', padding: '0 40px 0 26px', borderRadius: '48px', background: '#fff', boxShadow: '0 20px 50px rgba(2,36,70,0.18)', display: 'flex', alignItems: 'center', fontSize: '40px', fontWeight: '700', color: 'var(--navy)' }, step(1, 'Décrivez votre besoin'));
 
       const b = el(root, { left: '80px', top: '300px', width: '600px' });
       t.b = b;

@@ -88,23 +88,24 @@ body { font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiase
 @font-face { font-family: 'Nohemi'; font-weight: 700; src: url('../assets/leyton/Nohemi-Bold.woff') format('woff'); }
 
 :root {
-  --navy: #012D48;
-  --orange: #EB6739;
-  --peach: #FFD3AA;
-  --warm: #FCFAF8;
-  --blue: #EB6739;
-  --blue-light: #F4A071;
-  --offwhite: #FCFAF8;
+  --navy: #022446;
+  --orange: #2E8BC0;
+  --violet: #8F8AFF;
+  --peach: #C9D9E8;
+  --warm: #F7FAFC;
+  --blue: #2E8BC0;
+  --blue-light: #6BB8E6;
+  --offwhite: #F7FAFC;
 }
 .nh { font-family: 'Nohemi', 'Montserrat', sans-serif; font-weight: 700; letter-spacing: -0.015em; }
-.grad { background: linear-gradient(90deg, #EB6739 0%, #EE7A4C 45%, #F4A071 78%, #F8BC90 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.grad { background: linear-gradient(90deg, #5AAEE0 0%, #6BB8E6 45%, #8FC9EC 78%, #B9DDF3 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .o { color: var(--orange); }
-.o-light { color: #F4A071; }
-.bg-warm { background: radial-gradient(900px 700px at 100% 0%, rgba(255,211,170,0.55), rgba(255,211,170,0) 70%), radial-gradient(900px 700px at 0% 100%, rgba(255,211,170,0.40), rgba(255,211,170,0) 70%), #FCFAF8; }
-.bg-site-navy { background: radial-gradient(1200px 760px at 50% 16%, #0F5885 0%, #083F64 36%, #012D48 70%, #01233A 100%); }
-.circles { position: absolute; border-radius: 50%; border: 1.5px solid rgba(1,45,72,0.07); }
+.o-light { color: #6BB8E6; }
+.bg-warm { background: radial-gradient(900px 700px at 100% 0%, rgba(46,139,192,0.16), rgba(46,139,192,0) 70%), radial-gradient(900px 700px at 0% 100%, rgba(143,138,255,0.14), rgba(46,139,192,0) 70%), #F7FAFC; }
+.bg-site-navy { background: radial-gradient(1200px 900px at 78% 12%, #0B4471 0%, rgba(11, 68, 113, 0) 60%), linear-gradient(115deg, #011A33 0%, #022446 45%, #04305A 100%); }
+.circles { position: absolute; border-radius: 50%; border: 1.5px solid rgba(2,36,70,0.07); }
 .circles.dark { border-color: rgba(255,255,255,0.07); }
 .hl { color: var(--orange); }
-.hl-light { color: #F4A071; }
+.hl-light { color: #6BB8E6; }
 .label { color: var(--orange); font-family: 'Montserrat', sans-serif; }
-.label.on-dark { color: #F4A071; }
+.label.on-dark { color: #6BB8E6; }

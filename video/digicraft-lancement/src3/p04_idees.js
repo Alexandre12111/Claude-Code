@@ -4,9 +4,9 @@
   const { el, warmBg } = C;
 
   const HUBS = {
-    DG: { x: 960, y: 505, col: '#EB6739', ic: 'target' },
-    DAF: { x: 430, y: 520, col: '#1E9BD7', ic: 'landmark' },
-    DRH: { x: 1490, y: 520, col: '#8B5CF6', ic: 'users' },
+    DG: { x: 960, y: 505, col: '#2E8BC0', ic: 'target' },
+    DAF: { x: 430, y: 520, col: '#022446', ic: 'landmark' },
+    DRH: { x: 1490, y: 520, col: '#8F8AFF', ic: 'users' },
   };
   const CARDS = [
     ['Pilotage des KPI', 'gauge', 'DG', 960, 300],
@@ -56,30 +56,30 @@
         return b;
       });
 
-      const lane = el(root, { left: LANE.x + 'px', top: LANE.y + 'px', width: LANE.w + 'px', height: LANE.h + 'px', borderRadius: '75px', background: '#F3EEEA', border: '2px dashed #E3D3C6', transformOrigin: '0 50%' });
+      const lane = el(root, { left: LANE.x + 'px', top: LANE.y + 'px', width: LANE.w + 'px', height: LANE.h + 'px', borderRadius: '75px', background: '#E9EEF4', border: '2px dashed #C3CFDB', transformOrigin: '0 50%' });
       a.lane = lane;
-      a.ll = el(root, { left: LANE.x + 44 + 'px', top: LANE.y + 40 + 'px', display: 'flex', gap: '16px', alignItems: 'center' }, `${icon('hourglass', 34, 2.2, '#4A5568')}<div><div style="font-size:24px;font-weight:700;color:#012D48">En attente</div><div style="font-size:20px;font-weight:500;color:#4A5568">d'un créneau informatique</div></div>`);
+      a.ll = el(root, { left: LANE.x + 44 + 'px', top: LANE.y + 40 + 'px', display: 'flex', gap: '16px', alignItems: 'center' }, `${icon('hourglass', 34, 2.2, '#4A5568')}<div><div style="font-size:24px;font-weight:700;color:#022446">En attente</div><div style="font-size:20px;font-weight:500;color:#4A5568">d'un créneau informatique</div></div>`);
       a.hg = a.ll.querySelector('svg');
-      a.mc = el(root, { left: LANE.x + LANE.w - 450 + 'px', top: LANE.y - 78 + 'px', height: '56px', padding: '0 24px', borderRadius: '28px', background: '#fff', boxShadow: '0 8px 24px rgba(1,45,72,0.10)', display: 'flex', alignItems: 'center', gap: '14px', fontSize: '24px', fontWeight: '700', color: 'var(--navy)' },
-        `${icon('calendar', 26, 2.2, '#EB6739')}<span style="color:#4A5568;font-weight:500">Toujours en attente :</span>`);
+      a.mc = el(root, { left: LANE.x + LANE.w - 450 + 'px', top: LANE.y - 78 + 'px', height: '56px', padding: '0 24px', borderRadius: '28px', background: '#fff', boxShadow: '0 8px 24px rgba(2,36,70,0.10)', display: 'flex', alignItems: 'center', gap: '14px', fontSize: '24px', fontWeight: '700', color: 'var(--navy)' },
+        `${icon('calendar', 26, 2.2, '#2E8BC0')}<span style="color:#4A5568;font-weight:500">Toujours en attente :</span>`);
       a.mv = h('span', '', a.mc);
-      Object.assign(a.mv.style, { display: 'inline-block', minWidth: '120px', color: '#EB6739' });
-      const gate = el(root, { left: GATE.x - 56 + 'px', top: GATE.y - 56 + 'px', width: '112px', height: '112px', borderRadius: '56px', background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 30px rgba(1,45,72,0.25)' });
+      Object.assign(a.mv.style, { display: 'inline-block', minWidth: '120px', color: '#2E8BC0' });
+      const gate = el(root, { left: GATE.x - 56 + 'px', top: GATE.y - 56 + 'px', width: '112px', height: '112px', borderRadius: '56px', background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 30px rgba(2,36,70,0.25)' });
       a.gate = gate;
       a.lock = el(gate, { left: '32px', top: '30px' }, icon('lock', 48, 2.2, '#fff'));
       a.dc = el(gate, { left: '14px', top: '14px' }, window.dcIcon(84, 'g4', 'brand'));
 
       a.cards = CARDS.map(([label, ic, hub, x, y]) => {
         const col = HUBS[hub].col;
-        const c = el(root, { left: '0', top: '0', display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 28px 16px 16px', borderRadius: '22px', background: '#fff', boxShadow: '0 14px 40px rgba(1,45,72,0.10), 0 2px 6px rgba(1,45,72,0.06)', border: '1px solid #EFE6DF', whiteSpace: 'nowrap' },
-          `<div style="width:62px;height:62px;border-radius:17px;background:${col}1F;display:flex;align-items:center;justify-content:center">${icon(ic, 32, 2.2, col)}</div><div style="font-size:30px;font-weight:700;color:#012D48">${label}</div>`);
+        const c = el(root, { left: '0', top: '0', display: 'flex', alignItems: 'center', gap: '16px', padding: '16px 28px 16px 16px', borderRadius: '22px', background: '#fff', boxShadow: '0 14px 40px rgba(2,36,70,0.10), 0 2px 6px rgba(2,36,70,0.06)', border: '1px solid #E6ECF2', whiteSpace: 'nowrap' },
+          `<div style="width:62px;height:62px;border-radius:17px;background:${col}1F;display:flex;align-items:center;justify-content:center">${icon(ic, 32, 2.2, col)}</div><div style="font-size:30px;font-weight:700;color:#022446">${label}</div>`);
         c._home = { x, y };
         return c;
       });
       a.laneTargets = CARDS.map((_, i) => ({ x: LANE.x + 470 + i * 118, y: LANE.y + LANE.h / 2 }));
     },
     update(T, realT) {
-      E.slash(realT, 13.2, 0.6, a.root, a.bands || (a.bands = E.slashBands(a.root, ['#EB6739', '#012D48'])));
+      E.slash(realT, 13.2, 0.6, a.root, a.bands || (a.bands = E.slashBands(a.root, ['#2E8BC0', '#022446'])));
       a.bg(T);
       revealWords(T, a.tA, 13.55, 0.07, 0.6);
       hideWords(T, a.tA, 15.5, 0.03, 0.4);

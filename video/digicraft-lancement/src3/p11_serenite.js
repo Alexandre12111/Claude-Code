@@ -19,10 +19,10 @@
   ];
 
   function dashboard(parent) {
-    const d = el(parent, { left: '110px', top: '330px', width: '740px', height: '520px', borderRadius: '28px', background: '#fff', boxShadow: '0 40px 90px rgba(1,45,72,0.18)', border: '1px solid #EFE6DF', overflow: 'hidden', fontFamily: 'DM Sans' });
+    const d = el(parent, { left: '110px', top: '330px', width: '740px', height: '520px', borderRadius: '28px', background: '#fff', boxShadow: '0 40px 90px rgba(2,36,70,0.18)', border: '1px solid #E6ECF2', overflow: 'hidden', fontFamily: 'DM Sans' });
     el(d, { left: '0', top: '0', width: '170px', height: '520px', background: '#0B2545' });
-    el(d, { left: '18px', top: '22px', display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', fontWeight: '700', fontSize: '17px' }, `<div style="width:30px;height:30px;border-radius:8px;background:#EB6739;display:flex;align-items:center;justify-content:center">${icon('gauge', 17, 2.2, '#fff')}</div>Pilotage DG`);
-    ['Vue d’ensemble', 'Finance', 'Commercial', 'Ressources humaines', 'Alertes'].forEach((t, i) => el(d, { left: '12px', top: 84 + i * 42 + 'px', width: '146px', height: '32px', borderRadius: '8px', background: i ? 'transparent' : 'rgba(235,103,57,0.45)', color: i ? '#A9BCD0' : '#fff', fontSize: '13px', display: 'flex', alignItems: 'center', padding: '0 10px' }, t));
+    el(d, { left: '18px', top: '22px', display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', fontWeight: '700', fontSize: '17px' }, `<div style="width:30px;height:30px;border-radius:8px;background:#2E8BC0;display:flex;align-items:center;justify-content:center">${icon('gauge', 17, 2.2, '#fff')}</div>Pilotage DG`);
+    ['Vue d’ensemble', 'Finance', 'Commercial', 'Ressources humaines', 'Alertes'].forEach((t, i) => el(d, { left: '12px', top: 84 + i * 42 + 'px', width: '146px', height: '32px', borderRadius: '8px', background: i ? 'transparent' : 'rgba(46,139,192,0.45)', color: i ? '#A9BCD0' : '#fff', fontSize: '13px', display: 'flex', alignItems: 'center', padding: '0 10px' }, t));
     el(d, { left: '196px', top: '22px', fontWeight: '700', fontSize: '24px', color: '#0B2545' }, 'Vue d’ensemble groupe');
     [['Chiffre d’affaires', '48,2 M€'], ['Marge brute', '31,4 %'], ['Effectifs', '1 240'], ['Trésorerie', '12,8 M€']].forEach(([l, v], i) => {
       const k = el(d, { left: 196 + i * 132 + 'px', top: '76px', width: '122px', height: '84px', borderRadius: '12px', border: '1px solid #E5EAF0' });
@@ -31,7 +31,7 @@
     });
     const ch = el(d, { left: '196px', top: '180px', width: '520px', height: '310px', borderRadius: '14px', border: '1px solid #E5EAF0' });
     el(ch, { left: '16px', top: '14px', fontWeight: '700', fontSize: '15px', color: '#0B2545' }, 'Chiffre d’affaires mensuel');
-    [0.45, 0.55, 0.5, 0.62, 0.58, 0.7, 0.66, 0.82].forEach((v, i) => el(ch, { left: 26 + i * 60 + 'px', bottom: '22px', width: '38px', height: v * 220 + 'px', borderRadius: '7px 7px 2px 2px', background: i === 7 ? '#EB6739' : '#F8C4A8' }));
+    [0.45, 0.55, 0.5, 0.62, 0.58, 0.7, 0.66, 0.82].forEach((v, i) => el(ch, { left: 26 + i * 60 + 'px', bottom: '22px', width: '38px', height: v * 220 + 'px', borderRadius: '7px 7px 2px 2px', background: i === 7 ? '#2E8BC0' : '#9CCBE8' }));
     return d;
   }
 
@@ -44,22 +44,22 @@
       t.classList.add('nh');
       a.title = words(t, [{ t: 'Sérénité' }, { t: 'et' }, { t: 'sécurité' }, { t: 'assurées.', c: 'o' }]);
       a.dash = dashboard(root);
-      a.veil = el(a.dash, { inset: '0', background: 'rgba(1,45,72,0.35)' });
-      a.halo = el(root, { left: 480 - 190 + 'px', top: 590 - 190 + 'px', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(235,103,57,0.35), rgba(235,103,57,0) 70%)' });
+      a.veil = el(a.dash, { inset: '0', background: 'rgba(2,36,70,0.35)' });
+      a.halo = el(root, { left: 480 - 190 + 'px', top: 590 - 190 + 'px', width: '380px', height: '380px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(46,139,192,0.35), rgba(46,139,192,0) 70%)' });
       a.shield = el(root, { left: 480 - 130 + 'px', top: 590 - 140 + 'px', width: '260px', height: '280px' },
-        `<svg width="260" height="280" viewBox="0 0 24 26"><path d="M12 1.5 L21 5 V12 C21 18 17 22.5 12 24.5 C7 22.5 3 18 3 12 V5 Z" fill="#012D48" stroke="#EB6739" stroke-width="1.2" stroke-linejoin="round"/></svg>`);
+        `<svg width="260" height="280" viewBox="0 0 24 26"><path d="M12 1.5 L21 5 V12 C21 18 17 22.5 12 24.5 C7 22.5 3 18 3 12 V5 Z" fill="#022446" stroke="#2E8BC0" stroke-width="1.2" stroke-linejoin="round"/></svg>`);
       a.lock = el(a.shield, { left: '80px', top: '80px' }, icon('lock-keyhole', 100, 1.8, '#fff'));
       a.rows = ROWS.map(([t0, ic, tt, sub], i) => {
         const r = el(root, { left: '960px', top: 360 + i * 175 + 'px', width: '900px', height: '130px', display: 'flex', alignItems: 'center', gap: '30px' });
         const c = h('div', '', r, ic === 'eu' ? euStars() : icon(ic, 50, 2, '#fff'));
-        Object.assign(c.style, { width: '104px', height: '104px', borderRadius: '30px', background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', boxShadow: '0 14px 30px rgba(1,45,72,0.22)' });
-        const tx = h('div', '', r, `<div class="nh" style="font-size:44px;color:#012D48;white-space:nowrap">${tt}</div><div style="font-size:28px;font-weight:500;color:#4A5568;margin-top:6px">${sub}</div>`);
+        Object.assign(c.style, { width: '104px', height: '104px', borderRadius: '30px', background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', boxShadow: '0 14px 30px rgba(2,36,70,0.22)' });
+        const tx = h('div', '', r, `<div class="nh" style="font-size:44px;color:#022446;white-space:nowrap">${tt}</div><div style="font-size:28px;font-weight:500;color:#4A5568;margin-top:6px">${sub}</div>`);
         r._c = c; r._tx = tx; r._t0 = t0; r._stars = [...c.querySelectorAll('.st')];
         return r;
       });
     },
     update(T) {
-      E.slash(T, 40.3, 0.6, a.root, a.bands || (a.bands = E.slashBands(a.root, ['#EB6739', '#FFFFFF'])));
+      E.slash(T, 40.3, 0.6, a.root, a.bands || (a.bands = E.slashBands(a.root, ['#2E8BC0', '#FFFFFF'])));
       a.bg(T);
       revealWords(T, a.title, 40.65, 0.09, 0.6);
       const dp = P(T, 40.75, 0.8, Ease.outExpo);

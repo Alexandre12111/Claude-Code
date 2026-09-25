@@ -14,22 +14,22 @@
     build(root) {
       a.root = root;
       a.bg = navyBg(root);
-      a.ring = el(root, { borderRadius: '50%', border: '24px solid #EB6739', boxSizing: 'border-box' });
+      a.ring = el(root, { borderRadius: '50%', border: '24px solid #2E8BC0', boxSizing: 'border-box' });
       const t = el(root, { left: '0', width: '1920px', top: '120px', textAlign: 'center', fontSize: '92px', color: '#fff' });
       t.classList.add('nh');
       a.title = words(t, [{ t: 'Déjà' }, { t: 'adopté' }, { t: 'par' }, { t: 'nos', c: 'o-light' }, { t: 'équipes.', c: 'o-light' }]);
       a.cards = CARDS.map((c) => {
         const k = el(root, { left: 960 - 320 + 'px', top: 520 - 190 + 'px', width: '640px', height: '380px', borderRadius: '40px', background: 'linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))', border: '1.5px solid rgba(255,255,255,0.16)', boxShadow: '0 40px 80px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px' });
-        const ic = h('div', '', k, icon(c.ic, 52, 2, '#F4A071'));
-        Object.assign(ic.style, { position: 'relative', width: '92px', height: '92px', borderRadius: '26px', background: 'rgba(235,103,57,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '6px' });
+        const ic = h('div', '', k, icon(c.ic, 52, 2, '#6BB8E6'));
+        Object.assign(ic.style, { position: 'relative', width: '92px', height: '92px', borderRadius: '26px', background: 'rgba(46,139,192,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '6px' });
         if (c.ic === 'code-xml') {
           const st = h('div', '', ic);
-          Object.assign(st.style, { position: 'absolute', left: '14px', top: '42px', width: '64px', height: '7px', borderRadius: '4px', background: '#EB6739', transform: 'rotate(-35deg)' });
+          Object.assign(st.style, { position: 'absolute', left: '14px', top: '42px', width: '64px', height: '7px', borderRadius: '4px', background: '#2E8BC0', transform: 'rotate(-35deg)' });
         }
         k._num = h('div', 'nh', k);
         Object.assign(k._num.style, { fontSize: '160px', color: '#fff', lineHeight: '1' });
         const lab = h('div', '', k, c.lab);
-        Object.assign(lab.style, { fontSize: '40px', fontWeight: '600', color: '#F8D3BC' });
+        Object.assign(lab.style, { fontSize: '40px', fontWeight: '600', color: '#C9D9E8' });
         return k;
       });
     },

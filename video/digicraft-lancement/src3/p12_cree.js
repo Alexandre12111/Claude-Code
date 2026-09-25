@@ -7,7 +7,7 @@
     build(root) {
       a.root = root;
       a.bg = navyBg(root);
-      a.bands = E.slashBands(root, ['#EB6739', '#FFD3AA']);
+      a.bands = E.slashBands(root, ['#2E8BC0', '#6BB8E6']);
       const t = el(root, { left: '0', width: '1920px', top: '330px', textAlign: 'center', fontSize: '170px', color: '#fff', lineHeight: '1.05' });
       t.classList.add('nh');
       a.t = t;

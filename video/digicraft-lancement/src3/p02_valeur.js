@@ -9,7 +9,7 @@
       a.root = root;
       a.bg = navyBg(root);
       const W = { left: '0', width: '1920px', textAlign: 'center', color: '#fff' };
-      const lab = el(root, { ...W, top: '250px', fontSize: '28px', fontWeight: '700', letterSpacing: '0.34em', textTransform: 'uppercase', color: '#F4A071' });
+      const lab = el(root, { ...W, top: '250px', fontSize: '28px', fontWeight: '700', letterSpacing: '0.34em', textTransform: 'uppercase', color: '#6BB8E6' });
       a.lab = chars(lab, 'Depuis 1997');
       a.lA = words(el(root, { ...W, top: '320px', fontSize: '92px' }), 'Leyton révèle et capte la');
       a.lA.parentElement.classList.add('nh');
@@ -31,8 +31,8 @@
       const kit = el(root, { left: 960 - 280 + 'px', top: '740px', width: '560px', height: '250px' });
       a.kit = kit;
       const blk = (x, y, w, hh, st) => el(kit, { left: x + 'px', top: y + 'px', width: w + 'px', height: hh + 'px', borderRadius: '10px', background: 'rgba(255,255,255,0.08)', border: '1.5px solid rgba(255,255,255,0.22)', ...st });
-      a.blocks = [blk(0, 0, 560, 34, {}), blk(0, 46, 110, 204, {}), blk(124, 46, 138, 70, { background: 'rgba(235,103,57,0.25)', borderColor: 'rgba(244,160,113,0.7)' }), blk(273, 46, 138, 70, {}), blk(422, 46, 138, 70, { background: 'rgba(255,211,170,0.2)', borderColor: 'rgba(255,211,170,0.6)' }), blk(124, 128, 436, 122, {})];
-      a.bars = [40, 62, 50, 84, 70, 96].map((bh, i) => el(a.blocks[5], { left: 26 + i * 66 + 'px', bottom: '14px', width: '40px', height: bh + 'px', borderRadius: '6px 6px 2px 2px', background: i === 5 ? '#EB6739' : 'rgba(244,160,113,0.6)', transformOrigin: '50% 100%' }));
+      a.blocks = [blk(0, 0, 560, 34, {}), blk(0, 46, 110, 204, {}), blk(124, 46, 138, 70, { background: 'rgba(46,139,192,0.25)', borderColor: 'rgba(107,184,230,0.7)' }), blk(273, 46, 138, 70, {}), blk(422, 46, 138, 70, { background: 'rgba(143,138,255,0.22)', borderColor: 'rgba(143,138,255,0.6)' }), blk(124, 128, 436, 122, {})];
+      a.bars = [40, 62, 50, 84, 70, 96].map((bh, i) => el(a.blocks[5], { left: 26 + i * 66 + 'px', bottom: '14px', width: '40px', height: bh + 'px', borderRadius: '6px 6px 2px 2px', background: i === 5 ? '#2E8BC0' : 'rgba(107,184,230,0.6)', transformOrigin: '50% 100%' }));
     },
     update(T) {
       const r = window.G.logoClip(T);

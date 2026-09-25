@@ -35,7 +35,7 @@
   const STATUS = { ok: ['Atteint', 'var(--ok)', 'var(--ok-bg)'], warn: ['À surveiller', 'var(--warn)', 'var(--warn-bg)'] };
   const KPIS = [
     ["Chiffre d'affaires", 48.2, ' M€', 'trending-up', '#16A34A'],
-    ['Marge brute', 31.4, ' %', 'chart-pie', '#EB6739'],
+    ['Marge brute', 31.4, ' %', 'chart-pie', '#2E8BC0'],
     ['Effectifs', 1240, '', 'users', '#1E9BD7'],
     ['Trésorerie', 12.8, ' M€', 'wallet', '#7C3AED'],
   ];
@@ -45,7 +45,7 @@
     const v = el(c, { inset: '0' });
     el(v, px({ left: 0, top: 0, width: BW, height: 76, borderBottom: '1px solid #EEF0F4' }));
     el(v, px({ left: 36, top: 24 }), icon('panels-top-left', 26, 2, '#6B7280'));
-    const lg = el(v, px({ left: 84, top: 18, display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'Outfit', fontWeight: 700, fontSize: 30 }), `${window.dcIcon(36, 'h')}<span><span style="color:#012D48">Digi</span><span style="color:#EB6739">Craft</span></span>`);
+    const lg = el(v, px({ left: 84, top: 18, display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'Outfit', fontWeight: 700, fontSize: 30 }), `${window.dcIcon(36, 'h')}<span><span style="color:#022446">Digi</span><span style="color:#8F8AFF">Craft</span></span>`);
     void lg;
     el(v, px({ right: 110, top: 25 }), icon('sparkles', 26, 2, '#9CA3AF'));
     el(v, px({ right: 40, top: 16, width: 44, height: 44, borderRadius: 22, background: 'linear-gradient(135deg,#6D5DF6,#2E8BC0)', color: '#fff', fontFamily: 'DM Sans', fontWeight: 700, fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }), 'L');
@@ -76,9 +76,9 @@
     els.skel = sk;
 
     const side = el(app, px({ left: 0, top: 0, width: 210, height: 780, background: '#0B2545' }));
-    el(side, px({ left: 22, top: 26, display: 'flex', alignItems: 'center', gap: 10, color: '#fff', fontFamily: 'DM Sans', fontWeight: 700, fontSize: 21 }), `<div style="width:36px;height:36px;border-radius:10px;background:#EB6739;display:flex;align-items:center;justify-content:center">${icon('gauge', 20, 2.2, '#fff')}</div>Pilotage DG`);
+    el(side, px({ left: 22, top: 26, display: 'flex', alignItems: 'center', gap: 10, color: '#fff', fontFamily: 'DM Sans', fontWeight: 700, fontSize: 21 }), `<div style="width:36px;height:36px;border-radius:10px;background:#2E8BC0;display:flex;align-items:center;justify-content:center">${icon('gauge', 20, 2.2, '#fff')}</div>Pilotage DG`);
     const nav = [['layout-dashboard', "Vue d'ensemble", 1], ['landmark', 'Finance'], ['briefcase', 'Commercial'], ['users', 'Ressources humaines'], ['bell', 'Alertes', 0, '3']];
-    els.nav = nav.map(([ic, t, act, badge], i) => el(side, px({ left: 12, top: 100 + i * 54, width: 186, height: 44, borderRadius: 10, background: act ? 'rgba(235,103,57,0.45)' : 'transparent', display: 'flex', alignItems: 'center', gap: 12, padding: '0 12px', color: act ? '#fff' : '#A9BCD0', fontFamily: 'DM Sans', fontWeight: 500, fontSize: 17 }),
+    els.nav = nav.map(([ic, t, act, badge], i) => el(side, px({ left: 12, top: 100 + i * 54, width: 186, height: 44, borderRadius: 10, background: act ? 'rgba(46,139,192,0.45)' : 'transparent', display: 'flex', alignItems: 'center', gap: 12, padding: '0 12px', color: act ? '#fff' : '#A9BCD0', fontFamily: 'DM Sans', fontWeight: 500, fontSize: 17 }),
       `${icon(ic, 19, 2, act ? '#fff' : '#A9BCD0')}<span style="flex:1">${t}</span>${badge ? `<span style="background:#FF6633;color:#fff;border-radius:10px;padding:1px 8px;font-size:14px;font-weight:700">${badge}</span>` : ''}`));
     els.side = side;
 
@@ -86,7 +86,7 @@
     el(head, px({ left: 0, top: 0, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 30, color: '#0B2545' }), "Vue d'ensemble groupe");
     el(head, px({ left: 0, top: 40, fontFamily: 'DM Sans', fontSize: 16, color: '#6B7280' }), 'Septembre 2026 · toutes directions');
     els.exportBtn = el(head, px({ right: 170, top: 4, height: 42, padding: '0 16px', borderRadius: 10, border: '1px solid #D5DEE8', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'DM Sans', fontWeight: 600, fontSize: 16, color: '#0B2545', background: '#fff' }), `${icon('download', 18, 2, '#0B2545')}Export PDF`);
-    els.newBtn = el(head, px({ right: 0, top: 4, height: 42, padding: '0 16px', borderRadius: 10, background: '#012D48', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'DM Sans', fontWeight: 600, fontSize: 16, color: '#fff' }), `${icon('link', 18, 2.4, '#fff')}Partager au CODIR`);
+    els.newBtn = el(head, px({ right: 0, top: 4, height: 42, padding: '0 16px', borderRadius: 10, background: '#022446', display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'DM Sans', fontWeight: 600, fontSize: 16, color: '#fff' }), `${icon('link', 18, 2.4, '#fff')}Partager au CODIR`);
     els.head = head;
 
     els.kpis = KPIS.map(([t, v, suf, ic, col], i) => {
@@ -101,7 +101,7 @@
     const chart = el(app, px({ left: 238, top: 226, width: 390, height: 300, borderRadius: 14, border: '1px solid #E5EAF0', background: '#fff' }));
     el(chart, px({ left: 18, top: 16, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 18, color: '#0B2545' }), 'Chiffre d’affaires mensuel');
     els.bars = BARS.map(([lab, v], i) => {
-      const b = el(chart, px({ left: 26 + i * 59, bottom: 44, width: 36, height: v * 190, borderRadius: '8px 8px 3px 3px', background: i === 5 ? '#EB6739' : '#F8C4A8', transformOrigin: '50% 100%' }));
+      const b = el(chart, px({ left: 26 + i * 59, bottom: 44, width: 36, height: v * 190, borderRadius: '8px 8px 3px 3px', background: i === 5 ? '#2E8BC0' : '#9CCBE8', transformOrigin: '50% 100%' }));
       el(chart, px({ left: 14 + i * 59, bottom: 16, width: 60, textAlign: 'center', fontFamily: 'DM Sans', fontSize: 12, color: '#6B7280' }), lab);
       return b;
     });
@@ -177,14 +177,14 @@
     el(sc, px({ left: 24, top: 78, display: 'flex', alignItems: 'center', gap: 12, color: '#fff', fontFamily: 'DM Sans', fontWeight: 700, fontSize: 22 }), `<div style="width:40px;height:40px;border-radius:11px;background:#2E8BC0;display:flex;align-items:center;justify-content:center">${icon('gauge', 22, 2.2, '#fff')}</div>Pilotage DG`);
     el(sc, px({ left: 24, top: 166, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 24, color: '#0B2545' }), 'Rapport de septembre');
     const card = el(sc, px({ left: 18, top: 206, width: 346, height: 390, borderRadius: 22, background: '#fff', boxShadow: '0 8px 24px rgba(2,36,70,0.08)' }));
-    const rc = el(card, px({ left: 18, top: 18, width: 310, height: 150, borderRadius: 14, background: '#FFF4EE', overflow: 'hidden' }));
-    [0.45, 0.55, 0.5, 0.66, 0.6, 0.8, 0.74, 0.92].forEach((v, i) => el(rc, px({ left: 20 + i * 36, bottom: 16, width: 22, height: v * 110, borderRadius: '6px 6px 2px 2px', background: i === 7 ? '#EB6739' : '#F8C4A8' })));
+    const rc = el(card, px({ left: 18, top: 18, width: 310, height: 150, borderRadius: 14, background: '#EEF5FB', overflow: 'hidden' }));
+    [0.45, 0.55, 0.5, 0.66, 0.6, 0.8, 0.74, 0.92].forEach((v, i) => el(rc, px({ left: 20 + i * 36, bottom: 16, width: 22, height: v * 110, borderRadius: '6px 6px 2px 2px', background: i === 7 ? '#2E8BC0' : '#9CCBE8' })));
     el(card, px({ left: 20, top: 186, fontFamily: 'DM Sans', fontSize: 15, color: '#6B7280' }), "Chiffre d'affaires");
     el(card, px({ left: 20, top: 206, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 40, color: '#0B2545' }), '48,2 M€');
     el(card, px({ left: 20, top: 272, padding: '6px 14px', borderRadius: 14, background: '#DCFCE7', color: '#15803D', fontFamily: 'DM Sans', fontWeight: 600, fontSize: 15 }), '+6 % vs N-1');
     el(card, px({ left: 150, top: 272, padding: '6px 14px', borderRadius: 14, background: '#F3F4F6', color: '#4B5563', fontFamily: 'DM Sans', fontWeight: 600, fontSize: 15 }), 'Marge 31,4 %');
     els.stChip = el(card, px({ left: 20, top: 330, height: 36, padding: '0 14px', borderRadius: 18, display: 'flex', alignItems: 'center', gap: 8, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 15 }));
-    els.send = el(sc, px({ left: 18, top: 620, width: 346, height: 66, borderRadius: 18, background: '#012D48', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 20, overflow: 'hidden' }));
+    els.send = el(sc, px({ left: 18, top: 620, width: 346, height: 66, borderRadius: 18, background: '#022446', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, fontFamily: 'DM Sans', fontWeight: 700, fontSize: 20, overflow: 'hidden' }));
     els.sendTxt = el(els.send, px({ inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }));
     els.tap = el(els.send, px({ left: 173, top: 33, width: 20, height: 20, marginLeft: -10, marginTop: -10, borderRadius: 10, background: 'rgba(255,255,255,0.45)' }));
     els.notif = el(sc, px({ left: 12, top: 12, width: 358, height: 96, borderRadius: 24, background: 'rgba(17,24,39,0.94)', display: 'flex', alignItems: 'center', gap: 14, padding: '0 16px', fontFamily: 'DM Sans', color: '#fff' }),
@@ -196,13 +196,13 @@
     id: 'demo',
     build(root) {
       els.root = root;
-      root.style.background = 'radial-gradient(900px 700px at 100% 0%, rgba(255,211,170,0.55), rgba(255,211,170,0) 70%), radial-gradient(900px 700px at 0% 100%, rgba(255,211,170,0.4), rgba(255,211,170,0) 70%), #FCFAF8';
+      root.style.background = 'radial-gradient(900px 700px at 100% 0%, rgba(46,139,192,0.16), rgba(46,139,192,0) 70%), radial-gradient(900px 700px at 0% 100%, rgba(143,138,255,0.14), rgba(46,139,192,0) 70%), #F7FAFC';
       const grid = el(root, { inset: '-64px' });
       grid.className = 'abs bg-grid-light';
       els.grid = grid;
-      els.b1 = el(root, px({ width: 900, height: 900, left: -250, top: 250, background: 'rgba(255,211,170,0.35)' }));
+      els.b1 = el(root, px({ width: 900, height: 900, left: -250, top: 250, background: 'rgba(143,138,255,0.16)' }));
       els.b1.className = 'blob';
-      els.b2 = el(root, px({ width: 800, height: 800, right: -200, top: -300, background: 'rgba(235,103,57,0.08)' }));
+      els.b2 = el(root, px({ width: 800, height: 800, right: -200, top: -300, background: 'rgba(46,139,192,0.08)' }));
       els.b2.className = 'blob';
 
       els.capTop = el(root, px({ left: 0, width: 1920, top: 70, textAlign: 'center', fontSize: 62, fontWeight: 800, color: 'var(--navy)', letterSpacing: '-0.01em', zIndex: 5 }));
@@ -357,7 +357,7 @@
       const sent = T > tapT + 0.15;
       const valid = T > 35.75;
       els.sendTxt.innerHTML = sent ? `${icon('check', 24, 3, '#fff')}Partagé au CODIR` : `${icon('send', 22, 2.2, '#fff')}Partager au comité de direction`;
-      els.send.style.background = sent ? '#16A34A' : '#012D48';
+      els.send.style.background = sent ? '#16A34A' : '#022446';
       S(els.send, { s: 1 - (P(T, tapT - 0.05, 0.06) * (1 - P(T, tapT + 0.05, 0.2))) * 0.05 });
       const [lab, col, bg] = valid ? ['Objectifs atteints', '#15803D', '#DCFCE7'] : sent ? ['Envoyé au CODIR', '#B45309', '#FEF3C7'] : ['Mise à jour en direct', '#4B5563', '#F3F4F6'];
       els.stChip.innerHTML = `${icon(valid ? 'circle-check' : sent ? 'send' : 'activity', 17, 2.4, col)}${lab}`;

@@ -2,7 +2,7 @@
   const { h, S, P, Ease, lerp, clamp } = E;
   const el = (parent, style, html) => { const e = h('div', 'abs', parent, html); Object.assign(e.style, style); return e; };
 
-  const GRADS = { brand: ['#F8A87E', '#EB6739'], product: ['#B7A6FF', '#6D5DF6'] };
+  const GRADS = { brand: ['#B7A6FF', '#6D5DF6'], product: ['#B7A6FF', '#6D5DF6'] };
   window.dcIcon = function (size, id, kind = 'product') {
     const g = `dcg${id}`;
     const [a, b] = GRADS[kind];
@@ -45,7 +45,7 @@
   // Logo Leyton officiel (SVG du site).
   function leytonLogo(parent, height, white = false) {
     const img = h('img', '', parent);
-    img.src = `../assets/leyton/${white ? 'logo_white' : 'logo'}.svg`;
+    img.src = `../assets/leyton/${white ? 'logo_white' : 'logo_cognitx'}.svg`;
     img.style.height = height + 'px';
     img.style.display = 'block';
     return img;

@@ -13,7 +13,7 @@
       a.bg = warmBg(root);
       a.zoom = el(root, { inset: '0', transformOrigin: `${CX}px ${CY}px` });
       a.ring = h('img', 'abs', a.zoom);
-      a.ring.src = '../assets/leyton/ring_particles.png';
+      a.ring.src = '../assets/leyton/ring_particles_blue.png';
       Object.assign(a.ring.style, { left: CX - 380 + 'px', top: CY - 407 + 'px', width: '759px', height: '814px', opacity: '0.55' });
       const lock = el(a.zoom, { left: '0', width: '1920px', top: CY - 110 + 'px', height: '220px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '44px' });
       const ic = h('div', '', lock);
@@ -21,15 +21,15 @@
       Object.assign(ic.style, { position: 'relative', width: '180px', height: '180px', flex: 'none' });
       const D = (cx, cy, r) => {
         const side = r * Math.SQRT2 * 1.8;
-        return el(ic, { left: cx * 1.8 - side / 2 + 'px', top: cy * 1.8 - side / 2 + 'px', width: side + 'px', height: side + 'px', borderRadius: side * 0.12 + 'px', background: 'linear-gradient(135deg,#F8A87E,#EB6739)' });
+        return el(ic, { left: cx * 1.8 - side / 2 + 'px', top: cy * 1.8 - side / 2 + 'px', width: side + 'px', height: side + 'px', borderRadius: side * 0.12 + 'px', background: 'linear-gradient(135deg,#B7A6FF,#6D5DF6)' });
       };
       a.dia = [D(50, 50, 17), D(50, 14, 9), D(86, 50, 9), D(50, 86, 9), D(14, 50, 9)];
       const word = h('div', 'nh', lock);
       Object.assign(word.style, { fontSize: '196px', color: 'var(--navy)', lineHeight: '1', paddingTop: '20px' });
       a.digi = chars(word, 'Digi');
       a.craft = chars(word, 'Craft');
-      a.craft._c.forEach((c) => c.classList.add('o'));
-      const by = el(a.zoom, { left: '0', width: '1920px', top: CY + 150 + 'px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px', fontSize: '30px', fontWeight: '600', color: '#6B7B88' });
+      a.craft._c.forEach((c) => c.classList.add('hl-violet'));
+      const by = el(a.zoom, { left: '0', width: '1920px', top: CY + 150 + 'px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px', fontSize: '30px', fontWeight: '600', color: '#899AA8' });
       by.innerHTML = '<span>par</span>';
       C.leytonLogo(by, 70);
       a.by = by;
