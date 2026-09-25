@@ -8,7 +8,7 @@ const args = process.argv.slice(2);
 const opt = (k, d) => { const i = args.indexOf('--' + k); return i >= 0 ? args[i + 1] : d; };
 const has = (k) => args.includes('--' + k);
 const scale = parseFloat(opt('scale', '1'));
-const page_url = 'file://' + path.resolve(__dirname, '../src/index.html');
+const page_url = 'file://' + path.resolve(__dirname, '..', opt('page', 'src/index.html'));
 
 (async () => {
   const browser = await chromium.launch({ args: ['--disable-gpu-vsync', '--force-color-profile=srgb', '--font-render-hinting=none'] });

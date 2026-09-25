@@ -1,0 +1,110 @@
+@font-face { font-family: 'Montserrat'; font-weight: 400; src: url('../assets/fonts/montserrat-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 500; src: url('../assets/fonts/montserrat-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 600; src: url('../assets/fonts/montserrat-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 700; src: url('../assets/fonts/montserrat-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 800; src: url('../assets/fonts/montserrat-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 900; src: url('../assets/fonts/montserrat-latin-900-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 700; font-style: italic; src: url('../assets/fonts/montserrat-latin-700-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Montserrat'; font-weight: 800; font-style: italic; src: url('../assets/fonts/montserrat-latin-800-italic.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-weight: 400; src: url('../assets/fonts/outfit-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-weight: 500; src: url('../assets/fonts/outfit-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-weight: 600; src: url('../assets/fonts/outfit-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-weight: 700; src: url('../assets/fonts/outfit-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Outfit'; font-weight: 800; src: url('../assets/fonts/outfit-latin-800-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-weight: 400; src: url('../assets/fonts/dm-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-weight: 500; src: url('../assets/fonts/dm-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-weight: 600; src: url('../assets/fonts/dm-sans-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'DM Sans'; font-weight: 700; src: url('../assets/fonts/dm-sans-latin-700-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 400; src: url('../assets/fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 500; src: url('../assets/fonts/jetbrains-mono-latin-500-normal.woff2') format('woff2'); }
+
+:root {
+  --offwhite: #F7FAFC;
+  --navy: #022446;
+  --navy-2: #0A3358;
+  --navy-deep: #011A33;
+  --blue: #2E8BC0;
+  --blue-light: #6BB8E6;
+  --violet: #8F8AFF;
+  --orange: #FF6633;
+  --gray: #4A5568;
+  --gray-2: #899AA8;
+  --line: #E2E8F0;
+  --ice: #C9D9E8;
+  --dc-purple: #7C3AED;
+  --dc-purple-2: #A855F7;
+  --ok: #16A34A;
+  --ok-bg: #DCFCE7;
+  --warn: #D97706;
+  --warn-bg: #FEF3C7;
+  --ko: #DC2626;
+  --ko-bg: #FEE2E2;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: #000; }
+body { font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiased; text-rendering: geometricPrecision; }
+
+#stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--offwhite); }
+.scene { position: absolute; inset: 0; overflow: hidden; display: none; }
+.abs { position: absolute; }
+.center-x { left: 50%; transform: translateX(-50%); }
+.ic { display: block; flex: none; }
+
+.wline { display: block; white-space: nowrap; }
+.wm { display: inline-block; overflow: hidden; vertical-align: top; padding: 0.06em 0.02em 0.14em; margin: -0.06em -0.02em -0.14em; }
+.wi { display: inline-block; will-change: transform; }
+.chars { display: inline-block; white-space: nowrap; }
+.ch { display: inline-block; will-change: transform, opacity, filter; }
+
+.bg-navy {
+  background: radial-gradient(1200px 900px at 78% 12%, #0B4471 0%, rgba(11, 68, 113, 0) 60%),
+              linear-gradient(115deg, #011A33 0%, #022446 45%, #04305A 100%);
+}
+.bg-grid-light {
+  background-image:
+    linear-gradient(rgba(2, 36, 70, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(2, 36, 70, 0.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.bg-grid-dark {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+.blob { position: absolute; border-radius: 50%; filter: blur(80px); }
+
+.label {
+  font-weight: 700; font-size: 22px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--blue);
+}
+.label.on-dark { color: var(--blue-light); }
+.hl { color: var(--blue); }
+.hl-light { color: var(--blue-light); }
+.hl-violet { color: var(--violet); }
+
+@font-face { font-family: 'Nohemi'; font-weight: 400; src: url('../assets/leyton/Nohemi-Regular.woff') format('woff'); }
+@font-face { font-family: 'Nohemi'; font-weight: 600; src: url('../assets/leyton/Nohemi-SemiBold.woff') format('woff'); }
+@font-face { font-family: 'Nohemi'; font-weight: 700; src: url('../assets/leyton/Nohemi-Bold.woff') format('woff'); }
+
+:root {
+  --navy: #012D48;
+  --orange: #EB6739;
+  --peach: #FFD3AA;
+  --warm: #FCFAF8;
+  --blue: #EB6739;
+  --blue-light: #F4A071;
+  --offwhite: #FCFAF8;
+}
+.nh { font-family: 'Nohemi', 'Montserrat', sans-serif; font-weight: 700; letter-spacing: -0.015em; }
+.grad { background: linear-gradient(90deg, #EB6739 0%, #EE7A4C 45%, #F4A071 78%, #F8BC90 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.o { color: var(--orange); }
+.o-light { color: #F4A071; }
+.bg-warm { background: radial-gradient(900px 700px at 100% 0%, rgba(255,211,170,0.55), rgba(255,211,170,0) 70%), radial-gradient(900px 700px at 0% 100%, rgba(255,211,170,0.40), rgba(255,211,170,0) 70%), #FCFAF8; }
+.bg-site-navy { background: radial-gradient(1200px 760px at 50% 16%, #0F5885 0%, #083F64 36%, #012D48 70%, #01233A 100%); }
+.circles { position: absolute; border-radius: 50%; border: 1.5px solid rgba(1,45,72,0.07); }
+.circles.dark { border-color: rgba(255,255,255,0.07); }
+.hl { color: var(--orange); }
+.hl-light { color: #F4A071; }
+.label { color: var(--orange); font-family: 'Montserrat', sans-serif; }
+.label.on-dark { color: #F4A071; }

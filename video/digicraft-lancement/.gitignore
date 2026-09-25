@@ -7,3 +7,6 @@ audio/stems/*.wav
 !audio/stems/vo/
 out/parts2/
 out/video2_silent.mp4
+out/parts3/
+out/video3_silent.mp4
+out/stills3/
