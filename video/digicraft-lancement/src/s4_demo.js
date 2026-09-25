@@ -372,6 +372,9 @@
       revealWords(T, els.pc2, 33.75, 0.1, 0.65);
       const pcc = spring(T - 34.3, 220, 17);
       S(els.pcChip, { y: (1 - pcc) * 30, o: clamp((T - 34.3) * 5) });
+      if (window.TL.v2) {
+        [els.capTop, els.capLeft, els.chipA, els.chipB, els.pc1.parentElement, els.pcChip].forEach((e) => (e.style.display = 'none'));
+      }
     },
   });
 })();

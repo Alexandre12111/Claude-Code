@@ -5,3 +5,5 @@ out/video_silent.mp4
 out/*.log
 audio/stems/*.wav
 !audio/stems/vo/
+out/parts2/
+out/video2_silent.mp4
