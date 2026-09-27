@@ -1,15 +1,15 @@
 """Table de retiming V4 : segments de la timeline V3 et leur nouvelle durée."""
 SEGMENTS = [
     # (début V3, fin V3, nouvelle durée, commentaire)
-    (0.0, 2.3, 2.3, 'logo'),
-    (2.3, 3.0, 0.25, 'logo, pause raccourcie'),
+    (0.0, 2.3, 2.05, 'logo'),
+    (2.3, 3.0, 0.5, 'logo, pause raccourcie'),
     (3.0, 3.6, 0.6, 'plongée dans le logo'),
     (3.6, 6.7, 3.1, 'phrase VALEUR'),
     (6.7, 8.3, 2.3, 'lecture VALEUR'),
     (8.3, 10.3, 2.0, 'morph PRODUCTIVITÉ'),
-    (10.3, 11.1, 0.15, 'sous-titre coupé'),
+    (10.3, 11.1, 0.5, 'sous-titre coupé'),
     (11.1, 12.95, 1.15, 'blocs accélérés'),
-    (12.95, 13.2, 0.9, 'lecture PRODUCTIVITÉ'),
+    (12.95, 13.2, 0.55, 'lecture PRODUCTIVITÉ'),
     (13.2, 15.4, 2.2, 'idées DG DAF DRH'),
     (15.4, 16.9, 1.9, 'lecture des cas d usage'),
     (16.9, 17.6, 0.7, 'titre outil'),
@@ -47,12 +47,46 @@ def table():
     return pts
 
 
-def to_new(t3):
+def _pchip():
     pts = table()
-    for (n0, v0), (n1, v1) in zip(pts, pts[1:]):
-        if t3 <= v1:
-            return n0 + (t3 - v0) / (v1 - v0) * (n1 - n0) if v1 > v0 else n0
-    return pts[-1][0] + (t3 - pts[-1][1])
+    x = [p[0] for p in pts]; y = [p[1] for p in pts]; n = len(pts)
+    d = [(y[i + 1] - y[i]) / (x[i + 1] - x[i]) for i in range(n - 1)]
+    m = [0.0] * n
+    m[0] = d[0]; m[-1] = d[-1]
+    for i in range(1, n - 1):
+        h0, h1 = x[i] - x[i - 1], x[i + 1] - x[i]
+        m[i] = 0.0 if d[i - 1] * d[i] <= 0 else 3 * (h0 + h1) / ((2 * h1 + h0) / d[i - 1] + (h1 + 2 * h0) / d[i])
+
+    def f(t):
+        if t <= x[0]:
+            return y[0] + (t - x[0]) * m[0]
+        if t >= x[-1]:
+            return y[-1] + (t - x[-1]) * m[-1]
+        i = 0
+        while t > x[i + 1]:
+            i += 1
+        h = x[i + 1] - x[i]; s = (t - x[i]) / h
+        return ((2 * s ** 3 - 3 * s ** 2 + 1) * y[i] + (s ** 3 - 2 * s ** 2 + s) * h * m[i]
+                + (-2 * s ** 3 + 3 * s ** 2) * y[i + 1] + (s ** 3 - s ** 2) * h * m[i + 1])
+    return f, x[-1]
+
+
+def to_v3(tn):
+    """Temps V4 (vidéo finale) vers temps V3, même courbe que le moteur JS."""
+    return _pchip()[0](tn)
+
+
+def to_new(t3):
+    """Inverse de to_v3 par dichotomie (la courbe est monotone)."""
+    f, end = _pchip()
+    lo, hi = -5.0, end + 5.0
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        if f(mid) < t3:
+            lo = mid
+        else:
+            hi = mid
+    return (lo + hi) / 2
 
 
 if __name__ == '__main__':

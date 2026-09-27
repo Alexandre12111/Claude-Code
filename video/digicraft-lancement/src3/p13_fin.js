@@ -29,6 +29,9 @@
       a.craft._c.forEach((c) => c.classList.add('hl-violet'));
       a.tag = el(root, { left: '0', width: '1920px', top: '500px', textAlign: 'center', fontSize: '84px', color: 'var(--navy)' });
       a.tag.classList.add('nh');
+      a.tagC = chars(a.tag, TAG);
+      a.tagC._c.forEach((c, i) => { if (i < 5) c.classList.add('o'); c.style.opacity = '0'; });
+      a.caret = el(root, { top: '512px', width: '6px', height: '76px', background: '#2E8BC0', borderRadius: '3px' });
       a.tagU = el(root, { left: 960 - 330 + 'px', width: '660px', top: '612px', height: '8px', borderRadius: '4px', background: 'var(--orange)', transformOrigin: '0 50%' });
       const by = el(root, { left: '0', width: '1920px', top: '680px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '22px', fontSize: '30px', fontWeight: '600', color: '#899AA8' });
       by.innerHTML = '<span>par</span>';
@@ -51,10 +54,17 @@
         S(d, { x: dx * (1 - p) * 240, y: dy * (1 - p) * 240, r: 45 + (1 - p) * 225, s: Math.max(0.0001, i ? 0.3 + 0.7 * p : p), o: clamp((T - t0) * 8) });
       });
       riseChars(T, [...a.digi._c, ...a.craft._c], 46.6, 0.035, 0.6, 90);
-      const n = Math.round(clamp((T - TY0) / (TY1 - TY0)) * TAG.length);
-      const typed = TAG.slice(0, n);
-      const caret = T > 47.0 && (T < TY1 + 0.1 || Math.floor(T * 2.2) % 2 === 0);
-      a.tag.innerHTML = `<span class="o">${typed.slice(0, 5)}</span>${typed.slice(5)}<span style="display:inline-block;width:6px;height:76px;background:#2E8BC0;vertical-align:-8px;margin-left:6px;opacity:${caret ? 1 : 0}"></span>`;
+      const cs = a.tagC._c, step = (TY1 - TY0) / cs.length;
+      let lastX = null;
+      cs.forEach((c, i) => {
+        const p = clamp((T - (TY0 + i * step)) / 0.1);
+        S(c, { o: p, y: (1 - p) * 10 });
+        if (p > 0) { const r = c.getBoundingClientRect(); lastX = r.right; }
+      });
+      if (lastX === null) lastX = cs[0].getBoundingClientRect().left;
+      const caretOn = T > 47.0 && T < 49.6 && (T < TY1 + 0.1 || Math.floor(T * 2.2) % 2 === 0);
+      a.caret.style.left = lastX + 6 + 'px';
+      a.caret.style.opacity = caretOn ? '1' : '0';
       const u = P(T, 48.2, 0.5, Ease.outExpo);
       S(a.tagU, { sx: Math.max(0.0001, u), o: u > 0 ? 1 : 0 });
       const bp = P(T, 48.45, 0.6, Ease.outQuint);

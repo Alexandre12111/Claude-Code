@@ -357,7 +357,8 @@
       const sent = T > tapT + 0.15;
       const valid = T > 35.75;
       els.sendTxt.innerHTML = sent ? `${icon('check', 24, 3, '#fff')}Partagé au CODIR` : `${icon('send', 22, 2.2, '#fff')}Partager au comité de direction`;
-      els.send.style.background = sent ? '#16A34A' : '#022446';
+      const sendMix = P(T, tapT + 0.05, 0.3, Ease.inOutCubic);
+      els.send.style.background = `rgb(${Math.round(lerp(2, 22, sendMix))},${Math.round(lerp(36, 163, sendMix))},${Math.round(lerp(70, 74, sendMix))})`;
       S(els.send, { s: 1 - (P(T, tapT - 0.05, 0.06) * (1 - P(T, tapT + 0.05, 0.2))) * 0.05 });
       const [lab, col, bg] = valid ? ['Objectifs atteints', '#15803D', '#DCFCE7'] : sent ? ['Envoyé au CODIR', '#B45309', '#FEF3C7'] : ['Mise à jour en direct', '#4B5563', '#F3F4F6'];
       els.stChip.innerHTML = `${icon(valid ? 'circle-check' : sent ? 'send' : 'activity', 17, 2.4, col)}${lab}`;

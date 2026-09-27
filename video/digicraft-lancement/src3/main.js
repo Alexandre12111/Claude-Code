@@ -27,7 +27,27 @@
   // Petit « punch » de caméra sur les temps forts de la musique.
   const beat = 60 / TL.bpm;
   const punchZones = TL.punchZonesNew || [[20.4, 34.8], [34.8, 40.2]];
-  const retime = TL.retime ? mkRemap(TL.retime) : (T) => T;
+  // Courbe de temps lissée (Hermite monotone) : pas de changement de vitesse brutal.
+  function pchip(pts) {
+    const x = pts.map((p) => p[0]), y = pts.map((p) => p[1]), n = pts.length;
+    const d = [], m = [];
+    for (let i = 0; i < n - 1; i++) d.push((y[i + 1] - y[i]) / (x[i + 1] - x[i]));
+    m[0] = d[0]; m[n - 1] = d[n - 2];
+    for (let i = 1; i < n - 1; i++) {
+      const h0 = x[i] - x[i - 1], h1 = x[i + 1] - x[i];
+      m[i] = d[i - 1] * d[i] <= 0 ? 0 : (3 * (h0 + h1)) / ((2 * h1 + h0) / d[i - 1] + (h1 + 2 * h0) / d[i]);
+    }
+    return (t) => {
+      if (t <= x[0]) return y[0] + (t - x[0]) * m[0];
+      if (t >= x[n - 1]) return y[n - 1] + (t - x[n - 1]) * m[n - 1];
+      let i = 0;
+      while (t > x[i + 1]) i++;
+      const h = x[i + 1] - x[i], s = (t - x[i]) / h;
+      const h00 = 2 * s * s * s - 3 * s * s + 1, h10 = s * s * s - 2 * s * s + s, h01 = -2 * s * s * s + 3 * s * s, h11 = s * s * s - s * s;
+      return h00 * y[i] + h10 * h * m[i] + h01 * y[i + 1] + h11 * h * m[i + 1];
+    };
+  }
+  const retime = TL.retime ? pchip(TL.retime) : (T) => T;
   function punch(T) {
     let v = 0;
     for (const [a, b] of punchZones) {
@@ -36,7 +56,7 @@
       const tb = a + k * beat * 2;
       if (tb <= b) v = Math.max(v, Math.exp(-(T - tb) * 9));
     }
-    for (const t of TL.hitsNew || TL.hits || []) if (T >= t) v = Math.max(v, 1.8 * Math.exp(-(T - t) * 7));
+    for (const t of TL.hitsNew || TL.hits || []) if (T >= t) v = Math.max(v, 1.6 * (1 - Math.exp(-(T - t) * 30)) * Math.exp(-(T - t) * 5));
     return v;
   }
 
