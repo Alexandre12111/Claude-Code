@@ -28,7 +28,8 @@
       a.s1 = words(sub, "Aujourd'hui, on construit celle que vous");
       a.s2 = words(sub, [{ t: "n'avez" }, { t: 'jamais' }, { t: 'eu' }, { t: 'le' }, { t: 'temps' }, { t: 'de' }, { t: 'bâtir.', c: 'o-light' }]);
 
-      const kit = el(root, { left: 960 - 280 + 'px', top: '740px', width: '560px', height: '250px' });
+      if (window.TL.v4) sub.style.display = 'none';
+      const kit = el(root, { left: 960 - 280 + 'px', top: window.TL.v4 ? '560px' : '740px', width: '560px', height: '250px' });
       a.kit = kit;
       const blk = (x, y, w, hh, st) => el(kit, { left: x + 'px', top: y + 'px', width: w + 'px', height: hh + 'px', borderRadius: '10px', background: 'rgba(255,255,255,0.08)', border: '1.5px solid rgba(255,255,255,0.22)', ...st });
       a.blocks = [blk(0, 0, 560, 34, {}), blk(0, 46, 110, 204, {}), blk(124, 46, 138, 70, { background: 'rgba(46,139,192,0.25)', borderColor: 'rgba(107,184,230,0.7)' }), blk(273, 46, 138, 70, {}), blk(422, 46, 138, 70, { background: 'rgba(143,138,255,0.22)', borderColor: 'rgba(143,138,255,0.6)' }), blk(124, 128, 436, 122, {})];

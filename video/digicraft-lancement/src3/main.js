@@ -26,7 +26,8 @@
 
   // Petit « punch » de caméra sur les temps forts de la musique.
   const beat = 60 / TL.bpm;
-  const punchZones = [[20.4, 34.8], [34.8, 40.2]];
+  const punchZones = TL.punchZonesNew || [[20.4, 34.8], [34.8, 40.2]];
+  const retime = TL.retime ? mkRemap(TL.retime) : (T) => T;
   function punch(T) {
     let v = 0;
     for (const [a, b] of punchZones) {
@@ -35,20 +36,21 @@
       const tb = a + k * beat * 2;
       if (tb <= b) v = Math.max(v, Math.exp(-(T - tb) * 9));
     }
-    for (const t of TL.hits || []) if (T >= t) v = Math.max(v, 1.8 * Math.exp(-(T - t) * 7));
+    for (const t of TL.hitsNew || TL.hits || []) if (T >= t) v = Math.max(v, 1.8 * Math.exp(-(T - t) * 7));
     return v;
   }
 
   window.render = function (T) {
     const pv = punch(T);
     stage.style.transform = pv > 0.001 ? `scale(${(1 + 0.008 * pv).toFixed(5)})` : 'none';
+    const T3 = retime(T);
     for (const s of scenes) {
-      const vis = T >= s.t0 && T < s.t1;
+      const vis = T3 >= s.t0 && T3 < s.t1;
       if (vis !== s.visible) {
         s.root.style.display = vis ? 'block' : 'none';
         s.visible = vis;
       }
-      if (vis) s.update(s.map(T), T);
+      if (vis) s.update(s.map(T3), T3);
     }
   };
 
