@@ -48,34 +48,22 @@ KEEP = (1.6, 51.0)     # on retire le bip de départ et la fin de prise
 
 
 def load():
-    tmp = os.path.join(STEMS, 'vo7_src.wav')
-    subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', SRC, '-ac', '1', '-ar', str(SR),
-                    '-af', 'afftdn=nr=10:nf=-60', tmp], check=True)
-    x, _ = sf.read(tmp)
+    """Voix restaurée par voice_restore.py (débruitage IA, EQ, aigus reconstruits, dynamique)."""
+    pro = os.path.join(STEMS, 'vo7_pro.wav')
+    if not os.path.exists(pro):
+        subprocess.run([sys.executable, os.path.join(HERE, 'voice_restore.py'), SRC, pro] + sys.argv[2:3], check=True)
+    x, _ = sf.read(pro)
     x = x[int(KEEP[0] * SR):int(KEEP[1] * SR)]
     f = int(0.15 * SR)
     x[:f] *= np.linspace(0, 1, f); x[-f:] *= np.linspace(1, 0, f)
-    return x
+    return x / np.sqrt(np.mean(x[np.abs(x) > 0.02] ** 2)) * 0.16
 
 
-def chain(x):
-    x = Mu.hp(x, 80)
-    for b, a in (shelf(150, 1.5, high=False), biquad_peak(300, -2.5, 1.0), biquad_peak(3000, 2.5, 0.9), biquad_peak(6000, -1.5, 3.0)):
-        x = signal.lfilter(b, a, x)
-    # Compresseur doux 2,5:1 sur l'enveloppe lissée, pour une voix régulière sans pompage.
-    env = signal.filtfilt(*signal.butter(1, 12 / (SR / 2)), np.abs(x))
-    thr = np.percentile(env[env > 0.1 * env.max()], 60)
-    g = np.where(env > thr, (thr + (env - thr) / 2.5) / np.maximum(env, 1e-9), 1.0)
-    x = x * g
-    act = np.abs(x) > 0.05 * np.max(np.abs(x))
-    return x / (np.sqrt(np.mean(x[act] ** 2)) + 1e-9) * 0.16
-
-
-x = chain(load())
+x = load()
 vo = np.zeros(N)
 i = int((KEEP[0] + OFFSET) * SR)
 vo[i:i + len(x)] = x[:N - i]
-vo = Mu.reverb(np.stack([vo, vo], 1) * 0.5, 0.4, 0.04, 0.01)
+vo = Mu.reverb(np.stack([vo, vo], 1) * 0.5, 0.3, 0.02, 0.008)
 
 music, _ = sf.read(os.path.join(STEMS, 'music4.wav'))
 sfx, _ = sf.read(os.path.join(STEMS, 'sfx4.wav'))
@@ -85,7 +73,7 @@ on = (signal.filtfilt(*signal.butter(1, 20 / (SR / 2)), np.abs(vo.mean(1))) > 0.
 on = maximum_filter1d(on, int(0.35 * SR))
 att = np.clip(signal.filtfilt(*signal.butter(1, 3 / (SR / 2)), on), 0, 1)
 bed = music * 0.8 * (1 - 0.72 * att)[:, None] + sfx * 0.75 * (1 - 0.7 * att)[:, None]
-export(bed + vo * 2.5, 'mix7_voix')
+export(bed + vo * 2.1, 'mix7_voix')
 v = vo.mean(1) * 2.5; b = bed.mean(1)
 m = np.abs(signal.filtfilt(*signal.butter(1, 20 / (SR / 2)), np.abs(v))) > 0.05
 print('voix/fond pendant la parole dB', round(20 * np.log10(np.sqrt(np.mean(v[m] ** 2)) / np.sqrt(np.mean(b[m] ** 2))), 1))
