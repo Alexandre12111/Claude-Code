@@ -74,6 +74,6 @@ on = maximum_filter1d(on, int(0.35 * SR))
 att = np.clip(signal.filtfilt(*signal.butter(1, 3 / (SR / 2)), on), 0, 1)
 bed = music * 0.8 * (1 - 0.72 * att)[:, None] + sfx * 0.75 * (1 - 0.7 * att)[:, None]
 export(bed + vo * 2.1, 'mix7_voix')
-v = vo.mean(1) * 2.5; b = bed.mean(1)
+v = vo.mean(1) * 2.1; b = bed.mean(1)
 m = np.abs(signal.filtfilt(*signal.butter(1, 20 / (SR / 2)), np.abs(v))) > 0.05
 print('voix/fond pendant la parole dB', round(20 * np.log10(np.sqrt(np.mean(v[m] ** 2)) / np.sqrt(np.mean(b[m] ** 2))), 1))
