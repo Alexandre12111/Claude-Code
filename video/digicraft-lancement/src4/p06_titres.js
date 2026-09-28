@@ -23,7 +23,7 @@
       bt.classList.add('nh');
       t.b1 = chars(el(bt, { position: 'relative' }), 'DigiCraft');
       t.b2 = chars(el(bt, { position: 'relative' }), 'construit.');
-      t.b2._c.forEach((c) => c.classList.add('grad'));
+      t.b2._c.forEach((c) => c.classList.add('o'));
       t.bSub = el(b, { position: 'relative', marginTop: '28px', fontSize: '34px', fontWeight: '600', color: '#4A5568' }, 'Votre application prend forme sous vos yeux.');
 
       const o = el(root, { left: '110px', top: '300px', width: '760px' });
@@ -33,7 +33,7 @@
       ot.classList.add('nh');
       t.o1 = chars(el(ot, { position: 'relative' }), 'En ligne.');
       t.o2 = chars(el(ot, { position: 'relative', fontSize: '104px', marginTop: '14px' }), 'Le jour même.');
-      t.o2._c.forEach((c) => c.classList.add('grad'));
+      t.o2._c.forEach((c) => c.classList.add('o'));
     },
     update(T, RT) {
       T = RT;
@@ -55,7 +55,6 @@
       S(t.b0, { y: (1 - b0) * 20, o: b0 });
       slamChars(T, t.b1._c, 27.6, 0.03, 1.5);
       slamChars(T, t.b2._c, 27.9, 0.03, 1.5);
-      shine(t.b2._c, T, 28.55, 0.9, 120);
       const sp = P(T, 28.4, 0.5, Ease.outQuint);
       S(t.bSub, { y: (1 - sp) * 30, o: sp });
       const bo = P(T, 31.3, 0.35, Ease.inCubic);
@@ -65,7 +64,6 @@
       S(t.o0, { y: (1 - o0) * 20, o: o0 });
       slamChars(T, t.o1._c, 33.0, 0.03, 1.6);
       t.o2._c.forEach((c, i) => { const p = P(T, 33.35 + i * 0.025, 0.45, Ease.outExpo); S(c, { y: (1 - p) * 60, o: p }); });
-      shine(t.o2._c, T, 33.85, 0.8, 120);
       const oo = P(T, 34.6, 0.3, Ease.inCubic);
       S(t.o, { o: 1 - oo, x: -oo * 200 });
     },

@@ -29,7 +29,7 @@
       Object.assign(word.style, { fontSize: '196px', color: 'var(--navy)', lineHeight: '1', paddingTop: '20px' });
       a.digi = chars(word, 'Digi');
       a.craft = chars(word, 'Craft');
-      a.craft._c.forEach((c) => c.classList.add('grad'));
+      a.craft._c.forEach((c) => c.classList.add('o'));
       const by = el(a.zoom, { left: '0', width: '1920px', top: CY + 150 + 'px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px', fontSize: '30px', fontWeight: '600', color: '#6B7B88' });
       by.innerHTML = '<span>par</span>';
       C.leytonLogo(by, 70);
@@ -55,7 +55,6 @@
         S(d, { x: dx * (1 - p) * 260, y: dy * (1 - p) * 260, r: 45 + (1 - p) * 225, s: Math.max(0.0001, i ? 0.3 + 0.7 * p : p), o: clamp((T - t0) * 8) });
       });
       riseChars(T, [...a.digi._c, ...a.craft._c], 0.7, 0.04, 0.7, 90);
-      shine(a.craft._c, T, 1.35, 0.9);
       const hp = P(T, 0.35, 1.6, Ease.outCubic);
       S(a.halo, { x: a.c0 ? a.c0.x : CX - 330, y: a.c0 ? a.c0.y : CY, s: 0.5 + 0.6 * hp + 0.04 * Math.sin(T * 2), o: hp * 0.9 });
       const bp = P(T, 1.55, 0.7, Ease.outQuint);

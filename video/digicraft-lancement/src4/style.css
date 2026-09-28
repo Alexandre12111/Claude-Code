@@ -126,3 +126,6 @@ body { font-family: 'Montserrat', sans-serif; -webkit-font-smoothing: antialiase
   -webkit-mask: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(0,0,0,0.9), rgba(0,0,0,0) 75%); mask: radial-gradient(ellipse 60% 55% at 50% 50%, rgba(0,0,0,0.9), rgba(0,0,0,0) 75%); }
 .ringfx { position: absolute; border-radius: 50%; pointer-events: none;
   background: conic-gradient(from 0deg, #FFD3AA, #EB6739, #C94E24, #F4A071, #FFD3AA); }
+
+/* Les glyphes qui débordent de leur boîte gardent le dégradé. */
+.ch.grad { padding: 0 0.12em; margin: 0 -0.12em; }

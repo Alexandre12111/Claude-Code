@@ -22,6 +22,7 @@
     tiles.push(`url(${c.toDataURL()})`);
   }
   const grain = h('div', 'fx-grain', root);
+  grain.style.display = 'none'; // grain retiré : effet « sable » jugé dégradant
   const vign = h('div', 'fx-vignette', root);
 
   // Fuites de lumière sur les transitions : [temps, direction, teinte, intensité].

@@ -26,7 +26,7 @@
       Object.assign(word.style, { fontSize: '176px', color: 'var(--navy)', lineHeight: '1', paddingTop: '18px' });
       a.digi = chars(word, 'Digi');
       a.craft = chars(word, 'Craft');
-      a.craft._c.forEach((c) => c.classList.add('grad'));
+      a.craft._c.forEach((c) => c.classList.add('o'));
       a.tag = el(root, { left: '0', width: '1920px', top: '500px', textAlign: 'center', fontSize: '84px', color: 'var(--navy)' });
       a.tag.classList.add('nh');
       a.tagC = chars(a.tag, TAG);
@@ -59,7 +59,6 @@
         S(d, { x: dx * (1 - p) * 240, y: dy * (1 - p) * 240, r: 45 + (1 - p) * 225, s: Math.max(0.0001, i ? 0.3 + 0.7 * p : p), o: clamp((T - t0) * 8) });
       });
       riseChars(T, [...a.digi._c, ...a.craft._c], 46.6, 0.035, 0.6, 90);
-      shine(a.craft._c, T, 47.3, 0.85, 120);
       const cs = a.tagC._c, step = (TY1 - TY0) / cs.length;
       let lastX = null;
       cs.forEach((c, i) => {

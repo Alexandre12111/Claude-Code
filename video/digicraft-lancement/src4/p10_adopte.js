@@ -2,12 +2,14 @@
   const { h, S, P, Ease, lerp, clamp, words, revealWords, icon, spring, fmt } = E;
   const { el, navyBg, ringFx, glow } = C;
   let a = {};
+  // Les trois cartes arrivent ensemble, comptent en même temps, puis se verrouillent en rafale.
   const CARDS = [
-    { pre: '', n: 100, suf: ' %', lab: 'no code', ic: 'code-xml', t: 36.0 },
-    { pre: '+', n: 750, suf: '', lab: 'utilisateurs', ic: 'users', t: 37.4 },
-    { pre: '+', n: 350, suf: '', lab: 'applications déployées', ic: 'app-window', t: 38.8 },
+    { pre: '', n: 100, suf: ' %', lab: 'no code', ic: 'code-xml', t: 35.55 },
+    { pre: '+', n: 750, suf: '', lab: 'utilisateurs', ic: 'users', t: 35.63 },
+    { pre: '+', n: 350, suf: '', lab: 'applications déployées', ic: 'app-window', t: 35.71 },
   ];
-  const SLOTS = [440, 960, 1480];
+  const SLOTS = [400, 960, 1520];
+  const SC = 0.8, CY = 580, COUNT_END = 36.85;
 
   SCENES.push({
     id: 'adopte',
@@ -16,9 +18,9 @@
       a.bg = navyBg(root, 2);
       a.ringA = ringFx(root);
       a.ringB = ringFx(root);
-      const t = el(root, { left: '0', width: '1920px', top: '120px', textAlign: 'center', fontSize: '92px', color: '#fff' });
+      const t = el(root, { left: '0', width: '1920px', top: '130px', textAlign: 'center', fontSize: '80px', color: '#fff' });
       t.classList.add('nh');
-      a.title = words(t, [{ t: 'Déjà' }, { t: 'adopté' }, { t: 'par' }, { t: 'nos', c: 'o-light' }, { t: 'équipes.', c: 'o-light' }]);
+      a.title = words(t, [{ t: 'Déjà' }, { t: 'adopté' }, { t: 'par' }, { t: 'de' }, { t: 'nombreux', c: 'o-light' }, { t: 'utilisateurs.', c: 'o-light' }]);
       a.cards = CARDS.map((c) => {
         const gl = glow(root, 760, 'rgba(235,103,57,0.42)', 0);
         const k = el(root, { left: 960 - 320 + 'px', top: 520 - 190 + 'px', width: '640px', height: '380px', borderRadius: '40px', background: 'linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04))', border: '1.5px solid rgba(255,255,255,0.16)', boxShadow: '0 40px 80px rgba(0,0,0,0.25)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px' });
@@ -50,19 +52,19 @@
       revealWords(T, a.title, 35.3, 0.09, 0.6);
       a.cards.forEach((k, i) => {
         const c = CARDS[i];
-        const pop = spring(T - c.t, 200, 15);
-        const d0 = CARDS[i + 1] ? CARDS[i + 1].t - 0.42 : 39.85;
-        const dock = P(T, d0, 0.55, Ease.inOutQuart);
-        // la carte glisse d'abord sur le côté puis descend : pas de passage au dessus des autres
-        const x = lerp(0, SLOTS[i] - 960, P(T, d0, 0.42, Ease.inOutCubic));
-        const y = lerp(0, 300, dock) - 190 * P(T, 39.95, 0.45, Ease.inOutQuart);
-        const s = lerp(1, 0.6, dock) * (0.6 + 0.4 * pop);
-        S(k, { x, y: y + (1 - pop) * 80, s: Math.max(0.0001, s), o: clamp((T - c.t) * 6) });
+        const pop = spring(T - c.t, 210, 16);
+        // verrouillage en rafale une fois les compteurs arrivés : petit coup d'échelle + éclat
+        const lockT = COUNT_END + i * 0.11;
+        const bump = T > lockT ? Math.exp(-(T - lockT) * 9) * Math.sin(Math.min(Math.PI, (T - lockT) * 14)) : 0;
+        const x = SLOTS[i] - 960, y = CY - 520;
+        const s = SC * (0.7 + 0.3 * pop) * (1 + 0.07 * bump);
+        S(k, { x, y: y + (1 - pop) * 90, s: Math.max(0.0001, s), o: clamp((T - c.t) * 7) });
         const gp = P(T, c.t, 0.5, Ease.outCubic);
-        S(k._gl, { x: 960 + x, y: 520 + y, s: s * (0.9 + 0.1 * Math.sin(T * 2 + i)), o: gp * (0.55 + 0.45 * Math.exp(-(T - c.t) * 2)) * (1 - 0.4 * dock) });
-        k._num.style.backgroundPosition = `${lerp(100, 0, P(T, c.t + 0.75, 0.9, Ease.inOutSine))}% 0`;
-        const v = P(T, c.t + 0.05, 0.9, Ease.outCubic) * c.n;
+        const flash = T > lockT ? Math.exp(-(T - lockT) * 4) : 0;
+        S(k._gl, { x: 960 + x, y: 520 + y, s: SC * (0.85 + 0.1 * Math.sin(T * 2 + i) + 0.25 * flash), o: gp * (0.45 + 0.55 * flash) });
+        const v = P(T, c.t + 0.05, COUNT_END - c.t - 0.05 + i * 0.11, Ease.outCubic) * c.n;
         k._num.textContent = c.pre + fmt(v) + c.suf;
+        k._num.style.backgroundPosition = `${lerp(100, 0, P(T, lockT, 0.8, Ease.inOutSine))}% 0`;
       });
     },
   });
