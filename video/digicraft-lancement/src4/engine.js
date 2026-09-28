@@ -152,7 +152,7 @@
   function slash(T, t0, dur, root, bands, widths) {
     widths = widths || (bands.length === 3 ? [12, 250, 90] : [240, 70]);
     const total = widths.reduce((a, b) => a + b, 0);
-    const p = Ease.inOutQuart(clamp((T - t0) / dur));
+    const p = Ease.inOutCubic(clamp((T - t0) / dur));
     const xt = lerp(0, 1920 + SLANT + total + 40, p);
     const xb = xt - SLANT;
     if (p >= 1) root.style.clipPath = 'none';

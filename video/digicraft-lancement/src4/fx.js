@@ -43,9 +43,11 @@
       const r = seeded(f * 7919 + 13);
       grain.style.backgroundImage = tiles[f % tiles.length];
       grain.style.backgroundPosition = `${Math.floor(r() * 256)}px ${Math.floor(r() * 256)}px`;
-      const dark = (TL.darkZones || []).some(([a, b]) => T >= a && T < b);
-      grain.style.opacity = dark ? '0.085' : '0.06';
-      vign.style.opacity = dark ? '0.9' : '0.45';
+      // Passage clair/sombre en fondu de 0,5 s centré sur la transition (pas de saut de vignette).
+      const sm = (x) => { x = clamp(x); return x * x * (3 - 2 * x); };
+      const dk = Math.max(0, ...(TL.darkZones || []).map(([a, b]) => sm((T - a + 0.25) / 0.5) * sm((b + 0.25 - T) / 0.5)));
+      grain.style.opacity = lerp(0.06, 0.085, dk).toFixed(4);
+      vign.style.opacity = lerp(0.45, 0.9, dk).toFixed(4);
 
       for (const L of leaks) {
         const u = (T - (L.t - 0.55)) / 1.25;
