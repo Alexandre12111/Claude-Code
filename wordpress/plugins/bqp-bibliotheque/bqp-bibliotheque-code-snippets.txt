@@ -1,13 +1,16 @@
 /**
- * BQP Bibliothèque — bibliothèque numérique de la Bourse Jean-Michel Quatrepoint.
+ * BQP Bibliothèque : bibliothèque numérique de la Bourse Jean-Michel Quatrepoint.
  *
- * Étape 1 : back-office. Type de contenu « Document », neuf taxonomies
- * pré-remplies d'après l'arborescence validée, fiches Personnes et
- * Organisations, fiche document complète.
+ * Back-office : type de contenu « Document », neuf taxonomies pré-remplies,
+ * gestionnaire d'arborescence, panneau de classement, générateur de shortcodes.
+ * Site : les 5 blocs, listes de documents par shortcode, fiches documents,
+ * pages collections, thèmes, personnes et organisations.
  *
  * Compatible extension classique ET Code Snippets.
  *
- * Version : 1.0.0
+ * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
+ *
+ * Version : 2.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -15,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '1.0.0' );
+	define( 'BQB_VERSION', '2.0.0' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -163,6 +166,7 @@ function bqb_register_content() {
 				'show_tagcloud'      => false,
 				'show_in_rest'       => false,
 				'query_var'          => $key,
+				'meta_box_cb'        => false,
 				'rewrite'            => $public ? array( 'slug' => $slug, 'with_front' => false, 'hierarchical' => $hierarchical ) : false,
 			)
 		);
@@ -182,19 +186,6 @@ function bqb_maybe_flush_rewrite() {
 
 	flush_rewrite_rules( false );
 	update_option( 'bqb_rewrite_version', BQB_VERSION, false );
-}
-
-/**
- * Dans les arborescences (collections, thèmes), une case cochée ne remonte
- * plus en tête de liste : l'enfant reste sous son parent, lisible.
- */
-add_filter( 'wp_terms_checklist_args', 'bqb_checklist_args', 10, 2 );
-function bqb_checklist_args( $args, $post_id ) {
-	if ( isset( $args['taxonomy'] ) && in_array( $args['taxonomy'], array( 'bqb_collection', 'bqb_theme' ), true ) ) {
-		$args['checked_ontop'] = false;
-	}
-
-	return $args;
 }
 
 add_filter( 'enter_title_here', 'bqb_title_placeholder', 10, 2 );
@@ -800,7 +791,7 @@ function bqb_render_details_box( $post ) {
 	$html .= '<input type="text" class="bqb-admin__input" name="bqb_droits" id="bqb_droits" value="' . esc_attr( $droits ) . '" placeholder="Reproduction autorisée avec mention de la source" />';
 	$html .= '</p>';
 
-	$html .= '<div class="bqb-admin__remind"><span class="dashicons dashicons-info-outline"></span> Collection, nature, thèmes, secteurs, pays, personnes, organisations et mots-clés se renseignent dans les encadrés à droite de l\'écran.</div>';
+	$html .= '<div class="bqb-admin__remind"><span class="dashicons dashicons-info-outline"></span> Collection, nature, thèmes, personnes et autres étiquettes se choisissent dans l\'encadré <strong>Classement</strong>, juste en dessous.</div>';
 
 	$html .= '</div>';
 
@@ -1137,9 +1128,9 @@ function bqb_render_help_page() {
 		array( 'Mots-clés', 'Mots libres pour affiner la recherche.', 'Alstom, désindustrialisation' ),
 	);
 
-	$html  = '<div class="wrap bqb-help">';
-	$html .= '<h1 class="bqb-help__title">Bibliothèque numérique</h1>';
-	$html .= '<p class="bqb-help__intro">Chaque document reçoit plusieurs étiquettes indépendantes. C\'est leur combinaison qui le fait apparaître au bon endroit sur le site : un article de Jean-Michel Quatrepoint sur le nucléaire sera trouvé depuis ses écrits, depuis le thème Souveraineté énergétique et depuis le secteur Nucléaire, sans être saisi trois fois.</p>';
+	$html  = '<div class="wrap bqb-wrap bqb-help">';
+	$html .= bqb_admin_banner( 'Mode d\'emploi', 'Tout ce qu\'il faut savoir pour alimenter la bibliothèque et l\'afficher sur le site.' );
+	$html .= '<p class="bqb-help__intro">Chaque document reçoit plusieurs étiquettes indépendantes, dans l\'encadré <strong>Classement</strong> de sa fiche. C\'est leur combinaison qui le fait apparaître au bon endroit sur le site : un article de Jean-Michel Quatrepoint sur le nucléaire sera trouvé depuis ses écrits, depuis le thème Souveraineté énergétique et depuis le secteur Nucléaire, sans être saisi trois fois.</p>';
 
 	$html .= '<div class="bqb-help__example">';
 	$html .= '<span class="bqb-help__eyebrow">Exemple de fiche bien remplie</span>';
@@ -1149,10 +1140,20 @@ function bqb_render_help_page() {
 	}
 	$html .= '</tbody></table></div>';
 
+	$html .= '<h2 class="bqb-help__subtitle">Mettre la bibliothèque en place</h2><ol class="bqb-help__list">';
+	$html .= '<li>Créez une page « Bibliothèque » et collez-y <code>[bqp_bibliotheque]</code> : les cinq blocs.</li>';
+	$html .= '<li>Créez une page « Recherche avancée » avec <code>[bqp_documents filtres="oui"]</code>, une page « Auteurs » avec <code>[bqp_personnes]</code> et, si besoin, une page « Organisations » avec <code>[bqp_personnes famille="organisations"]</code>.</li>';
+	$html .= '<li>Dans <strong>Réglages</strong>, indiquez ces pages : les liens des blocs et le fil d\'Ariane s\'en servent.</li>';
+	$html .= '<li>Pour n\'importe quelle autre combinaison, utilisez le <strong>Générateur de shortcode</strong>.</li>';
+	$html .= '</ol>';
+
 	$html .= '<h2 class="bqb-help__subtitle">Bon à savoir</h2><ul class="bqb-help__list">';
+	$html .= '<li><strong>Arborescence</strong> : cliquez sur un nom pour le renommer, glissez une ligne pour la déplacer, l\'engrenage ouvre ses réglages (description, page dédiée, liens proposés dans le bloc). Chaque ligne affiche son shortcode : un clic le copie.</li>';
+	$html .= '<li>Renommer une catégorie ne casse aucun shortcode. Seul le changement de son <strong>identifiant</strong> oblige à mettre à jour les shortcodes déjà collés.</li>';
+	$html .= '<li>Une catégorie peut avoir une <strong>page dédiée</strong> construite avec Elementor : tous les liens y mènent alors, et l\'adresse automatique y redirige.</li>';
 	$html .= '<li><strong>Le résumé est le champ le plus important.</strong> Une page qui ne contient qu\'un lien vers un PDF est jugée pauvre par Google. Avec un résumé de 300 à 600 caractères, chaque document devient une page utile. La colonne « Résumé » de la liste signale ceux qui en manquent.</li>';
 	$html .= '<li>La <strong>date</strong> accepte l\'année seule. Le mois et le jour sont facultatifs.</li>';
-	$html .= '<li>Pour un <strong>lauréat</strong>, créez sa fiche dans <strong>Personnes</strong> et cochez le rôle Lauréat, avec l\'année et le prix. Sa page listera automatiquement tous ses travaux.</li>';
+	$html .= '<li>Pour un <strong>lauréat</strong>, ouvrez <strong>Arborescence › Personnes</strong>, puis la fiche complète : cochez le rôle Lauréat, avec l\'année et le prix. Sa page listera automatiquement tous ses travaux.</li>';
 	$html .= '<li>Les <strong>collections, thèmes, personnes et organisations</strong> ont leur propre page sur le site. Remplissez leur description : elle sert d\'introduction à la page et de texte pour Google.</li>';
 	$html .= '<li>Un document <strong>réservé</strong> ne doit pas encore recevoir son fichier : un fichier de la médiathèque est accessible par son adresse. La protection arrive avec l\'étape suivante.</li>';
 	$html .= '<li>Si une page document affiche une erreur 404, allez dans <strong>Réglages &rsaquo; Permaliens</strong> et cliquez sur Enregistrer, sans rien changer.</li>';
@@ -1173,35 +1174,37 @@ function bqb_admin_assets( $hook ) {
 		return;
 	}
 
-	$ours = ( BQB_CPT === $screen->post_type ) || ( $screen->taxonomy && array_key_exists( $screen->taxonomy, bqb_taxonomies() ) );
+	$ours = ( BQB_CPT === $screen->post_type )
+		|| ( $screen->taxonomy && array_key_exists( $screen->taxonomy, bqb_taxonomies() ) )
+		|| ( false !== strpos( (string) $hook, 'bqb-' ) );
 
 	if ( ! $ours ) {
 		return;
 	}
 
-	$needs_media = in_array( $hook, array( 'post.php', 'post-new.php', 'edit-tags.php', 'term.php' ), true );
+	// Les typographies du site, pour que l'administration lui ressemble.
+	wp_enqueue_style( 'bqb-fonts', 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap', array(), null );
 
-	if ( $needs_media ) {
+	if ( in_array( $hook, array( 'post.php', 'post-new.php', 'edit-tags.php', 'term.php' ), true ) ) {
 		wp_enqueue_media();
 	}
 
 	wp_register_style( 'bqb-admin', false, array(), BQB_VERSION );
 	wp_enqueue_style( 'bqb-admin' );
-	wp_add_inline_style( 'bqb-admin', bqb_admin_css() );
+	wp_add_inline_style( 'bqb-admin', bqb_admin_css() . bqb_admin_css_v2() );
 
-	if ( $needs_media ) {
-		wp_register_script( 'bqb-admin', false, array(), BQB_VERSION, true );
-		wp_enqueue_script( 'bqb-admin' );
-		wp_add_inline_script(
-			'bqb-admin',
-			'var BQB = ' . wp_json_encode(
-				array(
-					'ajax'  => admin_url( 'admin-ajax.php' ),
-					'nonce' => wp_create_nonce( 'bqb_related' ),
-				)
-			) . ';' . bqb_admin_js()
-		);
-	}
+	wp_register_script( 'bqb-admin', false, array(), BQB_VERSION, true );
+	wp_enqueue_script( 'bqb-admin' );
+	wp_add_inline_script(
+		'bqb-admin',
+		'var BQB = ' . wp_json_encode(
+			array(
+				'ajax'        => admin_url( 'admin-ajax.php' ),
+				'nonce'       => wp_create_nonce( 'bqb_related' ),
+				'nonce_terms' => wp_create_nonce( 'bqb_terms' ),
+			)
+		) . ';' . bqb_admin_js() . bqb_admin_js_v2()
+	);
 }
 
 function bqb_admin_css() {
@@ -1253,7 +1256,6 @@ function bqb_admin_css() {
 	.bqb-related__list li span{flex:1;}
 	.bqb-related__remove{border:0;background:none;color:#b32d2e;font-size:18px;line-height:1;cursor:pointer;}
 
-	#bqb_collection-all,#bqb_theme-all{max-height:440px;}
 	.bqb-checks{display:flex;flex-wrap:wrap;gap:6px 16px;}
 	.bqb-checks label{display:inline-flex !important;align-items:center;gap:6px;font-weight:400 !important;}
 	.bqb-media{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;}
@@ -1430,4 +1432,3270 @@ function bqb_admin_js() {
 		});
 	})();
 	";
+}
+
+/* =========================================================================
+ * VERSION 2
+ * ====================================================================== */
+
+/* -------------------------------------------------------------------------
+ * 9. Réglages
+ * ---------------------------------------------------------------------- */
+
+function bqb_settings() {
+	$saved = get_option( 'bqb_settings', array() );
+	$saved = is_array( $saved ) ? $saved : array();
+
+	return wp_parse_args(
+		$saved,
+		array(
+			'afficher_vides'  => 0,
+			'par_page'        => 12,
+			'page_catalogue'  => 0,
+			'page_bibliotheque' => 0,
+			'page_personnes'  => 0,
+			'page_organisations' => 0,
+			'page_contact'    => 0,
+			'bloc5_titre'     => 'Explorer par thème',
+			'bloc5_texte'     => 'Une navigation thématique transversale pour croiser les contenus.',
+			'bloc5_couleur'   => '#1F5561',
+			'fiche_auto'      => 1,
+			'archives_auto'   => 1,
+		)
+	);
+}
+
+/**
+ * Nom court utilisé dans les shortcodes => taxonomie.
+ */
+function bqb_short_map() {
+	return array(
+		'collection'   => 'bqb_collection',
+		'nature'       => 'bqb_nature',
+		'theme'        => 'bqb_theme',
+		'secteur'      => 'bqb_secteur',
+		'pays'         => 'bqb_pays',
+		'prix'         => 'bqb_prix',
+		'personne'     => 'bqb_personne',
+		'organisation' => 'bqb_organisation',
+		'motcle'       => 'bqb_motcle',
+	);
+}
+
+function bqb_short_name( $taxonomy ) {
+	$flip = array_flip( bqb_short_map() );
+
+	return isset( $flip[ $taxonomy ] ) ? $flip[ $taxonomy ] : '';
+}
+
+/**
+ * Les « vues » qu'une sous-collection peut proposer dans les blocs :
+ * elles regroupent les documents plutôt que de les filtrer.
+ */
+function bqb_views() {
+	return array(
+		'annee'        => 'Par année',
+		'personne'     => 'Par auteur',
+		'theme'        => 'Par thématique',
+		'organisation' => 'Par organisation',
+		'nature'       => 'Par type de document',
+		'laureats'     => 'Les lauréats',
+	);
+}
+
+/**
+ * Libellé d'une vue, adapté à la collection : « Par lauréat » plutôt que
+ * « Par auteur » dans l'espace des lauréats, « Par expert » chez les experts.
+ */
+function bqb_view_label( $view, $term = null ) {
+	$labels = bqb_views();
+	$label  = isset( $labels[ $view ] ) ? $labels[ $view ] : $view;
+	$custom = $term ? get_term_meta( $term->term_id, 'bqb_vue_' . $view, true ) : '';
+
+	return $custom ? $custom : $label;
+}
+
+/* -------------------------------------------------------------------------
+ * 10. Adresses : page dédiée, archive, filtres
+ * ---------------------------------------------------------------------- */
+
+/**
+ * L'adresse d'un terme : sa page dédiée si elle existe, sinon sa page
+ * d'archive, sinon la page catalogue filtrée.
+ */
+function bqb_term_url( $term, $args = array() ) {
+	if ( ! $term instanceof WP_Term ) {
+		return '';
+	}
+
+	$page = (int) get_term_meta( $term->term_id, 'bqb_page', true );
+	$tax  = get_taxonomy( $term->taxonomy );
+
+	if ( $page && 'publish' === get_post_status( $page ) ) {
+		$url = get_permalink( $page );
+	} elseif ( $tax && $tax->public ) {
+		$url = get_term_link( $term );
+	} else {
+		$settings = bqb_settings();
+		$url      = $settings['page_catalogue'] ? get_permalink( (int) $settings['page_catalogue'] ) : '';
+
+		if ( ! $url ) {
+			return '';
+		}
+
+		$args = array_merge( array( 'f_' . bqb_short_name( $term->taxonomy ) => $term->slug ), $args );
+	}
+
+	if ( is_wp_error( $url ) || ! $url ) {
+		return '';
+	}
+
+	return $args ? add_query_arg( array_map( 'rawurlencode', $args ), $url ) : $url;
+}
+
+/* -------------------------------------------------------------------------
+ * 11. Comptage des documents, mis en cache
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Chaque modification de document ou de terme invalide tout le cache :
+ * simple et sûr, les comptages se refont à la visite suivante.
+ */
+function bqb_bump_cache() {
+	update_option( 'bqb_cache_version', (string) microtime( true ), false );
+}
+
+add_action( 'save_post_' . BQB_CPT, 'bqb_bump_cache' );
+add_action( 'deleted_post', 'bqb_bump_cache' );
+add_action( 'trashed_post', 'bqb_bump_cache' );
+add_action( 'untrashed_post', 'bqb_bump_cache' );
+add_action( 'set_object_terms', 'bqb_bump_cache' );
+add_action( 'created_term', 'bqb_bump_cache' );
+add_action( 'edited_term', 'bqb_bump_cache' );
+add_action( 'delete_term', 'bqb_bump_cache' );
+
+/**
+ * Nombre de documents publiés pour une combinaison de critères.
+ * $criteria : array( 'collection' => array( 'slug' ), 'nature' => … ).
+ */
+function bqb_count( $criteria ) {
+	$version = (string) get_option( 'bqb_cache_version', '1' );
+	$key     = 'bqb_c_' . md5( $version . wp_json_encode( $criteria ) );
+	$cached  = get_transient( $key );
+
+	if ( false !== $cached ) {
+		return (int) $cached;
+	}
+
+	$args                   = bqb_query_args( $criteria );
+	$args['posts_per_page'] = 1;
+	$args['fields']         = 'ids';
+	$args['no_found_rows']  = false;
+
+	$query = new WP_Query( $args );
+	$count = (int) $query->found_posts;
+
+	set_transient( $key, $count, DAY_IN_SECONDS );
+
+	return $count;
+}
+
+/* -------------------------------------------------------------------------
+ * 12. Requête commune à toutes les listes
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Transforme des critères en arguments WP_Query.
+ * Plusieurs valeurs dans une même famille : l'une OU l'autre.
+ * Plusieurs familles : l'une ET l'autre.
+ */
+function bqb_query_args( $criteria ) {
+	$args = array(
+		'post_type'           => BQB_CPT,
+		'post_status'         => 'publish',
+		'ignore_sticky_posts' => true,
+		'tax_query'           => array( 'relation' => 'AND' ),
+		'meta_query'          => array( 'relation' => 'AND' ),
+	);
+
+	foreach ( bqb_short_map() as $short => $taxonomy ) {
+		if ( empty( $criteria[ $short ] ) ) {
+			continue;
+		}
+
+		$slugs = array_filter( array_map( 'sanitize_title', (array) $criteria[ $short ] ) );
+
+		if ( $slugs ) {
+			$args['tax_query'][] = array(
+				'taxonomy'         => $taxonomy,
+				'field'            => 'slug',
+				'terms'            => $slugs,
+				'include_children' => true,
+			);
+		}
+	}
+
+	if ( ! empty( $criteria['and'] ) ) {
+		foreach ( (array) $criteria['and'] as $short => $slugs ) {
+			$map   = bqb_short_map();
+			$slugs = array_filter( array_map( 'sanitize_title', (array) $slugs ) );
+
+			if ( isset( $map[ $short ] ) && $slugs ) {
+				$args['tax_query'][] = array(
+					'taxonomy'         => $map[ $short ],
+					'field'            => 'slug',
+					'terms'            => $slugs,
+					'include_children' => true,
+				);
+			}
+		}
+	}
+
+	if ( ! empty( $criteria['q'] ) ) {
+		$args['s'] = sanitize_text_field( $criteria['q'] );
+	}
+
+	if ( ! empty( $criteria['annee'] ) ) {
+		$range = array_map( 'intval', explode( '-', (string) $criteria['annee'] ) );
+
+		if ( 2 === count( $range ) && $range[0] && $range[1] ) {
+			$args['meta_query'][] = array( 'key' => '_bqb_annee', 'value' => array( min( $range ), max( $range ) ), 'type' => 'NUMERIC', 'compare' => 'BETWEEN' );
+		} elseif ( $range[0] ) {
+			$args['meta_query'][] = array( 'key' => '_bqb_annee', 'value' => $range[0], 'type' => 'NUMERIC', 'compare' => '=' );
+		}
+	}
+
+	if ( ! empty( $criteria['acces'] ) && array_key_exists( $criteria['acces'], bqb_access_levels() ) ) {
+		if ( 'public' === $criteria['acces'] ) {
+			$args['meta_query'][] = array(
+				'relation' => 'OR',
+				array( 'key' => '_bqb_acces', 'value' => 'public' ),
+				array( 'key' => '_bqb_acces', 'compare' => 'NOT EXISTS' ),
+			);
+		} else {
+			$args['meta_query'][] = array( 'key' => '_bqb_acces', 'value' => $criteria['acces'] );
+		}
+	}
+
+	$tri = isset( $criteria['tri'] ) ? $criteria['tri'] : 'recent';
+
+	if ( 'titre' === $tri ) {
+		$args['orderby'] = array( 'title' => 'ASC' );
+	} else {
+		// Les documents sans date restent listés, après les autres.
+		$args['meta_query']['bqb_date'] = array(
+			'relation'     => 'OR',
+			'bqb_date_ok'  => array( 'key' => '_bqb_date_tri', 'compare' => 'EXISTS' ),
+			'bqb_date_non' => array( 'key' => '_bqb_date_tri', 'compare' => 'NOT EXISTS' ),
+		);
+		$args['orderby'] = array(
+			'bqb_date_ok' => ( 'ancien' === $tri ) ? 'ASC' : 'DESC',
+			'title'       => 'ASC',
+		);
+	}
+
+	if ( 1 === count( $args['tax_query'] ) ) {
+		unset( $args['tax_query'] );
+	}
+
+	return $args;
+}
+
+/* -------------------------------------------------------------------------
+ * 13. Propositions des blocs, reprises du schéma validé
+ * ---------------------------------------------------------------------- */
+
+add_action( 'admin_init', 'bqb_maybe_seed_v2' );
+function bqb_maybe_seed_v2() {
+	if ( get_option( 'bqb_seeded_v2' ) || ! get_option( 'bqb_seeded' ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'manage_categories' ) ) {
+		return;
+	}
+
+	$nat = function ( $names ) {
+		$ids = array();
+		foreach ( $names as $name ) {
+			$term = get_term_by( 'slug', sanitize_title( $name ), 'bqb_nature' );
+			if ( $term ) {
+				$ids[] = (int) $term->term_id;
+			}
+		}
+		return $ids;
+	};
+
+	$plan = array(
+		'ecrits-de-jean-michel-quatrepoint'                => array( $nat( array( 'Livre ou ouvrage', 'Article', 'Chronique', 'Tribune', 'Note', 'Rapport', 'Entretien', 'Conférence ou intervention' ) ), array() ),
+		'fonds-documentaire'                               => array( $nat( array( 'Archive de presse', 'Rapport', 'Étude', 'Document institutionnel', 'Document d\'entreprise', 'Source historique', 'Document de travail', 'Autre' ) ), array() ),
+		'travaux-des-laureats'                             => array( array(), array( 'laureats' ) ),
+		'travaux-primes'                                   => array( array(), array( 'personne', 'annee' ) ),
+		'travaux-ulterieurs'                               => array( array(), array( 'personne', 'theme' ) ),
+		'publications-associees'                           => array( $nat( array( 'Article', 'Livre ou ouvrage', 'Entretien', 'Autre' ) ), array() ),
+		'publications-de-la-bourse'                        => array( $nat( array( 'Étude', 'Note de recherche', 'Cahier', 'Rapport', 'Dossier thématique', 'Tribune', 'Entretien', 'Actes de colloque', 'Synthèse', 'Document institutionnel' ) ), array() ),
+		'contributions-dexperts'                           => array( array(), array( 'personne', 'theme' ) ),
+		'publications-de-partenaires'                      => array( array(), array( 'organisation', 'nature' ) ),
+		'entretiens'                                       => array( array(), array( 'personne' ) ),
+		'tribunes-invitees'                                => array( array(), array( 'personne', 'theme' ) ),
+		'etudes-partenaires'                               => array( array(), array( 'organisation', 'theme' ) ),
+		'documents-institutionnels'                        => array( array(), array( 'organisation', 'nature' ) ),
+	);
+
+	$labels = array(
+		'travaux-primes'        => array( 'personne' => 'Par lauréat' ),
+		'travaux-ulterieurs'    => array( 'personne' => 'Par lauréat' ),
+		'contributions-dexperts' => array( 'personne' => 'Par expert' ),
+		'publications-de-partenaires' => array( 'organisation' => 'Par partenaire', 'nature' => 'Par type de publication' ),
+		'etudes-partenaires'    => array( 'organisation' => 'Par partenaire' ),
+		'documents-institutionnels' => array( 'organisation' => 'Par organisation', 'nature' => 'Par type de document' ),
+		'tribunes-invitees'     => array( 'personne' => 'Par auteur' ),
+		'entretiens'            => array( 'personne' => 'Par personne interrogée' ),
+	);
+
+	foreach ( $plan as $slug => $conf ) {
+		$term = get_term_by( 'slug', $slug, 'bqb_collection' );
+
+		if ( ! $term ) {
+			continue;
+		}
+
+		if ( '' === get_term_meta( $term->term_id, 'bqb_natures', true ) ) {
+			update_term_meta( $term->term_id, 'bqb_natures', $conf[0] );
+		}
+
+		if ( '' === get_term_meta( $term->term_id, 'bqb_vues', true ) ) {
+			update_term_meta( $term->term_id, 'bqb_vues', $conf[1] );
+		}
+
+		if ( isset( $labels[ $slug ] ) ) {
+			foreach ( $labels[ $slug ] as $view => $label ) {
+				update_term_meta( $term->term_id, 'bqb_vue_' . $view, $label );
+			}
+		}
+	}
+
+	// Ordre des natures : celui du schéma, plutôt que l'ordre alphabétique.
+	$i = 1;
+	foreach ( bqb_seed_data()['bqb_nature'] as $nature ) {
+		$term = get_term_by( 'slug', sanitize_title( $nature['name'] ), 'bqb_nature' );
+		if ( $term && '' === get_term_meta( $term->term_id, 'bqb_ordre', true ) ) {
+			update_term_meta( $term->term_id, 'bqb_ordre', $i );
+		}
+		$i++;
+	}
+
+	update_option( 'bqb_seeded_v2', BQB_VERSION, false );
+}
+
+/* -------------------------------------------------------------------------
+ * 14. Arbre ordonné d'une taxonomie
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Tous les termes, rangés : ordre choisi, puis ordre alphabétique.
+ * Renvoie array( parent_id => array( WP_Term, … ) ).
+ */
+function bqb_term_children_map( $taxonomy ) {
+	$terms = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false ) );
+	$map   = array();
+
+	if ( is_wp_error( $terms ) ) {
+		return $map;
+	}
+
+	foreach ( $terms as $term ) {
+		$term->bqb_ordre              = get_term_meta( $term->term_id, 'bqb_ordre', true );
+		$map[ (int) $term->parent ][] = $term;
+	}
+
+	foreach ( $map as $parent => $list ) {
+		usort(
+			$map[ $parent ],
+			function ( $a, $b ) {
+				$oa = ( '' === $a->bqb_ordre ) ? 9999 : (int) $a->bqb_ordre;
+				$ob = ( '' === $b->bqb_ordre ) ? 9999 : (int) $b->bqb_ordre;
+
+				return ( $oa === $ob ) ? strcasecmp( remove_accents( $a->name ), remove_accents( $b->name ) ) : ( $oa - $ob );
+			}
+		);
+	}
+
+	return $map;
+}
+
+/* -------------------------------------------------------------------------
+ * 15. Panneau « Classement » de la fiche document
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Comment chaque famille se présente dans le panneau.
+ */
+function bqb_picker_config() {
+	return array(
+		'bqb_collection'   => array( 'tree', 'Où se range le document. En général une seule sous-collection.' ),
+		'bqb_nature'       => array( 'pills', 'Ce qu\'est le document.' ),
+		'bqb_theme'        => array( 'tree', 'De quoi il parle. Plusieurs choix possibles.' ),
+		'bqb_personne'     => array( 'tokens', 'Auteurs, lauréats, experts. Tapez un nom : il se complète, ou se crée s\'il n\'existe pas.' ),
+		'bqb_organisation' => array( 'tokens', 'Éditeur, partenaire, institution, source.' ),
+		'bqb_secteur'      => array( 'pills', '' ),
+		'bqb_pays'         => array( 'pills', '' ),
+		'bqb_prix'         => array( 'pills', 'Pour les travaux des lauréats.' ),
+		'bqb_motcle'       => array( 'tokens', 'Mots libres pour affiner la recherche.' ),
+	);
+}
+
+add_action( 'add_meta_boxes', 'bqb_add_classement_box', 5 );
+function bqb_add_classement_box() {
+	add_meta_box( 'bqb_classement', 'Classement', 'bqb_render_classement_box', BQB_CPT, 'normal', 'high' );
+}
+
+function bqb_pill( $taxonomy, $term, $checked, $extra_class = '' ) {
+	return '<label class="bqb-pill' . ( $checked ? ' is-on' : '' ) . ( $extra_class ? ' ' . $extra_class : '' ) . '" data-name="' . esc_attr( remove_accents( strtolower( $term->name ) ) ) . '">'
+		. '<input type="checkbox" name="bqb_terms[' . esc_attr( $taxonomy ) . '][]" value="' . (int) $term->term_id . '"' . checked( $checked, true, false ) . ' />'
+		. '<span>' . esc_html( $term->name ) . '</span>'
+		. '</label>';
+}
+
+function bqb_render_classement_box( $post ) {
+	wp_nonce_field( 'bqb_save_classement', 'bqb_classement_nonce' );
+
+	$taxonomies = bqb_taxonomies();
+	$html       = '<div class="bqb-admin bqb-class">';
+
+	foreach ( bqb_picker_config() as $taxonomy => $conf ) {
+		list( $mode, $help ) = $conf;
+
+		$assigned = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
+		$assigned = is_wp_error( $assigned ) ? array() : array_map( 'intval', $assigned );
+		$label    = $taxonomies[ $taxonomy ][0];
+		$wide     = in_array( $mode, array( 'tree', 'tokens' ), true ) || 'bqb_nature' === $taxonomy;
+
+		$html .= '<section class="bqb-class__block' . ( $wide ? ' is-wide' : '' ) . '" data-tax="' . esc_attr( $taxonomy ) . '" data-mode="' . esc_attr( $mode ) . '">';
+		$html .= '<header class="bqb-class__head">';
+		$html .= '<h4>' . esc_html( $label ) . ' <span class="bqb-class__count" data-count>' . ( $assigned ? count( $assigned ) : '' ) . '</span></h4>';
+
+		if ( 'bqb_theme' === $taxonomy ) {
+			$html .= '<input type="search" class="bqb-class__filter" placeholder="Filtrer les thèmes…" data-filter />';
+		}
+
+		$html .= '</header>';
+
+		if ( $help ) {
+			$html .= '<p class="bqb-class__help">' . esc_html( $help ) . '</p>';
+		}
+
+		if ( 'tokens' === $mode ) {
+			$html .= '<div class="bqb-tokens" data-tokens>';
+			$html .= '<ul class="bqb-tokens__list" data-token-list>';
+
+			foreach ( $assigned as $term_id ) {
+				$term = get_term( $term_id, $taxonomy );
+				if ( $term && ! is_wp_error( $term ) ) {
+					$html .= '<li class="bqb-token"><input type="hidden" name="bqb_terms[' . esc_attr( $taxonomy ) . '][]" value="' . (int) $term->term_id . '" /><span>' . esc_html( $term->name ) . '</span><button type="button" aria-label="Retirer">×</button></li>';
+				}
+			}
+
+			$html .= '</ul>';
+			$html .= '<div class="bqb-tokens__search"><input type="text" class="bqb-admin__input" placeholder="Rechercher ou créer…" data-token-input autocomplete="off" /><div class="bqb-tokens__menu" data-token-menu hidden></div></div>';
+			$html .= '</div>';
+
+		} elseif ( 'tree' === $mode ) {
+			$map   = bqb_term_children_map( $taxonomy );
+			$html .= '<div class="bqb-tree-pick">';
+
+			foreach ( isset( $map[0] ) ? $map[0] : array() as $root ) {
+				$html .= '<div class="bqb-tree-pick__group" data-group>';
+				$html .= '<div class="bqb-tree-pick__root">' . bqb_pill( $taxonomy, $root, in_array( (int) $root->term_id, $assigned, true ), 'bqb-pill--root' ) . '</div>';
+
+				if ( ! empty( $map[ $root->term_id ] ) ) {
+					$html .= '<div class="bqb-tree-pick__children">';
+					foreach ( $map[ $root->term_id ] as $child ) {
+						$html .= bqb_pill( $taxonomy, $child, in_array( (int) $child->term_id, $assigned, true ) );
+
+						// Un troisième niveau reste possible, affiché à la suite.
+						foreach ( isset( $map[ $child->term_id ] ) ? $map[ $child->term_id ] : array() as $grand ) {
+							$html .= bqb_pill( $taxonomy, $grand, in_array( (int) $grand->term_id, $assigned, true ), 'bqb-pill--sub' );
+						}
+					}
+					$html .= '</div>';
+				}
+
+				$html .= '</div>';
+			}
+
+			$html .= '</div>';
+
+		} else {
+			$map   = bqb_term_children_map( $taxonomy );
+			$html .= '<div class="bqb-pills" data-pills>';
+
+			foreach ( isset( $map[0] ) ? $map[0] : array() as $term ) {
+				$html .= bqb_pill( $taxonomy, $term, in_array( (int) $term->term_id, $assigned, true ) );
+			}
+
+			$html .= '</div>';
+		}
+
+		if ( 'tokens' !== $mode ) {
+			$html .= '<div class="bqb-class__add"><button type="button" class="bqb-linkbtn" data-add-open>+ Ajouter ' . esc_html( strtolower( $taxonomies[ $taxonomy ][1] ) ) . '</button>'
+				. '<span class="bqb-class__addform" data-add-form hidden><input type="text" class="bqb-admin__input" placeholder="Nom" data-add-input /><button type="button" class="button" data-add-save>Créer</button></span></div>';
+		}
+
+		$html .= '</section>';
+	}
+
+	$html .= '<input type="hidden" name="bqb_terms_present" value="1" />';
+	$html .= '<p class="bqb-class__foot">Pour réorganiser les catégories elles-mêmes (renommer, déplacer, supprimer), utilisez <a href="' . esc_url( admin_url( 'edit.php?post_type=' . BQB_CPT . '&page=bqb-arbo' ) ) . '">Bibliothèque › Arborescence</a>.</p>';
+	$html .= '</div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+add_action( 'save_post_' . BQB_CPT, 'bqb_save_classement', 11, 2 );
+function bqb_save_classement( $post_id, $post ) {
+	if ( ! isset( $_POST['bqb_classement_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqb_classement_nonce'] ) ), 'bqb_save_classement' ) ) {
+		return;
+	}
+
+	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) || empty( $_POST['bqb_terms_present'] ) ) {
+		return;
+	}
+
+	$raw = isset( $_POST['bqb_terms'] ) && is_array( $_POST['bqb_terms'] ) ? wp_unslash( $_POST['bqb_terms'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+	foreach ( array_keys( bqb_taxonomies() ) as $taxonomy ) {
+		$ids = isset( $raw[ $taxonomy ] ) ? array_values( array_unique( array_filter( array_map( 'absint', (array) $raw[ $taxonomy ] ) ) ) ) : array();
+
+		// Seuls des termes existants de la bonne famille sont acceptés.
+		$ids = array_values(
+			array_filter(
+				$ids,
+				function ( $id ) use ( $taxonomy ) {
+					$term = get_term( $id, $taxonomy );
+					return $term && ! is_wp_error( $term );
+				}
+			)
+		);
+
+		wp_set_object_terms( $post_id, $ids, $taxonomy, false );
+	}
+}
+
+/* -------------------------------------------------------------------------
+ * 16. Recherche et création de termes à la volée
+ * ---------------------------------------------------------------------- */
+
+function bqb_ajax_guard( $taxonomy, $cap = 'assign' ) {
+	check_ajax_referer( 'bqb_terms', 'nonce' );
+
+	if ( ! array_key_exists( $taxonomy, bqb_taxonomies() ) ) {
+		wp_send_json_error( array( 'message' => 'Famille inconnue.' ), 400 );
+	}
+
+	$tax  = get_taxonomy( $taxonomy );
+	$need = ( 'manage' === $cap ) ? $tax->cap->manage_terms : $tax->cap->assign_terms;
+
+	if ( ! current_user_can( $need ) ) {
+		wp_send_json_error( array( 'message' => 'Droits insuffisants.' ), 403 );
+	}
+}
+
+add_action( 'wp_ajax_bqb_term_search', 'bqb_ajax_term_search' );
+function bqb_ajax_term_search() {
+	$taxonomy = isset( $_GET['tax'] ) ? sanitize_key( wp_unslash( $_GET['tax'] ) ) : '';
+	bqb_ajax_guard( $taxonomy );
+
+	$q     = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+	$terms = get_terms(
+		array(
+			'taxonomy'   => $taxonomy,
+			'hide_empty' => false,
+			'search'     => $q,
+			'number'     => 15,
+			'orderby'    => 'name',
+		)
+	);
+
+	$out = array();
+	foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
+		$out[] = array( 'id' => (int) $term->term_id, 'name' => html_entity_decode( $term->name, ENT_QUOTES, 'UTF-8' ) );
+	}
+
+	wp_send_json_success( $out );
+}
+
+add_action( 'wp_ajax_bqb_term_create', 'bqb_ajax_term_create' );
+function bqb_ajax_term_create() {
+	$taxonomy = isset( $_POST['tax'] ) ? sanitize_key( wp_unslash( $_POST['tax'] ) ) : '';
+	bqb_ajax_guard( $taxonomy, 'manage' );
+
+	$name   = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+	$parent = isset( $_POST['parent'] ) ? absint( $_POST['parent'] ) : 0;
+
+	if ( '' === $name ) {
+		wp_send_json_error( array( 'message' => 'Le nom est vide.' ), 400 );
+	}
+
+	// Un terme du même nom existe déjà : on le réutilise, sans doublon.
+	$existing = get_term_by( 'name', $name, $taxonomy );
+	if ( $existing ) {
+		wp_send_json_success( array( 'id' => (int) $existing->term_id, 'name' => $existing->name, 'existed' => true ) );
+	}
+
+	$created = wp_insert_term( $name, $taxonomy, array( 'parent' => $parent ) );
+
+	if ( is_wp_error( $created ) ) {
+		wp_send_json_error( array( 'message' => $created->get_error_message() ), 400 );
+	}
+
+	wp_send_json_success( array( 'id' => (int) $created['term_id'], 'name' => $name, 'existed' => false ) );
+}
+
+/* -------------------------------------------------------------------------
+ * 17. Pages d'administration de la version 2
+ * ---------------------------------------------------------------------- */
+
+add_action( 'admin_menu', 'bqb_admin_pages_v2', 9 );
+function bqb_admin_pages_v2() {
+	$parent = 'edit.php?post_type=' . BQB_CPT;
+
+	add_submenu_page( $parent, 'Arborescence', 'Arborescence', 'manage_categories', 'bqb-arbo', 'bqb_render_arbo_page', 3 );
+	add_submenu_page( $parent, 'Générateur de shortcode', 'Générateur de shortcode', 'edit_posts', 'bqb-shortcode', 'bqb_render_generator_page', 4 );
+	add_submenu_page( $parent, 'Réglages de la bibliothèque', 'Réglages', 'manage_options', 'bqb-reglages', 'bqb_render_settings_page', 5 );
+}
+
+/**
+ * Les sous-menus natifs de chaque taxonomie restent accessibles, mais on
+ * les retire du menu : tout passe par l'Arborescence, plus simple.
+ */
+add_action( 'admin_menu', 'bqb_hide_native_tax_menus', 99 );
+function bqb_hide_native_tax_menus() {
+	foreach ( array_keys( bqb_taxonomies() ) as $taxonomy ) {
+		remove_submenu_page( 'edit.php?post_type=' . BQB_CPT, 'edit-tags.php?taxonomy=' . $taxonomy . '&amp;post_type=' . BQB_CPT );
+	}
+}
+
+function bqb_admin_banner( $title, $text ) {
+	return '<div class="bqb-banner"><span class="bqb-banner__eyebrow">Bibliothèque numérique</span><h1 class="bqb-banner__title">' . esc_html( $title ) . '</h1><p class="bqb-banner__text">' . wp_kses( $text, array( 'strong' => array(), 'code' => array(), 'a' => array( 'href' => array() ) ) ) . '</p></div>';
+}
+
+/* -------------------------------------------------------------------------
+ * 18. Arborescence : l'écran
+ * ---------------------------------------------------------------------- */
+
+function bqb_render_arbo_node( $term, $taxonomy, $map ) {
+	$tax      = get_taxonomy( $taxonomy );
+	$short    = bqb_short_name( $taxonomy );
+	$code     = '[bqp_documents ' . $short . '="' . $term->slug . '"]';
+	$color    = ( 'bqb_collection' === $taxonomy && ! $term->parent ) ? get_term_meta( $term->term_id, 'bqb_couleur', true ) : '';
+	$page     = (int) get_term_meta( $term->term_id, 'bqb_page', true );
+	$children = isset( $map[ $term->term_id ] ) ? $map[ $term->term_id ] : array();
+	$view     = $tax->public ? bqb_term_url( $term ) : '';
+
+	$html  = '<li class="bqb-arbo__item" data-id="' . (int) $term->term_id . '">';
+	$html .= '<div class="bqb-node" data-node>';
+	$html .= '<span class="bqb-node__handle" title="Glisser pour déplacer" data-handle><span class="dashicons dashicons-menu"></span></span>';
+
+	if ( $color ) {
+		$html .= '<span class="bqb-node__swatch" style="background:' . esc_attr( $color ) . ';"></span>';
+	}
+
+	$html .= '<span class="bqb-node__name" data-name title="Cliquer pour renommer">' . esc_html( $term->name ) . '</span>';
+	$html .= '<input type="text" class="bqb-node__rename" value="' . esc_attr( $term->name ) . '" data-rename hidden />';
+	// Pour une arborescence, on compte aussi les documents des sous-catégories.
+	$total = $tax->hierarchical ? bqb_count( array( $short => array( $term->slug ) ) ) : (int) $term->count;
+	$html .= '<span class="bqb-node__count" title="Documents publiés, sous-catégories comprises">' . (int) $total . '</span>';
+
+	if ( $page ) {
+		$html .= '<span class="bqb-node__flag" title="Cette catégorie renvoie vers une page dédiée">Page dédiée</span>';
+	}
+
+	$html .= '<button type="button" class="bqb-node__code" data-copy="' . esc_attr( $code ) . '" title="Cliquer pour copier">' . esc_html( $code ) . '</button>';
+	$html .= '<span class="bqb-node__actions">';
+	$html .= '<button type="button" class="bqb-icon" data-act="rename" title="Renommer"><span class="dashicons dashicons-edit"></span></button>';
+
+	if ( $tax->hierarchical ) {
+		$html .= '<button type="button" class="bqb-icon" data-act="child" title="Ajouter une sous-catégorie"><span class="dashicons dashicons-plus-alt2"></span></button>';
+	}
+
+	$html .= '<button type="button" class="bqb-icon" data-act="panel" title="Réglages"><span class="dashicons dashicons-admin-generic"></span></button>';
+
+	if ( $view ) {
+		$html .= '<a class="bqb-icon" href="' . esc_url( $view ) . '" target="_blank" rel="noopener" title="Voir sur le site"><span class="dashicons dashicons-external"></span></a>';
+	}
+
+	$html .= '<button type="button" class="bqb-icon bqb-icon--danger" data-act="delete" data-count="' . (int) $term->count . '" data-children="' . count( $children ) . '" title="Supprimer"><span class="dashicons dashicons-trash"></span></button>';
+	$html .= '</span></div>';
+	$html .= '<div class="bqb-node__panel" data-panel hidden></div>';
+	$html .= '<ul class="bqb-arbo__list" data-parent="' . (int) $term->term_id . '">';
+
+	foreach ( $children as $child ) {
+		$html .= bqb_render_arbo_node( $child, $taxonomy, $map );
+	}
+
+	$html .= '</ul></li>';
+
+	return $html;
+}
+
+function bqb_render_arbo_page() {
+	$taxonomies = bqb_taxonomies();
+	$order      = array_keys( bqb_picker_config() );
+	$current    = isset( $_GET['tax'] ) ? sanitize_key( wp_unslash( $_GET['tax'] ) ) : 'bqb_collection'; // phpcs:ignore WordPress.Security.NonceVerification
+
+	if ( ! isset( $taxonomies[ $current ] ) ) {
+		$current = 'bqb_collection';
+	}
+
+	$tax  = get_taxonomy( $current );
+	$map  = bqb_term_children_map( $current );
+	$base = admin_url( 'edit.php?post_type=' . BQB_CPT . '&page=bqb-arbo' );
+
+	$html  = '<div class="wrap bqb-wrap">';
+	$html .= bqb_admin_banner( 'Arborescence', 'Renommez, déplacez, ajoutez et supprimez les catégories. Chaque catégorie a son propre <strong>shortcode</strong> : cliquez dessus pour le copier, puis collez-le dans n\'importe quelle page.' );
+
+	$html .= '<nav class="bqb-tabs">';
+	foreach ( $order as $key ) {
+		$count = wp_count_terms( array( 'taxonomy' => $key, 'hide_empty' => false ) );
+		$html .= '<a class="bqb-tab' . ( $key === $current ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( 'tax', $key, $base ) ) . '">' . esc_html( $taxonomies[ $key ][0] ) . ' <span>' . (int) ( is_wp_error( $count ) ? 0 : $count ) . '</span></a>';
+	}
+	$html .= '</nav>';
+
+	$html .= '<div class="bqb-arbo" data-arbo data-tax="' . esc_attr( $current ) . '">';
+	$html .= '<div class="bqb-arbo__intro"><p>' . esc_html( $taxonomies[ $current ][5] ) . ( $tax->hierarchical ? ' Glissez une ligne pour changer son ordre ; pour la ranger sous une autre catégorie, ouvrez ses réglages.' : '' ) . '</p></div>';
+	$html .= '<div class="bqb-arbo__toolbar">';
+	$html .= '<div class="bqb-arbo__add"><input type="text" class="bqb-admin__input" placeholder="Nouvelle catégorie au premier niveau" data-new-root /><button type="button" class="button button-primary" data-add-root>Ajouter</button></div>';
+	$html .= '<input type="search" class="bqb-admin__input bqb-arbo__search" placeholder="Rechercher…" data-search />';
+	$html .= '</div>';
+
+	$html .= '<ul class="bqb-arbo__list bqb-arbo__root" data-parent="0">';
+	foreach ( isset( $map[0] ) ? $map[0] : array() as $term ) {
+		$html .= bqb_render_arbo_node( $term, $current, $map );
+	}
+	$html .= '</ul>';
+
+	if ( empty( $map[0] ) ) {
+		$html .= '<p class="bqb-arbo__empty">Aucune catégorie pour le moment. Ajoutez la première ci-dessus.</p>';
+	}
+
+	$html .= '<p class="bqb-arbo__legend"><span class="bqb-node__count">12</span> nombre de documents publiés · <strong>Renommer</strong> ne casse aucun shortcode : seul l\'identifiant, modifiable dans les réglages, y figure.</p>';
+	$html .= '</div></div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/**
+ * Le panneau de réglages d'une catégorie, chargé à la demande.
+ */
+function bqb_render_arbo_panel( $term ) {
+	$taxonomy = $term->taxonomy;
+	$tax      = get_taxonomy( $taxonomy );
+	$html     = '<form class="bqb-panel" data-panel-form>';
+	$html    .= '<div class="bqb-panel__grid">';
+
+	$html .= '<label class="bqb-panel__field is-wide"><span class="bqb-admin__label">Description</span><textarea name="description" rows="3" class="bqb-admin__input">' . esc_textarea( $term->description ) . '</textarea><em>Introduction affichée sur sa page, et reprise par Google.</em></label>';
+
+	$html .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Identifiant</span><input type="text" name="slug" class="bqb-admin__input" value="' . esc_attr( $term->slug ) . '" /><em>Figure dans le shortcode et l\'adresse. Le changer oblige à mettre à jour les shortcodes déjà collés.</em></label>';
+
+	if ( $tax->hierarchical ) {
+		$html .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Ranger sous</span>'
+			. wp_dropdown_categories(
+				array(
+					'taxonomy'         => $taxonomy,
+					'name'             => 'parent',
+					'selected'         => (int) $term->parent,
+					'exclude_tree'     => (int) $term->term_id,
+					'hide_empty'       => false,
+					'hierarchical'     => true,
+					'show_option_none' => 'Premier niveau',
+					'option_none_value' => 0,
+					'class'            => 'bqb-admin__input',
+					'echo'             => false,
+				)
+			)
+			. '<em>Déplace la catégorie, avec ses sous-catégories.</em></label>';
+	}
+
+	if ( $tax->public ) {
+		$html .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Page dédiée</span>'
+			. wp_dropdown_pages(
+				array(
+					'name'              => 'page',
+					'selected'          => (int) get_term_meta( $term->term_id, 'bqb_page', true ),
+					'show_option_none'  => 'Aucune : page automatique',
+					'option_none_value' => 0,
+					'class'             => 'bqb-admin__input',
+					'echo'              => false,
+				)
+			)
+			. '<em>Si vous avez construit une page Elementor pour cette catégorie, les liens et l\'adresse automatique y renverront.</em></label>';
+	}
+
+	if ( 'bqb_collection' === $taxonomy && ! $term->parent ) {
+		$color = get_term_meta( $term->term_id, 'bqb_couleur', true );
+		$html .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Couleur du bloc</span><input type="color" name="couleur" value="' . esc_attr( $color ? $color : '#74041C' ) . '" /></label>';
+	}
+
+	if ( 'bqb_collection' === $taxonomy ) {
+		$natures = (array) get_term_meta( $term->term_id, 'bqb_natures', true );
+		$vues    = (array) get_term_meta( $term->term_id, 'bqb_vues', true );
+		$map     = bqb_term_children_map( 'bqb_nature' );
+
+		$html .= '<div class="bqb-panel__field is-wide"><span class="bqb-admin__label">Types de documents proposés dans le bloc</span><div class="bqb-pills">';
+		foreach ( isset( $map[0] ) ? $map[0] : array() as $nature ) {
+			$on    = in_array( (int) $nature->term_id, array_map( 'intval', $natures ), true );
+			$html .= '<label class="bqb-pill' . ( $on ? ' is-on' : '' ) . '"><input type="checkbox" name="natures[]" value="' . (int) $nature->term_id . '"' . checked( $on, true, false ) . ' /><span>' . esc_html( $nature->name ) . '</span></label>';
+		}
+		$html .= '</div><em>Chaque type coché devient un lien sous cette catégorie dans le bloc, par exemple « Articles ».</em></div>';
+
+		$html .= '<div class="bqb-panel__field is-wide"><span class="bqb-admin__label">Vues proposées dans le bloc</span><div class="bqb-views">';
+		foreach ( bqb_views() as $view => $label ) {
+			$on    = in_array( $view, $vues, true );
+			$html .= '<div class="bqb-views__row"><label class="bqb-pill' . ( $on ? ' is-on' : '' ) . '"><input type="checkbox" name="vues[]" value="' . esc_attr( $view ) . '"' . checked( $on, true, false ) . ' /><span>' . esc_html( $label ) . '</span></label>'
+				. ( 'laureats' === $view ? '' : '<input type="text" class="bqb-admin__input" name="vue_' . esc_attr( $view ) . '" value="' . esc_attr( get_term_meta( $term->term_id, 'bqb_vue_' . $view, true ) ) . '" placeholder="Libellé personnalisé, ex. « Par lauréat »" />' )
+				. '</div>';
+		}
+		$html .= '</div><em>Une vue regroupe les documents de la catégorie, par année ou par auteur par exemple.</em></div>';
+	}
+
+	if ( in_array( $taxonomy, array( 'bqb_personne', 'bqb_organisation' ), true ) ) {
+		$html .= '<div class="bqb-panel__field is-wide"><a class="button" href="' . esc_url( get_edit_term_link( $term->term_id, $taxonomy, BQB_CPT ) ) . '">Ouvrir la fiche complète (photo, biographie, rôles…)</a></div>';
+	}
+
+	$html .= '</div>';
+	$html .= '<div class="bqb-panel__foot"><button type="submit" class="button button-primary">Enregistrer</button><button type="button" class="button" data-panel-close>Fermer</button><span class="bqb-panel__msg" data-panel-msg></span></div>';
+	$html .= '</form>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
+ * 19. Arborescence : les actions
+ * ---------------------------------------------------------------------- */
+
+add_action( 'wp_ajax_bqb_arbo', 'bqb_ajax_arbo' );
+function bqb_ajax_arbo() {
+	$taxonomy = isset( $_POST['tax'] ) ? sanitize_key( wp_unslash( $_POST['tax'] ) ) : '';
+	bqb_ajax_guard( $taxonomy, 'manage' );
+
+	$op = isset( $_POST['op'] ) ? sanitize_key( wp_unslash( $_POST['op'] ) ) : '';
+	$id = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+
+	$term = $id ? get_term( $id, $taxonomy ) : null;
+	if ( $id && ( ! $term || is_wp_error( $term ) ) ) {
+		wp_send_json_error( array( 'message' => 'Catégorie introuvable.' ), 404 );
+	}
+
+	switch ( $op ) {
+
+		case 'add':
+			$name   = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+			$parent = isset( $_POST['parent'] ) ? absint( $_POST['parent'] ) : 0;
+
+			if ( '' === $name ) {
+				wp_send_json_error( array( 'message' => 'Le nom est vide.' ), 400 );
+			}
+
+			$created = wp_insert_term( $name, $taxonomy, array( 'parent' => $parent ) );
+			if ( is_wp_error( $created ) ) {
+				wp_send_json_error( array( 'message' => $created->get_error_message() ), 400 );
+			}
+
+			// Nouvelle catégorie rangée en dernier parmi ses sœurs.
+			$siblings = get_terms( array( 'taxonomy' => $taxonomy, 'parent' => $parent, 'hide_empty' => false, 'fields' => 'ids' ) );
+			update_term_meta( $created['term_id'], 'bqb_ordre', is_wp_error( $siblings ) ? 1 : count( $siblings ) );
+
+			$new = get_term( $created['term_id'], $taxonomy );
+			wp_send_json_success( array( 'html' => bqb_render_arbo_node( $new, $taxonomy, array() ) ) );
+
+		case 'rename':
+			$name = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+			if ( '' === $name ) {
+				wp_send_json_error( array( 'message' => 'Le nom est vide.' ), 400 );
+			}
+
+			// Seul le nom change : l'identifiant, donc les shortcodes, restent.
+			$done = wp_update_term( $id, $taxonomy, array( 'name' => $name, 'slug' => $term->slug ) );
+			if ( is_wp_error( $done ) ) {
+				wp_send_json_error( array( 'message' => $done->get_error_message() ), 400 );
+			}
+
+			wp_send_json_success( array( 'name' => $name ) );
+
+		case 'delete':
+			$done = wp_delete_term( $id, $taxonomy );
+			if ( ! $done || is_wp_error( $done ) ) {
+				wp_send_json_error( array( 'message' => 'Suppression impossible.' ), 400 );
+			}
+
+			wp_send_json_success();
+
+		case 'reorder':
+			$ids = isset( $_POST['ids'] ) ? array_map( 'absint', (array) wp_unslash( $_POST['ids'] ) ) : array();
+			$pos = 1;
+
+			foreach ( $ids as $term_id ) {
+				$t = get_term( $term_id, $taxonomy );
+				if ( $t && ! is_wp_error( $t ) ) {
+					update_term_meta( $term_id, 'bqb_ordre', $pos );
+					$pos++;
+				}
+			}
+
+			bqb_bump_cache();
+			wp_send_json_success();
+
+		case 'panel':
+			wp_send_json_success( array( 'html' => bqb_render_arbo_panel( $term ) ) );
+
+		case 'save':
+			$data = array(
+				'description' => isset( $_POST['description'] ) ? sanitize_textarea_field( wp_unslash( $_POST['description'] ) ) : $term->description,
+				'slug'        => isset( $_POST['slug'] ) && '' !== trim( wp_unslash( $_POST['slug'] ) ) ? sanitize_title( wp_unslash( $_POST['slug'] ) ) : $term->slug,
+			);
+
+			if ( isset( $_POST['parent'] ) && get_taxonomy( $taxonomy )->hierarchical ) {
+				$parent = absint( $_POST['parent'] );
+
+				// Une catégorie ne peut pas être rangée sous elle-même ou sous une de ses descendantes.
+				$descendants = get_term_children( $id, $taxonomy );
+				if ( $parent !== $id && ! in_array( $parent, is_wp_error( $descendants ) ? array() : array_map( 'intval', $descendants ), true ) ) {
+					$data['parent'] = $parent;
+				}
+			}
+
+			$done = wp_update_term( $id, $taxonomy, $data );
+			if ( is_wp_error( $done ) ) {
+				wp_send_json_error( array( 'message' => $done->get_error_message() ), 400 );
+			}
+
+			if ( isset( $_POST['page'] ) ) {
+				$page = absint( $_POST['page'] );
+				$page ? update_term_meta( $id, 'bqb_page', $page ) : delete_term_meta( $id, 'bqb_page' );
+			}
+
+			if ( isset( $_POST['couleur'] ) ) {
+				$color = sanitize_hex_color( wp_unslash( $_POST['couleur'] ) );
+				if ( $color ) {
+					update_term_meta( $id, 'bqb_couleur', $color );
+				}
+			}
+
+			if ( 'bqb_collection' === $taxonomy ) {
+				$natures = isset( $_POST['natures'] ) ? array_values( array_filter( array_map( 'absint', (array) wp_unslash( $_POST['natures'] ) ) ) ) : array();
+				update_term_meta( $id, 'bqb_natures', $natures );
+
+				$vues = isset( $_POST['vues'] ) ? array_values( array_intersect( array_map( 'sanitize_key', (array) wp_unslash( $_POST['vues'] ) ), array_keys( bqb_views() ) ) ) : array();
+				update_term_meta( $id, 'bqb_vues', $vues );
+
+				foreach ( array_keys( bqb_views() ) as $view ) {
+					if ( isset( $_POST[ 'vue_' . $view ] ) ) {
+						$label = sanitize_text_field( wp_unslash( $_POST[ 'vue_' . $view ] ) );
+						$label ? update_term_meta( $id, 'bqb_vue_' . $view, $label ) : delete_term_meta( $id, 'bqb_vue_' . $view );
+					}
+				}
+			}
+
+			bqb_bump_cache();
+
+			$moved = isset( $data['parent'] ) && (int) $data['parent'] !== (int) $term->parent;
+			$fresh = get_term( $id, $taxonomy );
+
+			wp_send_json_success(
+				array(
+					'reload' => $moved || $fresh->slug !== $term->slug,
+					'name'   => $fresh->name,
+				)
+			);
+	}
+
+	wp_send_json_error( array( 'message' => 'Action inconnue.' ), 400 );
+}
+
+/* -------------------------------------------------------------------------
+ * 20. Générateur de shortcode
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Liste déroulante d'une famille, en arborescence, valeur = identifiant.
+ */
+function bqb_term_select( $taxonomy, $name, $selected = '', $all = 'Toutes' ) {
+	$map  = bqb_term_children_map( $taxonomy );
+	$html = '<select class="bqb-admin__input" name="' . esc_attr( $name ) . '" data-gen="' . esc_attr( bqb_short_name( $taxonomy ) ) . '"><option value="">' . esc_html( $all ) . '</option>';
+
+	$walk = function ( $parent, $depth ) use ( &$walk, $map, $selected, &$html ) {
+		foreach ( isset( $map[ $parent ] ) ? $map[ $parent ] : array() as $term ) {
+			$html .= '<option value="' . esc_attr( $term->slug ) . '"' . selected( $selected, $term->slug, false ) . '>' . str_repeat( '&nbsp;&nbsp;&nbsp;', $depth ) . esc_html( $term->name ) . '</option>';
+			$walk( $term->term_id, $depth + 1 );
+		}
+	};
+	$walk( 0, 0 );
+
+	return $html . '</select>';
+}
+
+function bqb_render_generator_page() {
+	$taxonomies = bqb_taxonomies();
+
+	$html  = '<div class="wrap bqb-wrap">';
+	$html .= bqb_admin_banner( 'Générateur de shortcode', 'Choisissez une combinaison : le shortcode se construit tout seul. Collez-le dans une page Elementor avec le widget <strong>Shortcode</strong>. Pour changer ce qui s\'affiche sur la page, il suffit de remplacer le shortcode.' );
+
+	$html .= '<div class="bqb-gen">';
+	$html .= '<form class="bqb-card bqb-gen__form" data-gen-form onsubmit="return false;">';
+	$html .= '<h2 class="bqb-card__title">1. Quels documents ?</h2>';
+	$html .= '<div class="bqb-gen__grid">';
+
+	foreach ( array_keys( bqb_picker_config() ) as $taxonomy ) {
+		$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">' . esc_html( $taxonomies[ $taxonomy ][1] ) . '</span>' . bqb_term_select( $taxonomy, 'gen_' . $taxonomy ) . '</label>';
+	}
+
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Année ou période</span><input type="text" class="bqb-admin__input" data-gen="annee" placeholder="Ex. 2004 ou 1990-1999" /></label>';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Niveau d\'accès</span><select class="bqb-admin__input" data-gen="acces"><option value="">Tous</option>';
+	foreach ( bqb_access_levels() as $slug => $label ) {
+		$html .= '<option value="' . esc_attr( $slug ) . '">' . esc_html( $label ) . '</option>';
+	}
+	$html .= '</select></label>';
+	$html .= '</div>';
+
+	$html .= '<h2 class="bqb-card__title">2. Comment les afficher ?</h2>';
+	$html .= '<div class="bqb-gen__grid">';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Titre au-dessus</span><input type="text" class="bqb-admin__input" data-gen="titre" placeholder="Facultatif" /></label>';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Regrouper</span><select class="bqb-admin__input" data-gen="groupe"><option value="">Non, liste simple</option><option value="annee">Par année</option><option value="personne">Par auteur</option><option value="theme">Par thème</option><option value="organisation">Par organisation</option><option value="nature">Par type de document</option><option value="collection">Par collection</option></select></label>';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Ordre</span><select class="bqb-admin__input" data-gen="tri"><option value="">Plus récents d\'abord</option><option value="ancien">Plus anciens d\'abord</option><option value="titre">Alphabétique</option></select></label>';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Documents par page</span><input type="number" min="1" max="100" class="bqb-admin__input" data-gen="nombre" placeholder="' . (int) bqb_settings()['par_page'] . '" /></label>';
+	$html .= '<label class="bqb-gen__check"><input type="checkbox" data-gen="filtres" value="oui" /> Afficher la barre de recherche et de filtres</label>';
+	$html .= '</div>';
+	$html .= '</form>';
+
+	$html .= '<aside class="bqb-gen__side">';
+	$html .= '<div class="bqb-card bqb-gen__result">';
+	$html .= '<span class="bqb-admin__label">Votre shortcode</span>';
+	$html .= '<code class="bqb-gen__code" data-gen-code>[bqp_documents]</code>';
+	$html .= '<button type="button" class="button button-primary button-hero bqb-gen__copy" data-gen-copy>Copier le shortcode</button>';
+	$html .= '<p class="bqb-gen__count" data-gen-count>…</p>';
+	$html .= '</div>';
+
+	$html .= '<div class="bqb-card">';
+	$html .= '<span class="bqb-admin__label">Les autres shortcodes</span>';
+	$codes = array(
+		'[bqp_bibliotheque]'                  => 'Les cinq blocs de la bibliothèque, avec leurs liens.',
+		'[bqp_documents filtres="oui"]'       => 'Le catalogue complet avec recherche et filtres, pour la page « Recherche avancée ».',
+		'[bqp_documents groupe="annee"]'      => 'La chronologie : tous les documents, groupés par année.',
+		'[bqp_personnes role="laureat"]'      => 'Les lauréats, groupés par année du prix.',
+		'[bqp_personnes]'                     => 'L\'index des auteurs et personnes.',
+		'[bqp_personnes famille="organisations"]' => 'L\'index des organisations et sources.',
+	);
+	foreach ( $codes as $code => $desc ) {
+		$html .= '<div class="bqb-gen__other"><button type="button" class="bqb-node__code" data-copy="' . esc_attr( $code ) . '">' . esc_html( $code ) . '</button><p>' . esc_html( $desc ) . '</p></div>';
+	}
+	$html .= '</div>';
+	$html .= '</aside>';
+	$html .= '</div></div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+add_action( 'wp_ajax_bqb_gen_count', 'bqb_ajax_gen_count' );
+function bqb_ajax_gen_count() {
+	check_ajax_referer( 'bqb_terms', 'nonce' );
+
+	if ( ! current_user_can( 'edit_posts' ) ) {
+		wp_send_json_error();
+	}
+
+	$criteria = array();
+	foreach ( array_keys( bqb_short_map() ) as $short ) {
+		if ( ! empty( $_GET[ $short ] ) ) {
+			$criteria[ $short ] = explode( ',', sanitize_text_field( wp_unslash( $_GET[ $short ] ) ) );
+		}
+	}
+	foreach ( array( 'annee', 'acces' ) as $key ) {
+		if ( ! empty( $_GET[ $key ] ) ) {
+			$criteria[ $key ] = sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
+		}
+	}
+
+	wp_send_json_success( array( 'count' => bqb_count( $criteria ) ) );
+}
+
+/* -------------------------------------------------------------------------
+ * 21. Page Réglages
+ * ---------------------------------------------------------------------- */
+
+function bqb_render_settings_page() {
+	$notice = '';
+
+	if ( isset( $_POST['bqb_settings_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqb_settings_nonce'] ) ), 'bqb_settings' ) && current_user_can( 'manage_options' ) ) {
+		$color = isset( $_POST['bloc5_couleur'] ) ? sanitize_hex_color( wp_unslash( $_POST['bloc5_couleur'] ) ) : '';
+
+		update_option(
+			'bqb_settings',
+			array(
+				'afficher_vides' => ! empty( $_POST['afficher_vides'] ) ? 1 : 0,
+				'par_page'       => isset( $_POST['par_page'] ) ? max( 1, min( 100, absint( $_POST['par_page'] ) ) ) : 12,
+				'page_catalogue' => isset( $_POST['page_catalogue'] ) ? absint( $_POST['page_catalogue'] ) : 0,
+				'page_bibliotheque' => isset( $_POST['page_bibliotheque'] ) ? absint( $_POST['page_bibliotheque'] ) : 0,
+				'page_personnes' => isset( $_POST['page_personnes'] ) ? absint( $_POST['page_personnes'] ) : 0,
+				'page_organisations' => isset( $_POST['page_organisations'] ) ? absint( $_POST['page_organisations'] ) : 0,
+				'page_contact'   => isset( $_POST['page_contact'] ) ? absint( $_POST['page_contact'] ) : 0,
+				'bloc5_titre'    => isset( $_POST['bloc5_titre'] ) ? sanitize_text_field( wp_unslash( $_POST['bloc5_titre'] ) ) : '',
+				'bloc5_texte'    => isset( $_POST['bloc5_texte'] ) ? sanitize_text_field( wp_unslash( $_POST['bloc5_texte'] ) ) : '',
+				'bloc5_couleur'  => $color ? $color : '#1F5561',
+				'fiche_auto'     => ! empty( $_POST['fiche_auto'] ) ? 1 : 0,
+				'archives_auto'  => ! empty( $_POST['archives_auto'] ) ? 1 : 0,
+			),
+			false
+		);
+
+		bqb_bump_cache();
+		$notice = '<div class="bqb-notice">Réglages enregistrés.</div>';
+	}
+
+	$s    = bqb_settings();
+	$page = function ( $name, $value, $none ) {
+		return wp_dropdown_pages(
+			array(
+				'name'              => $name,
+				'selected'          => (int) $value,
+				'show_option_none'  => $none,
+				'option_none_value' => 0,
+				'class'             => 'bqb-admin__input',
+				'echo'              => false,
+			)
+		);
+	};
+
+	$html  = '<div class="wrap bqb-wrap">';
+	$html .= bqb_admin_banner( 'Réglages', 'Le comportement des blocs, des listes et des pages de la bibliothèque.' );
+	$html .= $notice;
+	$html .= '<form method="post" class="bqb-settings">';
+	$html .= wp_nonce_field( 'bqb_settings', 'bqb_settings_nonce', true, false );
+
+	$html .= '<section class="bqb-card"><h2 class="bqb-card__title">Les cinq blocs</h2>';
+	$html .= '<div class="bqb-radio">';
+	$html .= '<label class="bqb-radio__opt' . ( $s['afficher_vides'] ? '' : ' is-on' ) . '"><input type="radio" name="afficher_vides" value="0"' . checked( $s['afficher_vides'], 0, false ) . ' /><strong>Masquer les liens vides</strong><span>Un lien n\'apparaît que s\'il mène à au moins un document. Recommandé tant que la bibliothèque se remplit.</span></label>';
+	$html .= '<label class="bqb-radio__opt' . ( $s['afficher_vides'] ? ' is-on' : '' ) . '"><input type="radio" name="afficher_vides" value="1"' . checked( $s['afficher_vides'], 1, false ) . ' /><strong>Afficher tous les liens</strong><span>Les blocs montrent toute l\'arborescence prévue, même les rubriques encore vides.</span></label>';
+	$html .= '</div>';
+	$html .= '<div class="bqb-settings__grid">';
+	$html .= '<label><span class="bqb-admin__label">Titre du bloc thématique</span><input type="text" class="bqb-admin__input" name="bloc5_titre" value="' . esc_attr( $s['bloc5_titre'] ) . '" /></label>';
+	$html .= '<label><span class="bqb-admin__label">Couleur du bloc thématique</span><input type="color" name="bloc5_couleur" value="' . esc_attr( $s['bloc5_couleur'] ) . '" /></label>';
+	$html .= '<label class="is-wide"><span class="bqb-admin__label">Texte du bloc thématique</span><input type="text" class="bqb-admin__input" name="bloc5_texte" value="' . esc_attr( $s['bloc5_texte'] ) . '" /></label>';
+	$html .= '</div><p class="bqb-settings__hint">Les titres, textes et couleurs des quatre autres blocs se règlent dans <a href="' . esc_url( admin_url( 'edit.php?post_type=' . BQB_CPT . '&page=bqb-arbo' ) ) . '">Arborescence</a>, sur chaque collection.</p></section>';
+
+	$html .= '<section class="bqb-card"><h2 class="bqb-card__title">Pages du site</h2><div class="bqb-settings__grid">';
+	$html .= '<label><span class="bqb-admin__label">Page d\'accueil de la bibliothèque</span>' . $page( 'page_bibliotheque', $s['page_bibliotheque'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_bibliotheque]</code>. Sert de point de départ au fil d\'Ariane.</em></label>';
+	$html .= '<label><span class="bqb-admin__label">Page de recherche avancée</span>' . $page( 'page_catalogue', $s['page_catalogue'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_documents filtres="oui"]</code>. Reçoit les liens des natures, secteurs et pays.</em></label>';
+	$html .= '<label><span class="bqb-admin__label">Page des personnes</span>' . $page( 'page_personnes', $s['page_personnes'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_personnes]</code>. Reçoit le lien « Les lauréats ».</em></label>';
+	$html .= '<label><span class="bqb-admin__label">Page des organisations</span>' . $page( 'page_organisations', $s['page_organisations'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_personnes famille="organisations"]</code>.</em></label>';
+	$html .= '<label><span class="bqb-admin__label">Page de contact</span>' . $page( 'page_contact', $s['page_contact'], 'Aucune' ) . '<em>Le bouton « Demander l\'accès » d\'un document réservé y renvoie.</em></label>';
+	$html .= '<label><span class="bqb-admin__label">Documents par page</span><input type="number" min="1" max="100" class="bqb-admin__input" name="par_page" value="' . (int) $s['par_page'] . '" /></label>';
+	$html .= '</div></section>';
+
+	$html .= '<section class="bqb-card"><h2 class="bqb-card__title">Affichage automatique</h2>';
+	$html .= '<label class="bqb-switch"><input type="checkbox" name="fiche_auto" value="1"' . checked( $s['fiche_auto'], 1, false ) . ' /><span><strong>Fiche des documents</strong> : ajouter automatiquement le résumé, les informations et le bouton de téléchargement sur la page de chaque document. À décocher si vous construisez ce modèle avec Elementor Pro et le shortcode <code>[bqp_document_fiche]</code>.</span></label>';
+	$html .= '<label class="bqb-switch"><input type="checkbox" name="archives_auto" value="1"' . checked( $s['archives_auto'], 1, false ) . ' /><span><strong>Pages des collections, thèmes, personnes et organisations</strong> : générées automatiquement avec leur titre, leur description et leurs documents. À décocher si vous préférez des modèles Elementor Pro.</span></label>';
+	$html .= '</section>';
+
+	$html .= '<p><button type="submit" class="button button-primary button-hero">Enregistrer les réglages</button></p>';
+	$html .= '</form></div>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+/* =========================================================================
+ * SITE
+ * ====================================================================== */
+
+/* -------------------------------------------------------------------------
+ * 22. Informations d'un document, pour les listes et la fiche
+ * ---------------------------------------------------------------------- */
+
+function bqb_access_badge( $post_id ) {
+	$acces  = get_post_meta( $post_id, '_bqb_acces', true );
+	$acces  = $acces ? $acces : 'public';
+	$labels = array(
+		'public'      => 'Accès libre',
+		'adherents'   => 'Adhérents',
+		'partenaires' => 'Partenaires',
+		'sur-place'   => 'Sur place',
+	);
+
+	return '<span class="bqb-badge bqb-badge--' . esc_attr( $acces ) . '">' . esc_html( isset( $labels[ $acces ] ) ? $labels[ $acces ] : 'Accès libre' ) . '</span>';
+}
+
+function bqb_is_public( $post_id ) {
+	$acces = get_post_meta( $post_id, '_bqb_acces', true );
+
+	return ! $acces || 'public' === $acces;
+}
+
+function bqb_doc_date( $post_id ) {
+	$annee = get_post_meta( $post_id, '_bqb_annee', true );
+	$mois  = (int) get_post_meta( $post_id, '_bqb_mois', true );
+	$jour  = (int) get_post_meta( $post_id, '_bqb_jour', true );
+
+	if ( ! $annee ) {
+		return '';
+	}
+
+	$months = bqb_months();
+
+	if ( $mois && $jour ) {
+		return $jour . ' ' . $months[ $mois ] . ' ' . $annee;
+	}
+
+	return $mois ? $months[ $mois ] . ' ' . $annee : (string) $annee;
+}
+
+function bqb_term_names( $post_id, $taxonomy, $linked = false, $limit = 0 ) {
+	$terms = get_the_terms( $post_id, $taxonomy );
+
+	if ( ! $terms || is_wp_error( $terms ) ) {
+		return array();
+	}
+
+	$out = array();
+	foreach ( $terms as $term ) {
+		$url   = $linked ? bqb_term_url( $term ) : '';
+		$out[] = $url ? '<a href="' . esc_url( $url ) . '">' . esc_html( $term->name ) . '</a>' : esc_html( $term->name );
+
+		if ( $limit && count( $out ) >= $limit ) {
+			break;
+		}
+	}
+
+	return $out;
+}
+
+function bqb_is_video( $url ) {
+	return (bool) preg_match( '#(youtube\.com|youtu\.be|vimeo\.com|dailymotion\.com)#i', (string) $url );
+}
+
+/**
+ * Le bouton d'action d'un document : télécharger, regarder, consulter,
+ * ou voir la fiche quand l'accès est réservé.
+ */
+function bqb_doc_action( $post_id, $context = 'list' ) {
+	$file = (int) get_post_meta( $post_id, '_bqb_fichier', true );
+	$link = get_post_meta( $post_id, '_bqb_lien', true );
+
+	if ( ! bqb_is_public( $post_id ) ) {
+		if ( 'list' === $context ) {
+			return array( get_permalink( $post_id ), 'Voir la fiche', false );
+		}
+
+		$contact = (int) bqb_settings()['page_contact'];
+
+		return $contact ? array( add_query_arg( 'document', rawurlencode( get_the_title( $post_id ) ), get_permalink( $contact ) ), 'Demander l\'accès', false ) : array( '', '', false );
+	}
+
+	if ( $file && wp_get_attachment_url( $file ) ) {
+		return array( wp_get_attachment_url( $file ), 'Télécharger', true );
+	}
+
+	if ( $link ) {
+		return array( $link, bqb_is_video( $link ) ? 'Regarder' : 'Consulter la source', false );
+	}
+
+	return 'list' === $context ? array( get_permalink( $post_id ), 'Voir la fiche', false ) : array( '', '', false );
+}
+
+function bqb_render_doc_row( $post_id ) {
+	$collections = bqb_term_names( $post_id, 'bqb_collection', false, 1 );
+	$authors     = bqb_term_names( $post_id, 'bqb_personne', false, 3 );
+	$natures     = bqb_term_names( $post_id, 'bqb_nature', false, 1 );
+	$themes      = bqb_term_names( $post_id, 'bqb_theme', false, 1 );
+	$date        = bqb_doc_date( $post_id );
+	$file        = (int) get_post_meta( $post_id, '_bqb_fichier', true );
+
+	$info = array_filter(
+		array(
+			implode( ', ', $authors ),
+			$date ? esc_html( $date ) : '',
+			$natures ? $natures[0] : '',
+			$themes ? $themes[0] : '',
+			( $file && bqb_is_public( $post_id ) ) ? esc_html( str_replace( ' · ', ', ', bqb_file_label( $file ) ) ) : '',
+		)
+	);
+
+	list( $url, $label, $download ) = bqb_doc_action( $post_id );
+
+	$html  = '<article class="bqb-doc">';
+
+	if ( has_post_thumbnail( $post_id ) ) {
+		$html .= '<a class="bqb-doc__cover" href="' . esc_url( get_permalink( $post_id ) ) . '" tabindex="-1" aria-hidden="true">' . get_the_post_thumbnail( $post_id, 'thumbnail', array( 'alt' => '' ) ) . '</a>';
+	}
+
+	$html .= '<div class="bqb-doc__main">';
+	$html .= '<div class="bqb-doc__meta">' . bqb_access_badge( $post_id ) . ( $collections ? '<span class="bqb-doc__coll">' . $collections[0] . '</span>' : '' ) . '</div>';
+	$html .= '<h3 class="bqb-doc__title"><a href="' . esc_url( get_permalink( $post_id ) ) . '">' . esc_html( get_the_title( $post_id ) ) . '</a></h3>';
+
+	if ( $info ) {
+		$html .= '<p class="bqb-doc__info">' . implode( '<span class="bqb-sep">·</span>', $info ) . '</p>';
+	}
+
+	$html .= '</div>';
+
+	if ( $url ) {
+		$html .= '<div class="bqb-doc__action"><a class="bqb-btn bqb-btn--ghost" href="' . esc_url( $url ) . '"' . ( $download ? ' download' : '' ) . ( ( ! $download && $url !== get_permalink( $post_id ) ) ? ' target="_blank" rel="noopener"' : '' ) . '>' . esc_html( $label ) . '</a></div>';
+	}
+
+	$html .= '</article>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
+ * 23. [bqp_documents] : toute combinaison de critères
+ * ---------------------------------------------------------------------- */
+
+add_action( 'init', 'bqb_register_shortcodes' );
+function bqb_register_shortcodes() {
+	add_shortcode( 'bqp_documents', 'bqb_sc_documents' );
+	add_shortcode( 'bqp_bibliotheque', 'bqb_sc_blocks' );
+	add_shortcode( 'bqp_personnes', 'bqb_sc_personnes' );
+	add_shortcode( 'bqp_document_fiche', 'bqb_sc_fiche' );
+}
+
+function bqb_sc_documents( $atts ) {
+	$defaults = array_fill_keys( array_keys( bqb_short_map() ), '' );
+	$defaults = array_merge(
+		$defaults,
+		array(
+			'annee'      => '',
+			'acces'      => '',
+			'groupe'     => '',
+			'tri'        => '',
+			'nombre'     => '',
+			'filtres'    => 'non',
+			'titre'      => '',
+			'vide'       => 'Aucun document ne correspond pour le moment.',
+			'pagination' => 'oui',
+		)
+	);
+
+	return bqb_render_documents( shortcode_atts( $defaults, $atts, 'bqp_documents' ) );
+}
+
+/**
+ * Les années présentes dans la bibliothèque, pour le filtre.
+ */
+function bqb_years() {
+	$key    = 'bqb_years_' . md5( (string) get_option( 'bqb_cache_version', '1' ) );
+	$cached = get_transient( $key );
+
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	global $wpdb;
+	$years = $wpdb->get_col( $wpdb->prepare( "SELECT DISTINCT pm.meta_value FROM {$wpdb->postmeta} pm INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id WHERE pm.meta_key = '_bqb_annee' AND p.post_type = %s AND p.post_status = 'publish' ORDER BY pm.meta_value DESC", BQB_CPT ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+
+	$years = array_values( array_filter( array_map( 'intval', $years ) ) );
+	rsort( $years );
+
+	set_transient( $key, $years, DAY_IN_SECONDS );
+
+	return $years;
+}
+
+function bqb_url_filters() {
+	$out = array();
+
+	foreach ( array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe' ) ) as $key ) {
+		if ( isset( $_GET[ 'f_' . $key ] ) && '' !== $_GET[ 'f_' . $key ] ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$out[ $key ] = sanitize_text_field( wp_unslash( $_GET[ 'f_' . $key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		}
+	}
+
+	return $out;
+}
+
+function bqb_render_documents( $atts, $locked = array() ) {
+	static $instance = 0;
+	$instance++;
+
+	// Seule la première liste de la page écoute l'adresse (filtres, page).
+	$listens = ( 1 === $instance );
+	$url_f   = $listens ? bqb_url_filters() : array();
+	$groups  = array( 'annee', 'personne', 'theme', 'organisation', 'nature', 'collection' );
+
+	$criteria = array();
+	foreach ( array_keys( bqb_short_map() ) as $short ) {
+		$value = isset( $locked[ $short ] ) ? $locked[ $short ] : $atts[ $short ];
+		if ( '' !== $value && array() !== $value ) {
+			$criteria[ $short ] = is_array( $value ) ? $value : array_map( 'trim', explode( ',', $value ) );
+		}
+	}
+
+	$criteria['and'] = array();
+	foreach ( array_keys( bqb_short_map() ) as $short ) {
+		if ( isset( $url_f[ $short ] ) ) {
+			$criteria['and'][ $short ] = array( $url_f[ $short ] );
+		}
+	}
+
+	$criteria['q']     = isset( $url_f['q'] ) ? $url_f['q'] : '';
+	$criteria['annee'] = isset( $url_f['annee'] ) ? $url_f['annee'] : $atts['annee'];
+	$criteria['acces'] = $atts['acces'];
+	$criteria['tri']   = isset( $url_f['tri'] ) ? $url_f['tri'] : ( $atts['tri'] ? $atts['tri'] : 'recent' );
+
+	$groupe = isset( $url_f['groupe'] ) ? $url_f['groupe'] : $atts['groupe'];
+	$groupe = in_array( $groupe, $groups, true ) ? $groupe : '';
+
+	$settings = bqb_settings();
+	$per_page = $atts['nombre'] ? max( 1, (int) $atts['nombre'] ) : ( $groupe ? 300 : (int) $settings['par_page'] );
+	$paged    = ( $listens && isset( $_GET['pg'] ) ) ? max( 1, absint( $_GET['pg'] ) ) : 1; // phpcs:ignore WordPress.Security.NonceVerification
+
+	$args                   = bqb_query_args( $criteria );
+	$args['posts_per_page'] = $per_page;
+	$args['paged']          = $paged;
+
+	$query = new WP_Query( $args );
+
+	wp_enqueue_style( 'bqb-front' );
+
+	$html = '<section class="bqb-docs">';
+
+	if ( '' !== trim( $atts['titre'] ) ) {
+		$html .= '<h2 class="bqb-docs__title">' . esc_html( $atts['titre'] ) . '</h2>';
+	}
+
+	if ( 'oui' === strtolower( $atts['filtres'] ) ) {
+		$html .= bqb_render_filter_bar( $criteria, $url_f, $locked + array_filter( array_intersect_key( $atts, bqb_short_map() ) ) );
+	} elseif ( $url_f ) {
+		$html .= bqb_render_active_filters( $url_f );
+	}
+
+	$total = (int) $query->found_posts;
+
+	if ( $total ) {
+		$html .= '<p class="bqb-docs__count">' . sprintf( _n( '%s document', '%s documents', $total ), number_format_i18n( $total ) );
+
+		if ( $groupe ) {
+			$names  = array( 'annee' => 'par année', 'personne' => 'par auteur', 'theme' => 'par thème', 'organisation' => 'par organisation', 'nature' => 'par type', 'collection' => 'par collection' );
+			$html  .= ', regroupés ' . esc_html( $names[ $groupe ] );
+		}
+
+		$html .= '</p>';
+	}
+
+	if ( ! $query->have_posts() ) {
+		$html .= '<p class="bqb-docs__empty">' . esc_html( $atts['vide'] ) . '</p></section>';
+		wp_reset_postdata();
+		return $html;
+	}
+
+	$ids = wp_list_pluck( $query->posts, 'ID' );
+
+	if ( $groupe ) {
+		$html .= bqb_render_grouped( $ids, $groupe, $criteria['tri'] );
+	} else {
+		$html .= '<div class="bqb-docs__list">';
+		foreach ( $ids as $id ) {
+			$html .= bqb_render_doc_row( $id );
+		}
+		$html .= '</div>';
+	}
+
+	if ( 'oui' === strtolower( $atts['pagination'] ) && $query->max_num_pages > 1 && $listens ) {
+		$html .= '<nav class="bqb-pages" aria-label="Pages de résultats">';
+		for ( $i = 1; $i <= $query->max_num_pages; $i++ ) {
+			$html .= ( $i === $paged )
+				? '<span class="bqb-pages__item is-on" aria-current="page">' . $i . '</span>'
+				: '<a class="bqb-pages__item" href="' . esc_url( add_query_arg( 'pg', $i ) ) . '">' . $i . '</a>';
+		}
+		$html .= '</nav>';
+	}
+
+	$html .= '</section>';
+	wp_reset_postdata();
+
+	return $html;
+}
+
+function bqb_render_grouped( $ids, $groupe, $tri ) {
+	$buckets = array();
+	$other   = 'annee' === $groupe ? 'Sans date' : 'Non renseigné';
+
+	foreach ( $ids as $id ) {
+		if ( 'annee' === $groupe ) {
+			$year                  = get_post_meta( $id, '_bqb_annee', true );
+			$buckets[ $year ? (string) $year : $other ][] = $id;
+			continue;
+		}
+
+		$map   = bqb_short_map();
+		$terms = get_the_terms( $id, $map[ $groupe ] );
+
+		if ( ! $terms || is_wp_error( $terms ) ) {
+			$buckets[ $other ][] = $id;
+			continue;
+		}
+
+		foreach ( $terms as $term ) {
+			$buckets[ $term->name ][] = $id;
+		}
+	}
+
+	$keys = array_keys( $buckets );
+
+	if ( 'annee' === $groupe ) {
+		usort(
+			$keys,
+			function ( $a, $b ) use ( $other, $tri ) {
+				if ( $a === $other ) { return 1; }
+				if ( $b === $other ) { return -1; }
+				return 'ancien' === $tri ? ( (int) $a - (int) $b ) : ( (int) $b - (int) $a );
+			}
+		);
+	} else {
+		usort(
+			$keys,
+			function ( $a, $b ) use ( $other ) {
+				if ( $a === $other ) { return 1; }
+				if ( $b === $other ) { return -1; }
+				return strcasecmp( remove_accents( $a ), remove_accents( $b ) );
+			}
+		);
+	}
+
+	$html = '<div class="bqb-groups">';
+	foreach ( $keys as $key ) {
+		$html .= '<div class="bqb-group"><h3 class="bqb-group__title">' . esc_html( $key ) . ' <span>' . count( $buckets[ $key ] ) . '</span></h3><div class="bqb-docs__list">';
+		foreach ( $buckets[ $key ] as $id ) {
+			$html .= bqb_render_doc_row( $id );
+		}
+		$html .= '</div></div>';
+	}
+
+	return $html . '</div>';
+}
+
+/**
+ * Les filtres venus d'un lien (par exemple depuis un bloc), affichés en
+ * étiquettes que l'on peut retirer une à une.
+ */
+function bqb_render_active_filters( $url_f ) {
+	$map   = bqb_short_map();
+	$chips = array();
+
+	foreach ( $url_f as $key => $value ) {
+		if ( isset( $map[ $key ] ) ) {
+			$term  = get_term_by( 'slug', $value, $map[ $key ] );
+			$label = $term ? $term->name : $value;
+		} elseif ( 'groupe' === $key ) {
+			$names = array( 'annee' => 'Par année', 'personne' => 'Par auteur', 'theme' => 'Par thème', 'organisation' => 'Par organisation', 'nature' => 'Par type', 'collection' => 'Par collection' );
+			$label = isset( $names[ $value ] ) ? $names[ $value ] : $value;
+		} elseif ( 'q' === $key ) {
+			$label = '« ' . $value . ' »';
+		} elseif ( 'tri' === $key ) {
+			continue;
+		} else {
+			$label = $value;
+		}
+
+		$chips[] = '<a class="bqb-chip" href="' . esc_url( remove_query_arg( array( 'f_' . $key, 'pg' ) ) ) . '">' . esc_html( $label ) . ' <span aria-hidden="true">×</span><span class="screen-reader-text"> (retirer ce filtre)</span></a>';
+	}
+
+	return $chips ? '<div class="bqb-active">' . implode( '', $chips ) . '</div>' : '';
+}
+
+function bqb_render_filter_bar( $criteria, $url_f, $locked ) {
+	$action = remove_query_arg( array_merge( array_map( function ( $k ) { return 'f_' . $k; }, array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe' ) ) ), array( 'pg' ) ) );
+	$val    = function ( $key ) use ( $url_f ) {
+		return isset( $url_f[ $key ] ) ? $url_f[ $key ] : '';
+	};
+
+	$select = function ( $short, $label ) use ( $val ) {
+		$map = bqb_short_map();
+		return '<label class="bqb-filter"><span>' . esc_html( $label ) . '</span>' . str_replace( 'bqb-admin__input', 'bqb-input', bqb_term_select( $map[ $short ], 'f_' . $short, $val( $short ), 'Tous' ) ) . '</label>';
+	};
+
+	$html  = '<form class="bqb-filters" method="get" action="' . esc_url( $action ) . '">';
+	$html .= '<div class="bqb-filters__row">';
+	$html .= '<label class="bqb-filter bqb-filter--q"><span>Recherche libre</span><input type="search" class="bqb-input" name="f_q" value="' . esc_attr( $val( 'q' ) ) . '" placeholder="Titre, auteur, mot-clé…" /></label>';
+
+	if ( empty( $locked['collection'] ) ) {
+		$html .= $select( 'collection', 'Collection' );
+	}
+
+	$html .= $select( 'nature', 'Type de document' );
+	$html .= $select( 'theme', 'Thème' );
+
+	$html .= '<label class="bqb-filter"><span>Année</span><select class="bqb-input" name="f_annee"><option value="">Toutes</option>';
+	foreach ( bqb_years() as $year ) {
+		$html .= '<option value="' . (int) $year . '"' . selected( $val( 'annee' ), (string) $year, false ) . '>' . (int) $year . '</option>';
+	}
+	$html .= '</select></label>';
+
+	$html .= '</div>';
+
+	$more_open = $val( 'secteur' ) || $val( 'pays' ) || $val( 'prix' ) || $val( 'organisation' );
+	$html     .= '<details class="bqb-filters__more"' . ( $more_open ? ' open' : '' ) . '><summary>Plus de filtres</summary><div class="bqb-filters__row">';
+	$html     .= $select( 'secteur', 'Secteur' );
+	$html     .= $select( 'pays', 'Pays ou territoire' );
+	$html     .= $select( 'prix', 'Prix ou bourse' );
+	$html     .= $select( 'organisation', 'Organisation' );
+	$html     .= '</div></details>';
+
+	$html .= '<div class="bqb-filters__foot">';
+	$html .= '<label class="bqb-filter bqb-filter--inline"><span>Trier</span><select class="bqb-input" name="f_tri"><option value="">Plus récents</option><option value="ancien"' . selected( $val( 'tri' ), 'ancien', false ) . '>Plus anciens</option><option value="titre"' . selected( $val( 'tri' ), 'titre', false ) . '>A à Z</option></select></label>';
+
+	if ( $val( 'groupe' ) ) {
+		$html .= '<input type="hidden" name="f_groupe" value="' . esc_attr( $val( 'groupe' ) ) . '" />';
+	}
+
+	$html .= '<span class="bqb-filters__btns"><a class="bqb-btn bqb-btn--link" href="' . esc_url( $action ) . '">Réinitialiser</a><button type="submit" class="bqb-btn">Rechercher</button></span>';
+	$html .= '</div></form>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
+ * 24. [bqp_bibliotheque] : les cinq blocs
+ * ---------------------------------------------------------------------- */
+
+function bqb_laureats_count() {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'bqb_personne',
+			'hide_empty' => false,
+			'fields'     => 'ids',
+			'meta_query' => array( array( 'key' => 'bqb_roles', 'value' => '"laureat"', 'compare' => 'LIKE' ) ),
+		)
+	);
+
+	return is_wp_error( $terms ) ? 0 : count( $terms );
+}
+
+/**
+ * Un lien de bloc, masqué s'il ne mène à rien et que le réglage le demande.
+ */
+function bqb_block_link( $url, $label, $count, $show_empty, $class = '' ) {
+	if ( ! $url || ( ! $count && ! $show_empty ) ) {
+		return '';
+	}
+
+	return '<li class="bqb-blink' . ( $class ? ' ' . $class : '' ) . ( $count ? '' : ' is-empty' ) . '"><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . (int) $count . '</span>' : '' ) . '</li>';
+}
+
+function bqb_collection_items( $term, $show_empty, $split = false ) {
+	$items    = '';
+	$types    = '';
+	$settings = bqb_settings();
+	$slug     = $term->slug;
+
+	foreach ( (array) get_term_meta( $term->term_id, 'bqb_vues', true ) as $view ) {
+		if ( 'laureats' === $view ) {
+			$page = (int) $settings['page_personnes'];
+			if ( $page ) {
+				$items .= bqb_block_link( add_query_arg( 'role', 'laureat', get_permalink( $page ) ), bqb_view_label( $view, $term ), bqb_laureats_count(), $show_empty, 'is-view' );
+			}
+			continue;
+		}
+
+		if ( array_key_exists( $view, bqb_views() ) ) {
+			$items .= bqb_block_link( bqb_term_url( $term, array( 'f_groupe' => $view ) ), bqb_view_label( $view, $term ), bqb_count( array( 'collection' => array( $slug ) ) ), $show_empty, 'is-view' );
+		}
+	}
+
+	foreach ( (array) get_term_meta( $term->term_id, 'bqb_natures', true ) as $nature_id ) {
+		$nature = get_term( (int) $nature_id, 'bqb_nature' );
+
+		if ( ! $nature || is_wp_error( $nature ) ) {
+			continue;
+		}
+
+		$count  = bqb_count( array( 'collection' => array( $slug ), 'nature' => array( $nature->slug ) ) );
+		$types .= bqb_block_link( bqb_term_url( $term, array( 'f_nature' => $nature->slug ) ), $nature->name, $count, $show_empty );
+	}
+
+	// Les vues (regroupements) et les types de documents peuvent être
+	// rendus séparément, pour ne titrer « Types de documents » que les types.
+	return $split ? array( $items, $types ) : $items . $types;
+}
+
+function bqb_sc_blocks( $atts ) {
+	$atts = shortcode_atts( array( 'vides' => '', 'navigation' => 'oui' ), $atts, 'bqp_bibliotheque' );
+
+	$settings   = bqb_settings();
+	$show_empty = ( '' !== $atts['vides'] ) ? in_array( strtolower( $atts['vides'] ), array( 'oui', 'afficher', '1' ), true ) : (bool) $settings['afficher_vides'];
+	$map        = bqb_term_children_map( 'bqb_collection' );
+
+	wp_enqueue_style( 'bqb-front' );
+
+	$html = '<div class="bqb-lib">';
+
+	if ( 'non' !== strtolower( $atts['navigation'] ) ) {
+		$html .= bqb_render_lib_nav();
+	}
+
+	$html .= '<div class="bqb-blocks">';
+	$num   = 0;
+
+	foreach ( isset( $map[0] ) ? $map[0] : array() as $root ) {
+		$num++;
+		$color = get_term_meta( $root->term_id, 'bqb_couleur', true );
+		$color = $color ? $color : bqb_palette()['bordeaux'];
+		$total = bqb_count( array( 'collection' => array( $root->slug ) ) );
+
+		$body = '';
+
+		// Liens portés par l'espace lui-même (ex. « Types de publications »).
+		list( $own_views, $own_types ) = bqb_collection_items( $root, $show_empty, true );
+		if ( $own_views ) {
+			$body .= '<div class="bqb-sub"><ul class="bqb-sub__links">' . $own_views . '</ul></div>';
+		}
+		if ( $own_types ) {
+			$body .= '<div class="bqb-sub"><span class="bqb-sub__label">Types de documents</span><ul class="bqb-sub__links">' . $own_types . '</ul></div>';
+		}
+
+		$sub = 0;
+		foreach ( isset( $map[ $root->term_id ] ) ? $map[ $root->term_id ] : array() as $child ) {
+			$count = bqb_count( array( 'collection' => array( $child->slug ) ) );
+
+			if ( ! $count && ! $show_empty ) {
+				continue;
+			}
+
+			$sub++;
+			$items = bqb_collection_items( $child, $show_empty );
+			$body .= '<div class="bqb-sub">';
+			$body .= '<h4 class="bqb-sub__title"><a href="' . esc_url( bqb_term_url( $child ) ) . '"><span class="bqb-sub__num">' . $num . '.' . $sub . '</span>' . esc_html( $child->name ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . $count . '</span>' : '' ) . '</h4>';
+
+			if ( $items ) {
+				$body .= '<ul class="bqb-sub__links">' . $items . '</ul>';
+			}
+
+			$body .= '</div>';
+		}
+
+		$html .= bqb_render_block_card( $num, $root->name, $root->description, $color, ( $total || $show_empty ) ? bqb_term_url( $root ) : '', $body );
+	}
+
+	// Cinquième bloc : les thèmes.
+	$num++;
+	$themes = bqb_term_children_map( 'bqb_theme' );
+	$body   = '';
+
+	foreach ( isset( $themes[0] ) ? $themes[0] : array() as $root ) {
+		$count = bqb_count( array( 'theme' => array( $root->slug ) ) );
+
+		if ( ! $count && ! $show_empty ) {
+			continue;
+		}
+
+		$items = '';
+		foreach ( isset( $themes[ $root->term_id ] ) ? $themes[ $root->term_id ] : array() as $child ) {
+			$items .= bqb_block_link( bqb_term_url( $child ), $child->name, bqb_count( array( 'theme' => array( $child->slug ) ) ), $show_empty );
+		}
+
+		$body .= '<div class="bqb-sub"><h4 class="bqb-sub__title"><a href="' . esc_url( bqb_term_url( $root ) ) . '">' . esc_html( $root->name ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . $count . '</span>' : '' ) . '</h4>' . ( $items ? '<ul class="bqb-sub__links is-inline">' . $items . '</ul>' : '' ) . '</div>';
+	}
+
+	if ( $settings['page_catalogue'] ) {
+		$catalogue = get_permalink( (int) $settings['page_catalogue'] );
+		$body     .= '<div class="bqb-sub"><h4 class="bqb-sub__title">Autres filtres</h4><ul class="bqb-sub__links">'
+			. '<li class="bqb-blink is-view"><a href="' . esc_url( $catalogue ) . '">Secteurs, pays, périodes, types, collections</a></li>'
+			. '</ul></div>';
+	}
+
+	$html .= bqb_render_block_card( $num, $settings['bloc5_titre'], $settings['bloc5_texte'], $settings['bloc5_couleur'], '', $body, 'bqb-block--wide' );
+	$html .= '</div></div>';
+
+	return $html;
+}
+
+function bqb_render_block_card( $num, $title, $text, $color, $url, $body, $class = '' ) {
+	$html  = '<article class="bqb-block' . ( $class ? ' ' . esc_attr( $class ) : '' ) . '" style="--bqb-block:' . esc_attr( $color ) . ';--bqb-block-soft:' . esc_attr( bqb_hex_to_rgba( $color, 0.06 ) ) . ';--bqb-block-line:' . esc_attr( bqb_hex_to_rgba( $color, 0.18 ) ) . ';">';
+	$html .= '<header class="bqb-block__head">';
+	$html .= '<span class="bqb-block__num">' . (int) $num . '</span>';
+	$html .= '<h3 class="bqb-block__title">' . ( $url ? '<a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a>' : esc_html( $title ) ) . '</h3>';
+
+	if ( $text ) {
+		$html .= '<p class="bqb-block__text">' . esc_html( $text ) . '</p>';
+	}
+
+	$html .= '</header>';
+	$html .= '<div class="bqb-block__body">' . ( $body ? $body : '<p class="bqb-block__soon">Les premiers documents arrivent bientôt.</p>' ) . '</div>';
+	$html .= '</article>';
+
+	return $html;
+}
+
+/**
+ * La navigation transversale du schéma : recherche, chronologie, index.
+ */
+function bqb_render_lib_nav() {
+	$s     = bqb_settings();
+	$links = array();
+
+	$catalogue = $s['page_catalogue'] ? get_permalink( (int) $s['page_catalogue'] ) : '';
+
+	if ( $catalogue ) {
+		$links[] = array( $catalogue, 'Recherche avancée', 'search' );
+		$links[] = array( add_query_arg( 'f_groupe', 'annee', $catalogue ), 'Chronologie', 'calendar' );
+	}
+
+	if ( $s['page_personnes'] ) {
+		$links[] = array( get_permalink( (int) $s['page_personnes'] ), 'Auteurs et personnes', 'person' );
+	}
+
+	if ( $s['page_organisations'] ) {
+		$links[] = array( get_permalink( (int) $s['page_organisations'] ), 'Organisations et sources', 'building' );
+	}
+
+	if ( ! $links && ! $catalogue ) {
+		return '';
+	}
+
+	$icons = array(
+		'search'   => '<path d="M9 3a6 6 0 104.47 10l3.77 3.76 1.06-1.06-3.77-3.77A6 6 0 009 3zm0 1.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9z"/>',
+		'calendar' => '<path d="M6 2v2H4a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V5a1 1 0 00-1-1h-2V2h-1.5v2h-5V2H6zm-1.5 6h11v8.5h-11V8z"/>',
+		'person'   => '<path d="M10 2.5a3.75 3.75 0 110 7.5 3.75 3.75 0 010-7.5zM3.5 17c0-3 2.9-5 6.5-5s6.5 2 6.5 5v.5h-13V17z"/>',
+		'building' => '<path d="M10 2 2.5 6v1.5h15V6L10 2zM4 9v6H3v1.5h14V15h-1V9h-1.5v6h-2V9H11v6H9V9H7.5v6h-2V9H4z"/>',
+	);
+
+	$html = '<nav class="bqb-libnav" aria-label="Navigation de la bibliothèque">';
+
+	if ( $catalogue ) {
+		$html .= '<form class="bqb-libnav__search" method="get" action="' . esc_url( $catalogue ) . '"><input type="search" name="f_q" class="bqb-input" placeholder="Rechercher un document, un auteur, un thème…" aria-label="Rechercher dans la bibliothèque" /><button type="submit" class="bqb-btn">Rechercher</button></form>';
+	}
+
+	$html .= '<ul class="bqb-libnav__links">';
+	foreach ( $links as $link ) {
+		$html .= '<li><a href="' . esc_url( $link[0] ) . '"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" fill="currentColor">' . $icons[ $link[2] ] . '</svg>' . esc_html( $link[1] ) . '</a></li>';
+	}
+	$html .= '</ul></nav>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
+ * 25. Fil d'Ariane
+ * ---------------------------------------------------------------------- */
+
+function bqb_breadcrumb( $trail ) {
+	$s    = bqb_settings();
+	$home = $s['page_bibliotheque'] ? array( get_permalink( (int) $s['page_bibliotheque'] ), 'Bibliothèque' ) : null;
+
+	if ( $home ) {
+		array_unshift( $trail, $home );
+	}
+
+	if ( count( $trail ) < 2 ) {
+		return '';
+	}
+
+	$items = array();
+	$last  = count( $trail ) - 1;
+
+	foreach ( $trail as $i => $crumb ) {
+		$items[] = ( $i === $last || ! $crumb[0] )
+			? '<span aria-current="page">' . esc_html( $crumb[1] ) . '</span>'
+			: '<a href="' . esc_url( $crumb[0] ) . '">' . esc_html( $crumb[1] ) . '</a>';
+	}
+
+	return '<nav class="bqb-crumbs" aria-label="Fil d\'Ariane">' . implode( '<span class="bqb-crumbs__sep" aria-hidden="true">›</span>', $items ) . '</nav>';
+}
+
+function bqb_term_trail( $term ) {
+	$trail = array();
+
+	foreach ( array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) ) as $ancestor_id ) {
+		$ancestor = get_term( $ancestor_id, $term->taxonomy );
+		if ( $ancestor && ! is_wp_error( $ancestor ) ) {
+			$trail[] = array( bqb_term_url( $ancestor ), $ancestor->name );
+		}
+	}
+
+	$trail[] = array( bqb_term_url( $term ), $term->name );
+
+	return $trail;
+}
+
+/* -------------------------------------------------------------------------
+ * 26. Fiche d'un document
+ * ---------------------------------------------------------------------- */
+
+function bqb_related_ids( $post_id ) {
+	$out = get_post_meta( $post_id, '_bqb_associes', true );
+	$out = is_array( $out ) ? array_map( 'intval', $out ) : array();
+
+	// Les documents qui citent celui-ci comme associé, en retour.
+	$back = get_posts(
+		array(
+			'post_type'   => BQB_CPT,
+			'post_status' => 'publish',
+			'numberposts' => 20,
+			'fields'      => 'ids',
+			'meta_query'  => array( array( 'key' => '_bqb_associes', 'value' => 'i:' . (int) $post_id . ';', 'compare' => 'LIKE' ) ),
+		)
+	);
+
+	foreach ( $back as $id ) {
+		$list = get_post_meta( $id, '_bqb_associes', true );
+		if ( is_array( $list ) && in_array( (int) $post_id, array_map( 'intval', $list ), true ) ) {
+			$out[] = (int) $id;
+		}
+	}
+
+	return array_values(
+		array_unique(
+			array_filter(
+				$out,
+				function ( $id ) use ( $post_id ) {
+					return $id !== (int) $post_id && 'publish' === get_post_status( $id );
+				}
+			)
+		)
+	);
+}
+
+function bqb_render_fiche( $post_id, $notice_html ) {
+	$excerpt  = get_post_field( 'post_excerpt', $post_id );
+	$date     = bqb_doc_date( $post_id );
+	$link     = get_post_meta( $post_id, '_bqb_lien', true );
+	$file     = (int) get_post_meta( $post_id, '_bqb_fichier', true );
+	$ref      = get_post_meta( $post_id, '_bqb_reference', true );
+	$droits   = get_post_meta( $post_id, '_bqb_droits', true );
+	$edition  = get_post_meta( $post_id, '_bqb_edition', true );
+	$public   = bqb_is_public( $post_id );
+	$colls    = get_the_terms( $post_id, 'bqb_collection' );
+	$authors  = bqb_term_names( $post_id, 'bqb_personne', true );
+
+	list( $url, $label, $download ) = bqb_doc_action( $post_id, 'fiche' );
+
+	wp_enqueue_style( 'bqb-front' );
+	wp_enqueue_script( 'bqb-front' );
+
+	$html = '<div class="bqb-fiche">';
+
+	if ( $colls && ! is_wp_error( $colls ) ) {
+		$trail   = bqb_term_trail( $colls[0] );
+		$trail[] = array( '', get_the_title( $post_id ) );
+		$html   .= bqb_breadcrumb( $trail );
+	}
+
+	$html .= '<div class="bqb-fiche__top">';
+
+	if ( has_post_thumbnail( $post_id ) ) {
+		$html .= '<div class="bqb-fiche__cover">' . get_the_post_thumbnail( $post_id, 'medium', array( 'alt' => 'Couverture : ' . get_the_title( $post_id ) ) ) . '</div>';
+	}
+
+	$html .= '<div class="bqb-fiche__head">';
+	$html .= '<div class="bqb-doc__meta">' . bqb_access_badge( $post_id ) . ( $colls && ! is_wp_error( $colls ) ? '<a class="bqb-doc__coll" href="' . esc_url( bqb_term_url( $colls[0] ) ) . '">' . esc_html( $colls[0]->name ) . '</a>' : '' ) . '</div>';
+
+	if ( $authors || $date ) {
+		$html .= '<p class="bqb-fiche__byline">' . implode( ', ', $authors ) . ( $authors && $date ? '<span class="bqb-sep">·</span>' : '' ) . esc_html( $date ) . '</p>';
+	}
+
+	if ( $excerpt ) {
+		$html .= '<p class="bqb-fiche__lead">' . esc_html( $excerpt ) . '</p>';
+	}
+
+	$html .= '<div class="bqb-fiche__actions">';
+
+	if ( $url ) {
+		$extra = ( $download && $file ) ? ' <span class="bqb-btn__meta">' . esc_html( str_replace( ' · ', ', ', bqb_file_label( $file ) ) ) . '</span>' : '';
+		$html .= '<a class="bqb-btn" href="' . esc_url( $url ) . '"' . ( $download ? ' download' : ' target="_blank" rel="noopener"' ) . '>' . esc_html( $label ) . $extra . '</a>';
+	} elseif ( ! $public ) {
+		$html .= '<p class="bqb-fiche__locked">Ce document est réservé. Contactez-nous pour en obtenir l\'accès.</p>';
+	}
+
+	$cite = trim( wp_strip_all_tags( implode( ', ', $authors ) ) . ( $authors ? ', ' : '' ) . '« ' . get_the_title( $post_id ) . ' »' . ( $ref ? ', ' . $ref : ( $date ? ', ' . $date : '' ) ) . '. ' . get_permalink( $post_id ) );
+	$html .= '<button type="button" class="bqb-btn bqb-btn--ghost" data-cite="' . esc_attr( $cite ) . '">Citer ce document</button>';
+	$html .= '</div></div></div>';
+
+	if ( $public && $link && bqb_is_video( $link ) ) {
+		$embed = wp_oembed_get( $link );
+		if ( $embed ) {
+			$html .= '<div class="bqb-fiche__video">' . $embed . '</div>';
+		}
+	}
+
+	$rows = array(
+		'Date'                => $date ? esc_html( $date ) : '',
+		'Auteurs'             => implode( ', ', $authors ),
+		'Type de document'    => implode( ', ', bqb_term_names( $post_id, 'bqb_nature', true ) ),
+		'Collection'          => implode( ', ', bqb_term_names( $post_id, 'bqb_collection', true ) ),
+		'Thèmes'              => implode( ', ', bqb_term_names( $post_id, 'bqb_theme', true ) ),
+		'Secteurs'            => implode( ', ', bqb_term_names( $post_id, 'bqb_secteur', true ) ),
+		'Pays et territoires' => implode( ', ', bqb_term_names( $post_id, 'bqb_pays', true ) ),
+		'Organisations'       => implode( ', ', bqb_term_names( $post_id, 'bqb_organisation', true ) ),
+		'Prix ou bourse'      => implode( ', ', bqb_term_names( $post_id, 'bqb_prix', true ) ) . ( $edition ? ', édition ' . (int) $edition : '' ),
+		'Référence'           => $ref ? esc_html( $ref ) : '',
+		'Droits'              => $droits ? esc_html( $droits ) : '',
+	);
+
+	$dl = '';
+	foreach ( $rows as $label_row => $value ) {
+		if ( '' !== trim( wp_strip_all_tags( $value ), ', ' ) ) {
+			$dl .= '<div class="bqb-fiche__row"><dt>' . esc_html( $label_row ) . '</dt><dd>' . $value . '</dd></div>';
+		}
+	}
+
+	$html .= '<div class="bqb-fiche__grid' . ( trim( wp_strip_all_tags( $notice_html ) ) ? '' : ' is-single' ) . '">';
+
+	if ( trim( wp_strip_all_tags( $notice_html ) ) ) {
+		$html .= '<div class="bqb-fiche__notice"><h2 class="bqb-fiche__h2">Contexte et présentation</h2>' . $notice_html . '</div>';
+	}
+
+	$html .= '<aside class="bqb-fiche__infos"><h2 class="bqb-fiche__h2">Informations</h2><dl>' . $dl . '</dl></aside>';
+	$html .= '</div>';
+
+	$related = bqb_related_ids( $post_id );
+	if ( $related ) {
+		$html .= '<section class="bqb-fiche__related"><h2 class="bqb-fiche__h2">Documents associés</h2><div class="bqb-docs__list">';
+		foreach ( $related as $id ) {
+			$html .= bqb_render_doc_row( $id );
+		}
+		$html .= '</div></section>';
+	}
+
+	$html .= '</div>';
+
+	return $html;
+}
+
+add_filter( 'the_content', 'bqb_filter_content', 20 );
+function bqb_filter_content( $content ) {
+	if ( ! is_singular( BQB_CPT ) || ! in_the_loop() || ! is_main_query() ) {
+		return $content;
+	}
+
+	if ( ! bqb_settings()['fiche_auto'] ) {
+		return $content;
+	}
+
+	return bqb_render_fiche( get_the_ID(), $content );
+}
+
+function bqb_sc_fiche( $atts ) {
+	$atts = shortcode_atts( array( 'id' => 0 ), $atts, 'bqp_document_fiche' );
+	$id   = $atts['id'] ? absint( $atts['id'] ) : get_the_ID();
+
+	if ( ! $id || BQB_CPT !== get_post_type( $id ) ) {
+		return '';
+	}
+
+	return bqb_render_fiche( $id, wpautop( do_shortcode( get_post_field( 'post_content', $id ) ) ) );
+}
+
+/* -------------------------------------------------------------------------
+ * 27. Pages automatiques des collections, thèmes, personnes, organisations
+ * ---------------------------------------------------------------------- */
+
+add_action( 'template_redirect', 'bqb_archive_router', 5 );
+function bqb_archive_router() {
+	$public = array( 'bqb_collection', 'bqb_theme', 'bqb_personne', 'bqb_organisation' );
+
+	if ( ! is_tax( $public ) ) {
+		return;
+	}
+
+	$term = get_queried_object();
+	if ( ! $term instanceof WP_Term ) {
+		return;
+	}
+
+	// Une page dédiée existe : l'adresse automatique y renvoie, filtres compris.
+	$page = (int) get_term_meta( $term->term_id, 'bqb_page', true );
+	if ( $page && 'publish' === get_post_status( $page ) ) {
+		$keep = array_intersect_key( wp_unslash( $_GET ), array_flip( array_map( function ( $k ) { return 'f_' . $k; }, array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe' ) ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		wp_safe_redirect( add_query_arg( array_map( 'rawurlencode', array_map( 'sanitize_text_field', $keep ) ), get_permalink( $page ) ), 301 );
+		exit;
+	}
+
+	if ( ! bqb_settings()['archives_auto'] ) {
+		return;
+	}
+
+	get_header();
+	echo '<main id="content" class="site-main bqb-archive">' . bqb_render_archive( $term ) . '</main>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	get_footer();
+	exit;
+}
+
+function bqb_render_archive( $term ) {
+	$labels = array(
+		'bqb_collection'   => 'Collection',
+		'bqb_theme'        => 'Thème',
+		'bqb_personne'     => 'Auteur',
+		'bqb_organisation' => 'Organisation',
+	);
+
+	$map   = bqb_term_children_map( $term->taxonomy );
+	$color = '';
+
+	if ( 'bqb_collection' === $term->taxonomy ) {
+		$root  = $term;
+		$anc   = get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' );
+		$root  = $anc ? get_term( end( $anc ), $term->taxonomy ) : $term;
+		$color = get_term_meta( $root->term_id, 'bqb_couleur', true );
+	}
+
+	wp_enqueue_style( 'bqb-front' );
+
+	$html  = '<div class="bqb-page"' . ( $color ? ' style="--bqb-accent:' . esc_attr( $color ) . ';"' : '' ) . '>';
+	$html .= bqb_breadcrumb( bqb_term_trail( $term ) );
+	$html .= '<header class="bqb-hero">';
+
+	$visual = '';
+	$extra  = '';
+
+	if ( 'bqb_personne' === $term->taxonomy ) {
+		$photo = (int) get_term_meta( $term->term_id, 'bqb_photo', true );
+		$roles = array_intersect_key( bqb_person_roles(), array_flip( (array) get_term_meta( $term->term_id, 'bqb_roles', true ) ) );
+		$year  = get_term_meta( $term->term_id, 'bqb_annee_prix', true );
+		$prix  = (int) get_term_meta( $term->term_id, 'bqb_prix_id', true );
+		$prix  = $prix ? get_term( $prix, 'bqb_prix' ) : null;
+		$site  = get_term_meta( $term->term_id, 'bqb_site', true );
+		$bio   = get_term_meta( $term->term_id, 'bqb_bio', true );
+
+		$visual = $photo ? wp_get_attachment_image( $photo, 'medium', false, array( 'class' => 'bqb-hero__photo', 'alt' => 'Portrait de ' . $term->name ) ) : '';
+		$labels['bqb_personne'] = $roles ? implode( ', ', $roles ) : 'Auteur';
+
+		if ( $prix && ! is_wp_error( $prix ) ) {
+			$extra .= '<p class="bqb-hero__prize">' . esc_html( $prix->name ) . ( $year ? ' ' . (int) $year : '' ) . '</p>';
+		}
+		if ( $bio ) {
+			$extra .= '<p class="bqb-hero__text">' . nl2br( esc_html( $bio ) ) . '</p>';
+		}
+		if ( $site ) {
+			$extra .= '<p><a class="bqb-btn bqb-btn--ghost" href="' . esc_url( $site ) . '" target="_blank" rel="noopener">Page personnelle</a></p>';
+		}
+	}
+
+	if ( 'bqb_organisation' === $term->taxonomy ) {
+		$logo  = (int) get_term_meta( $term->term_id, 'bqb_logo', true );
+		$type  = get_term_meta( $term->term_id, 'bqb_type_orga', true );
+		$types = bqb_org_types();
+		$site  = get_term_meta( $term->term_id, 'bqb_site', true );
+
+		$visual = $logo ? wp_get_attachment_image( $logo, 'medium', false, array( 'class' => 'bqb-hero__logo', 'alt' => 'Logo ' . $term->name ) ) : '';
+
+		if ( $type && isset( $types[ $type ] ) ) {
+			$labels['bqb_organisation'] = $types[ $type ];
+		}
+		if ( $site ) {
+			$extra .= '<p><a class="bqb-btn bqb-btn--ghost" href="' . esc_url( $site ) . '" target="_blank" rel="noopener">Site internet</a></p>';
+		}
+	}
+
+	if ( $visual ) {
+		$html .= '<div class="bqb-hero__visual">' . $visual . '</div>';
+	}
+
+	$html .= '<div class="bqb-hero__body">';
+	$html .= '<span class="bqb-hero__eyebrow">' . esc_html( $labels[ $term->taxonomy ] ) . '</span>';
+	$html .= '<h1 class="bqb-hero__title">' . esc_html( $term->name ) . '</h1>';
+
+	if ( $term->description ) {
+		$html .= '<p class="bqb-hero__text">' . esc_html( $term->description ) . '</p>';
+	}
+
+	$html .= $extra . '</div></header>';
+
+	// Sous-catégories, en raccourcis.
+	if ( ! empty( $map[ $term->term_id ] ) ) {
+		$chips = '';
+		foreach ( $map[ $term->term_id ] as $child ) {
+			if ( $child->count || bqb_settings()['afficher_vides'] ) {
+				$chips .= '<a class="bqb-chip bqb-chip--nav" href="' . esc_url( bqb_term_url( $child ) ) . '">' . esc_html( $child->name ) . ' <span>' . (int) $child->count . '</span></a>';
+			}
+		}
+		if ( $chips ) {
+			$html .= '<nav class="bqb-subnav" aria-label="Sous-catégories">' . $chips . '</nav>';
+		}
+	}
+
+	$atts            = array_fill_keys( array_keys( bqb_short_map() ), '' );
+	$atts['annee']   = '';
+	$atts['acces']   = '';
+	$atts['groupe']  = '';
+	$atts['tri']     = '';
+	$atts['nombre']  = '';
+	$atts['filtres'] = 'oui';
+	$atts['titre']   = '';
+	$atts['vide']    = 'Aucun document dans cette rubrique pour le moment.';
+	$atts['pagination'] = 'oui';
+
+	$html .= bqb_render_documents( $atts, array( bqb_short_name( $term->taxonomy ) => array( $term->slug ) ) );
+	$html .= '</div>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
+ * 28. [bqp_personnes] : index des personnes ou des organisations
+ * ---------------------------------------------------------------------- */
+
+function bqb_sc_personnes( $atts ) {
+	$atts = shortcode_atts( array( 'famille' => 'personnes', 'role' => '', 'type' => '', 'groupe' => '' ), $atts, 'bqp_personnes' );
+	$orgs = ( 'organisations' === strtolower( $atts['famille'] ) );
+	$tax  = $orgs ? 'bqb_organisation' : 'bqb_personne';
+
+	$filter_key = $orgs ? 'type' : 'role';
+	$choices    = $orgs ? bqb_org_types() : bqb_person_roles();
+	$current    = $atts[ $filter_key ];
+
+	if ( '' === $current && isset( $_GET[ $filter_key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		$current = sanitize_key( wp_unslash( $_GET[ $filter_key ] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+	}
+	$current = array_key_exists( $current, $choices ) ? $current : '';
+
+	$args = array( 'taxonomy' => $tax, 'hide_empty' => false, 'orderby' => 'name' );
+
+	if ( $current ) {
+		$args['meta_query'] = $orgs
+			? array( array( 'key' => 'bqb_type_orga', 'value' => $current ) )
+			: array( array( 'key' => 'bqb_roles', 'value' => '"' . $current . '"', 'compare' => 'LIKE' ) );
+	}
+
+	$terms = get_terms( $args );
+	$terms = is_wp_error( $terms ) ? array() : $terms;
+
+	// Sans filtre, on n'affiche que les fiches reliées à au moins un document,
+	// ou les lauréats, qui ont leur place même sans document en ligne.
+	if ( ! $current ) {
+		$terms = array_values(
+			array_filter(
+				$terms,
+				function ( $t ) use ( $orgs ) {
+					return $t->count || ( ! $orgs && in_array( 'laureat', (array) get_term_meta( $t->term_id, 'bqb_roles', true ), true ) );
+				}
+			)
+		);
+	}
+
+	wp_enqueue_style( 'bqb-front' );
+
+	$html  = '<section class="bqb-people">';
+	$html .= '<nav class="bqb-people__filters">';
+	$html .= '<a class="bqb-chip bqb-chip--nav' . ( $current ? '' : ' is-on' ) . '" href="' . esc_url( remove_query_arg( $filter_key ) ) . '">Tous</a>';
+	foreach ( $choices as $key => $label ) {
+		$html .= '<a class="bqb-chip bqb-chip--nav' . ( $current === $key ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( $filter_key, $key ) ) . '">' . esc_html( $label ) . '</a>';
+	}
+	$html .= '</nav>';
+
+	if ( ! $terms ) {
+		return $html . '<p class="bqb-docs__empty">Aucune fiche pour le moment.</p></section>';
+	}
+
+	$groupe  = $atts['groupe'] ? $atts['groupe'] : ( ( ! $orgs && 'laureat' === $current ) ? 'annee' : 'alpha' );
+	$buckets = array();
+
+	foreach ( $terms as $t ) {
+		if ( 'annee' === $groupe ) {
+			$year = get_term_meta( $t->term_id, 'bqb_annee_prix', true );
+			$key  = $year ? 'Promotion ' . (int) $year : 'Année non renseignée';
+		} else {
+			$key = strtoupper( substr( remove_accents( $t->name ), 0, 1 ) );
+		}
+		$buckets[ $key ][] = $t;
+	}
+
+	'annee' === $groupe ? krsort( $buckets ) : ksort( $buckets );
+
+	foreach ( $buckets as $key => $list ) {
+		$html .= '<div class="bqb-group"><h3 class="bqb-group__title">' . esc_html( $key ) . '</h3><div class="bqb-people__grid">';
+
+		foreach ( $list as $t ) {
+			$img_id = (int) get_term_meta( $t->term_id, $orgs ? 'bqb_logo' : 'bqb_photo', true );
+			$sub    = array();
+
+			if ( $orgs ) {
+				$type = get_term_meta( $t->term_id, 'bqb_type_orga', true );
+				if ( isset( $choices[ $type ] ) ) {
+					$sub[] = $choices[ $type ];
+				}
+			} else {
+				$sub = array_values( array_intersect_key( $choices, array_flip( (array) get_term_meta( $t->term_id, 'bqb_roles', true ) ) ) );
+			}
+
+			$initials = '';
+			foreach ( preg_split( '/[\s\-]+/u', $t->name ) as $part ) {
+				$initials .= function_exists( 'mb_substr' ) ? mb_substr( $part, 0, 1 ) : substr( $part, 0, 1 );
+				if ( strlen( $initials ) >= 2 ) {
+					break;
+				}
+			}
+
+			$html .= '<a class="bqb-person' . ( $orgs ? ' is-org' : '' ) . '" href="' . esc_url( bqb_term_url( $t ) ) . '">';
+			$html .= '<span class="bqb-person__visual">' . ( $img_id ? wp_get_attachment_image( $img_id, 'thumbnail', false, array( 'alt' => '' ) ) : '<span class="bqb-person__initials">' . esc_html( strtoupper( $initials ) ) . '</span>' ) . '</span>';
+			$html .= '<span class="bqb-person__body"><strong>' . esc_html( $t->name ) . '</strong>';
+			if ( $sub ) {
+				$html .= '<em>' . esc_html( implode( ', ', $sub ) ) . '</em>';
+			}
+			$html .= '<span class="bqb-person__count">' . sprintf( _n( '%s document', '%s documents', (int) $t->count ), (int) $t->count ) . '</span></span>';
+			$html .= '</a>';
+		}
+
+		$html .= '</div></div>';
+	}
+
+	return $html . '</section>';
+}
+
+/* -------------------------------------------------------------------------
+ * 29. Styles et script du site
+ * ---------------------------------------------------------------------- */
+
+add_action( 'wp_enqueue_scripts', 'bqb_front_assets' );
+function bqb_front_assets() {
+	wp_register_style( 'bqb-front', false, array(), BQB_VERSION );
+	wp_add_inline_style( 'bqb-front', bqb_front_css() );
+
+	wp_register_script( 'bqb-front', false, array(), BQB_VERSION, true );
+	wp_add_inline_script( 'bqb-front', bqb_front_js() );
+
+	$needed = is_singular( BQB_CPT ) || is_tax( array( 'bqb_collection', 'bqb_theme', 'bqb_personne', 'bqb_organisation' ) );
+
+	if ( ! $needed && is_singular() ) {
+		$post    = get_post();
+		$content = $post ? (string) $post->post_content . (string) get_post_meta( $post->ID, '_elementor_data', true ) : '';
+		$needed  = ( false !== strpos( $content, '[bqp_' ) );
+	}
+
+	// Chargé dans l'en-tête dès que la page en a besoin, pour éviter tout
+	// affichage sans style le temps du chargement.
+	if ( $needed ) {
+		wp_enqueue_style( 'bqb-front' );
+		wp_enqueue_script( 'bqb-front' );
+	}
+}
+
+function bqb_front_js() {
+	return "
+	(function(){
+		function boot(){
+			document.addEventListener('click', function(e){
+				var btn = e.target.closest('[data-cite]');
+				if (!btn) { return; }
+				var text = btn.getAttribute('data-cite');
+				var done = function(){ var old = btn.textContent; btn.textContent = 'Référence copiée'; setTimeout(function(){ btn.textContent = old; }, 1800); };
+				if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, function(){ window.prompt('Référence à copier :', text); }); }
+				else { window.prompt('Référence à copier :', text); }
+			});
+
+			// Adresses de recherche propres : les filtres vides ne sont pas envoyés.
+			Array.prototype.forEach.call(document.querySelectorAll('.bqb-filters, .bqb-libnav__search'), function(form){
+				form.addEventListener('submit', function(){
+					Array.prototype.forEach.call(form.querySelectorAll('input, select'), function(el){
+						if (!el.value) { el.disabled = true; }
+					});
+				});
+			});
+		}
+
+		if ('loading' === document.readyState) { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
+	})();
+	";
+}
+
+function bqb_front_css() {
+	$p = bqb_palette();
+
+	return '
+	.bqb-lib,.bqb-docs,.bqb-fiche,.bqb-page,.bqb-people{
+		--bqb-bordeaux:' . $p['bordeaux'] . ';--bqb-dark:' . $p['bordeaux_dark'] . ';--bqb-navy:' . $p['navy'] . ';
+		--bqb-ink:#2f2f2f;--bqb-muted:#6f6f6f;--bqb-line:#E6E3E1;--bqb-soft:#FAF8F7;
+		--bqb-serif:"Cormorant Garamond","Playfair Display",Georgia,serif;
+		--bqb-sans:"Inter","Montserrat","Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+		font-family:var(--bqb-sans);color:var(--bqb-ink);box-sizing:border-box;
+	}
+	.bqb-lib *,.bqb-docs *,.bqb-fiche *,.bqb-page *,.bqb-people *{box-sizing:border-box;}
+	.bqb-lib a,.bqb-docs a,.bqb-fiche a,.bqb-page a,.bqb-people a{color:var(--bqb-bordeaux) !important;text-decoration:none !important;}
+	.bqb-lib a:hover,.bqb-docs a:hover,.bqb-fiche a:hover,.bqb-page a:hover{color:var(--bqb-dark) !important;}
+	.screen-reader-text{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
+
+	/* Boutons, protégés des couleurs du thème */
+	.bqb-lib .bqb-btn,.bqb-docs .bqb-btn,.bqb-fiche .bqb-btn,.bqb-page .bqb-btn{
+		-webkit-appearance:none;appearance:none;display:inline-flex;align-items:center;gap:8px;
+		padding:12px 20px !important;border:1px solid transparent !important;border-radius:3px !important;
+		background:var(--bqb-bordeaux) !important;background-image:linear-gradient(180deg,var(--bqb-bordeaux),var(--bqb-dark) 170%) !important;
+		color:#fff !important;font-family:var(--bqb-sans) !important;font-size:.74rem !important;font-weight:700 !important;
+		letter-spacing:.1em !important;text-transform:uppercase !important;line-height:1 !important;cursor:pointer;
+		box-shadow:0 8px 18px -12px rgba(49,2,12,.8);transition:filter .2s,transform .2s;
+	}
+	.bqb-lib .bqb-btn:hover,.bqb-docs .bqb-btn:hover,.bqb-fiche .bqb-btn:hover,.bqb-page .bqb-btn:hover{filter:brightness(1.1);transform:translateY(-1px);color:#fff !important;}
+	.bqb-lib .bqb-btn--ghost,.bqb-docs .bqb-btn--ghost,.bqb-fiche .bqb-btn--ghost,.bqb-page .bqb-btn--ghost{
+		background:#fff !important;background-image:none !important;border-color:var(--bqb-line) !important;color:var(--bqb-bordeaux) !important;box-shadow:none;
+	}
+	.bqb-lib .bqb-btn--ghost:hover,.bqb-docs .bqb-btn--ghost:hover,.bqb-fiche .bqb-btn--ghost:hover,.bqb-page .bqb-btn--ghost:hover{border-color:var(--bqb-bordeaux) !important;color:var(--bqb-bordeaux) !important;background:rgba(116,4,28,.04) !important;}
+	.bqb-docs .bqb-btn--link{background:none !important;background-image:none !important;border:0 !important;box-shadow:none;color:var(--bqb-muted) !important;padding:12px 8px !important;}
+	.bqb-btn__meta{font-weight:500;letter-spacing:.02em;text-transform:none;opacity:.8;}
+
+	.bqb-input{
+		width:100% !important;margin:0 !important;padding:11px 13px !important;border:1px solid #DAD6D3 !important;border-radius:3px !important;
+		background:#fff !important;color:var(--bqb-ink) !important;font-family:var(--bqb-sans) !important;font-size:.92rem !important;line-height:1.4 !important;box-shadow:none !important;
+	}
+	.bqb-input:focus{border-color:var(--bqb-bordeaux) !important;box-shadow:0 0 0 3px rgba(116,4,28,.1) !important;outline:none !important;}
+
+	/* Navigation transversale */
+	.bqb-libnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin:0 0 30px;padding:18px 20px;border:1px solid var(--bqb-line);border-radius:6px;background:#fff;}
+	.bqb-libnav__search{display:flex;gap:8px;flex:1 1 380px;}
+	.bqb-libnav__links{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0;padding:0;list-style:none;}
+	.bqb-libnav__links a{display:inline-flex;align-items:center;gap:7px;font-size:.84rem;font-weight:600;}
+
+	/* Les cinq blocs */
+	.bqb-blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;align-items:start;}
+	.bqb-block{background:#fff;border:1px solid var(--bqb-line);border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(49,2,12,.04);transition:box-shadow .3s,transform .3s;}
+	.bqb-block:hover{box-shadow:0 18px 40px -26px rgba(49,2,12,.55);transform:translateY(-2px);}
+	.bqb-block__head{position:relative;padding:22px 22px 20px 64px;background:var(--bqb-block);color:#fff;background-image:linear-gradient(160deg,rgba(255,255,255,.08),rgba(0,0,0,.18));}
+	.bqb-block__num{position:absolute;left:20px;top:21px;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border:1px solid rgba(255,255,255,.45);border-radius:50%;font-family:var(--bqb-serif);font-size:1.05rem;font-weight:600;}
+	.bqb-block__title{margin:0;font-family:var(--bqb-serif) !important;font-size:1.35rem !important;font-weight:600 !important;line-height:1.2 !important;color:#fff !important;}
+	.bqb-lib .bqb-block__title a{color:#fff !important;}
+	.bqb-lib .bqb-block__title a:hover{color:#fff !important;text-decoration:underline !important;text-underline-offset:3px;}
+	.bqb-block__text{margin:8px 0 0;font-size:.82rem;line-height:1.5;color:rgba(255,255,255,.85);}
+	.bqb-block__body{padding:8px 18px 18px;}
+	.bqb-block--wide{grid-column:1 / -1;}
+	.bqb-block--wide .bqb-block__head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 22px;}
+	.bqb-block--wide .bqb-block__text{margin:0;}
+	.bqb-block--wide .bqb-block__body{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0 26px;}
+	.bqb-block--wide .bqb-sub{border-bottom:0;}
+	.bqb-sub__label{display:block;margin:0 0 6px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-block);}
+	.bqb-block__soon{margin:14px 4px 4px;font-size:.85rem;font-style:italic;color:var(--bqb-muted);}
+	.bqb-sub{padding:12px 4px;border-bottom:1px solid var(--bqb-line);}
+	.bqb-sub:last-child{border-bottom:0;}
+	.bqb-sub__title{display:flex;align-items:baseline;gap:8px;margin:0 0 8px !important;font-family:var(--bqb-sans) !important;font-size:.88rem !important;font-weight:700 !important;line-height:1.35 !important;color:var(--bqb-dark) !important;}
+	.bqb-sub__title a{flex:1;color:var(--bqb-dark) !important;}
+	.bqb-lib .bqb-sub__title a:hover{color:var(--bqb-block) !important;}
+	.bqb-sub__num{margin-right:7px;color:var(--bqb-block);font-weight:700;}
+	.bqb-sub__links{margin:0;padding:0;list-style:none;}
+	.bqb-sub__links.is-inline{display:flex;flex-wrap:wrap;gap:4px 12px;}
+	.bqb-blink{display:flex;align-items:baseline;gap:8px;padding:3px 0 3px 14px;position:relative;font-size:.85rem;line-height:1.45;}
+	.bqb-blink::before{content:"";position:absolute;left:2px;top:.72em;width:5px;height:5px;border-radius:50%;background:var(--bqb-block);opacity:.55;}
+	.bqb-sub__links.is-inline .bqb-blink{padding-left:12px;}
+	.bqb-blink a{flex:1;color:var(--bqb-ink) !important;}
+	.bqb-lib .bqb-blink a:hover{color:var(--bqb-block) !important;}
+	.bqb-blink.is-view a{font-style:italic;}
+	.bqb-blink.is-empty a{color:#9a9a9a !important;}
+	.bqb-blink__n{flex:0 0 auto;min-width:22px;padding:1px 7px;border-radius:999px;background:var(--bqb-block-soft);color:var(--bqb-block);font-size:.7rem;font-weight:700;text-align:center;}
+
+	/* Listes de documents */
+	.bqb-docs__title{margin:0 0 18px;font-family:var(--bqb-serif) !important;font-size:1.9rem !important;font-weight:600 !important;color:var(--bqb-dark) !important;}
+	.bqb-docs__count{margin:22px 0 10px;font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-docs__empty{margin:20px 0;padding:22px;border:1px dashed #DAD6D3;border-radius:6px;background:var(--bqb-soft);text-align:center;font-style:italic;color:var(--bqb-muted);}
+	.bqb-docs__list{display:flex;flex-direction:column;border-top:1px solid var(--bqb-line);}
+	.bqb-doc{display:flex;align-items:center;gap:18px;padding:18px 4px;border-bottom:1px solid var(--bqb-line);}
+	.bqb-doc__cover{flex:0 0 56px;}
+	.bqb-doc__cover img{display:block;width:56px;height:76px;object-fit:cover;border-radius:2px;box-shadow:0 4px 10px -6px rgba(0,0,0,.4);}
+	.bqb-doc__main{flex:1;min-width:0;}
+	.bqb-doc__meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+	.bqb-doc__coll{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted) !important;}
+	.bqb-doc__title{margin:7px 0 5px !important;font-family:var(--bqb-serif) !important;font-size:1.3rem !important;font-weight:600 !important;line-height:1.25 !important;}
+	.bqb-doc__title a{color:var(--bqb-dark) !important;}
+	.bqb-docs .bqb-doc__title a:hover{color:var(--bqb-bordeaux) !important;}
+	.bqb-doc__info{margin:0;font-size:.84rem;line-height:1.5;color:var(--bqb-muted);}
+	.bqb-sep{margin:0 8px;opacity:.5;}
+	.bqb-doc__action{flex:0 0 auto;}
+	@media (max-width:640px){.bqb-doc{flex-wrap:wrap;}.bqb-doc__action{flex-basis:100%;}}
+
+	.bqb-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.66rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;line-height:1.5;}
+	.bqb-badge--public{background:#E9F3EC;color:#1D6B3A;}
+	.bqb-badge--adherents,.bqb-badge--partenaires{background:rgba(116,4,28,.08);color:var(--bqb-bordeaux);}
+	.bqb-badge--sur-place{background:#F0EEEC;color:#5a5a5a;}
+
+	.bqb-groups{display:flex;flex-direction:column;gap:30px;margin-top:10px;}
+	.bqb-group__title{display:flex;align-items:baseline;gap:10px;margin:0 0 6px !important;font-family:var(--bqb-serif) !important;font-size:1.55rem !important;font-weight:600 !important;color:var(--bqb-dark) !important;}
+	.bqb-group__title span{font-family:var(--bqb-sans);font-size:.72rem;font-weight:700;color:var(--bqb-muted);}
+
+	.bqb-pages{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:30px 0 0;}
+	.bqb-pages__item{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:38px;padding:0 10px;border:1px solid var(--bqb-line);border-radius:3px;font-size:.85rem;font-weight:600;}
+	.bqb-pages__item.is-on{background:var(--bqb-bordeaux);border-color:var(--bqb-bordeaux);color:#fff;}
+
+	/* Filtres */
+	.bqb-filters{margin:0 0 8px;padding:22px;border:1px solid var(--bqb-line);border-radius:6px;background:#fff;}
+	.bqb-filters__row{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;}
+	.bqb-filter{display:flex;flex-direction:column;gap:6px;margin:0;}
+	.bqb-filter > span{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-bordeaux);}
+	.bqb-filter--q{grid-column:span 2;}
+	@media (max-width:640px){.bqb-filter--q{grid-column:auto;}}
+	.bqb-filters__more{margin-top:14px;}
+	.bqb-filters__more summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--bqb-bordeaux);}
+	.bqb-filters__more .bqb-filters__row{margin-top:12px;}
+	.bqb-filters__foot{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:16px;padding-top:16px;border-top:1px solid var(--bqb-line);}
+	.bqb-filter--inline{flex-direction:row;align-items:center;gap:10px;}
+	.bqb-filter--inline .bqb-input{width:auto !important;}
+	.bqb-filters__btns{display:flex;gap:6px;}
+
+	.bqb-active{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px;}
+	.bqb-chip{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border:1px solid var(--bqb-line);border-radius:999px;background:#fff;font-size:.8rem;font-weight:600;transition:border-color .2s,background .2s;}
+	.bqb-chip:hover{border-color:var(--bqb-bordeaux);background:rgba(116,4,28,.04);}
+	.bqb-chip span{color:var(--bqb-muted);font-weight:700;}
+	.bqb-chip.is-on{background:var(--bqb-bordeaux);border-color:var(--bqb-bordeaux);color:#fff !important;}
+	.bqb-chip.is-on span{color:rgba(255,255,255,.8);}
+
+	/* Fil d’Ariane */
+	.bqb-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 22px;font-size:.78rem;color:var(--bqb-muted);}
+	.bqb-crumbs a{font-weight:600;}
+	.bqb-crumbs__sep{opacity:.5;}
+
+	/* Pages automatiques */
+	.bqb-page{max-width:1140px;margin:0 auto;padding:40px 20px 70px;}
+	.bqb-hero{display:flex;gap:30px;align-items:flex-start;margin:0 0 26px;padding:0 0 26px;border-bottom:1px solid var(--bqb-line);}
+	.bqb-hero__visual img{display:block;width:150px;height:150px;object-fit:cover;border-radius:50%;box-shadow:0 12px 30px -18px rgba(49,2,12,.7);}
+	.bqb-hero__visual img.bqb-hero__logo{border-radius:6px;object-fit:contain;background:#fff;padding:14px;border:1px solid var(--bqb-line);box-shadow:none;}
+	.bqb-hero__eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bqb-accent,var(--bqb-bordeaux));}
+	.bqb-hero__eyebrow::before{content:"";width:28px;height:2px;background:var(--bqb-accent,#C75A18);}
+	.bqb-hero__title{margin:10px 0 0 !important;font-family:var(--bqb-serif) !important;font-size:clamp(2rem,4vw,3rem) !important;font-weight:600 !important;line-height:1.1 !important;color:var(--bqb-dark) !important;}
+	.bqb-hero__text{max-width:70ch;margin:14px 0 0;font-size:1rem;line-height:1.7;color:#4a4a4a;}
+	.bqb-hero__prize{margin:10px 0 0;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bqb-bordeaux);}
+	@media (max-width:640px){.bqb-hero{flex-direction:column;}}
+	.bqb-subnav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px;}
+
+	/* Fiche document */
+	.bqb-fiche{margin:0 0 30px;}
+	.bqb-fiche__top{display:flex;gap:28px;align-items:flex-start;margin:0 0 30px;}
+	.bqb-fiche__cover img{display:block;width:170px;height:auto;border-radius:3px;box-shadow:0 16px 36px -20px rgba(0,0,0,.55);}
+	.bqb-fiche__head{flex:1;min-width:0;}
+	.bqb-fiche__byline{margin:12px 0 0;font-size:.9rem;font-weight:600;color:var(--bqb-ink);}
+	.bqb-fiche__lead{margin:16px 0 0;font-family:var(--bqb-serif);font-size:1.3rem;line-height:1.55;color:#3a3a3a;}
+	.bqb-fiche__actions{display:flex;flex-wrap:wrap;gap:10px;margin:22px 0 0;}
+	.bqb-fiche__locked{margin:0;padding:12px 16px;border-left:3px solid var(--bqb-bordeaux);background:rgba(116,4,28,.05);font-size:.9rem;}
+	.bqb-fiche__video{position:relative;margin:0 0 30px;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:6px;}
+	.bqb-fiche__video iframe{position:absolute;inset:0;width:100%;height:100%;}
+	.bqb-fiche__grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:40px;}
+	.bqb-fiche__grid.is-single{grid-template-columns:minmax(0,1fr);max-width:720px;}
+	@media (max-width:860px){.bqb-fiche__grid{grid-template-columns:1fr;}.bqb-fiche__top{flex-direction:column;}}
+	.bqb-fiche__h2{margin:0 0 14px !important;font-family:var(--bqb-serif) !important;font-size:1.45rem !important;font-weight:600 !important;color:var(--bqb-dark) !important;}
+	.bqb-fiche__notice{font-size:1rem;line-height:1.75;}
+	.bqb-fiche__infos{padding:22px;border:1px solid var(--bqb-line);border-radius:6px;background:var(--bqb-soft);align-self:start;}
+	.bqb-fiche__infos dl{margin:0;}
+	.bqb-fiche__row{padding:10px 0;border-bottom:1px solid var(--bqb-line);}
+	.bqb-fiche__row:last-child{border-bottom:0;}
+	.bqb-fiche__row dt{margin:0 0 3px;font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bqb-bordeaux);}
+	.bqb-fiche__row dd{margin:0;font-size:.9rem;line-height:1.5;}
+	.bqb-fiche__related{margin-top:40px;}
+
+	/* Index des personnes */
+	.bqb-people .bqb-group + .bqb-group{margin-top:30px;}
+	.bqb-people__filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;}
+	.bqb-people__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:10px;}
+	.bqb-person{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--bqb-line);border-radius:6px;background:#fff;transition:border-color .2s,box-shadow .2s;}
+	.bqb-person:hover{border-color:rgba(116,4,28,.35);box-shadow:0 12px 26px -20px rgba(49,2,12,.6);}
+	.bqb-person__visual{flex:0 0 58px;width:58px;height:58px;border-radius:50%;overflow:hidden;background:rgba(116,4,28,.07);display:flex;align-items:center;justify-content:center;}
+	.bqb-person.is-org .bqb-person__visual{border-radius:6px;background:#fff;border:1px solid var(--bqb-line);}
+	.bqb-person__visual img{width:100%;height:100%;object-fit:cover;}
+	.bqb-person.is-org .bqb-person__visual img{object-fit:contain;padding:6px;}
+	.bqb-person__initials{font-family:var(--bqb-serif);font-size:1.3rem;font-weight:600;color:var(--bqb-bordeaux);}
+	.bqb-person__body{display:flex;flex-direction:column;min-width:0;}
+	.bqb-person__body strong{font-family:var(--bqb-serif);font-size:1.15rem;font-weight:600;color:var(--bqb-dark);}
+	.bqb-person__body em{font-style:normal;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bqb-bordeaux);}
+	.bqb-person__count{font-size:.78rem;color:var(--bqb-muted);}
+	';
+}
+
+/* -------------------------------------------------------------------------
+ * 30. Habillage de l'administration, aux couleurs du site
+ * ---------------------------------------------------------------------- */
+
+function bqb_admin_css_v2() {
+	return <<<'CSS'
+body.post-type-bqb_document #wpbody-content{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+body.post-type-bqb_document .wrap h1.wp-heading-inline,body.post-type-bqb_document .wrap > h1{font-family:"Cormorant Garamond",Georgia,serif;font-size:32px;font-weight:600;color:#31020C;}
+body.post-type-bqb_document .page-title-action{border:1px solid #74041C !important;border-radius:3px !important;color:#74041C !important;background:#fff !important;font-weight:600;}
+body.post-type-bqb_document .page-title-action:hover{background:#74041C !important;color:#fff !important;}
+body.post-type-bqb_document .button-primary{background:#74041C !important;background-image:linear-gradient(180deg,#74041C,#4a0212) !important;border-color:#31020C !important;box-shadow:none !important;text-shadow:none !important;border-radius:3px !important;font-weight:600;}
+body.post-type-bqb_document .button-primary:hover,body.post-type-bqb_document .button-primary:focus{filter:brightness(1.12);}
+body.post-type-bqb_document .button:not(.button-primary){border-radius:3px;border-color:#D8D2CF;color:#74041C;}
+body.post-type-bqb_document .button:not(.button-primary):hover{border-color:#74041C;color:#31020C;background:#fff;}
+body.post-type-bqb_document .postbox{border:1px solid #E6E3E1;border-radius:8px;box-shadow:0 1px 2px rgba(49,2,12,.04);overflow:hidden;}
+body.post-type-bqb_document .postbox .postbox-header{border-bottom-color:#EFEAE8;background:#FDFBFA;}
+body.post-type-bqb_document .postbox .hndle{font-family:"Cormorant Garamond",Georgia,serif;font-size:19px !important;font-weight:600 !important;color:#31020C;}
+body.post-type-bqb_document #titlediv #title{font-family:"Cormorant Garamond",Georgia,serif;font-size:28px;font-weight:600;padding:8px 14px;border-color:#DAD6D3;border-radius:6px;color:#31020C;}
+body.post-type-bqb_document #titlediv #title:focus{border-color:#74041C;box-shadow:0 0 0 3px rgba(116,4,28,.12);}
+body.post-type-bqb_document .wp-list-table{border-color:#E6E3E1;border-radius:8px;overflow:hidden;}
+body.post-type-bqb_document .wp-list-table thead th,body.post-type-bqb_document .wp-list-table tfoot th{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#74041C;}
+body.post-type-bqb_document .wp-list-table thead th a,body.post-type-bqb_document .wp-list-table tfoot th a{color:#74041C;}
+body.post-type-bqb_document .wp-list-table .row-title{font-family:"Cormorant Garamond",Georgia,serif;font-size:17px;font-weight:600;color:#31020C;}
+body.post-type-bqb_document .wp-list-table tr:hover td{background:#FDFBFA;}
+body.post-type-bqb_document .subsubsub a.current{color:#74041C;}
+body.post-type-bqb_document a{color:#74041C;}
+body.post-type-bqb_document a:hover{color:#31020C;}
+
+/* Bandeau des pages de la bibliothèque */
+.bqb-wrap{max-width:1280px;}
+.bqb-banner{position:relative;margin:18px 0 22px;padding:30px 34px;border-radius:10px;color:#fff;background:#74041C;background-image:linear-gradient(135deg,#74041C 0%,#31020C 100%);box-shadow:0 18px 40px -26px rgba(49,2,12,.9);overflow:hidden;}
+.bqb-banner::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(255,255,255,.12);}
+.bqb-banner__eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.75);}
+.bqb-banner__eyebrow::before{content:"";width:26px;height:2px;background:#C75A18;}
+.bqb-banner__title{margin:8px 0 0 !important;padding:0 !important;font-family:"Cormorant Garamond",Georgia,serif !important;font-size:36px !important;font-weight:600 !important;line-height:1.1 !important;color:#fff !important;}
+.bqb-banner__text{max-width:760px;margin:10px 0 0;font-size:14px;line-height:1.6;color:rgba(255,255,255,.88);}
+.bqb-banner__text code{background:rgba(255,255,255,.15);color:#fff;}
+.bqb-card{margin:0 0 20px;padding:24px 26px;border:1px solid #E6E3E1;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgba(49,2,12,.04);}
+.bqb-card__title{margin:0 0 16px !important;font-family:"Cormorant Garamond",Georgia,serif !important;font-size:22px !important;font-weight:600 !important;color:#31020C !important;}
+.bqb-notice{margin:0 0 18px;padding:12px 16px;border-left:4px solid #1D6B3A;border-radius:0 6px 6px 0;background:#E9F3EC;color:#1D6B3A;font-weight:600;}
+
+/* Onglets */
+.bqb-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px;}
+.bqb-tab{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1px solid #E6E3E1;border-radius:999px;background:#fff;color:#424242 !important;font-size:13px;font-weight:600;text-decoration:none;transition:.18s;}
+.bqb-tab span{min-width:20px;padding:1px 7px;border-radius:999px;background:#F3EFED;font-size:11px;text-align:center;}
+.bqb-tab:hover{border-color:#74041C;color:#74041C !important;}
+.bqb-tab.is-on{background:#74041C;border-color:#74041C;color:#fff !important;}
+.bqb-tab.is-on span{background:rgba(255,255,255,.2);}
+
+/* Arborescence */
+.bqb-arbo{padding:22px 24px;border:1px solid #E6E3E1;border-radius:10px;background:#fff;}
+.bqb-arbo__intro p{margin:0 0 16px;color:#5a5a5a;font-size:13.5px;}
+.bqb-arbo__toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;margin:0 0 16px;padding:0 0 16px;border-bottom:1px solid #EFEAE8;}
+.bqb-arbo__add{display:flex;gap:8px;flex:1 1 420px;}
+.bqb-arbo__search{max-width:260px;}
+.bqb-arbo__list{margin:0;padding:0;list-style:none;}
+.bqb-arbo__list .bqb-arbo__list{margin-left:30px;padding-left:14px;border-left:2px solid #F1ECEA;}
+.bqb-arbo__item{margin:0;}
+.bqb-arbo__item.is-dragging{opacity:.45;}
+.bqb-arbo__item.is-hidden{display:none;}
+.bqb-node{display:flex;align-items:center;gap:10px;margin:4px 0;padding:8px 10px;border:1px solid transparent;border-radius:8px;transition:background .15s,border-color .15s;}
+.bqb-node:hover{background:#FBF8F7;border-color:#EFE7E4;}
+.bqb-node__handle{cursor:grab;color:#C9BDB8;display:flex;}
+.bqb-node__handle:active{cursor:grabbing;}
+.bqb-node__swatch{width:12px;height:12px;border-radius:3px;flex:0 0 12px;}
+.bqb-node__name{font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;font-weight:600;color:#31020C;cursor:text;}
+.bqb-arbo__root > .bqb-arbo__item > .bqb-node .bqb-node__name{font-size:20px;}
+.bqb-node__rename{max-width:360px;padding:4px 8px !important;font-family:"Cormorant Garamond",Georgia,serif;font-size:18px !important;font-weight:600;}
+.bqb-node__count{display:inline-flex;align-items:center;justify-content:center;min-width:24px;padding:1px 8px;border-radius:999px;background:#F3EFED;color:#74041C;font-size:11px;font-weight:700;}
+.bqb-node__flag{padding:2px 8px;border-radius:999px;background:rgba(199,90,24,.1);color:#C75A18;font-size:11px;font-weight:600;}
+.bqb-node__code{margin-left:auto;padding:4px 10px;border:1px dashed #DCCBC5;border-radius:6px;background:#FDFBFA;color:#74041C;font-family:Menlo,Consolas,monospace;font-size:11.5px;cursor:pointer;white-space:nowrap;max-width:360px;overflow:hidden;text-overflow:ellipsis;}
+.bqb-node__code:hover{border-style:solid;border-color:#74041C;background:#fff;}
+.bqb-node__code.is-copied{border-color:#1D6B3A;color:#1D6B3A;}
+.bqb-node__actions{display:flex;gap:2px;opacity:.35;transition:opacity .15s;}
+.bqb-node:hover .bqb-node__actions,.bqb-node:focus-within .bqb-node__actions{opacity:1;}
+.bqb-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;padding:0;border:0;border-radius:6px;background:none;color:#6f6f6f !important;cursor:pointer;text-decoration:none;}
+.bqb-icon:hover{background:#F3EFED;color:#74041C !important;}
+.bqb-icon--danger:hover{background:#FBEAEA;color:#B32D2E !important;}
+.bqb-icon .dashicons{font-size:17px;width:17px;height:17px;}
+.bqb-node__panel{margin:4px 0 12px 34px;}
+.bqb-arbo__newchild{display:flex;gap:6px;margin:6px 0 6px 34px;}
+.bqb-arbo__empty{padding:26px;text-align:center;color:#8a8a8a;font-style:italic;}
+.bqb-arbo__legend{margin:18px 0 0;padding-top:14px;border-top:1px solid #EFEAE8;color:#787c82;font-size:12.5px;}
+.bqb-drop-before > .bqb-node{box-shadow:0 -3px 0 #74041C;}
+.bqb-drop-after > .bqb-node{box-shadow:0 3px 0 #74041C;}
+
+/* Panneau de réglages d'une catégorie */
+.bqb-panel{padding:18px 20px;border:1px solid #EADBD6;border-radius:10px;background:#FDFBFA;}
+.bqb-panel__grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px;}
+.bqb-panel__field{display:flex;flex-direction:column;gap:6px;}
+.bqb-panel__field.is-wide{grid-column:1 / -1;}
+.bqb-panel__field em{color:#787c82;font-style:normal;font-size:12px;line-height:1.45;}
+.bqb-panel__field select{max-width:100%;}
+.bqb-panel__foot{display:flex;align-items:center;gap:8px;margin-top:16px;}
+.bqb-panel__msg{color:#1D6B3A;font-weight:600;font-size:12.5px;}
+.bqb-panel__msg.is-error{color:#B32D2E;}
+.bqb-views{display:flex;flex-direction:column;gap:6px;}
+.bqb-views__row{display:flex;align-items:center;gap:10px;}
+.bqb-views__row .bqb-pill{min-width:190px;}
+.bqb-views__row .bqb-admin__input{max-width:320px;padding:6px 10px;}
+@media (max-width:900px){.bqb-panel__grid{grid-template-columns:1fr;}}
+
+/* Pastilles */
+.bqb-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.bqb-pill{position:relative;display:inline-flex;align-items:center;margin:0;padding:6px 13px;border:1px solid #DDD5D2;border-radius:999px;background:#fff;color:#424242;font-size:12.5px;font-weight:500;line-height:1.3;cursor:pointer;user-select:none;transition:.15s;}
+.bqb-pill input{position:absolute;opacity:0;pointer-events:none;}
+.bqb-pill:hover{border-color:#74041C;color:#74041C;}
+.bqb-pill.is-on{background:#74041C;border-color:#74041C;color:#fff;}
+.bqb-pill.is-on::before{content:"✓";margin-right:6px;font-weight:700;}
+.bqb-pill:focus-within{box-shadow:0 0 0 3px rgba(116,4,28,.15);}
+.bqb-pill.is-hidden{display:none;}
+
+/* Panneau Classement */
+.bqb-class{display:grid;grid-template-columns:1fr 1fr;gap:0 26px;}
+.bqb-class__block{padding:16px 0;border-bottom:1px solid #F1ECEA;}
+.bqb-class__block.is-wide{grid-column:1 / -1;}
+.bqb-class__head{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.bqb-class__head h4{margin:0;font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;font-weight:600;color:#31020C;}
+.bqb-class__count{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;margin-left:6px;padding:0 6px;border-radius:999px;background:#74041C;color:#fff;font-family:"Inter",sans-serif;font-size:11px;font-weight:700;vertical-align:middle;}
+.bqb-class__count:empty{display:none;}
+.bqb-class__filter{max-width:220px;padding:5px 10px !important;border:1px solid #DDD5D2 !important;border-radius:999px !important;font-size:12.5px;}
+.bqb-class__help{margin:4px 0 10px;color:#787c82;font-size:12.5px;}
+.bqb-class__add{margin-top:10px;}
+.bqb-class__addform{display:inline-flex;gap:6px;margin-left:8px;}
+.bqb-class__addform .bqb-admin__input{width:220px;padding:5px 10px;}
+.bqb-class__foot{grid-column:1 / -1;margin:14px 0 0;color:#787c82;font-size:12.5px;}
+.bqb-linkbtn{padding:0;border:0;background:none;color:#74041C;font-size:12.5px;font-weight:600;cursor:pointer;}
+.bqb-linkbtn:hover{text-decoration:underline;}
+.bqb-tree-pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;}
+.bqb-tree-pick__group{padding:12px;border:1px solid #F1ECEA;border-radius:10px;background:#FDFBFA;}
+.bqb-tree-pick__group.is-hidden{display:none;}
+.bqb-tree-pick__root{margin-bottom:8px;}
+.bqb-pill--root{font-weight:700;border-color:#CDBDB8;}
+.bqb-pill--sub{font-size:11.5px;padding:4px 10px;}
+.bqb-tree-pick__children{display:flex;flex-wrap:wrap;gap:6px;}
+.bqb-tokens__list{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;padding:0;list-style:none;}
+.bqb-tokens__list:empty{display:none;}
+.bqb-token{display:inline-flex;align-items:center;gap:6px;margin:0;padding:5px 6px 5px 12px;border-radius:999px;background:#74041C;color:#fff;font-size:12.5px;font-weight:500;}
+.bqb-token button{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:14px;line-height:1;cursor:pointer;}
+.bqb-token button:hover{background:rgba(255,255,255,.35);}
+.bqb-tokens__search{position:relative;max-width:460px;}
+.bqb-tokens__menu{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 4px);max-height:260px;overflow:auto;border:1px solid #DDD5D2;border-radius:8px;background:#fff;box-shadow:0 14px 30px -14px rgba(0,0,0,.3);}
+.bqb-tokens__menu button{display:block;width:100%;padding:9px 13px;border:0;border-bottom:1px solid #F4F0EE;background:#fff;text-align:left;font-size:13px;cursor:pointer;}
+.bqb-tokens__menu button:hover,.bqb-tokens__menu button.is-active{background:#FBF4F2;color:#74041C;}
+.bqb-tokens__menu .is-create{color:#74041C;font-weight:600;}
+@media (max-width:1100px){.bqb-class{grid-template-columns:1fr;}}
+
+/* Générateur */
+.bqb-gen{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:20px;align-items:start;}
+.bqb-gen__form{margin:0;}
+.bqb-gen__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px 18px;margin:0 0 26px;}
+.bqb-gen__field{display:flex;flex-direction:column;gap:6px;}
+.bqb-gen__check{display:flex;align-items:center;gap:8px;grid-column:1 / -1;font-weight:600;color:#31020C;}
+.bqb-gen__side{position:sticky;top:46px;}
+.bqb-gen__result{text-align:left;border-color:rgba(116,4,28,.3);background:linear-gradient(180deg,#fff,#FDF8F6);}
+.bqb-gen__code{display:block;margin:8px 0 16px;padding:14px 16px;border-radius:8px;background:#31020C;color:#fff;font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.6;word-break:break-all;white-space:normal;}
+.bqb-gen__copy{width:100%;justify-content:center;text-align:center;}
+.bqb-gen__count{margin:12px 0 0;color:#5a5a5a;font-size:13px;text-align:center;}
+.bqb-gen__count strong{color:#74041C;}
+.bqb-gen__other{padding:10px 0;border-bottom:1px solid #F1ECEA;}
+.bqb-gen__other:last-child{border-bottom:0;}
+.bqb-gen__other .bqb-node__code{margin:0;max-width:100%;}
+.bqb-gen__other p{margin:6px 0 0;color:#787c82;font-size:12.5px;}
+@media (max-width:1100px){.bqb-gen{grid-template-columns:1fr;}.bqb-gen__side{position:static;}}
+
+/* Réglages */
+.bqb-radio{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 20px;}
+.bqb-radio__opt{display:flex;flex-direction:column;gap:4px;padding:16px 18px 16px 44px;position:relative;border:1px solid #E6E3E1;border-radius:10px;cursor:pointer;transition:.15s;}
+.bqb-radio__opt input{position:absolute;left:16px;top:18px;}
+.bqb-radio__opt strong{font-family:"Cormorant Garamond",Georgia,serif;font-size:18px;color:#31020C;}
+.bqb-radio__opt span{color:#6f6f6f;font-size:12.5px;line-height:1.5;}
+.bqb-radio__opt.is-on{border-color:#74041C;background:#FDF8F6;box-shadow:0 0 0 3px rgba(116,4,28,.08);}
+.bqb-settings__grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 22px;}
+.bqb-settings__grid label{display:flex;flex-direction:column;gap:6px;}
+.bqb-settings__grid label.is-wide{grid-column:1 / -1;}
+.bqb-settings__grid em{color:#787c82;font-style:normal;font-size:12px;line-height:1.45;}
+.bqb-settings__hint{margin:14px 0 0;color:#787c82;font-size:12.5px;}
+.bqb-switch{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid #F1ECEA;cursor:pointer;line-height:1.55;}
+.bqb-switch:last-child{border-bottom:0;}
+.bqb-switch input{margin-top:3px;}
+@media (max-width:900px){.bqb-radio,.bqb-settings__grid{grid-template-columns:1fr;}}
+
+/* Écrans natifs des fiches personnes et organisations */
+body.post-type-bqb_document.taxonomy-bqb_personne .form-wrap h2,body.post-type-bqb_document.taxonomy-bqb_organisation .form-wrap h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:22px;color:#31020C;}
+CSS;
+}
+
+function bqb_admin_js_v2() {
+	return <<<'JS'
+(function(){
+	var CFG = window.BQB || {};
+
+	function ready(fn){ if ('loading' === document.readyState) { document.addEventListener('DOMContentLoaded', fn); } else { fn(); } }
+	function esc(s){ var d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; }
+
+	function post(data){
+		var fd = new FormData();
+		fd.append('nonce', CFG.nonce_terms);
+		Object.keys(data).forEach(function(k){
+			var v = data[k];
+			if (Array.isArray(v)) { v.forEach(function(x){ fd.append(k + '[]', x); }); } else { fd.append(k, v); }
+		});
+		return fetch(CFG.ajax, { method: 'POST', credentials: 'same-origin', body: fd }).then(function(r){ return r.json(); });
+	}
+
+	function get(params){
+		params.nonce = CFG.nonce_terms;
+		var q = Object.keys(params).map(function(k){ return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]); }).join('&');
+		return fetch(CFG.ajax + '?' + q, { credentials: 'same-origin' }).then(function(r){ return r.json(); });
+	}
+
+	function copy(text, el){
+		var done = function(){
+			if (!el) { return; }
+			var old = el.textContent;
+			el.classList.add('is-copied');
+			el.textContent = 'Copié';
+			setTimeout(function(){ el.textContent = old; el.classList.remove('is-copied'); }, 1300);
+		};
+		if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done, function(){ window.prompt('Copiez ce texte :', text); }); }
+		else {
+			var t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
+			try { document.execCommand('copy'); done(); } catch (e) { window.prompt('Copiez ce texte :', text); }
+			t.remove();
+		}
+	}
+
+	function message(r, fallback){ return (r && r.data && r.data.message) ? r.data.message : fallback; }
+
+	/* ------------------------------------------------------------------
+	 * Pastilles (partout) et boutons de copie
+	 * ------------------------------------------------------------------ */
+	function bindCommon(){
+		document.addEventListener('change', function(e){
+			var input = e.target.closest('.bqb-pill input');
+			if (input) {
+				input.closest('.bqb-pill').classList.toggle('is-on', input.checked);
+				var block = input.closest('[data-tax]');
+				if (block) { refreshCount(block); }
+			}
+			var radio = e.target.closest('.bqb-radio__opt input');
+			if (radio) {
+				Array.prototype.forEach.call(document.querySelectorAll('.bqb-radio__opt'), function(o){ o.classList.toggle('is-on', o.querySelector('input').checked); });
+			}
+		});
+
+		document.addEventListener('click', function(e){
+			var b = e.target.closest('[data-copy]');
+			if (b) { e.preventDefault(); copy(b.getAttribute('data-copy'), b); }
+		});
+	}
+
+	function refreshCount(block){
+		var n = block.querySelectorAll('.bqb-pill input:checked, .bqb-token').length;
+		var c = block.querySelector('[data-count]');
+		if (c) { c.textContent = n ? n : ''; }
+	}
+
+	/* ------------------------------------------------------------------
+	 * Panneau Classement de la fiche document
+	 * ------------------------------------------------------------------ */
+	function initClassement(){
+		var root = document.querySelector('.bqb-class');
+		if (!root) { return; }
+
+		/* Filtre des thèmes */
+		Array.prototype.forEach.call(root.querySelectorAll('[data-filter]'), function(input){
+			var block = input.closest('[data-tax]');
+			input.addEventListener('input', function(){
+				var q = input.value.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+				Array.prototype.forEach.call(block.querySelectorAll('[data-group]'), function(group){
+					var any = false;
+					Array.prototype.forEach.call(group.querySelectorAll('.bqb-pill'), function(p){
+						var hit = !q || (p.getAttribute('data-name') || '').indexOf(q) !== -1;
+						p.classList.toggle('is-hidden', !hit && !p.classList.contains('bqb-pill--root'));
+						if (hit) { any = true; }
+					});
+					group.classList.toggle('is-hidden', !any);
+				});
+			});
+		});
+
+		/* Ajout d'une catégorie depuis la fiche */
+		root.addEventListener('click', function(e){
+			var open = e.target.closest('[data-add-open]');
+			var save = e.target.closest('[data-add-save]');
+
+			if (open) {
+				var form = open.parentNode.querySelector('[data-add-form]');
+				form.hidden = !form.hidden;
+				if (!form.hidden) { form.querySelector('input').focus(); }
+				return;
+			}
+
+			if (save) { createFromBlock(save.closest('[data-tax]')); }
+		});
+
+		root.addEventListener('keydown', function(e){
+			if ('Enter' === e.key && e.target.matches('[data-add-input]')) { e.preventDefault(); createFromBlock(e.target.closest('[data-tax]')); }
+		});
+
+		function createFromBlock(block){
+			var input = block.querySelector('[data-add-input]');
+			var name  = input.value.trim();
+			var tax   = block.getAttribute('data-tax');
+			if (!name) { return; }
+
+			post({ action: 'bqb_term_create', tax: tax, name: name }).then(function(r){
+				if (!r || !r.success) { window.alert(message(r, 'Création impossible.')); return; }
+
+				var existing = block.querySelector('.bqb-pill input[value="' + r.data.id + '"]');
+				if (existing) {
+					existing.checked = true;
+					existing.closest('.bqb-pill').classList.add('is-on');
+				} else {
+					var label = document.createElement('label');
+					label.className = 'bqb-pill is-on';
+					label.setAttribute('data-name', r.data.name.toLowerCase());
+					label.innerHTML = '<input type="checkbox" name="bqb_terms[' + tax + '][]" value="' + parseInt(r.data.id, 10) + '" checked /><span>' + esc(r.data.name) + '</span>';
+
+					var holder = block.querySelector('[data-pills]');
+					if (!holder) {
+						holder = document.createElement('div');
+						holder.className = 'bqb-tree-pick__group';
+						holder.setAttribute('data-group', '');
+						var wrap = document.createElement('div');
+						wrap.className = 'bqb-tree-pick__root';
+						wrap.appendChild(label.cloneNode(true));
+						holder.appendChild(wrap);
+						block.querySelector('.bqb-tree-pick').appendChild(holder);
+					} else {
+						holder.appendChild(label);
+					}
+				}
+
+				input.value = '';
+				block.querySelector('[data-add-form]').hidden = true;
+				refreshCount(block);
+			});
+		}
+
+		/* Personnes, organisations, mots-clés : recherche et création */
+		Array.prototype.forEach.call(root.querySelectorAll('[data-mode="tokens"]'), function(block){
+			var tax   = block.getAttribute('data-tax');
+			var list  = block.querySelector('[data-token-list]');
+			var input = block.querySelector('[data-token-input]');
+			var menu  = block.querySelector('[data-token-menu]');
+			var timer = null;
+			var items = [];
+			var active = -1;
+
+			function chosenIds(){ return Array.prototype.map.call(list.querySelectorAll('input'), function(i){ return i.value; }); }
+
+			function add(id, name){
+				if (chosenIds().indexOf(String(id)) !== -1) { return; }
+				var li = document.createElement('li');
+				li.className = 'bqb-token';
+				li.innerHTML = '<input type="hidden" name="bqb_terms[' + tax + '][]" value="' + parseInt(id, 10) + '" /><span>' + esc(name) + '</span><button type="button" aria-label="Retirer">×</button>';
+				list.appendChild(li);
+				refreshCount(block);
+			}
+
+			function close(){ menu.hidden = true; items = []; active = -1; }
+
+			function render(q, results){
+				menu.innerHTML = '';
+				items = [];
+				var exact = false;
+
+				results.forEach(function(t){
+					if (t.name.toLowerCase() === q.toLowerCase()) { exact = true; }
+					var b = document.createElement('button');
+					b.type = 'button';
+					b.innerHTML = esc(t.name);
+					b.addEventListener('click', function(){ add(t.id, t.name); input.value = ''; close(); input.focus(); });
+					menu.appendChild(b);
+					items.push(b);
+				});
+
+				if (!exact) {
+					var c = document.createElement('button');
+					c.type = 'button';
+					c.className = 'is-create';
+					c.innerHTML = '+ Créer « ' + esc(q) + ' »';
+					c.addEventListener('click', function(){
+						post({ action: 'bqb_term_create', tax: tax, name: q }).then(function(r){
+							if (!r || !r.success) { window.alert(message(r, 'Création impossible.')); return; }
+							add(r.data.id, r.data.name); input.value = ''; close(); input.focus();
+						});
+					});
+					menu.appendChild(c);
+					items.push(c);
+				}
+
+				active = items.length ? 0 : -1;
+				highlight();
+				menu.hidden = false;
+			}
+
+			function highlight(){ items.forEach(function(b, i){ b.classList.toggle('is-active', i === active); }); }
+
+			input.addEventListener('input', function(){
+				clearTimeout(timer);
+				var q = input.value.trim();
+				if (!q) { close(); return; }
+				timer = setTimeout(function(){
+					get({ action: 'bqb_term_search', tax: tax, q: q }).then(function(r){ render(q, (r && r.success) ? r.data : []); });
+				}, 200);
+			});
+
+			input.addEventListener('keydown', function(e){
+				if (menu.hidden) { if ('Enter' === e.key) { e.preventDefault(); } return; }
+				if ('ArrowDown' === e.key) { e.preventDefault(); active = Math.min(items.length - 1, active + 1); highlight(); }
+				else if ('ArrowUp' === e.key) { e.preventDefault(); active = Math.max(0, active - 1); highlight(); }
+				else if ('Enter' === e.key) { e.preventDefault(); if (items[active]) { items[active].click(); } }
+				else if ('Escape' === e.key) { close(); }
+			});
+
+			list.addEventListener('click', function(e){
+				if (e.target.closest('button')) { e.target.closest('li').remove(); refreshCount(block); }
+			});
+
+			document.addEventListener('click', function(e){ if (!block.contains(e.target)) { close(); } });
+		});
+	}
+
+	/* ------------------------------------------------------------------
+	 * Arborescence
+	 * ------------------------------------------------------------------ */
+	function initArbo(){
+		var box = document.querySelector('[data-arbo]');
+		if (!box) { return; }
+
+		var tax = box.getAttribute('data-tax');
+		var dragged = null;
+
+		function node(li){ return li.querySelector(':scope > [data-node]'); }
+
+		function startRename(li){
+			var n = node(li);
+			var name = n.querySelector('[data-name]');
+			var input = n.querySelector('[data-rename]');
+			name.hidden = true; input.hidden = false; input.value = name.textContent; input.focus(); input.select();
+
+			var finish = function(save){
+				input.removeEventListener('blur', onBlur);
+				input.removeEventListener('keydown', onKey);
+				var val = input.value.trim();
+				input.hidden = true; name.hidden = false;
+				if (!save || !val || val === name.textContent) { return; }
+				name.textContent = val;
+				post({ action: 'bqb_arbo', op: 'rename', tax: tax, id: li.getAttribute('data-id'), name: val }).then(function(r){
+					if (!r || !r.success) { window.alert(message(r, 'Renommage impossible.')); window.location.reload(); }
+				});
+			};
+			var onBlur = function(){ finish(true); };
+			var onKey = function(e){
+				if ('Enter' === e.key) { e.preventDefault(); finish(true); }
+				if ('Escape' === e.key) { e.preventDefault(); finish(false); }
+			};
+			input.addEventListener('blur', onBlur);
+			input.addEventListener('keydown', onKey);
+		}
+
+		function insertHtml(ul, html){
+			var t = document.createElement('div');
+			t.innerHTML = html;
+			var li = t.firstElementChild;
+			ul.appendChild(li);
+			var empty = box.querySelector('.bqb-arbo__empty');
+			if (empty) { empty.remove(); }
+			return li;
+		}
+
+		/* Ajout au premier niveau */
+		var rootInput = box.querySelector('[data-new-root]');
+		function addRoot(){
+			var name = rootInput.value.trim();
+			if (!name) { rootInput.focus(); return; }
+			post({ action: 'bqb_arbo', op: 'add', tax: tax, name: name, parent: 0 }).then(function(r){
+				if (!r || !r.success) { window.alert(message(r, 'Ajout impossible.')); return; }
+				var li = insertHtml(box.querySelector('.bqb-arbo__root'), r.data.html);
+				rootInput.value = '';
+				li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+			});
+		}
+		box.querySelector('[data-add-root]').addEventListener('click', addRoot);
+		rootInput.addEventListener('keydown', function(e){ if ('Enter' === e.key) { e.preventDefault(); addRoot(); } });
+
+		box.addEventListener('click', function(e){
+			var nameEl = e.target.closest('[data-name]');
+			if (nameEl) { startRename(nameEl.closest('.bqb-arbo__item')); return; }
+
+			var act = e.target.closest('[data-act]');
+			if (!act) {
+				var close = e.target.closest('[data-panel-close]');
+				if (close) { close.closest('[data-panel]').hidden = true; }
+				return;
+			}
+
+			var li = act.closest('.bqb-arbo__item');
+			var id = li.getAttribute('data-id');
+			var what = act.getAttribute('data-act');
+
+			if ('rename' === what) { startRename(li); }
+
+			if ('child' === what) {
+				var ul = li.querySelector(':scope > .bqb-arbo__list');
+				var row = li.querySelector(':scope > .bqb-arbo__newchild');
+				if (row) { row.querySelector('input').focus(); return; }
+				row = document.createElement('div');
+				row.className = 'bqb-arbo__newchild';
+				row.innerHTML = '<input type="text" class="bqb-admin__input" placeholder="Nom de la sous-catégorie" /><button type="button" class="button button-primary">Ajouter</button><button type="button" class="button">Annuler</button>';
+				li.insertBefore(row, ul);
+				var input = row.querySelector('input');
+				input.focus();
+				var go = function(){
+					var name = input.value.trim();
+					if (!name) { input.focus(); return; }
+					post({ action: 'bqb_arbo', op: 'add', tax: tax, name: name, parent: id }).then(function(r){
+						if (!r || !r.success) { window.alert(message(r, 'Ajout impossible.')); return; }
+						insertHtml(ul, r.data.html);
+						input.value = '';
+						input.focus();
+					});
+				};
+				row.querySelector('.button-primary').addEventListener('click', go);
+				row.querySelector('.button:not(.button-primary)').addEventListener('click', function(){ row.remove(); });
+				input.addEventListener('keydown', function(ev){ if ('Enter' === ev.key) { ev.preventDefault(); go(); } if ('Escape' === ev.key) { row.remove(); } });
+			}
+
+			if ('delete' === what) {
+				var count = parseInt(act.getAttribute('data-count'), 10) || 0;
+				var kids = parseInt(act.getAttribute('data-children'), 10) || 0;
+				var name = node(li).querySelector('[data-name]').textContent;
+				var msg = 'Supprimer « ' + name + ' » ?';
+				if (count) { msg += '\n\n' + count + ' document(s) sont rangés ici. Ils ne seront pas supprimés : ils perdront simplement cette étiquette.'; }
+				if (kids) { msg += '\n\nSes ' + kids + ' sous-catégorie(s) remonteront d\'un niveau.'; }
+				msg += '\n\nLes shortcodes qui utilisent cette catégorie n\'afficheront plus rien.';
+				if (!window.confirm(msg)) { return; }
+
+				post({ action: 'bqb_arbo', op: 'delete', tax: tax, id: id }).then(function(r){
+					if (!r || !r.success) { window.alert(message(r, 'Suppression impossible.')); return; }
+					if (kids) { window.location.reload(); } else { li.remove(); }
+				});
+			}
+
+			if ('panel' === what) {
+				var panel = li.querySelector(':scope > [data-panel]');
+				if (panel.innerHTML) { panel.hidden = !panel.hidden; return; }
+				post({ action: 'bqb_arbo', op: 'panel', tax: tax, id: id }).then(function(r){
+					if (!r || !r.success) { window.alert(message(r, 'Réglages indisponibles.')); return; }
+					panel.innerHTML = r.data.html;
+					panel.hidden = false;
+					var form = panel.querySelector('[data-panel-form]');
+					form.addEventListener('submit', function(ev){
+						ev.preventDefault();
+						var fd = new FormData(form);
+						var data = { action: 'bqb_arbo', op: 'save', tax: tax, id: id };
+						var arrays = {};
+						fd.forEach(function(v, k){
+							if (/\[\]$/.test(k)) { var key = k.replace(/\[\]$/, ''); (arrays[key] = arrays[key] || []).push(v); }
+							else { data[k] = v; }
+						});
+						Object.keys(arrays).forEach(function(k){ data[k] = arrays[k]; });
+						if (form.querySelector('[name="natures[]"]') && !arrays.natures) { data.natures = []; data['natures_empty'] = 1; }
+						if (form.querySelector('[name="vues[]"]') && !arrays.vues) { data.vues = []; }
+
+						var out = panel.querySelector('[data-panel-msg]');
+						out.className = 'bqb-panel__msg';
+						out.textContent = 'Enregistrement…';
+
+						post(data).then(function(res){
+							if (!res || !res.success) { out.classList.add('is-error'); out.textContent = message(res, 'Erreur.'); return; }
+							if (res.data.reload) { window.location.reload(); return; }
+							out.textContent = 'Enregistré';
+							setTimeout(function(){ out.textContent = ''; }, 2000);
+						});
+					});
+				});
+			}
+		});
+
+		/* Glisser-déposer entre catégories sœurs */
+		box.addEventListener('mousedown', function(e){
+			var h = e.target.closest('[data-handle]');
+			if (h) { h.closest('.bqb-arbo__item').setAttribute('draggable', 'true'); }
+		});
+
+		box.addEventListener('dragstart', function(e){
+			dragged = e.target.closest('.bqb-arbo__item');
+			if (!dragged) { return; }
+			e.dataTransfer.effectAllowed = 'move';
+			try { e.dataTransfer.setData('text/plain', dragged.getAttribute('data-id')); } catch (err) {}
+			setTimeout(function(){ dragged.classList.add('is-dragging'); }, 0);
+		});
+
+		function clearMarks(){
+			Array.prototype.forEach.call(box.querySelectorAll('.bqb-drop-before, .bqb-drop-after'), function(el){ el.classList.remove('bqb-drop-before', 'bqb-drop-after'); });
+		}
+
+		box.addEventListener('dragover', function(e){
+			if (!dragged) { return; }
+			var target = e.target.closest('.bqb-arbo__item');
+			if (!target || target === dragged || target.parentNode !== dragged.parentNode) { return; }
+			e.preventDefault();
+			clearMarks();
+			var rect = node(target).getBoundingClientRect();
+			target.classList.add(e.clientY < rect.top + rect.height / 2 ? 'bqb-drop-before' : 'bqb-drop-after');
+		});
+
+		box.addEventListener('drop', function(e){
+			if (!dragged) { return; }
+			var target = e.target.closest('.bqb-arbo__item');
+			if (!target || target === dragged || target.parentNode !== dragged.parentNode) { return; }
+			e.preventDefault();
+			var before = target.classList.contains('bqb-drop-before');
+			clearMarks();
+			target.parentNode.insertBefore(dragged, before ? target : target.nextSibling);
+
+			var ids = Array.prototype.map.call(dragged.parentNode.children, function(li){ return li.getAttribute('data-id'); });
+			post({ action: 'bqb_arbo', op: 'reorder', tax: tax, ids: ids });
+		});
+
+		box.addEventListener('dragend', function(){
+			if (dragged) { dragged.classList.remove('is-dragging'); dragged.removeAttribute('draggable'); }
+			clearMarks();
+			dragged = null;
+		});
+
+		/* Recherche */
+		var search = box.querySelector('[data-search]');
+		search.addEventListener('input', function(){
+			var q = search.value.trim().toLowerCase();
+			var all = box.querySelectorAll('.bqb-arbo__item');
+			Array.prototype.forEach.call(all, function(li){ li.classList.toggle('is-hidden', !!q); });
+			if (!q) { return; }
+			Array.prototype.forEach.call(all, function(li){
+				var name = node(li).querySelector('[data-name]').textContent.toLowerCase();
+				if (name.indexOf(q) !== -1) {
+					var el = li;
+					while (el && el.classList && el.classList.contains('bqb-arbo__item')) {
+						el.classList.remove('is-hidden');
+						el = el.parentNode.closest('.bqb-arbo__item');
+					}
+					Array.prototype.forEach.call(li.querySelectorAll('.bqb-arbo__item'), function(c){ c.classList.remove('is-hidden'); });
+				}
+			});
+		});
+	}
+
+	/* ------------------------------------------------------------------
+	 * Générateur de shortcode
+	 * ------------------------------------------------------------------ */
+	function initGenerator(){
+		var form = document.querySelector('[data-gen-form]');
+		if (!form) { return; }
+
+		var code  = document.querySelector('[data-gen-code]');
+		var count = document.querySelector('[data-gen-count]');
+		var btn   = document.querySelector('[data-gen-copy]');
+		var timer = null;
+		var taxKeys = ['collection', 'nature', 'theme', 'personne', 'organisation', 'secteur', 'pays', 'prix', 'motcle'];
+
+		function build(){
+			var parts = ['bqp_documents'];
+			var q = { action: 'bqb_gen_count' };
+
+			Array.prototype.forEach.call(form.querySelectorAll('[data-gen]'), function(el){
+				var key = el.getAttribute('data-gen');
+				var val = ('checkbox' === el.type) ? (el.checked ? el.value : '') : el.value.trim();
+				if (!val) { return; }
+				parts.push(key + '="' + val.replace(/"/g, '') + '"');
+				if (taxKeys.indexOf(key) !== -1 || 'annee' === key || 'acces' === key) { q[key] = val; }
+			});
+
+			var text = '[' + parts.join(' ') + ']';
+			code.textContent = text;
+
+			clearTimeout(timer);
+			count.textContent = '…';
+			timer = setTimeout(function(){
+				get(q).then(function(r){
+					if (!r || !r.success) { count.textContent = ''; return; }
+					var n = r.data.count;
+					count.innerHTML = n ? '<strong>' + n + '</strong> document' + (n > 1 ? 's' : '') + ' correspondent aujourd\'hui.' : 'Aucun document pour cette combinaison pour l\'instant. Le shortcode se remplira dès qu\'un document correspondra.';
+				});
+			}, 250);
+		}
+
+		form.addEventListener('input', build);
+		form.addEventListener('change', build);
+		btn.addEventListener('click', function(){ copy(code.textContent, btn); });
+		build();
+	}
+
+	ready(function(){
+		bindCommon();
+		initClassement();
+		initArbo();
+		initGenerator();
+	});
+})();
+JS;
 }
