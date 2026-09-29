@@ -1,8 +1,8 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 2.1.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.0.0.
 
-Type de contenu Document, neuf familles de classement pré-remplies, gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
+Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
 
 Indépendant des plugins Partenaires, Gouvernance et Formulaires : préfixe `bqb_`, aucun conflit.
 
@@ -36,23 +36,29 @@ Quand un sujet est choisi (collection, thème, personne, organisation), un en-t�
 
 Mise à jour depuis la 2.0 : les pages Recherche avancée, Auteurs et Organisations peuvent être supprimées. Les anciennes adresses `/collection/…`, `/theme/…`, `/personne/…`, `/organisation/…` redirigent en 301 vers la page Bibliothèque filtrée et sortent des sitemaps (WordPress et Rank Math).
 
-## Le principe : un modèle à facettes
+## Le principe : l'arborescence du client, à l'identique
 
-Chaque document reçoit plusieurs étiquettes indépendantes. C'est leur combinaison qui le fait apparaître au bon endroit. Un même type (« Article », « Entretien ») revient dans plusieurs espaces : il n'est saisi qu'une fois, dans Nature, et croisé avec la Collection.
+Les blocs du site reproduisent le schéma « Arborescence de la bibliothèque numérique » : mêmes blocs, mêmes rubriques numérotées (1.1 à 4.6, 5.1 et 5.2), mêmes éléments, mêmes libellés.
 
-| Famille | Forme | Page publique | Rôle |
-|---|---|---|---|
-| Collections | arborescence | oui, `/collection/…` | d'où vient le document, blocs 1 à 4 |
-| Natures | pastilles | non | ce qu'est le document |
-| Thèmes | arborescence | oui, `/theme/…` | de quoi il parle, bloc 5 |
-| Secteurs | pastilles | non | secteurs stratégiques |
-| Pays et territoires | pastilles | non | zones géographiques |
-| Prix et bourses | pastilles | non | programme de la Bourse |
-| Personnes | recherche + fiche | oui, `/personne/…` | auteurs, lauréats, experts |
-| Organisations | recherche + fiche | oui, `/organisation/…` | partenaires, éditeurs, institutions |
-| Mots-clés | saisie libre | non | recherche |
+| Famille | Contenu | Rôle |
+|---|---|---|
+| Collections | blocs 1 à 4 : espace › rubrique › élément | où se range le document |
+| Thèmes | bloc 5 : les 5 thématiques principales et leurs sous-thèmes | de quoi il parle ; les secteurs stratégiques et les pays en font partie, comme dans le schéma |
+| Natures | 22 natures | ce qu'est le document ; déduite automatiquement de la rubrique cochée |
+| Personnes | fiche : rôles, photo, biographie, année et nom du prix | auteurs, lauréats, experts |
+| Organisations | fiche : type, logo, site | partenaires, éditeurs, sources |
+| Mots-clés | saisie libre | recherche |
 
-Les neuf familles sont fixes dans le code. Les catégories à l'intérieur de chaque famille se créent, se renomment, se déplacent et se suppriment depuis l'administration.
+Les familles Secteurs, Pays et Prix de la 2.x sont supprimées : les secteurs et les pays sont des sous-thèmes (« Secteurs stratégiques », « Puissance et relations internationales »), le prix d'un lauréat est un simple champ de sa fiche.
+
+Dans les rubriques, deux sortes de liens, comme dans le schéma :
+
+- **les éléments** (« Articles », « Chroniques », « Archives de presse »…) sont des catégories que l'on coche dans le document
+- **les regroupements** (« Par lauréat », « Par année », « Par thématique », « Par partenaire »…) ne sont pas des catégories : ils affichent les documents de la rubrique regroupés
+
+« Page dédiée : Jean-Michel Quatrepoint » (bloc 1) est tirée de sa fiche Personne : biographie, principaux travaux (par nature), bibliographie (par année), thématiques associées.
+
+« 5.2 Autres filtres » ouvre directement le bon filtre du catalogue : secteur, pays, période, nature, collection.
 
 ## L'administration
 
@@ -66,7 +72,8 @@ Un onglet par famille. Pour chaque catégorie :
 - **Ajouter** une catégorie racine ou une sous-catégorie
 - **Déplacer** par glisser-déposer, l'ordre est enregistré immédiatement
 - **Supprimer** avec confirmation (les documents ne sont pas supprimés, seulement détachés)
-- **Panneau de détail** : description, couleur du bloc, ordre, page dédiée, vues proposées (par année, par lauréat, par thème…) avec libellés personnalisables
+- **Numérotation du schéma** (1, 1.1…) affichée devant les blocs et les rubriques
+- **Panneau de détail** : description, couleur du bloc, page dédiée ; pour une rubrique, la nature proposée et les liens de regroupement avec leurs libellés ; pour un sous-thème, son usage comme filtre Secteur ou Pays
 - **Copier le shortcode** de la catégorie en un clic
 - Compteur de documents publiés, sous-catégories comprises
 - Recherche instantanée dans l'arborescence
@@ -75,10 +82,11 @@ Les écrans natifs de WordPress pour ces familles sont masqués du menu : tout s
 
 ### Classement (dans chaque document)
 
-Un seul panneau remplace les neuf boîtes natives de WordPress :
+Un seul panneau remplace les boîtes natives de WordPress :
 
-- Collections et Thèmes : arbre dépliable avec cases à cocher et recherche
-- Natures, Secteurs, Pays, Prix : pastilles cliquables
+- Collections : l'arbre du schéma, numéroté, chaque rubrique avec ses éléments sur une ligne
+- Nature du document : « Automatique » par défaut (Articles sous 1.1 donne Article), ou choix manuel
+- Thèmes : arbre avec recherche, secteurs et pays compris
 - Personnes, Organisations, Mots-clés : recherche avec suggestions, et création d'une nouvelle entrée sans quitter le document
 
 ### Générateur de shortcodes
@@ -95,6 +103,11 @@ Pour mettre à jour une page : remplacer le shortcode dans le widget Elementor, 
 - Titre, texte et couleur du 5e bloc
 - Fiche automatique des documents
 - Pages séparées pour les collections, thèmes, personnes et organisations : désactivées par défaut
+- **Remettre l'arborescence du client** : recrée collections, thèmes et natures exactement comme le schéma (les documents perdent ce classement)
+
+### Passage de la 2.x à la 3.0
+
+Au premier passage dans l'administration : s'il n'y a encore aucun document, l'ancienne arborescence est remplacée par celle du client, et les familles Secteurs, Pays et Prix sont supprimées. S'il y a déjà des documents, rien n'est effacé : l'arborescence du client est ajoutée et un message invite à reclasser, ou à utiliser le bouton de Réglages.
 
 ## Les shortcodes
 
@@ -104,7 +117,7 @@ Liste de documents. Plusieurs valeurs dans un même attribut : l'une OU l'autre.
 
 | Attribut | Valeurs |
 |---|---|
-| `collection`, `nature`, `theme`, `secteur`, `pays`, `prix`, `personne`, `organisation`, `motcle` | slugs séparés par des virgules |
+| `collection`, `nature`, `theme`, `secteur`, `pays`, `personne`, `organisation`, `motcle` | identifiants séparés par des virgules (`secteur` et `pays` désignent des sous-thèmes) |
 | `annee` | `2024` ou `2015-2020` |
 | `acces` | `public`, `adherents`, `partenaires`, `sur-place` |
 | `groupe` | `annee`, `personne`, `theme`, `organisation`, `nature`, `collection` |
@@ -144,7 +157,7 @@ Fiche d'un document dans une mise en page Elementor. `id="123"` facultatif.
 
 ## Paramètres d'adresse
 
-La barre de filtres utilise des paramètres préfixés pour ne pas entrer en conflit avec WordPress : `f_q`, `f_collection`, `f_nature`, `f_theme`, `f_secteur`, `f_pays`, `f_prix`, `f_personne`, `f_organisation`, `f_motcle`, `f_annee`, `f_tri`, `f_groupe`, `pg` pour la page, et pour l'annuaire `f_annuaire` (`personnes` ou `organisations`) et `f_role` (rôle ou type). Seule la première liste d'une page écoute l'adresse.
+La barre de filtres utilise des paramètres préfixés pour ne pas entrer en conflit avec WordPress : `f_q`, `f_collection`, `f_nature`, `f_theme`, `f_secteur`, `f_pays`, `f_personne`, `f_organisation`, `f_motcle`, `f_annee`, `f_tri`, `f_groupe`, `pg` pour la page, et pour l'annuaire `f_annuaire` (`personnes` ou `organisations`) et `f_role` (rôle ou type). Seule la première liste d'une page écoute l'adresse.
 
 Les vues filtrées gardent l'adresse canonique de la page Bibliothèque : Google n'indexe qu'une page, pas une par combinaison de filtres.
 
@@ -156,9 +169,12 @@ Les vues filtrées gardent l'adresse canonique de la page Bibliothèque : Google
 
 ## Ce qui est créé automatiquement
 
-- **17 collections** : 4 espaces avec ordre et couleur, 13 sous-collections, avec leurs natures et vues
-- **21 natures**, **34 thèmes**, **12 secteurs**, **5 pays et territoires**, **3 prix**
-- la personne **Jean-Michel Quatrepoint**, rôle Auteur
+- **54 collections** : 4 blocs, 16 rubriques (1.1 à 4.6), 34 éléments, avec leur nature proposée et leurs liens de regroupement
+- **51 thèmes** : Souveraineté (7), Industrie (7), Secteurs stratégiques (12), Puissance et relations internationales (10, dont 4 pays), État et société (10)
+- **22 natures**
+- la personne **Jean-Michel Quatrepoint**, rôle Auteur, reliée à la page dédiée du bloc 1
+
+Identifiants des éléments : préfixe de la rubrique, car un même nom revient dans plusieurs rubriques (`ecrits-articles`, `associees-articles`, `types-cahiers`…).
 
 ## Points d'attention
 
@@ -176,4 +192,5 @@ Dans un WordPress 6.8 réel avec le thème Hello Elementor et les quatre plugins
 - Générateur : shortcode et compteur en direct
 - Réglages : affichage des liens vides activé puis visible sur le site ; détection automatique de la page Bibliothèque
 - Page unique (2.1) : lien de bloc, filtre par liste, retrait d'une pastille, annuaire, lauréats, fiche personne, recherche, bouton retour, tous sans rechargement ; redirections 301 des anciennes adresses, filtres conservés ; exclusion des sitemaps ; filtres repliables sur mobile, sans débordement horizontal
+- Arborescence du client (3.0) : migration depuis la 2.1 vérifiée en base (54 collections, 51 thèmes, 22 natures, anciennes familles supprimées) ; blocs identiques au schéma, numérotation conservée quand des rubriques sont masquées ; nature automatique puis manuelle ; page dédiée, fiche par lauréat, liens 5.2 qui ouvrent le bon filtre ; fiche document avec Collection / origine, Thèmes, Secteurs, Pays séparés
 - Front : toutes les pages en HTTP 200, aucune erreur PHP ni JavaScript, liens du plugin en bordeaux malgré le rose du thème

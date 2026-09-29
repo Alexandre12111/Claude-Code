@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       BQP Bibliothèque
- * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents, arborescence, shortcodes, fiches et page Bibliothèque unique.
- * Version:           2.1.0
+ * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents classés selon l'arborescence du client, page Bibliothèque unique, shortcodes et fiches.
+ * Version:           3.0.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -12,7 +12,7 @@
 /**
  * BQP Bibliothèque : bibliothèque numérique de la Bourse Jean-Michel Quatrepoint.
  *
- * Back-office : type de contenu « Document », neuf taxonomies pré-remplies,
+ * Back-office : type de contenu « Document », arborescence du client à l'identique,
  * gestionnaire d'arborescence, panneau de classement, générateur de shortcodes.
  * Site : les 5 blocs, listes de documents par shortcode, fiches documents,
  * page unique « Bibliothèque » : blocs, catalogue filtré et annuaire.
@@ -21,7 +21,7 @@
  *
  * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
  *
- * Version : 2.1.0
+ * Version : 3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '2.1.0' );
+	define( 'BQB_VERSION', '3.0.0' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -72,20 +72,18 @@ function bqb_hex_to_rgba( $hex, $alpha = 1 ) {
 }
 
 /**
- * Les neuf taxonomies : clé => réglages.
+ * Les six familles, calquées sur l'arborescence du client : clé => réglages.
  *
- * « public » : a sa propre page, indexable (collections, thèmes, personnes,
- * organisations). Les autres servent de filtres sans créer de pages
- * d'archives pauvres dans l'index Google.
+ * Collections : les blocs 1 à 4, à l'identique (espace › rubrique › élément).
+ * Thèmes : le bloc 5, avec les secteurs stratégiques et les pays inclus,
+ * comme dans le schéma. Nature du document : une seule valeur par document.
+ * Personnes, Organisations, Mots-clés : saisis au fil de l'eau.
  */
 function bqb_taxonomies() {
 	return array(
-		'bqb_collection'   => array( 'Collections', 'Collection', true, true, 'collection', 'Les espaces de la bibliothèque : d\'où vient le document.' ),
-		'bqb_nature'       => array( 'Natures', 'Nature du document', true, false, '', 'Ce qu\'est le document : livre, article, tribune, entretien…' ),
-		'bqb_theme'        => array( 'Thèmes', 'Thème', true, true, 'theme', 'De quoi parle le document.' ),
-		'bqb_secteur'      => array( 'Secteurs', 'Secteur', true, false, '', 'Les secteurs stratégiques concernés.' ),
-		'bqb_pays'         => array( 'Pays et territoires', 'Pays ou territoire', true, false, '', 'Les pays et zones géographiques concernés.' ),
-		'bqb_prix'         => array( 'Prix et bourses', 'Prix ou bourse', true, false, '', 'Le programme de la Bourse auquel se rattache le document.' ),
+		'bqb_collection'   => array( 'Collections', 'Collection', true, true, 'collection', 'Les blocs 1 à 4 de la bibliothèque : d\'où vient le document.' ),
+		'bqb_theme'        => array( 'Thèmes', 'Thème', true, true, 'theme', 'Le bloc 5 : de quoi parle le document, secteurs et pays compris.' ),
+		'bqb_nature'       => array( 'Natures', 'Nature du document', true, false, '', 'Ce qu\'est le document : article, étude, entretien…' ),
 		'bqb_personne'     => array( 'Personnes', 'Personne', false, true, 'personne', 'Auteurs, lauréats, experts.' ),
 		'bqb_organisation' => array( 'Organisations', 'Organisation', false, true, 'organisation', 'Partenaires, institutions, éditeurs, sources.' ),
 		'bqb_motcle'       => array( 'Mots-clés', 'Mot-clé', false, false, '', 'Mots-clés libres pour la recherche.' ),
@@ -224,19 +222,56 @@ function bqb_editor_heading( $post ) {
 }
 
 /* -------------------------------------------------------------------------
- * 3. L'arborescence validée, créée automatiquement
+ * 3. L'arborescence du client, créée automatiquement
  * ---------------------------------------------------------------------- */
 
 /**
  * Raccourci pour décrire un terme de l'arbre.
  */
-function bqb_t( $name, $children = array(), $description = '', $meta = array() ) {
+function bqb_t( $name, $children = array(), $description = '', $meta = array(), $slug = '' ) {
 	return array(
 		'name'        => $name,
 		'children'    => $children,
 		'description' => $description,
 		'meta'        => $meta,
+		'slug'        => $slug,
 	);
+}
+
+/**
+ * Les éléments d'une rubrique : nom => nature proposée par défaut.
+ * Leur identifiant reprend celui de la rubrique, pour rester unique
+ * (« Articles » existe dans plusieurs rubriques).
+ */
+function bqb_elements( $prefix, $items ) {
+	$out   = array();
+	$order = 1;
+
+	foreach ( $items as $name => $nature ) {
+		$out[] = bqb_t( $name, array(), '', array( 'bqb_ordre' => $order++, 'bqb_nature' => $nature ), $prefix . '-' . sanitize_title( $name ) );
+	}
+
+	return $out;
+}
+
+/**
+ * Une rubrique qui propose des vues (regroupements) plutôt que des éléments.
+ */
+function bqb_vues_meta( $order, $views, $nature = '' ) {
+	$meta = array(
+		'bqb_ordre' => $order,
+		'bqb_vues'  => array_keys( $views ),
+	);
+
+	foreach ( $views as $view => $label ) {
+		$meta[ 'bqb_vue_' . $view ] = $label;
+	}
+
+	if ( $nature ) {
+		$meta['bqb_nature'] = $nature;
+	}
+
+	return $meta;
 }
 
 function bqb_seed_data() {
@@ -244,132 +279,224 @@ function bqb_seed_data() {
 
 	return array(
 
+		// Blocs 1 à 4, dans l'ordre et avec les libellés du schéma.
 		'bqb_collection' => array(
 			bqb_t(
 				'Fonds Jean-Michel Quatrepoint',
 				array(
-					bqb_t( 'Écrits de Jean-Michel Quatrepoint', array(), 'Livres, articles, chroniques, tribunes, notes, rapports, entretiens, conférences et interventions.', array( 'bqb_ordre' => 1 ) ),
-					bqb_t( 'Fonds documentaire', array(), 'Archives de presse, rapports, documents institutionnels, documents d\'entreprises, sources historiques et documents de travail conservés dans son fonds.', array( 'bqb_ordre' => 2 ) ),
+					bqb_t(
+						'Écrits de Jean-Michel Quatrepoint',
+						bqb_elements(
+							'ecrits',
+							array(
+								'Livres et ouvrages'            => 'livre-ou-ouvrage',
+								'Articles'                      => 'article',
+								'Chroniques'                    => 'chronique',
+								'Tribunes'                      => 'tribune',
+								'Notes'                         => 'note',
+								'Rapports'                      => 'rapport',
+								'Entretiens'                    => 'entretien',
+								'Conférences et interventions'  => 'conference-ou-intervention',
+							)
+						),
+						'Les livres, articles, chroniques, tribunes, notes, rapports, entretiens et interventions de Jean-Michel Quatrepoint.',
+						array( 'bqb_ordre' => 1 ),
+						'ecrits-de-jean-michel-quatrepoint'
+					),
+					bqb_t(
+						'Documents de son fonds documentaire',
+						bqb_elements(
+							'fonds',
+							array(
+								'Archives de presse'                  => 'archive-de-presse',
+								'Rapports et études'                  => 'rapport',
+								'Documents institutionnels'           => 'document-institutionnel',
+								'Documents d\'entreprises'            => 'document-dentreprise',
+								'Documents économiques et industriels' => 'document-economique-ou-industriel',
+								'Documents géopolitiques'             => 'document-geopolitique',
+								'Sources historiques'                 => 'source-historique',
+								'Documents de travail'                => 'document-de-travail',
+								'Autres documents conservés'          => 'autre',
+							)
+						),
+						'Les archives et documents de travail conservés dans le fonds de Jean-Michel Quatrepoint.',
+						array( 'bqb_ordre' => 2 ),
+						'fonds-documentaire'
+					),
 				),
 				'Les écrits et les archives de Jean-Michel Quatrepoint, ainsi que les documents conservés dans son fonds.',
-				array( 'bqb_ordre' => 1, 'bqb_couleur' => $p['bordeaux'] )
+				array( 'bqb_ordre' => 1, 'bqb_couleur' => $p['bordeaux'], 'bqb_personne_dediee' => 'jean-michel-quatrepoint' ),
+				'fonds-jean-michel-quatrepoint'
 			),
 			bqb_t(
 				'Travaux des lauréats',
 				array(
-					bqb_t( 'Travaux primés', array(), 'Les travaux distingués par la Bourse, par lauréat et par édition.', array( 'bqb_ordre' => 1 ) ),
-					bqb_t( 'Travaux ultérieurs', array(), 'Les recherches menées par les lauréats après leur distinction.', array( 'bqb_ordre' => 2 ) ),
-					bqb_t( 'Publications associées', array(), 'Articles, ouvrages, entretiens et autres travaux des lauréats.', array( 'bqb_ordre' => 3 ) ),
+					bqb_t( 'Les lauréats', array(), 'Les lauréats de la Bourse, promotion par promotion.', bqb_vues_meta( 1, array( 'laureats' => 'Liste des lauréats (par année)', 'fiches' => 'Fiche par lauréat (biographie, travaux, etc.)' ) ), 'les-laureats' ),
+					bqb_t( 'Travaux primés', array(), 'Les travaux distingués par la Bourse.', bqb_vues_meta( 2, array( 'personne' => 'Par lauréat', 'annee' => 'Par année' ) ), 'travaux-primes' ),
+					bqb_t( 'Travaux ultérieurs', array(), 'Les recherches menées par les lauréats après leur distinction.', bqb_vues_meta( 3, array( 'personne' => 'Par lauréat', 'theme' => 'Par thématique' ) ), 'travaux-ulterieurs' ),
+					bqb_t(
+						'Publications associées',
+						bqb_elements(
+							'associees',
+							array(
+								'Articles'       => 'article',
+								'Ouvrages'       => 'livre-ou-ouvrage',
+								'Entretiens'     => 'entretien',
+								'Autres travaux' => 'autre',
+							)
+						),
+						'Articles, ouvrages, entretiens et autres travaux des lauréats.',
+						array( 'bqb_ordre' => 4 ),
+						'publications-associees'
+					),
 				),
 				'Les recherches soutenues par la Bourse et leurs prolongements.',
-				array( 'bqb_ordre' => 2, 'bqb_couleur' => $p['navy'] )
+				array( 'bqb_ordre' => 2, 'bqb_couleur' => $p['navy'] ),
+				'travaux-des-laureats'
 			),
 			bqb_t(
 				'Publications de la Bourse',
 				array(
-					bqb_t( 'Les Cahiers de la Bourse Jean-Michel Quatrepoint', array(), 'La collection éditoriale de référence de la Bourse.', array( 'bqb_ordre' => 1 ) ),
-					bqb_t( 'Autres collections', array(), 'Les autres séries éditoriales de la Bourse.', array( 'bqb_ordre' => 2 ) ),
+					bqb_t(
+						'Types de publications',
+						bqb_elements(
+							'types',
+							array(
+								'Études'                            => 'etude',
+								'Notes de recherche'                => 'note-de-recherche',
+								'Cahiers'                           => 'cahier',
+								'Rapports'                          => 'rapport',
+								'Dossiers thématiques'              => 'dossier-thematique',
+								'Tribunes'                          => 'tribune',
+								'Entretiens'                        => 'entretien',
+								'Actes de colloques et conférences' => 'actes-de-colloque',
+								'Synthèses'                         => 'synthese',
+								'Publications institutionnelles'    => 'document-institutionnel',
+							)
+						),
+						'Toutes les publications de la Bourse, par type.',
+						array( 'bqb_ordre' => 1 ),
+						'types-de-publications'
+					),
+					bqb_t(
+						'Collections éditoriales',
+						bqb_elements(
+							'collections',
+							array(
+								'Les Cahiers de la Bourse Jean-Michel Quatrepoint' => 'cahier',
+								'Autres collections'                               => '',
+							)
+						),
+						'Les séries éditoriales de la Bourse.',
+						array( 'bqb_ordre' => 2 ),
+						'collections-editoriales'
+					),
 				),
 				'La production éditoriale propre à l\'association.',
-				array( 'bqb_ordre' => 3, 'bqb_couleur' => $p['orange'] )
+				array( 'bqb_ordre' => 3, 'bqb_couleur' => $p['orange'] ),
+				'publications-de-la-bourse'
 			),
 			bqb_t(
 				'Contributions et partenaires',
 				array(
-					bqb_t( 'Contributions d\'experts', array(), 'Les travaux d\'experts associés à la Bourse.', array( 'bqb_ordre' => 1 ) ),
-					bqb_t( 'Publications de partenaires', array(), 'Les publications des organisations partenaires.', array( 'bqb_ordre' => 2 ) ),
-					bqb_t( 'Entretiens', array(), 'Entretiens avec des experts, des lauréats et des partenaires.', array( 'bqb_ordre' => 3 ) ),
-					bqb_t( 'Tribunes invitées', array(), 'Les tribunes signées par des auteurs invités.', array( 'bqb_ordre' => 4 ) ),
-					bqb_t( 'Études partenaires', array(), 'Les études produites avec ou par les partenaires.', array( 'bqb_ordre' => 5 ) ),
-					bqb_t( 'Documents institutionnels', array(), 'Documents produits par les organisations et institutions.', array( 'bqb_ordre' => 6 ) ),
+					bqb_t( 'Contributions d\'experts', array(), 'Les travaux d\'experts associés à la Bourse.', bqb_vues_meta( 1, array( 'personne' => 'Par expert', 'theme' => 'Par thématique' ) ), 'contributions-dexperts' ),
+					bqb_t( 'Publications de partenaires', array(), 'Les publications des organisations partenaires.', bqb_vues_meta( 2, array( 'organisation' => 'Par partenaire', 'nature' => 'Par type de publication' ) ), 'publications-de-partenaires' ),
+					bqb_t(
+						'Entretiens',
+						bqb_elements(
+							'entretiens',
+							array(
+								'Experts'     => 'entretien',
+								'Lauréats'    => 'entretien',
+								'Partenaires' => 'entretien',
+							)
+						),
+						'Entretiens avec des experts, des lauréats et des partenaires.',
+						array( 'bqb_ordre' => 3, 'bqb_nature' => 'entretien' ),
+						'entretiens'
+					),
+					bqb_t( 'Tribunes invitées', array(), 'Les tribunes signées par des auteurs invités.', bqb_vues_meta( 4, array( 'personne' => 'Par auteur', 'theme' => 'Par thématique' ), 'tribune' ), 'tribunes-invitees' ),
+					bqb_t( 'Études partenaires', array(), 'Les études produites avec ou par les partenaires.', bqb_vues_meta( 5, array( 'organisation' => 'Par partenaire', 'theme' => 'Par thématique' ), 'etude' ), 'etudes-partenaires' ),
+					bqb_t( 'Documents institutionnels', array(), 'Documents produits par les organisations et institutions.', bqb_vues_meta( 6, array( 'organisation' => 'Par organisation', 'nature' => 'Par type de document' ), 'document-institutionnel' ), 'documents-institutionnels' ),
 				),
 				'Les travaux d\'experts, chercheurs, organisations et partenaires associés à la Bourse.',
-				array( 'bqb_ordre' => 4, 'bqb_couleur' => $p['plum'] )
+				array( 'bqb_ordre' => 4, 'bqb_couleur' => $p['plum'] ),
+				'contributions-et-partenaires'
 			),
 		),
 
-		'bqb_nature' => array(
-			bqb_t( 'Livre ou ouvrage' ), bqb_t( 'Article' ), bqb_t( 'Chronique' ), bqb_t( 'Tribune' ),
-			bqb_t( 'Note' ), bqb_t( 'Note de recherche' ), bqb_t( 'Rapport' ), bqb_t( 'Étude' ),
-			bqb_t( 'Synthèse' ), bqb_t( 'Cahier' ), bqb_t( 'Dossier thématique' ), bqb_t( 'Entretien' ),
-			bqb_t( 'Conférence ou intervention' ), bqb_t( 'Actes de colloque' ), bqb_t( 'Archive de presse' ),
-			bqb_t( 'Document institutionnel' ), bqb_t( 'Document d\'entreprise' ), bqb_t( 'Document de travail' ),
-			bqb_t( 'Source historique' ), bqb_t( 'Captation audio ou vidéo' ), bqb_t( 'Autre' ),
-		),
+		// Bloc 5 : les thématiques principales du schéma, avec leurs
+		// sous-thèmes. Les secteurs et les pays servent aussi de filtres.
+		'bqb_theme' => bqb_theme_seed(),
 
-		'bqb_theme' => array(
-			bqb_t(
-				'Souveraineté',
-				array(
-					bqb_t( 'Souveraineté industrielle' ), bqb_t( 'Souveraineté économique' ), bqb_t( 'Souveraineté technologique' ),
-					bqb_t( 'Souveraineté énergétique' ), bqb_t( 'Souveraineté alimentaire' ), bqb_t( 'Souveraineté numérique' ),
-					bqb_t( 'Souveraineté financière' ),
-				),
-				'La capacité d\'un pays à décider et à produire par lui-même dans les domaines stratégiques.',
-				array( 'bqb_ordre' => 1 )
-			),
-			bqb_t(
-				'Industrie',
-				array(
-					bqb_t( 'Réindustrialisation' ), bqb_t( 'Entreprises stratégiques' ), bqb_t( 'Capital' ), bqb_t( 'Filières' ),
-					bqb_t( 'PME et ETI' ), bqb_t( 'Grands groupes' ), bqb_t( 'Innovation' ),
-				),
-				'L\'appareil productif, ses entreprises, ses filières et son financement.',
-				array( 'bqb_ordre' => 2 )
-			),
-			bqb_t(
-				'Puissance et relations internationales',
-				array(
-					bqb_t( 'Mondialisation' ), bqb_t( 'Commerce' ), bqb_t( 'Géopolitique' ), bqb_t( 'Guerre économique' ),
-					bqb_t( 'Influence' ), bqb_t( 'Dépendances' ),
-				),
-				'Les rapports de force économiques entre nations et blocs.',
-				array( 'bqb_ordre' => 3 )
-			),
-			bqb_t(
-				'État et société',
-				array(
-					bqb_t( 'Politique publique' ), bqb_t( 'Finances publiques' ), bqb_t( 'Territoires' ), bqb_t( 'Travail' ),
-					bqb_t( 'Compétences' ), bqb_t( 'Formation' ), bqb_t( 'Recherche' ), bqb_t( 'Administration' ),
-					bqb_t( 'Régulation' ), bqb_t( 'Normes' ),
-				),
-				'L\'action publique, le travail, la formation et la régulation.',
-				array( 'bqb_ordre' => 4 )
-			),
-		),
-
-		'bqb_secteur' => array(
-			bqb_t( 'Défense' ), bqb_t( 'Énergie' ), bqb_t( 'Nucléaire' ), bqb_t( 'Aéronautique' ),
-			bqb_t( 'Automobile' ), bqb_t( 'Télécoms' ), bqb_t( 'Numérique' ), bqb_t( 'Santé' ),
-			bqb_t( 'Agroalimentaire' ), bqb_t( 'Matières premières' ), bqb_t( 'Transports' ), bqb_t( 'Spatial' ),
-		),
-
-		'bqb_pays' => array(
-			bqb_t( 'France' ), bqb_t( 'Europe' ), bqb_t( 'États-Unis' ), bqb_t( 'Chine' ), bqb_t( 'Russie' ),
-		),
-
-		'bqb_prix' => array(
-			bqb_t( 'Grand Prix Jean-Michel Quatrepoint' ),
-			bqb_t( 'Bourses Jeunes Chercheurs' ),
-			bqb_t( 'Prix de l\'Essai et du Débat public' ),
+		// Une seule nature par document ; proposée d'après la rubrique cochée.
+		'bqb_nature' => array_map(
+			function ( $name, $i ) {
+				return bqb_t( $name, array(), '', array( 'bqb_ordre' => $i + 1 ) );
+			},
+			bqb_nature_names(),
+			array_keys( bqb_nature_names() )
 		),
 
 		'bqb_personne' => array(
-			bqb_t( 'Jean-Michel Quatrepoint', array(), '', array( 'bqb_roles' => array( 'auteur' ) ) ),
+			bqb_t( 'Jean-Michel Quatrepoint', array(), '', array( 'bqb_roles' => array( 'auteur' ) ), 'jean-michel-quatrepoint' ),
 		),
 	);
 }
 
+function bqb_nature_names() {
+	return array(
+		'Livre ou ouvrage', 'Article', 'Chronique', 'Tribune', 'Note', 'Note de recherche', 'Rapport', 'Étude',
+		'Synthèse', 'Cahier', 'Dossier thématique', 'Entretien', 'Conférence ou intervention', 'Actes de colloque',
+		'Archive de presse', 'Document institutionnel', 'Document d\'entreprise', 'Document économique ou industriel',
+		'Document géopolitique', 'Source historique', 'Document de travail', 'Autre',
+	);
+}
+
+function bqb_theme_seed() {
+	$groups = array(
+		'Souveraineté'                           => array( '', array( 'Souveraineté industrielle', 'Souveraineté économique', 'Souveraineté technologique', 'Souveraineté énergétique', 'Souveraineté alimentaire', 'Souveraineté numérique', 'Souveraineté financière' ) ),
+		'Industrie'                              => array( '', array( 'Réindustrialisation', 'Entreprises stratégiques', 'Capital', 'Filières', 'PME/ETI', 'Grands groupes', 'Innovation' ) ),
+		'Secteurs stratégiques'                  => array( 'secteur', array( 'Défense', 'Énergie', 'Nucléaire', 'Aéronautique', 'Automobile', 'Télécoms', 'Numérique', 'Santé', 'Agroalimentaire', 'Matières premières', 'Transports', 'Spatial' ) ),
+		'Puissance et relations internationales' => array( '', array( 'Europe', 'États-Unis', 'Chine', 'Russie', 'Mondialisation', 'Commerce', 'Géopolitique', 'Guerre économique', 'Influence', 'Dépendances' ) ),
+		'État et société'                        => array( '', array( 'Politique publique', 'Finances publiques', 'Territoires', 'Travail', 'Compétences', 'Formation', 'Recherche', 'Administration', 'Régulation', 'Normes' ) ),
+	);
+
+	$pays = array( 'Europe', 'États-Unis', 'Chine', 'Russie' );
+	$out  = array();
+	$i    = 1;
+
+	foreach ( $groups as $name => $conf ) {
+		$children = array();
+		$j        = 1;
+
+		foreach ( $conf[1] as $child ) {
+			$meta = array( 'bqb_ordre' => $j++ );
+			if ( 'secteur' === $conf[0] ) {
+				$meta['bqb_filtre'] = 'secteur';
+			} elseif ( in_array( $child, $pays, true ) ) {
+				$meta['bqb_filtre'] = 'pays';
+			}
+			$children[] = bqb_t( $child, array(), '', $meta, sanitize_title( str_replace( '/', ' ', $child ) ) );
+		}
+
+		$out[] = bqb_t( $name, $children, '', array( 'bqb_ordre' => $i++ ) );
+	}
+
+	return $out;
+}
+
 /**
- * Crée un niveau de l'arbre, puis ses enfants.
+ * Crée un niveau de l'arbre, puis ses enfants. Un terme qui existe déjà
+ * garde ses réglages ; seuls les réglages manquants sont complétés.
  */
 function bqb_seed_tree( $taxonomy, $terms, $parent = 0 ) {
 	foreach ( $terms as $term ) {
-		$slug   = sanitize_title( $term['name'] );
-		$exists = term_exists( $slug, $taxonomy, $parent );
+		$slug   = $term['slug'] ? $term['slug'] : sanitize_title( $term['name'] );
+		$exists = get_term_by( 'slug', $slug, $taxonomy );
 
 		if ( $exists ) {
-			$term_id = (int) ( is_array( $exists ) ? $exists['term_id'] : $exists );
+			$term_id = (int) $exists->term_id;
 		} else {
 			$created = wp_insert_term(
 				$term['name'],
@@ -386,8 +513,10 @@ function bqb_seed_tree( $taxonomy, $terms, $parent = 0 ) {
 			}
 
 			$term_id = (int) $created['term_id'];
+		}
 
-			foreach ( $term['meta'] as $key => $value ) {
+		foreach ( $term['meta'] as $key => $value ) {
+			if ( '' === get_term_meta( $term_id, $key, true ) ) {
 				update_term_meta( $term_id, $key, $value );
 			}
 		}
@@ -398,23 +527,80 @@ function bqb_seed_tree( $taxonomy, $terms, $parent = 0 ) {
 	}
 }
 
-add_action( 'admin_init', 'bqb_maybe_seed' );
-function bqb_maybe_seed() {
-	if ( get_option( 'bqb_seeded' ) ) {
-		return;
-	}
-
-	if ( ! current_user_can( 'manage_categories' ) ) {
-		return;
-	}
-
+function bqb_seed_all() {
 	foreach ( bqb_seed_data() as $taxonomy => $terms ) {
 		if ( taxonomy_exists( $taxonomy ) ) {
 			bqb_seed_tree( $taxonomy, $terms );
 		}
 	}
 
+	bqb_bump_cache();
+}
+
+/**
+ * Efface les collections, thèmes et natures, ainsi que les familles
+ * retirées en 3.0 (secteurs, pays, prix), puis recrée l'arborescence du
+ * client. Les documents sont conservés, mais perdent ce classement.
+ */
+function bqb_reset_tree() {
+	global $wpdb;
+
+	foreach ( array( 'bqb_collection', 'bqb_theme', 'bqb_nature' ) as $taxonomy ) {
+		$ids = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'fields' => 'ids' ) );
+		foreach ( is_wp_error( $ids ) ? array() : $ids as $id ) {
+			wp_delete_term( (int) $id, $taxonomy );
+		}
+	}
+
+	// Les anciennes familles ne sont plus enregistrées : nettoyage direct.
+	$rows = $wpdb->get_results( "SELECT term_taxonomy_id, term_id FROM {$wpdb->term_taxonomy} WHERE taxonomy IN ('bqb_secteur','bqb_pays','bqb_prix')" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	foreach ( $rows as $row ) {
+		$wpdb->delete( $wpdb->term_relationships, array( 'term_taxonomy_id' => (int) $row->term_taxonomy_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->delete( $wpdb->term_taxonomy, array( 'term_taxonomy_id' => (int) $row->term_taxonomy_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->delete( $wpdb->termmeta, array( 'term_id' => (int) $row->term_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$wpdb->delete( $wpdb->terms, array( 'term_id' => (int) $row->term_id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	}
+
+	bqb_seed_all();
+}
+
+/**
+ * Création au premier passage dans l'administration, et passage de la 2.x
+ * à la 3.0 : s'il n'y a encore aucun document, l'ancienne arborescence est
+ * remplacée par celle du client ; sinon elle est complétée sans rien effacer.
+ */
+add_action( 'admin_init', 'bqb_maybe_seed' );
+function bqb_maybe_seed() {
+	if ( get_option( 'bqb_seeded_v3' ) || ! current_user_can( 'manage_categories' ) ) {
+		return;
+	}
+
+	global $wpdb;
+
+	// Prix des lauréats : de l'ancienne famille « Prix » vers un simple texte.
+	$prix = $wpdb->get_results( "SELECT term_id, meta_value FROM {$wpdb->termmeta} WHERE meta_key = 'bqb_prix_id'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	foreach ( $prix as $row ) {
+		$name = $wpdb->get_var( $wpdb->prepare( "SELECT name FROM {$wpdb->terms} WHERE term_id = %d", (int) $row->meta_value ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		if ( $name ) {
+			update_term_meta( (int) $row->term_id, 'bqb_prix_nom', $name );
+		}
+		delete_term_meta( (int) $row->term_id, 'bqb_prix_id' );
+	}
+
+	$documents = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_type = %s AND post_status NOT IN ('auto-draft','trash')", BQB_CPT ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+
+	if ( get_option( 'bqb_seeded' ) && 0 === $documents ) {
+		bqb_reset_tree();
+	} else {
+		bqb_seed_all();
+		if ( get_option( 'bqb_seeded' ) ) {
+			update_option( 'bqb_notice_v3', 1, false );
+		}
+	}
+
+	delete_option( 'bqb_seeded_v2' );
 	update_option( 'bqb_seeded', BQB_VERSION, false );
+	update_option( 'bqb_seeded_v3', BQB_VERSION, false );
 }
 
 /* -------------------------------------------------------------------------
@@ -459,7 +645,7 @@ function bqb_term_fields() {
 			array( 'bqb_photo', 'image', 'Photo', 'Portrait, idéalement carré.' ),
 			array( 'bqb_bio', 'textarea', 'Biographie', 'Quelques lignes : parcours, fonctions, travaux.' ),
 			array( 'bqb_annee_prix', 'number', 'Année du prix', 'Pour les lauréats uniquement.' ),
-			array( 'bqb_prix_id', 'prix', 'Prix ou bourse obtenu', 'Pour les lauréats uniquement.' ),
+			array( 'bqb_prix_nom', 'text', 'Prix ou bourse obtenu', 'Pour les lauréats uniquement. Par exemple « Grand Prix Jean-Michel Quatrepoint ».' ),
 			array( 'bqb_site', 'url', 'Page personnelle ou profil', 'Site, page universitaire, LinkedIn…' ),
 		),
 		'bqb_organisation' => array(
@@ -504,15 +690,8 @@ function bqb_term_field_input( $field, $value ) {
 			}
 			return $html . '</select>';
 
-		case 'prix':
-			$terms = get_terms( array( 'taxonomy' => 'bqb_prix', 'hide_empty' => false ) );
-			$html  = '<select name="' . esc_attr( $key ) . '" id="' . esc_attr( $key ) . '"><option value="">Aucun</option>';
-			if ( ! is_wp_error( $terms ) ) {
-				foreach ( $terms as $term ) {
-					$html .= '<option value="' . (int) $term->term_id . '"' . selected( (int) $value, (int) $term->term_id, false ) . '>' . esc_html( $term->name ) . '</option>';
-				}
-			}
-			return $html . '</select>';
+		case 'text':
+			return '<input type="text" name="' . esc_attr( $key ) . '" id="' . esc_attr( $key ) . '" value="' . esc_attr( $value ) . '" />';
 
 		case 'image':
 			$src  = $value ? wp_get_attachment_image_url( (int) $value, 'thumbnail' ) : '';
@@ -591,7 +770,6 @@ function bqb_save_term_fields( $term_id, $tt_id = 0, $taxonomy = '' ) {
 		switch ( $type ) {
 			case 'number':
 			case 'image':
-			case 'prix':
 				$value = ( '' === $raw ) ? '' : (int) $raw;
 				break;
 			case 'color':
@@ -1128,12 +1306,9 @@ function bqb_admin_help_page() {
 
 function bqb_render_help_page() {
 	$rows = array(
-		array( 'Collection', 'D\'où vient le document. Une case parmi les espaces 1 à 4 et leurs sous-parties.', 'Écrits de Jean-Michel Quatrepoint' ),
-		array( 'Nature', 'Ce qu\'est le document.', 'Article' ),
-		array( 'Thèmes', 'De quoi il parle. Plusieurs possibles.', 'Souveraineté industrielle, Filières' ),
-		array( 'Secteurs', 'Les secteurs stratégiques concernés.', 'Nucléaire, Énergie' ),
-		array( 'Pays et territoires', 'Les zones géographiques concernées.', 'France, Chine' ),
-		array( 'Prix et bourses', 'Pour les travaux des lauréats : le programme concerné.', 'Grand Prix Jean-Michel Quatrepoint' ),
+		array( 'Collections', 'Où il se range dans les blocs 1 à 4, exactement comme dans le schéma. Cochez l\'élément le plus précis.', '1.1 Écrits de Jean-Michel Quatrepoint › Articles' ),
+		array( 'Nature', 'Déduite automatiquement de la rubrique. À changer seulement si besoin.', 'Article' ),
+		array( 'Thèmes', 'Le bloc 5 : de quoi il parle. Les secteurs stratégiques et les pays en font partie.', 'Souveraineté industrielle, Nucléaire, Chine' ),
 		array( 'Personnes', 'Les auteurs, lauréats, experts. Tapez le nom, il se complète.', 'Jean-Michel Quatrepoint' ),
 		array( 'Organisations', 'Éditeurs, partenaires, institutions, sources.', 'Éditions du Seuil' ),
 		array( 'Mots-clés', 'Mots libres pour affiner la recherche.', 'Alstom, désindustrialisation' ),
@@ -1577,9 +1752,8 @@ function bqb_short_map() {
 		'collection'   => 'bqb_collection',
 		'nature'       => 'bqb_nature',
 		'theme'        => 'bqb_theme',
-		'secteur'      => 'bqb_secteur',
-		'pays'         => 'bqb_pays',
-		'prix'         => 'bqb_prix',
+		'secteur'      => 'bqb_theme',
+		'pays'         => 'bqb_theme',
 		'personne'     => 'bqb_personne',
 		'organisation' => 'bqb_organisation',
 		'motcle'       => 'bqb_motcle',
@@ -1587,9 +1761,43 @@ function bqb_short_map() {
 }
 
 function bqb_short_name( $taxonomy ) {
-	$flip = array_flip( bqb_short_map() );
+	// Secteurs et pays sont des thèmes : le nom court d'un thème reste « theme ».
+	$flip = array_flip( array_reverse( bqb_short_map(), true ) );
 
 	return isset( $flip[ $taxonomy ] ) ? $flip[ $taxonomy ] : '';
+}
+
+/**
+ * Les thèmes qui servent aussi de filtre « Secteur » ou « Pays ».
+ */
+function bqb_theme_filters() {
+	return array(
+		'secteur' => 'Secteur',
+		'pays'    => 'Pays ou territoire',
+	);
+}
+
+function bqb_filter_terms( $kind ) {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'bqb_theme',
+			'hide_empty' => false,
+			'meta_query' => array( array( 'key' => 'bqb_filtre', 'value' => $kind ) ),
+		)
+	);
+
+	if ( is_wp_error( $terms ) ) {
+		return array();
+	}
+
+	usort(
+		$terms,
+		function ( $a, $b ) {
+			return (int) get_term_meta( $a->term_id, 'bqb_ordre', true ) - (int) get_term_meta( $b->term_id, 'bqb_ordre', true );
+		}
+	);
+
+	return $terms;
 }
 
 /**
@@ -1603,7 +1811,8 @@ function bqb_views() {
 		'theme'        => 'Par thématique',
 		'organisation' => 'Par organisation',
 		'nature'       => 'Par type de document',
-		'laureats'     => 'Les lauréats',
+		'laureats'     => 'Liste des lauréats (par année)',
+		'fiches'       => 'Fiche par lauréat',
 	);
 }
 
@@ -1804,93 +2013,6 @@ function bqb_query_args( $criteria ) {
 }
 
 /* -------------------------------------------------------------------------
- * 13. Propositions des blocs, reprises du schéma validé
- * ---------------------------------------------------------------------- */
-
-add_action( 'admin_init', 'bqb_maybe_seed_v2' );
-function bqb_maybe_seed_v2() {
-	if ( get_option( 'bqb_seeded_v2' ) || ! get_option( 'bqb_seeded' ) ) {
-		return;
-	}
-
-	if ( ! current_user_can( 'manage_categories' ) ) {
-		return;
-	}
-
-	$nat = function ( $names ) {
-		$ids = array();
-		foreach ( $names as $name ) {
-			$term = get_term_by( 'slug', sanitize_title( $name ), 'bqb_nature' );
-			if ( $term ) {
-				$ids[] = (int) $term->term_id;
-			}
-		}
-		return $ids;
-	};
-
-	$plan = array(
-		'ecrits-de-jean-michel-quatrepoint'                => array( $nat( array( 'Livre ou ouvrage', 'Article', 'Chronique', 'Tribune', 'Note', 'Rapport', 'Entretien', 'Conférence ou intervention' ) ), array() ),
-		'fonds-documentaire'                               => array( $nat( array( 'Archive de presse', 'Rapport', 'Étude', 'Document institutionnel', 'Document d\'entreprise', 'Source historique', 'Document de travail', 'Autre' ) ), array() ),
-		'travaux-des-laureats'                             => array( array(), array( 'laureats' ) ),
-		'travaux-primes'                                   => array( array(), array( 'personne', 'annee' ) ),
-		'travaux-ulterieurs'                               => array( array(), array( 'personne', 'theme' ) ),
-		'publications-associees'                           => array( $nat( array( 'Article', 'Livre ou ouvrage', 'Entretien', 'Autre' ) ), array() ),
-		'publications-de-la-bourse'                        => array( $nat( array( 'Étude', 'Note de recherche', 'Cahier', 'Rapport', 'Dossier thématique', 'Tribune', 'Entretien', 'Actes de colloque', 'Synthèse', 'Document institutionnel' ) ), array() ),
-		'contributions-dexperts'                           => array( array(), array( 'personne', 'theme' ) ),
-		'publications-de-partenaires'                      => array( array(), array( 'organisation', 'nature' ) ),
-		'entretiens'                                       => array( array(), array( 'personne' ) ),
-		'tribunes-invitees'                                => array( array(), array( 'personne', 'theme' ) ),
-		'etudes-partenaires'                               => array( array(), array( 'organisation', 'theme' ) ),
-		'documents-institutionnels'                        => array( array(), array( 'organisation', 'nature' ) ),
-	);
-
-	$labels = array(
-		'travaux-primes'        => array( 'personne' => 'Par lauréat' ),
-		'travaux-ulterieurs'    => array( 'personne' => 'Par lauréat' ),
-		'contributions-dexperts' => array( 'personne' => 'Par expert' ),
-		'publications-de-partenaires' => array( 'organisation' => 'Par partenaire', 'nature' => 'Par type de publication' ),
-		'etudes-partenaires'    => array( 'organisation' => 'Par partenaire' ),
-		'documents-institutionnels' => array( 'organisation' => 'Par organisation', 'nature' => 'Par type de document' ),
-		'tribunes-invitees'     => array( 'personne' => 'Par auteur' ),
-		'entretiens'            => array( 'personne' => 'Par personne interrogée' ),
-	);
-
-	foreach ( $plan as $slug => $conf ) {
-		$term = get_term_by( 'slug', $slug, 'bqb_collection' );
-
-		if ( ! $term ) {
-			continue;
-		}
-
-		if ( '' === get_term_meta( $term->term_id, 'bqb_natures', true ) ) {
-			update_term_meta( $term->term_id, 'bqb_natures', $conf[0] );
-		}
-
-		if ( '' === get_term_meta( $term->term_id, 'bqb_vues', true ) ) {
-			update_term_meta( $term->term_id, 'bqb_vues', $conf[1] );
-		}
-
-		if ( isset( $labels[ $slug ] ) ) {
-			foreach ( $labels[ $slug ] as $view => $label ) {
-				update_term_meta( $term->term_id, 'bqb_vue_' . $view, $label );
-			}
-		}
-	}
-
-	// Ordre des natures : celui du schéma, plutôt que l'ordre alphabétique.
-	$i = 1;
-	foreach ( bqb_seed_data()['bqb_nature'] as $nature ) {
-		$term = get_term_by( 'slug', sanitize_title( $nature['name'] ), 'bqb_nature' );
-		if ( $term && '' === get_term_meta( $term->term_id, 'bqb_ordre', true ) ) {
-			update_term_meta( $term->term_id, 'bqb_ordre', $i );
-		}
-		$i++;
-	}
-
-	update_option( 'bqb_seeded_v2', BQB_VERSION, false );
-}
-
-/* -------------------------------------------------------------------------
  * 14. Arbre ordonné d'une taxonomie
  * ---------------------------------------------------------------------- */
 
@@ -1935,14 +2057,11 @@ function bqb_term_children_map( $taxonomy ) {
  */
 function bqb_picker_config() {
 	return array(
-		'bqb_collection'   => array( 'tree', 'Où se range le document. En général une seule sous-collection.' ),
-		'bqb_nature'       => array( 'pills', 'Ce qu\'est le document.' ),
-		'bqb_theme'        => array( 'tree', 'De quoi il parle. Plusieurs choix possibles.' ),
+		'bqb_collection'   => array( 'tree', 'Où se range le document dans les blocs 1 à 4. Cochez l\'élément le plus précis, par exemple « Articles » sous 1.1.' ),
+		'bqb_nature'       => array( 'select', 'Laissez « Automatique » : la nature est déduite de la rubrique cochée.' ),
+		'bqb_theme'        => array( 'tree', 'De quoi il parle, pour le bloc 5. Plusieurs choix possibles, secteurs et pays compris.' ),
 		'bqb_personne'     => array( 'tokens', 'Auteurs, lauréats, experts. Tapez un nom : il se complète, ou se crée s\'il n\'existe pas.' ),
 		'bqb_organisation' => array( 'tokens', 'Éditeur, partenaire, institution, source.' ),
-		'bqb_secteur'      => array( 'pills', '' ),
-		'bqb_pays'         => array( 'pills', '' ),
-		'bqb_prix'         => array( 'pills', 'Pour les travaux des lauréats.' ),
 		'bqb_motcle'       => array( 'tokens', 'Mots libres pour affiner la recherche.' ),
 	);
 }
@@ -1971,7 +2090,7 @@ function bqb_render_classement_box( $post ) {
 		$assigned = wp_get_object_terms( $post->ID, $taxonomy, array( 'fields' => 'ids' ) );
 		$assigned = is_wp_error( $assigned ) ? array() : array_map( 'intval', $assigned );
 		$label    = $taxonomies[ $taxonomy ][0];
-		$wide     = in_array( $mode, array( 'tree', 'tokens' ), true ) || 'bqb_nature' === $taxonomy;
+		$wide     = in_array( $mode, array( 'tree', 'tokens' ), true );
 
 		$html .= '<section class="bqb-class__block' . ( $wide ? ' is-wide' : '' ) . '" data-tax="' . esc_attr( $taxonomy ) . '" data-mode="' . esc_attr( $mode ) . '">';
 		$html .= '<header class="bqb-class__head">';
@@ -2002,23 +2121,48 @@ function bqb_render_classement_box( $post ) {
 			$html .= '<div class="bqb-tokens__search"><input type="text" class="bqb-admin__input" placeholder="Rechercher ou créer…" data-token-input autocomplete="off" /><div class="bqb-tokens__menu" data-token-menu hidden></div></div>';
 			$html .= '</div>';
 
-		} elseif ( 'tree' === $mode ) {
+		} elseif ( 'select' === $mode ) {
 			$map   = bqb_term_children_map( $taxonomy );
-			$html .= '<div class="bqb-tree-pick">';
+			$auto  = get_post_meta( $post->ID, '_bqb_nature_auto', true );
+			$auto  = ( '' === $auto ) || (bool) $auto;
+			$html .= '<select class="bqb-admin__input bqb-class__select" name="bqb_nature_choice">';
+			$html .= '<option value="auto"' . selected( $auto, true, false ) . '>Automatique, selon la rubrique cochée' . ( $auto && $assigned ? ' (' . esc_html( get_term( $assigned[0] )->name ) . ')' : '' ) . '</option>';
+			foreach ( isset( $map[0] ) ? $map[0] : array() as $term ) {
+				$html .= '<option value="' . (int) $term->term_id . '"' . selected( ! $auto && in_array( (int) $term->term_id, $assigned, true ), true, false ) . '>' . esc_html( $term->name ) . '</option>';
+			}
+			$html .= '</select>';
+
+		} elseif ( 'tree' === $mode ) {
+			$map    = bqb_term_children_map( $taxonomy );
+			$number = ( 'bqb_collection' === $taxonomy );
+			$html  .= '<div class="bqb-tree-pick">';
+			$n      = 0;
 
 			foreach ( isset( $map[0] ) ? $map[0] : array() as $root ) {
+				$n++;
 				$html .= '<div class="bqb-tree-pick__group" data-group>';
-				$html .= '<div class="bqb-tree-pick__root">' . bqb_pill( $taxonomy, $root, in_array( (int) $root->term_id, $assigned, true ), 'bqb-pill--root' ) . '</div>';
+				$html .= '<div class="bqb-tree-pick__root">' . ( $number ? '<span class="bqb-tree-pick__num">' . $n . '</span>' : '' ) . bqb_pill( $taxonomy, $root, in_array( (int) $root->term_id, $assigned, true ), 'bqb-pill--root' ) . '</div>';
 
 				if ( ! empty( $map[ $root->term_id ] ) ) {
 					$html .= '<div class="bqb-tree-pick__children">';
+					$c     = 0;
 					foreach ( $map[ $root->term_id ] as $child ) {
-						$html .= bqb_pill( $taxonomy, $child, in_array( (int) $child->term_id, $assigned, true ) );
+						$c++;
+						$grands = isset( $map[ $child->term_id ] ) ? $map[ $child->term_id ] : array();
 
-						// Un troisième niveau reste possible, affiché à la suite.
-						foreach ( isset( $map[ $child->term_id ] ) ? $map[ $child->term_id ] : array() as $grand ) {
+						if ( ! $grands ) {
+							$html .= ( $number ? '<span class="bqb-tree-pick__section"><span class="bqb-tree-pick__num">' . $n . '.' . $c . '</span>' : '' ) . bqb_pill( $taxonomy, $child, in_array( (int) $child->term_id, $assigned, true ) ) . ( $number ? '</span>' : '' );
+							continue;
+						}
+
+						// Rubrique et ses éléments, sur une ligne.
+						$html .= '<div class="bqb-tree-pick__row">';
+						$html .= '<span class="bqb-tree-pick__section">' . ( $number ? '<span class="bqb-tree-pick__num">' . $n . '.' . $c . '</span>' : '' ) . bqb_pill( $taxonomy, $child, in_array( (int) $child->term_id, $assigned, true ), 'bqb-pill--section' ) . '</span>';
+						$html .= '<div class="bqb-tree-pick__els">';
+						foreach ( $grands as $grand ) {
 							$html .= bqb_pill( $taxonomy, $grand, in_array( (int) $grand->term_id, $assigned, true ), 'bqb-pill--sub' );
 						}
+						$html .= '</div></div>';
 					}
 					$html .= '</div>';
 				}
@@ -2039,7 +2183,8 @@ function bqb_render_classement_box( $post ) {
 			$html .= '</div>';
 		}
 
-		if ( 'tokens' !== $mode ) {
+		// La structure des collections suit le schéma : elle se modifie dans Arborescence.
+		if ( in_array( $mode, array( 'tree', 'pills' ), true ) && 'bqb_collection' !== $taxonomy ) {
 			$html .= '<div class="bqb-class__add"><button type="button" class="bqb-linkbtn" data-add-open>+ Ajouter ' . esc_html( strtolower( $taxonomies[ $taxonomy ][1] ) ) . '</button>'
 				. '<span class="bqb-class__addform" data-add-form hidden><input type="text" class="bqb-admin__input" placeholder="Nom" data-add-input /><button type="button" class="button" data-add-save>Créer</button></span></div>';
 		}
@@ -2084,8 +2229,51 @@ function bqb_save_classement( $post_id, $post ) {
 			)
 		);
 
+		if ( 'bqb_nature' === $taxonomy ) {
+			continue;
+		}
+
 		wp_set_object_terms( $post_id, $ids, $taxonomy, false );
 	}
+
+	// Nature : choisie à la main, ou déduite de la rubrique la plus précise.
+	$choice = isset( $_POST['bqb_nature_choice'] ) ? sanitize_key( wp_unslash( $_POST['bqb_nature_choice'] ) ) : 'auto';
+	$nature = ( 'auto' === $choice ) ? bqb_guess_nature( $post_id ) : absint( $choice );
+	$nature = ( $nature && get_term( $nature, 'bqb_nature' ) ) ? array( $nature ) : array();
+
+	update_post_meta( $post_id, '_bqb_nature_auto', 'auto' === $choice ? 1 : 0 );
+	wp_set_object_terms( $post_id, $nature, 'bqb_nature', false );
+}
+
+/**
+ * La nature proposée par la rubrique cochée : l'élément le plus profond
+ * en premier (« Articles » sous 1.1 donne « Article »), puis sa rubrique.
+ */
+function bqb_guess_nature( $post_id ) {
+	$terms = wp_get_object_terms( $post_id, 'bqb_collection' );
+
+	if ( ! $terms || is_wp_error( $terms ) ) {
+		return 0;
+	}
+
+	usort(
+		$terms,
+		function ( $a, $b ) {
+			return count( get_ancestors( $b->term_id, 'bqb_collection', 'taxonomy' ) ) - count( get_ancestors( $a->term_id, 'bqb_collection', 'taxonomy' ) );
+		}
+	);
+
+	foreach ( $terms as $term ) {
+		foreach ( array_merge( array( $term->term_id ), get_ancestors( $term->term_id, 'bqb_collection', 'taxonomy' ) ) as $id ) {
+			$slug = get_term_meta( $id, 'bqb_nature', true );
+			$hit  = $slug ? get_term_by( 'slug', $slug, 'bqb_nature' ) : null;
+			if ( $hit ) {
+				return (int) $hit->term_id;
+			}
+		}
+	}
+
+	return 0;
 }
 
 /* -------------------------------------------------------------------------
@@ -2190,7 +2378,7 @@ function bqb_admin_banner( $title, $text ) {
  * 18. Arborescence : l'écran
  * ---------------------------------------------------------------------- */
 
-function bqb_render_arbo_node( $term, $taxonomy, $map ) {
+function bqb_render_arbo_node( $term, $taxonomy, $map, $num = '' ) {
 	$tax      = get_taxonomy( $taxonomy );
 	$short    = bqb_short_name( $taxonomy );
 	$code     = '[bqp_documents ' . $short . '="' . $term->slug . '"]';
@@ -2205,6 +2393,11 @@ function bqb_render_arbo_node( $term, $taxonomy, $map ) {
 
 	if ( $color ) {
 		$html .= '<span class="bqb-node__swatch" style="background:' . esc_attr( $color ) . ';"></span>';
+	}
+
+	// Numérotation du schéma (1, 1.1…) pour les blocs et leurs rubriques.
+	if ( '' !== $num && substr_count( $num, '.' ) < 2 ) {
+		$html .= '<span class="bqb-node__num">' . esc_html( $num ) . '</span>';
 	}
 
 	$html .= '<span class="bqb-node__name" data-name title="Cliquer pour renommer">' . esc_html( $term->name ) . '</span>';
@@ -2236,8 +2429,10 @@ function bqb_render_arbo_node( $term, $taxonomy, $map ) {
 	$html .= '<div class="bqb-node__panel" data-panel hidden></div>';
 	$html .= '<ul class="bqb-arbo__list" data-parent="' . (int) $term->term_id . '">';
 
+	$i = 0;
 	foreach ( $children as $child ) {
-		$html .= bqb_render_arbo_node( $child, $taxonomy, $map );
+		$i++;
+		$html .= bqb_render_arbo_node( $child, $taxonomy, $map, '' !== $num ? $num . '.' . $i : '' );
 	}
 
 	$html .= '</ul></li>';
@@ -2247,7 +2442,7 @@ function bqb_render_arbo_node( $term, $taxonomy, $map ) {
 
 function bqb_render_arbo_page() {
 	$taxonomies = bqb_taxonomies();
-	$order      = array_keys( bqb_picker_config() );
+	$order      = array_keys( $taxonomies );
 	$current    = isset( $_GET['tax'] ) ? sanitize_key( wp_unslash( $_GET['tax'] ) ) : 'bqb_collection'; // phpcs:ignore WordPress.Security.NonceVerification
 
 	if ( ! isset( $taxonomies[ $current ] ) ) {
@@ -2276,8 +2471,10 @@ function bqb_render_arbo_page() {
 	$html .= '</div>';
 
 	$html .= '<ul class="bqb-arbo__list bqb-arbo__root" data-parent="0">';
+	$i     = 0;
 	foreach ( isset( $map[0] ) ? $map[0] : array() as $term ) {
-		$html .= bqb_render_arbo_node( $term, $current, $map );
+		$i++;
+		$html .= bqb_render_arbo_node( $term, $current, $map, 'bqb_collection' === $current ? (string) $i : '' );
 	}
 	$html .= '</ul>';
 
@@ -2343,26 +2540,34 @@ function bqb_render_arbo_panel( $term ) {
 		$html .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Couleur du bloc</span><input type="color" name="couleur" value="' . esc_attr( $color ? $color : '#74041C' ) . '" /></label>';
 	}
 
-	if ( 'bqb_collection' === $taxonomy ) {
-		$natures = (array) get_term_meta( $term->term_id, 'bqb_natures', true );
+	if ( 'bqb_collection' === $taxonomy && $term->parent ) {
 		$vues    = (array) get_term_meta( $term->term_id, 'bqb_vues', true );
-		$map     = bqb_term_children_map( 'bqb_nature' );
+		$natures = get_terms( array( 'taxonomy' => 'bqb_nature', 'hide_empty' => false ) );
+		$current = get_term_meta( $term->term_id, 'bqb_nature', true );
 
-		$html .= '<div class="bqb-panel__field is-wide"><span class="bqb-admin__label">Types de documents proposés dans le bloc</span><div class="bqb-pills">';
-		foreach ( isset( $map[0] ) ? $map[0] : array() as $nature ) {
-			$on    = in_array( (int) $nature->term_id, array_map( 'intval', $natures ), true );
-			$html .= '<label class="bqb-pill' . ( $on ? ' is-on' : '' ) . '"><input type="checkbox" name="natures[]" value="' . (int) $nature->term_id . '"' . checked( $on, true, false ) . ' /><span>' . esc_html( $nature->name ) . '</span></label>';
+		$html .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Nature proposée</span><select name="nature" class="bqb-admin__input"><option value="">Aucune</option>';
+		foreach ( is_wp_error( $natures ) ? array() : $natures as $nature ) {
+			$html .= '<option value="' . esc_attr( $nature->slug ) . '"' . selected( $current, $nature->slug, false ) . '>' . esc_html( $nature->name ) . '</option>';
 		}
-		$html .= '</div><em>Chaque type coché devient un lien sous cette catégorie dans le bloc, par exemple « Articles ».</em></div>';
+		$html .= '</select><em>Donnée automatiquement aux documents rangés ici, par exemple « Article » pour 1.1 › Articles.</em></label>';
 
-		$html .= '<div class="bqb-panel__field is-wide"><span class="bqb-admin__label">Vues proposées dans le bloc</span><div class="bqb-views">';
+		$html .= '<div class="bqb-panel__field is-wide"><span class="bqb-admin__label">Liens de regroupement affichés dans le bloc</span><div class="bqb-views">';
 		foreach ( bqb_views() as $view => $label ) {
 			$on    = in_array( $view, $vues, true );
 			$html .= '<div class="bqb-views__row"><label class="bqb-pill' . ( $on ? ' is-on' : '' ) . '"><input type="checkbox" name="vues[]" value="' . esc_attr( $view ) . '"' . checked( $on, true, false ) . ' /><span>' . esc_html( $label ) . '</span></label>'
-				. ( 'laureats' === $view ? '' : '<input type="text" class="bqb-admin__input" name="vue_' . esc_attr( $view ) . '" value="' . esc_attr( get_term_meta( $term->term_id, 'bqb_vue_' . $view, true ) ) . '" placeholder="Libellé personnalisé, ex. « Par lauréat »" />' )
+				. '<input type="text" class="bqb-admin__input" name="vue_' . esc_attr( $view ) . '" value="' . esc_attr( get_term_meta( $term->term_id, 'bqb_vue_' . $view, true ) ) . '" placeholder="Libellé affiché, ex. « Par lauréat »" />'
 				. '</div>';
 		}
-		$html .= '</div><em>Une vue regroupe les documents de la catégorie, par année ou par auteur par exemple.</em></div>';
+		$html .= '</div><input type="hidden" name="vues_present" value="1" /><em>Comme « Par lauréat » ou « Par année » dans le schéma : ces liens regroupent les documents de la rubrique, sans créer de catégorie.</em></div>';
+	}
+
+	if ( 'bqb_theme' === $taxonomy && $term->parent ) {
+		$filtre = get_term_meta( $term->term_id, 'bqb_filtre', true );
+		$html  .= '<label class="bqb-panel__field"><span class="bqb-admin__label">Sert aussi de filtre</span><select name="filtre" class="bqb-admin__input"><option value="">Non</option>';
+		foreach ( bqb_theme_filters() as $key => $label ) {
+			$html .= '<option value="' . esc_attr( $key ) . '"' . selected( $filtre, $key, false ) . '>' . esc_html( $label ) . '</option>';
+		}
+		$html .= '</select><em>Apparaît dans la liste « Secteur » ou « Pays ou territoire » du catalogue.</em></label>';
 	}
 
 	if ( in_array( $taxonomy, array( 'bqb_personne', 'bqb_organisation' ), true ) ) {
@@ -2488,10 +2693,17 @@ function bqb_ajax_arbo() {
 				}
 			}
 
-			if ( 'bqb_collection' === $taxonomy ) {
-				$natures = isset( $_POST['natures'] ) ? array_values( array_filter( array_map( 'absint', (array) wp_unslash( $_POST['natures'] ) ) ) ) : array();
-				update_term_meta( $id, 'bqb_natures', $natures );
+			if ( 'bqb_collection' === $taxonomy && isset( $_POST['nature'] ) ) {
+				$nature = sanitize_title( wp_unslash( $_POST['nature'] ) );
+				$nature ? update_term_meta( $id, 'bqb_nature', $nature ) : delete_term_meta( $id, 'bqb_nature' );
+			}
 
+			if ( 'bqb_theme' === $taxonomy && isset( $_POST['filtre'] ) ) {
+				$filtre = sanitize_key( wp_unslash( $_POST['filtre'] ) );
+				array_key_exists( $filtre, bqb_theme_filters() ) ? update_term_meta( $id, 'bqb_filtre', $filtre ) : delete_term_meta( $id, 'bqb_filtre' );
+			}
+
+			if ( 'bqb_collection' === $taxonomy && isset( $_POST['vues_present'] ) ) {
 				$vues = isset( $_POST['vues'] ) ? array_values( array_intersect( array_map( 'sanitize_key', (array) wp_unslash( $_POST['vues'] ) ), array_keys( bqb_views() ) ) ) : array();
 				update_term_meta( $id, 'bqb_vues', $vues );
 
@@ -2630,6 +2842,12 @@ function bqb_ajax_gen_count() {
 function bqb_render_settings_page() {
 	$notice = '';
 
+	if ( isset( $_POST['bqb_reset_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqb_reset_nonce'] ) ), 'bqb_reset_tree' ) && current_user_can( 'manage_options' ) ) {
+		bqb_reset_tree();
+		delete_option( 'bqb_notice_v3' );
+		$notice = '<div class="bqb-notice">L\'arborescence du client a été recréée à l\'identique.</div>';
+	}
+
 	if ( isset( $_POST['bqb_settings_nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['bqb_settings_nonce'] ) ), 'bqb_settings' ) && current_user_can( 'manage_options' ) ) {
 		$color = isset( $_POST['bloc5_couleur'] ) ? sanitize_hex_color( wp_unslash( $_POST['bloc5_couleur'] ) ) : '';
 
@@ -2702,9 +2920,27 @@ function bqb_render_settings_page() {
 	$html .= '</section>';
 
 	$html .= '<p><button type="submit" class="button button-primary button-hero">Enregistrer les réglages</button></p>';
+	$html .= '</form>';
+
+	$html .= '<form method="post" class="bqb-card bqb-reset" onsubmit="return window.confirm(\'Recréer l\\\'arborescence du client ? Les collections, thèmes et natures actuels seront remplacés, et les documents devront être reclassés.\');">';
+	$html .= wp_nonce_field( 'bqb_reset_tree', 'bqb_reset_nonce', true, false );
+	$html .= '<h2 class="bqb-card__title">Arborescence du client</h2>';
+	$html .= '<p class="bqb-settings__hint" style="margin:0 0 16px;">Remet les collections (blocs 1 à 4), les thèmes (bloc 5) et les natures exactement comme dans le schéma du client, en effaçant les modifications faites depuis. Les personnes, organisations et documents sont conservés, mais les documents perdent leur classement dans ces trois familles.</p>';
+	$html .= '<button type="submit" class="button">Remettre l\'arborescence du client</button>';
 	$html .= '</form></div>';
 
 	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+add_action( 'admin_notices', 'bqb_notice_v3' );
+function bqb_notice_v3() {
+	$screen = get_current_screen();
+
+	if ( ! get_option( 'bqb_notice_v3' ) || ! $screen || BQB_CPT !== $screen->post_type ) {
+		return;
+	}
+
+	echo '<div class="notice notice-warning"><p><strong>Bibliothèque 3.0 :</strong> l\'arborescence du client a été ajoutée à côté de l\'ancienne, car des documents existent déjà. Reclassez-les, puis supprimez les anciennes catégories dans <a href="' . esc_url( admin_url( 'edit.php?post_type=' . BQB_CPT . '&page=bqb-arbo' ) ) . '">Arborescence</a>, ou repartez de zéro avec <a href="' . esc_url( admin_url( 'edit.php?post_type=' . BQB_CPT . '&page=bqb-reglages' ) ) . '">Réglages › Remettre l\'arborescence du client</a>.</p></div>';
 }
 
 /* =========================================================================
@@ -2766,6 +3002,47 @@ function bqb_term_names( $post_id, $taxonomy, $linked = false, $limit = 0 ) {
 
 		if ( $limit && count( $out ) >= $limit ) {
 			break;
+		}
+	}
+
+	return $out;
+}
+
+/**
+ * Les rubriques d'un document avec leur chemin : « Écrits de
+ * Jean-Michel Quatrepoint › Articles » plutôt que « Articles » seul.
+ */
+function bqb_collection_paths( $post_id ) {
+	$terms = get_the_terms( $post_id, 'bqb_collection' );
+	$out   = array();
+
+	foreach ( ( $terms && ! is_wp_error( $terms ) ) ? $terms : array() as $term ) {
+		$parts = array();
+		foreach ( array_reverse( get_ancestors( $term->term_id, 'bqb_collection', 'taxonomy' ) ) as $id ) {
+			$ancestor = get_term( $id, 'bqb_collection' );
+			// L'espace (bloc) est déjà indiqué par le badge : on part de la rubrique.
+			if ( $ancestor && ! is_wp_error( $ancestor ) && $ancestor->parent ) {
+				$parts[] = '<a href="' . esc_url( bqb_term_url( $ancestor ) ) . '">' . esc_html( $ancestor->name ) . '</a>';
+			}
+		}
+		$parts[] = '<a href="' . esc_url( bqb_term_url( $term ) ) . '">' . esc_html( $term->name ) . '</a>';
+		$out[]   = implode( ' › ', $parts );
+	}
+
+	return $out;
+}
+
+/**
+ * Les thèmes d'un document, séparés comme dans le schéma : thèmes,
+ * secteurs stratégiques, pays et territoires.
+ */
+function bqb_theme_names( $post_id, $kind ) {
+	$terms = get_the_terms( $post_id, 'bqb_theme' );
+	$out   = array();
+
+	foreach ( ( $terms && ! is_wp_error( $terms ) ) ? $terms : array() as $term ) {
+		if ( (string) get_term_meta( $term->term_id, 'bqb_filtre', true ) === $kind ) {
+			$out[] = '<a href="' . esc_url( bqb_term_url( $term ) ) . '">' . esc_html( $term->name ) . '</a>';
 		}
 	}
 
@@ -3121,9 +3398,18 @@ function bqb_render_filter_bar( $criteria, $url_f, $locked, $anchor = '' ) {
 		return isset( $url_f[ $key ] ) ? $url_f[ $key ] : '';
 	};
 
-	$select = function ( $short, $label ) use ( $val ) {
+	$select = function ( $short, $label, $all = 'Tous' ) use ( $val ) {
 		$map = bqb_short_map();
-		return '<label class="bqb-filter"><span>' . esc_html( $label ) . '</span>' . str_replace( 'bqb-admin__input', 'bqb-input', bqb_term_select( $map[ $short ], 'f_' . $short, $val( $short ), 'Tous' ) ) . '</label>';
+		return '<label class="bqb-filter" id="bqb-filtre-' . esc_attr( $short ) . '"><span>' . esc_html( $label ) . '</span>' . str_replace( 'bqb-admin__input', 'bqb-input', bqb_term_select( $map[ $short ], 'f_' . $short, $val( $short ), $all ) ) . '</label>';
+	};
+
+	// Secteurs et pays : les thèmes marqués comme tels, en liste simple.
+	$flagged = function ( $kind, $label ) use ( $val ) {
+		$html = '<label class="bqb-filter" id="bqb-filtre-' . esc_attr( $kind ) . '"><span>' . esc_html( $label ) . '</span><select class="bqb-input" name="f_' . esc_attr( $kind ) . '"><option value="">Tous</option>';
+		foreach ( bqb_filter_terms( $kind ) as $term ) {
+			$html .= '<option value="' . esc_attr( $term->slug ) . '"' . selected( $val( $kind ), $term->slug, false ) . '>' . esc_html( $term->name ) . '</option>';
+		}
+		return $html . '</select></label>';
 	};
 
 	$active = count( array_diff_key( $url_f, array( 'tri' => 1, 'groupe' => 1 ) ) );
@@ -3135,13 +3421,13 @@ function bqb_render_filter_bar( $criteria, $url_f, $locked, $anchor = '' ) {
 	$html .= '<label class="bqb-filter bqb-filter--q"><span>Recherche libre</span><input type="search" class="bqb-input" name="f_q" value="' . esc_attr( $val( 'q' ) ) . '" placeholder="Titre, auteur, mot-clé…" /></label>';
 
 	if ( empty( $locked['collection'] ) ) {
-		$html .= $select( 'collection', 'Collection' );
+		$html .= $select( 'collection', 'Collection / origine', 'Toutes' );
 	}
 
-	$html .= $select( 'nature', 'Type de document' );
+	$html .= $select( 'nature', 'Nature du document', 'Toutes' );
 	$html .= $select( 'theme', 'Thème' );
 
-	$html .= '<label class="bqb-filter"><span>Année</span><select class="bqb-input" name="f_annee"><option value="">Toutes</option>';
+	$html .= '<label class="bqb-filter" id="bqb-filtre-annee"><span>Période</span><select class="bqb-input" name="f_annee"><option value="">Toutes</option>';
 	foreach ( bqb_years() as $year ) {
 		$html .= '<option value="' . (int) $year . '"' . selected( $val( 'annee' ), (string) $year, false ) . '>' . (int) $year . '</option>';
 	}
@@ -3149,13 +3435,12 @@ function bqb_render_filter_bar( $criteria, $url_f, $locked, $anchor = '' ) {
 
 	$html .= '</div>';
 
-	$more_open = $val( 'secteur' ) || $val( 'pays' ) || $val( 'prix' ) || $val( 'organisation' ) || $val( 'personne' );
+	$more_open = $val( 'secteur' ) || $val( 'pays' ) || $val( 'organisation' ) || $val( 'personne' );
 	$html     .= '<details class="bqb-filters__more"' . ( $more_open ? ' open' : '' ) . '><summary>Plus de filtres</summary><div class="bqb-filters__row">';
-	$html     .= $select( 'personne', 'Auteur ou personne' );
-	$html     .= $select( 'organisation', 'Organisation' );
-	$html     .= $select( 'secteur', 'Secteur' );
-	$html     .= $select( 'pays', 'Pays ou territoire' );
-	$html     .= $select( 'prix', 'Prix ou bourse' );
+	$html     .= $flagged( 'secteur', 'Secteur' );
+	$html     .= $flagged( 'pays', 'Pays / territoire' );
+	$html     .= $select( 'personne', 'Auteur / personne' );
+	$html     .= $select( 'organisation', 'Organisation / source', 'Toutes' );
 	$html     .= '</div></details>';
 
 	$html .= '<div class="bqb-filters__foot">';
@@ -3199,36 +3484,92 @@ function bqb_block_link( $url, $label, $count, $show_empty, $class = '' ) {
 	return '<li class="bqb-blink' . ( $class ? ' ' . $class : '' ) . ( $count ? '' : ' is-empty' ) . '"><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . (int) $count . '</span>' : '' ) . '</li>';
 }
 
-function bqb_collection_items( $term, $show_empty, $split = false ) {
+/**
+ * Les liens d'une rubrique, dans l'ordre du schéma : ses liens de
+ * regroupement (« Par lauréat », « Par année »), puis ses éléments
+ * (« Articles », « Chroniques »…).
+ */
+function bqb_collection_items( $term, $show_empty, $map ) {
 	$items = '';
-	$types = '';
-	$slug  = $term->slug;
+	$total = bqb_count( array( 'collection' => array( $term->slug ) ) );
 
 	foreach ( (array) get_term_meta( $term->term_id, 'bqb_vues', true ) as $view ) {
-		if ( 'laureats' === $view ) {
-			$items .= bqb_block_link( bqb_library_link( array( 'f_annuaire' => 'personnes', 'f_role' => 'laureat' ) ), bqb_view_label( $view, $term ), bqb_laureats_count(), $show_empty, 'is-view' );
+		if ( 'laureats' === $view || 'fiches' === $view ) {
+			$args = array( 'f_annuaire' => 'personnes', 'f_role' => 'laureat' );
+			if ( 'fiches' === $view ) {
+				$args['f_groupe'] = 'alpha';
+			}
+			$items .= bqb_block_link( bqb_library_link( $args ), bqb_view_label( $view, $term ), bqb_laureats_count(), $show_empty, 'is-view' );
 			continue;
 		}
 
 		if ( array_key_exists( $view, bqb_views() ) ) {
-			$items .= bqb_block_link( bqb_term_url( $term, array( 'f_groupe' => $view ) ), bqb_view_label( $view, $term ), bqb_count( array( 'collection' => array( $slug ) ) ), $show_empty, 'is-view' );
+			$items .= bqb_block_link( bqb_term_url( $term, array( 'f_groupe' => $view ) ), bqb_view_label( $view, $term ), $total, $show_empty, 'is-view' );
 		}
 	}
 
-	foreach ( (array) get_term_meta( $term->term_id, 'bqb_natures', true ) as $nature_id ) {
-		$nature = get_term( (int) $nature_id, 'bqb_nature' );
-
-		if ( ! $nature || is_wp_error( $nature ) ) {
-			continue;
-		}
-
-		$count  = bqb_count( array( 'collection' => array( $slug ), 'nature' => array( $nature->slug ) ) );
-		$types .= bqb_block_link( bqb_term_url( $term, array( 'f_nature' => $nature->slug ) ), $nature->name, $count, $show_empty );
+	foreach ( isset( $map[ $term->term_id ] ) ? $map[ $term->term_id ] : array() as $element ) {
+		$items .= bqb_block_link( bqb_term_url( $element ), $element->name, bqb_count( array( 'collection' => array( $element->slug ) ) ), $show_empty );
 	}
 
-	// Les vues (regroupements) et les types de documents peuvent être
-	// rendus séparément, pour ne titrer « Types de documents » que les types.
-	return $split ? array( $items, $types ) : $items . $types;
+	return $items;
+}
+
+/**
+ * « Page dédiée : Jean-Michel Quatrepoint » : biographie, principaux
+ * travaux, bibliographie et thématiques associées, tirés de sa fiche.
+ */
+function bqb_render_dedicated( $root, $show_empty ) {
+	$slug   = get_term_meta( $root->term_id, 'bqb_personne_dediee', true );
+	$person = $slug ? get_term_by( 'slug', $slug, 'bqb_personne' ) : null;
+
+	if ( ! $person ) {
+		return '';
+	}
+
+	$docs  = bqb_count( array( 'personne' => array( $person->slug ) ) );
+	$bio   = (string) get_term_meta( $person->term_id, 'bqb_bio', true );
+	$links = array(
+		array( 'Biographie', bqb_term_url( $person ), '' !== trim( $bio ) ),
+		array( 'Principaux travaux', bqb_term_url( $person, array( 'f_groupe' => 'nature' ) ), $docs > 0 ),
+		array( 'Bibliographie', bqb_term_url( $person, array( 'f_groupe' => 'annee' ) ), $docs > 0 ),
+		array( 'Thématiques associées', bqb_term_url( $person, array( 'f_groupe' => 'theme' ) ), $docs > 0 ),
+	);
+
+	$items = '';
+	foreach ( $links as $link ) {
+		if ( $link[1] && ( $link[2] || $show_empty ) ) {
+			$items .= '<li class="bqb-blink' . ( $link[2] ? '' : ' is-empty' ) . '"><a href="' . esc_url( $link[1] ) . '">' . esc_html( $link[0] ) . '</a></li>';
+		}
+	}
+
+	if ( ! $items ) {
+		return '';
+	}
+
+	return '<div class="bqb-sub bqb-sub--dedicated"><h4 class="bqb-sub__title"><a href="' . esc_url( bqb_term_url( $person ) ) . '">Page dédiée : ' . esc_html( $person->name ) . '</a></h4><ul class="bqb-sub__links">' . $items . '</ul></div>';
+}
+
+/**
+ * Nom court d'un sous-thème dans le bloc 5 : « Souveraineté industrielle »
+ * s'affiche « industrielle » entre les parenthèses, comme dans le schéma.
+ */
+function bqb_short_label( $child, $parent ) {
+	$prefix = $parent->name . ' ';
+
+	$label = $child->name;
+
+	if ( 0 === stripos( $label, $prefix ) && strlen( $label ) > strlen( $prefix ) ) {
+		$label = substr( $label, strlen( $prefix ) );
+	}
+
+	// Minuscule entre parenthèses, sauf noms propres (pays) et sigles.
+	$second = function_exists( 'mb_substr' ) ? mb_substr( $label, 1, 1 ) : substr( $label, 1, 1 );
+	if ( 'pays' !== get_term_meta( $child->term_id, 'bqb_filtre', true ) && $second === strtolower( $second ) && function_exists( 'mb_strtolower' ) ) {
+		$label = mb_strtolower( mb_substr( $label, 0, 1 ) ) . mb_substr( $label, 1 );
+	}
+
+	return $label;
 }
 
 function bqb_sc_blocks( $atts ) {
@@ -3251,50 +3592,40 @@ function bqb_sc_blocks( $atts ) {
 	$html .= '<div class="bqb-blocks">';
 	$num   = 0;
 
+	// Blocs 1 à 4 : espace › rubriques numérotées › éléments et regroupements.
 	foreach ( isset( $map[0] ) ? $map[0] : array() as $root ) {
 		$num++;
 		$color = get_term_meta( $root->term_id, 'bqb_couleur', true );
 		$color = $color ? $color : bqb_palette()['bordeaux'];
 		$total = bqb_count( array( 'collection' => array( $root->slug ) ) );
+		$body  = '';
+		$sub   = 0;
 
-		$body = '';
-
-		// Liens portés par l'espace lui-même (ex. « Types de publications »).
-		list( $own_views, $own_types ) = bqb_collection_items( $root, $show_empty, true );
-		if ( $own_views ) {
-			$body .= '<div class="bqb-sub"><ul class="bqb-sub__links">' . $own_views . '</ul></div>';
-		}
-		if ( $own_types ) {
-			$body .= '<div class="bqb-sub"><span class="bqb-sub__label">Types de documents</span><ul class="bqb-sub__links">' . $own_types . '</ul></div>';
-		}
-
-		$sub = 0;
 		foreach ( isset( $map[ $root->term_id ] ) ? $map[ $root->term_id ] : array() as $child ) {
+			// La numérotation suit le schéma, même si une rubrique est masquée.
+			$sub++;
 			$count = bqb_count( array( 'collection' => array( $child->slug ) ) );
+			$items = bqb_collection_items( $child, $show_empty, $map );
 
-			if ( ! $count && ! $show_empty ) {
+			if ( ! $count && ! $items && ! $show_empty ) {
 				continue;
 			}
 
-			$sub++;
-			$items = bqb_collection_items( $child, $show_empty );
 			$body .= '<div class="bqb-sub">';
 			$body .= '<h4 class="bqb-sub__title"><a href="' . esc_url( bqb_term_url( $child ) ) . '"><span class="bqb-sub__num">' . $num . '.' . $sub . '</span>' . esc_html( $child->name ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . $count . '</span>' : '' ) . '</h4>';
-
-			if ( $items ) {
-				$body .= '<ul class="bqb-sub__links">' . $items . '</ul>';
-			}
-
+			$body .= $items ? '<ul class="bqb-sub__links">' . $items . '</ul>' : '';
 			$body .= '</div>';
 		}
+
+		$body .= bqb_render_dedicated( $root, $show_empty );
 
 		$html .= bqb_render_block_card( $num, $root->name, $root->description, $color, ( $total || $show_empty ) ? bqb_term_url( $root ) : '', $body );
 	}
 
-	// Cinquième bloc : les thèmes.
+	// Bloc 5 : 5.1 Thématiques principales, 5.2 Autres filtres.
 	$num++;
 	$themes = bqb_term_children_map( 'bqb_theme' );
-	$body   = '';
+	$list   = '';
 
 	foreach ( isset( $themes[0] ) ? $themes[0] : array() as $root ) {
 		$count = bqb_count( array( 'theme' => array( $root->slug ) ) );
@@ -3303,18 +3634,37 @@ function bqb_sc_blocks( $atts ) {
 			continue;
 		}
 
-		$items = '';
+		$kids = array();
 		foreach ( isset( $themes[ $root->term_id ] ) ? $themes[ $root->term_id ] : array() as $child ) {
-			$items .= bqb_block_link( bqb_term_url( $child ), $child->name, bqb_count( array( 'theme' => array( $child->slug ) ) ), $show_empty );
+			$n = bqb_count( array( 'theme' => array( $child->slug ) ) );
+			if ( $n || $show_empty ) {
+				$kids[] = '<a class="' . ( $n ? '' : 'is-empty' ) . '" href="' . esc_url( bqb_term_url( $child ) ) . '">' . esc_html( bqb_short_label( $child, $root ) ) . '</a>';
+			}
 		}
 
-		$body .= '<div class="bqb-sub"><h4 class="bqb-sub__title"><a href="' . esc_url( bqb_term_url( $root ) ) . '">' . esc_html( $root->name ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . $count . '</span>' : '' ) . '</h4>' . ( $items ? '<ul class="bqb-sub__links is-inline">' . $items . '</ul>' : '' ) . '</div>';
+		$list .= '<li class="bqb-theme"><a class="bqb-theme__name" href="' . esc_url( bqb_term_url( $root ) ) . '">' . esc_html( $root->name ) . '</a>' . ( $count ? ' <span class="bqb-blink__n">' . $count . '</span>' : '' )
+			. ( $kids ? '<span class="bqb-theme__kids">(' . implode( ', ', $kids ) . ')</span>' : '' ) . '</li>';
 	}
 
-	if ( $catalog ) {
-		$body .= '<div class="bqb-sub"><h4 class="bqb-sub__title">Autres filtres</h4><ul class="bqb-sub__links">'
-			. '<li class="bqb-blink is-view"><a href="#bqb-catalogue" data-bqb-more>Secteurs, pays, périodes, types, collections</a></li>'
-			. '</ul></div>';
+	$body = '<div class="bqb-sub bqb-sub--themes"><h4 class="bqb-sub__title"><span><span class="bqb-sub__num">' . $num . '.1</span>Thématiques principales</span></h4>'
+		. ( $list ? '<ul class="bqb-themes">' . $list . '</ul>' : '<p class="bqb-block__soon">Les premiers documents arrivent bientôt.</p>' ) . '</div>';
+
+	$filters = array(
+		array( 'Secteurs', 'f_secteur' ),
+		array( 'Pays / territoires', 'f_pays' ),
+		array( 'Périodes / chronologie', '' ),
+		array( 'Nature du document', 'f_nature' ),
+		array( 'Collection / origine', 'f_collection' ),
+	);
+
+	$links = '';
+	foreach ( $filters as $filter ) {
+		$url    = $filter[1] ? bqb_library_link() : bqb_library_link( array( 'f_groupe' => 'annee' ) );
+		$links .= $url ? '<li class="bqb-blink is-view"><a href="' . esc_url( $url ) . '"' . ( $filter[1] ? ' data-bqb-focus="' . esc_attr( $filter[1] ) . '"' : '' ) . '>' . esc_html( $filter[0] ) . '</a></li>' : '';
+	}
+
+	if ( $links ) {
+		$body .= '<div class="bqb-sub"><h4 class="bqb-sub__title"><span><span class="bqb-sub__num">' . $num . '.2</span>Autres filtres</span></h4><ul class="bqb-sub__links">' . $links . '</ul></div>';
 	}
 
 	$html .= bqb_render_block_card( $num, $settings['bloc5_titre'], $settings['bloc5_texte'], $settings['bloc5_couleur'], '', $body, 'bqb-block--wide' );
@@ -3344,17 +3694,21 @@ function bqb_render_catalog( $atts ) {
 		$orgs    = ( 'organisations' === $annuaire );
 		$choices = $orgs ? bqb_org_types() : bqb_person_roles();
 		$role    = array_key_exists( $role, $choices ) ? $role : '';
-		$title   = $orgs ? 'Organisations et sources' : ( 'laureat' === $role ? 'Les lauréats' : 'Auteurs et personnes' );
+		$title   = $orgs ? 'Organisations / Sources' : ( 'laureat' === $role ? 'Les lauréats' : 'Auteurs / Personnes' );
 
 		$html  = '<header class="bqb-catalog__head"><span class="bqb-catalog__eyebrow">Annuaire</span><h2 class="bqb-catalog__title">' . esc_html( $title ) . '</h2>';
 		$html .= '<a class="bqb-catalog__back" href="' . esc_url( bqb_library_link() ) . '">Voir tous les documents</a></header>';
+
+		$groupe = isset( $_GET['f_groupe'] ) ? sanitize_key( wp_unslash( $_GET['f_groupe'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+		$groupe = in_array( $groupe, array( 'alpha', 'annee' ), true ) ? $groupe : '';
 
 		return $html . bqb_render_people(
 			$orgs,
 			$role,
 			function ( $key ) use ( $annuaire ) {
 				return bqb_library_link( array( 'f_annuaire' => $annuaire, 'f_role' => $key ) );
-			}
+			},
+			$groupe
 		);
 	}
 
@@ -3389,6 +3743,9 @@ function bqb_render_context( $url_f ) {
 		'organisation' => array( 'bqb_organisation', 'Organisation' ),
 		'collection'   => array( 'bqb_collection', 'Collection' ),
 		'theme'        => array( 'bqb_theme', 'Thème' ),
+		'secteur'      => array( 'bqb_theme', 'Secteur' ),
+		'pays'         => array( 'bqb_theme', 'Pays / territoire' ),
+		'nature'       => array( 'bqb_nature', 'Nature du document' ),
 	);
 
 	$term = null;
@@ -3415,8 +3772,7 @@ function bqb_render_context( $url_f ) {
 		$photo = (int) get_term_meta( $term->term_id, 'bqb_photo', true );
 		$roles = array_intersect_key( bqb_person_roles(), array_flip( (array) get_term_meta( $term->term_id, 'bqb_roles', true ) ) );
 		$year  = get_term_meta( $term->term_id, 'bqb_annee_prix', true );
-		$prix  = (int) get_term_meta( $term->term_id, 'bqb_prix_id', true );
-		$prix  = $prix ? get_term( $prix, 'bqb_prix' ) : null;
+		$prix  = get_term_meta( $term->term_id, 'bqb_prix_nom', true );
 		$site  = get_term_meta( $term->term_id, 'bqb_site', true );
 		$bio   = get_term_meta( $term->term_id, 'bqb_bio', true );
 
@@ -3424,8 +3780,8 @@ function bqb_render_context( $url_f ) {
 		$label  = $roles ? implode( ', ', $roles ) : $label;
 		$text   = $bio ? $bio : $text;
 
-		if ( $prix && ! is_wp_error( $prix ) ) {
-			$extra .= '<p class="bqb-context__prize">' . esc_html( $prix->name ) . ( $year ? ' ' . (int) $year : '' ) . '</p>';
+		if ( $prix || $year ) {
+			$extra .= '<p class="bqb-context__prize">' . esc_html( $prix ? $prix : 'Lauréat' ) . ( $year ? ' ' . (int) $year : '' ) . '</p>';
 		}
 		if ( $site ) {
 			$extra .= '<p><a class="bqb-btn bqb-btn--ghost" href="' . esc_url( $site ) . '" target="_blank" rel="noopener">Page personnelle</a></p>';
@@ -3516,10 +3872,10 @@ function bqb_render_lib_nav() {
 
 	// Tout reste sur la page Bibliothèque : ces raccourcis filtrent le catalogue.
 	$links = array(
-		array( bqb_library_link(), 'Tous les documents', 'search' ),
-		array( bqb_library_link( array( 'f_groupe' => 'annee' ) ), 'Chronologie', 'calendar' ),
-		array( bqb_library_link( array( 'f_annuaire' => 'personnes' ) ), 'Auteurs et personnes', 'person' ),
-		array( bqb_library_link( array( 'f_annuaire' => 'organisations' ) ), 'Organisations et sources', 'building' ),
+		array( bqb_library_link(), 'Recherche avancée', 'search', ' data-bqb-focus="f_q"' ),
+		array( bqb_library_link( array( 'f_groupe' => 'annee' ) ), 'Chronologie', 'calendar', '' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'personnes' ) ), 'Auteurs / Personnes', 'person', '' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'organisations' ) ), 'Organisations / Sources', 'building', '' ),
 	);
 
 	$icons = array(
@@ -3537,7 +3893,7 @@ function bqb_render_lib_nav() {
 
 	$html .= '<ul class="bqb-libnav__links">';
 	foreach ( $links as $link ) {
-		$html .= '<li><a href="' . esc_url( $link[0] ) . '"><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" fill="currentColor">' . $icons[ $link[2] ] . '</svg>' . esc_html( $link[1] ) . '</a></li>';
+		$html .= '<li><a href="' . esc_url( $link[0] ) . '"' . $link[3] . '><svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" fill="currentColor">' . $icons[ $link[2] ] . '</svg>' . esc_html( $link[1] ) . '</a></li>';
 	}
 	$html .= '</ul></nav>';
 
@@ -3690,13 +4046,13 @@ function bqb_render_fiche( $post_id, $notice_html ) {
 	$rows = array(
 		'Date'                => $date ? esc_html( $date ) : '',
 		'Auteurs'             => implode( ', ', $authors ),
-		'Type de document'    => implode( ', ', bqb_term_names( $post_id, 'bqb_nature', true ) ),
-		'Collection'          => implode( ', ', bqb_term_names( $post_id, 'bqb_collection', true ) ),
-		'Thèmes'              => implode( ', ', bqb_term_names( $post_id, 'bqb_theme', true ) ),
-		'Secteurs'            => implode( ', ', bqb_term_names( $post_id, 'bqb_secteur', true ) ),
-		'Pays et territoires' => implode( ', ', bqb_term_names( $post_id, 'bqb_pays', true ) ),
+		'Nature du document'  => implode( ', ', bqb_term_names( $post_id, 'bqb_nature', true ) ),
+		'Collection / origine' => implode( '<br />', bqb_collection_paths( $post_id ) ),
+		'Thèmes'              => implode( ', ', bqb_theme_names( $post_id, '' ) ),
+		'Secteurs'            => implode( ', ', bqb_theme_names( $post_id, 'secteur' ) ),
+		'Pays / territoires'  => implode( ', ', bqb_theme_names( $post_id, 'pays' ) ),
 		'Organisations'       => implode( ', ', bqb_term_names( $post_id, 'bqb_organisation', true ) ),
-		'Prix ou bourse'      => implode( ', ', bqb_term_names( $post_id, 'bqb_prix', true ) ) . ( $edition ? ', édition ' . (int) $edition : '' ),
+		'Édition du prix'     => $edition ? (string) (int) $edition : '',
 		'Référence'           => $ref ? esc_html( $ref ) : '',
 		'Droits'              => $droits ? esc_html( $droits ) : '',
 	);
@@ -3847,16 +4203,15 @@ function bqb_render_archive( $term ) {
 		$photo = (int) get_term_meta( $term->term_id, 'bqb_photo', true );
 		$roles = array_intersect_key( bqb_person_roles(), array_flip( (array) get_term_meta( $term->term_id, 'bqb_roles', true ) ) );
 		$year  = get_term_meta( $term->term_id, 'bqb_annee_prix', true );
-		$prix  = (int) get_term_meta( $term->term_id, 'bqb_prix_id', true );
-		$prix  = $prix ? get_term( $prix, 'bqb_prix' ) : null;
+		$prix  = get_term_meta( $term->term_id, 'bqb_prix_nom', true );
 		$site  = get_term_meta( $term->term_id, 'bqb_site', true );
 		$bio   = get_term_meta( $term->term_id, 'bqb_bio', true );
 
 		$visual = $photo ? wp_get_attachment_image( $photo, 'medium', false, array( 'class' => 'bqb-hero__photo', 'alt' => 'Portrait de ' . $term->name ) ) : '';
 		$labels['bqb_personne'] = $roles ? implode( ', ', $roles ) : 'Auteur';
 
-		if ( $prix && ! is_wp_error( $prix ) ) {
-			$extra .= '<p class="bqb-hero__prize">' . esc_html( $prix->name ) . ( $year ? ' ' . (int) $year : '' ) . '</p>';
+		if ( $prix || $year ) {
+			$extra .= '<p class="bqb-hero__prize">' . esc_html( $prix ? $prix : 'Lauréat' ) . ( $year ? ' ' . (int) $year : '' ) . '</p>';
 		}
 		if ( $bio ) {
 			$extra .= '<p class="bqb-hero__text">' . nl2br( esc_html( $bio ) ) . '</p>';
@@ -4134,7 +4489,7 @@ function bqb_front_js() {
 			if (top < 0 || top > window.innerHeight * 0.4) { cat.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 		}
 
-		function load(href, push){
+		function load(href, push, after){
 			if (busy && busy.abort) { busy.abort(); }
 			busy = window.AbortController ? new AbortController() : null;
 			cat.classList.add('is-loading');
@@ -4149,6 +4504,7 @@ function bqb_front_js() {
 					cat.classList.remove('is-loading');
 					cat.removeAttribute('aria-busy');
 					if (push) { history.pushState({ bqb: 1 }, '', href); }
+					if (after) { after(); return; }
 					var title = cat.querySelector('.bqb-catalog__title');
 					if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); }
 					reveal();
@@ -4166,11 +4522,26 @@ function bqb_front_js() {
 			var a = e.target.closest('a[href]');
 			if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || '_blank' === a.target) { return; }
 
-			if (a.hasAttribute('data-bqb-more')) {
+			// « Recherche avancée » et « 5.2 Autres filtres » : ouvrent le bon
+			// filtre du catalogue, au lieu de changer la liste affichée.
+			if (a.hasAttribute('data-bqb-focus')) {
 				e.preventDefault();
-				var more = cat.querySelector('.bqb-filters__more');
-				if (more) { more.open = true; }
-				cat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				var name = a.getAttribute('data-bqb-focus');
+				var focus = function(){
+					var field = cat.querySelector('.bqb-filters [name="' + name + '"]');
+					if (!field) { return false; }
+					var form = field.form;
+					var more = field.closest('.bqb-filters__more');
+					if (more) { more.open = true; }
+					if (form && form.querySelector('[data-bqb-toggle]') && window.matchMedia('(max-width: 640px)').matches) {
+						form.classList.add('is-open');
+						form.querySelector('[data-bqb-toggle]').setAttribute('aria-expanded', 'true');
+					}
+					field.closest('.bqb-filter').scrollIntoView({ behavior: 'smooth', block: 'center' });
+					setTimeout(function(){ field.focus({ preventScroll: true }); }, 350);
+					return true;
+				};
+				if (!focus()) { load(new URL(a.href, location.href).href, true, focus); }
 				return;
 			}
 
@@ -4271,6 +4642,18 @@ function bqb_front_css() {
 	.bqb-block--wide .bqb-block__text{margin:0;}
 	.bqb-block--wide .bqb-block__body{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0 26px;}
 	.bqb-block--wide .bqb-sub{border-bottom:0;}
+	@media (min-width:900px){.bqb-block--wide .bqb-block__body{grid-template-columns:2fr 1fr;gap:0 40px;}}
+	.bqb-themes{margin:0;padding:0;list-style:none;}
+	.bqb-theme{position:relative;padding:5px 0 5px 14px;font-size:.85rem;line-height:1.55;color:var(--bqb-muted);}
+	.bqb-theme::before{content:"";position:absolute;left:2px;top:.85em;width:5px;height:5px;border-radius:50%;background:var(--bqb-block);opacity:.55;}
+	.bqb-lib .bqb-theme__name{font-weight:700;color:var(--bqb-dark) !important;}
+	.bqb-theme .bqb-blink__n{margin-left:4px;}
+	.bqb-theme__kids{margin-left:6px;font-size:.8rem;}
+	.bqb-lib .bqb-theme__kids a{color:#555 !important;}
+	.bqb-lib .bqb-theme a:hover{color:var(--bqb-block) !important;}
+	.bqb-lib .bqb-theme__kids a.is-empty{color:#9a9a9a !important;}
+	.bqb-sub--dedicated{margin:10px 0 0;padding:12px 14px !important;border:1px solid var(--bqb-block-line) !important;border-radius:6px;background:var(--bqb-block-soft);}
+	.bqb-sub--dedicated .bqb-sub__title{font-size:.84rem !important;}
 	.bqb-sub__label{display:block;margin:0 0 6px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-block);}
 	.bqb-block__soon{margin:14px 4px 4px;font-size:.85rem;font-style:italic;color:var(--bqb-muted);}
 	.bqb-sub{padding:12px 4px;border-bottom:1px solid var(--bqb-line);}
@@ -4574,6 +4957,17 @@ body.post-type-bqb_document a:hover{color:#31020C;}
 .bqb-pill--root{font-weight:700;border-color:#CDBDB8;}
 .bqb-pill--sub{font-size:11.5px;padding:4px 10px;}
 .bqb-tree-pick__children{display:flex;flex-wrap:wrap;gap:6px;}
+.bqb-class__block[data-tax="bqb_collection"] .bqb-tree-pick{grid-template-columns:repeat(auto-fit,minmax(420px,1fr));}
+.bqb-tree-pick__root{display:flex;align-items:center;gap:8px;}
+.bqb-node__num{flex:0 0 auto;min-width:26px;font-size:12px;font-weight:700;color:#74041C;font-variant-numeric:tabular-nums;}
+.bqb-tree-pick__num{display:inline-block;min-width:24px;font-size:11px;font-weight:700;color:#74041C;font-variant-numeric:tabular-nums;}
+.bqb-tree-pick__section{display:inline-flex;align-items:center;gap:4px;}
+.bqb-tree-pick__children > .bqb-tree-pick__section{flex-basis:100%;padding:5px 0;border-top:1px dashed #EDE6E3;}
+.bqb-tree-pick__row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;flex-basis:100%;padding:7px 0;border-top:1px dashed #EDE6E3;}
+.bqb-tree-pick__row .bqb-tree-pick__section{flex-basis:100%;}
+.bqb-tree-pick__els{display:flex;flex-wrap:wrap;gap:6px;flex-basis:100%;padding-left:28px;}
+.bqb-pill--section{font-weight:600;}
+.bqb-class__select{max-width:420px;}
 .bqb-tokens__list{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px;padding:0;list-style:none;}
 .bqb-tokens__list:empty{display:none;}
 .bqb-token{display:inline-flex;align-items:center;gap:6px;margin:0;padding:5px 6px 5px 12px;border-radius:999px;background:#74041C;color:#fff;font-size:12.5px;font-weight:500;}
@@ -5004,7 +5398,6 @@ function bqb_admin_js_v2() {
 							else { data[k] = v; }
 						});
 						Object.keys(arrays).forEach(function(k){ data[k] = arrays[k]; });
-						if (form.querySelector('[name="natures[]"]') && !arrays.natures) { data.natures = []; data['natures_empty'] = 1; }
 						if (form.querySelector('[name="vues[]"]') && !arrays.vues) { data.vues = []; }
 
 						var out = panel.querySelector('[data-panel-msg]');
@@ -5101,7 +5494,7 @@ function bqb_admin_js_v2() {
 		var count = document.querySelector('[data-gen-count]');
 		var btn   = document.querySelector('[data-gen-copy]');
 		var timer = null;
-		var taxKeys = ['collection', 'nature', 'theme', 'personne', 'organisation', 'secteur', 'pays', 'prix', 'motcle'];
+		var taxKeys = ['collection', 'nature', 'theme', 'personne', 'organisation', 'motcle'];
 
 		function build(){
 			var parts = ['bqp_documents'];
