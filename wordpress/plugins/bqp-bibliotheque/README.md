@@ -1,6 +1,6 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.0.1.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.1.0.
 
 Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
 
@@ -113,7 +113,14 @@ Au premier passage dans l'administration : s'il n'y a encore aucun document, l'a
 
 ### `[bqp_documents]`
 
-Liste de documents. Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs : l'un ET l'autre.
+Liste de documents, en **cartes** par défaut : nature et année, titre, auteurs, résumé court, emplacement numéroté (« 1.1 › Articles ») et « Voir la fiche ». Toute la carte est cliquable.
+
+- **6 documents**, puis un bouton **« Afficher plus de documents »** juste en dessous, qui ajoute les suivants sans recharger la page (sans JavaScript, il ouvre la page suivante)
+- quand la liste porte sur **une seule collection ou un seul thème** qui a des sous-catégories, des **onglets** apparaissent : « Tout », puis les rubriques numérotées avec leur nombre de documents ; une rubrique choisie affiche ses éléments sur une seconde ligne. La liste se met à jour sur place, et le bouton retour du navigateur fonctionne
+
+Exemple : `[bqp_documents collection="fonds-jean-michel-quatrepoint"]` donne les onglets Tout (22), 1.1 Écrits de Jean-Michel Quatrepoint (12), 1.2 Documents de son fonds documentaire (10), puis Livres et ouvrages, Articles, Chroniques… sous 1.1.
+
+Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs : l'un ET l'autre. Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs : l'un ET l'autre.
 
 | Attribut | Valeurs |
 |---|---|
@@ -122,11 +129,13 @@ Liste de documents. Plusieurs valeurs dans un même attribut : l'une OU l'autre.
 | `acces` | `public`, `adherents`, `partenaires`, `sur-place` |
 | `groupe` | `annee`, `personne`, `theme`, `organisation`, `nature`, `collection` |
 | `tri` | `recent` (défaut), `ancien`, `titre` |
-| `nombre` | nombre de documents par page |
+| `nombre` | documents affichés avant « Afficher plus » (6 par défaut en cartes) |
+| `affichage` | `cartes` (défaut) ou `liste` |
+| `sousfiltres` | `non` pour masquer les onglets de sous-catégories |
 | `filtres` | `oui` pour afficher la barre de filtres |
 | `titre` | titre au-dessus de la liste |
 | `vide` | message si aucun document |
-| `pagination` | `non` pour la masquer |
+| `pagination` | `non` pour masquer « Afficher plus » |
 
 Exemples :
 
@@ -146,6 +155,23 @@ La page Bibliothèque complète : recherche, 5 blocs, catalogue et annuaire.
 | `navigation` | `non` pour masquer la recherche et les raccourcis |
 | `catalogue` | `non` pour n'afficher que les blocs (par exemple sur l'accueil) ; leurs liens mènent alors à la page Bibliothèque |
 | `titre_catalogue` | titre du catalogue, « Tous les documents » par défaut |
+
+### `[bqp_vitrine]`
+
+Pour l'accueil : la bibliothèque mise en avant, sans surcharger la page.
+
+- en-tête (« Bibliothèque numérique », titre, texte) et bouton « Explorer la bibliothèque »
+- onglets : **Nouveautés**, puis les quatre blocs numérotés (ou les cinq thématiques)
+- **3 documents** par onglet, en cartes « En savoir plus »
+- sous chaque onglet, la description du bloc et **« En savoir plus sur « … » »** vers la page Bibliothèque filtrée
+- changement d'onglet instantané (tout est déjà dans la page), navigation au clavier avec les flèches ; les onglets sans document sont masqués
+
+| Attribut | Valeurs |
+|---|---|
+| `nombre` | documents par onglet, de 1 à 6 (3 par défaut) |
+| `onglets` | `collections` (défaut) ou `themes` |
+| `titre`, `texte`, `bouton` | textes de l'en-tête ; vide pour les masquer |
+| `nouveautes` | `non` pour retirer l'onglet Nouveautés |
 
 ### `[bqp_personnes]`
 
@@ -185,6 +211,7 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 
 ## Historique
 
+- **3.1.0** : listes en cartes, « Afficher plus » à la place de la pagination, onglets de sous-catégories, shortcode `[bqp_vitrine]` pour l'accueil, nouvelles options dans le Générateur
 - **3.0.1** : le bouton « Rechercher et filtrer », prévu pour le mobile, n'apparaît plus sur ordinateur (le thème Hello forçait son affichage) ; intertitres de la notice aux couleurs du site ; taille des fichiers arrondie (« 180 Ko »)
 - **3.0.0** : arborescence du client à l'identique, 6 familles
 - **2.1.0** : une seule page Bibliothèque
@@ -202,4 +229,5 @@ Dans un WordPress 6.8 réel avec le thème Hello Elementor et les quatre plugins
 - Réglages : affichage des liens vides activé puis visible sur le site ; détection automatique de la page Bibliothèque
 - Page unique (2.1) : lien de bloc, filtre par liste, retrait d'une pastille, annuaire, lauréats, fiche personne, recherche, bouton retour, tous sans rechargement ; redirections 301 des anciennes adresses, filtres conservés ; exclusion des sitemaps ; filtres repliables sur mobile, sans débordement horizontal
 - Arborescence du client (3.0) : migration depuis la 2.1 vérifiée en base (54 collections, 51 thèmes, 22 natures, anciennes familles supprimées) ; blocs identiques au schéma, numérotation conservée quand des rubriques sont masquées ; nature automatique puis manuelle ; page dédiée, fiche par lauréat, liens 5.2 qui ouvrent le bon filtre ; fiche document avec Collection / origine, Thèmes, Secteurs, Pays séparés
+- Listes et vitrine (3.1) : 6 cartes puis « Afficher plus » (6, 12… sur 22, sans rechargement), onglets 1.1 et 1.2 puis éléments, bouton retour, vitrine avec 5 onglets et « En savoir plus », catalogue en cartes, mode liste, vue groupée, mobile sans débordement
 - Front : toutes les pages en HTTP 200, aucune erreur PHP ni JavaScript, liens du plugin en bordeaux malgré le rose du thème

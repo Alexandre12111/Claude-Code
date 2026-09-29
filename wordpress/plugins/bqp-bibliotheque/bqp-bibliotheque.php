@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       BQP Bibliothèque
  * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents classés selon l'arborescence du client, page Bibliothèque unique, shortcodes et fiches.
- * Version:           3.0.1
+ * Version:           3.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -21,7 +21,7 @@
  *
  * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
  *
- * Version : 3.0.1
+ * Version : 3.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '3.0.1' );
+	define( 'BQB_VERSION', '3.1.0' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -2783,7 +2783,9 @@ function bqb_render_generator_page() {
 	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Titre au-dessus</span><input type="text" class="bqb-admin__input" data-gen="titre" placeholder="Facultatif" /></label>';
 	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Regrouper</span><select class="bqb-admin__input" data-gen="groupe"><option value="">Non, liste simple</option><option value="annee">Par année</option><option value="personne">Par auteur</option><option value="theme">Par thème</option><option value="organisation">Par organisation</option><option value="nature">Par type de document</option><option value="collection">Par collection</option></select></label>';
 	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Ordre</span><select class="bqb-admin__input" data-gen="tri"><option value="">Plus récents d\'abord</option><option value="ancien">Plus anciens d\'abord</option><option value="titre">Alphabétique</option></select></label>';
-	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Documents par page</span><input type="number" min="1" max="100" class="bqb-admin__input" data-gen="nombre" placeholder="' . (int) bqb_settings()['par_page'] . '" /></label>';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Présentation</span><select class="bqb-admin__input" data-gen="affichage"><option value="">Cartes (recommandé)</option><option value="liste">Liste compacte</option></select></label>';
+	$html .= '<label class="bqb-gen__field"><span class="bqb-admin__label">Documents affichés avant « Afficher plus »</span><input type="number" min="1" max="100" class="bqb-admin__input" data-gen="nombre" placeholder="6" /></label>';
+	$html .= '<label class="bqb-gen__check"><input type="checkbox" data-gen="sousfiltres" value="non" /> Masquer les onglets de sous-catégories</label>';
 	$html .= '<label class="bqb-gen__check"><input type="checkbox" data-gen="filtres" value="oui" /> Afficher la barre de recherche et de filtres</label>';
 	$html .= '</div>';
 	$html .= '</form>';
@@ -2800,7 +2802,8 @@ function bqb_render_generator_page() {
 	$html .= '<span class="bqb-admin__label">Les autres shortcodes</span>';
 	$codes = array(
 		'[bqp_bibliotheque]'                  => 'La page Bibliothèque complète : recherche, cinq blocs, catalogue filtré et annuaire. À coller une seule fois.',
-		'[bqp_bibliotheque catalogue="non"]'  => 'Les cinq blocs seuls, par exemple sur l\'accueil : leurs liens mènent à la page Bibliothèque.',
+		'[bqp_vitrine]'                       => 'Pour l\'accueil : trois documents par onglet (Nouveautés, puis les quatre blocs), avec « En savoir plus ». Options : nombre="2", onglets="themes", titre="…", texte="…".',
+		'[bqp_bibliotheque catalogue="non"]'  => 'Les cinq blocs seuls : leurs liens mènent à la page Bibliothèque.',
 		'[bqp_documents nombre="6" pagination="non"]' => 'Les six derniers documents, pour l\'accueil ou une actualité.',
 		'[bqp_personnes role="laureat"]'      => 'Les lauréats, groupés par année du prix.',
 	);
@@ -3139,6 +3142,7 @@ function bqb_register_shortcodes() {
 	add_shortcode( 'bqp_bibliotheque', 'bqb_sc_blocks' );
 	add_shortcode( 'bqp_personnes', 'bqb_sc_personnes' );
 	add_shortcode( 'bqp_document_fiche', 'bqb_sc_fiche' );
+	add_shortcode( 'bqp_vitrine', 'bqb_sc_vitrine' );
 }
 
 function bqb_sc_documents( $atts ) {
@@ -3154,12 +3158,21 @@ function bqb_sc_documents( $atts ) {
 			'filtres'    => 'non',
 			'titre'      => '',
 			'vide'       => 'Aucun document ne correspond pour le moment.',
-			'pagination' => 'oui',
-			'ancre'      => '',
+			'pagination'  => 'oui',
+			'ancre'       => '',
+			'affichage'   => 'cartes',
+			'sousfiltres' => 'oui',
 		)
 	);
 
-	return bqb_render_documents( shortcode_atts( $defaults, $atts, 'bqp_documents' ) );
+	$atts = shortcode_atts( $defaults, $atts, 'bqp_documents' );
+
+	// En cartes, 6 par défaut : deux rangées, puis « Afficher plus ».
+	if ( '' === $atts['nombre'] && 'liste' !== strtolower( $atts['affichage'] ) ) {
+		$atts['nombre'] = '6';
+	}
+
+	return bqb_render_documents( $atts );
 }
 
 /**
@@ -3204,6 +3217,8 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	$listens = ( 1 === $instance );
 	$url_f   = $listens ? bqb_url_filters() : array();
 	$groups  = array( 'annee', 'personne', 'theme', 'organisation', 'nature', 'collection' );
+	$cards   = ( 'liste' !== strtolower( isset( $atts['affichage'] ) ? (string) $atts['affichage'] : '' ) );
+	$list_id = 'bqb-liste-' . $instance;
 
 	$criteria = array();
 	foreach ( array_keys( bqb_short_map() ) as $short ) {
@@ -3239,35 +3254,36 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	$query = new WP_Query( $args );
 
 	wp_enqueue_style( 'bqb-front' );
+	wp_enqueue_script( 'bqb-front' );
 
-	$anchor = ( $listens && ! empty( $atts['ancre'] ) ) ? '#' . sanitize_html_class( $atts['ancre'] ) : '';
+	// Ancre : celle du catalogue, sinon celle de la liste elle-même.
+	$anchor = $listens ? '#' . sanitize_html_class( ! empty( $atts['ancre'] ) ? $atts['ancre'] : $list_id ) : '';
 
-	$html = '<section class="bqb-docs">';
+	$html = '<section class="bqb-docs' . ( $cards ? ' is-cards' : '' ) . '" id="' . esc_attr( $list_id ) . '" data-bqb-list="' . (int) $instance . '">';
 
 	if ( '' !== trim( $atts['titre'] ) ) {
 		$html .= '<h2 class="bqb-docs__title">' . esc_html( $atts['titre'] ) . '</h2>';
+	}
+
+	// Onglets des sous-catégories, pour filtrer sans quitter la liste.
+	$has_tabs = false;
+	if ( $listens && 'non' !== strtolower( isset( $atts['sousfiltres'] ) ? (string) $atts['sousfiltres'] : 'oui' ) ) {
+		$tabs     = bqb_render_subtabs( $criteria, $url_f, $anchor );
+		$has_tabs = ( '' !== $tabs );
+		$html    .= $tabs;
 	}
 
 	if ( 'oui' === strtolower( $atts['filtres'] ) ) {
 		$html .= bqb_render_filter_bar( $criteria, $url_f, $locked + array_filter( array_intersect_key( $atts, bqb_short_map() ) ), $anchor );
 	}
 
-	if ( $url_f ) {
-		$html .= bqb_render_active_filters( $url_f, $anchor );
+	// Les pastilles « filtres actifs » font doublon avec les onglets.
+	$chips = $has_tabs ? array_diff_key( $url_f, array( 'collection' => 1, 'theme' => 1 ) ) : $url_f;
+	if ( $chips ) {
+		$html .= bqb_render_active_filters( $chips, $anchor );
 	}
 
 	$total = (int) $query->found_posts;
-
-	if ( $total ) {
-		$html .= '<p class="bqb-docs__count">' . sprintf( _n( '%s document', '%s documents', $total ), number_format_i18n( $total ) );
-
-		if ( $groupe ) {
-			$names  = array( 'annee' => 'par année', 'personne' => 'par auteur', 'theme' => 'par thème', 'organisation' => 'par organisation', 'nature' => 'par type', 'collection' => 'par collection' );
-			$html  .= ', regroupés ' . esc_html( $names[ $groupe ] );
-		}
-
-		$html .= '</p>';
-	}
 
 	if ( ! $query->have_posts() ) {
 		$html .= '<p class="bqb-docs__empty">' . esc_html( $atts['vide'] ) . '</p></section>';
@@ -3275,26 +3291,34 @@ function bqb_render_documents( $atts, $locked = array() ) {
 		return $html;
 	}
 
-	$ids = wp_list_pluck( $query->posts, 'ID' );
+	$ids   = wp_list_pluck( $query->posts, 'ID' );
+	$shown = min( $total, ( $paged - 1 ) * $per_page + count( $ids ) );
+
+	$html .= '<p class="bqb-docs__count">' . sprintf( _n( '%s document', '%s documents', $total ), number_format_i18n( $total ) );
+	if ( $groupe ) {
+		$names  = array( 'annee' => 'par année', 'personne' => 'par auteur', 'theme' => 'par thème', 'organisation' => 'par organisation', 'nature' => 'par type', 'collection' => 'par collection' );
+		$html  .= ', regroupés ' . esc_html( $names[ $groupe ] );
+	}
+	$html .= '</p>';
 
 	if ( $groupe ) {
-		$html .= bqb_render_grouped( $ids, $groupe, $criteria['tri'] );
+		$html .= bqb_render_grouped( $ids, $groupe, $criteria['tri'], $cards );
 	} else {
-		$html .= '<div class="bqb-docs__list">';
+		$html .= '<div class="' . ( $cards ? 'bqb-grid' : 'bqb-docs__list' ) . '" data-bqb-items>';
 		foreach ( $ids as $id ) {
-			$html .= bqb_render_doc_row( $id );
+			$html .= $cards ? bqb_render_doc_card( $id ) : bqb_render_doc_row( $id );
 		}
 		$html .= '</div>';
 	}
 
-	if ( 'oui' === strtolower( $atts['pagination'] ) && $query->max_num_pages > 1 && $listens ) {
-		$html .= '<nav class="bqb-pages" aria-label="Pages de résultats">';
-		for ( $i = 1; $i <= $query->max_num_pages; $i++ ) {
-			$html .= ( $i === $paged )
-				? '<span class="bqb-pages__item is-on" aria-current="page">' . $i . '</span>'
-				: '<a class="bqb-pages__item" href="' . esc_url( add_query_arg( 'pg', $i ) . $anchor ) . '">' . $i . '</a>';
-		}
-		$html .= '</nav>';
+	if ( 'oui' === strtolower( $atts['pagination'] ) && $query->max_num_pages > $paged && $listens ) {
+		// « Afficher plus » juste sous les résultats, plutôt qu'une pagination
+		// en bas d'une longue page. Sans JavaScript, le lien ouvre la page suivante.
+		$left  = $total - $shown;
+		$html .= '<nav class="bqb-more" aria-label="Suite des résultats">'
+			. '<a class="bqb-btn bqb-btn--ghost" href="' . esc_url( add_query_arg( 'pg', $paged + 1 ) . $anchor ) . '" data-bqb-more>Afficher plus de documents <span class="bqb-btn__meta">' . sprintf( _n( '%s restant', '%s restants', $left ), number_format_i18n( $left ) ) . '</span></a>'
+			. '<span class="bqb-more__status">' . sprintf( '%1$s sur %2$s', number_format_i18n( $shown ), number_format_i18n( $total ) ) . '</span>'
+			. '</nav>';
 	}
 
 	$html .= '</section>';
@@ -3303,7 +3327,223 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	return $html;
 }
 
-function bqb_render_grouped( $ids, $groupe, $tri ) {
+/**
+ * Numéro du schéma d'une collection : « 2 » pour un bloc, « 2.3 » pour une
+ * rubrique. Vide au-delà.
+ */
+function bqb_term_number( $term ) {
+	if ( 'bqb_collection' !== $term->taxonomy ) {
+		return '';
+	}
+
+	$map   = bqb_term_children_map( 'bqb_collection' );
+	$chain = array_reverse( get_ancestors( $term->term_id, 'bqb_collection', 'taxonomy' ) );
+	$chain[] = $term->term_id;
+
+	if ( count( $chain ) > 2 ) {
+		return '';
+	}
+
+	$parts  = array();
+	$parent = 0;
+	foreach ( $chain as $id ) {
+		$pos = 0;
+		foreach ( isset( $map[ $parent ] ) ? $map[ $parent ] : array() as $i => $sibling ) {
+			if ( (int) $sibling->term_id === (int) $id ) {
+				$pos = $i + 1;
+				break;
+			}
+		}
+		$parts[] = $pos;
+		$parent  = (int) $id;
+	}
+
+	return implode( '.', $parts );
+}
+
+/**
+ * Onglets des sous-catégories quand une liste porte sur une seule
+ * collection ou un seul thème : « Tout », puis ses rubriques ; une rubrique
+ * choisie affiche ses éléments sur une seconde ligne.
+ */
+function bqb_render_subtabs( $criteria, $url_f, $anchor ) {
+	foreach ( array( 'collection' => 'bqb_collection', 'theme' => 'bqb_theme' ) as $short => $taxonomy ) {
+		if ( empty( $criteria[ $short ] ) || 1 !== count( $criteria[ $short ] ) ) {
+			continue;
+		}
+
+		$base = get_term_by( 'slug', $criteria[ $short ][0], $taxonomy );
+		$map  = bqb_term_children_map( $taxonomy );
+
+		if ( ! $base || empty( $map[ $base->term_id ] ) ) {
+			continue;
+		}
+
+		// Le reste des critères de la liste, pour des compteurs justes.
+		$rest = array_diff_key( $criteria, array( $short => 1, 'and' => 1, 'tri' => 1 ) );
+		$rest = array_filter( $rest );
+
+		$count = function ( $term ) use ( $rest, $short ) {
+			return bqb_count( array_merge( $rest, array( $short => array( $term->slug ) ) ) );
+		};
+
+		// Onglet actif : l'enfant choisi, ou le parent de l'élément choisi.
+		$current = isset( $url_f[ $short ] ) ? get_term_by( 'slug', $url_f[ $short ], $taxonomy ) : null;
+		$level1  = null;
+		$level2  = null;
+
+		if ( $current && (int) $current->parent === (int) $base->term_id ) {
+			$level1 = $current;
+		} elseif ( $current && $current->parent ) {
+			$parent = get_term( $current->parent, $taxonomy );
+			if ( $parent && ! is_wp_error( $parent ) && (int) $parent->parent === (int) $base->term_id ) {
+				$level1 = $parent;
+				$level2 = $current;
+			}
+		}
+
+		$link = function ( $slug ) use ( $short, $anchor ) {
+			$url = remove_query_arg( array( 'f_' . $short, 'pg' ) );
+			return ( $slug ? add_query_arg( 'f_' . $short, rawurlencode( $slug ), $url ) : $url ) . $anchor;
+		};
+
+		$show_empty = (bool) bqb_settings()['afficher_vides'];
+		$color      = '';
+		if ( 'bqb_collection' === $taxonomy ) {
+			$color = bqb_root_color( $base->term_id );
+		}
+
+		$html  = '<nav class="bqb-tabs" aria-label="Sous-catégories"' . ( $color ? ' style="--bqb-accent:' . esc_attr( $color ) . ';"' : '' ) . '>';
+		$html .= '<div class="bqb-tabs__row">';
+		$html .= '<a class="bqb-tab' . ( $level1 ? '' : ' is-on' ) . '" href="' . esc_url( $link( '' ) ) . '" data-bqb-refresh' . ( $level1 ? '' : ' aria-current="true"' ) . '>Tout <span>' . (int) $count( $base ) . '</span></a>';
+
+		foreach ( $map[ $base->term_id ] as $child ) {
+			$n = $count( $child );
+			if ( ! $n && ! $show_empty ) {
+				continue;
+			}
+			$on     = $level1 && (int) $level1->term_id === (int) $child->term_id;
+			$number = bqb_term_number( $child );
+			$html  .= '<a class="bqb-tab' . ( $on ? ' is-on' : '' ) . '" href="' . esc_url( $link( $child->slug ) ) . '" data-bqb-refresh' . ( $on ? ' aria-current="true"' : '' ) . '>'
+				. ( $number ? '<em>' . esc_html( $number ) . '</em>' : '' ) . esc_html( $child->name ) . ' <span>' . (int) $n . '</span></a>';
+		}
+
+		$html .= '</div>';
+
+		if ( $level1 && ! empty( $map[ $level1->term_id ] ) ) {
+			$html .= '<div class="bqb-tabs__sub">';
+			$html .= '<a class="bqb-subtab' . ( $level2 ? '' : ' is-on' ) . '" href="' . esc_url( $link( $level1->slug ) ) . '" data-bqb-refresh>Tous</a>';
+			foreach ( $map[ $level1->term_id ] as $element ) {
+				$n = $count( $element );
+				if ( ! $n && ! $show_empty ) {
+					continue;
+				}
+				$on    = $level2 && (int) $level2->term_id === (int) $element->term_id;
+				$html .= '<a class="bqb-subtab' . ( $on ? ' is-on' : '' ) . '" href="' . esc_url( $link( $element->slug ) ) . '" data-bqb-refresh>' . esc_html( $element->name ) . ' <span>' . (int) $n . '</span></a>';
+			}
+			$html .= '</div>';
+		}
+
+		return $html . '</nav>';
+	}
+
+	return '';
+}
+
+/**
+ * Couleur du bloc (espace de premier niveau) d'une collection.
+ */
+function bqb_root_color( $term_id ) {
+	static $cache = array();
+
+	if ( isset( $cache[ $term_id ] ) ) {
+		return $cache[ $term_id ];
+	}
+
+	$chain = get_ancestors( (int) $term_id, 'bqb_collection', 'taxonomy' );
+	$root  = $chain ? end( $chain ) : (int) $term_id;
+	$color = (string) get_term_meta( $root, 'bqb_couleur', true );
+
+	$cache[ $term_id ] = $color ? $color : bqb_palette()['bordeaux'];
+
+	return $cache[ $term_id ];
+}
+
+/**
+ * Une carte document : nature et année, titre, auteurs, résumé court, et
+ * un seul appel à l'action. Toute la carte mène à la fiche.
+ */
+function bqb_render_doc_card( $post_id, $more = 'Voir la fiche' ) {
+	$collections = get_the_terms( $post_id, 'bqb_collection' );
+	$collection  = ( $collections && ! is_wp_error( $collections ) ) ? $collections[0] : null;
+	$color       = $collection ? bqb_root_color( $collection->term_id ) : bqb_palette()['bordeaux'];
+	$natures     = bqb_term_names( $post_id, 'bqb_nature', false, 1 );
+	$authors     = bqb_term_names( $post_id, 'bqb_personne', false, 2 );
+	$orgs        = $authors ? array() : bqb_term_names( $post_id, 'bqb_organisation', false, 1 );
+	$year        = get_post_meta( $post_id, '_bqb_annee', true );
+	$file        = (int) get_post_meta( $post_id, '_bqb_fichier', true );
+	$link        = (string) get_post_meta( $post_id, '_bqb_lien', true );
+	$acces       = get_post_meta( $post_id, '_bqb_acces', true );
+	$url         = get_permalink( $post_id );
+	$excerpt     = wp_strip_all_tags( get_post_field( 'post_excerpt', $post_id, 'raw' ) );
+
+	// Format : PDF, vidéo ou source en ligne, repéré d'un coup d'œil.
+	$format = '';
+	if ( $file && bqb_is_public( $post_id ) ) {
+		$format = strtoupper( pathinfo( (string) get_attached_file( $file ), PATHINFO_EXTENSION ) );
+	} elseif ( $link ) {
+		$format = bqb_is_video( $link ) ? 'Vidéo' : 'En ligne';
+	}
+
+	// Emplacement court et numéroté, comme dans le schéma : « 1.1 › Articles »,
+	// « 4.4 Tribunes invitées ».
+	$place = '';
+	if ( $collection ) {
+		$number = bqb_term_number( $collection );
+		if ( $number ) {
+			$place = $number . ' ' . $collection->name;
+		} else {
+			$parent = $collection->parent ? get_term( $collection->parent, 'bqb_collection' ) : null;
+			$number = ( $parent && ! is_wp_error( $parent ) ) ? bqb_term_number( $parent ) : '';
+			$place  = ( $number ? $number . ' › ' : '' ) . $collection->name;
+		}
+	}
+
+	$html  = '<article class="bqb-dcard' . ( has_post_thumbnail( $post_id ) ? ' has-cover' : '' ) . '" style="--bqb-accent:' . esc_attr( $color ) . ';">';
+	$html .= '<div class="bqb-dcard__top">';
+	$html .= '<span class="bqb-dcard__kind">' . ( $natures ? $natures[0] : 'Document' ) . ( $year ? '<span class="bqb-dcard__year">' . (int) $year . '</span>' : '' ) . '</span>';
+	$html .= '<span class="bqb-dcard__flags">';
+	if ( $acces && 'public' !== $acces ) {
+		$html .= bqb_access_badge( $post_id );
+	}
+	if ( $format ) {
+		$html .= '<span class="bqb-dcard__format">' . esc_html( $format ) . '</span>';
+	}
+	$html .= '</span></div>';
+
+	$html .= '<div class="bqb-dcard__body">';
+	if ( has_post_thumbnail( $post_id ) ) {
+		$html .= '<span class="bqb-dcard__cover" aria-hidden="true">' . get_the_post_thumbnail( $post_id, 'thumbnail', array( 'alt' => '' ) ) . '</span>';
+	}
+	$html .= '<h3 class="bqb-dcard__title"><a href="' . esc_url( $url ) . '">' . esc_html( get_the_title( $post_id ) ) . '</a></h3>';
+	if ( $authors || $orgs ) {
+		$html .= '<p class="bqb-dcard__by">' . implode( ', ', $authors ? $authors : $orgs ) . '</p>';
+	}
+	if ( $excerpt ) {
+		$html .= '<p class="bqb-dcard__excerpt">' . esc_html( $excerpt ) . '</p>';
+	}
+	$html .= '</div>';
+
+	$html .= '<div class="bqb-dcard__foot">';
+	$html .= '<span class="bqb-dcard__place">' . esc_html( $place ) . '</span>';
+	$html .= '<span class="bqb-dcard__more" aria-hidden="true">' . esc_html( $more ) . ' <span>→</span></span>';
+	$html .= '</div>';
+	$html .= '</article>';
+
+	return $html;
+}
+
+function bqb_render_grouped( $ids, $groupe, $tri, $cards = false ) {
 	$buckets = array();
 	$other   = 'annee' === $groupe ? 'Sans date' : 'Non renseigné';
 
@@ -3351,9 +3591,9 @@ function bqb_render_grouped( $ids, $groupe, $tri ) {
 
 	$html = '<div class="bqb-groups">';
 	foreach ( $keys as $key ) {
-		$html .= '<div class="bqb-group"><h3 class="bqb-group__title">' . esc_html( $key ) . ' <span>' . count( $buckets[ $key ] ) . '</span></h3><div class="bqb-docs__list">';
+		$html .= '<div class="bqb-group"><h3 class="bqb-group__title">' . esc_html( $key ) . ' <span>' . count( $buckets[ $key ] ) . '</span></h3><div class="' . ( $cards ? 'bqb-grid' : 'bqb-docs__list' ) . '">';
 		foreach ( $buckets[ $key ] as $id ) {
-			$html .= bqb_render_doc_row( $id );
+			$html .= $cards ? bqb_render_doc_card( $id ) : bqb_render_doc_row( $id );
 		}
 		$html .= '</div></div>';
 	}
@@ -3731,6 +3971,8 @@ function bqb_render_catalog( $atts ) {
 	$docs['vide']    = 'Aucun document ne correspond à ces critères pour le moment.';
 	$docs['pagination'] = 'oui';
 	$docs['ancre']   = 'bqb-catalogue';
+	$docs['affichage']   = 'cartes';
+	$docs['sousfiltres'] = 'non';
 
 	return $html . bqb_render_documents( $docs );
 }
@@ -4418,6 +4660,116 @@ function bqb_render_people( $orgs, $current, $chip_url, $groupe = '' ) {
 }
 
 /* -------------------------------------------------------------------------
+ * [bqp_vitrine] : la bibliothèque mise en avant, par exemple sur l'accueil
+ * ---------------------------------------------------------------------- */
+
+/**
+ * Un en-tête, des onglets (Nouveautés, puis les blocs ou les thèmes), trois
+ * documents par onglet et un « En savoir plus » vers la page Bibliothèque
+ * filtrée. Tout est rendu d'avance : changer d'onglet est instantané.
+ */
+function bqb_sc_vitrine( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'titre'    => 'La bibliothèque numérique',
+			'texte'    => 'Les sources, les travaux et les publications consacrés à la souveraineté économique et industrielle.',
+			'nombre'   => '3',
+			'onglets'  => 'collections',
+			'bouton'   => 'Explorer la bibliothèque',
+			'nouveautes' => 'oui',
+		),
+		$atts,
+		'bqp_vitrine'
+	);
+
+	$number  = max( 1, min( 6, (int) $atts['nombre'] ) );
+	$themes  = ( 'themes' === strtolower( $atts['onglets'] ) );
+	$tax     = $themes ? 'bqb_theme' : 'bqb_collection';
+	$short   = $themes ? 'theme' : 'collection';
+	$map     = bqb_term_children_map( $tax );
+	$library = bqb_library_link();
+	$tabs    = array();
+
+	static $instance = 0;
+	$instance++;
+
+	if ( 'non' !== strtolower( $atts['nouveautes'] ) ) {
+		$tabs[] = array( 'Nouveautés', '', array(), $library, 'Voir tous les documents', '', bqb_palette()['bordeaux'] );
+	}
+
+	foreach ( isset( $map[0] ) ? $map[0] : array() as $i => $root ) {
+		$color  = $themes ? bqb_settings()['bloc5_couleur'] : bqb_root_color( $root->term_id );
+		$tabs[] = array( $root->name, $themes ? '' : (string) ( $i + 1 ), array( $short => array( $root->slug ) ), bqb_term_url( $root ), 'En savoir plus sur « ' . $root->name . ' »', $root->description, $color );
+	}
+
+	$panels = '';
+	$nav    = '';
+	$k      = 0;
+
+	foreach ( $tabs as $tab ) {
+		$query = new WP_Query(
+			array_merge(
+				bqb_query_args( array_merge( $tab[2], array( 'tri' => 'recent' ) ) ),
+				array(
+					'posts_per_page' => $number,
+					'no_found_rows'  => false,
+				)
+			)
+		);
+
+		if ( ! $query->have_posts() ) {
+			continue;
+		}
+
+		$id     = 'bqb-vitrine-' . $instance . '-' . $k;
+		$on     = ( 0 === $k );
+		$count  = (int) $query->found_posts;
+		$nav   .= '<button type="button" class="bqb-vtab' . ( $on ? ' is-on' : '' ) . '" role="tab" id="' . esc_attr( $id ) . '-tab" aria-controls="' . esc_attr( $id ) . '" aria-selected="' . ( $on ? 'true' : 'false' ) . '" tabindex="' . ( $on ? '0' : '-1' ) . '" style="--bqb-accent:' . esc_attr( $tab[6] ) . ';" data-bqb-vtab>'
+			. ( $tab[1] ? '<em>' . esc_html( $tab[1] ) . '</em>' : '' ) . esc_html( $tab[0] ) . '</button>';
+
+		$panels .= '<div class="bqb-vpanel" role="tabpanel" id="' . esc_attr( $id ) . '" aria-labelledby="' . esc_attr( $id ) . '-tab"' . ( $on ? '' : ' hidden' ) . ' style="--bqb-accent:' . esc_attr( $tab[6] ) . ';">';
+		$panels .= '<div class="bqb-grid bqb-grid--' . (int) min( 3, $number ) . '">';
+		foreach ( wp_list_pluck( $query->posts, 'ID' ) as $post_id ) {
+			$panels .= bqb_render_doc_card( $post_id, 'En savoir plus' );
+		}
+		$panels .= '</div>';
+
+		if ( $tab[3] ) {
+			$panels .= '<div class="bqb-vpanel__foot">'
+				. ( $tab[5] ? '<p>' . esc_html( $tab[5] ) . '</p>' : '<p>' . sprintf( _n( '%s document dans la bibliothèque.', '%s documents dans la bibliothèque.', $count ), number_format_i18n( $count ) ) . '</p>' )
+				. '<a class="bqb-link-more" href="' . esc_url( $tab[3] ) . '">' . esc_html( $tab[4] ) . ' <span aria-hidden="true">→</span></a></div>';
+		}
+
+		$panels .= '</div>';
+		$k++;
+		wp_reset_postdata();
+	}
+
+	if ( ! $panels ) {
+		return '';
+	}
+
+	wp_enqueue_style( 'bqb-front' );
+	wp_enqueue_script( 'bqb-front' );
+
+	$html  = '<section class="bqb-vitrine">';
+	$html .= '<header class="bqb-vitrine__head"><div class="bqb-vitrine__intro">';
+	$html .= '<span class="bqb-catalog__eyebrow">Bibliothèque numérique</span>';
+	$html .= $atts['titre'] ? '<h2 class="bqb-vitrine__title">' . esc_html( $atts['titre'] ) . '</h2>' : '';
+	$html .= $atts['texte'] ? '<p class="bqb-vitrine__text">' . esc_html( $atts['texte'] ) . '</p>' : '';
+	$html .= '</div>';
+	if ( $library && $atts['bouton'] ) {
+		$html .= '<a class="bqb-btn" href="' . esc_url( $library ) . '">' . esc_html( $atts['bouton'] ) . '</a>';
+	}
+	$html .= '</header>';
+	$html .= $k > 1 ? '<div class="bqb-vtabs" role="tablist" aria-label="Parcourir la bibliothèque">' . $nav . '</div>' : '';
+	$html .= $panels;
+	$html .= '</section>';
+
+	return $html;
+}
+
+/* -------------------------------------------------------------------------
  * 29. Styles et script du site
  * ---------------------------------------------------------------------- */
 
@@ -4475,6 +4827,85 @@ function bqb_front_js() {
 			t.setAttribute('aria-expanded', open ? 'true' : 'false');
 		});
 
+		// Vitrine : onglets, à la souris et au clavier.
+		document.addEventListener('click', function(e){
+			var tab = e.target.closest('[data-bqb-vtab]');
+			if (!tab) { return; }
+			each(tab.parentNode.querySelectorAll('[data-bqb-vtab]'), function(t){
+				var on = (t === tab);
+				t.classList.toggle('is-on', on);
+				t.setAttribute('aria-selected', on ? 'true' : 'false');
+				t.tabIndex = on ? 0 : -1;
+				var panel = document.getElementById(t.getAttribute('aria-controls'));
+				if (panel) { panel.hidden = !on; }
+			});
+		});
+		document.addEventListener('keydown', function(e){
+			var tab = e.target.closest && e.target.closest('[data-bqb-vtab]');
+			if (!tab || ('ArrowRight' !== e.key && 'ArrowLeft' !== e.key)) { return; }
+			var tabs = Array.prototype.slice.call(tab.parentNode.querySelectorAll('[data-bqb-vtab]'));
+			var next = tabs[(tabs.indexOf(tab) + ('ArrowRight' === e.key ? 1 : -1) + tabs.length) % tabs.length];
+			e.preventDefault();
+			next.focus();
+			next.click();
+		});
+
+		function fetchPage(href){
+			return fetch(href, { credentials: 'same-origin' })
+				.then(function(r){ if (!r.ok) { throw new Error(r.status); } return r.text(); })
+				.then(function(html){ return new DOMParser().parseFromString(html, 'text/html'); });
+		}
+
+		function sameList(doc, list){
+			return doc.querySelector('[data-bqb-list="' + list.getAttribute('data-bqb-list') + '"]');
+		}
+
+		// « Afficher plus » : les documents suivants s'ajoutent à la liste.
+		document.addEventListener('click', function(e){
+			var a = e.target.closest('[data-bqb-more]');
+			if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || !window.fetch || !window.DOMParser) { return; }
+			var list = a.closest('[data-bqb-list]');
+			var nav  = a.closest('.bqb-more');
+			if (!list || !nav) { return; }
+			e.preventDefault();
+			nav.classList.add('is-loading');
+			fetchPage(a.href).then(function(doc){
+				var fresh  = sameList(doc, list);
+				var items  = fresh ? fresh.querySelector('[data-bqb-items]') : null;
+				var target = list.querySelector('[data-bqb-items]');
+				if (!items || !target) { throw new Error('liste'); }
+				var first = items.firstElementChild;
+				while (items.firstChild) { target.appendChild(items.firstChild); }
+				var next = fresh.querySelector('.bqb-more');
+				if (next) { nav.parentNode.replaceChild(next, nav); } else { nav.parentNode.removeChild(nav); }
+				var link = first ? first.querySelector('a') : null;
+				if (link) { link.focus({ preventScroll: true }); }
+			}).catch(function(){ window.location.href = a.href; });
+		});
+
+		// Onglets des sous-catégories : la liste se met à jour sur place.
+		document.addEventListener('click', function(e){
+			var a = e.target.closest('[data-bqb-refresh]');
+			if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || !window.fetch || !window.DOMParser) { return; }
+			var list = a.closest('[data-bqb-list]');
+			if (!list) { return; }
+			e.preventDefault();
+			list.classList.add('is-loading');
+			fetchPage(a.href).then(function(doc){
+				var fresh = sameList(doc, list);
+				if (!fresh) { throw new Error('liste'); }
+				list.innerHTML = fresh.innerHTML;
+				list.classList.remove('is-loading');
+				if (window.history && history.pushState) { history.pushState({ bqbList: 1 }, '', a.href); }
+				if (list.getBoundingClientRect().top < 0) { list.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+			}).catch(function(){ window.location.href = a.href; });
+		});
+
+		if (document.querySelector('[data-bqb-refresh]') && !document.querySelector('[data-bqb-lib]') && window.history && history.replaceState) {
+			history.replaceState({ bqbList: 1 }, '', location.href);
+			window.addEventListener('popstate', function(e){ if (e.state && e.state.bqbList) { window.location.reload(); } });
+		}
+
 		// Page Bibliothèque : les blocs, les filtres, l'annuaire et la
 		// pagination mettent à jour le catalogue sans recharger la page.
 		var lib = document.querySelector('[data-bqb-lib]');
@@ -4523,6 +4954,7 @@ function bqb_front_js() {
 		lib.addEventListener('click', function(e){
 			var a = e.target.closest('a[href]');
 			if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || '_blank' === a.target) { return; }
+			if (a.hasAttribute('data-bqb-more')) { return; }
 
 			// « Recherche avancée » et « 5.2 Autres filtres » : ouvrent le bon
 			// filtre du catalogue, au lieu de changer la liste affichée.
@@ -4587,20 +5019,20 @@ function bqb_front_css() {
 	$p = bqb_palette();
 
 	return '
-	.bqb-lib,.bqb-docs,.bqb-fiche,.bqb-page,.bqb-people{
+	.bqb-lib,.bqb-docs,.bqb-fiche,.bqb-page,.bqb-people,.bqb-vitrine{
 		--bqb-bordeaux:' . $p['bordeaux'] . ';--bqb-dark:' . $p['bordeaux_dark'] . ';--bqb-navy:' . $p['navy'] . ';
 		--bqb-ink:#2f2f2f;--bqb-muted:#6f6f6f;--bqb-line:#E6E3E1;--bqb-soft:#FAF8F7;
 		--bqb-serif:"Cormorant Garamond","Playfair Display",Georgia,serif;
 		--bqb-sans:"Inter","Montserrat","Lato",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 		font-family:var(--bqb-sans);color:var(--bqb-ink);box-sizing:border-box;
 	}
-	.bqb-lib *,.bqb-docs *,.bqb-fiche *,.bqb-page *,.bqb-people *{box-sizing:border-box;}
-	.bqb-lib a,.bqb-docs a,.bqb-fiche a,.bqb-page a,.bqb-people a{color:var(--bqb-bordeaux) !important;text-decoration:none !important;}
-	.bqb-lib a:hover,.bqb-docs a:hover,.bqb-fiche a:hover,.bqb-page a:hover{color:var(--bqb-dark) !important;}
+	.bqb-lib *,.bqb-docs *,.bqb-fiche *,.bqb-page *,.bqb-people *,.bqb-vitrine *{box-sizing:border-box;}
+	.bqb-lib a,.bqb-docs a,.bqb-fiche a,.bqb-page a,.bqb-people a,.bqb-vitrine a{color:var(--bqb-bordeaux) !important;text-decoration:none !important;}
+	.bqb-lib a:hover,.bqb-docs a:hover,.bqb-fiche a:hover,.bqb-page a:hover,.bqb-vitrine a:hover{color:var(--bqb-dark) !important;}
 	.screen-reader-text{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);}
 
 	/* Boutons, protégés des couleurs du thème */
-	.bqb-lib .bqb-btn,.bqb-docs .bqb-btn,.bqb-fiche .bqb-btn,.bqb-page .bqb-btn{
+	.bqb-lib .bqb-btn,.bqb-docs .bqb-btn,.bqb-fiche .bqb-btn,.bqb-page .bqb-btn,.bqb-vitrine .bqb-btn{
 		-webkit-appearance:none;appearance:none;display:inline-flex;align-items:center;gap:8px;
 		padding:12px 20px !important;border:1px solid transparent !important;border-radius:3px !important;
 		background:var(--bqb-bordeaux) !important;background-image:linear-gradient(180deg,var(--bqb-bordeaux),var(--bqb-dark) 170%) !important;
@@ -4608,7 +5040,7 @@ function bqb_front_css() {
 		letter-spacing:.1em !important;text-transform:uppercase !important;line-height:1 !important;cursor:pointer;
 		box-shadow:0 8px 18px -12px rgba(49,2,12,.8);transition:filter .2s,transform .2s;
 	}
-	.bqb-lib .bqb-btn:hover,.bqb-docs .bqb-btn:hover,.bqb-fiche .bqb-btn:hover,.bqb-page .bqb-btn:hover{filter:brightness(1.1);transform:translateY(-1px);color:#fff !important;}
+	.bqb-lib .bqb-btn:hover,.bqb-docs .bqb-btn:hover,.bqb-fiche .bqb-btn:hover,.bqb-page .bqb-btn:hover,.bqb-vitrine .bqb-btn:hover{filter:brightness(1.1);transform:translateY(-1px);color:#fff !important;}
 	.bqb-lib .bqb-btn--ghost,.bqb-docs .bqb-btn--ghost,.bqb-fiche .bqb-btn--ghost,.bqb-page .bqb-btn--ghost{
 		background:#fff !important;background-image:none !important;border-color:var(--bqb-line) !important;color:var(--bqb-bordeaux) !important;box-shadow:none;
 	}
@@ -4810,6 +5242,86 @@ function bqb_front_css() {
 	.bqb-context .bqb-subnav{margin:18px 0 0;}
 	@media (max-width:640px){.bqb-context{flex-direction:column;padding:22px 20px;}}
 	.bqb-docs .bqb-filters__toggle{display:none !important;}
+	/* Listes en cartes */
+	.bqb-docs,.bqb-vitrine{--bqb-accent:var(--bqb-bordeaux);}
+	.bqb-docs.is-loading{opacity:.45;pointer-events:none;transition:opacity .2s;}
+	.bqb-docs.is-cards .bqb-docs__count{margin:20px 0 16px;}
+	.bqb-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch;}
+	@media (max-width:980px){.bqb-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+	@media (max-width:620px){.bqb-grid{grid-template-columns:1fr;gap:14px;}}
+	.bqb-group .bqb-grid{margin-bottom:6px;}
+	.bqb-dcard{position:relative;display:flex;flex-direction:column;min-width:0;padding:20px 22px 0;border:1px solid var(--bqb-line);border-top:3px solid var(--bqb-accent);border-radius:6px;background:#fff;box-shadow:0 1px 2px rgba(49,2,12,.04);transition:box-shadow .3s,transform .3s,border-color .3s;}
+	.bqb-dcard:hover,.bqb-dcard:focus-within{transform:translateY(-3px);box-shadow:0 22px 44px -30px rgba(49,2,12,.6);border-color:#D9D2CF;border-top-color:var(--bqb-accent);}
+	.bqb-dcard__top{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:22px;}
+	.bqb-dcard__kind{display:inline-flex;align-items:center;gap:8px;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bqb-accent);}
+	.bqb-dcard__year{padding-left:8px;border-left:1px solid var(--bqb-line);color:var(--bqb-muted);letter-spacing:.06em;}
+	.bqb-dcard__flags{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+	.bqb-dcard__format{padding:2px 8px;border:1px solid var(--bqb-line);border-radius:999px;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-dcard__body{flex:1;padding:14px 0 18px;}
+	.bqb-dcard__cover{float:right;margin:2px 0 8px 16px;}
+	.bqb-dcard__cover img{display:block;width:62px !important;height:84px !important;object-fit:cover;border-radius:2px;box-shadow:0 8px 16px -10px rgba(0,0,0,.55);}
+	.bqb-dcard__title{margin:0 0 8px !important;font-family:var(--bqb-serif) !important;font-size:1.32rem !important;font-weight:600 !important;line-height:1.2 !important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+	.bqb-docs .bqb-dcard__title a,.bqb-vitrine .bqb-dcard__title a{color:var(--bqb-dark) !important;}
+	.bqb-dcard__title a::after{content:"";position:absolute;inset:0;z-index:1;border-radius:6px;}
+	.bqb-dcard__title a:focus-visible{outline:none;}
+	.bqb-dcard__title a:focus-visible::after{box-shadow:0 0 0 3px rgba(116,4,28,.35);}
+	.bqb-dcard__by{margin:0 0 8px;font-size:.82rem;font-weight:600;color:var(--bqb-ink);}
+	.bqb-dcard__excerpt{margin:0;font-size:.86rem;line-height:1.6;color:var(--bqb-muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+	.bqb-dcard__foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 -22px;padding:13px 22px;border-top:1px solid var(--bqb-line);background:var(--bqb-soft);border-radius:0 0 6px 6px;}
+	.bqb-dcard__place{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:.74rem;font-weight:600;color:var(--bqb-muted);}
+	.bqb-dcard__more{flex:0 0 auto;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bqb-accent);}
+	.bqb-dcard__more span{display:inline-block;transition:transform .25s;}
+	.bqb-dcard:hover .bqb-dcard__more span{transform:translateX(4px);}
+
+	/* Onglets des sous-catégories */
+	.bqb-tabs{margin:0 0 18px;}
+	.bqb-tabs__row,.bqb-tabs__sub{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;}
+	.bqb-tabs__row::-webkit-scrollbar,.bqb-tabs__sub::-webkit-scrollbar{display:none;}
+	.bqb-docs .bqb-tab{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:1px solid var(--bqb-line);border-radius:999px;background:#fff;font-size:.84rem;font-weight:600;line-height:1.2;color:var(--bqb-dark) !important;white-space:nowrap;transition:border-color .2s,background .2s,color .2s;}
+	.bqb-docs .bqb-tab:hover{border-color:var(--bqb-accent);color:var(--bqb-accent) !important;}
+	.bqb-tab em{font-style:normal;font-weight:700;color:var(--bqb-accent);}
+	.bqb-tab span,.bqb-subtab span{min-width:22px;padding:1px 7px;border-radius:999px;background:var(--bqb-soft);font-size:.7rem;font-weight:700;text-align:center;color:var(--bqb-muted);}
+	.bqb-docs .bqb-tab.is-on{background:var(--bqb-accent);border-color:var(--bqb-accent);color:#fff !important;box-shadow:0 10px 20px -14px rgba(0,0,0,.6);}
+	.bqb-tab.is-on em{color:rgba(255,255,255,.75);}
+	.bqb-tab.is-on span{background:rgba(255,255,255,.2);color:#fff;}
+	@media (max-width:760px){.bqb-tabs__row,.bqb-tabs__sub{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:40px;}}
+	.bqb-tabs__sub{margin-top:10px;padding-top:12px;border-top:1px dashed var(--bqb-line);}
+	.bqb-docs .bqb-subtab{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:999px;font-size:.8rem;font-weight:500;color:var(--bqb-ink) !important;white-space:nowrap;}
+	.bqb-docs .bqb-subtab:hover{background:var(--bqb-soft);}
+	.bqb-docs .bqb-subtab.is-on{background:var(--bqb-soft);box-shadow:inset 0 0 0 1px var(--bqb-accent);color:var(--bqb-accent) !important;font-weight:700;}
+
+	/* Afficher plus */
+	.bqb-more{display:flex;flex-direction:column;align-items:center;gap:10px;margin:30px 0 0;}
+	.bqb-more.is-loading{opacity:.5;pointer-events:none;}
+	.bqb-more__status{font-size:.74rem;letter-spacing:.06em;color:var(--bqb-muted);}
+
+	/* Vitrine */
+	.bqb-vitrine__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px 40px;margin:0 0 28px;}
+	.bqb-vitrine__intro{max-width:640px;}
+	.bqb-vitrine__title{margin:10px 0 0 !important;font-family:var(--bqb-serif) !important;font-size:clamp(2rem,4vw,2.8rem) !important;font-weight:600 !important;line-height:1.1 !important;color:var(--bqb-dark) !important;}
+	.bqb-vitrine__text{margin:12px 0 0;font-size:1rem;line-height:1.65;color:var(--bqb-muted);}
+	.bqb-vtabs{display:flex;gap:28px;margin:0 0 26px;border-bottom:1px solid var(--bqb-line);overflow-x:auto;scrollbar-width:none;}
+	.bqb-vtabs::-webkit-scrollbar{display:none;}
+	.bqb-vitrine .bqb-vtab,.bqb-vitrine .bqb-vtab:hover,.bqb-vitrine .bqb-vtab:focus{
+		flex:0 0 auto;display:inline-flex;align-items:baseline;gap:8px;margin:0 0 -1px !important;padding:14px 0 13px !important;
+		border:0 !important;border-bottom:2px solid transparent !important;border-radius:0 !important;background:none !important;box-shadow:none !important;
+		font-family:var(--bqb-sans) !important;font-size:.92rem !important;font-weight:600 !important;letter-spacing:0 !important;text-transform:none !important;line-height:1.2 !important;
+		color:var(--bqb-muted) !important;white-space:nowrap;cursor:pointer;transition:color .2s,border-color .2s;
+	}
+	.bqb-vitrine .bqb-vtab:hover{color:var(--bqb-dark) !important;}
+	.bqb-vitrine .bqb-vtab.is-on{color:var(--bqb-dark) !important;border-bottom-color:var(--bqb-accent) !important;}
+	.bqb-vitrine .bqb-vtab:focus-visible{outline:2px solid var(--bqb-accent) !important;outline-offset:4px;}
+	.bqb-vtab em{font-style:normal;font-size:.78rem;font-weight:700;color:var(--bqb-accent);}
+	.bqb-vpanel[hidden]{display:none !important;}
+	.bqb-vpanel{animation:bqb-fade .35s ease;}
+	@keyframes bqb-fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+	.bqb-vpanel__foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 30px;margin:24px 0 0;padding:18px 0 0;border-top:1px solid var(--bqb-line);}
+	.bqb-vpanel__foot p{margin:0;max-width:640px;font-size:.9rem;line-height:1.6;color:var(--bqb-muted);}
+	.bqb-vitrine .bqb-link-more{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-accent) !important;}
+	.bqb-link-more span{transition:transform .25s;}
+	.bqb-link-more:hover span{transform:translateX(4px);}
+	@media (max-width:620px){.bqb-vitrine__head .bqb-btn{width:100%;justify-content:center;}.bqb-vtabs{gap:20px;}}
+
 	.bqb-fiche__notice h2,.bqb-fiche__notice h3,.bqb-fiche__notice h4{margin:1.6em 0 .5em !important;font-family:var(--bqb-serif) !important;font-weight:600 !important;line-height:1.2 !important;color:var(--bqb-dark) !important;}
 	.bqb-fiche__notice h2{font-size:1.45rem !important;}
 	.bqb-fiche__notice h3{font-size:1.2rem !important;}
