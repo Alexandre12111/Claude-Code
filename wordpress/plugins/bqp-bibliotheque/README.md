@@ -1,6 +1,6 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.1.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.2.0.
 
 Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
 
@@ -211,6 +211,7 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 
 ## Historique
 
+- **3.2.0** : refonte du design. Page Bibliothèque : en-tête de recherche avec accès transversaux et chiffres clés ; blocs en 2 × 2 avec numéro, total, rubriques, éléments en pastilles, regroupements en liens, encart « Page dédiée » avec monogramme et « Explorer » en pied ; bloc 5 en grille de thématiques et raccourcis « Autres filtres ». Filtres : barre compacte, filtre actif en bordeaux, application immédiate partout, « Effacer les filtres » et « Trier par ». Fiche : en-tête pleine largeur (nature, rubrique numérotée, titre H1, auteurs avec initiales, date, accès, résumé, action principale, Partager), couverture ou couverture générée aux couleurs du bloc, texte à 70 caractères par ligne, encadré Informations qui reste visible, bloc « Citer », documents associés en cartes (sinon « Dans la même rubrique ») ; le titre du thème Hello est masqué pour garder un seul H1
 - **3.1.0** : listes en cartes, « Afficher plus » à la place de la pagination, onglets de sous-catégories, shortcode `[bqp_vitrine]` pour l'accueil, nouvelles options dans le Générateur
 - **3.0.1** : le bouton « Rechercher et filtrer », prévu pour le mobile, n'apparaît plus sur ordinateur (le thème Hello forçait son affichage) ; intertitres de la notice aux couleurs du site ; taille des fichiers arrondie (« 180 Ko »)
 - **3.0.0** : arborescence du client à l'identique, 6 familles
@@ -230,4 +231,5 @@ Dans un WordPress 6.8 réel avec le thème Hello Elementor et les quatre plugins
 - Page unique (2.1) : lien de bloc, filtre par liste, retrait d'une pastille, annuaire, lauréats, fiche personne, recherche, bouton retour, tous sans rechargement ; redirections 301 des anciennes adresses, filtres conservés ; exclusion des sitemaps ; filtres repliables sur mobile, sans débordement horizontal
 - Arborescence du client (3.0) : migration depuis la 2.1 vérifiée en base (54 collections, 51 thèmes, 22 natures, anciennes familles supprimées) ; blocs identiques au schéma, numérotation conservée quand des rubriques sont masquées ; nature automatique puis manuelle ; page dédiée, fiche par lauréat, liens 5.2 qui ouvrent le bon filtre ; fiche document avec Collection / origine, Thèmes, Secteurs, Pays séparés
 - Listes et vitrine (3.1) : 6 cartes puis « Afficher plus » (6, 12… sur 22, sans rechargement), onglets 1.1 et 1.2 puis éléments, bouton retour, vitrine avec 5 onglets et « En savoir plus », catalogue en cartes, mode liste, vue groupée, mobile sans débordement
+- Design (3.2) : liens des rubriques, pastilles d'éléments, regroupements, page dédiée, tuiles de thèmes et raccourcis 5.2 filtrent le catalogue sans rechargement ; filtre appliqué et mis en évidence, effacement ; un seul H1 sur la fiche ; Partager et Copier la référence ; couverture générée sans visuel ; mobile sans débordement
 - Front : toutes les pages en HTTP 200, aucune erreur PHP ni JavaScript, liens du plugin en bordeaux malgré le rose du thème
