@@ -12,21 +12,21 @@ N = int(60.0 * SR)
 SRC = sys.argv[1]
 
 # (début, fin) dans l'enregistrement -> instant de pose dans la vidéo V9
-CLIPS = [
-    ((3.5, 5.66), 3.4),     # What we've done for almost thirty years? (VALUE)
-    ((5.86, 8.08), 5.76),   # Find the value companies leave on the table.
-    ((8.39, 12.56), 8.9),   # And today, the biggest opportunity... (PRODUCTIVITY)
-    ((13.22, 16.9), 13.3),  # Your teams are full of ideas... (ideas)
-    ((17.41, 20.85), 17.2), # The problem is... (They lack a tool)
-    ((21.21, 24.15), 20.85),# So we came up with something different. The idea is very simple.
-    ((24.55, 28.88), 24.1), # You explain what you need... DigiCraft takes care of the rest.
-    ((29.53, 32.36), 28.75),# The design, the data... (building)
-    ((32.75, 35.93), 32.9), # One click, and your tool is live... (publish, mobile)
-    ((36.63, 43.94), 36.5), # At Leyton... (figures)
-    ((44.47, 47.05), 44.15),# When it comes to security... (security)
-    ((47.27, 51.53), 46.93),# Your data stays in Europe...
-    ((51.67, 52.68), 51.4), # Because it's your tool. (Built by you)
-    ((53.17, 53.99), 53.7), # Truly yours. (final logo)
+CLIPS = [  # prise anglaise n°2
+    ((1.98, 4.04), 3.4),     # What we've done for almost thirty years? (VALUE)
+    ((4.2, 6.73), 5.6),      # Find the value companies leave on the table.
+    ((7.22, 11.49), 8.7),    # And today, the biggest opportunity... (PRODUCTIVITY)
+    ((11.63, 15.95), 13.1),  # Your teams are full of ideas... (ideas)
+    ((16.28, 19.84), 17.6),  # The problem is... come to life. (They lack a tool)
+    ((20.22, 23.44), 21.4),  # So we came up with something different. The idea is very simple.
+    ((23.59, 26.12), 24.85), # You explain what you need, in your own words. (prompt)
+    ((26.21, 31.45), 27.55), # And DigiCraft takes care of the rest: the design... (building)
+    ((31.67, 34.9), 33.0),   # One click, and your tool is live... (publish, mobile)
+    ((35.15, 42.45), 36.5),  # At Leyton... (figures)
+    ((42.75, 44.06), 44.1),  # When it comes to security, (security)
+    ((44.23, 49.82), 45.55), # you can rest easy. Your data stays in Europe...
+    ((50.09, 51.23), 51.4),  # Because it's your tool. (Built by you)
+    ((51.53, 52.51), 53.7),  # Truly yours. (final logo)
 ]
 
 
