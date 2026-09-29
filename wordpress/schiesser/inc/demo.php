@@ -97,8 +97,10 @@ function schiesser_demo_image( $photo, $nom, $alt ) {
 	) );
 	if ( $existant ) {
 		$id = (int) $existant[0];
-		if ( '' === (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) ) {
+		// Photo déjà importée : texte alternatif remplacé une fois par sa version allemande (le site est en allemand).
+		if ( '' === (string) get_post_meta( $id, '_wp_attachment_image_alt', true ) || 'de' !== get_post_meta( $id, '_schiesser_alt_langue', true ) ) {
 			update_post_meta( $id, '_wp_attachment_image_alt', $alt );
+			update_post_meta( $id, '_schiesser_alt_langue', 'de' );
 		}
 		return $id;
 	}
@@ -118,6 +120,7 @@ function schiesser_demo_image( $photo, $nom, $alt ) {
 	}
 	update_post_meta( $id, '_schiesser_source', $photo );
 	update_post_meta( $id, '_wp_attachment_image_alt', $alt );
+	update_post_meta( $id, '_schiesser_alt_langue', 'de' );
 	return (int) $id;
 }
 
@@ -167,7 +170,9 @@ function schiesser_importer_preisliste() {
 	// Les produits de démonstration en français partent à la corbeille (récupérables).
 	foreach ( schiesser_demo_anciens_produits() as $nom ) {
 		foreach ( get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids' ) ) as $id ) {
-			wp_trash_post( $id );
+			if ( ! get_post_meta( $id, '_s_preisliste', true ) ) { // « Marrons glacés » existe aussi dans la liste de prix : celui-là reste
+				wp_trash_post( $id );
+			}
 		}
 	}
 	foreach ( array( 'Chocolats', 'Biscuits', 'Confiseries', 'Pâtisserie', 'Coffrets' ) as $ancienne ) {
@@ -278,11 +283,9 @@ function schiesser_importer_tearoom() {
 		}
 		$term_id = (int) ( is_array( $t ) ? $t['term_id'] : $t );
 		update_term_meta( $term_id, 'ordre', $i + 1 );
-		if ( ! get_term_meta( $term_id, 'photo', true ) ) {
-			$photo = schiesser_demo_image( $photos[ $r['photo'] ], 'tea-room-' . sanitize_title( $r['nom'] ), $r['alt'] );
-			if ( $photo ) {
-				update_term_meta( $term_id, 'photo', $photo );
-			}
+		$photo = schiesser_demo_image( $photos[ $r['photo'] ], 'tea-room-' . sanitize_title( $r['nom'] ), $r['alt'] ); // photo déjà importée : texte alternatif mis en allemand
+		if ( $photo && ! get_term_meta( $term_id, 'photo', true ) ) {
+			update_term_meta( $term_id, 'photo', $photo );
 		}
 		foreach ( $r['plats'] as $k => $p ) {
 			$existant = get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'title' => $p[0], 'post_status' => array( 'publish', 'draft', 'private' ), 'numberposts' => 1, 'fields' => 'ids' ) );

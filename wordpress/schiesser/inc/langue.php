@@ -98,6 +98,25 @@ function schiesser_uhr( $hhmm, $avec_uhr = true ) {
 	return ( $m ? $h . '.' . sprintf( '%02d', $m ) : (string) $h ) . ( $avec_uhr ? "\u{00A0}Uhr" : '' );
 }
 
+/* Titres de WordPress visibles sur le site (onglet du navigateur), sans le pack de langue. */
+add_filter( 'document_title_parts', function ( $parts ) {
+	if ( is_404() ) {
+		$parts['title'] = 'Seite nicht gefunden';
+	} elseif ( is_search() ) {
+		$parts['title'] = sprintf( 'Suchergebnisse für «%s»', get_search_query( false ) );
+	}
+	if ( isset( $parts['page'] ) && is_paged() ) {
+		$parts['page'] = sprintf( 'Seite %d', max( 1, (int) get_query_var( 'paged' ) ) );
+	}
+	return $parts;
+} );
+add_filter( 'rank_math/frontend/title', function ( $titre ) {
+	if ( is_404() ) {
+		return 'Seite nicht gefunden | ' . get_bloginfo( 'name' );
+	}
+	return $titre;
+} );
+
 /* ------------------------------------------------------------------ */
 /* Adresses des pages                                                  */
 /* ------------------------------------------------------------------ */

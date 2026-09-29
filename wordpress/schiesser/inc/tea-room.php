@@ -728,7 +728,7 @@ function schiesser_schema_menu( $post ) {
 		'@type'          => 'Menu',
 		'@id'            => $url . '#menu',
 		'url'            => $url . ( $ancre ? '#' . $ancre : '' ),
-		'name'           => schiesser_texte_brut( $bloc['attrs']['titre'] ?? '' ) ?: 'Carte du salon de thé',
+		'name'           => schiesser_texte_brut( $bloc['attrs']['titre'] ?? '' ) ?: 'Karte des Tea Room',
 		'inLanguage'     => get_bloginfo( 'language' ),
 		'hasMenuSection' => $sections,
 	);

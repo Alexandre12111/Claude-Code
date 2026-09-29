@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || exit;
 
 /** clé => [ nom, nom court (filtres « Sans … »), tracé du pictogramme (24 × 24) ]. */
 function schiesser_allergenes_liste() {
-	return array(
+	$liste = array(
 		'gluten'      => array( 'Gluten', 'gluten', 'M12 21V8 M12 8c-2-1-3-3-3-5 2 1 3 3 3 5z M12 8c2-1 3-3 3-5-2 1-3 3-3 5z M12 13c-2-1-3.5-3-3.5-5 2 .8 3.5 3 3.5 5z M12 13c2-1 3.5-3 3.5-5-2 .8-3.5 3-3.5 5z M12 18c-2-1-3.5-3-3.5-5 2 .8 3.5 3 3.5 5z M12 18c2-1 3.5-3 3.5-5-2 .8-3.5 3-3.5 5z' ),
 		'oeufs'       => array( 'Œufs', 'œufs', 'M12 3c-3.5 0-6 5.5-6 10a6 6 0 0 0 12 0c0-4.5-2.5-10-6-10z' ),
 		'lait'        => array( 'Lait (lactose)', 'lait', 'M9 3h6 M9.5 3v3L7 10v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V10l-2.5-4V3 M7 13h10' ),
@@ -32,16 +32,47 @@ function schiesser_allergenes_liste() {
 		'lupin'       => array( 'Lupin', 'lupin', 'M12 21V10 M12 10c-1.5 0-2.5-1-2.5-2.5S10.5 5 12 5s2.5 1 2.5 2.5S13.5 10 12 10z M12 5c-1 0-1.5-.8-1.5-1.5S11 2 12 2s1.5.8 1.5 1.5S13 5 12 5z M8 15c2 0 4 1 4 3 M16 13c-2 0-4 1-4 3' ),
 		'alcool'      => array( 'Alcool (kirsch, liqueur…)', 'alcool', 'M7 3h10c0 5-2 8-5 8s-5-3-5-8z M12 11v8 M8 21h8 M7.5 6h9' ),
 	);
+	if ( ! schiesser_est_cote_admin() ) {
+		// Sur le site : noms en allemand (nom, nom court des filtres « Ohne … »).
+		$de = array(
+			'gluten'       => array( 'Gluten', 'Gluten' ),
+			'oeufs'        => array( 'Eier', 'Eier' ),
+			'lait'         => array( 'Milch (Laktose)', 'Milch' ),
+			'fruits-coque' => array( 'Schalenfrüchte (Mandeln, Haselnüsse, Nüsse…)', 'Nüsse' ),
+			'arachides'    => array( 'Erdnüsse', 'Erdnüsse' ),
+			'soja'         => array( 'Soja', 'Soja' ),
+			'sesame'       => array( 'Sesam', 'Sesam' ),
+			'sulfites'     => array( 'Sulfite', 'Sulfite' ),
+			'celeri'       => array( 'Sellerie', 'Sellerie' ),
+			'moutarde'     => array( 'Senf', 'Senf' ),
+			'poisson'      => array( 'Fisch', 'Fisch' ),
+			'crustaces'    => array( 'Krebstiere', 'Krebstiere' ),
+			'mollusques'   => array( 'Weichtiere', 'Weichtiere' ),
+			'lupin'        => array( 'Lupinen', 'Lupinen' ),
+			'alcool'       => array( 'Alkohol (Kirsch, Likör…)', 'Alkohol' ),
+		);
+		foreach ( $de as $k => $n ) {
+			$liste[ $k ][0] = $n[0];
+			$liste[ $k ][1] = $n[1];
+		}
+	}
+	return $liste;
 }
 
 /** clé => [ nom, tracé du pictogramme ]. */
 function schiesser_regimes_liste() {
-	return array(
+	$liste = array(
 		'vegetarien'   => array( 'Végétarien', 'M5 19C5 11 11 5 19 5c0 8-6 14-14 14z M5 19l8-8' ),
 		'vegane'       => array( 'Végane', 'M5 19C5 11 11 5 19 5c0 8-6 14-14 14z M5 19l8-8 M9 9.5l3 6 3-6' ),
 		'sans-gluten'  => array( 'Sans gluten', 'M12 21V9 M12 9c-2-1-3-3-3-5 2 1 3 3 3 5z M12 9c2-1 3-3 3-5-2 1-3 3-3 5z M12 15c-2-1-3.5-3-3.5-5 2 .8 3.5 3 3.5 5z M12 15c2-1 3.5-3 3.5-5-2 .8-3.5 3-3.5 5z M4 4l16 16' ),
 		'sans-lactose' => array( 'Sans lactose', 'M9 3h6 M9.5 3v3L7 10v10a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V10l-2.5-4V3 M4 4l16 16' ),
 	);
+	if ( ! schiesser_est_cote_admin() ) {
+		foreach ( array( 'vegetarien' => 'Vegetarisch', 'vegane' => 'Vegan', 'sans-gluten' => 'Glutenfrei', 'sans-lactose' => 'Laktosefrei' ) as $k => $n ) {
+			$liste[ $k ][0] = $n;
+		}
+	}
+	return $liste;
 }
 
 function schiesser_picto_allergene( $trace, $titre ) {
@@ -96,7 +127,7 @@ function schiesser_allergenes_texte( $d ) {
 		return $liste[ $k ][0];
 	}, $d['allergenes'] );
 	if ( ! $noms && ! empty( $d['renseigne'] ) ) {
-		return 'Aucun des 14 allergènes à déclarer';
+		return 'Keines der 14 deklarationspflichtigen Allergene';
 	}
 	return implode( ', ', $noms );
 }
@@ -129,7 +160,7 @@ function schiesser_allergenes_filtres( $items ) {
 	$regimes = array_diff( $regimes, array( 'sans-gluten' ) );
 	foreach ( $ordre as $k ) {
 		if ( in_array( $k, $presents, true ) ) {
-			$boutons .= '<button type="button" class="fchip fchip--al" data-sans="' . esc_attr( $k ) . '" aria-pressed="false">Sans ' . esc_html( $liste[ $k ][1] ) . '</button>';
+			$boutons .= '<button type="button" class="fchip fchip--al" data-sans="' . esc_attr( $k ) . '" aria-pressed="false">Ohne ' . esc_html( $liste[ $k ][1] ) . '</button>';
 		}
 	}
 	foreach ( schiesser_regimes_liste() as $k => $r ) {
@@ -140,8 +171,8 @@ function schiesser_allergenes_filtres( $items ) {
 	if ( '' === $boutons ) {
 		return '';
 	}
-	return '<div class="al-filtres js-al-filtres"><div class="al-filtres-in" role="group" aria-label="Allergènes et régimes"><span class="al-filtres-k">Allergies</span>' . $boutons . '</div>'
-		. '<p class="al-filtres-vide js-al-vide" hidden>Aucun produit ne correspond. Les produits dont les allergènes ne sont pas encore renseignés sont masqués pendant le filtrage.</p></div>';
+	return '<div class="al-filtres js-al-filtres"><div class="al-filtres-in" role="group" aria-label="Allergene und Ernährung"><span class="al-filtres-k">Allergien</span>' . $boutons . '</div>'
+		. '<p class="al-filtres-vide js-al-vide" hidden>Kein Produkt passt zu dieser Auswahl. Produkte ohne Allergenangaben werden beim Filtern ausgeblendet.</p></div>';
 }
 
 /** Remarque générale sur les allergènes (Réglages maison), sous les listes. */

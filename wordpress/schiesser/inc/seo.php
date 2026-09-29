@@ -276,7 +276,7 @@ function schiesser_schema_ariane() {
 		return null;
 	}
 	$url      = get_permalink();
-	$elements = array( array( 'Accueil', home_url( '/' ) ) );
+	$elements = array( array( 'Startseite', home_url( '/' ) ) );
 	if ( is_singular( SCHIESSER_PRODUIT ) ) {
 		$boutique = schiesser_url_boutique();
 		if ( untrailingslashit( $boutique ) !== untrailingslashit( home_url( '/' ) ) ) {

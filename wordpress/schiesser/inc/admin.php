@@ -163,8 +163,17 @@ function schiesser_page_guide() {
 			'Choisissez le fond (clair, sable, sombre…) à droite, écrivez le titre, puis ajoutez du contenu avec le <strong>+</strong> : paragraphes, images, colonnes, boutons, questions fréquentes…',
 			'Plus rapide : onglet « Compositions » de l\'outil d\'ajout, catégorie Schiesser, pour insérer une section toute prête.',
 		) ),
+		array( 'translation', 'Site en allemand, administration en français', array(
+			'Tout ce que voient les visiteurs est en allemand : écrivez les textes des pages, des produits et des Réglages maison (présentation, vitrine, annonces…) <strong>en allemand</strong>.',
+			'L\'administration (menus, écrans, ce guide) reste en français. Les horaires, les jours fériés et les boutons du site sont traduits automatiquement.',
+		) ),
+		array( 'products', 'Mettre en ligne la liste des produits', array(
+			'Tant que les photos ne sont pas prêtes, la boutique affiche « Produktliste folgt in Kürze » avec un aperçu des rubriques ; les fiches produits ne sont pas visibles.',
+			'Ajoutez une photo à chaque produit, relisez noms, formats et prix, puis ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT . '&page=schiesser-lancement' ), 'Produits boutique → Mise en ligne' ) . ' → « Tout est prêt : afficher la liste des produits ».',
+			'Le même écran permet de remettre la liste en préparation.',
+		) ),
 		array( 'shortcode', 'Écrire les horaires ou l\'adresse dans un texte', array(
-			'Tapez un code court entre crochets dans un paragraphe, par exemple <code>[schiesser_horaires_phrase]</code> : il affiche «&nbsp;du lundi au vendredi de 7&nbsp;h&nbsp;30 à 18&nbsp;h&nbsp;30, …&nbsp;».',
+			'Tapez un code court entre crochets dans un paragraphe, par exemple <code>[schiesser_horaires_phrase]</code> : il affiche «&nbsp;Montag bis Freitag von 7.30 bis 18.30&nbsp;Uhr, …&nbsp;».',
 			'Autres codes : <code>[schiesser_horaires]</code> (tableau), <code>[schiesser_adresse]</code>, <code>[schiesser_telephone]</code>, <code>[schiesser_email]</code>, <code>[schiesser_statut]</code> (ouvert ou fermé).',
 			'Ils se mettent à jour tout seuls quand les Réglages maison changent : rien à retoucher dans les pages.',
 		) ),

@@ -1580,7 +1580,7 @@ mark.has-inline-color{background-color:transparent}
 .avis-carte{display:flex;flex-direction:column;gap:16px;padding:clamp(22px,2.4vw,32px);background:color-mix(in srgb,var(--paper) 55%,#fff);border:1px solid var(--line)}
 .avis-texte{margin:0;flex:1}
 .avis-texte p{margin:0;font-size:16px;line-height:1.65;color:var(--text)}
-.avis-texte p::before{content:"« "}.avis-texte p::after{content:" »"}
+.avis-texte p::before{content:"«"}.avis-texte p::after{content:"»"}
 .avis-suite{align-self:flex-start;font-size:13px;color:var(--vert);text-underline-offset:3px}
 .avis-auteur{display:flex;align-items:center;gap:12px;margin:0;padding-top:16px;border-top:1px solid var(--line);font-size:14px}
 .avis-auteur strong{display:block;font-weight:600;color:var(--ink)}
@@ -1657,7 +1657,7 @@ mark.has-inline-color{background-color:transparent}
 .mi-top .al-svg{width:15px;height:15px}
 .bg-ink .al-liste,.bg-ink .al--regime{color:var(--mint)}
 .mn .al-filtres{margin-bottom:18px}
-.mn.al-actif .mn-list:not(.is-off):not(:has(.mi:not(.al-masque)))::after{content:"Aucun plat de cette rubrique ne correspond à ces filtres.";display:block;padding:18px 0;font-size:14px;color:var(--ink-soft)}
+.mn.al-actif .mn-list:not(.is-off):not(:has(.mi:not(.al-masque)))::after{content:"Kein Gericht dieser Rubrik passt zu diesen Filtern.";display:block;padding:18px 0;font-size:14px;color:var(--ink-soft)}
 
 /* ---------- Commander par téléphone (inc/client.php) ---------- */
 .cmd{display:flex;flex-direction:column;align-items:flex-start;gap:12px}

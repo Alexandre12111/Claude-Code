@@ -255,10 +255,7 @@ function schiesser_page_reglages() {
 				<?php schiesser_carte_avis_reglages( $o, $r ); ?>
 
 				<?php schiesser_carte_debut( 'Référencement (SEO)', '', 'chart-line' ); ?>
-				<?php if ( 0 !== strpos( get_locale(), 'fr' ) ) : ?>
-					<p class="s-etat s-etat--alerte"><span class="dashicons dashicons-translation" aria-hidden="true"></span> <strong>La langue du site n'est pas le français</strong> (<?php echo esc_html( get_locale() ); ?>) : Google risque de mal comprendre les pages.
-					<?php if ( current_user_can( 'manage_options' ) ) : ?><a href="<?php echo esc_url( admin_url( 'options-general.php' ) ); ?>">Réglages → Général → Langue du site : Français</a><?php endif; ?></p>
-				<?php endif; ?>
+				<p class="s-etat s-etat--ok"><span class="dashicons dashicons-translation" aria-hidden="true"></span> <strong>Site public en allemand (Suisse)</strong>, administration en français. Google reçoit la langue <code>de-CH</code> sur chaque page.</p>
 				<?php if ( schiesser_rank_math_actif() ) : ?>
 					<p class="s-etat s-etat--ok"><span class="dashicons dashicons-yes-alt" aria-hidden="true"></span> <strong>Rank Math SEO est actif.</strong> Titres, descriptions et mots-clés se règlent dans chaque page (panneau Rank Math de l'éditeur). Le thème complète automatiquement les données structurées de Rank Math avec cette fiche, les produits et les questions fréquentes.</p>
 				<?php else : ?>

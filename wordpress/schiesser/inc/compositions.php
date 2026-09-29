@@ -165,91 +165,93 @@ add_action( 'after_setup_theme', function () {
 add_filter( 'should_load_remote_block_patterns', '__return_false' );
 
 function schiesser_compositions() {
-	$boutique = '/boutique/';
-	$contact  = '/contact/';
+	$boutique = '/confiserie/';
+	$contact  = '/kontakt/';
+	$besuch   = '/besuch/';
+	// Textes des compositions en allemand : ils s'affichent sur le site (les noms des compositions restent en français).
 
 	$texte_photo = function ( $ancre = '' ) use ( $boutique ) {
 		return schiesser_bm_section(
-			array_filter( array( 'numero' => '01', 'titre' => 'Un titre qui donne <em>envie</em>', 'note' => 'Une phrase courte pour situer la section.', 'ancre' => $ancre ) ),
+			array_filter( array( 'numero' => '01', 'titre' => 'Ein Titel, der <em>Lust</em> macht', 'note' => 'Ein kurzer Satz, der den Abschnitt einordnet.', 'ancre' => $ancre ) ),
 			schiesser_bm_colonnes( array(
-			schiesser_bm_p( 'Une introduction de deux ou trois lignes : ce que l’on trouve ici, pour qui, et pourquoi c’est différent.', 'chapeau' )
-			. schiesser_bm_p( 'Un paragraphe de détail. Cliquez sur ce texte pour l’écrire. Pour mettre un mot en valeur, sélectionnez-le puis cliquez sur B (gras) ou I (italique).' )
-			. schiesser_bm_boutons( array( array( 'En savoir plus', $boutique, 'lien' ) ) ),
+			schiesser_bm_p( 'Eine Einleitung in zwei, drei Zeilen: was man hier findet, für wen, und was es besonders macht.', 'chapeau' )
+			. schiesser_bm_p( 'Ein Absatz mit Details. Hier steht Ihr Text.' )
+			. schiesser_bm_boutons( array( array( 'Mehr erfahren', $boutique, 'lien' ) ) ),
 			schiesser_bm_image( 0, '', '', 'vitrine' ),
 			) )
 		);
 	};
 
 	$trois_points = schiesser_bm_section(
-		array( 'numero' => '02', 'titre' => 'Bon à <em>savoir</em>', 'fond' => 'clair' ),
+		array( 'numero' => '02', 'titre' => 'Gut zu <em>wissen</em>', 'fond' => 'clair' ),
 		schiesser_bm_colonnes( array(
-			schiesser_bm_titre( 'Premier point', 3 ) . schiesser_bm_p( 'Deux lignes pour expliquer ce point. Restez simple et concret.' ),
-			schiesser_bm_titre( 'Deuxième point', 3 ) . schiesser_bm_p( 'Deux lignes pour expliquer ce point. Restez simple et concret.' ),
-			schiesser_bm_titre( 'Troisième point', 3 ) . schiesser_bm_p( 'Deux lignes pour expliquer ce point. Restez simple et concret.' ),
+			schiesser_bm_titre( 'Erster Punkt', 3 ) . schiesser_bm_p( 'Deux lignes pour expliquer ce point. Restez simple et concret.' ),
+			schiesser_bm_titre( 'Zweiter Punkt', 3 ) . schiesser_bm_p( 'Deux lignes pour expliquer ce point. Restez simple et concret.' ),
+			schiesser_bm_titre( 'Dritter Punkt', 3 ) . schiesser_bm_p( 'Deux lignes pour expliquer ce point. Restez simple et concret.' ),
 		), 'filets' )
 	);
 
 	$cartes = schiesser_bm_section(
-		array( 'numero' => '03', 'titre' => 'Trois façons de <em>commander</em>', 'fond' => 'alterne' ),
+		array( 'numero' => '03', 'titre' => 'Drei Wege zum <em>Bestellen</em>', 'fond' => 'alterne' ),
 		schiesser_bm_colonnes( array(
-			schiesser_bm_titre( 'En boutique', 3 ) . schiesser_bm_p( 'Tous les jours au Marktplatz, sans réservation.' ) . schiesser_bm_boutons( array( array( 'Nous visiter', '/nous-visiter/', 'lien' ) ) ),
-			schiesser_bm_titre( 'Par téléphone', 3 ) . schiesser_bm_p( 'Pour une commande de fête ou un grand coffret : [schiesser_telephone]' ) . schiesser_bm_boutons( array( array( 'Nous appeler', $contact, 'lien' ) ) ),
-			schiesser_bm_titre( 'Par e-mail', 3 ) . schiesser_bm_p( 'Écrivez-nous, nous répondons sous 24 heures ouvrées.' ) . schiesser_bm_boutons( array( array( 'Écrire', $contact, 'lien' ) ) ),
+			schiesser_bm_titre( 'Im Laden', 3 ) . schiesser_bm_p( 'Jeden Tag am Marktplatz, ohne Reservation.' ) . schiesser_bm_boutons( array( array( 'Besuch planen', $besuch, 'lien' ) ) ),
+			schiesser_bm_titre( 'Per Telefon', 3 ) . schiesser_bm_p( 'Für eine Festtagsbestellung oder ein grosses Geschenk: [schiesser_telephone]' ) . schiesser_bm_boutons( array( array( 'Anrufen', $contact, 'lien' ) ) ),
+			schiesser_bm_titre( 'Per E-Mail', 3 ) . schiesser_bm_p( 'Schreiben Sie uns, wir antworten innerhalb eines Werktags.' ) . schiesser_bm_boutons( array( array( 'Schreiben', $contact, 'lien' ) ) ),
 		), 'cartes' )
 	);
 
 	$faq = schiesser_bm_section(
-		array( 'numero' => '04', 'titre' => 'Questions <em>fréquentes</em>', 'largeur' => 'lecture' ),
-		schiesser_bm_question( 'Première question que posent vos clients ?', 'Une réponse claire en deux ou trois phrases.' )
-		. schiesser_bm_question( 'Deuxième question ?', 'Une réponse claire en deux ou trois phrases.' )
-		. schiesser_bm_question( 'Troisième question ?', 'Une réponse claire en deux ou trois phrases.' )
+		array( 'numero' => '04', 'titre' => 'Häufige <em>Fragen</em>', 'largeur' => 'lecture' ),
+		schiesser_bm_question( 'Erste Frage Ihrer Gäste?', 'Eine klare Antwort in zwei, drei Sätzen.' )
+		. schiesser_bm_question( 'Zweite Frage?', 'Eine klare Antwort in zwei, drei Sätzen.' )
+		. schiesser_bm_question( 'Dritte Frage?', 'Eine klare Antwort in zwei, drei Sätzen.' )
 	);
 
 	$horaires = schiesser_bm_section(
-		array( 'numero' => '05', 'titre' => 'Horaires et <em>adresse</em>', 'note' => 'Mis à jour automatiquement depuis les Réglages maison.', 'ancre' => 'horaires' ),
+		array( 'numero' => '05', 'titre' => 'Öffnungszeiten und <em>Adresse</em>', 'note' => 'Immer aktuell.', 'ancre' => 'oeffnungszeiten' ),
 		schiesser_bm_colonnes( array(
-			schiesser_bm_titre( 'Horaires', 3 ) . schiesser_bm_code_court( '[schiesser_horaires]' ),
-			schiesser_bm_titre( 'Adresse', 3 ) . schiesser_bm_p( '[schiesser_adresse]' ) . schiesser_bm_p( '[schiesser_telephone] · [schiesser_email]' ) . schiesser_bm_code_court( '[schiesser_itineraire texte="Itinéraire"]' ),
+			schiesser_bm_titre( 'Öffnungszeiten', 3 ) . schiesser_bm_code_court( '[schiesser_horaires]' ),
+			schiesser_bm_titre( 'Adresse', 3 ) . schiesser_bm_p( '[schiesser_adresse]' ) . schiesser_bm_p( '[schiesser_telephone] · [schiesser_email]' ) . schiesser_bm_code_court( '[schiesser_itineraire texte="Route planen"]' ),
 		) )
 	);
 
 	$appel = schiesser_bm_section(
 		array( 'entete' => false, 'fond' => 'sombre', 'centre' => true, 'largeur' => 'lecture' ),
-		schiesser_bm_p( 'Au plaisir de vous recevoir', 'surtitre', true )
-		. schiesser_bm_titre( 'Passez nous <em>voir</em>', 2 )
-		. schiesser_bm_p( 'Une phrase qui invite à venir ou à commander.', '', true )
-		. schiesser_bm_boutons( array( array( 'Nous visiter', '/nous-visiter/', 'creme' ), array( 'Nous écrire', $contact, 'contour' ) ), true )
+		schiesser_bm_p( 'Wir freuen uns auf Sie', 'surtitre', true )
+		. schiesser_bm_titre( 'Besuchen Sie <em>uns</em>', 2 )
+		. schiesser_bm_p( 'Ein Satz, der zum Vorbeikommen oder Bestellen einlädt.', '', true )
+		. schiesser_bm_boutons( array( array( 'Besuch planen', $besuch, 'creme' ), array( 'Schreiben Sie uns', $contact, 'contour' ) ), true )
 	);
 
 	$citation = schiesser_bm_section(
 		array( 'entete' => false, 'fond' => 'clair', 'centre' => true, 'largeur' => 'lecture' ),
-		schiesser_bm_citation( 'Une phrase forte, un souvenir, un avis de client.', 'Nom, fonction' )
+		schiesser_bm_citation( 'Ein starker Satz, eine Erinnerung, eine Stimme eines Gastes.', 'Name, Funktion' )
 	);
 
 	$lecture = schiesser_bm_section(
-		array( 'numero' => '06', 'titre' => 'Un texte de <em>lecture</em>', 'largeur' => 'lecture' ),
-		schiesser_bm_p( 'Un chapeau d’introduction, un peu plus grand que le texte courant.', 'chapeau' )
-		. schiesser_bm_p( 'Le texte courant. Appuyez sur Entrée pour créer un nouveau paragraphe, tapez / pour chercher un bloc (image, liste, citation…).' )
-		. schiesser_bm_titre( 'Un sous-titre', 3 )
-		. schiesser_bm_liste( array( 'Premier élément', 'Deuxième élément', 'Troisième élément' ) )
+		array( 'numero' => '06', 'titre' => 'Ein <em>Lesetext</em>', 'largeur' => 'lecture' ),
+		schiesser_bm_p( 'Ein Einleitungssatz, etwas grösser als der Fliesstext.', 'chapeau' )
+		. schiesser_bm_p( 'Der Fliesstext. Hier steht Ihr Text.' )
+		. schiesser_bm_titre( 'Ein Zwischentitel', 3 )
+		. schiesser_bm_liste( array( 'Erster Punkt', 'Zweiter Punkt', 'Dritter Punkt' ) )
 		. schiesser_bm_separateur()
-		. schiesser_bm_p( 'Un dernier paragraphe pour conclure.' )
+		. schiesser_bm_p( 'Ein letzter Absatz zum Abschluss.' )
 	);
 
 	$html = schiesser_bm_section(
-		array( 'numero' => '07', 'titre' => 'Réserver une <em>table</em>', 'note' => 'Zone de code : collez ici un widget externe (réservation, carte, avis…).' ),
-		schiesser_bm_p( 'Le texte au-dessus du widget reste modifiable normalement.' )
-		. schiesser_bm_html( "<!-- Collez ici le code fourni par le service (réservation, carte, avis…) -->\n<div class=\"s-widget\">Le widget s'affichera ici.</div>" )
+		array( 'numero' => '07', 'titre' => 'Einen Tisch <em>reservieren</em>', 'note' => 'Reservieren Sie bequem online.' ),
+		schiesser_bm_p( 'Ein kurzer Text über dem Widget.' )
+		. schiesser_bm_html( "<!-- Collez ici le code fourni par le service (réservation, carte, avis…) -->\n<div class=\"s-widget\">Hier erscheint das Widget.</div>" )
 	);
 
 	$selection = schiesser_bm( 'schiesser/produits', array(
 		'numero'    => '01',
-		'titre'     => 'En <em>vitrine</em>',
-		'note'      => 'Une sélection de la maison.',
+		'titre'     => 'In der <em>Vitrine</em>',
+		'note'      => 'Eine Auswahl des Hauses.',
 		'ancre'     => 'selection',
 		'limite'    => 4,
 		'filtres'   => false,
-		'lienTexte' => 'Voir toute la boutique',
+		'lienTexte' => 'Ganzes Sortiment ansehen',
 	) );
 
 	$compos = array(
@@ -268,10 +270,10 @@ function schiesser_compositions() {
 	/* Modèles proposés à la création d'une page (fenêtre « Choisir une composition »). */
 	$hero = function ( $titre, $texte, $hauteur = 'page' ) {
 		return schiesser_bm( 'schiesser/hero', array(
-			'surtitre'     => 'Confiserie Schiesser · Bâle',
+			'surtitre'     => 'Confiserie Schiesser · Basel',
 			'titre'        => $titre,
 			'texte'        => $texte,
-			'bouton1Texte' => 'Découvrir',
+			'bouton1Texte' => 'Entdecken',
 			'bouton1Lien'  => '#section-1',
 			'bouton2Texte' => '',
 			'hauteur'      => $hauteur,
@@ -280,7 +282,7 @@ function schiesser_compositions() {
 	$compos['page-complete'] = array(
 		'title'       => 'Page complète : grande photo, sections, appel final',
 		'description' => 'Idéal pour une nouvelle page de présentation.',
-		'content'     => $hero( 'Le titre de la <em>page</em>', 'Une phrase d’introduction qui contient le sujet principal de la page.' )
+		'content'     => $hero( 'Der Titel der <em>Seite</em>', 'Ein Einleitungssatz mit dem Hauptthema der Seite.' )
 			. $texte_photo( 'section-1' ) . $trois_points . $appel,
 		'blockTypes'  => array( 'core/post-content' ),
 		'postTypes'   => array( 'page' ),
@@ -289,9 +291,9 @@ function schiesser_compositions() {
 		'title'       => 'Page simple : titre et texte',
 		'description' => 'Mentions légales, conditions, page d’information.',
 		'content'     => schiesser_bm_section( array( 'entete' => false, 'largeur' => 'lecture' ),
-			schiesser_bm_p( 'Écrivez votre texte ici. Le titre de la page s’affiche automatiquement au-dessus.', 'chapeau' )
-			. schiesser_bm_titre( 'Un sous-titre', 2 )
-			. schiesser_bm_p( 'Un paragraphe.' ) ),
+			schiesser_bm_p( 'Hier steht Ihr Text. Der Seitentitel erscheint automatisch darüber.', 'chapeau' )
+			. schiesser_bm_titre( 'Ein Zwischentitel', 2 )
+			. schiesser_bm_p( 'Ein Absatz.' ) ),
 		'blockTypes'  => array( 'core/post-content' ),
 		'postTypes'   => array( 'page' ),
 	);
