@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       BQP Bibliothèque
- * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents, arborescence, shortcodes, fiches et pages automatiques.
- * Version:           2.0.0
+ * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents, arborescence, shortcodes, fiches et page Bibliothèque unique.
+ * Version:           2.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -15,13 +15,13 @@
  * Back-office : type de contenu « Document », neuf taxonomies pré-remplies,
  * gestionnaire d'arborescence, panneau de classement, générateur de shortcodes.
  * Site : les 5 blocs, listes de documents par shortcode, fiches documents,
- * pages collections, thèmes, personnes et organisations.
+ * page unique « Bibliothèque » : blocs, catalogue filtré et annuaire.
  *
  * Compatible extension classique ET Code Snippets.
  *
  * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
  *
- * Version : 2.0.0
+ * Version : 2.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '2.0.0' );
+	define( 'BQB_VERSION', '2.1.0' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -1152,10 +1152,9 @@ function bqb_render_help_page() {
 	$html .= '</tbody></table></div>';
 
 	$html .= '<h2 class="bqb-help__subtitle">Mettre la bibliothèque en place</h2><ol class="bqb-help__list">';
-	$html .= '<li>Créez une page « Bibliothèque » et collez-y <code>[bqp_bibliotheque]</code> : les cinq blocs.</li>';
-	$html .= '<li>Créez une page « Recherche avancée » avec <code>[bqp_documents filtres="oui"]</code>, une page « Auteurs » avec <code>[bqp_personnes]</code> et, si besoin, une page « Organisations » avec <code>[bqp_personnes famille="organisations"]</code>.</li>';
-	$html .= '<li>Dans <strong>Réglages</strong>, indiquez ces pages : les liens des blocs et le fil d\'Ariane s\'en servent.</li>';
-	$html .= '<li>Pour n\'importe quelle autre combinaison, utilisez le <strong>Générateur de shortcode</strong>.</li>';
+	$html .= '<li>Créez <strong>une seule page</strong> « Bibliothèque » et collez-y <code>[bqp_bibliotheque]</code>. Elle contient tout : la recherche, les cinq blocs, le catalogue filtré et l\'annuaire des auteurs et organisations.</li>';
+	$html .= '<li>C\'est tout : la page est détectée automatiquement. Chaque lien des blocs filtre le catalogue, sur la même page, sans rechargement.</li>';
+	$html .= '<li>Pour afficher une sélection ailleurs sur le site (accueil, actualité), utilisez le <strong>Générateur de shortcode</strong>.</li>';
 	$html .= '</ol>';
 
 	$html .= '<h2 class="bqb-help__subtitle">Bon à savoir</h2><ul class="bqb-help__list">';
@@ -1164,8 +1163,8 @@ function bqb_render_help_page() {
 	$html .= '<li>Une catégorie peut avoir une <strong>page dédiée</strong> construite avec Elementor : tous les liens y mènent alors, et l\'adresse automatique y redirige.</li>';
 	$html .= '<li><strong>Le résumé est le champ le plus important.</strong> Une page qui ne contient qu\'un lien vers un PDF est jugée pauvre par Google. Avec un résumé de 300 à 600 caractères, chaque document devient une page utile. La colonne « Résumé » de la liste signale ceux qui en manquent.</li>';
 	$html .= '<li>La <strong>date</strong> accepte l\'année seule. Le mois et le jour sont facultatifs.</li>';
-	$html .= '<li>Pour un <strong>lauréat</strong>, ouvrez <strong>Arborescence › Personnes</strong>, puis la fiche complète : cochez le rôle Lauréat, avec l\'année et le prix. Sa page listera automatiquement tous ses travaux.</li>';
-	$html .= '<li>Les <strong>collections, thèmes, personnes et organisations</strong> ont leur propre page sur le site. Remplissez leur description : elle sert d\'introduction à la page et de texte pour Google.</li>';
+	$html .= '<li>Pour un <strong>lauréat</strong>, ouvrez <strong>Arborescence › Personnes</strong>, puis la fiche complète : cochez le rôle Lauréat, avec l\'année et le prix. Il apparaît dans l\'annuaire des lauréats, et un clic sur son nom affiche sa présentation et tous ses travaux.</li>';
+	$html .= '<li>Remplissez la <strong>description</strong> des collections, thèmes, personnes et organisations : elle s\'affiche en tête du catalogue quand on les choisit.</li>';
 	$html .= '<li>Un document <strong>réservé</strong> ne doit pas encore recevoir son fichier : un fichier de la médiathèque est accessible par son adresse. La protection arrive avec l\'étape suivante.</li>';
 	$html .= '<li>Si une page document affiche une erreur 404, allez dans <strong>Réglages &rsaquo; Permaliens</strong> et cliquez sur Enregistrer, sans rien changer.</li>';
 	$html .= '</ul></div>';
@@ -1460,20 +1459,114 @@ function bqb_settings() {
 	return wp_parse_args(
 		$saved,
 		array(
-			'afficher_vides'  => 0,
-			'par_page'        => 12,
-			'page_catalogue'  => 0,
+			'afficher_vides'    => 0,
+			'par_page'          => 12,
 			'page_bibliotheque' => 0,
-			'page_personnes'  => 0,
-			'page_organisations' => 0,
-			'page_contact'    => 0,
-			'bloc5_titre'     => 'Explorer par thème',
-			'bloc5_texte'     => 'Une navigation thématique transversale pour croiser les contenus.',
-			'bloc5_couleur'   => '#1F5561',
-			'fiche_auto'      => 1,
-			'archives_auto'   => 1,
+			'page_contact'      => 0,
+			'bloc5_titre'       => 'Explorer par thème',
+			'bloc5_texte'       => 'Une navigation thématique transversale pour croiser les contenus.',
+			'bloc5_couleur'     => '#1F5561',
+			'fiche_auto'        => 1,
+			'archives_auto'     => 0,
 		)
 	);
+}
+
+/**
+ * Passage en 2.1 : tout se retrouve sur la page Bibliothèque. Les pages
+ * séparées des collections, thèmes, personnes et organisations sont
+ * désactivées une fois, même si la 2.0 les avait enregistrées.
+ */
+add_action( 'admin_init', 'bqb_migrate_21' );
+function bqb_migrate_21() {
+	if ( get_option( 'bqb_migrated_21' ) ) {
+		return;
+	}
+
+	$saved = get_option( 'bqb_settings', array() );
+
+	if ( is_array( $saved ) && $saved ) {
+		$saved['archives_auto'] = 0;
+		unset( $saved['page_catalogue'], $saved['page_personnes'], $saved['page_organisations'] );
+		update_option( 'bqb_settings', $saved, false );
+	}
+
+	update_option( 'bqb_migrated_21', 1, false );
+}
+
+/**
+ * L'adresse de la page Bibliothèque : celle choisie dans les réglages, sinon
+ * la première page publiée qui contient [bqp_bibliotheque], dans son contenu
+ * ou dans un widget Elementor. Détection mise en mémoire, recalculée dès
+ * qu'une page est enregistrée.
+ */
+function bqb_library_id() {
+	static $id = null;
+
+	if ( null !== $id ) {
+		return $id;
+	}
+
+	$id = (int) bqb_settings()['page_bibliotheque'];
+
+	if ( $id && 'publish' === get_post_status( $id ) ) {
+		return $id;
+	}
+
+	$auto = get_option( 'bqb_page_auto', '' );
+
+	if ( '' === $auto ) {
+		global $wpdb;
+		$like = '%' . $wpdb->esc_like( '[bqp_bibliotheque' ) . '%';
+		$auto = (int) $wpdb->get_var( $wpdb->prepare( "SELECT p.ID FROM {$wpdb->posts} p LEFT JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = '_elementor_data' WHERE p.post_type = 'page' AND p.post_status = 'publish' AND ( p.post_content LIKE %s OR m.meta_value LIKE %s ) ORDER BY p.menu_order ASC, p.ID ASC LIMIT 1", $like, $like ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		update_option( 'bqb_page_auto', (string) $auto, true );
+	}
+
+	$id = (int) $auto;
+
+	return $id;
+}
+
+function bqb_library_url() {
+	$id  = bqb_library_id();
+	$url = $id ? get_permalink( $id ) : '';
+
+	return $url ? $url : '';
+}
+
+add_action( 'save_post_page', 'bqb_forget_library_page' );
+add_action( 'deleted_post', 'bqb_forget_library_page' );
+add_action( 'trashed_post', 'bqb_forget_library_page' );
+function bqb_forget_library_page() {
+	delete_option( 'bqb_page_auto' );
+}
+
+/**
+ * Tous les paramètres d'adresse de la bibliothèque, préfixés pour ne jamais
+ * entrer en conflit avec ceux de WordPress.
+ */
+function bqb_filter_keys() {
+	return array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe', 'annuaire', 'role' ) );
+}
+
+function bqb_filter_params() {
+	return array_merge( array_map( function ( $k ) { return 'f_' . $k; }, bqb_filter_keys() ), array( 'pg' ) );
+}
+
+/**
+ * Une vue de la page Bibliothèque : ses paramètres, et l'ancre qui fait
+ * descendre jusqu'au catalogue.
+ */
+function bqb_library_link( $args = array() ) {
+	$url = bqb_library_url();
+
+	if ( ! $url ) {
+		return '';
+	}
+
+	$args = array_filter( (array) $args, 'strlen' );
+
+	return ( $args ? add_query_arg( array_map( 'rawurlencode', $args ), $url ) : $url ) . '#bqb-catalogue';
 }
 
 /**
@@ -1531,30 +1624,28 @@ function bqb_view_label( $view, $term = null ) {
  * ---------------------------------------------------------------------- */
 
 /**
- * L'adresse d'un terme : sa page dédiée si elle existe, sinon sa page
- * d'archive, sinon la page catalogue filtrée.
+ * L'adresse d'un terme : sa page dédiée si elle existe ; sinon la page
+ * Bibliothèque filtrée sur ce terme ; sinon, si les pages séparées sont
+ * activées ou qu'aucune page Bibliothèque n'existe, sa page automatique.
  */
 function bqb_term_url( $term, $args = array() ) {
 	if ( ! $term instanceof WP_Term ) {
 		return '';
 	}
 
-	$page = (int) get_term_meta( $term->term_id, 'bqb_page', true );
-	$tax  = get_taxonomy( $term->taxonomy );
+	$page    = (int) get_term_meta( $term->term_id, 'bqb_page', true );
+	$tax     = get_taxonomy( $term->taxonomy );
+	$library = bqb_library_url();
+	$public  = $tax && $tax->public;
 
 	if ( $page && 'publish' === get_post_status( $page ) ) {
 		$url = get_permalink( $page );
-	} elseif ( $tax && $tax->public ) {
+	} elseif ( $library && ! ( $public && bqb_settings()['archives_auto'] ) ) {
+		return bqb_library_link( array_merge( array( 'f_' . bqb_short_name( $term->taxonomy ) => $term->slug ), $args ) );
+	} elseif ( $public ) {
 		$url = get_term_link( $term );
 	} else {
-		$settings = bqb_settings();
-		$url      = $settings['page_catalogue'] ? get_permalink( (int) $settings['page_catalogue'] ) : '';
-
-		if ( ! $url ) {
-			return '';
-		}
-
-		$args = array_merge( array( 'f_' . bqb_short_name( $term->taxonomy ) => $term->slug ), $args );
+		return '';
 	}
 
 	if ( is_wp_error( $url ) || ! $url ) {
@@ -2238,13 +2329,13 @@ function bqb_render_arbo_panel( $term ) {
 				array(
 					'name'              => 'page',
 					'selected'          => (int) get_term_meta( $term->term_id, 'bqb_page', true ),
-					'show_option_none'  => 'Aucune : page automatique',
+					'show_option_none'  => 'Aucune : page Bibliothèque filtrée',
 					'option_none_value' => 0,
 					'class'             => 'bqb-admin__input',
 					'echo'              => false,
 				)
 			)
-			. '<em>Si vous avez construit une page Elementor pour cette catégorie, les liens et l\'adresse automatique y renverront.</em></label>';
+			. '<em>Facultatif. Par défaut, les liens de cette catégorie filtrent le catalogue de la page Bibliothèque.</em></label>';
 	}
 
 	if ( 'bqb_collection' === $taxonomy && ! $term->parent ) {
@@ -2494,12 +2585,10 @@ function bqb_render_generator_page() {
 	$html .= '<div class="bqb-card">';
 	$html .= '<span class="bqb-admin__label">Les autres shortcodes</span>';
 	$codes = array(
-		'[bqp_bibliotheque]'                  => 'Les cinq blocs de la bibliothèque, avec leurs liens.',
-		'[bqp_documents filtres="oui"]'       => 'Le catalogue complet avec recherche et filtres, pour la page « Recherche avancée ».',
-		'[bqp_documents groupe="annee"]'      => 'La chronologie : tous les documents, groupés par année.',
+		'[bqp_bibliotheque]'                  => 'La page Bibliothèque complète : recherche, cinq blocs, catalogue filtré et annuaire. À coller une seule fois.',
+		'[bqp_bibliotheque catalogue="non"]'  => 'Les cinq blocs seuls, par exemple sur l\'accueil : leurs liens mènent à la page Bibliothèque.',
+		'[bqp_documents nombre="6" pagination="non"]' => 'Les six derniers documents, pour l\'accueil ou une actualité.',
 		'[bqp_personnes role="laureat"]'      => 'Les lauréats, groupés par année du prix.',
-		'[bqp_personnes]'                     => 'L\'index des auteurs et personnes.',
-		'[bqp_personnes famille="organisations"]' => 'L\'index des organisations et sources.',
 	);
 	foreach ( $codes as $code => $desc ) {
 		$html .= '<div class="bqb-gen__other"><button type="button" class="bqb-node__code" data-copy="' . esc_attr( $code ) . '">' . esc_html( $code ) . '</button><p>' . esc_html( $desc ) . '</p></div>';
@@ -2549,10 +2638,7 @@ function bqb_render_settings_page() {
 			array(
 				'afficher_vides' => ! empty( $_POST['afficher_vides'] ) ? 1 : 0,
 				'par_page'       => isset( $_POST['par_page'] ) ? max( 1, min( 100, absint( $_POST['par_page'] ) ) ) : 12,
-				'page_catalogue' => isset( $_POST['page_catalogue'] ) ? absint( $_POST['page_catalogue'] ) : 0,
 				'page_bibliotheque' => isset( $_POST['page_bibliotheque'] ) ? absint( $_POST['page_bibliotheque'] ) : 0,
-				'page_personnes' => isset( $_POST['page_personnes'] ) ? absint( $_POST['page_personnes'] ) : 0,
-				'page_organisations' => isset( $_POST['page_organisations'] ) ? absint( $_POST['page_organisations'] ) : 0,
 				'page_contact'   => isset( $_POST['page_contact'] ) ? absint( $_POST['page_contact'] ) : 0,
 				'bloc5_titre'    => isset( $_POST['bloc5_titre'] ) ? sanitize_text_field( wp_unslash( $_POST['bloc5_titre'] ) ) : '',
 				'bloc5_texte'    => isset( $_POST['bloc5_texte'] ) ? sanitize_text_field( wp_unslash( $_POST['bloc5_texte'] ) ) : '',
@@ -2564,6 +2650,7 @@ function bqb_render_settings_page() {
 		);
 
 		bqb_bump_cache();
+		bqb_forget_library_page();
 		$notice = '<div class="bqb-notice">Réglages enregistrés.</div>';
 	}
 
@@ -2598,18 +2685,20 @@ function bqb_render_settings_page() {
 	$html .= '<label class="is-wide"><span class="bqb-admin__label">Texte du bloc thématique</span><input type="text" class="bqb-admin__input" name="bloc5_texte" value="' . esc_attr( $s['bloc5_texte'] ) . '" /></label>';
 	$html .= '</div><p class="bqb-settings__hint">Les titres, textes et couleurs des quatre autres blocs se règlent dans <a href="' . esc_url( admin_url( 'edit.php?post_type=' . BQB_CPT . '&page=bqb-arbo' ) ) . '">Arborescence</a>, sur chaque collection.</p></section>';
 
-	$html .= '<section class="bqb-card"><h2 class="bqb-card__title">Pages du site</h2><div class="bqb-settings__grid">';
-	$html .= '<label><span class="bqb-admin__label">Page d\'accueil de la bibliothèque</span>' . $page( 'page_bibliotheque', $s['page_bibliotheque'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_bibliotheque]</code>. Sert de point de départ au fil d\'Ariane.</em></label>';
-	$html .= '<label><span class="bqb-admin__label">Page de recherche avancée</span>' . $page( 'page_catalogue', $s['page_catalogue'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_documents filtres="oui"]</code>. Reçoit les liens des natures, secteurs et pays.</em></label>';
-	$html .= '<label><span class="bqb-admin__label">Page des personnes</span>' . $page( 'page_personnes', $s['page_personnes'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_personnes]</code>. Reçoit le lien « Les lauréats ».</em></label>';
-	$html .= '<label><span class="bqb-admin__label">Page des organisations</span>' . $page( 'page_organisations', $s['page_organisations'], 'Aucune' ) . '<em>La page qui contient <code>[bqp_personnes famille="organisations"]</code>.</em></label>';
+	$detected = bqb_library_id();
+	$found    = $detected ? 'Page utilisée : <a href="' . esc_url( get_permalink( $detected ) ) . '" target="_blank" rel="noopener">' . esc_html( get_the_title( $detected ) ) . '</a>.' : '<strong>Aucune page trouvée</strong> : créez une page et collez-y <code>[bqp_bibliotheque]</code>.';
+
+	$html .= '<section class="bqb-card"><h2 class="bqb-card__title">Pages du site</h2>';
+	$html .= '<p class="bqb-settings__hint" style="margin:0 0 20px;">Toute la bibliothèque tient sur <strong>une seule page</strong> : les cinq blocs, puis le catalogue avec ses filtres et l\'annuaire des auteurs et organisations. Chaque lien des blocs filtre le catalogue sans changer de page.</p>';
+	$html .= '<div class="bqb-settings__grid">';
+	$html .= '<label><span class="bqb-admin__label">Page Bibliothèque</span>' . $page( 'page_bibliotheque', $s['page_bibliotheque'], 'Détection automatique' ) . '<em>La page qui contient <code>[bqp_bibliotheque]</code>. ' . $found . '</em></label>';
 	$html .= '<label><span class="bqb-admin__label">Page de contact</span>' . $page( 'page_contact', $s['page_contact'], 'Aucune' ) . '<em>Le bouton « Demander l\'accès » d\'un document réservé y renvoie.</em></label>';
 	$html .= '<label><span class="bqb-admin__label">Documents par page</span><input type="number" min="1" max="100" class="bqb-admin__input" name="par_page" value="' . (int) $s['par_page'] . '" /></label>';
 	$html .= '</div></section>';
 
 	$html .= '<section class="bqb-card"><h2 class="bqb-card__title">Affichage automatique</h2>';
 	$html .= '<label class="bqb-switch"><input type="checkbox" name="fiche_auto" value="1"' . checked( $s['fiche_auto'], 1, false ) . ' /><span><strong>Fiche des documents</strong> : ajouter automatiquement le résumé, les informations et le bouton de téléchargement sur la page de chaque document. À décocher si vous construisez ce modèle avec Elementor Pro et le shortcode <code>[bqp_document_fiche]</code>.</span></label>';
-	$html .= '<label class="bqb-switch"><input type="checkbox" name="archives_auto" value="1"' . checked( $s['archives_auto'], 1, false ) . ' /><span><strong>Pages des collections, thèmes, personnes et organisations</strong> : générées automatiquement avec leur titre, leur description et leurs documents. À décocher si vous préférez des modèles Elementor Pro.</span></label>';
+	$html .= '<label class="bqb-switch"><input type="checkbox" name="archives_auto" value="1"' . checked( $s['archives_auto'], 1, false ) . ' /><span><strong>Pages séparées pour les collections, thèmes, personnes et organisations</strong> : décoché (recommandé), tout s\'affiche sur la page Bibliothèque et les adresses <code>/collection/…</code>, <code>/theme/…</code>, <code>/personne/…</code>, <code>/organisation/…</code> y redirigent. Coché, chacune a sa propre page.</span></label>';
 	$html .= '</section>';
 
 	$html .= '<p><button type="submit" class="button button-primary button-hero">Enregistrer les réglages</button></p>';
@@ -2787,6 +2876,7 @@ function bqb_sc_documents( $atts ) {
 			'titre'      => '',
 			'vide'       => 'Aucun document ne correspond pour le moment.',
 			'pagination' => 'oui',
+			'ancre'      => '',
 		)
 	);
 
@@ -2871,6 +2961,8 @@ function bqb_render_documents( $atts, $locked = array() ) {
 
 	wp_enqueue_style( 'bqb-front' );
 
+	$anchor = ( $listens && ! empty( $atts['ancre'] ) ) ? '#' . sanitize_html_class( $atts['ancre'] ) : '';
+
 	$html = '<section class="bqb-docs">';
 
 	if ( '' !== trim( $atts['titre'] ) ) {
@@ -2878,9 +2970,11 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	}
 
 	if ( 'oui' === strtolower( $atts['filtres'] ) ) {
-		$html .= bqb_render_filter_bar( $criteria, $url_f, $locked + array_filter( array_intersect_key( $atts, bqb_short_map() ) ) );
-	} elseif ( $url_f ) {
-		$html .= bqb_render_active_filters( $url_f );
+		$html .= bqb_render_filter_bar( $criteria, $url_f, $locked + array_filter( array_intersect_key( $atts, bqb_short_map() ) ), $anchor );
+	}
+
+	if ( $url_f ) {
+		$html .= bqb_render_active_filters( $url_f, $anchor );
 	}
 
 	$total = (int) $query->found_posts;
@@ -2919,7 +3013,7 @@ function bqb_render_documents( $atts, $locked = array() ) {
 		for ( $i = 1; $i <= $query->max_num_pages; $i++ ) {
 			$html .= ( $i === $paged )
 				? '<span class="bqb-pages__item is-on" aria-current="page">' . $i . '</span>'
-				: '<a class="bqb-pages__item" href="' . esc_url( add_query_arg( 'pg', $i ) ) . '">' . $i . '</a>';
+				: '<a class="bqb-pages__item" href="' . esc_url( add_query_arg( 'pg', $i ) . $anchor ) . '">' . $i . '</a>';
 		}
 		$html .= '</nav>';
 	}
@@ -2992,7 +3086,7 @@ function bqb_render_grouped( $ids, $groupe, $tri ) {
  * Les filtres venus d'un lien (par exemple depuis un bloc), affichés en
  * étiquettes que l'on peut retirer une à une.
  */
-function bqb_render_active_filters( $url_f ) {
+function bqb_render_active_filters( $url_f, $anchor = '' ) {
 	$map   = bqb_short_map();
 	$chips = array();
 
@@ -3011,14 +3105,18 @@ function bqb_render_active_filters( $url_f ) {
 			$label = $value;
 		}
 
-		$chips[] = '<a class="bqb-chip" href="' . esc_url( remove_query_arg( array( 'f_' . $key, 'pg' ) ) ) . '">' . esc_html( $label ) . ' <span aria-hidden="true">×</span><span class="screen-reader-text"> (retirer ce filtre)</span></a>';
+		$chips[] = '<a class="bqb-chip" href="' . esc_url( remove_query_arg( array( 'f_' . $key, 'pg' ) ) . $anchor ) . '">' . esc_html( $label ) . ' <span aria-hidden="true">×</span><span class="screen-reader-text"> (retirer ce filtre)</span></a>';
 	}
 
-	return $chips ? '<div class="bqb-active">' . implode( '', $chips ) . '</div>' : '';
+	if ( count( $chips ) > 1 ) {
+		$chips[] = '<a class="bqb-chip bqb-chip--clear" href="' . esc_url( remove_query_arg( bqb_filter_params() ) . $anchor ) . '">Tout effacer</a>';
+	}
+
+	return $chips ? '<div class="bqb-active"><span class="bqb-active__label">Filtres actifs</span>' . implode( '', $chips ) . '</div>' : '';
 }
 
-function bqb_render_filter_bar( $criteria, $url_f, $locked ) {
-	$action = remove_query_arg( array_merge( array_map( function ( $k ) { return 'f_' . $k; }, array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe' ) ) ), array( 'pg' ) ) );
+function bqb_render_filter_bar( $criteria, $url_f, $locked, $anchor = '' ) {
+	$action = remove_query_arg( bqb_filter_params() ) . $anchor;
 	$val    = function ( $key ) use ( $url_f ) {
 		return isset( $url_f[ $key ] ) ? $url_f[ $key ] : '';
 	};
@@ -3028,7 +3126,11 @@ function bqb_render_filter_bar( $criteria, $url_f, $locked ) {
 		return '<label class="bqb-filter"><span>' . esc_html( $label ) . '</span>' . str_replace( 'bqb-admin__input', 'bqb-input', bqb_term_select( $map[ $short ], 'f_' . $short, $val( $short ), 'Tous' ) ) . '</label>';
 	};
 
+	$active = count( array_diff_key( $url_f, array( 'tri' => 1, 'groupe' => 1 ) ) );
+
 	$html  = '<form class="bqb-filters" method="get" action="' . esc_url( $action ) . '">';
+	$html .= '<button type="button" class="bqb-filters__toggle" data-bqb-toggle aria-expanded="false">Rechercher et filtrer' . ( $active ? ' <span>' . (int) $active . '</span>' : '' ) . '</button>';
+	$html .= '<div class="bqb-filters__body">';
 	$html .= '<div class="bqb-filters__row">';
 	$html .= '<label class="bqb-filter bqb-filter--q"><span>Recherche libre</span><input type="search" class="bqb-input" name="f_q" value="' . esc_attr( $val( 'q' ) ) . '" placeholder="Titre, auteur, mot-clé…" /></label>';
 
@@ -3047,12 +3149,13 @@ function bqb_render_filter_bar( $criteria, $url_f, $locked ) {
 
 	$html .= '</div>';
 
-	$more_open = $val( 'secteur' ) || $val( 'pays' ) || $val( 'prix' ) || $val( 'organisation' );
+	$more_open = $val( 'secteur' ) || $val( 'pays' ) || $val( 'prix' ) || $val( 'organisation' ) || $val( 'personne' );
 	$html     .= '<details class="bqb-filters__more"' . ( $more_open ? ' open' : '' ) . '><summary>Plus de filtres</summary><div class="bqb-filters__row">';
+	$html     .= $select( 'personne', 'Auteur ou personne' );
+	$html     .= $select( 'organisation', 'Organisation' );
 	$html     .= $select( 'secteur', 'Secteur' );
 	$html     .= $select( 'pays', 'Pays ou territoire' );
 	$html     .= $select( 'prix', 'Prix ou bourse' );
-	$html     .= $select( 'organisation', 'Organisation' );
 	$html     .= '</div></details>';
 
 	$html .= '<div class="bqb-filters__foot">';
@@ -3063,7 +3166,7 @@ function bqb_render_filter_bar( $criteria, $url_f, $locked ) {
 	}
 
 	$html .= '<span class="bqb-filters__btns"><a class="bqb-btn bqb-btn--link" href="' . esc_url( $action ) . '">Réinitialiser</a><button type="submit" class="bqb-btn">Rechercher</button></span>';
-	$html .= '</div></form>';
+	$html .= '</div></div></form>';
 
 	return $html;
 }
@@ -3097,17 +3200,13 @@ function bqb_block_link( $url, $label, $count, $show_empty, $class = '' ) {
 }
 
 function bqb_collection_items( $term, $show_empty, $split = false ) {
-	$items    = '';
-	$types    = '';
-	$settings = bqb_settings();
-	$slug     = $term->slug;
+	$items = '';
+	$types = '';
+	$slug  = $term->slug;
 
 	foreach ( (array) get_term_meta( $term->term_id, 'bqb_vues', true ) as $view ) {
 		if ( 'laureats' === $view ) {
-			$page = (int) $settings['page_personnes'];
-			if ( $page ) {
-				$items .= bqb_block_link( add_query_arg( 'role', 'laureat', get_permalink( $page ) ), bqb_view_label( $view, $term ), bqb_laureats_count(), $show_empty, 'is-view' );
-			}
+			$items .= bqb_block_link( bqb_library_link( array( 'f_annuaire' => 'personnes', 'f_role' => 'laureat' ) ), bqb_view_label( $view, $term ), bqb_laureats_count(), $show_empty, 'is-view' );
 			continue;
 		}
 
@@ -3133,15 +3232,17 @@ function bqb_collection_items( $term, $show_empty, $split = false ) {
 }
 
 function bqb_sc_blocks( $atts ) {
-	$atts = shortcode_atts( array( 'vides' => '', 'navigation' => 'oui' ), $atts, 'bqp_bibliotheque' );
+	$atts = shortcode_atts( array( 'vides' => '', 'navigation' => 'oui', 'catalogue' => 'oui', 'titre_catalogue' => 'Tous les documents' ), $atts, 'bqp_bibliotheque' );
 
 	$settings   = bqb_settings();
 	$show_empty = ( '' !== $atts['vides'] ) ? in_array( strtolower( $atts['vides'] ), array( 'oui', 'afficher', '1' ), true ) : (bool) $settings['afficher_vides'];
 	$map        = bqb_term_children_map( 'bqb_collection' );
+	$catalog    = ( 'non' !== strtolower( $atts['catalogue'] ) );
 
 	wp_enqueue_style( 'bqb-front' );
+	wp_enqueue_script( 'bqb-front' );
 
-	$html = '<div class="bqb-lib">';
+	$html = '<div class="bqb-lib"' . ( $catalog ? ' data-bqb-lib' : '' ) . '>';
 
 	if ( 'non' !== strtolower( $atts['navigation'] ) ) {
 		$html .= bqb_render_lib_nav();
@@ -3210,17 +3311,180 @@ function bqb_sc_blocks( $atts ) {
 		$body .= '<div class="bqb-sub"><h4 class="bqb-sub__title"><a href="' . esc_url( bqb_term_url( $root ) ) . '">' . esc_html( $root->name ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . $count . '</span>' : '' ) . '</h4>' . ( $items ? '<ul class="bqb-sub__links is-inline">' . $items . '</ul>' : '' ) . '</div>';
 	}
 
-	if ( $settings['page_catalogue'] ) {
-		$catalogue = get_permalink( (int) $settings['page_catalogue'] );
-		$body     .= '<div class="bqb-sub"><h4 class="bqb-sub__title">Autres filtres</h4><ul class="bqb-sub__links">'
-			. '<li class="bqb-blink is-view"><a href="' . esc_url( $catalogue ) . '">Secteurs, pays, périodes, types, collections</a></li>'
+	if ( $catalog ) {
+		$body .= '<div class="bqb-sub"><h4 class="bqb-sub__title">Autres filtres</h4><ul class="bqb-sub__links">'
+			. '<li class="bqb-blink is-view"><a href="#bqb-catalogue" data-bqb-more>Secteurs, pays, périodes, types, collections</a></li>'
 			. '</ul></div>';
 	}
 
 	$html .= bqb_render_block_card( $num, $settings['bloc5_titre'], $settings['bloc5_texte'], $settings['bloc5_couleur'], '', $body, 'bqb-block--wide' );
-	$html .= '</div></div>';
+	$html .= '</div>';
+
+	// Le catalogue, sur la même page : les liens des blocs le filtrent.
+	if ( $catalog ) {
+		$html .= '<section id="bqb-catalogue" class="bqb-catalog" data-bqb-catalog aria-live="polite">' . bqb_render_catalog( $atts ) . '</section>';
+	}
+
+	$html .= '</div>';
 
 	return $html;
+}
+
+/**
+ * Le catalogue de la page Bibliothèque : un en-tête qui présente le filtre
+ * choisi (collection, thème, personne, organisation), puis les documents ou
+ * l'annuaire des personnes et organisations.
+ */
+function bqb_render_catalog( $atts ) {
+	$url_f    = bqb_url_filters();
+	$annuaire = isset( $_GET['f_annuaire'] ) ? sanitize_key( wp_unslash( $_GET['f_annuaire'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+	$role     = isset( $_GET['f_role'] ) ? sanitize_key( wp_unslash( $_GET['f_role'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
+
+	if ( in_array( $annuaire, array( 'personnes', 'organisations' ), true ) ) {
+		$orgs    = ( 'organisations' === $annuaire );
+		$choices = $orgs ? bqb_org_types() : bqb_person_roles();
+		$role    = array_key_exists( $role, $choices ) ? $role : '';
+		$title   = $orgs ? 'Organisations et sources' : ( 'laureat' === $role ? 'Les lauréats' : 'Auteurs et personnes' );
+
+		$html  = '<header class="bqb-catalog__head"><span class="bqb-catalog__eyebrow">Annuaire</span><h2 class="bqb-catalog__title">' . esc_html( $title ) . '</h2>';
+		$html .= '<a class="bqb-catalog__back" href="' . esc_url( bqb_library_link() ) . '">Voir tous les documents</a></header>';
+
+		return $html . bqb_render_people(
+			$orgs,
+			$role,
+			function ( $key ) use ( $annuaire ) {
+				return bqb_library_link( array( 'f_annuaire' => $annuaire, 'f_role' => $key ) );
+			}
+		);
+	}
+
+	$html = bqb_render_context( $url_f );
+
+	if ( ! $html ) {
+		$html = '<header class="bqb-catalog__head"><span class="bqb-catalog__eyebrow">Catalogue</span><h2 class="bqb-catalog__title">' . esc_html( $atts['titre_catalogue'] ) . '</h2></header>';
+	}
+
+	$docs            = array_fill_keys( array_keys( bqb_short_map() ), '' );
+	$docs['annee']   = '';
+	$docs['acces']   = '';
+	$docs['groupe']  = '';
+	$docs['tri']     = '';
+	$docs['nombre']  = '';
+	$docs['filtres'] = 'oui';
+	$docs['titre']   = '';
+	$docs['vide']    = 'Aucun document ne correspond à ces critères pour le moment.';
+	$docs['pagination'] = 'oui';
+	$docs['ancre']   = 'bqb-catalogue';
+
+	return $html . bqb_render_documents( $docs );
+}
+
+/**
+ * En-tête du catalogue quand un seul sujet est choisi : il remplace les
+ * anciennes pages séparées, avec la description, la photo ou le logo.
+ */
+function bqb_render_context( $url_f ) {
+	$labels = array(
+		'personne'     => array( 'bqb_personne', 'Auteur' ),
+		'organisation' => array( 'bqb_organisation', 'Organisation' ),
+		'collection'   => array( 'bqb_collection', 'Collection' ),
+		'theme'        => array( 'bqb_theme', 'Thème' ),
+	);
+
+	$term = null;
+	foreach ( $labels as $short => $info ) {
+		if ( ! empty( $url_f[ $short ] ) ) {
+			$found = get_term_by( 'slug', $url_f[ $short ], $info[0] );
+			if ( $found ) {
+				$term  = $found;
+				$label = $info[1];
+				break;
+			}
+		}
+	}
+
+	if ( ! $term ) {
+		return '';
+	}
+
+	$visual = '';
+	$extra  = '';
+	$text   = $term->description;
+
+	if ( 'bqb_personne' === $term->taxonomy ) {
+		$photo = (int) get_term_meta( $term->term_id, 'bqb_photo', true );
+		$roles = array_intersect_key( bqb_person_roles(), array_flip( (array) get_term_meta( $term->term_id, 'bqb_roles', true ) ) );
+		$year  = get_term_meta( $term->term_id, 'bqb_annee_prix', true );
+		$prix  = (int) get_term_meta( $term->term_id, 'bqb_prix_id', true );
+		$prix  = $prix ? get_term( $prix, 'bqb_prix' ) : null;
+		$site  = get_term_meta( $term->term_id, 'bqb_site', true );
+		$bio   = get_term_meta( $term->term_id, 'bqb_bio', true );
+
+		$visual = $photo ? wp_get_attachment_image( $photo, 'medium', false, array( 'class' => 'bqb-context__photo', 'alt' => 'Portrait de ' . $term->name ) ) : '';
+		$label  = $roles ? implode( ', ', $roles ) : $label;
+		$text   = $bio ? $bio : $text;
+
+		if ( $prix && ! is_wp_error( $prix ) ) {
+			$extra .= '<p class="bqb-context__prize">' . esc_html( $prix->name ) . ( $year ? ' ' . (int) $year : '' ) . '</p>';
+		}
+		if ( $site ) {
+			$extra .= '<p><a class="bqb-btn bqb-btn--ghost" href="' . esc_url( $site ) . '" target="_blank" rel="noopener">Page personnelle</a></p>';
+		}
+	}
+
+	if ( 'bqb_organisation' === $term->taxonomy ) {
+		$logo  = (int) get_term_meta( $term->term_id, 'bqb_logo', true );
+		$type  = get_term_meta( $term->term_id, 'bqb_type_orga', true );
+		$types = bqb_org_types();
+		$site  = get_term_meta( $term->term_id, 'bqb_site', true );
+
+		$visual = $logo ? wp_get_attachment_image( $logo, 'medium', false, array( 'class' => 'bqb-context__logo', 'alt' => 'Logo ' . $term->name ) ) : '';
+		$label  = ( $type && isset( $types[ $type ] ) ) ? $types[ $type ] : $label;
+
+		if ( $site ) {
+			$extra .= '<p><a class="bqb-btn bqb-btn--ghost" href="' . esc_url( $site ) . '" target="_blank" rel="noopener">Site internet</a></p>';
+		}
+	}
+
+	$color = '';
+	if ( 'bqb_collection' === $term->taxonomy ) {
+		$anc   = get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' );
+		$root  = $anc ? get_term( end( $anc ), $term->taxonomy ) : $term;
+		$color = $root && ! is_wp_error( $root ) ? get_term_meta( $root->term_id, 'bqb_couleur', true ) : '';
+	}
+
+	// Le chemin, pour remonter d'un niveau sans revenir en haut de page.
+	$path = '';
+	foreach ( array_reverse( get_ancestors( $term->term_id, $term->taxonomy, 'taxonomy' ) ) as $ancestor_id ) {
+		$ancestor = get_term( $ancestor_id, $term->taxonomy );
+		if ( $ancestor && ! is_wp_error( $ancestor ) ) {
+			$path .= '<a href="' . esc_url( bqb_term_url( $ancestor ) ) . '">' . esc_html( $ancestor->name ) . '</a><span aria-hidden="true">›</span>';
+		}
+	}
+
+	$html  = '<header class="bqb-context' . ( $visual ? ' has-visual' : '' ) . '"' . ( $color ? ' style="--bqb-accent:' . esc_attr( $color ) . ';"' : '' ) . '>';
+	$html .= $visual ? '<div class="bqb-context__visual">' . $visual . '</div>' : '';
+	$html .= '<div class="bqb-context__body">';
+	$html .= '<span class="bqb-catalog__eyebrow">' . ( $path ? '<span class="bqb-context__path">' . $path . '</span>' : '' ) . esc_html( $label ) . '</span>';
+	$html .= '<h2 class="bqb-catalog__title">' . esc_html( $term->name ) . '</h2>';
+	$html .= $text ? '<p class="bqb-context__text">' . nl2br( esc_html( $text ) ) . '</p>' : '';
+	$html .= $extra;
+
+	// Sous-catégories, en raccourcis.
+	$map   = bqb_term_children_map( $term->taxonomy );
+	$chips = '';
+	$short = bqb_short_name( $term->taxonomy );
+
+	foreach ( isset( $map[ $term->term_id ] ) ? $map[ $term->term_id ] : array() as $child ) {
+		$n = bqb_count( array( $short => array( $child->slug ) ) );
+		if ( $n || bqb_settings()['afficher_vides'] ) {
+			$chips .= '<a class="bqb-chip bqb-chip--nav" href="' . esc_url( bqb_term_url( $child ) ) . '">' . esc_html( $child->name ) . ' <span>' . (int) $n . '</span></a>';
+		}
+	}
+
+	$html .= $chips ? '<nav class="bqb-subnav" aria-label="Sous-catégories">' . $chips . '</nav>' : '';
+
+	return $html . '</div></header>';
 }
 
 function bqb_render_block_card( $num, $title, $text, $color, $url, $body, $class = '' ) {
@@ -3244,27 +3508,19 @@ function bqb_render_block_card( $num, $title, $text, $color, $url, $body, $class
  * La navigation transversale du schéma : recherche, chronologie, index.
  */
 function bqb_render_lib_nav() {
-	$s     = bqb_settings();
-	$links = array();
+	$catalogue = bqb_library_url();
 
-	$catalogue = $s['page_catalogue'] ? get_permalink( (int) $s['page_catalogue'] ) : '';
-
-	if ( $catalogue ) {
-		$links[] = array( $catalogue, 'Recherche avancée', 'search' );
-		$links[] = array( add_query_arg( 'f_groupe', 'annee', $catalogue ), 'Chronologie', 'calendar' );
-	}
-
-	if ( $s['page_personnes'] ) {
-		$links[] = array( get_permalink( (int) $s['page_personnes'] ), 'Auteurs et personnes', 'person' );
-	}
-
-	if ( $s['page_organisations'] ) {
-		$links[] = array( get_permalink( (int) $s['page_organisations'] ), 'Organisations et sources', 'building' );
-	}
-
-	if ( ! $links && ! $catalogue ) {
+	if ( ! $catalogue ) {
 		return '';
 	}
+
+	// Tout reste sur la page Bibliothèque : ces raccourcis filtrent le catalogue.
+	$links = array(
+		array( bqb_library_link(), 'Tous les documents', 'search' ),
+		array( bqb_library_link( array( 'f_groupe' => 'annee' ) ), 'Chronologie', 'calendar' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'personnes' ) ), 'Auteurs et personnes', 'person' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'organisations' ) ), 'Organisations et sources', 'building' ),
+	);
 
 	$icons = array(
 		'search'   => '<path d="M9 3a6 6 0 104.47 10l3.77 3.76 1.06-1.06-3.77-3.77A6 6 0 009 3zm0 1.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9z"/>',
@@ -3276,7 +3532,7 @@ function bqb_render_lib_nav() {
 	$html = '<nav class="bqb-libnav" aria-label="Navigation de la bibliothèque">';
 
 	if ( $catalogue ) {
-		$html .= '<form class="bqb-libnav__search" method="get" action="' . esc_url( $catalogue ) . '"><input type="search" name="f_q" class="bqb-input" placeholder="Rechercher un document, un auteur, un thème…" aria-label="Rechercher dans la bibliothèque" /><button type="submit" class="bqb-btn">Rechercher</button></form>';
+		$html .= '<form class="bqb-libnav__search" method="get" action="' . esc_url( bqb_library_link() ) . '"><input type="search" name="f_q" class="bqb-input" placeholder="Rechercher un document, un auteur, un thème…" aria-label="Rechercher dans la bibliothèque" /><button type="submit" class="bqb-btn">Rechercher</button></form>';
 	}
 
 	$html .= '<ul class="bqb-libnav__links">';
@@ -3293,8 +3549,8 @@ function bqb_render_lib_nav() {
  * ---------------------------------------------------------------------- */
 
 function bqb_breadcrumb( $trail ) {
-	$s    = bqb_settings();
-	$home = $s['page_bibliotheque'] ? array( get_permalink( (int) $s['page_bibliotheque'] ), 'Bibliothèque' ) : null;
+	$library = bqb_library_url();
+	$home    = $library ? array( $library, get_the_title( bqb_library_id() ) ) : null;
 
 	if ( $home ) {
 		array_unshift( $trail, $home );
@@ -3516,22 +3772,48 @@ function bqb_archive_router() {
 		return;
 	}
 
-	// Une page dédiée existe : l'adresse automatique y renvoie, filtres compris.
 	$page = (int) get_term_meta( $term->term_id, 'bqb_page', true );
-	if ( $page && 'publish' === get_post_status( $page ) ) {
-		$keep = array_intersect_key( wp_unslash( $_GET ), array_flip( array_map( function ( $k ) { return 'f_' . $k; }, array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe' ) ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		wp_safe_redirect( add_query_arg( array_map( 'rawurlencode', array_map( 'sanitize_text_field', $keep ) ), get_permalink( $page ) ), 301 );
-		exit;
-	}
+	$page = ( $page && 'publish' === get_post_status( $page ) ) ? $page : 0;
 
-	if ( ! bqb_settings()['archives_auto'] ) {
-		return;
+	// Une page dédiée existe, ou tout se trouve sur la page Bibliothèque :
+	// l'adresse automatique y renvoie définitivement, filtres compris.
+	if ( $page || ( ! bqb_settings()['archives_auto'] && bqb_library_url() ) ) {
+		$keep   = array_intersect_key( wp_unslash( $_GET ), array_flip( bqb_filter_params() ) ); // phpcs:ignore WordPress.Security.NonceVerification
+		$keep   = array_map( 'sanitize_text_field', array_filter( $keep, 'is_string' ) );
+		$target = $page ? add_query_arg( array_map( 'rawurlencode', $keep ), get_permalink( $page ) ) : bqb_term_url( $term, $keep );
+		wp_safe_redirect( $target, 301 );
+		exit;
 	}
 
 	get_header();
 	echo '<main id="content" class="site-main bqb-archive">' . bqb_render_archive( $term ) . '</main>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	get_footer();
 	exit;
+}
+
+/**
+ * Quand tout tient sur la page Bibliothèque, les adresses des catégories
+ * redirigent : elles n'ont rien à faire dans les sitemaps.
+ */
+function bqb_archives_hidden( $taxonomy ) {
+	return in_array( $taxonomy, array( 'bqb_collection', 'bqb_theme', 'bqb_personne', 'bqb_organisation' ), true )
+		&& ! bqb_settings()['archives_auto'] && bqb_library_url();
+}
+
+add_filter( 'wp_sitemaps_taxonomies', 'bqb_core_sitemap_taxonomies' );
+function bqb_core_sitemap_taxonomies( $taxonomies ) {
+	foreach ( array_keys( $taxonomies ) as $taxonomy ) {
+		if ( bqb_archives_hidden( $taxonomy ) ) {
+			unset( $taxonomies[ $taxonomy ] );
+		}
+	}
+
+	return $taxonomies;
+}
+
+add_filter( 'rank_math/sitemap/exclude_taxonomy', 'bqb_rank_math_sitemap_taxonomy', 10, 2 );
+function bqb_rank_math_sitemap_taxonomy( $exclude, $taxonomy ) {
+	return bqb_archives_hidden( $taxonomy ) ? true : $exclude;
 }
 
 function bqb_render_archive( $term ) {
@@ -3651,7 +3933,6 @@ function bqb_render_archive( $term ) {
 function bqb_sc_personnes( $atts ) {
 	$atts = shortcode_atts( array( 'famille' => 'personnes', 'role' => '', 'type' => '', 'groupe' => '' ), $atts, 'bqp_personnes' );
 	$orgs = ( 'organisations' === strtolower( $atts['famille'] ) );
-	$tax  = $orgs ? 'bqb_organisation' : 'bqb_personne';
 
 	$filter_key = $orgs ? 'type' : 'role';
 	$choices    = $orgs ? bqb_org_types() : bqb_person_roles();
@@ -3662,7 +3943,24 @@ function bqb_sc_personnes( $atts ) {
 	}
 	$current = array_key_exists( $current, $choices ) ? $current : '';
 
-	$args = array( 'taxonomy' => $tax, 'hide_empty' => false, 'orderby' => 'name' );
+	return bqb_render_people(
+		$orgs,
+		$current,
+		function ( $key ) use ( $filter_key ) {
+			return $key ? add_query_arg( $filter_key, $key ) : remove_query_arg( $filter_key );
+		},
+		$atts['groupe']
+	);
+}
+
+/**
+ * L'annuaire des personnes ou des organisations. $chip_url donne l'adresse
+ * de chaque pastille de filtre (clé vide pour « Tous »).
+ */
+function bqb_render_people( $orgs, $current, $chip_url, $groupe = '' ) {
+	$tax     = $orgs ? 'bqb_organisation' : 'bqb_personne';
+	$choices = $orgs ? bqb_org_types() : bqb_person_roles();
+	$args    = array( 'taxonomy' => $tax, 'hide_empty' => false, 'orderby' => 'name' );
 
 	if ( $current ) {
 		$args['meta_query'] = $orgs
@@ -3690,9 +3988,9 @@ function bqb_sc_personnes( $atts ) {
 
 	$html  = '<section class="bqb-people">';
 	$html .= '<nav class="bqb-people__filters">';
-	$html .= '<a class="bqb-chip bqb-chip--nav' . ( $current ? '' : ' is-on' ) . '" href="' . esc_url( remove_query_arg( $filter_key ) ) . '">Tous</a>';
+	$html .= '<a class="bqb-chip bqb-chip--nav' . ( $current ? '' : ' is-on' ) . '" href="' . esc_url( $chip_url( '' ) ) . '">Tous</a>';
 	foreach ( $choices as $key => $label ) {
-		$html .= '<a class="bqb-chip bqb-chip--nav' . ( $current === $key ? ' is-on' : '' ) . '" href="' . esc_url( add_query_arg( $filter_key, $key ) ) . '">' . esc_html( $label ) . '</a>';
+		$html .= '<a class="bqb-chip bqb-chip--nav' . ( $current === $key ? ' is-on' : '' ) . '" href="' . esc_url( $chip_url( $key ) ) . '">' . esc_html( $label ) . '</a>';
 	}
 	$html .= '</nav>';
 
@@ -3700,11 +3998,18 @@ function bqb_sc_personnes( $atts ) {
 		return $html . '<p class="bqb-docs__empty">Aucune fiche pour le moment.</p></section>';
 	}
 
-	$groupe  = $atts['groupe'] ? $atts['groupe'] : ( ( ! $orgs && 'laureat' === $current ) ? 'annee' : 'alpha' );
+	$groupe  = $groupe ? $groupe : ( ( ! $orgs && 'laureat' === $current ) ? 'annee' : 'alpha' );
 	$buckets = array();
 
+	// Peu de fiches : une seule grille, sans lettres qui allongent la page.
+	if ( 'alpha' === $groupe && count( $terms ) <= 24 ) {
+		$groupe = 'aucun';
+	}
+
 	foreach ( $terms as $t ) {
-		if ( 'annee' === $groupe ) {
+		if ( 'aucun' === $groupe ) {
+			$key = '';
+		} elseif ( 'annee' === $groupe ) {
 			$year = get_term_meta( $t->term_id, 'bqb_annee_prix', true );
 			$key  = $year ? 'Promotion ' . (int) $year : 'Année non renseignée';
 		} else {
@@ -3716,7 +4021,7 @@ function bqb_sc_personnes( $atts ) {
 	'annee' === $groupe ? krsort( $buckets ) : ksort( $buckets );
 
 	foreach ( $buckets as $key => $list ) {
-		$html .= '<div class="bqb-group"><h3 class="bqb-group__title">' . esc_html( $key ) . '</h3><div class="bqb-people__grid">';
+		$html .= '<div class="bqb-group">' . ( '' !== $key ? '<h3 class="bqb-group__title">' . esc_html( $key ) . '</h3>' : '' ) . '<div class="bqb-people__grid">';
 
 		foreach ( $list as $t ) {
 			$img_id = (int) get_term_meta( $t->term_id, $orgs ? 'bqb_logo' : 'bqb_photo', true );
@@ -3784,31 +4089,125 @@ function bqb_front_assets() {
 }
 
 function bqb_front_js() {
-	return "
-	(function(){
-		function boot(){
-			document.addEventListener('click', function(e){
-				var btn = e.target.closest('[data-cite]');
-				if (!btn) { return; }
-				var text = btn.getAttribute('data-cite');
-				var done = function(){ var old = btn.textContent; btn.textContent = 'Référence copiée'; setTimeout(function(){ btn.textContent = old; }, 1800); };
-				if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, function(){ window.prompt('Référence à copier :', text); }); }
-				else { window.prompt('Référence à copier :', text); }
-			});
+	return <<<'JS'
+(function(){
+	function each(list, fn){ Array.prototype.forEach.call(list, fn); }
 
-			// Adresses de recherche propres : les filtres vides ne sont pas envoyés.
-			Array.prototype.forEach.call(document.querySelectorAll('.bqb-filters, .bqb-libnav__search'), function(form){
-				form.addEventListener('submit', function(){
-					Array.prototype.forEach.call(form.querySelectorAll('input, select'), function(el){
-						if (!el.value) { el.disabled = true; }
-					});
-				});
-			});
+	function boot(){
+		document.addEventListener('click', function(e){
+			var btn = e.target.closest('[data-cite]');
+			if (!btn) { return; }
+			var text = btn.getAttribute('data-cite');
+			var done = function(){ var old = btn.textContent; btn.textContent = 'Référence copiée'; setTimeout(function(){ btn.textContent = old; }, 1800); };
+			if (navigator.clipboard) { navigator.clipboard.writeText(text).then(done, function(){ window.prompt('Référence à copier :', text); }); }
+			else { window.prompt('Référence à copier :', text); }
+		});
+
+		// Adresses de recherche propres : les filtres vides ne sont pas envoyés.
+		document.addEventListener('submit', function(e){
+			var form = e.target;
+			if (e.defaultPrevented || !form.matches('.bqb-filters, .bqb-libnav__search')) { return; }
+			each(form.querySelectorAll('input, select'), function(el){ if (!el.value) { el.disabled = true; } });
+		});
+
+		// Sur mobile, les filtres se déplient à la demande.
+		document.addEventListener('click', function(e){
+			var t = e.target.closest('[data-bqb-toggle]');
+			if (!t) { return; }
+			var open = t.form.classList.toggle('is-open');
+			t.setAttribute('aria-expanded', open ? 'true' : 'false');
+		});
+
+		// Page Bibliothèque : les blocs, les filtres, l'annuaire et la
+		// pagination mettent à jour le catalogue sans recharger la page.
+		var lib = document.querySelector('[data-bqb-lib]');
+		var cat = lib ? lib.querySelector('[data-bqb-catalog]') : null;
+
+		if (!cat || !window.fetch || !window.DOMParser || !window.URLSearchParams || !(window.history && history.pushState)) { return; }
+
+		var busy = null;
+
+		function samePage(url){ return url.origin === location.origin && url.pathname === location.pathname; }
+
+		function reveal(){
+			var top = cat.getBoundingClientRect().top;
+			if (top < 0 || top > window.innerHeight * 0.4) { cat.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 		}
 
-		if ('loading' === document.readyState) { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
-	})();
-	";
+		function load(href, push){
+			if (busy && busy.abort) { busy.abort(); }
+			busy = window.AbortController ? new AbortController() : null;
+			cat.classList.add('is-loading');
+			cat.setAttribute('aria-busy', 'true');
+
+			fetch(href, { credentials: 'same-origin', signal: busy ? busy.signal : undefined })
+				.then(function(r){ if (!r.ok) { throw new Error(r.status); } return r.text(); })
+				.then(function(html){
+					var fresh = new DOMParser().parseFromString(html, 'text/html').querySelector('[data-bqb-catalog]');
+					if (!fresh) { throw new Error('catalogue'); }
+					cat.innerHTML = fresh.innerHTML;
+					cat.classList.remove('is-loading');
+					cat.removeAttribute('aria-busy');
+					if (push) { history.pushState({ bqb: 1 }, '', href); }
+					var title = cat.querySelector('.bqb-catalog__title');
+					if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); }
+					reveal();
+				})
+				.catch(function(err){
+					if (err && 'AbortError' === err.name) { return; }
+					window.location.href = href;
+				});
+		}
+
+		history.replaceState({ bqb: 1 }, '', location.href);
+		window.addEventListener('popstate', function(e){ if (e.state && e.state.bqb) { load(location.href, false); } });
+
+		lib.addEventListener('click', function(e){
+			var a = e.target.closest('a[href]');
+			if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || '_blank' === a.target) { return; }
+
+			if (a.hasAttribute('data-bqb-more')) {
+				e.preventDefault();
+				var more = cat.querySelector('.bqb-filters__more');
+				if (more) { more.open = true; }
+				cat.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				return;
+			}
+
+			var url = new URL(a.href, location.href);
+			if (!samePage(url) || '#bqb-catalogue' !== url.hash) { return; }
+
+			e.preventDefault();
+			load(url.href, true);
+		});
+
+		lib.addEventListener('submit', function(e){
+			var form = e.target;
+			if (!form.matches('.bqb-filters, .bqb-libnav__search')) { return; }
+
+			var url = new URL(form.getAttribute('action') || location.href, location.href);
+			if (!samePage(url)) { return; }
+
+			e.preventDefault();
+			var params = new URLSearchParams();
+			each(form.querySelectorAll('input[name], select[name]'), function(el){ if (el.value) { params.append(el.name, el.value); } });
+			url.search = params.toString();
+			url.hash = 'bqb-catalogue';
+			load(url.href, true);
+		});
+
+		// Un filtre choisi dans une liste s'applique aussitôt.
+		lib.addEventListener('change', function(e){
+			var el = e.target;
+			if (!el.matches('.bqb-filters select')) { return; }
+			if (el.form.requestSubmit) { el.form.requestSubmit(); }
+			else { el.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); }
+		});
+	}
+
+	if ('loading' === document.readyState) { document.addEventListener('DOMContentLoaded', boot); } else { boot(); }
+})();
+JS;
 }
 
 function bqb_front_css() {
@@ -4002,6 +4401,41 @@ function bqb_front_css() {
 	.bqb-person__body strong{font-family:var(--bqb-serif);font-size:1.15rem;font-weight:600;color:var(--bqb-dark);}
 	.bqb-person__body em{font-style:normal;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bqb-bordeaux);}
 	.bqb-person__count{font-size:.78rem;color:var(--bqb-muted);}
+
+	/* Catalogue et annuaire intégrés à la page Bibliothèque */
+	.bqb-catalog{position:relative;margin:48px 0 0;padding:36px 0 0;border-top:1px solid var(--bqb-line);scroll-margin-top:110px;transition:opacity .2s;}
+	.bqb-catalog.is-loading{opacity:.45;pointer-events:none;}
+	.bqb-catalog.is-loading::after{content:"";position:absolute;top:18px;left:50%;width:26px;height:26px;margin-left:-13px;border:3px solid var(--bqb-line);border-top-color:var(--bqb-bordeaux);border-radius:50%;animation:bqb-spin .7s linear infinite;}
+	@keyframes bqb-spin{to{transform:rotate(360deg);}}
+	.bqb-catalog__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px;margin:0 0 22px;}
+	.bqb-catalog__head .bqb-catalog__title{flex:1 1 100%;}
+	.bqb-catalog__eyebrow{display:inline-flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bqb-accent,var(--bqb-bordeaux));}
+	.bqb-catalog__eyebrow::before{content:"";width:28px;height:2px;background:var(--bqb-accent,#C75A18);}
+	.bqb-catalog__title{margin:8px 0 0 !important;font-family:var(--bqb-serif) !important;font-size:clamp(1.8rem,3.4vw,2.6rem) !important;font-weight:600 !important;line-height:1.12 !important;color:var(--bqb-dark) !important;outline:none;}
+	.bqb-catalog__back{font-size:.84rem;font-weight:600;}
+	.bqb-context{display:flex;gap:28px;align-items:flex-start;margin:0 0 24px;padding:26px 28px;border:1px solid var(--bqb-line);border-left:4px solid var(--bqb-accent,var(--bqb-bordeaux));border-radius:6px;background:var(--bqb-soft);}
+	.bqb-context__visual img{display:block;width:120px;height:120px;object-fit:cover;border-radius:50%;box-shadow:0 12px 30px -18px rgba(49,2,12,.7);}
+	.bqb-context__visual img.bqb-context__logo{border-radius:6px;object-fit:contain;background:#fff;padding:12px;border:1px solid var(--bqb-line);box-shadow:none;}
+	.bqb-context__body{min-width:0;flex:1;}
+	.bqb-context__path{display:inline-flex;align-items:center;gap:8px;letter-spacing:.08em;}
+	.bqb-context__path span{color:var(--bqb-muted);}
+	.bqb-context__text{max-width:72ch;margin:12px 0 0;font-size:.98rem;line-height:1.7;color:#4a4a4a;}
+	.bqb-context__prize{margin:10px 0 0;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bqb-bordeaux);}
+	.bqb-context p:has(> .bqb-btn){margin:14px 0 0;}
+	.bqb-context .bqb-subnav{margin:18px 0 0;}
+	@media (max-width:640px){.bqb-context{flex-direction:column;padding:22px 20px;}}
+	.bqb-filters__toggle{display:none;}
+	@media (max-width:640px){
+		.bqb-docs .bqb-filters__toggle{display:flex;align-items:center;justify-content:space-between;width:100%;margin:0;padding:12px 16px;border:1px solid var(--bqb-line) !important;border-radius:4px;background:#fff !important;color:var(--bqb-bordeaux) !important;font:700 .78rem/1.2 var(--bqb-sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:none !important;}
+		.bqb-docs .bqb-filters__toggle::after{content:"+";font-size:1.2rem;font-weight:400;}
+		.bqb-docs .bqb-filters__toggle[aria-expanded="true"]::after{content:"\2212";}
+		.bqb-filters__toggle span{margin-left:auto;margin-right:12px;padding:2px 8px;border-radius:999px;background:var(--bqb-bordeaux);color:#fff;letter-spacing:0;}
+		.bqb-filters:has(.bqb-filters__toggle){padding:0 !important;border:0 !important;background:none !important;}
+		.bqb-filters__body{display:none;margin-top:10px;padding:18px;border:1px solid var(--bqb-line);border-radius:6px;background:#fff;}
+		.bqb-filters.is-open .bqb-filters__body{display:block;}
+	}
+	.bqb-active__label{align-self:center;margin-right:4px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-chip--clear{border-style:dashed;color:var(--bqb-muted) !important;}
 	';
 }
 

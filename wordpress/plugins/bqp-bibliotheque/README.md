@@ -1,8 +1,8 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 2.0.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 2.1.0.
 
-Type de contenu Document, neuf familles de classement pré-remplies, gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, pages publiques (5 blocs, catalogue filtré, fiches, pages automatiques).
+Type de contenu Document, neuf familles de classement pré-remplies, gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
 
 Indépendant des plugins Partenaires, Gouvernance et Formulaires : préfixe `bqb_`, aucun conflit.
 
@@ -20,16 +20,21 @@ Indépendant des plugins Partenaires, Gouvernance et Formulaires : préfixe `bqb
 
 Compresser le dossier en `.zip`, puis Extensions → Ajouter → Téléverser.
 
-### Pages à créer
+### Une seule page à créer
 
-| Page | Contenu |
-|---|---|
-| Bibliothèque | `[bqp_bibliotheque]` |
-| Recherche avancée | `[bqp_documents filtres="oui"]` |
-| Auteurs et personnes | `[bqp_personnes famille="personnes"]` |
-| Organisations | `[bqp_personnes famille="organisations"]` |
+Créer une page « Bibliothèque » avec le shortcode `[bqp_bibliotheque]`. C'est tout : la page est détectée automatiquement (contenu ou widget Elementor), aucun réglage n'est nécessaire.
 
-Puis Bibliothèque › Réglages : choisir ces pages dans les listes.
+Elle contient, de haut en bas :
+
+1. la recherche et les raccourcis (Tous les documents, Chronologie, Auteurs et personnes, Organisations et sources)
+2. les 5 blocs
+3. le catalogue (`#bqb-catalogue`) avec ses filtres, ou l'annuaire
+
+Chaque lien des blocs, chaque filtre, chaque fiche de l'annuaire et chaque page de résultats met à jour le catalogue **sans recharger la page**. L'adresse change quand même (bouton retour, partage et favoris fonctionnent) ; sans JavaScript, les mêmes liens rechargent la page et descendent au catalogue.
+
+Quand un sujet est choisi (collection, thème, personne, organisation), un en-tête le présente au-dessus des résultats : description, photo et biographie, logo, sous-catégories.
+
+Mise à jour depuis la 2.0 : les pages Recherche avancée, Auteurs et Organisations peuvent être supprimées. Les anciennes adresses `/collection/…`, `/theme/…`, `/personne/…`, `/organisation/…` redirigent en 301 vers la page Bibliothèque filtrée et sortent des sitemaps (WordPress et Rank Math).
 
 ## Le principe : un modèle à facettes
 
@@ -86,9 +91,10 @@ Pour mettre à jour une page : remplacer le shortcode dans le widget Elementor, 
 
 - Afficher ou masquer les liens vides dans les 5 blocs (masqués par défaut)
 - Nombre de documents par page
-- Pages Bibliothèque, Recherche avancée, Personnes, Organisations, Contact
+- Page Bibliothèque (détection automatique, ou choix manuel) et page Contact
 - Titre, texte et couleur du 5e bloc
-- Fiches automatiques et pages automatiques des catégories, activables séparément
+- Fiche automatique des documents
+- Pages séparées pour les collections, thèmes, personnes et organisations : désactivées par défaut
 
 ## Les shortcodes
 
@@ -119,11 +125,18 @@ Exemples :
 
 ### `[bqp_bibliotheque]`
 
-Les 5 blocs : 4 espaces de collections et le bloc thèmes en pleine largeur. Attributs `vides="oui|non"` (prioritaire sur le réglage) et `navigation="non"`.
+La page Bibliothèque complète : recherche, 5 blocs, catalogue et annuaire.
+
+| Attribut | Valeurs |
+|---|---|
+| `vides` | `oui` ou `non`, prioritaire sur le réglage |
+| `navigation` | `non` pour masquer la recherche et les raccourcis |
+| `catalogue` | `non` pour n'afficher que les blocs (par exemple sur l'accueil) ; leurs liens mènent alors à la page Bibliothèque |
+| `titre_catalogue` | titre du catalogue, « Tous les documents » par défaut |
 
 ### `[bqp_personnes]`
 
-Annuaire. `famille="personnes|organisations"`, `role="laureat|auteur|expert|partenaire"`, `type="…"` pour les organisations.
+Annuaire autonome, pour une autre page si besoin (la page Bibliothèque intègre déjà le sien). `famille="personnes|organisations"`, `role="laureat|auteur|expert|partenaire"`, `type="…"` pour les organisations.
 
 ### `[bqp_document_fiche]`
 
@@ -131,12 +144,15 @@ Fiche d'un document dans une mise en page Elementor. `id="123"` facultatif.
 
 ## Paramètres d'adresse
 
-La barre de filtres utilise des paramètres préfixés pour ne pas entrer en conflit avec WordPress : `f_q`, `f_collection`, `f_nature`, `f_theme`, `f_secteur`, `f_pays`, `f_prix`, `f_personne`, `f_organisation`, `f_motcle`, `f_annee`, `f_tri`, `f_groupe`, et `pg` pour la page. Seule la première liste d'une page écoute l'adresse.
+La barre de filtres utilise des paramètres préfixés pour ne pas entrer en conflit avec WordPress : `f_q`, `f_collection`, `f_nature`, `f_theme`, `f_secteur`, `f_pays`, `f_prix`, `f_personne`, `f_organisation`, `f_motcle`, `f_annee`, `f_tri`, `f_groupe`, `pg` pour la page, et pour l'annuaire `f_annuaire` (`personnes` ou `organisations`) et `f_role` (rôle ou type). Seule la première liste d'une page écoute l'adresse.
 
-## Pages publiques automatiques
+Les vues filtrées gardent l'adresse canonique de la page Bibliothèque : Google n'indexe qu'une page, pas une par combinaison de filtres.
 
-- **Fiche document** `/bibliotheque/titre/` : fil d'Ariane, badge de collection, résumé, boutons Télécharger, Regarder, Consulter ou Demander l'accès selon le niveau, bouton Citer, vidéo intégrée, informations, documents associés dans les deux sens
-- **Collections, Thèmes, Personnes, Organisations** : page générée automatiquement, ou redirection 301 vers la page dédiée si elle est renseignée dans l'Arborescence
+## Pages publiques
+
+- **Page Bibliothèque** : la seule page à créer
+- **Fiche document** `/bibliotheque/titre/` : générée pour chaque document. Fil d'Ariane vers la page Bibliothèque filtrée, badge de collection, résumé, boutons Télécharger, Regarder, Consulter ou Demander l'accès selon le niveau, bouton Citer, vidéo intégrée, informations, documents associés dans les deux sens
+- **Page dédiée** (facultatif) : une catégorie peut pointer vers une page Elementor choisie dans l'Arborescence ; ses liens et son ancienne adresse y mènent alors
 
 ## Ce qui est créé automatiquement
 
@@ -158,5 +174,6 @@ Dans un WordPress 6.8 réel avec le thème Hello Elementor et les quatre plugins
 - Arborescence : renommage (slug conservé), ajout racine et enfant, panneau de détail, glisser-déposer, suppression, recherche, copie du shortcode, vérifiés en base
 - Classement : thèmes, personnes, organisation et pays créés depuis le document, vérifiés en base
 - Générateur : shortcode et compteur en direct
-- Réglages : affichage des liens vides activé puis visible sur le site
+- Réglages : affichage des liens vides activé puis visible sur le site ; détection automatique de la page Bibliothèque
+- Page unique (2.1) : lien de bloc, filtre par liste, retrait d'une pastille, annuaire, lauréats, fiche personne, recherche, bouton retour, tous sans rechargement ; redirections 301 des anciennes adresses, filtres conservés ; exclusion des sitemaps ; filtres repliables sur mobile, sans débordement horizontal
 - Front : toutes les pages en HTTP 200, aucune erreur PHP ni JavaScript, liens du plugin en bordeaux malgré le rose du thème
