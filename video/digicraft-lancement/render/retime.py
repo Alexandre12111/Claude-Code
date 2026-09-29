@@ -36,6 +36,12 @@ SEGMENTS = [
 ]
 
 
+# Variante anglaise (voix plus longue) : chiffres +2,4 s, lecture sérénité +1,2 s.
+import os as _os
+if _os.environ.get('DC_VARIANT') == 'en':
+    SEGMENTS = [(a, b, {(36.0, 40.3): 6.0, (42.6, 44.2): 4.5}.get((a, b), d), c) for a, b, d, c in SEGMENTS]
+
+
 def table():
     pts = [(0.0, 0.0)]
     n = 0.0

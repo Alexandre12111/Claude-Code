@@ -10,7 +10,7 @@ Mu.N = int(58.6 * 48000)
 from music import SR, lp, hp, bp, reverb, OUT
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'render'))
-import retime  # noqa: E402
+import retime  # noqa: E402  (DC_VARIANT=en pour la version anglaise)
 
 N = Mu.N
 rng = np.random.default_rng(23)
@@ -274,5 +274,5 @@ at3(wet, 49.3, sparkle(0.7, 0.5, n=6, lo=4000))
 
 mix = reverb(dry, 1.2, 0.12) + reverb(wet, 2.4, 0.38)
 mix = np.tanh(mix * 1.1) / 1.1
-sf.write(os.path.join(OUT, 'sfx6.wav'), mix.astype(np.float32), SR)
+sf.write(os.path.join(OUT, 'sfx_en.wav' if os.environ.get('DC_VARIANT') == 'en' else 'sfx6.wav'), mix.astype(np.float32), SR)
 print('sfx6 ok', round(float(np.max(np.abs(mix))), 3))
