@@ -20,7 +20,7 @@ function schiesser_page_contact_url() {
 	if ( null !== $url ) {
 		return $url;
 	}
-	$page = get_page_by_path( 'contact' );
+	$page = schiesser_page( 'contact' );
 	if ( ! $page || false === strpos( $page->post_content, 'wp:schiesser/formulaire' ) ) {
 		$trouve = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'numberposts' => 1, 's' => 'wp:schiesser/formulaire', 'search_columns' => array( 'post_content' ) ) );
 		$page   = $trouve ? $trouve[0] : $page;
@@ -37,7 +37,7 @@ function schiesser_page_contact_url() {
 function schiesser_boutons_commande( $p, $forme = 'fiche' ) {
 	$tel     = schiesser_reglage( 'telephone' );
 	$etat    = function_exists( 'schiesser_barre_mobile_etat' ) ? schiesser_barre_mobile_etat() : array( true, '' );
-	$message = add_query_arg( 'produit', rawurlencode( $p['nom'] ?? '' ), schiesser_page_contact_url() ) . '#ecrire';
+	$message = add_query_arg( 'produit', rawurlencode( $p['nom'] ?? '' ), schiesser_page_contact_url() ) . '#schreiben';
 	$court   = 'barre' === $forme;
 	$html    = '<div class="cmd cmd--' . esc_attr( $forme ) . ' js-cmd' . ( $tel ? '' : ' cmd--sans-tel' ) . '" data-produit="' . esc_attr( $p['nom'] ?? '' ) . '">';
 	if ( $tel ) {

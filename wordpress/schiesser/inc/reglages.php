@@ -67,22 +67,22 @@ function schiesser_reglages_defaut() {
 		'ville'              => 'Basel',
 		'region'             => 'Basel-Stadt',
 		'pays'               => 'CH',
-		'mention'            => 'Confiserie à Bâle · Marktplatz · depuis 1870',
+		'mention'            => 'Confiserie & Tea Room · Marktplatz Basel · seit 1870',
 		'lien_maps'          => 'https://www.google.com/maps/search/?api=1&query=Confiserie+Schiesser%2C+Marktplatz+19%2C+4051+Basel',
 		'carte_google'       => '', // adresse d'intégration Google Maps (facultatif)
 		'carte_au_clic'      => 0,  // carte Google affichée seulement après un clic
 		// Horaires
 		'horaires'           => $horaires,
-		'horaires_note'      => 'Les horaires peuvent varier les jours fériés. En cas de doute, un appel suffit.',
+		'horaires_note'      => 'An Feiertagen können die Öffnungszeiten abweichen. Im Zweifel genügt ein Anruf.',
 		'feries'             => schiesser_feries_defaut(), // jours fériés de Bâle (inc/horaires.php)
 		'exceptions'         => array(),                  // fermetures et horaires exceptionnels datés
 		'annonces'           => array(),                  // bandeau d'annonce (inc/annonces.php)
 		'annonce_feries'     => 1,
 		'barre_mobile'       => 1,
-		'allergenes_note'    => 'Nos créations sont préparées dans un atelier qui travaille aussi le gluten, les fruits à coque, le lait et les œufs : des traces sont possibles. Notre équipe vous renseigne volontiers.',
+		'allergenes_note'    => 'In unserer Backstube werden auch Gluten, Nüsse, Milch und Eier verarbeitet: Spuren sind möglich. Unser Team gibt Ihnen gerne Auskunft.',
 		// Accueil et pied de page
-		'vitrine'            => array( 'Läckerli', 'Truffes', 'Tarte du jour' ),
-		'presentation'       => 'La Confiserie Schiesser est une confiserie artisanale fondée en 1870 sur le Marktplatz de Bâle. Läckerli de Bâle, truffes, pralinés et coffrets y sont préparés à la main, et son salon de thé accueille les visiteurs au premier étage.',
+		'vitrine'            => array( 'Läckerli', 'Truffes', 'Fruchtwähe' ),
+		'presentation'       => 'Die Confiserie Schiesser wurde 1870 am Basler Marktplatz gegründet. Läckerli, Pralinen, Torten und Gebäck entstehen in der eigenen Backstube; im ersten Stock liegt der Tea Room, das älteste Kaffeehaus der Schweiz.',
 		'instagram'          => '',
 		'facebook'           => '',
 		// Établissement (SEO)

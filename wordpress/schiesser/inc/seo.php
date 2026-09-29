@@ -157,11 +157,12 @@ function schiesser_schema_etablissement() {
 
 /** Adresse de la carte du salon : page contenant une section avec l'ancre « carte ». */
 function schiesser_url_carte() {
-	foreach ( array( 'salon-de-the', 'tea-room' ) as $slug ) {
-		$page = get_page_by_path( $slug );
-		if ( $page && 'publish' === $page->post_status && false !== strpos( $page->post_content, '"ancre":"carte"' ) ) {
-			return get_permalink( $page ) . '#carte';
-		}
+	$page = schiesser_page( 'salon' );
+	if ( $page && false !== strpos( $page->post_content, '"ancre":"karte"' ) ) {
+		return get_permalink( $page ) . '#karte';
+	}
+	if ( $page && false !== strpos( $page->post_content, '"ancre":"carte"' ) ) {
+		return get_permalink( $page ) . '#carte';
 	}
 	return '';
 }
@@ -366,6 +367,9 @@ function schiesser_schema_produit( $post ) {
 
 /** Liste des produits présentés sur la page (bloc « Grille des produits »). */
 function schiesser_schema_liste_produits( $post ) {
+	if ( function_exists( 'schiesser_boutique_prete' ) && ! schiesser_boutique_prete() ) {
+		return null; // liste pas encore en ligne
+	}
 	$bloc = schiesser_trouver_bloc( 'schiesser/produits', schiesser_blocs_page( $post ) );
 	if ( $bloc ) {
 		$produits = schiesser_liste_produits( $bloc['attrs']['source'] ?? 'auto', (int) ( $bloc['attrs']['limite'] ?? 0 ) );
@@ -392,7 +396,7 @@ function schiesser_schema_liste_produits( $post ) {
 	return array(
 		'@type'           => 'ItemList',
 		'@id'             => get_permalink( $post ) . '#produits',
-		'name'            => schiesser_texte_brut( $bloc['attrs']['titre'] ?? 'Produits' ),
+		'name'            => schiesser_texte_brut( $bloc['attrs']['titre'] ?? 'Produkte' ),
 		'numberOfItems'   => count( $elements ),
 		'itemListElement' => $elements,
 	);

@@ -3,6 +3,7 @@
  * Thème Schiesser : point d'entrée.
  *
  * Chaque fichier de inc/ gère une partie du site :
+ * - langue.php        : site public en allemand, administration en français, dates et adresses allemandes
  * - setup.php         : réglages du thème, styles, scripts, navigation
  * - charte.php        : couleurs et typographie modifiables
  * - reglages.php      : données des « Réglages maison » (horaires, contacts…)
@@ -11,6 +12,7 @@
  * - page-reglages.php : l'écran « Réglages maison » de l'administration
  * - shortcodes.php    : codes courts [schiesser_horaires], [schiesser_horaires_phrase], [schiesser_adresse]…
  * - produits.php      : type de contenu « Produits boutique », ses champs et ses pages
+ * - lancement.php     : liste des produits « en préparation » (Produktliste folgt) et bouton de mise en ligne
  * - tea-room.php      : type de contenu « Produits Tea Room » (la carte du salon de thé)
  * - allergenes.php    : allergènes et régimes des produits et du Tea Room, pictogrammes, filtres
  * - blocs.php         : blocs sur mesure (Hero, Section, Grille) et styles des blocs
@@ -25,6 +27,8 @@
  * - aujourdhui.php    : écran « Aujourd'hui » (vitrine, suggestion, épuisés, annonce, messages)
  * - client.php        : « Appeler pour commander », « Ma sélection », partage, navigation fluide
  * - edition.php       : sections programmées, « Modifier cette section », point d'intérêt des photos, menu du gérant
+ * - contenu-produits.php : liste de prix de la boutique et carte du Tea Room (allemand)
+ * - contenu-pages.php : textes des pages en allemand
  * - demo.php          : import du contenu de démonstration
  */
 
@@ -34,6 +38,7 @@ define( 'SCHIESSER_VERSION', '0.8.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
+require SCHIESSER_DIR . '/inc/langue.php';
 require SCHIESSER_DIR . '/inc/setup.php';
 require SCHIESSER_DIR . '/inc/charte.php';
 require SCHIESSER_DIR . '/inc/reglages.php';
@@ -42,6 +47,7 @@ require SCHIESSER_DIR . '/inc/annonces.php';
 require SCHIESSER_DIR . '/inc/page-reglages.php';
 require SCHIESSER_DIR . '/inc/shortcodes.php';
 require SCHIESSER_DIR . '/inc/produits.php';
+require SCHIESSER_DIR . '/inc/lancement.php';
 require SCHIESSER_DIR . '/inc/tea-room.php';
 require SCHIESSER_DIR . '/inc/allergenes.php';
 require SCHIESSER_DIR . '/inc/blocs.php';
@@ -57,4 +63,6 @@ require SCHIESSER_DIR . '/inc/admin.php';
 require SCHIESSER_DIR . '/inc/aujourdhui.php';
 require SCHIESSER_DIR . '/inc/client.php';
 require SCHIESSER_DIR . '/inc/edition.php';
+require SCHIESSER_DIR . '/inc/contenu-produits.php';
+require SCHIESSER_DIR . '/inc/contenu-pages.php';
 require SCHIESSER_DIR . '/inc/demo.php';

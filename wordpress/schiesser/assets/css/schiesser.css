@@ -1739,3 +1739,17 @@ header.site-header{view-transition-name:entete}
 @keyframes vt-sortie{to{opacity:0}}
 @keyframes vt-entree{from{opacity:0;transform:translateY(8px)}}
 @media(prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+
+/* ---------- Liste des produits en préparation (inc/lancement.php) ---------- */
+.bientot{display:grid;gap:clamp(24px,3vw,40px)}
+@media(min-width:900px){.bientot{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start}}
+.bientot-tete{padding:clamp(24px,3vw,40px);border:1px solid var(--line);background:color-mix(in srgb,var(--paper) 55%,#fff)}
+.bientot-k{margin:0 0 12px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--vert)}
+.bientot-texte{margin:0 0 22px;font-family:var(--serif);font-size:clamp(20px,2.2vw,26px);line-height:1.35;color:var(--ink)}
+.bientot-actions{display:flex;flex-wrap:wrap;gap:12px}
+.bientot-rubriken{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.bientot-rubriken li{display:grid;gap:4px;padding:16px 0;border-bottom:1px solid var(--line)}
+.bientot-nom{font-family:var(--serif);font-size:21px;line-height:1.2;color:var(--ink)}
+.bientot-liste{font-size:14px;color:var(--ink-soft)}
+.bg-ink .bientot-tete{background:color-mix(in srgb,var(--paper) 6%,transparent);border-color:var(--line-dark)}
+.bg-ink :is(.bientot-nom,.bientot-texte){color:var(--on-dark)}

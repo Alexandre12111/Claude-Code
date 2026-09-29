@@ -148,6 +148,12 @@ ob_start();
 <?php
 $grille = ob_get_clean();
 
+// Liste pas encore en ligne (photos en préparation) : aperçu de l'assortiment à la place (inc/lancement.php).
+if ( ! $apercu && function_exists( 'schiesser_boutique_prete' ) && ! schiesser_boutique_prete() ) {
+	$grille = schiesser_html_bientot( $produits );
+	$lien   = '';
+}
+
 if ( $apercu ) {
 	echo $grille; // phpcs:ignore WordPress.Security.EscapeOutput
 	return;
@@ -157,7 +163,7 @@ $fonds  = array( 'papier' => '', 'clair' => 'bg-soft', 'alterne' => 'bg-alt', 's
 $fond   = isset( $fonds[ $a['fond'] ?? '' ] ) ? $a['fond'] : 'papier';
 $ancre  = sanitize_title( $a['ancre'] ?? 'catalogue' );
 $titre  = trim( wp_strip_all_tags( $a['titre'] ?? '' ) );
-$lien   = trim( wp_strip_all_tags( $a['lienTexte'] ?? '' ) );
+$lien   = isset( $lien ) ? $lien : trim( wp_strip_all_tags( $a['lienTexte'] ?? '' ) );
 $classe = trim( 'sec sec-produits ' . $fonds[ $fond ] );
 ?>
 <section <?php echo get_block_wrapper_attributes( array( 'class' => $classe, 'id' => $ancre ?: null ) ); ?>>

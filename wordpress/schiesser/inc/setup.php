@@ -108,6 +108,10 @@ function schiesser_cle_page() {
 		return 'shop';
 	}
 	$correspondances = array(
+		'confiserie'     => 'shop',
+		'geschichte'     => 'story',
+		'besuch'         => 'visit',
+		'kontakt'        => 'contact',
 		'boutique'       => 'shop',
 		'la-boutique'    => 'shop',
 		'tea-room'       => 'tearoom',
@@ -133,7 +137,7 @@ function schiesser_url_boutique() {
 	if ( $id && 'publish' === get_post_status( $id ) ) {
 		return get_permalink( $id );
 	}
-	$page = get_page_by_path( 'boutique' );
+	$page = schiesser_page( 'boutique' );
 	return $page ? get_permalink( $page ) : home_url( '/' );
 }
 
