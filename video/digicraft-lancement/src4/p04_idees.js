@@ -33,7 +33,10 @@
       a.tA = words(T1, [{ t: 'Vos' }, { t: 'équipes' }, { t: 'ne' }, { t: 'manquent' }, { t: 'pas' }, { t: "d'idées.", c: 'o' }]);
       const T2 = el(root, { left: '0', width: '1920px', top: '92px', textAlign: 'center', color: 'var(--navy)', fontSize: '72px' });
       T2.classList.add('nh');
-      a.tB = words(T2, [{ t: 'Elles' }, { t: 'manquent' }, { t: "d'un" }, { t: 'outil', c: 'o' }, { t: 'pour' }, { t: 'les' }, { t: 'construire.' }]);
+      a.tB = words(T2, [{ t: 'Elles' }, { t: 'manquent' }, { t: "d'un" }, { t: 'outil', c: 'o' }, { t: 'pour' }, { t: 'les' }, { t: 'construire.', c: 'o' }]);
+      // Mise en avant discrète de « construire » : trait qui se dessine dessous.
+      a.tBwrap = T2;
+      a.cu = el(T2, { top: '92px', height: '8px', borderRadius: '4px', background: 'linear-gradient(90deg, #EB6739, #F6AF84)', transformOrigin: '0 50%', left: '0', width: '10px' });
 
       const ns = 'http://www.w3.org/2000/svg';
       const svg = document.createElementNS(ns, 'svg');
@@ -86,6 +89,16 @@
       hideWords(T, a.tA, 15.5, 0.03, 0.4);
       revealWords(T, a.tB, 15.62, 0.07, 0.6);
       hideWords(T, a.tB, 19.25, 0.025, 0.35);
+      if (!a.cuPos) {
+        const w = a.tB._w[6].parentElement, rt = a.tBwrap.getBoundingClientRect(), r = w.getBoundingClientRect();
+        a.cuPos = true;
+        Object.assign(a.cu.style, { left: r.left - rt.left + 4 + 'px', width: r.width - 22 + 'px' });
+      }
+      const cu = P(T, 16.1, 0.55, Ease.outExpo), cuOut = P(T, 19.2, 0.3, Ease.inCubic);
+      S(a.cu, { sx: Math.max(0.0001, cu * (1 - cuOut)), o: cu > 0 ? 1 - cuOut : 0 });
+      // léger reflet sur le mot
+      const wi = a.tB._w[6], sh = P(T, 16.35, 0.7, Ease.inOutSine);
+      wi.style.textShadow = sh > 0 && sh < 1 ? `0 0 ${18 * Math.sin(Math.PI * sh)}px rgba(248,168,126,${0.9 * Math.sin(Math.PI * sh)})` : 'none';
 
       const hubOut = P(T, 15.55, 0.4, Ease.inCubic);
       a.hubs.forEach((b, i) => {
