@@ -1,6 +1,6 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.0.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.0.1.
 
 Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
 
@@ -182,6 +182,15 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 - **Adresses** : ne pas créer de page enfant sous une page dont le slug est `bibliotheque`.
 - **Cache** : les compteurs sont mis en cache et vidés à chaque enregistrement de document ou de catégorie.
 - **Code Snippets** n'a pas de hook d'activation : les règles d'adresses sont enregistrées au premier chargement, puis à chaque changement de version.
+
+## Historique
+
+- **3.0.1** : le bouton « Rechercher et filtrer », prévu pour le mobile, n'apparaît plus sur ordinateur (le thème Hello forçait son affichage) ; intertitres de la notice aux couleurs du site ; taille des fichiers arrondie (« 180 Ko »)
+- **3.0.0** : arborescence du client à l'identique, 6 familles
+- **2.1.0** : une seule page Bibliothèque
+- **2.0.0** : Arborescence, Classement, Générateur, Réglages
+
+Pour tester le design avec de faux documents : snippet `bqp-bibliotheque-demo`.
 
 ## Testé
 

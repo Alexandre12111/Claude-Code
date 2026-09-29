@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       BQP Bibliothèque
  * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents classés selon l'arborescence du client, page Bibliothèque unique, shortcodes et fiches.
- * Version:           3.0.0
+ * Version:           3.0.1
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -21,7 +21,7 @@
  *
  * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
  *
- * Version : 3.0.0
+ * Version : 3.0.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '3.0.0' );
+	define( 'BQB_VERSION', '3.0.1' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -998,7 +998,9 @@ function bqb_file_label( $file_id ) {
 	}
 
 	$ext  = strtoupper( pathinfo( $path, PATHINFO_EXTENSION ) );
-	$size = file_exists( $path ) ? size_format( filesize( $path ), 1 ) : '';
+	$bytes = file_exists( $path ) ? (int) filesize( $path ) : 0;
+	// « 240 Ko », « 1,4 Mo » : une décimale seulement au-delà du mégaoctet.
+	$size = $bytes ? size_format( $bytes, $bytes >= MB_IN_BYTES ? 1 : 0 ) : '';
 
 	return trim( $ext . ( $size ? ' · ' . $size : '' ) );
 }
@@ -4807,9 +4809,13 @@ function bqb_front_css() {
 	.bqb-context p:has(> .bqb-btn){margin:14px 0 0;}
 	.bqb-context .bqb-subnav{margin:18px 0 0;}
 	@media (max-width:640px){.bqb-context{flex-direction:column;padding:22px 20px;}}
-	.bqb-filters__toggle{display:none;}
+	.bqb-docs .bqb-filters__toggle{display:none !important;}
+	.bqb-fiche__notice h2,.bqb-fiche__notice h3,.bqb-fiche__notice h4{margin:1.6em 0 .5em !important;font-family:var(--bqb-serif) !important;font-weight:600 !important;line-height:1.2 !important;color:var(--bqb-dark) !important;}
+	.bqb-fiche__notice h2{font-size:1.45rem !important;}
+	.bqb-fiche__notice h3{font-size:1.2rem !important;}
+	.bqb-fiche__notice h4{font-size:1.05rem !important;}
 	@media (max-width:640px){
-		.bqb-docs .bqb-filters__toggle{display:flex;align-items:center;justify-content:space-between;width:100%;margin:0;padding:12px 16px;border:1px solid var(--bqb-line) !important;border-radius:4px;background:#fff !important;color:var(--bqb-bordeaux) !important;font:700 .78rem/1.2 var(--bqb-sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:none !important;}
+		.bqb-docs .bqb-filters__toggle{display:flex !important;align-items:center;justify-content:space-between;width:100%;margin:0;padding:12px 16px;border:1px solid var(--bqb-line) !important;border-radius:4px;background:#fff !important;color:var(--bqb-bordeaux) !important;font:700 .78rem/1.2 var(--bqb-sans);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:none !important;}
 		.bqb-docs .bqb-filters__toggle::after{content:"+";font-size:1.2rem;font-weight:400;}
 		.bqb-docs .bqb-filters__toggle[aria-expanded="true"]::after{content:"\2212";}
 		.bqb-filters__toggle span{margin-left:auto;margin-right:12px;padding:2px 8px;border-radius:999px;background:var(--bqb-bordeaux);color:#fff;letter-spacing:0;}
