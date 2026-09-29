@@ -118,6 +118,9 @@ function schiesser_page_aujourdhui() {
 			<div class="notice notice-success is-dismissible"><p><strong>C’est enregistré.</strong> Le site est à jour.</p></div>
 		<?php endif; ?>
 
+		<?php if ( function_exists( 'schiesser_boutique_prete' ) && ! schiesser_boutique_prete() ) : ?>
+			<div class="notice notice-warning inline"><p><strong>Liste des produits en préparation :</strong> le site affiche « Produktliste folgt in Kürze ». <a href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT . '&page=schiesser-lancement' ) ); ?>">Afficher la liste quand les photos sont prêtes →</a></p></div>
+		<?php endif; ?>
 		<div class="s-auj-haut">
 			<div class="s-carte s-auj-etat<?php echo $etat[0] ? ' is-ouvert' : ''; ?>">
 				<div class="s-carte-corps">

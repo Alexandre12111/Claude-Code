@@ -223,7 +223,7 @@
     app.hidden = !S.tel;
     app.href = S.tel || '#';
     app.querySelector('span').textContent = e.ouvert ? 'Appeler pour commander' : 'Appeler (' + e.texte.replace('Fermé · ', '') + ')';
-    msg.href = (S.contact || '/') + ((S.contact || '').indexOf('?') < 0 ? '?' : '&') + 'selection=1#ecrire';
+    msg.href = (S.contact || '/') + ((S.contact || '').indexOf('?') < 0 ? '?' : '&') + 'selection=1#schreiben';
   }
   S.majSelection = majSelection;
   S.texteSelection = texteListe;

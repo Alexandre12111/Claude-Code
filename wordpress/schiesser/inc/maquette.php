@@ -792,6 +792,11 @@ function schiesser_mq_produits_catalogue( $a ) {
 }
 
 function schiesser_mq_rendu_catalogue( $a ) {
+	// Liste pas encore en ligne : aperçu de l'assortiment (inc/lancement.php).
+	if ( empty( $a['apercu'] ) && function_exists( 'schiesser_boutique_prete' ) && ! schiesser_boutique_prete() ) {
+		$tous = function_exists( 'schiesser_liste_produits' ) ? schiesser_liste_produits( 'auto' ) : array();
+		return $tous ? schiesser_mq_section( $a, schiesser_html_bientot( $tous ) ) : '';
+	}
 	$produits = array_values( schiesser_mq_produits_catalogue( $a ) );
 	if ( ! $produits ) {
 		return '';
@@ -1558,7 +1563,7 @@ function schiesser_mq_envoi_contact() {
 	$retour = isset( $_POST['retour'] ) ? esc_url_raw( wp_unslash( $_POST['retour'] ) ) : home_url( '/' ); // phpcs:ignore WordPress.Security.NonceVerification
 	$retour = wp_validate_redirect( $retour, home_url( '/' ) );
 	$aller  = function ( $etat ) use ( $retour ) {
-		wp_safe_redirect( add_query_arg( 'contact', $etat, $retour ) . '#ecrire' );
+		wp_safe_redirect( add_query_arg( 'contact', $etat, $retour ) . '#schreiben' );
 		exit;
 	};
 	// phpcs:disable WordPress.Security.NonceVerification

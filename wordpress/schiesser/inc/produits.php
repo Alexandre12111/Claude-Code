@@ -53,7 +53,7 @@ add_action( 'init', function () {
 		'menu_icon'           => 'dashicons-cart',
 		'supports'            => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
 		'has_archive'         => false, // la liste des produits est la page « La boutique »
-		'rewrite'             => array( 'slug' => 'produits', 'with_front' => false ),
+		'rewrite'             => array( 'slug' => 'produkte', 'with_front' => false ), // /produkte/… (les anciennes adresses /produits/… redirigent)
 	) );
 
 	register_taxonomy( SCHIESSER_CATEGORIE, SCHIESSER_PRODUIT, array(

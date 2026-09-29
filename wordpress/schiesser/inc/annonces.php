@@ -162,7 +162,7 @@ add_action( 'wp_footer', function () {
 	$tel   = schiesser_reglage( 'telephone' );
 	$liens = schiesser_mq_liens_maison();
 	$etat  = schiesser_barre_mobile_etat();
-	$visite = get_page_by_path( 'nous-visiter' );
+	$visite = schiesser_page( 'visiter' );
 	$icone = function ( $d ) {
 		return '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="' . $d . '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 	};
