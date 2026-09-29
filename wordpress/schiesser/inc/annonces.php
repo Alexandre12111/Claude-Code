@@ -77,10 +77,10 @@ function schiesser_annonces_actives() {
 			$parties = array();
 			foreach ( $groupes as $p ) {
 				$jour      = function ( $d ) use ( $auj ) {
-					return $d === $auj ? 'aujourd’hui' : schiesser_date_fr( $d, 'D j M' );
+					return $d === $auj ? 'heute' : schiesser_datum( $d, 'D j. M' );
 				};
 				$quand     = ucfirst( $p['date'] === $p['fin'] ? $jour( $p['date'] ) : $jour( $p['date'] ) . ' – ' . $jour( $p['fin'] ) );
-				$parties[] = $quand . ' (' . $p['motif'] . ') : ' . ( $p['plage'] ? 'ouvert de ' . schiesser_heure_fr( $p['plage'][0] ) . ' à ' . schiesser_heure_fr( $p['plage'][1] ) : 'fermé' );
+				$parties[] = $quand . ' (' . $p['motif'] . '): ' . ( $p['plage'] ? 'geöffnet von ' . schiesser_uhr( $p['plage'][0], false ) . ' bis ' . schiesser_uhr( $p['plage'][1] ) : 'geschlossen' );
 			}
 			$liste[] = array(
 				'texte' => implode( ' · ', $parties ),
@@ -100,14 +100,14 @@ add_action( 'schiesser_avant_entete', function () {
 	if ( ! $annonces ) {
 		return;
 	}
-	echo '<div class="annonces" role="region" aria-label="Annonces" data-nosnippet>';
+	echo '<div class="annonces" role="region" aria-label="Hinweise" data-nosnippet>';
 	foreach ( $annonces as $a ) {
 		$cle = substr( md5( $a['texte'] ), 0, 10 );
 		$fin = $a['fin'] ? ( new DateTimeImmutable( $a['fin'] . ' 23:59:59', wp_timezone() ) )->getTimestamp() * 1000 : 0;
 		echo '<div class="annonce annonce--' . esc_attr( $a['style'] ) . '" data-cle="' . esc_attr( $cle ) . '"' . ( $fin ? ' data-fin="' . esc_attr( (string) $fin ) . '"' : '' ) . '><div class="wrap">';
-		echo '<p>' . ( ! empty( $a['auto'] ) ? '<span class="annonce-k">Horaires</span> ' : '' );
+		echo '<p>' . ( ! empty( $a['auto'] ) ? '<span class="annonce-k">Öffnungszeiten</span> ' : '' );
 		echo $a['lien'] ? '<a href="' . esc_url( $a['lien'] ) . '">' . esc_html( $a['texte'] ) . ' <span aria-hidden="true">→</span></a>' : esc_html( $a['texte'] );
-		echo '</p><button type="button" class="annonce-fermer" aria-label="Masquer cette annonce">×</button></div></div>';
+		echo '</p><button type="button" class="annonce-fermer" aria-label="Hinweis ausblenden">×</button></div></div>';
 	}
 	echo '</div>';
 	// Annonce masquée par le visiteur (pour cette visite) ou périmée (page gardée en cache) : retirée avant affichage.
@@ -136,23 +136,23 @@ add_filter( 'body_class', function ( $classes ) {
 	return $classes;
 } );
 
-/** Texte d'état de la barre : « Ouvert jusqu'à 18 h 30 », « Fermé · ouvre demain à 8 h »… (recalculé en direct par site.js). */
+/** Texte d'état de la barre : « Geöffnet bis 18.30 Uhr », « Geschlossen · öffnet morgen um 8 Uhr »… (recalculé en direct par site.js). */
 function schiesser_barre_mobile_etat() {
 	$now = current_datetime();
 	$h   = schiesser_horaires_date( $now->format( 'Y-m-d' ) );
 	$t   = (int) $now->format( 'G' ) + (int) $now->format( 'i' ) / 60;
 	if ( $h && $t >= $h[0] && $t < $h[1] ) {
-		return array( true, 'Ouvert jusqu’à ' . schiesser_heure_fr( schiesser_heure_hhmm( $h[1] ) ) );
+		return array( true, 'Geöffnet bis ' . schiesser_uhr( schiesser_heure_hhmm( $h[1] ) ) );
 	}
 	for ( $k = 0; $k <= 14; $k++ ) {
 		$jour = $now->modify( '+' . $k . ' days' );
 		$x    = schiesser_horaires_date( $jour->format( 'Y-m-d' ) );
 		if ( $x && ( $k > 0 || $t < $x[0] ) ) {
-			$quand = 0 === $k ? '' : ( 1 === $k ? 'demain ' : wp_date( 'l', $jour->getTimestamp() ) . ' ' );
-			return array( false, 'Fermé · ouvre ' . $quand . 'à ' . schiesser_heure_fr( schiesser_heure_hhmm( $x[0] ) ) );
+			$quand = 0 === $k ? '' : ( 1 === $k ? 'morgen ' : 'am ' . schiesser_datum( $jour->getTimestamp(), 'l' ) . ' ' );
+			return array( false, 'Geschlossen · öffnet ' . $quand . 'um ' . schiesser_uhr( schiesser_heure_hhmm( $x[0] ) ) );
 		}
 	}
-	return array( false, 'Fermé' );
+	return array( false, 'Geschlossen' );
 }
 
 add_action( 'wp_footer', function () {
@@ -166,11 +166,11 @@ add_action( 'wp_footer', function () {
 	$icone = function ( $d ) {
 		return '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="' . $d . '" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 	};
-	echo '<nav class="barre-mobile" aria-label="Accès rapide">';
+	echo '<nav class="barre-mobile" aria-label="Schnellzugriff">';
 	if ( $tel ) {
-		echo '<a class="bm-lien" href="' . esc_url( schiesser_lien_tel() ) . '">' . $icone( 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2' ) . '<span>Appeler</span></a>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo '<a class="bm-lien" href="' . esc_url( schiesser_lien_tel() ) . '">' . $icone( 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2' ) . '<span>Anrufen</span></a>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
-	echo '<a class="bm-lien" href="' . esc_url( $liens['itineraire'] ) . '" target="_blank" rel="noopener">' . $icone( 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5' ) . '<span>Itinéraire</span></a>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	echo '<a class="bm-lien" href="' . esc_url( $liens['itineraire'] ) . '" target="_blank" rel="noopener">' . $icone( 'M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5' ) . '<span>Route</span></a>'; // phpcs:ignore WordPress.Security.EscapeOutput
 	$etat_html = '<span class="bm-led js-bm-led' . ( $etat[0] ? '' : ' shut' ) . '"></span><span class="js-bm-texte">' . esc_html( $etat[1] ) . '</span>';
 	echo $visite
 		? '<a class="bm-etat" href="' . esc_url( get_permalink( $visite ) ) . '" data-nosnippet>' . $etat_html . '</a>' // phpcs:ignore WordPress.Security.EscapeOutput

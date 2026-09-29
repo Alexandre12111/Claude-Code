@@ -15,8 +15,8 @@
 	"attributes": {
 		"align": { "type": "string", "default": "full" },
 		"numero": { "type": "string", "default": "01" },
-		"titre": { "type": "string", "default": "Les produits de la boutique" },
-		"note": { "type": "string", "default": "Cliquez un produit pour ouvrir sa fiche détaillée." },
+		"titre": { "type": "string", "default": "Unsere Spezialitäten" },
+		"note": { "type": "string", "default": "Klicken Sie auf ein Produkt für alle Details." },
 		"ancre": { "type": "string", "default": "catalogue" },
 		"fond": { "type": "string", "default": "papier" },
 		"source": { "type": "string", "default": "auto" },

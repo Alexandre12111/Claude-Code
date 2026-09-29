@@ -19,8 +19,8 @@ $balise = $args['h1'] ? 'h1' : 'p';
 ?>
 <section class="titre-page">
 	<div class="wrap">
-		<nav class="crumb crumb--clair" aria-label="Fil d'Ariane">
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
+		<nav class="crumb crumb--clair" aria-label="Brotkrümelnavigation">
+			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a>
 			<?php foreach ( $args['ariane'] as $lien ) : ?>
 				<span aria-hidden="true">·</span><a href="<?php echo esc_url( $lien[1] ); ?>"><?php echo esc_html( $lien[0] ); ?></a>
 			<?php endforeach; ?>

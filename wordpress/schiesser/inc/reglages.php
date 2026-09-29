@@ -142,10 +142,23 @@ function schiesser_heure_decimale( $hhmm ) {
 	return (int) $p[0] + ( isset( $p[1] ) ? (int) $p[1] / 60 : 0 );
 }
 
-/** Horaires du jour dans le fuseau du site, ex. « 07:30–18:30 », ou « Fermé aujourd'hui ». */
+/** Jours de la semaine en allemand, pour le site (l'administration garde schiesser_jours()). */
+function schiesser_jours_site() {
+	return array(
+		1 => 'Montag',
+		2 => 'Dienstag',
+		3 => 'Mittwoch',
+		4 => 'Donnerstag',
+		5 => 'Freitag',
+		6 => 'Samstag',
+		0 => 'Sonntag',
+	);
+}
+
+/** Horaires du jour dans le fuseau du site, ex. « 7.30–18.30 Uhr », ou « Heute geschlossen ». */
 function schiesser_horaires_du_jour() {
 	$p = schiesser_horaires_date( current_datetime()->format( 'Y-m-d' ) ); // jours fériés compris
-	return $p ? schiesser_heure_hhmm( $p[0] ) . '–' . schiesser_heure_hhmm( $p[1] ) : 'Fermé aujourd’hui';
+	return $p ? schiesser_uhr( schiesser_heure_hhmm( $p[0] ), false ) . '–' . schiesser_uhr( schiesser_heure_hhmm( $p[1] ) ) : 'Heute geschlossen';
 }
 
 /** 7.5 → « 07:30 » */
@@ -155,8 +168,8 @@ function schiesser_heure_hhmm( $x ) {
 }
 
 /**
- * Heure à la française : « 07:30 » → « 7 h 30 », « 08:00 » → « 8 h ».
- * Espaces insécables : l'heure n'est jamais coupée en fin de ligne.
+ * Heure à la française : « 07:30 » → « 7 h 30 », « 08:00 » → « 8 h » (administration).
+ * Sur le site, l'heure s'écrit à la suisse : schiesser_uhr() (« 7.30 Uhr »).
  */
 function schiesser_heure_fr( $hhmm ) {
 	$p = explode( ':', (string) $hhmm );
@@ -166,16 +179,16 @@ function schiesser_heure_fr( $hhmm ) {
 }
 
 /**
- * Horaires en une phrase, ex. « du lundi au vendredi de 7 h 30 à 18 h 30, le samedi de 8 h à 18 h
- * et le dimanche de 9 h à 17 h ». Toujours à jour : elle est calculée depuis les réglages.
+ * Horaires en une phrase, ex. « Montag bis Freitag von 7.30 bis 18.30 Uhr, Samstag von 8 bis 18 Uhr
+ * und Sonntag von 9 bis 17 Uhr ». Toujours à jour : elle est calculée depuis les réglages.
  */
 function schiesser_horaires_phrase() {
-	$noms    = array( 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi', 0 => 'dimanche' );
+	$noms    = schiesser_jours_site();
 	$tous    = schiesser_reglage( 'horaires' );
 	$groupes = array();
 	foreach ( schiesser_jours() as $n => $nom ) {
 		$h     = $tous[ $n ];
-		$texte = ! empty( $h['ferme'] ) ? 'fermé' : 'de ' . schiesser_heure_fr( $h['ouverture'] ) . ' à ' . schiesser_heure_fr( $h['fermeture'] );
+		$texte = ! empty( $h['ferme'] ) ? 'geschlossen' : 'von ' . schiesser_uhr( $h['ouverture'], false ) . ' bis ' . schiesser_uhr( $h['fermeture'] );
 		$der   = count( $groupes ) - 1;
 		if ( $der >= 0 && $groupes[ $der ]['texte'] === $texte ) {
 			$groupes[ $der ]['fin'] = $noms[ $n ];
@@ -185,21 +198,21 @@ function schiesser_horaires_phrase() {
 	}
 	$parties = array();
 	foreach ( $groupes as $g ) {
-		$jours     = $g['fin'] ? 'du ' . $g['debut'] . ' au ' . $g['fin'] : 'le ' . $g['debut'];
+		$jours     = $g['fin'] ? $g['debut'] . ' bis ' . $g['fin'] : $g['debut'];
 		$parties[] = $jours . ' ' . $g['texte'];
 	}
 	$dernier = array_pop( $parties );
-	return $parties ? implode( ', ', $parties ) . ' et ' . $dernier : (string) $dernier;
+	return $parties ? implode( ', ', $parties ) . ' und ' . $dernier : (string) $dernier;
 }
 
-/** Résumé lisible, par ex. « Lun–Ven 07:30–18:30 · Sam 08:00–18:00 ». */
+/** Résumé lisible, par ex. « Mo–Fr 7.30–18.30 · Sa 8–18 · So 9–17 ». */
 function schiesser_horaires_resume() {
-	$courts  = array( 1 => 'Lun', 2 => 'Mar', 3 => 'Mer', 4 => 'Jeu', 5 => 'Ven', 6 => 'Sam', 0 => 'Dim' );
+	$courts  = array( 1 => 'Mo', 2 => 'Di', 3 => 'Mi', 4 => 'Do', 5 => 'Fr', 6 => 'Sa', 0 => 'So' );
 	$groupes = array();
 	$tous    = schiesser_reglage( 'horaires' );
 	foreach ( schiesser_jours() as $n => $nom ) {
 		$h     = $tous[ $n ];
-		$texte = ! empty( $h['ferme'] ) ? 'fermé' : $h['ouverture'] . '–' . $h['fermeture'];
+		$texte = ! empty( $h['ferme'] ) ? 'geschlossen' : schiesser_uhr( $h['ouverture'], false ) . '–' . schiesser_uhr( $h['fermeture'], false );
 		$der   = count( $groupes ) - 1;
 		if ( $der >= 0 && $groupes[ $der ]['texte'] === $texte ) {
 			$groupes[ $der ]['fin'] = $courts[ $n ];

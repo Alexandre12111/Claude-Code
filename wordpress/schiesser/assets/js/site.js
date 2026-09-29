@@ -46,6 +46,8 @@
   var H = S.horaires || {};
   var P = S.particuliers || {}; // jours fériés et dates exceptionnelles : { "2026-04-06": { h: null, m: "Lundi de Pâques" } }
   var fuseau = (S.fuseau && S.fuseau.indexOf('/') > 0) ? S.fuseau : null;
+  // Heure à la suisse : 7.5 → « 7.30 », 8 → « 8 » (avec « Uhr » si demandé).
+  function uhr(x, avecUhr) { var h = Math.floor(x), m = Math.round((x % 1) * 60); return h + (m ? '.' + ('0' + m).slice(-2) : '') + (avecUhr ? '\u00a0Uhr' : ''); }
   function hh(h) { var m = Math.round((h % 1) * 60); return String(Math.floor(h)).padStart(2, '0') + ':' + String(m).padStart(2, '0'); }
   function maintenant() {
     var d = new Date();
@@ -68,12 +70,12 @@
     var t = maintenant();
     var j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1];
     document.querySelectorAll('.js-led').forEach(function (e) { e.classList.toggle('shut', !ouvert); });
-    document.querySelectorAll('.js-statut').forEach(function (e) { e.textContent = ouvert ? 'Ouvert' : 'Fermé'; });
-    document.querySelectorAll('.js-heures').forEach(function (e) { e.textContent = j ? hh(j[0]) + '–' + hh(j[1]) : 'Fermé aujourd’hui'; });
+    document.querySelectorAll('.js-statut').forEach(function (e) { e.textContent = ouvert ? 'Geöffnet' : 'Geschlossen'; });
+    document.querySelectorAll('.js-heures').forEach(function (e) { e.textContent = j ? uhr(j[0], false) + '–' + uhr(j[1], true) : 'Heute geschlossen'; });
     var options = { weekday: 'long', day: 'numeric', month: 'long' };
     if (fuseau) options.timeZone = fuseau;
     document.querySelectorAll('.js-date').forEach(function (e) {
-      try { e.textContent = t.d.toLocaleDateString(S.langue || 'fr', options); }
+      try { e.textContent = t.d.toLocaleDateString(S.langue || 'de', options); }
       catch (err) { e.textContent = t.d.toLocaleDateString(); }
     });
   }
@@ -115,18 +117,18 @@
     scope.addEventListener('schiesser:categorie', appliquer);
   });
 
-  /* barre du téléphone : « Ouvert jusqu'à 18 h 30 » / « Fermé · ouvre demain à 8 h » */
+  /* barre du téléphone : « Geöffnet bis 18.30 Uhr » / « Geschlossen · öffnet morgen um 8 Uhr » */
   var bm = document.querySelector('.js-bm-texte');
-  function hfr(x) { var h = Math.floor(x), m = Math.round((x % 1) * 60); return h + '\u00a0h' + (m ? '\u00a0' + ('0' + m).slice(-2) : ''); }
-  // État de la maison maintenant : { ouvert, texte } (« Ouvert jusqu'à 18 h 30 », « Fermé · ouvre demain à 8 h »).
+  function hfr(x) { return uhr(x, true); }
+  // État de la maison maintenant : { ouvert, texte } (« Geöffnet bis 18.30 Uhr », « Geschlossen · öffnet morgen um 8 Uhr »).
   function etatMaison() {
-    var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1], txt = 'Fermé';
-    if (ouvert) txt = 'Ouvert jusqu’à ' + hfr(j[1]);
+    var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1], txt = 'Geschlossen';
+    if (ouvert) txt = 'Geöffnet bis ' + hfr(j[1]);
     else for (var k = 0; k <= 14; k++) {
       var x = horairesDans(t, k);
       if (x && (k > 0 || t.h < x[0])) {
-        var quand = k === 0 ? '' : (k === 1 ? 'demain ' : ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'][(t.jour + k) % 7] + ' ');
-        txt = 'Fermé · ouvre ' + quand + 'à ' + hfr(x[0]); break;
+        var quand = k === 0 ? '' : (k === 1 ? 'morgen ' : 'am ' + ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'][(t.jour + k) % 7] + ' ');
+        txt = 'Geschlossen · öffnet ' + quand + 'um ' + hfr(x[0]); break;
       }
     }
     return { ouvert: ouvert, texte: txt };
@@ -165,15 +167,15 @@
     flottant = document.createElement('button');
     flottant.type = 'button'; flottant.className = 'sel-flottant'; flottant.hidden = true;
     flottant.setAttribute('aria-haspopup', 'dialog');
-    flottant.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="currentColor"/></svg><span>Ma sélection</span><b class="sel-nb">0</b>';
+    flottant.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="currentColor"/></svg><span>Merkliste</span><b class="sel-nb">0</b>';
     document.body.appendChild(flottant);
     panneau = document.createElement('div');
     panneau.className = 'sel-panneau'; panneau.hidden = true;
     panneau.setAttribute('role', 'dialog'); panneau.setAttribute('aria-modal', 'true'); panneau.setAttribute('aria-labelledby', 'sel-titre');
-    panneau.innerHTML = '<div class="sel-fond js-sel-fermer"></div><div class="sel-boite"><div class="sel-tete"><p class="sel-titre" id="sel-titre">Ma sélection</p><button type="button" class="sel-x js-sel-fermer" aria-label="Fermer">✕</button></div>'
-      + '<p class="sel-intro">Votre liste pour commander par téléphone ou par message. Elle reste dans ce navigateur.</p><ul class="sel-liste js-sel-liste"></ul>'
-      + '<div class="sel-actions"><a class="btn btn-kir js-sel-appeler" href="#"><span>Appeler pour commander</span></a><a class="btn btn-line js-sel-message" href="#"><span>Envoyer par message</span></a></div>'
-      + '<div class="sel-pied"><button type="button" class="sel-lien js-sel-copier">Copier la liste</button><button type="button" class="sel-lien js-sel-vider">Vider la sélection</button></div></div>';
+    panneau.innerHTML = '<div class="sel-fond js-sel-fermer"></div><div class="sel-boite"><div class="sel-tete"><p class="sel-titre" id="sel-titre">Meine Merkliste</p><button type="button" class="sel-x js-sel-fermer" aria-label="Schliessen">✕</button></div>'
+      + '<p class="sel-intro">Ihre Liste, um telefonisch oder per Nachricht zu bestellen. Sie bleibt in diesem Browser gespeichert.</p><ul class="sel-liste js-sel-liste"></ul>'
+      + '<div class="sel-actions"><a class="btn btn-kir js-sel-appeler" href="#"><span>Telefonisch bestellen</span></a><a class="btn btn-line js-sel-message" href="#"><span>Per Nachricht senden</span></a></div>'
+      + '<div class="sel-pied"><button type="button" class="sel-lien js-sel-copier">Liste kopieren</button><button type="button" class="sel-lien js-sel-vider">Liste leeren</button></div></div>';
     document.body.appendChild(panneau);
     var dernier = null;
     flottant.addEventListener('click', function () { dernier = document.activeElement; panneau.hidden = false; document.documentElement.classList.add('sel-ouvert'); var x = panneau.querySelector('.sel-x'); if (x) x.focus(); });
@@ -190,10 +192,10 @@
         if (t.classList.contains('js-sel-retirer')) l = l.filter(function (y) { return cle(y) !== k; });
         ecrire(l); return;
       }
-      if (t.classList.contains('js-sel-vider')) { if (window.confirm('Vider votre sélection ?')) { ecrire([]); fermer(); } }
+      if (t.classList.contains('js-sel-vider')) { if (window.confirm('Merkliste leeren?')) { ecrire([]); fermer(); } }
       if (t.classList.contains('js-sel-copier')) {
         var txt = texteListe();
-        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { t.textContent = 'Liste copiée'; setTimeout(function () { t.textContent = 'Copier la liste'; }, 2000); }, function () { window.prompt('Copiez la liste :', txt); });
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { t.textContent = 'Liste kopiert'; setTimeout(function () { t.textContent = 'Liste kopieren'; }, 2000); }, function () { window.prompt('Liste kopieren:', txt); });
       }
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panneau.hidden) fermer(); });
@@ -207,7 +209,7 @@
       var on = dansSelection(b);
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
       var t = b.querySelector('.js-sel-texte');
-      if (t) t.textContent = on ? 'Dans ma sélection' : (b.closest('.cmd--barre') ? 'Garder' : 'Ajouter à ma sélection');
+      if (t) t.textContent = on ? 'Auf der Merkliste' : (b.closest('.cmd--barre') ? 'Merken' : 'Auf meine Merkliste');
     });
     if (!l.length && !flottant) return;
     construire();
@@ -215,14 +217,14 @@
     flottant.querySelector('.sel-nb').textContent = l.reduce(function (n, x) { return n + (x.qte || 1); }, 0);
     panneau.querySelector('.js-sel-liste').innerHTML = l.map(function (x) {
       return '<li data-k="' + echap(cle(x)) + '"><span class="sel-nom">' + (x.url ? '<a href="' + echap(x.url) + '">' + echap(x.nom) + '</a>' : echap(x.nom)) + (x.prix ? '<small>' + echap(x.prix) + (x.unite ? ' · ' + echap(x.unite) : '') + '</small>' : '') + '</span>'
-        + '<span class="sel-qte"><button type="button" class="js-sel-moins" aria-label="Un de moins : ' + echap(x.nom) + '">−</button><b aria-live="polite">' + (x.qte || 1) + '</b><button type="button" class="js-sel-plus" aria-label="Un de plus : ' + echap(x.nom) + '">+</button></span>'
-        + '<button type="button" class="sel-retirer js-sel-retirer" aria-label="Retirer ' + echap(x.nom) + '">✕</button></li>';
-    }).join('') || '<li class="sel-vide">Votre sélection est vide.</li>';
+        + '<span class="sel-qte"><button type="button" class="js-sel-moins" aria-label="Eins weniger: ' + echap(x.nom) + '">−</button><b aria-live="polite">' + (x.qte || 1) + '</b><button type="button" class="js-sel-plus" aria-label="Eins mehr: ' + echap(x.nom) + '">+</button></span>'
+        + '<button type="button" class="sel-retirer js-sel-retirer" aria-label="Entfernen: ' + echap(x.nom) + '">✕</button></li>';
+    }).join('') || '<li class="sel-vide">Ihre Merkliste ist leer.</li>';
     var app = panneau.querySelector('.js-sel-appeler'), msg = panneau.querySelector('.js-sel-message');
     var e = etatMaison();
     app.hidden = !S.tel;
     app.href = S.tel || '#';
-    app.querySelector('span').textContent = e.ouvert ? 'Appeler pour commander' : 'Appeler (' + e.texte.replace('Fermé · ', '') + ')';
+    app.querySelector('span').textContent = e.ouvert ? 'Telefonisch bestellen' : 'Anrufen (' + e.texte.replace('Geschlossen · ', '') + ')';
     msg.href = (S.contact || '/') + ((S.contact || '').indexOf('?') < 0 ? '?' : '&') + 'selection=1#schreiben';
   }
   S.majSelection = majSelection;
@@ -254,7 +256,7 @@
     if (b.classList.contains('js-partage-natif')) { navigator.share({ title: titre, url: url }).catch(function () {}); return; }
     var t = b.querySelector('.js-partage-copier-texte');
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () {
-      if (t) { t.textContent = 'Lien copié'; setTimeout(function () { t.textContent = 'Copier le lien'; }, 2000); }
-    }, function () { window.prompt('Copiez le lien :', url); });
+      if (t) { t.textContent = 'Link kopiert'; setTimeout(function () { t.textContent = 'Link kopieren'; }, 2000); }
+    }, function () { window.prompt('Link kopieren:', url); });
   });
 })();
