@@ -12,6 +12,9 @@
       how.classList.add('nh');
       t.howW = words(how, [{ t: 'How' }, { t: 'does' }, { t: 'it' }, { t: 'work?', c: 'o' }]);
       t.how = how;
+      // Intuitivité : sous-titre sous « How does it work? », emporté avec le titre.
+      t.easy = el(how, { left: '0', width: '1920px', top: '190px', textAlign: 'center', fontFamily: 'Montserrat', fontSize: '46px', fontWeight: '600', letterSpacing: '0', color: '#4A5568' });
+      t.easyW = words(t.easy, [{ t: 'As' }, { t: 'simple' }, { t: 'as' }, { t: 'a' }, { t: 'conversation.', c: 'o' }]);
       t.tag = el(root, { left: '60px', top: '48px', height: '58px', padding: '0 26px', borderRadius: '29px', background: 'var(--navy)', color: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '24px', fontWeight: '700', boxShadow: '0 12px 30px rgba(1,45,72,0.25)' }, `${icon('sparkles', 24, 2.2, '#82BEE1')}How does it work?`);
 
       t.s1 = el(root, { left: '60px', top: '900px', height: '96px', padding: '0 40px 0 26px', borderRadius: '48px', background: '#fff', boxShadow: '0 20px 50px rgba(1,45,72,0.18)', display: 'flex', alignItems: 'center', fontSize: '40px', fontWeight: '700', color: 'var(--navy)' }, step(1, 'Describe what you need'));
@@ -38,6 +41,7 @@
     update(T, RT) {
       T = RT;
       revealWords(T, t.howW, 22.2, 0.08, 0.55);
+      revealWords(T, t.easyW, 22.55, 0.07, 0.55);
       // Le grand titre se réduit et vole jusqu'à l'étiquette en haut à gauche (morphing).
       if (!t.m) {
         const rh = t.how.getBoundingClientRect(), rg = t.tag.getBoundingClientRect();

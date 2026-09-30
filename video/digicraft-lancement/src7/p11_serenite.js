@@ -15,7 +15,7 @@
   const ROWS = [
     [41.1, 'eu', 'Hosted in Europe', 'Your data stays in the European Union.'],
     [42.2, 'shield-check', 'Built-in governance', 'Access, permissions and audit trails under control.'],
-    [43.05, 'handshake', 'Supported by Leyton teams', 'From scoping to rollout.'],
+    [43.05, 'mouse-pointer-click', 'Intuitive from minute one', 'No training and no code needed.'],
   ];
 
   function dashboard(parent) {
