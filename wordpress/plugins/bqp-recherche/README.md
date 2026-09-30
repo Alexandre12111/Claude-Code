@@ -15,10 +15,12 @@ Préfixe `bqr_` : aucun conflit avec les autres snippets BQP.
 
 - Avec **BQP Bibliothèque** actif, elle cherche **dans la bibliothèque** : la recherche ouvre la page Bibliothèque sur le catalogue filtré (« nucléaire », 2 documents…)
 - Sans la bibliothèque, ou avec `cible="site"`, elle utilise la recherche WordPress de tout le site
+- **Elle mène aussi aux pages du site** : Contact, Gouvernance, Nos partenaires… apparaissent dans les suggestions (groupe « Pages du site »), en tête quand leur titre contient le mot tapé. Si le texte tapé est **exactement le titre d'une page**, Entrée ouvre directement cette page au lieu de lancer une recherche (« Contact » ouvre la page Contact ; « partenaires » cherche dans la bibliothèque et propose « Nos partenaires »)
 - **Suggestions pendant la frappe**, dès 2 lettres :
   - **Documents** : d'abord ceux dont le titre correspond, puis ceux des auteurs trouvés, puis ceux dont le résumé correspond ; avec nature, année et auteur
   - **Auteurs et organisations**, avec leur nombre de documents
-  - **Thèmes et collections**, numérotés comme dans le schéma (« 1.1 Écrits de Jean-Michel Quatrepoint »)
+  - **Thèmes et collections**, numérotés comme dans le schéma (« 1.1 Écrits de Jean-Michel Quatrepoint », « 4.3 › Partenaires »)
+  - **Pages du site** (et actualités s'il y en a), sauf la page Bibliothèque et les pages protégées par mot de passe
   - le texte tapé est mis en valeur, accents compris
   - « Voir tous les résultats pour « … » » en bas
 - **Clavier** : flèches pour parcourir, Entrée pour ouvrir, Échap pour fermer ; accessible aux lecteurs d'écran (combobox)
@@ -35,6 +37,8 @@ Préfixe `bqr_` : aucun conflit avec les autres snippets BQP.
 | `titre` | petit titre au-dessus | aucun |
 | `largeur` | largeur maximale, par exemple `480px` ou `60%` | toute la largeur |
 | `suggestions` | `non` pour les désactiver | `oui` |
+| `pages` | `non` pour ne pas proposer les pages du site | `oui` |
+| `exclure` | identifiants de pages à ne jamais proposer, séparés par des virgules (ex. `12,45`) | aucune |
 
 Exemples :
 
@@ -43,7 +47,10 @@ Exemples :
 [bqp_recherche style="compact" bouton="" largeur="360px"]
 [bqp_recherche style="sombre" placeholder="Que cherchez-vous ?"]
 [bqp_recherche cible="site" titre="Rechercher sur le site"]
+[bqp_recherche exclure="12,45"]
 ```
+
+L'identifiant d'une page se lit dans son adresse d'édition : `post.php?post=12`.
 
 ## Technique
 
@@ -52,5 +59,7 @@ Exemples :
 - Requiert WordPress 6.2 ou plus (recherche par colonnes)
 
 ## Testé
+
+Version 1.1.0 : pages proposées (en tête si le titre correspond), « Contact » + Entrée ouvre la page Contact même tapé très vite, « gouvernance » ouvre Gouvernance, « partenaires » cherche dans la bibliothèque, page protégée par mot de passe jamais proposée, `pages="non"` respecté.
 
 Dans un WordPress 6.8 réel avec le thème Hello Elementor et BQP Bibliothèque 3.1 : trois styles, suggestions dans les deux modes, navigation au clavier, ouverture d'une suggestion avec Entrée, recherche vers le catalogue filtré, recherche WordPress (`?s=`), envoi à vide bloqué, mobile sans débordement, aucune erreur PHP ni JavaScript.

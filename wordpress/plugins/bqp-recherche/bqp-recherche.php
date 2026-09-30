@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name:       BQP Recherche
- * Description:       Barre de recherche à placer n'importe où avec [bqp_recherche], avec suggestions pendant la frappe.
- * Version:           1.0.0
+ * Description:       Barre de recherche à placer n'importe où avec [bqp_recherche], avec suggestions pendant la frappe : pages, documents, auteurs, thèmes.
+ * Version:           1.1.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -14,13 +14,14 @@
  *
  * [bqp_recherche] cherche dans la bibliothèque (résultats dans le catalogue
  * de la page Bibliothèque) et propose des suggestions pendant la frappe :
- * documents, auteurs, thèmes et collections. [bqp_recherche cible="site"]
- * cherche dans tout le site WordPress.
+ * pages du site, documents, auteurs, thèmes et collections. Si le texte tapé
+ * est le titre d'une page, Entrée y mène directement. [bqp_recherche
+ * cible="site"] cherche dans tout le site WordPress.
  *
  * Compatible Code Snippets (Run everywhere). Fonctionne seul ; avec
  * BQP Bibliothèque, il cherche par défaut dans la bibliothèque.
  *
- * Version : 1.0.0
+ * Version : 1.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQR_VERSION' ) ) {
-	define( 'BQR_VERSION', '1.0.0' );
+	define( 'BQR_VERSION', '1.1.0' );
 }
 
 /* -------------------------------------------------------------------------
@@ -61,6 +62,8 @@ function bqr_shortcode( $atts ) {
 			'suggestions' => 'oui',
 			'titre'       => '',
 			'largeur'     => '',
+			'pages'       => 'oui',
+			'exclure'     => '',
 		),
 		$atts,
 		'bqp_recherche'
@@ -75,6 +78,8 @@ function bqr_shortcode( $atts ) {
 	$id      = 'bqr-' . $instance;
 	$suggest = ( 'non' !== strtolower( $atts['suggestions'] ) );
 	$width   = preg_match( '/^\d{1,4}(px|%|rem|em|vw)$/', trim( $atts['largeur'] ) ) ? trim( $atts['largeur'] ) : '';
+	$pages   = ( 'non' !== strtolower( $atts['pages'] ) );
+	$exclude = implode( ',', array_filter( array_map( 'absint', explode( ',', $atts['exclure'] ) ) ) );
 
 	if ( $suggest ) {
 		wp_enqueue_script( 'bqr' );
@@ -83,7 +88,7 @@ function bqr_shortcode( $atts ) {
 	$html  = bqr_inline_css();
 	$html .= '<form role="search" method="get" class="bqr bqr--' . esc_attr( $style ) . '" action="' . esc_url( $action ) . '"'
 		. ( $width ? ' style="max-width:' . esc_attr( $width ) . ';"' : '' )
-		. ( $suggest ? ' data-bqr data-endpoint="' . esc_url( admin_url( 'admin-ajax.php' ) ) . '" data-scope="' . ( $library ? 'bibliotheque' : 'site' ) . '"' : '' ) . '>';
+		. ( $suggest ? ' data-bqr data-endpoint="' . esc_url( admin_url( 'admin-ajax.php' ) ) . '" data-scope="' . ( $library ? 'bibliotheque' : 'site' ) . '" data-pages="' . ( $pages ? '1' : '0' ) . '"' . ( $exclude ? ' data-exclude="' . esc_attr( $exclude ) . '"' : '' ) : '' ) . '>';
 
 	if ( '' !== trim( $atts['titre'] ) ) {
 		$html .= '<label class="bqr__title" for="' . esc_attr( $id ) . '">' . esc_html( $atts['titre'] ) . '</label>';
@@ -128,7 +133,18 @@ function bqr_suggest() {
 	}
 
 	$library = ( 'site' !== $scope ) && bqr_has_library();
-	$groups  = $library ? bqr_suggest_library( $q ) : bqr_suggest_site( $q );
+	$exclude = isset( $_GET['exclude'] ) ? array_filter( array_map( 'absint', explode( ',', sanitize_text_field( wp_unslash( $_GET['exclude'] ) ) ) ) ) : array(); // phpcs:ignore WordPress.Security.NonceVerification
+	$groups  = $library ? bqr_suggest_library( $q ) : bqr_suggest_site( $q, $exclude );
+
+	// Les pages du site : en tête si l'une porte le mot cherché dans son
+	// titre, sinon après les résultats de la bibliothèque.
+	if ( $library && ! ( isset( $_GET['pages'] ) && '0' === $_GET['pages'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		list( $pages, $in_title ) = bqr_suggest_pages( $q, $exclude );
+		if ( $pages ) {
+			$group = array( 'title' => 'Pages du site', 'items' => $pages );
+			$in_title ? array_unshift( $groups, $group ) : $groups[] = $group;
+		}
+	}
 	$all     = $library ? add_query_arg( 'f_q', rawurlencode( $q ), bqb_library_url() ) . '#bqb-catalogue' : add_query_arg( 's', rawurlencode( $q ), home_url( '/' ) );
 
 	wp_send_json_success( array( 'groups' => $groups, 'all' => $all ) );
@@ -227,6 +243,12 @@ function bqr_suggest_library( $q ) {
 		foreach ( is_wp_error( $terms ) ? array() : $terms as $term ) {
 			$url    = function_exists( 'bqb_term_url' ) ? bqb_term_url( $term ) : get_term_link( $term );
 			$number = function_exists( 'bqb_term_number' ) ? bqb_term_number( $term ) : '';
+
+			// Un élément (« Partenaires ») prend le numéro de sa rubrique : « 4.3 › Partenaires ».
+			if ( ! $number && $term->parent && function_exists( 'bqb_term_number' ) ) {
+				$parent = get_term( $term->parent, $taxonomy );
+				$number = ( $parent && ! is_wp_error( $parent ) && bqb_term_number( $parent ) ) ? bqb_term_number( $parent ) . ' ›' : '';
+			}
 			if ( ! $url || is_wp_error( $url ) ) {
 				continue;
 			}
@@ -245,7 +267,61 @@ function bqr_suggest_library( $q ) {
 	return $groups;
 }
 
-function bqr_suggest_site( $q ) {
+/**
+ * Les pages publiées du site (et les actualités s'il y en a) : titre
+ * d'abord, puis contenu. La page Bibliothèque elle-même est écartée, ainsi
+ * que les pages protégées par mot de passe et celles passées dans exclure.
+ * Renvoie les suggestions, et vrai si au moins une correspond par son titre.
+ */
+function bqr_suggest_pages( $q, $exclude = array() ) {
+	$skip = array_merge( array( 0 ), array_map( 'intval', (array) $exclude ) );
+
+	if ( function_exists( 'bqb_library_id' ) && bqb_library_id() ) {
+		$skip[] = (int) bqb_library_id();
+	}
+
+	$types = array_values( array_intersect( array( 'page', 'post' ), get_post_types( array( 'public' => true ) ) ) );
+	$ids   = array();
+	$first = 0;
+
+	foreach ( array( array( 'post_title' ), array( 'post_excerpt', 'post_content' ) ) as $i => $columns ) {
+		if ( count( $ids ) >= 3 ) {
+			break;
+		}
+		$query = new WP_Query(
+			array(
+				'post_type'           => $types,
+				'post_status'         => 'publish',
+				'has_password'        => false,
+				's'                   => $q,
+				'search_columns'      => $columns,
+				'posts_per_page'      => 3 - count( $ids ),
+				'post__not_in'        => array_merge( $skip, $ids ),
+				'fields'              => 'ids',
+				'no_found_rows'       => true,
+				'ignore_sticky_posts' => true,
+			)
+		);
+		$ids = array_merge( $ids, array_map( 'intval', $query->posts ) );
+		if ( 0 === $i ) {
+			$first = count( $ids );
+		}
+	}
+
+	$items = array();
+	foreach ( $ids as $post_id ) {
+		$items[] = array(
+			'label' => html_entity_decode( get_the_title( $post_id ), ENT_QUOTES, 'UTF-8' ),
+			'meta'  => 'post' === get_post_type( $post_id ) ? 'Actualité · ' . get_the_date( 'j F Y', $post_id ) : 'Page',
+			'url'   => get_permalink( $post_id ),
+			'type'  => 'page',
+		);
+	}
+
+	return array( $items, $first > 0 );
+}
+
+function bqr_suggest_site( $q, $exclude = array() ) {
 	$types = get_post_types( array( 'public' => true, 'exclude_from_search' => false ), 'objects' );
 	unset( $types['attachment'] );
 
@@ -255,6 +331,8 @@ function bqr_suggest_site( $q ) {
 			'post_status'         => 'publish',
 			's'                   => $q,
 			'posts_per_page'      => 7,
+			'post__not_in'        => array_merge( array( 0 ), array_map( 'intval', (array) $exclude ) ),
+			'has_password'        => false,
 			'no_found_rows'       => true,
 			'ignore_sticky_posts' => true,
 		)
@@ -267,6 +345,7 @@ function bqr_suggest_site( $q ) {
 			'label' => html_entity_decode( get_the_title( $post ), ENT_QUOTES, 'UTF-8' ),
 			'meta'  => 'bqb_document' === $post->post_type ? 'Bibliothèque' : $type,
 			'url'   => get_permalink( $post ),
+			'type'  => 'bqb_document' === $post->post_type ? 'document' : 'page',
 		);
 	}
 
@@ -336,6 +415,11 @@ function bqr_inline_css() {
 	.bqr__label{font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;font-size:1.08rem;font-weight:600;line-height:1.25;color:var(--bqr-dark);}
 	.bqr__label mark{padding:0;background:none;color:var(--bqr-accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;}
 	.bqr__meta{font-size:.76rem;color:var(--bqr-muted);}
+	.bqr a.bqr__item.is-page{flex-direction:row;align-items:center;gap:12px;}
+	.bqr a.bqr__item.is-page .bqr__meta{margin-left:auto;padding:2px 8px;border:1px solid var(--bqr-line);border-radius:999px;font-size:.68rem;font-weight:600;white-space:nowrap;}
+	.bqr a.bqr__item.is-page .bqr__label{font-family:inherit;font-size:.95rem;font-weight:600;}
+	.bqr a.bqr__item.is-page::after{content:"→";flex:0 0 auto;color:var(--bqr-accent);opacity:0;transition:opacity .2s,transform .2s;}
+	.bqr a.bqr__item.is-page:hover::after,.bqr a.bqr__item.is-page.is-active::after{opacity:1;transform:translateX(2px);}
 	.bqr a.bqr__all{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 0;padding:12px 10px;border-top:1px solid var(--bqr-line);border-radius:0 0 4px 4px;font-size:.74rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bqr-accent) !important;text-decoration:none !important;}
 	.bqr a.bqr__all:hover,.bqr a.bqr__all.is-active{background:#F7F3F2;}
 	.bqr__empty{margin:0;padding:14px 10px;font-size:.88rem;color:var(--bqr-muted);}
@@ -404,7 +488,7 @@ function bqr_js() {
 			(data.groups || []).forEach(function(group){
 				html += '<div class="bqr__group" role="group" aria-label="' + esc(group.title) + '"><p class="bqr__gtitle">' + esc(group.title) + '</p>';
 				group.items.forEach(function(item){
-					html += '<a class="bqr__item" role="option" aria-selected="false" id="' + uid + '-o' + (n++) + '" href="' + esc(item.url) + '">'
+					html += '<a class="bqr__item' + ('page' === item.type ? ' is-page' : '') + '" role="option" aria-selected="false" id="' + uid + '-o' + (n++) + '" href="' + esc(item.url) + '">'
 						+ '<span class="bqr__label">' + highlight(item.label, q) + '</span>'
 						+ (item.meta ? '<span class="bqr__meta">' + esc(item.meta) + '</span>' : '') + '</a>';
 				});
@@ -421,13 +505,19 @@ function bqr_js() {
 			if (status) { status.textContent = n ? n + ' suggestion' + (n > 1 ? 's' : '') + ' disponible' + (n > 1 ? 's' : '') + '.' : 'Aucune suggestion.'; }
 		}
 
+		function endpoint(q){
+			return form.getAttribute('data-endpoint') + '?action=bqr_suggest&scope=' + encodeURIComponent(form.getAttribute('data-scope'))
+				+ '&pages=' + (form.getAttribute('data-pages') || '1')
+				+ (form.getAttribute('data-exclude') ? '&exclude=' + encodeURIComponent(form.getAttribute('data-exclude')) : '')
+				+ '&q=' + encodeURIComponent(q);
+		}
+
 		function lookup(q){
 			if (cache[q]) { render(cache[q], q); return; }
 			if (ctrl && ctrl.abort) { ctrl.abort(); }
 			ctrl = window.AbortController ? new AbortController() : null;
 			form.classList.add('is-loading');
-			var url = form.getAttribute('data-endpoint') + '?action=bqr_suggest&scope=' + encodeURIComponent(form.getAttribute('data-scope')) + '&q=' + encodeURIComponent(q);
-			fetch(url, { credentials: 'same-origin', signal: ctrl ? ctrl.signal : undefined })
+			fetch(endpoint(q), { credentials: 'same-origin', signal: ctrl ? ctrl.signal : undefined })
 				.then(function(r){ return r.json(); })
 				.then(function(r){
 					form.classList.remove('is-loading');
@@ -457,8 +547,38 @@ function bqr_js() {
 		input.addEventListener('focus', function(){ if (panel.innerHTML && input.value.trim().length > 1) { panel.hidden = false; input.setAttribute('aria-expanded', 'true'); } });
 		document.addEventListener('click', function(e){ if (!form.contains(e.target)) { close(); } });
 
-		// Rien à envoyer si le champ est vide.
-		form.addEventListener('submit', function(e){ if (!input.value.trim()) { e.preventDefault(); input.focus(); } });
+		// Page dont le titre est exactement le texte tapé (« Contact »,
+		// « Gouvernance ») : on y va directement plutôt que de chercher.
+		function exactPage(q){
+			var data = cache[q];
+			if (!data) { return ''; }
+			var hit = '';
+			(data.groups || []).forEach(function(group){
+				group.items.forEach(function(item){
+					if (!hit && 'page' === item.type && fold(item.label).trim() === fold(q)) { hit = item.url; }
+				});
+			});
+			return hit;
+		}
+
+		form.addEventListener('submit', function(e){
+			var q = input.value.trim();
+			// Rien à envoyer si le champ est vide.
+			if (!q) { e.preventDefault(); input.focus(); return; }
+			if (cache[q]) {
+				var page = exactPage(q);
+				if (page) { e.preventDefault(); window.location.href = page; }
+				return;
+			}
+			// Suggestions pas encore arrivées : on vérifie d'abord le titre.
+			e.preventDefault();
+			form.classList.add('is-loading');
+			fetch(endpoint(q), { credentials: 'same-origin' })
+				.then(function(r){ return r.json(); })
+				.then(function(r){ if (r && r.success) { cache[q] = r.data; } })
+				.catch(function(){})
+				.then(function(){ var hit = exactPage(q); if (hit) { window.location.href = hit; } else { form.submit(); } });
+		});
 	}
 
 	function boot(){ Array.prototype.forEach.call(document.querySelectorAll('form[data-bqr]'), setup); }
