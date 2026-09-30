@@ -15,7 +15,7 @@
   const ROWS = [
     [41.1, 'eu', 'Hébergé en Europe', 'Vos données restent dans l’Union européenne.'],
     [42.2, 'shield-check', 'Gouvernance intégrée', 'Accès, droits et traçabilité maîtrisés.'],
-    [43.05, 'handshake', 'Accompagné par les équipes Leyton', 'Du cadrage au déploiement.'],
+    [43.05, 'mouse-pointer-click', 'Intuitif dès la première minute', 'Aucune formation ni ligne de code nécessaire.'],
   ];
 
   function dashboard(parent) {
