@@ -60,3 +60,11 @@ out/sheet_*.png
 out/s_*.png
 out/s2.png
 out/crop_*.png
+out/parts_cafr/
+out/video_cafr_silent.mp4
+out/parts_usfr/
+out/video_usfr_silent.mp4
+out/parts_caen/
+out/video_caen_silent.mp4
+out/parts_usen/
+out/video_usen_silent.mp4
