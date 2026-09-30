@@ -48,3 +48,15 @@ out/parts_it/
 out/parts_es/
 out/video_it_silent.mp4
 out/video_es_silent.mp4
+out/parts_de/
+out/parts_sv/
+out/parts_pl/
+out/video_de_silent.mp4
+out/video_sv_silent.mp4
+out/video_pl_silent.mp4
+out/stills_*/
+out/st_*.log
+out/sheet_*.png
+out/s_*.png
+out/s2.png
+out/crop_*.png

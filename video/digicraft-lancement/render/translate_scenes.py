@@ -1,9 +1,11 @@
 """Traduit la composition FR CognitX (src6) en italien ou en espagnol.
-Usage : python3 translate_scenes.py it|es dossier_cible"""
+Usage : python3 translate_scenes.py it|es|de|sv|pl dossier_cible"""
 import os, shutil, sys
 
 LANG, DST = sys.argv[1], sys.argv[2]
-I = 0 if LANG == 'it' else 1
+I = {'it': 0, 'es': 1}.get(LANG)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from translations_extra import EXTRA, ALL_EXTRA  # noqa: E402
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, '..', 'src6')
 DST = os.path.join(HERE, '..', DST)
@@ -166,15 +168,20 @@ if os.path.exists(DST):
     shutil.rmtree(DST)
 shutil.copytree(SRC, DST)
 bad = 0
-for f, fr, it, es in T:
+if I is None:
+    assert len(EXTRA[LANG]) == len(T), (len(EXTRA[LANG]), len(T))
+for k, (f, fr, it, es) in enumerate(T):
     p = os.path.join(DST, f)
     s = open(p, encoding='utf-8').read()
     if fr not in s:
         print('MANQUANT', f, fr[:80]); bad += 1; continue
-    s = s.replace(fr, (it, es)[I])
+    s = s.replace(fr, (it, es)[I] if I is not None else EXTRA[LANG][k])
     open(p, 'w', encoding='utf-8').write(s)
 for f, fr, it, es in ALL:
     p = os.path.join(DST, f)
     s = open(p, encoding='utf-8').read()
-    open(p, 'w', encoding='utf-8').write(s.replace(fr, (it, es)[I]))
+    open(p, 'w', encoding='utf-8').write(s.replace(fr, (it, es)[I] if I is not None else ALL_EXTRA[LANG]))
+# Capitales accentuées (Ä, Ś, Ć) : étendre la zone du dégradé au dessus de la ligne.
+css = os.path.join(DST, 'style.css')
+open(css, 'a', encoding='utf-8').write('.ch.grad { padding: 0.28em 0.12em 0.1em; margin: -0.28em -0.12em -0.1em; }\n')
 print(LANG, 'ok' if not bad else f'{bad} manquants')
