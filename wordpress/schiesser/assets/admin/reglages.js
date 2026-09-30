@@ -87,7 +87,8 @@
 
   /* ---------- horaires ---------- */
   var lignes = document.querySelectorAll('.s-horaires tbody tr');
-  var courts = { 1: 'Lun', 2: 'Mar', 3: 'Mer', 4: 'Jeu', 5: 'Ven', 6: 'Sam', 0: 'Dim' };
+  var courts = { 1: 'Mo', 2: 'Di', 3: 'Mi', 4: 'Do', 5: 'Fr', 6: 'Sa', 0: 'So' }; // résumé affiché sur le site (en allemand)
+  function uhr(v) { var p = String(v).split(':'); return parseInt(p[0], 10) + (parseInt(p[1], 10) ? '.' + p[1] : ''); }
   function valeurs(tr) {
     var t = tr.querySelectorAll('input[type="time"]');
     return { o: t[0].value, f: t[1].value, ferme: tr.querySelector('input[type="checkbox"]').checked };
@@ -96,7 +97,7 @@
     var groupes = [];
     lignes.forEach(function (tr) {
       var v = valeurs(tr);
-      var texte = v.ferme ? 'fermé' : v.o + '–' + v.f;
+      var texte = v.ferme ? 'geschlossen' : uhr(v.o) + '–' + uhr(v.f);
       var der = groupes[groupes.length - 1];
       if (der && der.texte === texte) der.fin = courts[tr.dataset.jour];
       else groupes.push({ debut: courts[tr.dataset.jour], fin: null, texte: texte });

@@ -12,15 +12,15 @@ while ( have_posts() ) :
 	$p        = schiesser_donnees_produit( get_post() );
 	$boutique = schiesser_url_boutique();
 	$id_page  = url_to_postid( $boutique );
-	$nom_b    = $id_page ? get_the_title( $id_page ) : 'La boutique';
+	$nom_b    = $id_page ? get_the_title( $id_page ) : 'Confiserie';
 	$email    = schiesser_reglage( 'email' );
 	$tel      = schiesser_reglage( 'telephone' );
 	$lignes   = $p['fiche'];
 	if ( $p['accord'] ) {
-		$lignes[] = array( 'Accord', $p['accord'], 1 );
+		$lignes[] = array( 'Passt zu', $p['accord'], 1 );
 	}
 	if ( $p['origine'] ) {
-		$lignes[] = array( 'Origine', $p['origine'], 1 );
+		$lignes[] = array( 'Herkunft', $p['origine'], 1 );
 	}
 	$lies = schiesser_produits_lies( get_the_ID(), 4 );
 	?>
@@ -43,8 +43,8 @@ while ( have_posts() ) :
 			</div>
 
 			<div class="produit-texte">
-				<nav class="crumb crumb--clair" aria-label="Fil d'Ariane">
-					<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
+				<nav class="crumb crumb--clair" aria-label="Brotkrümelnavigation">
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a>
 					<span aria-hidden="true">·</span>
 					<a href="<?php echo esc_url( $boutique ); ?>"><?php echo esc_html( $nom_b ); ?></a>
 					<span aria-hidden="true">·</span>
@@ -68,11 +68,11 @@ while ( have_posts() ) :
 
 				<?php if ( ! empty( $p['al'] ) && ( $p['al']['renseigne'] || $p['al']['regimes'] ) ) : ?>
 					<div class="produit-al">
-						<p class="produit-al-k">Allergènes et régimes</p>
+						<p class="produit-al-k">Allergene und Ernährung</p>
 						<?php
 						echo schiesser_allergenes_pictos( $p['al'], true ); // phpcs:ignore WordPress.Security.EscapeOutput
 						if ( $p['al']['renseigne'] && ! $p['al']['allergenes'] ) {
-							echo '<p class="produit-al-t">Ne contient aucun des 14 allergènes à déclarer.</p>';
+							echo '<p class="produit-al-t">Enthält keines der 14 deklarationspflichtigen Allergene.</p>';
 						}
 						if ( '' !== $p['al']['traces'] ) {
 							echo '<p class="produit-al-t">' . esc_html( $p['al']['traces'] ) . '</p>';
@@ -83,16 +83,16 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<?php if ( $p['prix'] ) : ?>
-					<div class="sh-price"><span class="pk">Prix<?php echo $p['unite'] ? ' · ' . esc_html( $p['unite'] ) : ''; ?></span><span class="pv"><?php echo esc_html( $p['prix'] ); ?></span></div>
+					<div class="sh-price"><span class="pk">Preis<?php echo $p['unite'] ? ' · ' . esc_html( $p['unite'] ) : ''; ?></span><span class="pv"><?php echo esc_html( $p['prix'] ); ?></span></div>
 				<?php endif; ?>
 
 				<?php if ( schiesser_est_epuise( $p['id'] ) ) : ?>
-					<p class="produit-epuise"><strong>Épuisé aujourd’hui.</strong> De retour dès demain : appelez pour le réserver.</p>
+					<p class="produit-epuise"><strong>Heute ausverkauft.</strong> Ab morgen wieder da: Rufen Sie an und reservieren Sie.</p>
 				<?php endif; ?>
 				<div class="produit-actions">
 					<?php echo schiesser_boutons_commande( $p ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 				</div>
-				<p class="produit-note"><i class="x-diamond" aria-hidden="true"></i> Fait main par la <?php echo esc_html( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?>. Retrait en boutique, <?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?> · <?php echo esc_html( schiesser_horaires_resume() ); ?></p>
+				<p class="produit-note"><i class="x-diamond" aria-hidden="true"></i> Von Hand gemacht: <?php echo esc_html( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?>. Abholung im Laden, <?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?> · <?php echo esc_html( schiesser_horaires_resume() ); ?></p>
 				<?php echo schiesser_partage( $p['url'], $p['nom'] . ' · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 			</div>
 		</div>
@@ -113,7 +113,7 @@ while ( have_posts() ) :
 			<div class="wrap">
 				<div class="sec-head rv">
 					<span class="idx"><i class="x-diamond"></i>01</span>
-					<h2><?php echo esc_html( $p['nom'] ); ?>, <em>en détail</em></h2>
+					<h2><?php echo esc_html( $p['nom'] ); ?>, <em>im Detail</em></h2>
 				</div>
 				<div class="sec-body sec-body--lecture">
 					<?php the_content(); ?>
@@ -127,8 +127,8 @@ while ( have_posts() ) :
 			<div class="wrap">
 				<div class="sec-head rv">
 					<span class="idx"><i class="x-diamond"></i><?php echo '' !== trim( wp_strip_all_tags( get_the_content() ) ) ? '02' : '01'; ?></span>
-					<h2>Dans la même <em>vitrine</em></h2>
-					<p class="note"><a class="lien-fleche" href="<?php echo esc_url( $boutique ); ?>">Voir toute la boutique <span aria-hidden="true">→</span></a></p>
+					<h2>Aus derselben <em>Vitrine</em></h2>
+					<p class="note"><a class="lien-fleche" href="<?php echo esc_url( $boutique ); ?>">Ganzes Sortiment ansehen <span aria-hidden="true">→</span></a></p>
 				</div>
 				<div class="shop-grid">
 					<?php foreach ( $lies as $i => $lie ) { schiesser_carte_produit( $lie, $i, false ); } ?>

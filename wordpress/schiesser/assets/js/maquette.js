@@ -45,7 +45,9 @@
     }
     return { jour: d.getDay(), h: d.getHours() + d.getMinutes() / 60, y: d.getFullYear(), m: d.getMonth() + 1, dj: d.getDate() };
   }
-  function hh(h) { var m = Math.round((h % 1) * 60); return dd(Math.floor(h)) + ':' + dd(m); }
+  // Heure à la suisse : 7.5 → « 7.30 », 8 → « 8 ».
+  function hh(h) { var m = Math.round((h % 1) * 60); return Math.floor(h) + (m ? '.' + dd(m) : ''); }
+  var UHR = '\u00a0Uhr';
   var P = S.particuliers || {};
   // Horaires dans k jours, jours fériés et dates exceptionnelles compris (même calcul que site.js).
   function dateDans(t, k) { var x = new Date(Date.UTC(t.y, t.m - 1, t.dj + k)); return x.getUTCFullYear() + '-' + dd(x.getUTCMonth() + 1) + '-' + dd(x.getUTCDate()); }
@@ -56,30 +58,30 @@
     for (var k = 0; k <= 14; k++) { var x = horairesDans(t, k); if (x && (k > 0 || t.h < x[0])) return { k: k, h: x[0] }; }
     return null;
   }
-  function plage(t, k) { var x = horairesDans(t, k); return x ? hh(x[0]) + ' – ' + hh(x[1]) : null; }
+  function plage(t, k) { var x = horairesDans(t, k); return x ? hh(x[0]) + '–' + hh(x[1]) + UHR : null; }
 
   /* ---------- états en direct : bandeau, fiches, tableau des horaires ---------- */
-  var JOURS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  var JOURS = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
   function direct() {
     var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1];
     var minutes = null, libelle;
-    if (ouvert) { minutes = Math.round((j[1] - t.h) * 60); libelle = 'Fermeture dans'; }
+    if (ouvert) { minutes = Math.round((j[1] - t.h) * 60); libelle = 'Schliesst in'; }
     else {
-      libelle = 'Ouverture dans';
+      libelle = 'Öffnet in';
       if (j && t.h < j[0]) minutes = Math.round((j[0] - t.h) * 60);
       else for (var k = 1; k <= 7; k++) { var s = horairesDans(t, k); if (s) { minutes = Math.round((24 - t.h + 24 * (k - 1) + s[0]) * 60); break; } }
     }
-    var duree = minutes === null ? '' : (Math.floor(minutes / 60) ? Math.floor(minutes / 60) + 'h' + dd(minutes % 60) : (minutes % 60) + ' min');
+    var duree = minutes === null ? '' : (Math.floor(minutes / 60) ? Math.floor(minutes / 60) + ' Std. ' + dd(minutes % 60) + ' Min.' : (minutes % 60) + ' Min.');
     tous('.js-lv-dot').forEach(function (e) { e.classList.toggle('shut', !ouvert); });
-    tous('.js-lv-etat').forEach(function (e) { e.textContent = ouvert ? 'Ouvert' : 'Fermé'; });
+    tous('.js-lv-etat').forEach(function (e) { e.textContent = ouvert ? 'Geöffnet' : 'Geschlossen'; });
     tous('.js-lv-compte').forEach(function (e) { e.innerHTML = libelle + ' <b>' + duree + '</b>'; });
     var m0 = motif(t, 0), m1 = motif(t, 1);
-    tous('.js-aujourdhui').forEach(function (e) { e.textContent = (plage(t, 0) || 'Fermé aujourd’hui') + (m0 ? ' · ' + m0 : ''); });
-    tous('.js-demain').forEach(function (e) { e.textContent = 'Demain · ' + (plage(t, 1) || 'fermé') + (m1 ? ' (' + m1 + ')' : ''); });
+    tous('.js-aujourdhui').forEach(function (e) { e.textContent = (plage(t, 0) || 'Heute geschlossen') + (m0 ? ' · ' + m0 : ''); });
+    tous('.js-demain').forEach(function (e) { e.textContent = 'Morgen · ' + (plage(t, 1) || 'geschlossen') + (m1 ? ' (' + m1 + ')' : ''); });
     S.etatDirect = { ouvert: ouvert, j: j, t: t, prochain: ouvert ? null : prochaineOuverture(t) };
-    tous('.js-live-court').forEach(function (e) { e.textContent = ouvert ? 'Ouvert · ' + hh(j[1]) : 'Fermé'; e.classList.toggle('shut', !ouvert); });
+    tous('.js-live-court').forEach(function (e) { e.textContent = ouvert ? 'Geöffnet bis ' + hh(j[1]) + UHR : 'Geschlossen'; e.classList.toggle('shut', !ouvert); });
     tous('.js-etat-plage').forEach(function (e) {
-      var txt = (ouvert ? 'Ouvert' : 'Fermé') + (j ? ' · ' + hh(j[0]) + '–' + hh(j[1]) : '');
+      var txt = (ouvert ? 'Geöffnet' : 'Geschlossen') + (j ? ' · ' + hh(j[0]) + '–' + hh(j[1]) + UHR : '');
       var span = un('span', e); if (span) span.textContent = txt; else e.textContent = txt;
       e.classList.toggle('shut', !ouvert);
     });
@@ -257,7 +259,7 @@
       img.alt = a.getAttribute('data-texte') || '';
       titre.textContent = a.getAttribute('data-titre') || '';
       texte.textContent = a.getAttribute('data-texte') || '';
-      num.textContent = 'Archive ' + dd(cur + 1) + ' / ' + dd(items.length);
+      num.textContent = 'Archiv ' + dd(cur + 1) + ' / ' + dd(items.length);
       if (!lb.classList.contains('open')) {
         retour = document.activeElement;
         lb.classList.add('open');
@@ -328,21 +330,21 @@
     var donnees = {};
     try { donnees = JSON.parse(bloc.getAttribute('data-donnees') || '{}'); } catch (e) { return; }
     var debut = +bloc.getAttribute('data-debut') || 8, jours = tous('.dchip', bloc), chart = un('.js-aff-chart', bloc), calme = un('.js-aff-calme', bloc), anime = un('.js-aff-anime', bloc);
-    function niveau(v) { return v === 0 ? 'Fermé' : v > 75 ? 'Très animé' : v > 50 ? 'Animé' : 'Calme'; }
+    function niveau(v) { return v === 0 ? 'Geschlossen' : v > 75 ? 'Sehr belebt' : v > 50 ? 'Belebt' : 'Ruhig'; }
     function dessiner(j) {
       var t = maintenant(), data = donnees[j] || [], html = '', ouverts = [];
       data.forEach(function (v, k) {
         var h = debut + k, now = (+j === t.jour && h === Math.floor(t.h) && v > 0);
-        html += '<div class="bar' + (now ? ' now' : '') + '" style="height:' + Math.max(v, 4) + '%"><span class="bv">' + niveau(v) + '</span><span class="bl">' + h + 'h</span></div>';
+        html += '<div class="bar' + (now ? ' now' : '') + '" style="height:' + Math.max(v, 4) + '%"><span class="bv">' + niveau(v) + '</span><span class="bl">' + h + ' Uhr</span></div>';
         if (v > 0) ouverts.push({ v: v, h: h });
       });
       chart.innerHTML = html;
       if (ouverts.length) {
         var q = ouverts.reduce(function (a, b) { return b.v < a.v ? b : a; });
         var z = ouverts.reduce(function (a, b) { return b.v > a.v ? b : a; });
-        calme.textContent = q.h + 'h – ' + (q.h + 1) + 'h';
-        anime.textContent = z.h + 'h – ' + (z.h + 1) + 'h';
-      } else { calme.textContent = 'Fermé'; anime.textContent = 'Fermé'; }
+        calme.textContent = q.h + '–' + (q.h + 1) + ' Uhr';
+        anime.textContent = z.h + '–' + (z.h + 1) + ' Uhr';
+      } else { calme.textContent = 'Geschlossen'; anime.textContent = 'Geschlossen'; }
     }
     jours.forEach(function (b) {
       b.addEventListener('click', function () { var j = b.getAttribute('data-j'); activer(jours, +j, 'data-j'); dessiner(j); });
@@ -389,7 +391,7 @@
       if (params.get('selection') && S.texteSelection) liste = S.texteSelection();
       else if (produit) liste = '1 × ' + produit;
       if (liste) {
-        zone.value = 'Bonjour,\n\nJe souhaite commander :\n' + liste + '\n\nDate de retrait souhaitée : \nMon numéro de téléphone : \n\nMerci !';
+        zone.value = 'Grüezi\n\nIch möchte gerne bestellen:\n' + liste + '\n\nGewünschtes Abholdatum: \nMeine Telefonnummer: \n\nVielen Dank!';
         var xg = zone.closest('.xg'); if (xg) xg.classList.add('float');
       }
     }
@@ -475,8 +477,8 @@
   /* ---------- curseur dessiné (ordinateur) ---------- */
   var curseur = un('.x-cursor');
   if (curseur && window.matchMedia && window.matchMedia('(hover: hover) and (min-width: 821px)').matches) {
-    var ZONES = [['.card', 'Voir'], ['.gv-th', 'Voir'], ['.gv-main', 'Voir', 1], ['.compare', 'Glisser', 1], ['.arch', 'Ouvrir'],
-      ['.gp', 'Voir', 1], ['.x-menupic', 'Voir'], ['.x-floor', 'Ouvrir', 1], ['.mapel', 'Explorer'], ['.vmap', 'Explorer']];
+    var ZONES = [['.card', 'Ansehen'], ['.gv-th', 'Ansehen'], ['.gv-main', 'Ansehen', 1], ['.compare', 'Ziehen', 1], ['.arch', 'Öffnen'],
+      ['.gp', 'Ansehen', 1], ['.x-menupic', 'Ansehen'], ['.x-floor', 'Öffnen', 1], ['.mapel', 'Entdecken'], ['.vmap', 'Entdecken']];
     document.addEventListener('mousemove', function (e) { curseur.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)'; });
     ZONES.forEach(function (z) {
       tous(z[0]).forEach(function (zone) {

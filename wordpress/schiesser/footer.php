@@ -38,22 +38,22 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 				</div>
 			</div>
 			<div class="fcol">
-				<h2 class="fcol-titre">Nous trouver</h2>
+				<h2 class="fcol-titre">So finden Sie uns</h2>
 				<span class="fcol-txt"><?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?></span>
 				<span class="fcol-txt"><?php echo esc_html( schiesser_horaires_resume() ); ?></span>
 				<?php if ( $email ) : ?><a href="<?php echo esc_url( 'mailto:' . $email ); ?>"><?php echo esc_html( $email ); ?></a><?php endif; ?>
 				<?php if ( $tel ) : ?><a href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><?php echo esc_html( $tel ); ?></a><?php endif; ?>
 			</div>
 			<?php if ( $ancres ) : ?>
-				<nav class="fcol" aria-label="Sur cette page">
-					<h2 class="fcol-titre">Sur cette page</h2>
+				<nav class="fcol" aria-label="Auf dieser Seite">
+					<h2 class="fcol-titre">Auf dieser Seite</h2>
 					<?php foreach ( $ancres as $ancre => $titre ) : ?>
 						<a href="#<?php echo esc_attr( $ancre ); ?>"><?php echo esc_html( $titre ); ?></a>
 					<?php endforeach; ?>
 				</nav>
 			<?php endif; ?>
 			<div class="fcol">
-				<h2 class="fcol-titre">Explorer</h2>
+				<h2 class="fcol-titre">Entdecken</h2>
 				<?php foreach ( schiesser_liens_menu( 'pied' ) as $lien ) : ?>
 					<a href="<?php echo esc_url( $lien['url'] ); ?>"><?php echo esc_html( $lien['titre'] ); ?></a>
 				<?php endforeach; ?>
@@ -63,7 +63,7 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 			<span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
 			<span class="x-legal">
 				<?php if ( $mention && 'publish' === $mention->post_status ) : ?><a href="<?php echo esc_url( get_permalink( $mention ) ); ?>"><?php echo esc_html( get_the_title( $mention ) ); ?></a><?php endif; ?>
-				<?php if ( get_privacy_policy_url() ) : ?><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Confidentialité</a><?php endif; ?>
+				<?php if ( get_privacy_policy_url() ) : ?><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Datenschutz</a><?php endif; ?>
 			</span>
 			<span><?php echo esc_html( implode( ' · ', array_filter( array( $rue, $ville ) ) ) ); ?></span>
 		</div>

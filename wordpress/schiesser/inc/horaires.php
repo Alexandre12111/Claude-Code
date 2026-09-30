@@ -35,27 +35,33 @@ function schiesser_paques( $annee ) {
 
 /**
  * Jours fériés et jours particuliers de Bâle.
- * clé => [ nom, date fixe « mois-jour » ou décalage en jours depuis Pâques, réglage proposé ].
+ * clé => [ nom, date fixe « mois-jour » ou décalage en jours depuis Pâques, réglage proposé, nom allemand (site) ].
  */
 function schiesser_feries_liste() {
 	return array(
-		'nouvel-an'         => array( 'Nouvel An', '01-01', 'ferme' ),
-		'fasnacht-lundi'    => array( 'Fasnacht : lundi (Morgestraich)', -41, 'normal' ),
-		'fasnacht-mardi'    => array( 'Fasnacht : mardi', -40, 'normal' ),
-		'fasnacht-mercredi' => array( 'Fasnacht : mercredi', -39, 'normal' ),
-		'vendredi-saint'    => array( 'Vendredi saint', -2, 'ferme' ),
-		'paques'            => array( 'Pâques', 0, 'normal' ),
-		'lundi-paques'      => array( 'Lundi de Pâques', 1, 'ferme' ),
-		'fete-travail'      => array( 'Fête du travail', '05-01', 'ferme' ),
-		'ascension'         => array( 'Ascension', 39, 'ferme' ),
-		'pentecote'         => array( 'Pentecôte', 49, 'normal' ),
-		'lundi-pentecote'   => array( 'Lundi de Pentecôte', 50, 'ferme' ),
-		'fete-nationale'    => array( 'Fête nationale', '08-01', 'ferme' ),
-		'veille-noel'       => array( 'Veille de Noël', '12-24', 'special' ),
-		'noel'              => array( 'Noël', '12-25', 'ferme' ),
-		'saint-etienne'     => array( 'Saint-Étienne', '12-26', 'ferme' ),
-		'saint-sylvestre'   => array( 'Saint-Sylvestre', '12-31', 'special' ),
+		'nouvel-an'         => array( 'Nouvel An', '01-01', 'ferme', 'Neujahr' ),
+		'fasnacht-lundi'    => array( 'Fasnacht : lundi (Morgestraich)', -41, 'normal', 'Fasnachtsmontag (Morgestraich)' ),
+		'fasnacht-mardi'    => array( 'Fasnacht : mardi', -40, 'normal', 'Fasnachtsdienstag' ),
+		'fasnacht-mercredi' => array( 'Fasnacht : mercredi', -39, 'normal', 'Fasnachtsmittwoch' ),
+		'vendredi-saint'    => array( 'Vendredi saint', -2, 'ferme', 'Karfreitag' ),
+		'paques'            => array( 'Pâques', 0, 'normal', 'Ostern' ),
+		'lundi-paques'      => array( 'Lundi de Pâques', 1, 'ferme', 'Ostermontag' ),
+		'fete-travail'      => array( 'Fête du travail', '05-01', 'ferme', 'Tag der Arbeit' ),
+		'ascension'         => array( 'Ascension', 39, 'ferme', 'Auffahrt' ),
+		'pentecote'         => array( 'Pentecôte', 49, 'normal', 'Pfingsten' ),
+		'lundi-pentecote'   => array( 'Lundi de Pentecôte', 50, 'ferme', 'Pfingstmontag' ),
+		'fete-nationale'    => array( 'Fête nationale', '08-01', 'ferme', 'Bundesfeier' ),
+		'veille-noel'       => array( 'Veille de Noël', '12-24', 'special', 'Heiligabend' ),
+		'noel'              => array( 'Noël', '12-25', 'ferme', 'Weihnachten' ),
+		'saint-etienne'     => array( 'Saint-Étienne', '12-26', 'ferme', 'Stephanstag' ),
+		'saint-sylvestre'   => array( 'Saint-Sylvestre', '12-31', 'special', 'Silvester' ),
 	);
+}
+
+/** Nom d'un jour férié : en français dans l'administration, en allemand sur le site. */
+function schiesser_nom_ferie( $cle ) {
+	$f = schiesser_feries_liste()[ $cle ] ?? array( '' );
+	return ( ! schiesser_est_cote_admin() && ! empty( $f[3] ) ) ? $f[3] : $f[0];
 }
 
 /** Réglages proposés pour chaque jour férié (modifiables dans Réglages maison). */
@@ -102,7 +108,9 @@ function schiesser_jour_particulier( $ymd ) {
 	foreach ( (array) schiesser_reglage( 'exceptions' ) as $x ) {
 		if ( ! empty( $x['debut'] ) && $ymd >= $x['debut'] && $ymd <= ( $x['fin'] ?: $x['debut'] ) ) {
 			return array(
-				'motif' => $x['motif'] ?: ( 'ferme' === $x['mode'] ? 'Fermeture exceptionnelle' : 'Horaires exceptionnels' ),
+				'motif' => $x['motif'] ?: ( schiesser_est_cote_admin()
+					? ( 'ferme' === $x['mode'] ? 'Fermeture exceptionnelle' : 'Horaires exceptionnels' )
+					: ( 'ferme' === $x['mode'] ? 'Ausnahmsweise geschlossen' : 'Besondere Öffnungszeiten' ) ),
 				'plage' => 'ferme' === $x['mode'] ? null : array( $x['ouverture'], $x['fermeture'] ),
 			);
 		}
@@ -112,10 +120,10 @@ function schiesser_jour_particulier( $ymd ) {
 	if ( $cle ) {
 		$r = wp_parse_args( (array) ( schiesser_reglage( 'feries' )[ $cle ] ?? array() ), schiesser_feries_defaut()[ $cle ] );
 		if ( 'ferme' === $r['mode'] ) {
-			return array( 'motif' => schiesser_feries_liste()[ $cle ][0], 'plage' => null );
+			return array( 'motif' => schiesser_nom_ferie( $cle ), 'plage' => null );
 		}
 		if ( 'special' === $r['mode'] ) {
-			return array( 'motif' => schiesser_feries_liste()[ $cle ][0], 'plage' => array( $r['ouverture'], $r['fermeture'] ) );
+			return array( 'motif' => schiesser_nom_ferie( $cle ), 'plage' => array( $r['ouverture'], $r['fermeture'] ) );
 		}
 	}
 	return null;
@@ -176,10 +184,10 @@ function schiesser_html_jours_particuliers( $nb_jours = 45, $max = 5 ) {
 	if ( ! $liste ) {
 		return '';
 	}
-	$html = '<div class="h-particuliers" data-nosnippet><p class="h-part-titre">Jours particuliers à venir</p><ul>';
+	$html = '<div class="h-particuliers" data-nosnippet><p class="h-part-titre">Besondere Öffnungszeiten</p><ul>';
 	foreach ( $liste as $p ) {
-		$html .= '<li><span class="h-part-jour"><strong>' . esc_html( ucfirst( schiesser_date_fr( $p['date'] ) ) ) . '</strong> · ' . esc_html( $p['motif'] ) . '</span>'
-			. '<span class="h-part-h">' . ( $p['plage'] ? esc_html( $p['plage'][0] . ' – ' . $p['plage'][1] ) : 'Fermé' ) . '</span></li>';
+		$html .= '<li><span class="h-part-jour"><strong>' . esc_html( schiesser_datum( $p['date'], 'l, j. F' ) ) . '</strong> · ' . esc_html( $p['motif'] ) . '</span>'
+			. '<span class="h-part-h">' . ( $p['plage'] ? esc_html( schiesser_uhr( $p['plage'][0], false ) . '–' . schiesser_uhr( $p['plage'][1] ) ) : 'Geschlossen' ) . '</span></li>';
 	}
 	return $html . '</ul></div>';
 }

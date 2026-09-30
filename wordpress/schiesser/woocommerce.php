@@ -27,8 +27,8 @@ if ( is_shop() && ! is_search() && ! is_paged() && $page_boutique && has_blocks(
 	?>
 	<div class="woo-page woo-page--produit">
 		<div class="wrap">
-			<nav class="crumb crumb--clair" aria-label="Fil d'Ariane">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Accueil</a>
+			<nav class="crumb crumb--clair" aria-label="Brotkrümelnavigation">
+				<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a>
 				<?php if ( $boutique ) : ?><span aria-hidden="true">·</span><a href="<?php echo esc_url( $boutique ); ?>"><?php echo esc_html( get_the_title( wc_get_page_id( 'shop' ) ) ); ?></a><?php endif; ?>
 				<span aria-hidden="true">·</span><span aria-current="page"><?php echo esc_html( get_the_title() ); ?></span>
 			</nav>
@@ -39,7 +39,7 @@ if ( is_shop() && ! is_search() && ! is_paged() && $page_boutique && has_blocks(
 } else {
 	get_template_part( 'parts/titre-page', null, array(
 		'titre'    => woocommerce_page_title( false ),
-		'surtitre' => 'Boutique en ligne',
+		'surtitre' => 'Onlineshop',
 		'ariane'   => ( ! is_shop() && wc_get_page_id( 'shop' ) > 0 ) ? array( array( get_the_title( wc_get_page_id( 'shop' ) ), get_permalink( wc_get_page_id( 'shop' ) ) ) ) : array(),
 	) );
 	?>

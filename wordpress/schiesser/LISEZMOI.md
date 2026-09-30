@@ -1,7 +1,24 @@
-# Thème Schiesser 0.8
+# Thème Schiesser 0.9
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.9 : site en allemand, liste de prix et carte du Tea Room
+
+**Langues**
+- **Le site public est entièrement en allemand (Suisse)** : pages, boutons, horaires (« 7.30–18.30 Uhr »), jours fériés (Auffahrt, Bundesfeier…), messages du formulaire, filtres d'allergènes, titres pour Google et données structurées (`de-CH`).
+- **L'administration reste en français** : menus, écrans, réglages, guide, messages à l'équipe. Les deux langues fonctionnent en même temps, sans extension.
+- **Adresses des pages en allemand** : `/confiserie/`, `/tea-room/`, `/geschichte/`, `/besuch/`, `/kontakt/`, `/firmengeschenke/`, `/impressum/`, fiches produits en `/produkte/…`. Les anciennes adresses françaises redirigent automatiquement (301).
+- Sur le tableau de bord, un bouton **« Installer la langue allemande »** ajoute le pack de langue de WordPress pour les rares textes de WordPress et des extensions (Rank Math) visibles sur le site.
+
+**Contenu**
+- **Liste de prix de la boutique** : 70 produits en 8 rubriques (Läckerli & Basler Spezialitäten, Pralinen & Confiserie, Schokolade, Torten & Patisserie, Aus der Backstube, Salziges & Apéro, Guetzli & Gebäck, Glace), avec leurs formats et prix (« ab CHF … » quand il y a plusieurs formats).
+- **Carte du Tea Room** : 78 articles en 8 rubriques (Kaffee, Tee, Heisse Schokolade, Frühstück, Suppen & Hausgemachtes, Dessert & Glace, Kalte Getränke, Wein, Cüpli & Drinks), gérés dans « Produits Tea Room ».
+- **Pages réécrites en allemand**, avec l'histoire racontée par la carte (fondation en 1870 par le confiseur glaronais Rudolf Schiesser, façade néogothique et Tea Room de son fils Hans) et deux photos d'archives (façade en 1889, Marktplatz vers 1900).
+
+**Liste des produits « en préparation »**
+- Tant que les photos des produits ne sont pas prêtes, la boutique affiche **« Produktliste folgt in Kürze »** avec un aperçu des rubriques, un bouton d'appel et un lien vers les horaires. Les fiches produits ne sont pas encore publiques (ni pour les visiteurs, ni pour Google).
+- Quand tout est prêt : **Produits boutique → Mise en ligne → « Tout est prêt : afficher la liste des produits »**. Un clic, et la liste complète apparaît. Le bouton inverse remet la liste en préparation. Le rappel est aussi dans la barre noire du haut (« Liste des produits : en préparation »).
 
 ## Nouveautés de la version 0.8 : modifier plus vite, commander par téléphone
 
@@ -91,9 +108,16 @@ Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le 
 ### Première installation (site de test)
 
 1. **Apparence → Thèmes → Ajouter → Téléverser un thème**, choisir `schiesser.zip`, puis **Activer**.
-2. **Réglages → Général** : Langue du site « Français », Fuseau horaire « Zurich », Titre du site « Confiserie Schiesser », puis Enregistrer. Ces trois réglages sont lus par Google et par le bandeau « Ouvert / Fermé ».
-3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (8 produits, 7 pages, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
+2. **Réglages → Général** : Langue du site « Français » (l'administration ; le site public s'affiche de toute façon en allemand), Fuseau horaire « Zurich », Titre du site « Confiserie Schiesser », puis Enregistrer. Ces trois réglages sont lus par Google et par le bandeau « Ouvert / Fermé ».
+3. Sur le tableau de bord, cliquer sur **Importer le contenu de démonstration** (70 produits de la liste de prix, 78 articles du Tea Room, 7 pages en allemand, menus de l'en-tête et du pied de page, réglages SEO ; les photos sont téléchargées depuis Unsplash, comptez une minute).
 4. **Réglages → Permaliens** : vérifier que « Titre de la publication » est sélectionné, puis Enregistrer.
+
+### Mise à jour depuis la version 0.8
+
+1. Remplacer le thème par le nouveau zip.
+2. Sur le tableau de bord, cliquer sur **« Passer le site en allemand »** : le texte des 7 pages est remplacé par la version allemande, la liste de prix et la carte du Tea Room sont importées, les anciens produits de démonstration en français partent à la corbeille (récupérables). Les photos de la médiathèque restent.
+3. **Réglages → Permaliens** : cliquer sur Enregistrer (nouvelle adresse `/produkte/`).
+4. Si vous aviez modifié les textes « Présentation », « Mention » ou la vitrine dans Réglages maison, les réécrire en allemand.
 
 ### Mise à jour depuis la version 0.7
 
@@ -257,13 +281,15 @@ Ce parcours a été testé ici avec une imitation de WooCommerce (l'extension ne
 
 ## Avant la mise en ligne
 
-- Vérifier **Réglages → Général** (langue Français, fuseau Zurich, titre « Confiserie Schiesser ») et, le jour du lancement, décocher « Demander aux moteurs de recherche de ne pas indexer ce site » dans **Réglages → Lecture**.
+- Ajouter une photo à chaque produit, relire noms, formats et prix, puis **Produits boutique → Mise en ligne → « Tout est prêt »**.
+- Remplacer les photos d'illustration (Unsplash) du Tea Room et des pages par les photos de la maison.
+- Vérifier **Réglages → Général** (langue Français pour l'administration, fuseau Zurich, titre « Confiserie Schiesser ») et, le jour du lancement, décocher « Demander aux moteurs de recherche de ne pas indexer ce site » dans **Réglages → Lecture**.
 - Relire tous les textes de démonstration (dates, chiffres, prix, allergènes, affirmations historiques) et les faire valider par la maison : la liste des faits à vérifier est dans `SEO-RAPPORT.md`, section 7. En particulier la mention « Le plus ancien café de Suisse » de l'encart « La doyenne », les durées des trajets et les chiffres d'affluence, donnés à titre d'exemple.
 - Remplacer les photos par les photos de la maison, avec un texte alternatif descriptif pour chacune ; les archives et les comparaisons « hier et aujourd’hui » attendent le fonds photographique de la maison.
 - Saisir les vraies coordonnées et les horaires dans Réglages maison, ainsi que la position exacte (latitude, longitude).
 - Installer une extension d'envoi d'e-mails (SMTP) et **envoyer un message de test** avec le formulaire de contact.
 - Vérifier que l'adresse des Réglages maison est exactement celle de la fiche Google (les annuaires indiquent Marktplatz 19, 4051 Basel), puis contrôler la carte Google Maps et les boutons « Itinéraire ».
-- Compléter et publier la page **Mentions légales** (brouillon créé par l'import) et la **Politique de confidentialité** (nLPD), en y mentionnant la carte et le formulaire (voir plus haut).
+- Compléter et publier la page **Impressum** (brouillon créé par l'import) et la **Politique de confidentialité** (nLPD), en y mentionnant la carte et le formulaire (voir plus haut).
 - Créer ou mettre à jour la fiche **Google Business Profile** avec exactement le même nom, la même adresse et le même téléphone.
 - Mettre le site en HTTPS, activer un cache, programmer des sauvegardes.
 - Relier Google Search Console et envoyer le plan du site.
@@ -279,6 +305,10 @@ schiesser/
 ├── woocommerce.php                pages WooCommerce (utilisé seulement si WooCommerce est actif)
 ├── parts/titre-page.php           bandeau de titre des pages sans grande photo
 ├── inc/
+│   ├── langue.php         site en allemand, administration en français, dates et heures, adresses des pages
+│   ├── lancement.php      liste des produits « en préparation » et bouton de mise en ligne
+│   ├── contenu-produits.php  liste de prix de la boutique et carte du Tea Room
+│   ├── contenu-pages.php  texte allemand des pages
 │   ├── setup.php          réglages du thème, styles, scripts, navigation, redirections de pages
 │   ├── charte.php         couleurs et typographie
 │   ├── reglages.php       données des Réglages maison

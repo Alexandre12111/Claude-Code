@@ -196,17 +196,17 @@ function schiesser_mailto( $sujet, $lignes = array() ) {
 	if ( ! $email ) {
 		return '';
 	}
-	$corps = "Bonjour,\r\n\r\n" . implode( "\r\n", $lignes ) . "\r\n\r\nMerci et à bientôt,\r\n";
+	$corps = "Grüezi\r\n\r\n" . implode( "\r\n", $lignes ) . "\r\n\r\nVielen Dank und bis bald\r\n";
 	return 'mailto:' . $email . '?subject=' . rawurlencode( $sujet ) . '&body=' . rawurlencode( $corps );
 }
 
 /** Lien de commande d'un produit par e-mail. */
 function schiesser_mailto_commande( $nom ) {
-	return schiesser_mailto( 'Commande : ' . $nom, array(
-		'Je souhaite commander : ' . $nom,
-		'Quantité ou format :',
-		'Date de retrait souhaitée :',
-		'Nom et téléphone :',
+	return schiesser_mailto( 'Bestellung: ' . $nom, array(
+		'Ich möchte gerne bestellen: ' . $nom,
+		'Menge oder Format:',
+		'Gewünschtes Abholdatum:',
+		'Name und Telefon:',
 	) );
 }
 
@@ -268,14 +268,14 @@ function schiesser_carte_produit( $p, $i, $fiche_rapide = true ) {
 			?>
 			<span class="tint"></span>
 			<?php if ( ! empty( $p['id'] ) && schiesser_est_epuise( $p['id'] ) ) : ?>
-				<span class="card-tag card-tag--epuise">Épuisé aujourd’hui</span>
+				<span class="card-tag card-tag--epuise">Heute ausverkauft</span>
 			<?php elseif ( $p['badge'] ) : ?>
 				<span class="card-tag<?php echo 'menthe' === $p['badge_style'] ? ' gold' : ''; ?>"><?php echo esc_html( $p['badge'] ); ?></span>
 			<?php endif; ?>
-			<span class="card-see" aria-hidden="true"><?php echo $fiche_rapide ? 'Voir la fiche' : 'Découvrir'; ?></span>
+			<span class="card-see" aria-hidden="true"><?php echo $fiche_rapide ? 'Details ansehen' : 'Entdecken'; ?></span>
 		</span>
 		<span class="card-body">
-			<span class="card-plate" aria-hidden="true">Pl. <?php echo esc_html( str_pad( (string) ( ! empty( $p['ordre'] ) ? $p['ordre'] : $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+			<span class="card-plate" aria-hidden="true">Nr. <?php echo esc_html( str_pad( (string) ( ! empty( $p['ordre'] ) ? $p['ordre'] : $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 			<h3 class="card-name"><?php echo esc_html( $p['nom'] ); ?></h3>
 			<?php if ( $p['prix'] ) : ?><span class="card-price"><?php echo esc_html( $p['prix'] ); ?></span><?php endif; ?>
 			<?php if ( $p['unite'] ) : ?><span class="card-unit"><?php echo esc_html( $p['unite'] ); ?></span><?php endif; ?>
