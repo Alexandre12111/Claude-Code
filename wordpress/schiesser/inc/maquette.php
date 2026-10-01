@@ -486,7 +486,9 @@ function schiesser_mq_bouton( $texte, $lien, $classe = 'btn-line', $fleche = fal
 		return '';
 	}
 	$lien    = (string) $lien;
-	$externe = 0 === strpos( $lien, 'http' ) && false === strpos( $lien, (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+	$pdf     = '#karte-pdf' === $lien && function_exists( 'schiesser_url_carte_pdf' ); // lien spécial : le PDF de la carte du Tea Room
+	$lien    = $pdf ? schiesser_url_carte_pdf() : $lien;
+	$externe = $pdf || ( 0 === strpos( $lien, 'http' ) && false === strpos( $lien, (string) wp_parse_url( home_url(), PHP_URL_HOST ) ) );
 	return '<a href="' . esc_url( $lien ?: '#' ) . '" class="btn ' . esc_attr( $classe ) . '"' . ( $externe ? ' target="_blank" rel="noopener"' : '' ) . '>'
 		. ( $fleche ? '<span>' . esc_html( $texte ) . '</span> <span class="a" aria-hidden="true">→</span>' : esc_html( $texte ) )
 		. '</a>';
@@ -792,11 +794,10 @@ function schiesser_mq_produits_catalogue( $a ) {
 }
 
 function schiesser_mq_rendu_catalogue( $a ) {
-	// Liste pas encore en ligne : aperçu de l'assortiment (inc/lancement.php).
-	if ( empty( $a['apercu'] ) && function_exists( 'schiesser_boutique_prete' ) && ! schiesser_boutique_prete() ) {
-		$tous = function_exists( 'schiesser_liste_produits' ) ? schiesser_liste_produits( 'auto' ) : array();
-		return $tous ? schiesser_mq_section( $a, schiesser_html_bientot( $tous ) ) : '';
-	}
+	// Liste pas encore en ligne (inc/lancement.php) : les spécialités restent présentées, avec la photo
+	// de leur catégorie si besoin ; elles mènent à la page Confiserie au lieu des fiches pas encore publiques.
+	$en_preparation = empty( $a['apercu'] ) && function_exists( 'schiesser_boutique_prete' ) && ! schiesser_boutique_prete();
+	$vers_confiserie = $en_preparation ? schiesser_url_page( 'boutique', 'sortiment' ) : '';
 	$produits = array_values( schiesser_mq_produits_catalogue( $a ) );
 	if ( ! $produits ) {
 		return '';
@@ -806,14 +807,15 @@ function schiesser_mq_rendu_catalogue( $a ) {
 	foreach ( $produits as $i => $p ) {
 		$no       = schiesser_mq_num( $i + 1 );
 		$accroche = trim( (string) ( $p['accroche'] ?? '' ) ) ?: (string) $p['categorie'];
-		$vignette = $p['image_id'] ? wp_get_attachment_image( $p['image_id'], 'medium_large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ) : '';
-		$lignes  .= '<a class="cat-row" data-img="' . $i . '" data-nom="' . esc_attr( $p['nom'] ) . '" data-no="Nr. ' . esc_attr( $no ) . '" href="' . esc_url( $p['url'] ) . '">'
+		$photo    = function_exists( 'schiesser_photo_produit_ou_categorie' ) ? schiesser_photo_produit_ou_categorie( $p ) : (int) $p['image_id'];
+		$vignette = $photo ? wp_get_attachment_image( $photo, 'medium_large', false, array( 'alt' => '', 'loading' => 'lazy', 'decoding' => 'async' ) ) : '';
+		$lignes  .= '<a class="cat-row" data-img="' . $i . '" data-nom="' . esc_attr( $p['nom'] ) . '" data-no="Nr. ' . esc_attr( $no ) . '" href="' . esc_url( $vers_confiserie ?: $p['url'] ) . '">'
 			. '<span class="n">' . esc_html( $no ) . '</span>'
 			. '<span class="nm">' . esc_html( $p['nom'] ) . ( $accroche ? '<small>' . esc_html( $accroche ) . '</small>' : '' ) . '</span>'
 			. '<span class="go" aria-hidden="true">→</span>'
 			. '<span class="cat-thumb ph" data-label="' . esc_attr( $p['nom'] ) . '">' . $vignette . '</span></a>';
-		if ( $p['image_id'] ) {
-			$images .= wp_get_attachment_image( $p['image_id'], 'large', false, array(
+		if ( $photo ) {
+			$images .= wp_get_attachment_image( $photo, 'large', false, array(
 				'loading'  => 'lazy',
 				'decoding' => 'async',
 				'data-i'   => (string) $i,
@@ -823,7 +825,10 @@ function schiesser_mq_rendu_catalogue( $a ) {
 		}
 	}
 	$premier = $produits[0];
-	$contenu = '<div class="cat"><div class="cat-list rv">' . $lignes . '</div>'
+	$suite   = $en_preparation
+		? '<p class="cat-suite"><span class="cat-suite-k">Produktliste folgt in Kürze</span> Alle Spezialitäten finden Sie schon heute an der Theke am Marktplatz. <a href="' . esc_url( schiesser_url_page( 'boutique' ) ) . '">Zum ganzen Sortiment</a></p>'
+		: '';
+	$contenu = '<div class="cat"><div class="cat-list rv">' . $lignes . $suite . '</div>'
 		. '<div class="cat-preview" aria-hidden="true"><div class="pv ph" data-label="Vorschau">' . $images . '</div>'
 		. '<div class="cap"><span class="cap-nom js-cap-nom">' . esc_html( $premier['nom'] ) . '</span><span class="cap-no js-cap-no">Nr. 01</span></div></div></div>';
 	return schiesser_mq_section( $a, $contenu );
@@ -1182,7 +1187,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	foreach ( $rubriques as $i => $r ) {
 		$nom      = schiesser_mq_brut( $r['nom'] );
 		$photos  .= schiesser_mq_image( $r, 'image', 'full', array( 'data-c' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '(min-width: 1200px) 1140px, 100vw' ) );
-		$onglets .= '<button type="button" class="mtab' . ( 0 === $i ? ' on' : '' ) . '" data-c="' . $i . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '">' . esc_html( $nom ) . '</button>';
+		$onglets .= '<button type="button" class="mtab' . ( 0 === $i ? ' on' : '' ) . '" data-c="' . $i . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '"><span class="mtab-no" aria-hidden="true">' . schiesser_mq_num( $i + 1 ) . '</span>' . esc_html( $nom ) . '</button>';
 		$plats    = '';
 		foreach ( $r['plats'] as $k => $q ) {
 			$al     = $q['al'] ?? null;
@@ -1191,7 +1196,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 				. ( '' !== trim( $q['description'] ) ? '<div class="mi-d">' . schiesser_mq_texte( $q['description'] ) . '</div>' : '' )
 				. ( ! empty( $q['id'] ) && schiesser_est_epuise( $q['id'] ) ? '<span class="mi-tag mi-tag--epuise">Heute ausverkauft</span>' : ( '' !== trim( $q['mention'] ) ? '<span class="mi-tag">' . schiesser_mq_riche( $q['mention'] ) . '</span>' : '' ) ) . '</div>';
 		}
-		$listes .= '<div class="mn-list' . ( $i ? ' is-off' : '' ) . '" data-c="' . $i . '"><h3 class="screen-reader-text">' . esc_html( $nom ) . '</h3>' . $plats . '</div>';
+		$listes .= '<div class="mn-list' . ( $i ? ' is-off' : '' ) . '" data-c="' . $i . '"><div class="mn-head"><span class="mn-no">' . schiesser_mq_num( $i + 1 ) . '</span><h3 class="mn-titre">' . esc_html( $nom ) . '</h3><span class="mn-orn" aria-hidden="true"><i></i><b></b><i></i></span><span class="mn-nb">' . count( $r['plats'] ) . ( 1 === count( $r['plats'] ) ? ' Angebot' : ' Angebote' ) . '</span></div><div class="mn-items">' . $plats . '</div></div>';
 	}
 
 	// Suggestion du jour : le produit du Tea Room coché « Suggestion du jour », sinon celle saisie dans le bloc.
@@ -1214,10 +1219,16 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 			. ( '' !== trim( $s_texte ) ? '<p class="sp">' . schiesser_mq_texte( $s_texte ) . '</p>' : '' )
 			. '<div class="sf"><span>' . schiesser_mq_riche( $a['sPied'] ) . '</span><b>' . esc_html( schiesser_mq_brut( $s_prix ) ) . '</b></div></div></div>';
 	}
-	$contenu = '<div class="rv js-carte-salon">'
+	$pdf     = function_exists( 'schiesser_url_carte_pdf' )
+		? '<a class="carte-pdf" href="' . esc_url( schiesser_url_carte_pdf() ) . '" target="_blank" rel="noopener" type="application/pdf">'
+			. '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M7 3h7l5 5v13H7z M14 3v5h5 M10 13h6 M10 16.5h6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>'
+			. '<span><b>Die ganze Karte als PDF</b><small>Zum Lesen, Drucken oder Teilen</small></span><span class="a" aria-hidden="true">↗</span></a>'
+		: '';
+	$contenu = '<div class="carte rv js-carte-salon">'
+		. '<div class="mn-tabs" role="group" aria-label="Rubriken der Karte">' . $onglets . '</div>'
+		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">'
 		. '<div class="x-menupic">' . $photos . '<span class="x-mc js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></div>'
-		. '<div class="mn-tabs">' . $onglets . '</div>'
-		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">' . $suggestion
+		. $pdf . $suggestion
 		. ( array_filter( $tous_al ) ? schiesser_allergenes_note() : '' )
 		. ( empty( $a['apercu'] ) && is_singular() ? schiesser_partage( get_permalink(), 'Die Karte des Tea Room · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ), 'partage--carte' ) : '' )
 		. ( '' !== trim( $a['mention'] ) ? '<p class="mn-note">' . schiesser_mq_riche( $a['mention'] ) . '</p>' : '' ) . '</aside></div></div>';

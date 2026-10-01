@@ -17,6 +17,7 @@ $mention = schiesser_page( 'mentions', false );
 $ancres  = ( is_page() && function_exists( 'schiesser_ancres_page' ) ) ? array_slice( schiesser_ancres_page(), 0, 5, true ) : array();
 $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 ?>
+<?php do_action( 'schiesser_avant_pied' ); // liens vers les autres pages de la maison (inc/maillage.php) ?>
 </main>
 
 <footer class="site-footer">

@@ -25,9 +25,12 @@ foreach ( array( 1, 2 ) as $n ) {
 		continue;
 	}
 	$style     = $a[ 'bouton' . $n . 'Style' ] ?? ( 1 === $n ? 'creme' : 'contour' );
+	$lien      = $a[ 'bouton' . $n . 'Lien' ] ?: '#';
+	$pdf       = '#karte-pdf' === $lien && function_exists( 'schiesser_url_carte_pdf' ); // lien spécial : le PDF de la carte du Tea Room
 	$boutons[] = array(
 		'texte'  => $texte,
-		'lien'   => $a[ 'bouton' . $n . 'Lien' ] ?: '#',
+		'lien'   => $pdf ? schiesser_url_carte_pdf() : $lien,
+		'pdf'    => $pdf,
 		'classe' => $styles[ $style ] ?? $styles['creme'],
 		'fleche' => 1 === $n,
 	);
@@ -79,7 +82,7 @@ $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 			<?php if ( $boutons ) : ?>
 				<div class="hero-actions">
 					<?php foreach ( $boutons as $b ) : ?>
-						<a class="<?php echo esc_attr( $b['classe'] ); ?>" href="<?php echo esc_url( $b['lien'] ); ?>">
+						<a class="<?php echo esc_attr( $b['classe'] ); ?>" href="<?php echo esc_url( $b['lien'] ); ?>"<?php echo $b['pdf'] ? ' target="_blank" rel="noopener" type="application/pdf"' : ''; ?>>
 							<span><?php echo esc_html( $b['texte'] ); ?></span><?php if ( $b['fleche'] ) : ?> <span class="a" aria-hidden="true">→</span><?php endif; ?>
 						</a>
 					<?php endforeach; ?>

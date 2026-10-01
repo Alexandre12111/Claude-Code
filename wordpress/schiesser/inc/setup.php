@@ -44,6 +44,7 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'schiesser-site' );
 
 	wp_enqueue_script( 'schiesser-site', SCHIESSER_URI . '/assets/js/site.js', array(), SCHIESSER_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+	wp_enqueue_script( 'schiesser-prestige', SCHIESSER_URI . '/assets/js/prestige.js', array( 'schiesser-site' ), SCHIESSER_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) ); // effets premium
 	wp_localize_script( 'schiesser-site', 'SCHIESSER', array(
 		'horaires' => schiesser_horaires_js(),
 		'particuliers' => schiesser_particuliers_js(), // jours fériés et dates exceptionnelles des prochaines semaines

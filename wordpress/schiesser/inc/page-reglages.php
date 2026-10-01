@@ -227,6 +227,14 @@ function schiesser_page_reglages() {
 					?>
 				</div>
 				<?php schiesser_carte_fin(); ?>
+
+				<?php schiesser_carte_debut( 'Carte du Tea Room en PDF', 'Le bouton « Karte als PDF » de la page Tea Room ouvre ce fichier. Par défaut, le thème fournit la carte actuelle mise en page en PDF.', 'media-document' ); ?>
+				<div class="s-grille">
+					<?php
+					schiesser_champ( $o, 'carte_pdf', $r['carte_pdf'] ?? '', array( 'libelle' => 'Lien du PDF de la carte', 'type' => 'url', 'placeholder' => 'https://…/karte.pdf', 'classe' => 's-large', 'aide' => 'Pour une nouvelle carte : Médias → Ajouter un fichier, téléversez le PDF, copiez son « URL du fichier » et collez la ici. Laissez vide pour la carte fournie par le thème. Pour créer un PDF à jour à partir des « Produits Tea Room » : ouvrez <a href="' . esc_url( add_query_arg( 'schiesser_karte', 'druck', home_url( '/' ) ) ) . '" target="_blank" rel="noopener">la carte imprimable</a>, puis Imprimer → Enregistrer au format PDF.' ) );
+					?>
+				</div>
+				<?php schiesser_carte_fin(); ?>
 			</section>
 
 			<!-- ============ Fiche Google et SEO ============ -->

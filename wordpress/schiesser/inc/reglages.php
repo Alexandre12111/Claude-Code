@@ -84,6 +84,7 @@ function schiesser_reglages_defaut() {
 		'vitrine'            => array( 'Läckerli', 'Truffes', 'Fruchtwähe' ),
 		'presentation'       => 'Die Confiserie Schiesser wurde 1870 am Basler Marktplatz gegründet. Läckerli, Pralinen, Torten und Gebäck entstehen in der eigenen Backstube; im ersten Stock liegt der Tea Room, das älteste Kaffeehaus der Schweiz.',
 		'instagram'          => '',
+		'carte_pdf'          => '',
 		'facebook'           => '',
 		// Établissement (SEO)
 		'nom_etablissement'  => 'Confiserie Schiesser',
@@ -266,7 +267,7 @@ function schiesser_nettoyer_reglages( $entree ) {
 		}
 	}
 	$propre['profils'] = implode( "\n", $profils );
-	foreach ( array( 'instagram', 'facebook' ) as $cle ) {
+	foreach ( array( 'instagram', 'facebook', 'carte_pdf' ) as $cle ) {
 		$propre[ $cle ] = isset( $entree[ $cle ] ) ? esc_url_raw( $entree[ $cle ] ) : '';
 	}
 	$propre['lien_maps']     = schiesser_nettoyer_lien_maps( $entree['lien_maps'] ?? '', $propre['ville'] );

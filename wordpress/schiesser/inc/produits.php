@@ -428,3 +428,61 @@ add_action( 'pre_get_posts', function ( $q ) {
 		$q->set( 'orderby', array( 'menu_order' => 'ASC', 'title' => 'ASC' ) );
 	}
 } );
+
+/* ------------------------------------------------------------------ */
+/* Photo de catégorie (en attendant les photos des produits)           */
+/* ------------------------------------------------------------------ */
+
+/** Photo d'un produit, sinon celle de sa catégorie (accueil, catalogue des spécialités). */
+function schiesser_photo_produit_ou_categorie( $p ) {
+	if ( ! empty( $p['image_id'] ) ) {
+		return (int) $p['image_id'];
+	}
+	foreach ( array_keys( (array) ( $p['categories'] ?? array() ) ) as $slug ) {
+		$t = get_term_by( 'slug', $slug, SCHIESSER_CATEGORIE );
+		$photo = $t ? (int) get_term_meta( $t->term_id, 'photo', true ) : 0;
+		if ( $photo && wp_attachment_is_image( $photo ) ) {
+			return $photo;
+		}
+	}
+	return 0;
+}
+
+add_action( SCHIESSER_CATEGORIE . '_add_form_fields', function () {
+	echo '<div class="form-field"><label>Photo de la catégorie</label>' . schiesser_categorie_champ_photo() . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
+} );
+add_action( SCHIESSER_CATEGORIE . '_edit_form_fields', function ( $terme ) {
+	echo '<tr class="form-field"><th scope="row">Photo de la catégorie</th><td>' . schiesser_categorie_champ_photo( $terme ) . '</td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput
+} );
+
+function schiesser_categorie_champ_photo( $terme = null ) {
+	$html = schiesser_rubrique_champs( $terme )['photo'];
+	return str_replace(
+		'La grande photo affichée au-dessus des onglets quand cette rubrique est choisie.',
+		'Utilisée sur l’accueil pour les produits de cette catégorie qui n’ont pas encore leur propre photo.',
+		$html
+	);
+}
+
+/* Les formulaires de catégorie sont déjà protégés par WordPress (jeton vérifié avant ces actions). */
+function schiesser_categorie_enregistrer( $term_id ) {
+	if ( ! current_user_can( 'edit_term', $term_id ) || ! isset( $_POST['rubrique_photo'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return;
+	}
+	$photo = absint( $_POST['rubrique_photo'] ); // phpcs:ignore WordPress.Security.NonceVerification
+	if ( $photo && wp_attachment_is_image( $photo ) ) {
+		update_term_meta( $term_id, 'photo', $photo );
+	} else {
+		delete_term_meta( $term_id, 'photo' );
+	}
+}
+add_action( 'created_' . SCHIESSER_CATEGORIE, 'schiesser_categorie_enregistrer' );
+add_action( 'edited_' . SCHIESSER_CATEGORIE, 'schiesser_categorie_enregistrer' );
+
+add_action( 'admin_enqueue_scripts', function () {
+	$ecran = get_current_screen();
+	if ( $ecran && SCHIESSER_CATEGORIE === $ecran->taxonomy ) {
+		wp_enqueue_media();
+		wp_enqueue_script( 'schiesser-admin-tearoom', SCHIESSER_URI . '/assets/admin/tearoom.js', array( 'jquery' ), SCHIESSER_VERSION, true );
+	}
+} );

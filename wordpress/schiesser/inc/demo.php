@@ -33,7 +33,7 @@ add_action( 'admin_notices', function () {
 	}
 	$importee = get_option( 'schiesser_demo_importee' );
 	$version  = (string) get_option( 'schiesser_demo_version', $importee ? '0.1.0' : '' );
-	if ( $importee && version_compare( $version, '0.9.0', '>=' ) ) {
+	if ( $importee && version_compare( $version, '0.10.0', '>=' ) ) {
 		return;
 	}
 	if ( ! $importee ) {
@@ -49,8 +49,8 @@ add_action( 'admin_notices', function () {
 	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_import_demo&remplacer=1' ), 'schiesser_import_demo' );
 	?>
 	<div class="notice notice-info">
-		<p><strong>Thème Schiesser :</strong> le site passe en <strong>allemand</strong>. La mise à jour remplace le texte des 7 pages par leur version allemande (adresses allemandes, les anciennes redirigent), importe la <strong>liste de prix</strong> de la boutique (70 produits, masqués sur le site jusqu’à ce que vous cliquiez sur « Afficher la liste des produits ») et la <strong>carte du Tea Room</strong>. Les anciens produits de démonstration en français partent à la corbeille. Les photos que vous avez ajoutées restent dans la médiathèque.</p>
-		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>" onclick="return confirm('Remplacer le contenu des pages par la version allemande et importer la liste de prix et la carte ?');">Passer le site en allemand</a></p>
+		<p><strong>Thème Schiesser 0.10 :</strong> la carte du Tea Room passe en haut de sa page (avec le PDF), les pages reçoivent davantage de liens internes et 5 mots-clés Rank Math chacune. Si ce n’est pas déjà fait, le site passe aussi en <strong>allemand</strong>. La mise à jour remplace le texte des 7 pages par leur version allemande (adresses allemandes, les anciennes redirigent), importe la <strong>liste de prix</strong> de la boutique (70 produits, masqués sur le site jusqu’à ce que vous cliquiez sur « Afficher la liste des produits ») et la <strong>carte du Tea Room</strong>. Les anciens produits de démonstration en français partent à la corbeille. Les photos que vous avez ajoutées restent dans la médiathèque.</p>
+		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>" onclick="return confirm('Remplacer le contenu des pages par la version allemande et importer la liste de prix et la carte ?');">Mettre à jour le contenu des pages</a></p>
 	</div>
 	<?php
 } );
@@ -182,6 +182,16 @@ function schiesser_importer_preisliste() {
 		}
 	}
 
+	$photos_categories = array(
+		'Läckerli & Basler Spezialitäten' => array( '1556910103-1c02745aae4d', 'Basler Läckerli und Spezialitäten aus der Confiserie Schiesser' ),
+		'Pralinen & Confiserie'           => array( '1481391319762-47dff72954d9', 'Handgemachte Pralinen der Confiserie Schiesser in Basel' ),
+		'Schokolade'                      => array( '1464195244916-405fa0a82545', 'Schokolade aus der Confiserie Schiesser' ),
+		'Torten & Patisserie'             => array( '1565958011703-44f9829ba187', 'Torten und Patisserie aus der eigenen Backstube' ),
+		'Aus der Backstube'               => array( '1509440159596-0249088772ff', 'Frisches Gebäck aus der Backstube am Marktplatz' ),
+		'Salziges & Apéro'                => array( '1600891964092-4316c288032e', 'Salziges Gebäck und Apéro der Confiserie Schiesser' ),
+		'Guetzli & Gebäck'                => array( '1549007994-cb92caebd54b', 'Guetzli und Gebäck aus Basel' ),
+		'Glace'                           => array( '1551024506-0bccd828d307', 'Hausgemachte Glace der Confiserie Schiesser' ),
+	);
 	$ordre = 0;
 	foreach ( schiesser_preisliste() as $rubrique => $produits ) {
 		$t = term_exists( $rubrique, SCHIESSER_CATEGORIE ) ?: wp_insert_term( $rubrique, SCHIESSER_CATEGORIE );
@@ -189,6 +199,13 @@ function schiesser_importer_preisliste() {
 			continue;
 		}
 		$cat = (int) ( is_array( $t ) ? $t['term_id'] : $t );
+		// Photo d'illustration de la catégorie : montrée sur l'accueil tant que les produits n'ont pas leur photo.
+		if ( ! get_term_meta( $cat, 'photo', true ) && isset( $photos_categories[ $rubrique ] ) ) {
+			$photo = schiesser_demo_image( $photos_categories[ $rubrique ][0], 'confiserie-basel-' . sanitize_title( $rubrique ), $photos_categories[ $rubrique ][1] );
+			if ( $photo ) {
+				update_term_meta( $cat, 'photo', $photo );
+			}
+		}
 		foreach ( $produits as $p ) {
 			++$ordre;
 			list( $nom, $formats, $accroche ) = $p;
@@ -244,11 +261,22 @@ function schiesser_importer_preisliste() {
 				$desc_seo = str_replace( '. Im Laden', '. Von Hand gemacht, im Laden', $desc_seo );
 			}
 			$ancien = (string) get_post_meta( $id, 'rank_math_title', true );
-			if ( '' === $ancien || $nom . ' | Confiserie Schiesser Basel' === $ancien ) {
+			if ( '' === $ancien || $nom . ' | Confiserie Schiesser Basel' === $ancien || $titre_seo === $ancien ) { // réglages encore automatiques
 				update_post_meta( $id, 'rank_math_title', $titre_seo );
 				update_post_meta( $id, 'rank_math_description', $desc_seo );
 				// Mot-clé principal : le nom du produit ; secondaire : avec la ville, si elle n'y est pas déjà.
-				update_post_meta( $id, 'rank_math_focus_keyword', $nom . ( preg_match( '/bas(el|ler)/iu', $nom ) ? '' : ',' . $nom . ' Basel' ) );
+				$themes = array(
+					'Läckerli & Basler Spezialitäten' => 'Basler Spezialitäten',
+					'Pralinen & Confiserie'           => 'Confiserie Basel',
+					'Schokolade'                      => 'Schokolade Basel',
+					'Torten & Patisserie'             => 'Patisserie Basel',
+					'Aus der Backstube'               => 'Gebäck Basel',
+					'Salziges & Apéro'                => 'Apéro Basel',
+					'Guetzli & Gebäck'                => 'Guetzli Basel',
+					'Glace'                           => 'Glace Basel',
+				);
+				$mots = array( $nom, preg_match( '/bas(el|ler)/iu', $nom ) ? $nom . ' Geschenk' : $nom . ' Basel', $nom . ' kaufen', $themes[ $rubrique ] ?? 'Confiserie Basel', 'Confiserie Schiesser ' . $nom );
+				update_post_meta( $id, 'rank_math_focus_keyword', implode( ',', array_slice( array_unique( $mots ), 0, 5 ) ) ); // Rank Math : 5 mots-clés, le premier est le principal
 			}
 		}
 	}

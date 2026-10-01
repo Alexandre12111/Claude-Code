@@ -1,11 +1,11 @@
 # Rapport SEO : Confiserie Schiesser
 
-Thème Schiesser 0.9.1. État vérifié le 1er octobre 2026 sur le site de test (WordPress 6.5, contenu importé par « Passer le site en allemand »), page par page, avec la liste des produits en préparation puis en ligne.
+Thème Schiesser 0.10. État vérifié le 1er octobre 2026 sur le site de test (WordPress 6.5, contenu importé par « Passer le site en allemand »), page par page, avec la liste des produits en préparation puis en ligne.
 
 ## 1. En résumé
 
 - **Le site public est en allemand (Suisse)** : textes, adresses des pages, titres SEO, descriptions, données structurées et langue déclarée à Google (`de-CH`). L'administration reste en français.
-- **Chaque page et chaque produit arrive avec son titre SEO, sa méta description et son mot-clé principal** déjà saisis dans Rank Math. Les longueurs suivent la règle maison : titres de 47 à 60 caractères, descriptions de 129 à 157.
+- **Chaque page et chaque produit arrive avec son titre SEO, sa méta description et 5 mots-clés** (le premier est le principal) déjà saisis dans Rank Math. Les longueurs suivent la règle maison : titres de 47 à 60 caractères, descriptions de 129 à 157.
 - **Les données structurées sont valides** sur toutes les pages, avec ou sans Rank Math. Le thème complète la fiche de Rank Math au lieu d'en créer une seconde.
 - **La liste des produits est « en préparation »** tant que les photos manquent : les fiches produits ne sont ni visibles ni indexées. Elles entrent dans le plan du site au clic sur « Tout est prêt ».
 - **Ce qui reste dépend de la maison** : vraies photos, faits à valider, Impressum, fiche Google, avis et annuaires (sections 7 à 9).
@@ -37,19 +37,19 @@ Un mot-clé principal par page, placé dans le titre SEO, la méta description e
 
 | Page | Mot-clé principal | Secondaires | Titre SEO (caractères) | Description | H1 |
 |---|---|---|---|---|---|
-| Startseite | Confiserie Basel | Tea Room Basel, Confiserie Schiesser | Confiserie in Basel \| Tea Room seit 1870 – Schiesser (52) | 155 | Confiserie in Basel, seit 1870 am Marktplatz |
-| Confiserie | Läckerli Basel | Pralinen Basel, Confiserie Marktplatz | Läckerli & Pralinen Basel \| Confiserie Schiesser (48) | 143 | Confiserie in Basel, aus der eigenen Backstube |
-| Tea Room | Tea Room Basel | Kaffeehaus Basel, Frühstück Basel Marktplatz | Tea Room Basel \| Ältestes Kaffeehaus der Schweiz – Schiesser (60) | 143 | Tea Room in Basel, über dem Marktplatz |
-| Geschichte | Basler Confiserie seit 1870 | Confiserie Schiesser Geschichte | Geschichte seit 1870 \| Basler Confiserie – Schiesser (52) | 153 | Seit 1870 am Basler Marktplatz |
-| Besuch | Confiserie Marktplatz Basel | Öffnungszeiten Confiserie Schiesser | Öffnungszeiten & Anfahrt \| Confiserie Marktplatz Basel (54) | 133 | Confiserie am Marktplatz, mitten in Basel |
-| Kontakt | Confiserie Schiesser Kontakt | Torte bestellen Basel | Kontakt & Bestellung \| Confiserie Schiesser Basel (49) | 157 | Kontakt zur Confiserie Schiesser |
-| Firmengeschenke | Firmengeschenke Basel | Kundengeschenke Basel | Firmengeschenke Basel \| Pralinen & Läckerli – Schiesser (55) | 144 | Firmengeschenke aus Basel, von Hand gemacht |
+| Startseite | Confiserie Basel | Tea Room Basel, Confiserie Schiesser, Kaffeehaus Basel, Basler Läckerli | Confiserie in Basel \| Tea Room seit 1870 – Schiesser (52) | 155 | Confiserie in Basel, seit 1870 am Marktplatz |
+| Confiserie | Läckerli Basel | Pralinen Basel, Basler Läckerli kaufen, Confiserie Marktplatz Basel, Torten Basel | Läckerli & Pralinen Basel \| Confiserie Schiesser (48) | 143 | Confiserie in Basel, aus der eigenen Backstube |
+| Tea Room | Tea Room Basel | Kaffeehaus Basel, Frühstück Basel Marktplatz, ältestes Kaffeehaus der Schweiz, Café Marktplatz Basel | Tea Room Basel \| Ältestes Kaffeehaus der Schweiz – Schiesser (60) | 143 | Tea Room in Basel, über dem Marktplatz |
+| Geschichte | Basler Confiserie seit 1870 | Confiserie Schiesser Geschichte, Rudolf Schiesser, Rathstübli Basel, Geschichte Marktplatz Basel | Geschichte seit 1870 \| Basler Confiserie – Schiesser (52) | 153 | Seit 1870 am Basler Marktplatz |
+| Besuch | Confiserie Marktplatz Basel | Öffnungszeiten Confiserie Schiesser, Confiserie Schiesser Adresse, Anfahrt Marktplatz Basel, Confiserie beim Rathaus Basel | Öffnungszeiten & Anfahrt \| Confiserie Marktplatz Basel (54) | 133 | Confiserie am Marktplatz, mitten in Basel |
+| Kontakt | Confiserie Schiesser Kontakt | Torte bestellen Basel, Pralinen bestellen Basel, Tea Room Basel reservieren, Geschenkbox Basel | Kontakt & Bestellung \| Confiserie Schiesser Basel (49) | 157 | Kontakt zur Confiserie Schiesser |
+| Firmengeschenke | Firmengeschenke Basel | Kundengeschenke Basel, Pralinen Firmengeschenk, Läckerli Geschenkbox, Weihnachtsgeschenke Firmen Basel | Firmengeschenke Basel \| Pralinen & Läckerli – Schiesser (55) | 144 | Firmengeschenke aus Basel, von Hand gemacht |
 | Impressum | Impressum | | Impressum \| Confiserie Schiesser (32) | 131 | Impressum |
 
 **Fiches produits (70)** : réglages préparés automatiquement à partir de la liste de prix, puis modifiables dans Rank Math.
 - Titre : « Basler Läckerli | Confiserie Schiesser am Marktplatz Basel », raccourci en « … | Confiserie Schiesser Basel » quand le nom est long (47 à 60 caractères).
 - Description : nom, maison, lieu, formats et prix de départ, retrait en boutique et commande par téléphone (129 à 157 caractères).
-- Mot-clé principal : le nom du produit (« Pralinen ») ; secondaire : avec la ville (« Pralinen Basel ») quand le nom ne contient pas déjà Basel ou Basler.
+- 5 mots-clés : le nom du produit (principal), le nom avec la ville (ou « Geschenk » s'il contient déjà Basel), le nom avec « kaufen », le thème de la catégorie (« Patisserie Basel », « Basler Spezialitäten »…) et « Confiserie Schiesser » avec le nom. Exemple : Pralinen, Pralinen Basel, Pralinen kaufen, Confiserie Basel, Confiserie Schiesser Pralinen.
 - Un réglage modifié à la main n'est jamais écrasé par un nouvel import.
 
 Rank Math signalera « mot-clé absent de l'adresse » sur quelques pages (Geschichte, Besuch, Kontakt) : c'est voulu, des adresses courtes et claires valent mieux qu'un mot-clé de plus.
@@ -89,7 +89,11 @@ Rank Math signalera « mot-clé absent de l'adresse » sur quelques pages (Gesch
 - **Pages réécrites en allemand**, sur la base des faits de la carte du Tea Room : fondation en 1870 par le confiseur glaronais Rudolf Schiesser, façade néogothique sur le modèle du Rathaus, Tea Room et « Rathstübli » aménagés par son fils Hans, « ältestes Kaffeehaus der Schweiz », recettes des années de fondation.
 - **Deux photos d'archives** (façade en 1889, Marktplatz vers 1900) avec légende et texte alternatif.
 - **Liste de prix** : 70 produits en 8 rubriques, avec formats et prix. **Carte du Tea Room** : 78 articles en 8 rubriques.
-- **Maillage interne** : chaque page reçoit des liens depuis le texte d'autres pages ; le pied de page reprend toutes les pages principales et les sections de la page (« Auf dieser Seite »).
+- **Maillage interne** :
+  - liens dans les textes et les réponses des questions fréquentes, avec des textes de lien descriptifs (« Confiserie am Basler Marktplatz », « Firmengeschenke aus Basel », « Öffnungszeiten und Anfahrt »…) ;
+  - section **« Weiter im Haus »** en bas de chaque page : trois cartes vers les pages les plus utiles depuis la page en cours ;
+  - le pied de page reprend toutes les pages principales et les sections de la page (« Auf dieser Seite »).
+- **Tea Room** : la carte est la première section de la page (« Die Karte des Tea Room »), avec la carte complète en PDF.
 - **Section « Das Haus in Kürze »** sur la Startseite : qui, quoi, où, depuis quand, horaires. Utile aux moteurs de recherche par IA, qui citent volontiers ce type de résumé.
 
 ## 7. À faire à la mise en ligne (environ 20 minutes)

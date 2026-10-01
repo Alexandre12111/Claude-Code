@@ -167,6 +167,11 @@ function schiesser_page_guide() {
 			'Tout ce que voient les visiteurs est en allemand : écrivez les textes des pages, des produits et des Réglages maison (présentation, vitrine, annonces…) <strong>en allemand</strong>.',
 			'L\'administration (menus, écrans, ce guide) reste en français. Les horaires, les jours fériés et les boutons du site sont traduits automatiquement.',
 		) ),
+		array( 'media-document', 'Carte du Tea Room en PDF', array(
+			'Le bouton « Karte ansehen (PDF) » de la page Tea Room ouvre la carte mise en page. Pour en mettre une nouvelle : Médias → Ajouter, puis collez l’adresse du fichier dans ' . $lien( admin_url( 'admin.php?page=schiesser-reglages' ), 'Réglages maison' ) . ' → « Carte du Tea Room en PDF ».',
+			'Après avoir modifié les Produits Tea Room, ouvrez <a href="' . esc_url( add_query_arg( 'schiesser_karte', 'druck', home_url( '/' ) ) ) . '" target="_blank" rel="noopener">la carte imprimable</a> puis Imprimer → Enregistrer au format PDF : vous obtenez un PDF à jour, à téléverser.',
+			'Dans n’importe quel bouton, le lien <code>#karte-pdf</code> ouvre la carte en PDF.',
+		) ),
 		array( 'products', 'Mettre en ligne la liste des produits', array(
 			'Tant que les photos ne sont pas prêtes, la boutique affiche « Produktliste folgt in Kürze » avec un aperçu des rubriques ; les fiches produits ne sont pas visibles.',
 			'Ajoutez une photo à chaque produit, relisez noms, formats et prix, puis ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT . '&page=schiesser-lancement' ), 'Produits boutique → Mise en ligne' ) . ' → « Tout est prêt : afficher la liste des produits ».',

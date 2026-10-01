@@ -1,7 +1,32 @@
-# Thème Schiesser 0.9.1
+# Thème Schiesser 0.10
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.10 : design prestige, carte du Tea Room en PDF, maillage
+
+**Accueil**
+- Les **spécialités** restent en tête de l'accueil (Basler Läckerli, Pralinen, Truffes-Cake, Bonbonnière, Marrons glacés, Zopf), même pendant que la liste des produits est « en préparation ». Tant qu'un produit n'a pas sa photo, c'est celle de sa **catégorie** qui s'affiche (Produits boutique → Catégories → « Photo de la catégorie »), et le lien mène à la page Confiserie.
+
+**Tea Room**
+- **La carte passe en premier** sur la page Tea Room, juste sous la grande photo.
+- **Nouveau design** : carte encadrée de filets dorés, onglets en pastilles numérotées, titre de rubrique centré avec ornement, photo de la rubrique et suggestion de la maison à côté.
+- **Carte en PDF** : le bouton « Karte ansehen (PDF) » de la grande photo et le lien « Die ganze Karte als PDF » ouvrent la carte mise en page (couverture et 7 pages A4). Pour la remplacer : Réglages maison → Pied de page → « Carte du Tea Room en PDF ». Une **carte imprimable toujours à jour** (`/?schiesser_karte=druck`) permet de refaire le PDF après une modification des Produits Tea Room : Imprimer → Enregistrer au format PDF.
+- Dans un bouton, le lien `#karte-pdf` ouvre toujours le PDF de la carte.
+
+**Design prestige** (tous les blocs restent les mêmes)
+- Typographie affinée (titres plus grands et plus fins, notes en italique), dorures sur les filets, numéros et ornements, coins dorés sur la grande photo.
+- Titres qui montent mot par mot, photos qui se dévoilent en rideau, léger effet de profondeur sur la grande photo, boutons aimantés avec reflet, barre de lecture dorée, en-tête qui s'affine au défilement.
+- Les effets sont désactivés automatiquement pour les visiteurs qui ont choisi « mouvement réduit » ; contrastes vérifiés (0 erreur d'accessibilité).
+
+**SEO**
+- Section **« Weiter im Haus »** en bas de chaque page : trois liens vers les autres pages de la maison.
+- Davantage de **liens dans les textes** et les questions fréquentes, avec des textes de lien descriptifs.
+- **5 mots-clés Rank Math** par page et par produit (le premier reste le mot-clé principal).
+
+### Mise à jour depuis la version 0.9
+
+Remplacer le thème par le nouveau zip, puis cliquer sur **« Mettre à jour le contenu des pages »** sur le tableau de bord (carte du Tea Room en haut, liens, mots-clés). Les réglages SEO que vous avez modifiés à la main dans les fiches produits sont conservés.
 
 ## Version 0.9.1 : SEO prêt pour la mise en ligne
 
@@ -313,6 +338,8 @@ schiesser/
 ├── woocommerce.php                pages WooCommerce (utilisé seulement si WooCommerce est actif)
 ├── parts/titre-page.php           bandeau de titre des pages sans grande photo
 ├── inc/
+│   ├── carte-druck.php    carte du Tea Room en PDF et carte imprimable
+│   ├── maillage.php       section « Weiter im Haus » (liens vers les autres pages)
 │   ├── langue.php         site en allemand, administration en français, dates et heures, adresses des pages
 │   ├── lancement.php      liste des produits « en préparation » et bouton de mise en ligne
 │   ├── contenu-produits.php  liste de prix de la boutique et carte du Tea Room
@@ -344,7 +371,7 @@ schiesser/
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)
 └── assets/
     ├── css/     schiesser.css (site), editeur-maquette.css (éditeur), WooCommerce
-    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), mise-en-page.js (espacements, boutons, copie de section), boutique, éditeur
+    ├── js/      site.js, maquette.js (animations du site), prestige.js (effets premium), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), mise-en-page.js (espacements, boutons, copie de section), boutique, éditeur
     ├── vendor/leaflet/   bibliothèque de carte (licence BSD)
     └── admin/, fonts/
 ```
