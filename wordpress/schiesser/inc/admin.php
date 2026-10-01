@@ -21,7 +21,7 @@ add_action( 'admin_init', function () {
 		'schiesser',
 		'Schiesser',
 		SCHIESSER_URI . '/assets/admin/colors-schiesser.css',
-		array( '#271B12', '#1C130C', '#23503B', '#8CC5A6' ),
+		array( '#271B12', '#1C130C', '#174633', '#8CC5A6' ),
 		array( 'base' => '#D9CEBD', 'focus' => '#8CC5A6', 'current' => '#fff' )
 	);
 } );

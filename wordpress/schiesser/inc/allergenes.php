@@ -243,5 +243,5 @@ add_action( 'admin_head', function () {
 	echo '<style>.s-al-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 16px;margin:12px 0;border:0;padding:0}'
 		. '.s-al-grille--regimes{margin-top:18px}.s-al-grille legend{margin-bottom:8px}'
 		. '.s-al-case{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #dcdcde;border-radius:4px;background:#fff;cursor:pointer}'
-		. '.s-al-case:has(input:checked){border-color:#23503B;background:#f0f6f2}.s-al-case .al-svg{color:#23503B;flex-shrink:0}</style>';
+		. '.s-al-case:has(input:checked){border-color:#174633;background:#f0f6f2}.s-al-case .al-svg{color:#174633;flex-shrink:0}</style>';
 } );

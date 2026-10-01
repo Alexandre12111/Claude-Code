@@ -3,6 +3,13 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.10.1 : vert sapin
+
+- Les accents dorés laissent la place au **vert sapin** (#174633), couleur secondaire de la maison, avec une touche de chocolat pour les numéros et les filets. Contraste vérifié pour une lecture facile.
+- La couleur reste réglable dans Réglages maison → Charte graphique (« Vert maison ») : tous les accents suivent.
+- Correction : le zoom des photos au survol (cartes Confiserie et Tea Room de l'accueil, catalogue) est de nouveau progressif.
+- La carte du Tea Room en PDF reprend le vert sapin.
+
 ## Nouveautés de la version 0.10 : design prestige, carte du Tea Room en PDF, maillage
 
 **Accueil**

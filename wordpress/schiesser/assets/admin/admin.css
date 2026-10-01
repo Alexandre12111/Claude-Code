@@ -7,7 +7,7 @@
 @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;font-display:swap;src:url(../fonts/bodoni-moda-italic.woff2) format('woff2')}
 
 :root{
-  --s-vert:#23503B;--s-menthe:#8CC5A6;--s-choco:#271B12;--s-papier:#F1EADE;--s-sable:#E4D8C3;--s-encre:#2A1C12;--s-texte:#3A2818;--s-doux:#6B5A47;
+  --s-vert:#174633;--s-menthe:#8CC5A6;--s-choco:#271B12;--s-papier:#F1EADE;--s-sable:#E4D8C3;--s-encre:#2A1C12;--s-texte:#3A2818;--s-doux:#6B5A47;
   --s-filet:color-mix(in srgb,var(--s-texte) 14%,transparent);
   --s-fond-carte:#fff;
   --s-serif:'Bodoni Moda',Didot,'Times New Roman',serif;
