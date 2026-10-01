@@ -1,7 +1,14 @@
-# Thème Schiesser 0.9
+# Thème Schiesser 0.9.1
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.9.1 : SEO prêt pour la mise en ligne
+
+- Rapport SEO (`SEO-RAPPORT.md`) entièrement mis à jour pour le site en allemand.
+- H1 de la Startseite avec le mot-clé principal (« Confiserie in Basel, seit 1870 am Marktplatz »).
+- Fiches produits : titres SEO de 47 à 60 caractères, mot-clé principal égal au nom du produit, données Google avec le prix le plus bas, le plus haut et le nombre de formats.
+- Pied de page : colonne « Adresse & Kontakt » (évite deux titres « So finden Sie uns » sur la même page).
 
 ## Nouveautés de la version 0.9 : site en allemand, liste de prix et carte du Tea Room
 
@@ -257,7 +264,8 @@ Règle d'or : ne jamais modifier les fichiers du thème directement (Apparence �
 1. Installer et activer **Rank Math SEO**, suivre l'assistant en mode « Facile ».
 2. Type de site : **Petite entreprise** ; nom : Confiserie Schiesser ; logo : le logo de la maison.
 3. Inutile de ressaisir l'adresse et les horaires dans Rank Math : le thème ajoute automatiquement les informations des Réglages maison à la fiche de Rank Math.
-4. **Plan du site** : inclure les Pages et les Produits ; exclure les Articles s'il n'y a pas de blog.
+4. **Plan du site** : inclure les Pages et les Produits ; exclure les Articles s'il n'y a pas de blog. Tant que la liste des produits est « en préparation », le thème retire lui-même les produits du plan du site.
+   Ne pas ressaisir l'adresse et les horaires dans le module SEO local de Rank Math : le thème les fournit déjà.
 5. Activer le module **Redirections** : chaque changement d'adresse d'une page créera une redirection.
 6. Dans chaque page, le panneau Rank Math affiche déjà le **mot-clé principal**, le **titre SEO** et la **méta description** préparés. Les textes des blocs de la maquette sont transmis à l'analyse de Rank Math. Viser un score de 80 ou plus, sans chercher 100 à tout prix.
 7. Après la mise en ligne : relier **Google Search Console** et envoyer le plan du site.

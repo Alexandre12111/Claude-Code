@@ -234,11 +234,21 @@ function schiesser_importer_preisliste() {
 			if ( '' === (string) get_post_meta( $id, '_s_badge_style', true ) ) {
 				update_post_meta( $id, '_s_badge_style', 'vert' );
 			}
-			// SEO de base (modifiable dans Rank Math) : nom, maison, ville.
-			if ( '' === (string) get_post_meta( $id, 'rank_math_title', true ) ) {
-				update_post_meta( $id, 'rank_math_title', $nom . ' | Confiserie Schiesser Basel' );
-				update_post_meta( $id, 'rank_math_description', $nom . ' aus der Confiserie Schiesser am Marktplatz Basel: ' . ( 1 === count( $formats ) ? $affiche : 'in ' . count( $formats ) . ' Formaten, ' . $affiche ) . '. Im Laden erhältlich, Bestellung per Telefon.' );
-				update_post_meta( $id, 'rank_math_focus_keyword', $nom . ' Basel' );
+			// SEO de base (modifiable dans Rank Math) : nom, maison, ville. Remplacé seulement s'il n'a pas été modifié à la main.
+			$titre_seo = $nom . ' | Confiserie Schiesser am Marktplatz Basel';
+			if ( mb_strlen( $titre_seo ) > 60 ) {
+				$titre_seo = $nom . ' | Confiserie Schiesser Basel';
+			}
+			$desc_seo = $nom . ' aus der Confiserie Schiesser am Marktplatz Basel: ' . ( 1 === count( $formats ) ? $affiche : 'in ' . count( $formats ) . ' Formaten, ' . $affiche ) . '. Im Laden erhältlich, Bestellung per Telefon.';
+			if ( mb_strlen( $desc_seo ) < 140 ) {
+				$desc_seo = str_replace( '. Im Laden', '. Von Hand gemacht, im Laden', $desc_seo );
+			}
+			$ancien = (string) get_post_meta( $id, 'rank_math_title', true );
+			if ( '' === $ancien || $nom . ' | Confiserie Schiesser Basel' === $ancien ) {
+				update_post_meta( $id, 'rank_math_title', $titre_seo );
+				update_post_meta( $id, 'rank_math_description', $desc_seo );
+				// Mot-clé principal : le nom du produit ; secondaire : avec la ville, si elle n'y est pas déjà.
+				update_post_meta( $id, 'rank_math_focus_keyword', $nom . ( preg_match( '/bas(el|ler)/iu', $nom ) ? '' : ',' . $nom . ' Basel' ) );
 			}
 		}
 	}

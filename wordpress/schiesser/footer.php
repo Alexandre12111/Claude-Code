@@ -38,7 +38,7 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 				</div>
 			</div>
 			<div class="fcol">
-				<h2 class="fcol-titre">So finden Sie uns</h2>
+				<h2 class="fcol-titre">Adresse &amp; Kontakt</h2>
 				<span class="fcol-txt"><?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?></span>
 				<span class="fcol-txt"><?php echo esc_html( schiesser_horaires_resume() ); ?></span>
 				<?php if ( $email ) : ?><a href="<?php echo esc_url( 'mailto:' . $email ); ?>"><?php echo esc_html( $email ); ?></a><?php endif; ?>

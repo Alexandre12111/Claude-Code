@@ -350,16 +350,27 @@ function schiesser_schema_produit( $post ) {
 		'itemCondition' => 'https://schema.org/NewCondition',
 		'seller'        => array( '@id' => home_url( '/#organization' ) ),
 	);
-	if ( preg_match( '/\b(dès|des|à partir|a partir|ab)\b/iu', (string) $p['prix'] ) ) {
-		// prix de départ : « Dès CHF 45 »
+	// Plusieurs formats dans la fiche (« 250 g · CHF 8.90 », « 500 g · CHF 16.50 »…) : prix le plus bas et le plus haut.
+	$formats = array();
+	foreach ( (array) $p['fiche'] as $ligne ) {
+		$x = schiesser_prix_numerique( (string) ( $ligne[1] ?? '' ) );
+		if ( null !== $x && $x > 0 ) {
+			$formats[] = $x;
+		}
+	}
+	if ( count( $formats ) > 1 || preg_match( '/\b(dès|des|à partir|a partir|ab)\b/iu', (string) $p['prix'] ) ) {
+		// prix de départ : « ab CHF 8.90 », « Dès CHF 45 »
 		$offre = array(
 			'@type'         => 'AggregateOffer',
 			'url'           => $p['url'],
-			'lowPrice'      => number_format( $prix, 2, '.', '' ),
+			'lowPrice'      => number_format( $formats ? min( $formats ) : $prix, 2, '.', '' ),
 			'priceCurrency' => schiesser_devise(),
-			'offerCount'    => 1,
+			'offerCount'    => max( 1, count( $formats ) ),
 			'availability'  => 'https://schema.org/InStoreOnly',
 		);
+		if ( count( $formats ) > 1 ) {
+			$offre['highPrice'] = number_format( max( $formats ), 2, '.', '' );
+		}
 	}
 	$schema['offers'] = $offre;
 	return $schema;
