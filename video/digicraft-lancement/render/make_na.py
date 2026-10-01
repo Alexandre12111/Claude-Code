@@ -41,3 +41,11 @@ for m, (t, sub, marge) in EN.items():
         ('p06_demo.js', 'Southern Europe margin', marge),
         ('p06_demo.js', '€', '$'),
     ])
+
+# Royaume-Uni (EN) : hébergement au Royaume-Uni, montants en livres sterling.
+build('src7', 'src_uken', [
+    ('p11_serenite.js', "[41.1, 'eu', 'Hosted in Europe', 'Your data stays in the European Union.']", "[41.1, 'map-pin-check', 'Hosted in the UK', 'Your data stays in the United Kingdom.']"),
+    ('p11_serenite.js', '€', '£'),
+    ('p06_demo.js', 'Southern Europe margin', 'North of England margin'),
+    ('p06_demo.js', '€', '£'),
+])
