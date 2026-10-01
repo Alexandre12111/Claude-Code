@@ -1,7 +1,14 @@
-# Thème Schiesser 0.11
+# Thème Schiesser 0.11.1
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.11.1 : typographie épurée et photos d'archives
+
+- **Titres et textes plus petits sur tout le site** : grand titre de l'accueil environ 40 % plus petit, titres de section environ 45 % plus petits, texte courant à 15 px. Mise en page plus aérée et plus lisible. L'accueil occupe un peu moins de hauteur.
+- La taille de tous les titres reste réglable dans Réglages maison → Charte graphique (échelle des titres).
+- **7 photos d'archives de la maison** intégrées : façade « Patisserie · Leckerly », la maison Schiesser sur le Marktplatz, la vitrine « Seit 1870 », le comptoir, l'atelier (deux photos) et la caisse du salon de thé. Elles illustrent l'accueil (savoir-faire), la Confiserie, le Tea Room et la page Histoire (8 images dans « Aus dem Archiv »), avec textes alternatifs en allemand, français et anglais.
+- Pour les mettre en place : Pages → « Mettre à jour le contenu des pages ».
 
 ## Nouveautés de la version 0.11 : site en allemand, français et anglais
 

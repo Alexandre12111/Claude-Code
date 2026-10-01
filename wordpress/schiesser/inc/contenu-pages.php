@@ -107,11 +107,23 @@ function schiesser_demo_pages() {
 		'tables'   => '1600891964092-4316c288032e',
 		'relais'   => '1587248720327-8eb72564be1e',
 		'jour'     => '1551024506-0bccd828d307',
-		'a1889'    => 'theme:schiesser-fassade-1889.jpg',
+		'a1889'    => 'theme:archiv-fassade-patisserie-leckerly.jpg',
+		'neubau'   => 'theme:archiv-schiesserhaus-marktplatz.jpg',
+		'schaufenster' => 'theme:archiv-schaufenster-seit-1870.jpg',
+		'theke'    => 'theme:archiv-verkaufstheke-confiserie.jpg',
+		'torten'   => 'theme:archiv-konditoren-torten.jpg',
+		'backstube' => 'theme:archiv-backstube-confiserie.jpg',
+		'kasse'    => 'theme:archiv-kasse-tea-room.jpg',
 		'a1900'    => 'theme:schiesser-marktplatz-1900.jpg',
 	);
 	$alt1889 = 'Fassade der Confiserie Schiesser um 1889 mit den Schriftzügen Patisserie, Leckerly und Schiesser Confiseur';
 	$alt1900 = 'Markttag vor der Confiserie Schiesser am Basler Marktplatz um 1900';
+	$alt_neubau       = 'Das Schiesserhaus am Marktplatz mit Café, Tea-Room und Confiserie, davor der Markt';
+	$alt_schaufenster = 'Historisches Schaufenster der Confiserie Schiesser mit dem Schriftzug «Seit 1870 Schiesser»';
+	$alt_theke        = 'Historische Verkaufstheke der Confiserie Schiesser mit Pralinen in der Vitrine';
+	$alt_torten       = 'Drei Konditoren der Confiserie Schiesser dekorieren Torten in der Backstube';
+	$alt_backstube    = 'Junger Konditor in der historischen Backstube der Confiserie Schiesser';
+	$alt_kasse        = 'Kassiererin am Buffet des Tea Room der Confiserie Schiesser, Archivbild';
 
 	$url_confiserie = $u( '/confiserie/' );
 	$url_tearoom    = $u( '/tea-room/' );
@@ -152,10 +164,10 @@ function schiesser_demo_pages() {
 		. $sep
 		. $b( 'schiesser/savoir-faire', array( 'numero' => '03', 'titre' => 'Handwerk, das man sieht', 'note' => 'Vieles entsteht wie damals im Haus, zum Teil nach Rezepten aus den Gründerjahren.', 'fond' => 'clair', 'ancre' => 'handwerk' ),
 			$enfants( 'schiesser/geste', array(
-				array( 'titre' => 'Backen', 'texte' => 'Honig, Mandeln und Gewürze für die Läckerli, Butter und Mehl für die Gipfeli: gebacken wird im eigenen Haus.' ) + $img( $P['bisc'], 'backstube-confiserie-basel', 'Gebäck aus der eigenen Backstube' ),
-				array( 'titre' => 'Formen', 'texte' => 'Jedes Stück wird von Hand geschnitten, gerollt oder getunkt, ohne Abkürzung.' ) + $img( $P['relais'], 'handarbeit-confiserie', 'Handarbeit in der Backstube' ),
+				array( 'titre' => 'Backen', 'texte' => 'Honig, Mandeln und Gewürze für die Läckerli, Butter und Mehl für die Gipfeli: gebacken wird im eigenen Haus.' ) + $img( $P['backstube'], '', $alt_backstube ),
+				array( 'titre' => 'Formen', 'texte' => 'Jedes Stück wird von Hand geschnitten, gerollt oder getunkt, ohne Abkürzung.' ) + $img( $P['torten'], '', $alt_torten ),
 				array( 'titre' => 'Veredeln', 'texte' => 'Glasur, Dekor und Kontrolle: das Finish macht den Unterschied.' ) + $img( $P['tabl'], 'schokolade-handgemacht-basel', 'Veredeln der Schokolade von Hand' ),
-				array( 'titre' => 'Die Vitrine', 'texte' => 'Am Morgen wandert alles in die Vitrine am Marktplatz und hinauf in den Tea Room.' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Vitrine der Confiserie am Marktplatz' ),
+				array( 'titre' => 'Die Vitrine', 'texte' => 'Am Morgen wandert alles in die Vitrine am Marktplatz und hinauf in den Tea Room.' ) + $img( $P['schaufenster'], '', $alt_schaufenster ),
 			) ) )
 		. $b( 'schiesser/frise', array( 'numero' => '04', 'titre' => 'Die Zeitleiste', 'note' => 'Blättern Sie durch die Geschichte des Hauses. Ziehen oder mit den Pfeilen.', 'ancre' => 'geschichte', 'affichage' => 'cartes', 'indication' => 'Zum Entdecken ziehen →', 'retenirLibelle' => 'Gut zu wissen' ),
 			$enfants( 'schiesser/date', array(
@@ -194,10 +206,10 @@ function schiesser_demo_pages() {
 		. $b( 'schiesser/produits', array( 'numero' => '01', 'titre' => 'Unser Sortiment', 'note' => 'Klicken Sie auf ein Produkt: alle Formate und Preise.', 'ancre' => 'sortiment', 'lienTexte' => '' ) )
 		. $b( 'schiesser/galerie', array( 'numero' => '02', 'titre' => 'Der Laden in Bildern', 'note' => 'Von der Vitrine bis zur Backstube: alles an einem Ort.', 'fond' => 'sombre', 'marque' => true, 'ancre' => 'bilder' ),
 			$enfants( 'schiesser/vue', array(
-				array( 'titre' => 'Die Vitrine', 'texte' => 'Jeden Morgen neu bestückt. Was Sie sehen, kommt wenige Stunden vorher aus der Backstube.' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Vitrine, jeden Morgen neu bestückt' ),
-				array( 'titre' => 'Die Theke', 'texte' => 'Hier wählt man Stück für Stück, lässt sich beraten und eine Box zusammenstellen.' ) + $img( $P['pral'], 'confiserie-basel-pralinen', 'Pralinen an der Theke, Stück für Stück ausgewählt' ),
-				array( 'titre' => 'Die Backstube', 'texte' => 'Sie arbeitet direkt hinter dem Laden, wie seit den Gründerjahren.' ) + $img( $P['bisc'], 'backstube-confiserie-basel', 'Die Backstube der Confiserie' ),
-				array( 'titre' => 'Das Finish', 'texte' => 'Glasieren, tunken, dekorieren: der langsamste Schritt, und der, der ein Haus ausmacht.' ) + $img( $P['tabl'], 'schokolade-handgemacht-basel', 'Schokolade, von Hand veredelt' ),
+				array( 'titre' => 'Die Vitrine', 'texte' => 'Jeden Morgen neu bestückt. Was Sie sehen, kommt wenige Stunden vorher aus der Backstube.' ) + $img( $P['schaufenster'], '', $alt_schaufenster ),
+				array( 'titre' => 'Die Theke', 'texte' => 'Hier wählt man Stück für Stück, lässt sich beraten und eine Box zusammenstellen.' ) + $img( $P['theke'], '', $alt_theke ),
+				array( 'titre' => 'Die Backstube', 'texte' => 'Sie arbeitet direkt hinter dem Laden, wie seit den Gründerjahren.' ) + $img( $P['backstube'], '', $alt_backstube ),
+				array( 'titre' => 'Das Finish', 'texte' => 'Glasieren, tunken, dekorieren: der langsamste Schritt, und der, der ein Haus ausmacht.' ) + $img( $P['torten'], '', $alt_torten ),
 				array( 'titre' => 'Die Verpackung', 'texte' => 'Jede Box wird von Hand gefüllt und verschlossen. Für Flug oder Zug verpacken wir auf Wunsch besonders sicher.' ) + $img( $P['coff'], 'geschenkbox-pralinen', 'Pralinenbox, von Hand verpackt' ),
 				array( 'titre' => 'Die Fassade', 'texte' => 'Am Marktplatz, gegenüber dem Rathaus. «Schiesser Confiseur» stand schon 1889 darauf.' ) + $img( $P['a1889'], '', $alt1889 ),
 			) ) )
@@ -260,7 +272,7 @@ function schiesser_demo_pages() {
 				array( 'titre' => 'Die Fenster', 'texte' => 'Sie gehen direkt auf den Marktplatz und das Rathaus. Die schönsten Tische stehen an ihnen.' ) + $img( $P['salon'], 'tea-room-basel', 'Die Fenster des Tea Room zum Marktplatz' ),
 				array( 'titre' => 'Das Rathstübli', 'texte' => 'Ein Raum mit eigener Geschichte, eingerichtet von Hans Schiesser, dem Sohn des Gründers.' ) + $img( $P['tables'], 'rathstuebli-basel', 'Das Rathstübli im ersten Stock' ),
 				array( 'titre' => 'Der Service', 'texte' => 'Tee kommt frisch aufgegossen im Kännchen, mit Zitrone, Honig und hausgemachten Pralinen.' ) + $img( $P['tabl'], 'tee-service-tea-room', 'Tee-Service im Tea Room' ),
-				array( 'titre' => 'Die Verkaufstheke', 'texte' => 'Hier warten täglich frische Pâtisserie, Torten, Früchtewähen und feines Hausgebäck.' ) + $img( $P['truf'], 'patisserie-verkaufstheke', 'Pâtisserie an der Verkaufstheke' ),
+				array( 'titre' => 'Die Verkaufstheke', 'texte' => 'Hier warten täglich frische Pâtisserie, Torten, Früchtewähen und feines Hausgebäck.' ) + $img( $P['theke'], '', $alt_theke ),
 			) ) )
 		. $sep
 		. $b( 'schiesser/moments', array( 'numero' => '05', 'titre' => 'Wann kommen?', 'note' => 'Der Tea Room verändert sich im Lauf des Tages. Wählen Sie Ihren Moment.', 'fond' => 'sombre', 'marque' => true, 'conseilLibelle' => 'Unsere Empfehlung' ),
@@ -308,18 +320,24 @@ function schiesser_demo_pages() {
 				array( 'annee' => '1870', 'libelle' => 'Gründung', 'titre' => 'Die Gründung', 'texte' => 'Rudolf Schiesser, Konditor aus Glarus, eröffnet seine Confiserie am Basler Marktplatz.', 'retenir' => 'Das Haus steht bis heute an derselben Adresse, gegenüber dem Rathaus.' ) + $img( $P['a1889'], '', $alt1889 ),
 				array( 'annee' => '1889', 'libelle' => 'Die Fassade', 'titre' => 'Patisserie und Leckerly', 'texte' => 'Die Aufnahme von 1889 zeigt die Fassade mit «Patisserie», «Leckerly» und «Schiesser Confiseur», in den Fenstern das Personal des Hauses.', 'retenir' => 'Läckerli gehören seit den Anfängen zum Haus.' ) + $img( $P['a1889'], '', $alt1889 ),
 				array( 'annee' => '1900', 'libelle' => 'Der Markt', 'titre' => 'Mitten im Markt', 'texte' => 'Um 1900: vor dem Haus die Marktstände, dahinter die Confiserie.', 'retenir' => 'Der Markt findet bis heute direkt vor unseren Fenstern statt.' ) + $img( $P['a1900'], '', $alt1900 ),
-				array( 'annee' => 'Nach 1900', 'libelle' => 'Zweite Generation', 'titre' => 'Tea Room und Rathstübli', 'texte' => 'Hans Schiesser gibt dem Haus die neugotische Fassade nach dem Vorbild des Rathauses und richtet im ersten Stock Tea Room und «Rathstübli» ein.', 'retenir' => 'Seit über hundert Jahren ein Treffpunkt für Basel.' ) + $img( $P['salon'], 'tea-room-basel', 'Der Tea Room im ersten Stock' ),
+				array( 'annee' => 'Nach 1900', 'libelle' => 'Zweite Generation', 'titre' => 'Tea Room und Rathstübli', 'texte' => 'Hans Schiesser gibt dem Haus die neugotische Fassade nach dem Vorbild des Rathauses und richtet im ersten Stock Tea Room und «Rathstübli» ein.', 'retenir' => 'Seit über hundert Jahren ein Treffpunkt für Basel.' ) + $img( $P['neubau'], '', $alt_neubau ),
 				array( 'annee' => 'Heute', 'libelle' => 'Marktplatz', 'titre' => 'Immer noch am Marktplatz', 'texte' => 'Kaffeehaus, Tea Room und Confiserie mit eigener Backstube unter einem Dach, wohl nirgends sonst in der Schweiz so im Original erhalten.', 'retenir' => 'Überzeugen Sie sich selbst: ' . $l( '/besuch/', 'Öffnungszeiten und Anfahrt' ) . '.' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Die Confiserie Schiesser heute' ),
 			) ) )
-		. $b( 'schiesser/archives', array( 'numero' => '03', 'titre' => 'Aus dem Archiv', 'note' => 'Zwei Aufnahmen aus den Anfängen des Hauses. Klicken Sie zum Vergrössern.', 'fond' => 'clair', 'credit' => 'Archivbilder: Confiserie Schiesser.' ),
+		. $b( 'schiesser/archives', array( 'numero' => '03', 'titre' => 'Aus dem Archiv', 'note' => 'Aufnahmen aus der Geschichte des Hauses. Klicken Sie zum Vergrössern.', 'fond' => 'clair', 'credit' => 'Archivbilder: Confiserie Schiesser.' ),
 			$enfants( 'schiesser/archive', array(
 				array( 'titre' => 'Die Fassade', 'meta' => '1889 · Fotografie', 'description' => 'Die Fassade mit den Schriftzügen «Patisserie», «Leckerly» und «Schiesser Confiseur»; in den Fenstern das Personal des Hauses.' ) + $img( $P['a1889'], '', $alt1889 ),
 				array( 'titre' => 'Der Marktplatz', 'meta' => 'Um 1900 · Fotografie', 'description' => 'Markttag vor dem Haus: Stände, Körbe und Karren, dahinter die Confiserie.' ) + $img( $P['a1900'], '', $alt1900 ),
+				array( 'titre' => 'Das Schiesserhaus', 'meta' => 'Archiv · Fotografie', 'description' => 'Das neue Haus am Marktplatz mit Café, Tea-Room und Confiserie; davor der Markt.' ) + $img( $P['neubau'], '', $alt_neubau ),
+				array( 'titre' => 'Das Schaufenster', 'meta' => 'Archiv · Fotografie', 'description' => '«Seit 1870 Schiesser»: Läckerli, Geschenkdosen und eine Lokomotive als Blickfang.' ) + $img( $P['schaufenster'], '', $alt_schaufenster ),
+				array( 'titre' => 'Die Verkaufstheke', 'meta' => 'Archiv · Fotografie', 'description' => 'Pralinen unter Glas, die Waage auf der Theke, Dosen und Tafeln in den Regalen.' ) + $img( $P['theke'], '', $alt_theke ),
+				array( 'titre' => 'Die Backstube', 'meta' => 'Archiv · Fotografie', 'description' => 'Drei Konditoren dekorieren Torten: Handarbeit, wie bis heute.' ) + $img( $P['torten'], '', $alt_torten ),
+				array( 'titre' => 'Am Rührwerk', 'meta' => 'Archiv · Fotografie', 'description' => 'Ein junger Konditor an der Arbeit, neben den grossen Rührmaschinen der Backstube.' ) + $img( $P['backstube'], '', $alt_backstube ),
+				array( 'titre' => 'Am Buffet', 'meta' => 'Archiv · Fotografie', 'description' => 'An der Kasse des Tea Room, zwischen Holztäfer und Kronleuchter.' ) + $img( $P['kasse'], '', $alt_kasse ),
 			) ) )
 		. $b( 'schiesser/avant-apres', array( 'numero' => '04', 'titre' => 'Gestern und heute', 'note' => 'Dasselbe Haus, im Abstand von über einem Jahrhundert. Ziehen Sie den Regler.', 'indication' => 'Zum Vergleichen ziehen' ),
 			$enfants( 'schiesser/comparaison', array(
 				array( 'onglet' => 'Die Fassade', 'avantLibelle' => '1889', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['a1889'], '', $alt1889, 'avant' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Confiserie heute', 'apres' ),
-				array( 'onglet' => 'Der Marktplatz', 'avantLibelle' => 'Um 1900', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['a1900'], '', $alt1900, 'avant' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Der Marktplatz heute', 'apres' ),
+				array( 'onglet' => 'Der Marktplatz', 'avantLibelle' => 'Damals', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['neubau'], '', $alt_neubau, 'avant' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Der Marktplatz heute', 'apres' ),
 			) ) )
 		. $sep
 		. $b( 'schiesser/cartes', array( 'numero' => '05', 'titre' => 'Was sich nicht geändert hat', 'note' => 'Drei Grundsätze, seit dem ersten Tag.', 'modele' => 'principes', 'fond' => 'papier' ),

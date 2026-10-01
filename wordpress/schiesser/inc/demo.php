@@ -34,7 +34,7 @@ add_action( 'admin_notices', function () {
 	$importee = get_option( 'schiesser_demo_importee' );
 	$version  = (string) get_option( 'schiesser_demo_version', $importee ? '0.1.0' : '' );
 	$langues_manquantes = array_diff( schiesser_langues_a_traduire(), (array) get_option( 'schiesser_langues_importees', array() ) );
-	if ( $importee && version_compare( $version, '0.11.0', '>=' ) && ! $langues_manquantes ) {
+	if ( $importee && version_compare( $version, '0.11.1', '>=' ) && ! $langues_manquantes ) {
 		return;
 	}
 	if ( ! $importee ) {
