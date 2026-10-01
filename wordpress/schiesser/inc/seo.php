@@ -276,7 +276,7 @@ function schiesser_schema_ariane() {
 		return null;
 	}
 	$url      = get_permalink();
-	$elements = array( array( 'Startseite', home_url( '/' ) ) );
+	$elements = array( array( schiesser_t( 'Startseite' ), function_exists( 'pll_home_url' ) ? pll_home_url() : home_url( '/' ) ) );
 	if ( is_singular( SCHIESSER_PRODUIT ) ) {
 		$boutique = schiesser_url_boutique();
 		if ( untrailingslashit( $boutique ) !== untrailingslashit( home_url( '/' ) ) ) {
@@ -407,7 +407,7 @@ function schiesser_schema_liste_produits( $post ) {
 	return array(
 		'@type'           => 'ItemList',
 		'@id'             => get_permalink( $post ) . '#produits',
-		'name'            => schiesser_texte_brut( $bloc['attrs']['titre'] ?? 'Produkte' ),
+		'name'            => schiesser_texte_brut( $bloc['attrs']['titre'] ?? schiesser_t( 'Produkte' ) ),
 		'numberOfItems'   => count( $elements ),
 		'itemListElement' => $elements,
 	);

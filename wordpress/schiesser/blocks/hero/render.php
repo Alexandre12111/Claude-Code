@@ -62,8 +62,8 @@ $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 	<div class="hero-copy">
 		<div class="hero-inner">
 			<?php if ( ! empty( $a['ariane'] ) && ! is_front_page() ) : ?>
-				<nav class="crumb" aria-label="Brotkrümelnavigation">
-					<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a>
+				<nav class="crumb" aria-label="<?php echo esc_attr( schiesser_t( 'Brotkrümelnavigation' ) ); ?>">
+					<a href="<?php echo esc_url( schiesser_url_accueil() ); ?>"><?php echo esc_html( schiesser_t( 'Startseite' ) ); ?></a>
 					<span aria-hidden="true">·</span>
 					<span aria-current="page"><?php echo esc_html( get_the_title() ); ?></span>
 				</nav>

@@ -48,7 +48,9 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_localize_script( 'schiesser-site', 'SCHIESSER', array(
 		'horaires' => schiesser_horaires_js(),
 		'particuliers' => schiesser_particuliers_js(), // jours fériés et dates exceptionnelles des prochaines semaines
-		'langue'   => substr( get_locale(), 0, 2 ),
+		'langue'   => schiesser_langues_site()[ schiesser_langue() ][2], // dates : de-CH, fr-CH, en-GB
+		'lang'     => schiesser_langue(),
+		't'        => (object) ( 'de' === schiesser_langue() ? array() : schiesser_dictionnaire( schiesser_langue() . '-js' ) ), // textes des scripts (inc/traductions.php)
 		'fuseau'   => wp_timezone_string(), // l'état « Ouvert / Fermé » suit l'heure de Bâle, où que soit le visiteur
 	) );
 } );
@@ -122,6 +124,11 @@ function schiesser_cle_page() {
 		'nous-visiter'   => 'visit',
 		'visiter'        => 'visit',
 		'contact'        => 'contact',
+		'confectionery'  => 'shop',
+		'tearoom'        => 'tearoom',
+		'history'        => 'story',
+		'visit-us'       => 'visit',
+		'contact-us'     => 'contact',
 	);
 	if ( is_page() ) {
 		$slug = get_post_field( 'post_name', get_queried_object_id() );
@@ -135,6 +142,7 @@ function schiesser_cle_page() {
 /** Adresse de la page boutique (réglage, sinon page « boutique », sinon accueil). */
 function schiesser_url_boutique() {
 	$id = (int) schiesser_reglage( 'page_boutique' );
+	$id = $id && function_exists( 'schiesser_post_traduit' ) ? schiesser_post_traduit( $id ) : $id; // dans la langue de la page
 	if ( $id && 'publish' === get_post_status( $id ) ) {
 		return get_permalink( $id );
 	}
@@ -161,6 +169,15 @@ function schiesser_liens_menu( $position = 'principal' ) {
 		foreach ( (array) $elements as $el ) {
 			if ( (int) $el->menu_item_parent ) {
 				continue;
+			}
+			// Avec Polylang, un seul menu suffit : chaque page y est remplacée par sa traduction.
+			if ( 'post_type' === $el->type && function_exists( 'schiesser_post_traduit' ) && 'de' !== schiesser_langue() ) {
+				$tid = schiesser_post_traduit( (int) $el->object_id );
+				if ( $tid !== (int) $el->object_id ) {
+					$el->object_id = $tid;
+					$el->url       = get_permalink( $tid );
+					$el->title     = get_the_title( $tid );
+				}
 			}
 			$actif = 'post_type' === $el->type && (int) $el->object_id === $courant;
 			// Une page produit « appartient » à la boutique dans le menu.
@@ -237,7 +254,22 @@ add_action( 'template_redirect', function () {
 		'fields'      => 'ids',
 		'meta_key'    => '_schiesser_ancien_slug', // phpcs:ignore WordPress.DB.SlowDBQuery
 		'meta_value'  => $slug, // phpcs:ignore WordPress.DB.SlowDBQuery
+		'lang'        => '', // toutes les langues (Polylang)
 	) );
+	if ( ! $pages ) {
+		// Avec Polylang : une adresse sans code de langue (ex. /salon-de-the/) mène à la page de cette langue (/fr/salon-de-the/).
+		$pages = get_posts( array(
+			'post_type'   => 'page',
+			'post_status' => 'publish',
+			'numberposts' => 1,
+			'fields'      => 'ids',
+			'name'        => $slug,
+			'lang'        => '',
+		) );
+		if ( $pages && untrailingslashit( get_permalink( $pages[0] ) ) === untrailingslashit( home_url( $chemin ) ) ) {
+			$pages = array(); // même adresse : pas de boucle
+		}
+	}
 	if ( $pages ) {
 		wp_safe_redirect( get_permalink( $pages[0] ), 301 );
 		exit;

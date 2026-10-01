@@ -1,7 +1,27 @@
-# Thème Schiesser 0.10
+# Thème Schiesser 0.11
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Nouveautés de la version 0.11 : site en allemand, français et anglais
+
+L'allemand reste la langue principale. Avec l'extension gratuite **Polylang**, le thème fournit les versions **française** et **anglaise** complètes, rédigées à la main (pas de traduction automatique) :
+
+- **8 pages** traduites (textes, boutons, questions fréquentes, textes alternatifs), avec leurs adresses : `/accueil/`, `/boutique/`, `/salon-de-the/`, `/notre-histoire/`, `/nous-visiter/`, `/contact/`, `/cadeaux-entreprise/` en français ; `/home/`, `/confectionery/`, `/tearoom/`, `/history/`, `/visit-us/`, `/contact-us/`, `/corporate-gifts/` en anglais. Les liens internes pointent vers les pages de la même langue.
+- **Réglages Rank Math dans chaque langue** : titre SEO de 50 à 60 caractères, description de 140 à 160 caractères, 5 mots-clés (le premier est le principal).
+- **70 produits** (noms, accroches, catégories, SEO) et **carte du Tea Room** (78 plats, 8 rubriques, descriptions, mentions) en français et en anglais.
+- **Textes du thème** dans la langue de la page : état « Ouvert / Fermé », horaires (« 7 h 30 » en français, « 7:30 » en anglais), jours fériés, allergènes, formulaire, Merkliste, sélection, mentions de prix (« dès CHF 8.90 », « from CHF 8.90 »).
+- **Carte du Tea Room en PDF** dans les trois langues (le bouton ouvre celle de la langue de la page).
+- Prix, photos et allergènes sont **communs** aux trois langues : modifiés une fois, ils sont recopiés dans les traductions. « Épuisé aujourd'hui » et la suggestion du jour valent pour toutes les langues.
+
+### Mise en place (une fois)
+
+1. Extensions → Ajouter → **Polylang** → Installer, Activer.
+2. Langues : créer **Deutsch** (`de_CH`) en premier (langue par défaut), puis **Français** (`fr_FR`) et **English** (`en_GB`). Accepter d'attribuer la langue par défaut aux contenus existants.
+3. Langues → Réglages → URL modifiées : « La langue est définie par le nom de dossier » et « Cacher le code de langue pour la langue par défaut ».
+4. Pages → bouton **« Mettre à jour le contenu des pages »** : les versions FR et EN sont créées et reliées. Le bouton peut être relancé sans créer de doublon.
+5. Langues → Traductions : traduire le slogan du site et, si vous les avez changés, les textes des Réglages maison.
+6. Rank Math → Plan du site : vérifier que les trois langues y figurent ; Polylang ajoute les balises `hreflang`.
 
 ## Version 0.10.1 : vert sapin
 
@@ -200,7 +220,7 @@ Elementor n'est pas utilisé : il peut être désactivé. **Code Snippets** peut
 | **Code Snippets** (gratuit) | Quand un petit ajout de code vous est fourni | Ajouter une fonctionnalité sans toucher au thème ; conservé lors des mises à jour. |
 | Une extension de cache (selon l'hébergeur) | À la mise en ligne | Vitesse d'affichage. |
 | Une extension de sauvegarde (par exemple UpdraftPlus) | À la mise en ligne | Sauvegardes automatiques. |
-| Polylang | Si le site passe en allemand et en anglais | Versions linguistiques ; le sélecteur FR · DE · EN de la maquette apparaît alors dans l'en-tête. |
+| **Polylang** (gratuit) | Pour le français et l'anglais | Versions linguistiques fournies par le thème ; le sélecteur DE · FR · EN apparaît dans l'en-tête (voir la version 0.11). |
 
 Aucune extension de formulaire n'est nécessaire : le formulaire de la maquette est intégré au thème (bloc « Formulaire de contact »).
 
@@ -348,6 +368,10 @@ schiesser/
 │   ├── carte-druck.php    carte du Tea Room en PDF et carte imprimable
 │   ├── maillage.php       section « Weiter im Haus » (liens vers les autres pages)
 │   ├── langue.php         site en allemand, administration en français, dates et heures, adresses des pages
+│   ├── i18n.php           trois langues avec Polylang : langue de la page, traductions liées, prix et photos communs
+│   ├── traductions.php    textes du thème en français et en anglais (boutons, horaires, fériés, allergènes…)
+│   ├── contenu-traductions.php  pages, produits et carte du Tea Room en français et en anglais (et leur SEO)
+│   ├── import-langues.php création des versions FR et EN à l'import (Polylang)
 │   ├── lancement.php      liste des produits « en préparation » et bouton de mise en ligne
 │   ├── contenu-produits.php  liste de prix de la boutique et carte du Tea Room
 │   ├── contenu-pages.php  texte allemand des pages

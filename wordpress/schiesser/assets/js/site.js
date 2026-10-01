@@ -1,6 +1,16 @@
 /* Comportements communs à toutes les pages. */
 (function () {
   var S = window.SCHIESSER || {};
+  /* langue de la page (Polylang) : textes traduits fournis par le thème (inc/traductions.php) */
+  var LANG = S.lang || 'de', DICO = S.t || {};
+  function T(s) { return Object.prototype.hasOwnProperty.call(DICO, s) ? DICO[s] : s; }
+  function TF(s) { var a = arguments, i = 0; return T(s).replace(/%(?:(\d)\$)?s/g, function (m, n) { return n ? a[+n] : a[++i]; }); }
+  var NOMS_JOURS = {
+    de: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+    fr: ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'],
+    en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+  };
+  S.T = T; S.TF = TF; S.jours = NOMS_JOURS[LANG] || NOMS_JOURS.de;
 
   /* menu mobile */
   document.querySelectorAll('header .burger').forEach(function (b) {
@@ -46,8 +56,14 @@
   var H = S.horaires || {};
   var P = S.particuliers || {}; // jours fériés et dates exceptionnelles : { "2026-04-06": { h: null, m: "Lundi de Pâques" } }
   var fuseau = (S.fuseau && S.fuseau.indexOf('/') > 0) ? S.fuseau : null;
-  // Heure à la suisse : 7.5 → « 7.30 », 8 → « 8 » (avec « Uhr » si demandé).
-  function uhr(x, avecUhr) { var h = Math.floor(x), m = Math.round((x % 1) * 60); return h + (m ? '.' + ('0' + m).slice(-2) : '') + (avecUhr ? '\u00a0Uhr' : ''); }
+  // Heure selon la langue : « 7.30 Uhr » (de), « 7 h 30 » (fr), « 7:30 » (en).
+  function uhr(x, avecUhr) {
+    var h = Math.floor(x), m = Math.round((x % 1) * 60), mm = ('0' + m).slice(-2);
+    if (LANG === 'fr') return h + '\u00a0h' + (m ? '\u00a0' + mm : '');
+    if (LANG === 'en') return h + ':' + mm;
+    return h + (m ? '.' + mm : '') + (avecUhr ? '\u00a0Uhr' : '');
+  }
+  S.uhr = uhr;
   function hh(h) { var m = Math.round((h % 1) * 60); return String(Math.floor(h)).padStart(2, '0') + ':' + String(m).padStart(2, '0'); }
   function maintenant() {
     var d = new Date();
@@ -70,8 +86,8 @@
     var t = maintenant();
     var j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1];
     document.querySelectorAll('.js-led').forEach(function (e) { e.classList.toggle('shut', !ouvert); });
-    document.querySelectorAll('.js-statut').forEach(function (e) { e.textContent = ouvert ? 'Geöffnet' : 'Geschlossen'; });
-    document.querySelectorAll('.js-heures').forEach(function (e) { e.textContent = j ? uhr(j[0], false) + '–' + uhr(j[1], true) : 'Heute geschlossen'; });
+    document.querySelectorAll('.js-statut').forEach(function (e) { e.textContent = T(ouvert ? 'Geöffnet' : 'Geschlossen'); });
+    document.querySelectorAll('.js-heures').forEach(function (e) { e.textContent = j ? uhr(j[0], false) + '–' + uhr(j[1], true) : T('Heute geschlossen'); });
     var options = { weekday: 'long', day: 'numeric', month: 'long' };
     if (fuseau) options.timeZone = fuseau;
     document.querySelectorAll('.js-date').forEach(function (e) {
@@ -122,13 +138,14 @@
   function hfr(x) { return uhr(x, true); }
   // État de la maison maintenant : { ouvert, texte } (« Geöffnet bis 18.30 Uhr », « Geschlossen · öffnet morgen um 8 Uhr »).
   function etatMaison() {
-    var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1], txt = 'Geschlossen';
-    if (ouvert) txt = 'Geöffnet bis ' + hfr(j[1]);
+    var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1], txt = T('Geschlossen');
+    if (ouvert) txt = TF('Geöffnet bis %s', hfr(j[1]));
     else for (var k = 0; k <= 14; k++) {
       var x = horairesDans(t, k);
       if (x && (k > 0 || t.h < x[0])) {
-        var quand = k === 0 ? '' : (k === 1 ? 'morgen ' : 'am ' + ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'][(t.jour + k) % 7] + ' ');
-        txt = 'Geschlossen · öffnet ' + quand + 'um ' + hfr(x[0]); break;
+        txt = k === 0 ? TF('Geschlossen · öffnet um %s', hfr(x[0]))
+          : TF('Geschlossen · öffnet %1$s um %2$s', k === 1 ? T('morgen') : TF('am %s', S.jours[(t.jour + k) % 7]), hfr(x[0]));
+        break;
       }
     }
     return { ouvert: ouvert, texte: txt };
@@ -167,15 +184,15 @@
     flottant = document.createElement('button');
     flottant.type = 'button'; flottant.className = 'sel-flottant'; flottant.hidden = true;
     flottant.setAttribute('aria-haspopup', 'dialog');
-    flottant.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="currentColor"/></svg><span>Merkliste</span><b class="sel-nb">0</b>';
+    flottant.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="currentColor"/></svg><span>' + T('Merkliste') + '</span><b class="sel-nb">0</b>';
     document.body.appendChild(flottant);
     panneau = document.createElement('div');
     panneau.className = 'sel-panneau'; panneau.hidden = true;
     panneau.setAttribute('role', 'dialog'); panneau.setAttribute('aria-modal', 'true'); panneau.setAttribute('aria-labelledby', 'sel-titre');
-    panneau.innerHTML = '<div class="sel-fond js-sel-fermer"></div><div class="sel-boite"><div class="sel-tete"><p class="sel-titre" id="sel-titre">Meine Merkliste</p><button type="button" class="sel-x js-sel-fermer" aria-label="Schliessen">✕</button></div>'
-      + '<p class="sel-intro">Ihre Liste, um telefonisch oder per Nachricht zu bestellen. Sie bleibt in diesem Browser gespeichert.</p><ul class="sel-liste js-sel-liste"></ul>'
-      + '<div class="sel-actions"><a class="btn btn-kir js-sel-appeler" href="#"><span>Telefonisch bestellen</span></a><a class="btn btn-line js-sel-message" href="#"><span>Per Nachricht senden</span></a></div>'
-      + '<div class="sel-pied"><button type="button" class="sel-lien js-sel-copier">Liste kopieren</button><button type="button" class="sel-lien js-sel-vider">Liste leeren</button></div></div>';
+    panneau.innerHTML = '<div class="sel-fond js-sel-fermer"></div><div class="sel-boite"><div class="sel-tete"><p class="sel-titre" id="sel-titre">' + T('Meine Merkliste') + '</p><button type="button" class="sel-x js-sel-fermer" aria-label="' + T('Schliessen') + '">✕</button></div>'
+      + '<p class="sel-intro">' + T('Ihre Liste, um telefonisch oder per Nachricht zu bestellen. Sie bleibt in diesem Browser gespeichert.') + '</p><ul class="sel-liste js-sel-liste"></ul>'
+      + '<div class="sel-actions"><a class="btn btn-kir js-sel-appeler" href="#"><span>' + T('Telefonisch bestellen') + '</span></a><a class="btn btn-line js-sel-message" href="#"><span>' + T('Per Nachricht senden') + '</span></a></div>'
+      + '<div class="sel-pied"><button type="button" class="sel-lien js-sel-copier">' + T('Liste kopieren') + '</button><button type="button" class="sel-lien js-sel-vider">' + T('Liste leeren') + '</button></div></div>';
     document.body.appendChild(panneau);
     var dernier = null;
     flottant.addEventListener('click', function () { dernier = document.activeElement; panneau.hidden = false; document.documentElement.classList.add('sel-ouvert'); var x = panneau.querySelector('.sel-x'); if (x) x.focus(); });
@@ -192,10 +209,10 @@
         if (t.classList.contains('js-sel-retirer')) l = l.filter(function (y) { return cle(y) !== k; });
         ecrire(l); return;
       }
-      if (t.classList.contains('js-sel-vider')) { if (window.confirm('Merkliste leeren?')) { ecrire([]); fermer(); } }
+      if (t.classList.contains('js-sel-vider')) { if (window.confirm(T('Merkliste leeren?'))) { ecrire([]); fermer(); } }
       if (t.classList.contains('js-sel-copier')) {
         var txt = texteListe();
-        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { t.textContent = 'Liste kopiert'; setTimeout(function () { t.textContent = 'Liste kopieren'; }, 2000); }, function () { window.prompt('Liste kopieren:', txt); });
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { t.textContent = T('Liste kopiert'); setTimeout(function () { t.textContent = T('Liste kopieren'); }, 2000); }, function () { window.prompt(T('Liste kopieren:'), txt); });
       }
     });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panneau.hidden) fermer(); });
@@ -209,7 +226,7 @@
       var on = dansSelection(b);
       b.setAttribute('aria-pressed', on ? 'true' : 'false');
       var t = b.querySelector('.js-sel-texte');
-      if (t) t.textContent = on ? 'Auf der Merkliste' : (b.closest('.cmd--barre') ? 'Merken' : 'Auf meine Merkliste');
+      if (t) t.textContent = T(on ? 'Auf der Merkliste' : (b.closest('.cmd--barre') ? 'Merken' : 'Auf meine Merkliste'));
     });
     if (!l.length && !flottant) return;
     construire();
@@ -217,14 +234,14 @@
     flottant.querySelector('.sel-nb').textContent = l.reduce(function (n, x) { return n + (x.qte || 1); }, 0);
     panneau.querySelector('.js-sel-liste').innerHTML = l.map(function (x) {
       return '<li data-k="' + echap(cle(x)) + '"><span class="sel-nom">' + (x.url ? '<a href="' + echap(x.url) + '">' + echap(x.nom) + '</a>' : echap(x.nom)) + (x.prix ? '<small>' + echap(x.prix) + (x.unite ? ' · ' + echap(x.unite) : '') + '</small>' : '') + '</span>'
-        + '<span class="sel-qte"><button type="button" class="js-sel-moins" aria-label="Eins weniger: ' + echap(x.nom) + '">−</button><b aria-live="polite">' + (x.qte || 1) + '</b><button type="button" class="js-sel-plus" aria-label="Eins mehr: ' + echap(x.nom) + '">+</button></span>'
-        + '<button type="button" class="sel-retirer js-sel-retirer" aria-label="Entfernen: ' + echap(x.nom) + '">✕</button></li>';
-    }).join('') || '<li class="sel-vide">Ihre Merkliste ist leer.</li>';
+        + '<span class="sel-qte"><button type="button" class="js-sel-moins" aria-label="' + T('Eins weniger:') + ' ' + echap(x.nom) + '">−</button><b aria-live="polite">' + (x.qte || 1) + '</b><button type="button" class="js-sel-plus" aria-label="' + T('Eins mehr:') + ' ' + echap(x.nom) + '">+</button></span>'
+        + '<button type="button" class="sel-retirer js-sel-retirer" aria-label="' + T('Entfernen:') + ' ' + echap(x.nom) + '">✕</button></li>';
+    }).join('') || '<li class="sel-vide">' + T('Ihre Merkliste ist leer.') + '</li>';
     var app = panneau.querySelector('.js-sel-appeler'), msg = panneau.querySelector('.js-sel-message');
     var e = etatMaison();
     app.hidden = !S.tel;
     app.href = S.tel || '#';
-    app.querySelector('span').textContent = e.ouvert ? 'Telefonisch bestellen' : 'Anrufen (' + e.texte.replace('Geschlossen · ', '') + ')';
+    app.querySelector('span').textContent = e.ouvert ? T('Telefonisch bestellen') : TF('Anrufen (%s)', e.texte.replace(T('Geschlossen') + ' · ', ''));
     msg.href = (S.contact || '/') + ((S.contact || '').indexOf('?') < 0 ? '?' : '&') + 'selection=1#schreiben';
   }
   S.majSelection = majSelection;
@@ -256,7 +273,7 @@
     if (b.classList.contains('js-partage-natif')) { navigator.share({ title: titre, url: url }).catch(function () {}); return; }
     var t = b.querySelector('.js-partage-copier-texte');
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () {
-      if (t) { t.textContent = 'Link kopiert'; setTimeout(function () { t.textContent = 'Link kopieren'; }, 2000); }
-    }, function () { window.prompt('Link kopieren:', url); });
+      if (t) { t.textContent = T('Link kopiert'); setTimeout(function () { t.textContent = T('Link kopieren'); }, 2000); }
+    }, function () { window.prompt(T('Link kopieren') + ':', url); });
   });
 })();

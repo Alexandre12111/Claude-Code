@@ -36,11 +36,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.10.1' );
+define( 'SCHIESSER_VERSION', '0.11.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
 require SCHIESSER_DIR . '/inc/langue.php';
+require SCHIESSER_DIR . '/inc/i18n.php';        // trois langues avec Polylang
+require SCHIESSER_DIR . '/inc/traductions.php'; // textes du thème en français et en anglais
 require SCHIESSER_DIR . '/inc/setup.php';
 require SCHIESSER_DIR . '/inc/charte.php';
 require SCHIESSER_DIR . '/inc/reglages.php';
@@ -70,3 +72,5 @@ require SCHIESSER_DIR . '/inc/edition.php';
 require SCHIESSER_DIR . '/inc/contenu-produits.php';
 require SCHIESSER_DIR . '/inc/contenu-pages.php';
 require SCHIESSER_DIR . '/inc/demo.php';
+require SCHIESSER_DIR . '/inc/contenu-traductions.php'; // pages, produits et carte en français et en anglais
+require SCHIESSER_DIR . '/inc/import-langues.php';       // import des traductions avec Polylang

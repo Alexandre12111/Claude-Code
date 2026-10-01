@@ -141,6 +141,14 @@ function schiesser_donnees_produit( $post ) {
 		$d[ $cle ] = (string) get_post_meta( $post->ID, '_s_' . $cle, true );
 	}
 	$d['fiche'] = array_values( array_filter( (array) get_post_meta( $post->ID, '_s_fiche', true ) ) );
+	// Prix et formats sont enregistrés une fois (en allemand) pour les trois langues : affichés dans celle de la page.
+	if ( ! is_admin() && function_exists( 'schiesser_t_libelle' ) ) {
+		$d['prix']  = schiesser_t_libelle( $d['prix'] );
+		$d['unite'] = schiesser_t_libelle( $d['unite'] );
+		$d['fiche'] = array_map( function ( $l ) {
+			return is_array( $l ) ? array( schiesser_t_libelle( $l[0] ?? '' ), $l[1] ?? '' ) + $l : $l;
+		}, $d['fiche'] );
+	}
 	$d['al']    = schiesser_allergenes_de( $post->ID, '_s_' ); // allergènes et régimes (inc/allergenes.php)
 	if ( '' === $d['alt'] ) {
 		$d['alt'] = $d['nom'];
@@ -196,17 +204,17 @@ function schiesser_mailto( $sujet, $lignes = array() ) {
 	if ( ! $email ) {
 		return '';
 	}
-	$corps = "Grüezi\r\n\r\n" . implode( "\r\n", $lignes ) . "\r\n\r\nVielen Dank und bis bald\r\n";
+	$corps = schiesser_t( 'Grüezi' ) . "\r\n\r\n" . implode( "\r\n", $lignes ) . "\r\n\r\n" . schiesser_t( 'Vielen Dank und bis bald' ) . "\r\n";
 	return 'mailto:' . $email . '?subject=' . rawurlencode( $sujet ) . '&body=' . rawurlencode( $corps );
 }
 
 /** Lien de commande d'un produit par e-mail. */
 function schiesser_mailto_commande( $nom ) {
-	return schiesser_mailto( 'Bestellung: ' . $nom, array(
-		'Ich möchte gerne bestellen: ' . $nom,
-		'Menge oder Format:',
-		'Gewünschtes Abholdatum:',
-		'Name und Telefon:',
+	return schiesser_mailto( schiesser_t( 'Bestellung:' ) . ' ' . $nom, array(
+		schiesser_t( 'Ich möchte gerne bestellen:' ) . ' ' . $nom,
+		schiesser_t( 'Menge oder Format:' ),
+		schiesser_t( 'Gewünschtes Abholdatum:' ),
+		schiesser_t( 'Name und Telefon:' ),
 	) );
 }
 
@@ -268,14 +276,14 @@ function schiesser_carte_produit( $p, $i, $fiche_rapide = true ) {
 			?>
 			<span class="tint"></span>
 			<?php if ( ! empty( $p['id'] ) && schiesser_est_epuise( $p['id'] ) ) : ?>
-				<span class="card-tag card-tag--epuise">Heute ausverkauft</span>
+				<span class="card-tag card-tag--epuise"><?php echo esc_html( schiesser_t( 'Heute ausverkauft' ) ); ?></span>
 			<?php elseif ( $p['badge'] ) : ?>
 				<span class="card-tag<?php echo 'menthe' === $p['badge_style'] ? ' gold' : ''; ?>"><?php echo esc_html( $p['badge'] ); ?></span>
 			<?php endif; ?>
-			<span class="card-see" aria-hidden="true"><?php echo $fiche_rapide ? 'Details ansehen' : 'Entdecken'; ?></span>
+			<span class="card-see" aria-hidden="true"><?php echo esc_html( schiesser_t( $fiche_rapide ? 'Details ansehen' : 'Entdecken' ) ); ?></span>
 		</span>
 		<span class="card-body">
-			<span class="card-plate" aria-hidden="true">Nr. <?php echo esc_html( str_pad( (string) ( ! empty( $p['ordre'] ) ? $p['ordre'] : $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+			<span class="card-plate" aria-hidden="true"><?php echo esc_html( schiesser_t( 'Nr.' ) ); ?> <?php echo esc_html( str_pad( (string) ( ! empty( $p['ordre'] ) ? $p['ordre'] : $i + 1 ), 2, '0', STR_PAD_LEFT ) ); ?></span>
 			<h3 class="card-name"><?php echo esc_html( $p['nom'] ); ?></h3>
 			<?php if ( $p['prix'] ) : ?><span class="card-price"><?php echo esc_html( $p['prix'] ); ?></span><?php endif; ?>
 			<?php if ( $p['unite'] ) : ?><span class="card-unit"><?php echo esc_html( $p['unite'] ); ?></span><?php endif; ?>

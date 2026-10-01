@@ -1,6 +1,6 @@
 # Rapport SEO : Confiserie Schiesser
 
-Thème Schiesser 0.10. État vérifié le 1er octobre 2026 sur le site de test (WordPress 6.5, contenu importé par « Passer le site en allemand »), page par page, avec la liste des produits en préparation puis en ligne.
+Thème Schiesser 0.11. État vérifié le 1er octobre 2026 sur le site de test (WordPress 6.5, contenu importé par « Passer le site en allemand »), page par page, avec la liste des produits en préparation puis en ligne.
 
 ## 1. En résumé
 
@@ -30,6 +30,14 @@ Thème Schiesser 0.10. État vérifié le 1er octobre 2026 sur le site de test (
 | Fiches produits | `/produkte/nom-du-produit/` | `/produits/…` |
 
 Les redirections sont faites par le thème, sans réglage. Elles ont été vérifiées une par une (code 301 vers la bonne page).
+
+### Versions française et anglaise (0.11, avec Polylang)
+
+- L'allemand reste la langue principale (adresses sans préfixe). Avec Polylang réglé sur « nom de dossier » et « cacher le code de la langue par défaut », le français est servi sous `/fr/` et l'anglais sous `/en/` ; chaque page déclare sa langue (`fr-FR`, `en-GB`) et Polylang ajoute les balises `hreflang` entre les trois versions.
+- Adresses françaises : `/fr/accueil/` (accueil `/fr/`), `/fr/boutique/`, `/fr/salon-de-the/`, `/fr/notre-histoire/`, `/fr/nous-visiter/`, `/fr/contact/`, `/fr/cadeaux-entreprise/`. Adresses anglaises : `/en/`, `/en/confectionery/`, `/en/tearoom/`, `/en/history/`, `/en/visit-us/`, `/en/contact-us/`, `/en/corporate-gifts/`. Les anciennes adresses françaises sans préfixe (`/salon-de-the/`…) redirigent en 301 vers la page française.
+- Chaque page traduite a son titre SEO (50 à 60 caractères), sa description (140 à 160 caractères) et 5 mots-clés dans sa langue, par exemple `salon de thé Bâle`, `confiserie Bâle`, `tea room Basel`, `confectionery Basel`. Les 70 produits ont aussi leur SEO en français et en anglais.
+- Les textes ont été rédigés à la main pour chaque langue (pas de traduction automatique). Liens internes, maillage « À découvrir aussi », menus et carte PDF suivent la langue de la page.
+- Vérifié sur le site de test : aucune erreur d'accessibilité (axe) sur les pages FR et EN, aucun bloc invalide dans l'éditeur, aucun reste d'allemand hors noms propres (Läckerli, Rathstübli, Kaffee Lutz…).
 
 ## 3. Carte des mots-clés
 

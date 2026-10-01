@@ -174,8 +174,12 @@ add_action( 'save_post_' . SCHIESSER_TEAROOM, function ( $post_id ) {
 
 /** Une seule suggestion du jour : la cocher sur un produit la retire des autres. */
 function schiesser_tearoom_definir_suggestion( $post_id, $oui ) {
+	// La suggestion vaut pour le plat dans toutes ses langues (Polylang).
+	$versions = function_exists( 'schiesser_ids_traductions' ) ? schiesser_ids_traductions( $post_id ) : array( (int) $post_id );
 	if ( ! $oui ) {
-		delete_post_meta( $post_id, '_t_suggestion' );
+		foreach ( $versions as $v ) {
+			delete_post_meta( $v, '_t_suggestion' );
+		}
 		return;
 	}
 	foreach ( get_posts( array(
@@ -183,12 +187,15 @@ function schiesser_tearoom_definir_suggestion( $post_id, $oui ) {
 		'post_status' => 'any',
 		'numberposts' => -1,
 		'fields'      => 'ids',
-		'exclude'     => array( $post_id ),
+		'exclude'     => $versions,
 		'meta_key'    => '_t_suggestion', // phpcs:ignore WordPress.DB.SlowDBQuery
+		'lang'        => '', // toutes les langues
 	) ) as $autre ) {
 		delete_post_meta( $autre, '_t_suggestion' );
 	}
-	update_post_meta( $post_id, '_t_suggestion', 1 );
+	foreach ( $versions as $v ) {
+		update_post_meta( $v, '_t_suggestion', 1 );
+	}
 }
 
 /* Colonnes de la liste : photo, prix, mention, suggestion */
@@ -367,7 +374,7 @@ function schiesser_donnees_tearoom( $post ) {
 	return array(
 		'id'          => $post->ID,
 		'nom'         => html_entity_decode( get_the_title( $post ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
-		'prix'        => (string) get_post_meta( $post->ID, '_t_prix', true ),
+		'prix'        => function_exists( 'schiesser_t_libelle' ) && ! is_admin() ? schiesser_t_libelle( (string) get_post_meta( $post->ID, '_t_prix', true ) ) : (string) get_post_meta( $post->ID, '_t_prix', true ),
 		'description' => (string) get_post_meta( $post->ID, '_t_description', true ),
 		'mention'     => (string) get_post_meta( $post->ID, '_t_mention', true ),
 		'imageId'     => $photo,
@@ -575,12 +582,13 @@ function schiesser_tearoom_creer( $d ) {
 		return 0;
 	}
 	$existant = 0;
-	foreach ( get_posts( array(
+	$args = array(
 		'post_type'   => SCHIESSER_TEAROOM,
 		'post_status' => 'any',
 		'numberposts' => -1,
 		'title'       => $nom,
-	) ) as $p ) {
+	);
+	foreach ( function_exists( 'schiesser_posts_allemands' ) ? schiesser_posts_allemands( $args ) : get_posts( $args ) as $p ) {
 		$rubs = wp_get_object_terms( $p->ID, SCHIESSER_RUBRIQUE, array( 'fields' => 'ids' ) );
 		if ( empty( $d['rubrique'] ) ? ! $rubs : in_array( (int) $d['rubrique'], array_map( 'intval', (array) $rubs ), true ) ) {
 			$existant = $p->ID;
@@ -728,7 +736,7 @@ function schiesser_schema_menu( $post ) {
 		'@type'          => 'Menu',
 		'@id'            => $url . '#menu',
 		'url'            => $url . ( $ancre ? '#' . $ancre : '' ),
-		'name'           => schiesser_texte_brut( $bloc['attrs']['titre'] ?? '' ) ?: 'Karte des Tea Room',
+		'name'           => schiesser_texte_brut( $bloc['attrs']['titre'] ?? '' ) ?: schiesser_t( 'Karte des Tea Room' ),
 		'inLanguage'     => get_bloginfo( 'language' ),
 		'hasMenuSection' => $sections,
 	);

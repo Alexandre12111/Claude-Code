@@ -223,7 +223,7 @@ function schiesser_avis_donnees() {
 			'texte'  => $c['texte'],
 			'date'   => $c['date'],
 			'lien'   => $c['lien'],
-			'source' => 'Livre d’or' === $c['source'] ? 'Gästebuch' : $c['source'],
+			'source' => 'Livre d’or' === $c['source'] ? schiesser_t( 'Gästebuch' ) : $c['source'],
 		);
 	}
 	$note = schiesser_reglage( 'avis_note' );
@@ -246,7 +246,7 @@ function schiesser_avis_donnees() {
 function schiesser_avis_etoiles( $note, $classe = '' ) {
 	$note = max( 0, min( 5, (float) $note ) );
 	$lue  = str_replace( '.', ',', (string) round( $note, 1 ) );
-	return '<span class="avis-etoiles ' . esc_attr( $classe ) . '" style="--note:' . round( $note / 5 * 100, 1 ) . '%" role="img" aria-label="' . esc_attr( $lue . ' von 5 Sternen' ) . '"></span>';
+	return '<span class="avis-etoiles ' . esc_attr( $classe ) . '" style="--note:' . round( $note / 5 * 100, 1 ) . '%" role="img" aria-label="' . esc_attr( schiesser_tf( '%s von 5 Sternen', $lue ) ) . '"></span>';
 }
 
 /** Coupe un texte trop long sur un mot entier. */
@@ -278,7 +278,7 @@ function schiesser_mq_rendu_avis( $a ) {
 	if ( ! empty( $a['resume'] ) && $d['note'] ) {
 		$html .= '<div class="avis-resume">'
 			. '<p class="avis-moyenne"><span class="avis-chiffre">' . esc_html( number_format_i18n( $d['note'], 1 ) ) . '</span>' . schiesser_avis_etoiles( $d['note'], 'avis-etoiles--grand' ) . '</p>'
-			. ( $d['nombre'] ? '<p class="avis-nombre">' . esc_html( number_format_i18n( $d['nombre'] ) . ' Google-Bewertungen' ) . '</p>' : '' )
+			. ( $d['nombre'] ? '<p class="avis-nombre">' . esc_html( schiesser_tf( '%s Google-Bewertungen', number_format_i18n( $d['nombre'] ) ) ) . '</p>' : '' )
 			. '<div class="avis-actions">'
 			. schiesser_mq_bouton( $a['lienTexte'] ?? '', $d['lien'], 'sombre' === ( $a['fond'] ?? '' ) ? 'btn-ghost' : 'btn-line' )
 			. ( $d['ecrire'] ? schiesser_mq_bouton( $a['avisTexte'] ?? '', $d['ecrire'], 'btn-kir' ) : '' )
@@ -294,7 +294,7 @@ function schiesser_mq_rendu_avis( $a ) {
 			$html    .= '<li class="avis-carte">'
 				. schiesser_avis_etoiles( $x['note'] )
 				. '<blockquote class="avis-texte"><p>' . esc_html( $texte ) . '</p></blockquote>'
-				. ( $coupe && $x['lien'] ? '<a class="avis-suite" href="' . esc_url( $x['lien'] ) . '" target="_blank" rel="noopener">Weiterlesen<span class="screen-reader-text">: Bewertung von ' . esc_html( $x['auteur'] ) . '</span></a>' : '' )
+				. ( $coupe && $x['lien'] ? '<a class="avis-suite" href="' . esc_url( $x['lien'] ) . '" target="_blank" rel="noopener">' . esc_html( schiesser_t( 'Weiterlesen' ) ) . '<span class="screen-reader-text">: ' . esc_html( schiesser_tf( 'Bewertung von %s', $x['auteur'] ) ) . '</span></a>' : '' )
 				. '<p class="avis-auteur"><span class="avis-initiale" aria-hidden="true">' . esc_html( $initiale ) . '</span>'
 				. '<span><strong>' . esc_html( $x['auteur'] ) . '</strong>' . ( $meta ? '<span class="avis-date">' . esc_html( implode( ' · ', $meta ) ) . '</span>' : '' ) . '</span></p>'
 				. '</li>';
@@ -303,7 +303,7 @@ function schiesser_mq_rendu_avis( $a ) {
 	}
 
 	if ( $google ) {
-		$html .= '<p class="avis-mention">Bewertungen von Google, unverändert wiedergegeben.</p>';
+		$html .= '<p class="avis-mention">' . esc_html( schiesser_t( 'Bewertungen von Google, unverändert wiedergegeben.' ) ) . '</p>';
 	}
 	return schiesser_mq_section( $a, $html . '</div>', 'sec-avis' );
 }

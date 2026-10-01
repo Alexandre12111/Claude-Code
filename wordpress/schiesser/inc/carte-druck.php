@@ -13,16 +13,28 @@ defined( 'ABSPATH' ) || exit;
 
 const SCHIESSER_CARTE_PDF = 'assets/pdf/karte-tea-room-schiesser.pdf';
 
+/** Fichier PDF fourni avec le thème, par langue. */
+function schiesser_fichier_carte_pdf( $langue ) {
+	$fichiers = array(
+		'de' => SCHIESSER_CARTE_PDF,
+		'fr' => 'assets/pdf/carte-tea-room-schiesser.pdf',
+		'en' => 'assets/pdf/menu-tea-room-schiesser.pdf',
+	);
+	return $fichiers[ $langue ] ?? SCHIESSER_CARTE_PDF;
+}
+
 /** Adresse du PDF de la carte. */
 function schiesser_url_carte_pdf() {
-	$reglage = trim( (string) schiesser_reglage( 'carte_pdf' ) );
+	$langue  = function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de';
+	$reglage = trim( (string) schiesser_reglage( 'de' === $langue ? 'carte_pdf' : 'carte_pdf_' . $langue ) );
 	if ( '' !== $reglage ) {
 		return $reglage;
 	}
-	if ( file_exists( SCHIESSER_DIR . '/' . SCHIESSER_CARTE_PDF ) ) {
-		return SCHIESSER_URI . '/' . SCHIESSER_CARTE_PDF . '?v=' . SCHIESSER_VERSION;
+	$fichier = schiesser_fichier_carte_pdf( $langue );
+	if ( file_exists( SCHIESSER_DIR . '/' . $fichier ) ) {
+		return SCHIESSER_URI . '/' . $fichier . '?v=' . SCHIESSER_VERSION;
 	}
-	return add_query_arg( 'schiesser_karte', 'druck', home_url( '/' ) );
+	return add_query_arg( 'schiesser_karte', 'druck', schiesser_url_accueil() );
 }
 
 /* La carte imprimable n'est pas une page à indexer. */
@@ -45,7 +57,7 @@ function schiesser_carte_druck_html() {
 	$web   = apply_filters( 'schiesser_carte_druck_web', preg_replace( '#^https?://(www\.)?#', '', untrailingslashit( home_url() ) ) );
 	$f     = SCHIESSER_URI . '/assets/fonts/';
 	$sceau = '<svg class="sceau" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="r" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>'
-		. '<text font-size="10.5" font-weight="600" letter-spacing="3" fill="currentColor"><textPath href="#r" textLength="496" lengthAdjust="spacing">CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·</textPath></text>'
+		. '<text font-size="10.5" font-weight="600" letter-spacing="3" fill="currentColor"><textPath href="#r" textLength="496" lengthAdjust="spacing">' . esc_html( schiesser_t( 'CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·' ) ) . '</textPath></text>'
 		. '<circle cx="100" cy="100" r="64" fill="none" stroke="currentColor" stroke-opacity=".6"/><circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-dasharray="1 4"/>'
 		. '<text x="100" y="121" text-anchor="middle" font-size="58" font-weight="500" font-family="Bodoni Moda" fill="currentColor">S</text></svg>';
 	$orn   = '<span class="orn" aria-hidden="true"><i></i><b>◆</b><i></i></span>';
@@ -73,17 +85,17 @@ function schiesser_carte_druck_html() {
 		$pages[ count( $pages ) - 1 ] .= $html;
 		$charge += $poids;
 	}
-	$pied = '<div class="pied">' . esc_html( trim( $nom . ' · ' . $adr . ( $tel ? ' · ' . $tel : '' ), ' ·' ) ) . '<span>Alle Preise in CHF inkl. MwSt. · Auskunft zu Allergenen erhalten Sie gerne bei unserem Team.</span></div>';
+	$pied = '<div class="pied">' . esc_html( trim( $nom . ' · ' . $adr . ( $tel ? ' · ' . $tel : '' ), ' ·' ) ) . '<span>' . esc_html( schiesser_t( 'Alle Preise in CHF inkl. MwSt. · Auskunft zu Allergenen erhalten Sie gerne bei unserem Team.' ) ) . '</span></div>';
 
 	ob_start();
 	?>
 <!DOCTYPE html>
-<html lang="de-CH">
+<html lang="<?php echo esc_attr( schiesser_langues_site()[ schiesser_langue() ][2] ); ?>">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex, follow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Karte Tea Room · <?php echo esc_html( $nom ); ?></title>
+<title><?php echo esc_html( schiesser_t( 'Karte Tea Room' ) ); ?> · <?php echo esc_html( $nom ); ?></title>
 <style>
 @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda-italic.woff2' ); ?>) format('woff2')}
@@ -137,11 +149,11 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 <p class="aide">Carte imprimable : Imprimer → « Enregistrer au format PDF », format A4, marges « Aucune », graphiques d’arrière-plan activés. <button type="button" onclick="window.print()">Imprimer</button></p>
 <div class="page couv">
 	<?php echo $sceau; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-	<p class="k">Seit 1870 · Marktplatz Basel</p>
+	<p class="k"><?php echo esc_html( schiesser_t( 'Seit 1870 · Marktplatz Basel' ) ); ?></p>
 	<h1>Schiesser<em>Tea Room &amp; Rathstübli</em></h1>
-	<p class="sous">Das älteste Kaffeehaus der Schweiz</p>
+	<p class="sous"><?php echo esc_html( schiesser_t( 'Das älteste Kaffeehaus der Schweiz' ) ); ?></p>
 	<?php echo $orn; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-	<p class="k">Die Karte</p>
+	<p class="k"><?php echo esc_html( schiesser_t( 'Die Karte' ) ); ?></p>
 	<p class="bas"><?php echo esc_html( trim( $adr . ( $tel ? ' · ' . $tel : '' ) . ' · ' . $web, ' ·' ) ); ?></p>
 </div>
 <?php foreach ( $pages as $k => $contenu ) : ?>

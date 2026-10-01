@@ -1,5 +1,7 @@
 /* Boutique : filtres par catégorie et fiche rapide des produits. */
 (function () {
+  var S = window.SCHIESSER || {};
+  function T(t) { return S.T ? S.T(t) : t; }
   document.querySelectorAll('.js-boutique').forEach(function (root) {
     var dataEl = root.querySelector('.js-boutique-data');
     var sheet = root.querySelector('.js-sheet');
@@ -54,7 +56,7 @@
       var n = cartes.filter(function (c) { return !c.hidden && !c.classList.contains('al-masque') && !c.classList.contains('rech-masque'); }).length;
       if (rechercheVide) rechercheVide.hidden = !(recherche && recherche.value.trim() && n === 0);
       if (nombre) nombre.textContent = n;
-      if (libelle) libelle.textContent = n > 1 ? 'Produkte' : 'Produkt';
+      if (libelle) libelle.textContent = T(n > 1 ? 'Produkte' : 'Produkt');
     }
     root.addEventListener('schiesser:filtre', compter);
 
@@ -75,7 +77,7 @@
       q('.js-sh-lignes').innerHTML = (f.lignes || []).filter(function (l) { return l[0] || l[1]; }).map(function (l) {
         return '<div class="sh-row' + (l[2] ? ' x-extra' : '') + '"><span class="k">' + esc(l[0]) + '</span><span>' + esc(l[1]) + '</span></div>';
       }).join('');
-      q('.js-sh-unite').textContent = 'Preis' + (f.unite ? ' · ' + f.unite : '');
+      q('.js-sh-unite').textContent = T('Preis') + (f.unite ? ' · ' + f.unite : '');
       q('.js-sh-prix').textContent = f.prix || '';
       q('.sh-price').hidden = !f.prix;
 

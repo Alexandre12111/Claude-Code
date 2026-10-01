@@ -63,7 +63,7 @@ function schiesser_html_maillage() {
 			continue;
 		}
 		++$n;
-		list( $sur, $titre, $texte ) = $infos[ $cible ];
+		list( $sur, $titre, $texte ) = array_map( 'schiesser_t', $infos[ $cible ] );
 		$cartes .= '<a class="ml-carte" href="' . esc_url( get_permalink( $p ) ) . '">'
 			. '<span class="ml-no" aria-hidden="true">' . sprintf( '%02d', $n ) . '</span>'
 			. '<span class="ml-k">' . esc_html( $sur ) . '</span>'
@@ -75,7 +75,7 @@ function schiesser_html_maillage() {
 		return '';
 	}
 	return '<nav class="maillage" aria-labelledby="maillage-titre"><div class="wrap">'
-		. '<div class="ml-tete rv"><p class="eyebrow">Weiter im Haus</p><h2 id="maillage-titre" class="ml-titre">Confiserie, Tea Room <em>und mehr</em></h2></div>'
+		. '<div class="ml-tete rv"><p class="eyebrow">' . esc_html( schiesser_t( 'Weiter im Haus' ) ) . '</p><h2 id="maillage-titre" class="ml-titre">Confiserie, Tea Room <em>' . esc_html( schiesser_t( 'und mehr' ) ) . '</em></h2></div>'
 		. '<div class="ml-grille rv">' . $cartes . '</div></div></nav>';
 }
 

@@ -1657,6 +1657,8 @@ mark.has-inline-color{background-color:transparent}
 .mi-top .al-svg{width:15px;height:15px}
 .bg-ink .al-liste,.bg-ink .al--regime{color:var(--mint)}
 .mn .al-filtres{margin-bottom:18px}
+:lang(fr) .mn.al-actif .mn-list:not(.is-off):not(:has(.mi:not(.al-masque)))::after{content:"Aucun plat de cette rubrique ne correspond à ces filtres."}
+:lang(en) .mn.al-actif .mn-list:not(.is-off):not(:has(.mi:not(.al-masque)))::after{content:"No item in this section matches these filters."}
 .mn.al-actif .mn-list:not(.is-off):not(:has(.mi:not(.al-masque)))::after{content:"Kein Gericht dieser Rubrik passt zu diesen Filtern.";display:block;padding:18px 0;font-size:14px;color:var(--ink-soft)}
 
 /* ---------- Commander par téléphone (inc/client.php) ---------- */

@@ -33,7 +33,8 @@ add_action( 'admin_notices', function () {
 	}
 	$importee = get_option( 'schiesser_demo_importee' );
 	$version  = (string) get_option( 'schiesser_demo_version', $importee ? '0.1.0' : '' );
-	if ( $importee && version_compare( $version, '0.10.0', '>=' ) ) {
+	$langues_manquantes = array_diff( schiesser_langues_a_traduire(), (array) get_option( 'schiesser_langues_importees', array() ) );
+	if ( $importee && version_compare( $version, '0.11.0', '>=' ) && ! $langues_manquantes ) {
 		return;
 	}
 	if ( ! $importee ) {
@@ -49,15 +50,15 @@ add_action( 'admin_notices', function () {
 	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_import_demo&remplacer=1' ), 'schiesser_import_demo' );
 	?>
 	<div class="notice notice-info">
-		<p><strong>Thème Schiesser 0.10 :</strong> la carte du Tea Room passe en haut de sa page (avec le PDF), les pages reçoivent davantage de liens internes et 5 mots-clés Rank Math chacune. Si ce n’est pas déjà fait, le site passe aussi en <strong>allemand</strong>. La mise à jour remplace le texte des 7 pages par leur version allemande (adresses allemandes, les anciennes redirigent), importe la <strong>liste de prix</strong> de la boutique (70 produits, masqués sur le site jusqu’à ce que vous cliquiez sur « Afficher la liste des produits ») et la <strong>carte du Tea Room</strong>. Les anciens produits de démonstration en français partent à la corbeille. Les photos que vous avez ajoutées restent dans la médiathèque.</p>
-		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>" onclick="return confirm('Remplacer le contenu des pages par la version allemande et importer la liste de prix et la carte ?');">Mettre à jour le contenu des pages</a></p>
+		<p><strong>Thème Schiesser 0.11 : site en trois langues.</strong> L’allemand reste la langue principale. <?php if ( schiesser_langues_a_traduire() ) : ?>Polylang est actif : la mise à jour crée aussi les versions <strong><?php echo esc_html( implode( ' et ', array_map( function ( $l ) { return 'fr' === $l ? 'française' : 'anglaise'; }, schiesser_langues_a_traduire() ) ) ); ?></strong> des 8 pages, des 70 produits et de la carte du Tea Room (78 plats), reliées à la version allemande pour le sélecteur de langue.<?php else : ?>Pour les versions <strong>française et anglaise</strong>, installez d’abord l’extension <strong>Polylang</strong> et créez les langues Deutsch (langue par défaut), Français et English (voir le Guide), puis revenez ici.<?php endif; ?> La mise à jour remplace le texte des pages par la version du thème ; les photos de la médiathèque, les prix et les produits ajoutés à la main sont conservés.</p>
+		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>" onclick="return confirm('Remplacer le contenu des pages par la version du thème (et créer les traductions si Polylang est actif) ?');">Mettre à jour le contenu des pages</a></p>
 	</div>
 	<?php
 } );
 
 add_action( 'admin_notices', function () {
 	if ( isset( $_GET['schiesser_demo'] ) && 'ok' === $_GET['schiesser_demo'] ) { // phpcs:ignore WordPress.Security.NonceVerification
-		echo '<div class="notice notice-success is-dismissible"><p>Contenu du site importé (en allemand). <a href="' . esc_url( home_url( '/' ) ) . '" target="_blank">Voir le site</a> · <a href="' . esc_url( admin_url( 'edit.php?post_type=page' ) ) . '">Voir les pages</a> · <a href="' . esc_url( admin_url( 'edit.php?post_type=schiesser_produit' ) ) . '">Voir les produits</a></p></div>';
+		echo '<div class="notice notice-success is-dismissible"><p>Contenu du site importé' . ( get_option( 'schiesser_langues_importees' ) ? ' (allemand, avec les versions ' . esc_html( implode( ', ', array_map( 'strtoupper', (array) get_option( 'schiesser_langues_importees' ) ) ) ) . ')' : ' (en allemand)' ) . '. <a href="' . esc_url( home_url( '/' ) ) . '" target="_blank">Voir le site</a> · <a href="' . esc_url( admin_url( 'edit.php?post_type=page' ) ) . '">Voir les pages</a> · <a href="' . esc_url( admin_url( 'edit.php?post_type=schiesser_produit' ) ) . '">Voir les produits</a></p></div>';
 	}
 } );
 
@@ -169,7 +170,7 @@ function schiesser_demo_anciens_produits() {
 function schiesser_importer_preisliste() {
 	// Les produits de démonstration en français partent à la corbeille (récupérables).
 	foreach ( schiesser_demo_anciens_produits() as $nom ) {
-		foreach ( get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids' ) ) as $id ) {
+		foreach ( get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'lang' => '' ) ) as $id ) {
 			if ( ! get_post_meta( $id, '_s_preisliste', true ) ) { // « Marrons glacés » existe aussi dans la liste de prix : celui-là reste
 				wp_trash_post( $id );
 			}
@@ -209,7 +210,7 @@ function schiesser_importer_preisliste() {
 		foreach ( $produits as $p ) {
 			++$ordre;
 			list( $nom, $formats, $accroche ) = $p;
-			$existant = get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => array( 'publish', 'draft', 'pending', 'private' ), 'numberposts' => 1 ) );
+			$existant = schiesser_posts_allemands( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => array( 'publish', 'draft', 'pending', 'private' ), 'numberposts' => 1 ) );
 			$donnees  = array(
 				'post_type'   => SCHIESSER_PRODUIT,
 				'post_status' => $existant ? $existant[0]->post_status : 'publish',
@@ -294,7 +295,7 @@ function schiesser_importer_tearoom() {
 	if ( ! function_exists( 'schiesser_tearoom_creer' ) ) {
 		return;
 	}
-	foreach ( get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_t_demo' ) ) as $id ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+	foreach ( get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_t_demo', 'lang' => '' ) ) as $id ) { // phpcs:ignore WordPress.DB.SlowDBQuery
 		wp_trash_post( $id );
 	}
 	foreach ( array( 'Cafés & chocolats', 'Thés & infusions', 'Pâtisseries', 'Salé & glaces' ) as $ancienne ) {
@@ -326,7 +327,7 @@ function schiesser_importer_tearoom() {
 			update_term_meta( $term_id, 'photo', $photo );
 		}
 		foreach ( $r['plats'] as $k => $p ) {
-			$existant = get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'title' => $p[0], 'post_status' => array( 'publish', 'draft', 'private' ), 'numberposts' => 1, 'fields' => 'ids' ) );
+			$existant = schiesser_posts_allemands( array( 'post_type' => SCHIESSER_TEAROOM, 'title' => $p[0], 'post_status' => array( 'publish', 'draft', 'private' ), 'numberposts' => 1, 'fields' => 'ids', 'tax_query' => array( array( 'taxonomy' => SCHIESSER_RUBRIQUE, 'terms' => $term_id ) ) ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
 			if ( $existant ) {
 				$id = $existant[0];
 				update_post_meta( $id, '_t_prix', $p[1] );
@@ -377,9 +378,9 @@ function schiesser_importer_demo( $remplacer = false ) {
 	/* Pages */
 	$ids = array();
 	foreach ( schiesser_demo_pages() as $ordre => $p ) {
-		$page = get_page_by_path( $p['slug'] );
+		$page = schiesser_demo_page_allemande( get_page_by_path( $p['slug'] ) );
 		foreach ( $p['anciens'] as $ancien ) {
-			$page = $page ?: get_page_by_path( $ancien );
+			$page = $page ?: schiesser_demo_page_allemande( get_page_by_path( $ancien ) );
 		}
 		if ( $page && ! $remplacer ) {
 			$ids[ $p['slug'] ] = $page->ID;
@@ -410,7 +411,8 @@ function schiesser_importer_demo( $remplacer = false ) {
 		if ( $ids[ $p['slug'] ] && ! is_wp_error( $ids[ $p['slug'] ] ) ) {
 			schiesser_demo_seo( $ids[ $p['slug'] ], $p['seo'] );
 			// Anciennes adresses connues (ex. /tea-room/ de la version 0.1) : elles redirigent vers la page.
-			foreach ( $p['anciens'] as $ancien ) {
+			// Avec Polylang et le français, les adresses françaises appartiennent aux pages françaises.
+			foreach ( in_array( 'fr', schiesser_langues_a_traduire(), true ) ? array() : $p['anciens'] as $ancien ) {
 				if ( ! in_array( $ancien, (array) get_post_meta( $ids[ $p['slug'] ], '_schiesser_ancien_slug' ), true ) ) {
 					add_post_meta( $ids[ $p['slug'] ], '_schiesser_ancien_slug', $ancien );
 				}
@@ -500,6 +502,18 @@ function schiesser_importer_demo( $remplacer = false ) {
 	}
 	flush_rewrite_rules();
 
+	/* Versions française et anglaise (Polylang) */
+	schiesser_importer_langues( $ids, $remplacer );
+
 	update_option( 'schiesser_demo_importee', 1 );
 	update_option( 'schiesser_demo_version', SCHIESSER_VERSION );
+}
+
+/** Page de la langue allemande (ou sans langue) ; null pour une traduction. */
+function schiesser_demo_page_allemande( $page ) {
+	if ( ! $page || ! function_exists( 'pll_get_post_language' ) ) {
+		return $page;
+	}
+	$l = (string) pll_get_post_language( $page->ID );
+	return ( '' === $l || 'de' === substr( $l, 0, 2 ) ) ? $page : null;
 }

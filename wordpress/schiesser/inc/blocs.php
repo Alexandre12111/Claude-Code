@@ -31,7 +31,7 @@ add_action( 'init', function () {
 
 /* Le script de la boutique n'est chargé que sur les pages qui affichent la grille. */
 add_action( 'init', function () {
-	wp_register_script( 'schiesser-boutique', SCHIESSER_URI . '/assets/js/boutique.js', array(), SCHIESSER_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+	wp_register_script( 'schiesser-boutique', SCHIESSER_URI . '/assets/js/boutique.js', array( 'schiesser-site' ), SCHIESSER_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 }, 5 );
 
 /* ------------------------------------------------------------------ */
@@ -142,7 +142,7 @@ function schiesser_sceau_svg() {
 	return '<div class="hero-seal" aria-hidden="true"><svg viewBox="0 0 200 200">'
 		. '<defs><path id="sealRing" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>'
 		. '<g class="ring"><text class="seal-txt" font-size="11" font-weight="600" letter-spacing="3" fill="currentColor">'
-		. '<textPath href="#sealRing" textLength="496" lengthAdjust="spacing">CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·</textPath></text></g>'
+		. '<textPath href="#sealRing" textLength="496" lengthAdjust="spacing">' . esc_html( schiesser_t( 'CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·' ) ) . '</textPath></text></g>'
 		. '<circle cx="100" cy="100" r="64" fill="none" stroke="currentColor" stroke-opacity=".55"/>'
 		. '<circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-opacity=".4" stroke-dasharray="1 4"/>'
 		. '<text class="seal-s" x="100" y="121" text-anchor="middle" font-size="58" font-weight="500" fill="currentColor">S</text>'

@@ -86,7 +86,7 @@ function schiesser_demo_pages() {
 	$ids_produits = function ( $noms ) {
 		$ids = array();
 		foreach ( $noms as $nom ) {
-			$p = get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'publish', 'numberposts' => 1, 'fields' => 'ids' ) );
+			$p = schiesser_posts_allemands( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'publish', 'numberposts' => 1, 'fields' => 'ids' ) );
 			if ( $p ) {
 				$ids[] = $p[0];
 			}
