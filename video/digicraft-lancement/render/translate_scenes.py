@@ -1,5 +1,5 @@
 """Traduit la composition FR CognitX (src6) en italien ou en espagnol.
-Usage : python3 translate_scenes.py it|es|de|sv|pl dossier_cible"""
+Usage : python3 translate_scenes.py it|es|de|sv|pl|nl dossier_cible"""
 import os, shutil, sys
 
 LANG, DST = sys.argv[1], sys.argv[2]
