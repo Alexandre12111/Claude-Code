@@ -1,7 +1,19 @@
-# Thème Schiesser 0.13
+# Thème Schiesser 0.14
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.14 : le vert sapin, couleur principale
+
+Trois couleurs, trois rôles : **vert sapin** pour les grandes surfaces et les actions, **chocolat** pour le pied de page et les contrastes, **beige** pour la lecture. Mêmes éléments, mêmes polices, aucune fonction modifiée.
+
+- Sections sombres (chronologie, galerie de la Confiserie, encart et moments du Tea Room, itinéraires, appel final) en **vert sapin**, avec une lumière douce et des cartes intérieures chocolat.
+- Bandeau du haut, bandeau « ouvert / fermé », vitrine du jour et chiffres de l'Histoire en vert sapin.
+- Étiquettes « N° » pleines, petit filet vert sous chaque titre de section, numéros et flèches en vert.
+- Carte du Tea Room : barre des rubriques verte, rubrique active en crème.
+- « Weiter im Haus » : bloc vert sapin avec cartes crème qui se soulèvent au survol.
+- Questions fréquentes ouvertes, ligne du jour des horaires, graphique d'affluence : vert sapin.
+- Retours plus nets au toucher et au clic, défilement doux, contours de focus visibles sur toutes les surfaces.
 
 ## Version 0.13 : lumière sapin et nouvelle carte du Tea Room
 

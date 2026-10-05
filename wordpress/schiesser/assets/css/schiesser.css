@@ -2335,3 +2335,153 @@ p{text-wrap:pretty}
 .carte .mtab-no{opacity:1;color:var(--vert)}
 .carte .mtab:hover .mtab-no{color:var(--vert)}
 .carte .mtab.on .mtab-no{color:#fff;opacity:.85}
+
+/* =====================================================================
+   VERSION 0.14 · VERT SAPIN, COULEUR PRINCIPALE
+   Rôles : vert sapin = grandes surfaces et actions (sections sombres,
+   bandeaux, appels, états actifs) ; chocolat = pied de page et contrastes ;
+   beige = fond de lecture. Mêmes éléments, mêmes polices.
+   ===================================================================== */
+:root{
+  --sapin:var(--vert);
+  --sapin-fonce:color-mix(in srgb,var(--vert) 74%,#000);
+  --sapin-nuit:color-mix(in srgb,var(--vert) 55%,var(--dark));
+  --sur-sapin:var(--paper);
+  --sur-sapin-2:color-mix(in srgb,var(--paper) 82%,transparent);
+  --sur-sapin-3:color-mix(in srgb,var(--paper) 62%,transparent);
+  --filet-sapin:color-mix(in srgb,var(--paper) 16%,transparent);
+  --surface-sapin:
+    radial-gradient(70% 90% at 100% 0%,color-mix(in srgb,#fff 9%,transparent) 0%,transparent 60%),
+    radial-gradient(80% 100% at 0% 100%,color-mix(in srgb,var(--dark) 55%,transparent) 0%,transparent 65%),
+    linear-gradient(160deg,var(--vert) 0%,var(--sapin-fonce) 100%);
+}
+
+/* ---------- Grandes surfaces en vert sapin ---------- */
+.tl,.bg-ink,.cta,.sec--sombre{--sec-bg:var(--vert);background-color:var(--vert);background-image:var(--surface-sapin);color:var(--sur-sapin)}
+:is(.tl,.bg-ink,.cta) p{color:var(--sur-sapin-2)}
+:is(.tl,.bg-ink,.cta) .sec-head .note{color:var(--sur-sapin-2)}
+:is(.tl,.bg-ink,.cta) .sec-head .idx{background:color-mix(in srgb,var(--paper) 14%,transparent);color:var(--paper)}
+:is(.tl,.bg-ink,.cta) :is(h2,h3) em{color:var(--mint)}
+/* boutons et témoins posés sur le vert : crème */
+:is(.tl,.bg-ink,.cta) .btn-kir{background:var(--paper);color:var(--vert);border-color:var(--paper)}
+:is(.tl,.bg-ink,.cta) .btn-kir:hover{background:#fff;color:var(--sapin-fonce)}
+:is(.tl,.bg-ink,.cta) .btn-solid{background:var(--paper);color:var(--vert)}
+:is(.tl,.bg-ink,.cta) .btn-solid:hover{background:var(--dark);border-color:var(--dark);color:var(--paper)}
+:is(.tl,.bg-ink,.cta) .btn-ghost:hover,:is(.tl,.bg-ink,.cta) .btn-line:hover{background:var(--paper);border-color:var(--paper);color:var(--vert)}
+/* cartes intérieures des sections vertes : chocolat profond, pour le contraste des deux couleurs maison */
+.tl-card,.dy,.jp-main,.orig{background-color:color-mix(in srgb,var(--dark) 70%,var(--vert))}
+.tl-card{box-shadow:0 30px 50px -30px color-mix(in srgb,#000 60%,transparent)}
+.ochip.on{background:color-mix(in srgb,var(--paper) 12%,transparent)}
+.mo-node.on .bar,.tl-node.on .bar{background:var(--paper)}
+:is(.tl,.bg-ink) .x-seal,:is(.tl,.bg-ink) .marque{color:color-mix(in srgb,var(--paper) 18%,transparent)}
+
+/* ---------- Bandeaux ---------- */
+.meta{background:var(--vert);background-image:linear-gradient(90deg,var(--sapin-fonce),var(--vert) 50%,var(--sapin-fonce))}
+.meta .r{color:var(--sur-sapin-2)}
+section.live .wrap{background-color:var(--vert);background-image:var(--surface-sapin)}
+section.live .lv-cell{border-color:var(--filet-sapin)}
+.lv-cell .k{color:var(--mint)}
+.led,.lv-dot{background:var(--paper);box-shadow:0 0 0 3px color-mix(in srgb,var(--paper) 25%,transparent)}
+@keyframes pulse-sapin{0%,100%{box-shadow:0 0 0 3px color-mix(in srgb,var(--paper) 25%,transparent)}50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--paper) 0%,transparent)}}
+/* vitrine du jour : bandeau vert sous la grande photo */
+.vband{background:var(--vert);background-image:var(--surface-sapin);margin:10px var(--frame) 0;border-radius:var(--r-m);color:var(--sur-sapin)}
+.vband .wrap{border-bottom:0}
+.vband .vt b{color:var(--paper)}
+.vband .vt .dot{background:var(--paper);box-shadow:0 0 0 4px color-mix(in srgb,var(--paper) 18%,transparent)}
+.vband li{background:color-mix(in srgb,var(--paper) 10%,transparent);box-shadow:inset 0 0 0 1px var(--filet-sapin);color:var(--paper)}
+.vband li b{color:var(--mint)}
+.vband .vday{color:var(--sur-sapin-2)}
+@media(max-width:600px){.vband{margin:8px 6px 0}}
+/* chiffres clés (Histoire) : bande verte */
+.sband{background:var(--vert);background-image:var(--surface-sapin);border:0;margin:10px var(--frame) 0;border-radius:var(--r-m);color:var(--sur-sapin)}
+.sband .sb{border-color:var(--filet-sapin)}
+.sband .n{color:var(--paper)}
+.sband .l{color:var(--sur-sapin-2)}
+@media(max-width:600px){.sband{margin:8px 6px 0}}
+
+/* ---------- Grande photo : lumière sapin ---------- */
+.hero-media::after{background:
+  linear-gradient(180deg,color-mix(in srgb,var(--sapin-nuit) 40%,transparent) 0%,transparent 30%,color-mix(in srgb,var(--sapin-nuit) 25%,transparent) 55%,color-mix(in srgb,var(--sapin-nuit) 88%,transparent) 100%)}
+.hero .eyebrow{background:color-mix(in srgb,var(--vert) 70%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--paper) 25%,transparent);color:var(--paper)}
+.hero .eyebrow::before{background:var(--paper)}
+.hero .btn-solid:hover{background:var(--vert);border-color:var(--vert);color:#fff}
+
+/* ---------- Étiquettes, numéros, filets : vert sapin ---------- */
+.sec-head .idx{background:var(--vert);color:var(--paper)}
+.sec-head .idx::before{opacity:.7}
+.sec-head h2::after{content:"";display:block;width:44px;height:2px;margin-top:18px;background:var(--vert);border-radius:2px}
+:is(.tl,.bg-ink,.cta) .sec-head h2::after{background:var(--mint)}
+.cta h2::after{margin-left:auto;margin-right:auto}
+.ml-tete .eyebrow,.eyebrow{color:var(--vert)}
+.hero .eyebrow,:is(.tl,.bg-ink,.cta) .eyebrow{color:var(--mint)}
+.x-sep,.sep{color:var(--vert)}
+.cat-row .n,.cstep .cn,.ml-no,.carte .mn-no{color:var(--vert)}
+.cat-row:hover{background:color-mix(in srgb,var(--vert) 7%,var(--paper-3))}
+.cat-row:hover .nm{color:var(--vert)}
+.cat-row .go{border-color:color-mix(in srgb,var(--vert) 35%,transparent);color:var(--vert)}
+.x-floor:first-child::after{background:linear-gradient(0deg,color-mix(in srgb,var(--sapin-fonce) 92%,transparent) 0%,color-mix(in srgb,var(--vert) 35%,transparent) 55%,transparent 100%)}
+.x-floor .x-lv{color:var(--mint)}
+.cstep.active::before{background:var(--vert);width:2px}
+
+/* ---------- Cartes : survol vert sapin ---------- */
+.ml-carte .ml-a,.fq .pm,.prac .pi{border-color:color-mix(in srgb,var(--vert) 35%,transparent);color:var(--vert)}
+.ml-carte:hover{background:var(--vert);background-image:var(--surface-sapin);color:var(--paper)}
+.pcell:hover,.pc:hover,.val:hover{background:var(--paper-3);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--vert) 40%,transparent)}
+.prac .pi{background:color-mix(in srgb,var(--vert) 8%,transparent)}
+.pcell:hover .pi,.pc:hover .pi{background:var(--vert);border-color:var(--vert)}
+.oc-dark{background:var(--vert);background-image:var(--surface-sapin);border-color:var(--vert)}
+.oc-dark .btn-kir,.oc-dark .btn-solid{background:var(--paper);color:var(--vert);border-color:var(--paper)}
+.oc:not(.oc-dark):hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--vert) 40%,transparent),var(--ombre-haute)}
+.fq[open],.fq.open{box-shadow:inset 3px 0 0 var(--vert),inset 0 0 0 1px color-mix(in srgb,var(--vert) 25%,transparent),var(--ombre-douce)}
+.fq[open] .pm,.fq.open .pm{background:var(--vert);border-color:var(--vert);color:#fff}
+.htable .hrow.today{background:var(--vert);color:var(--paper)}
+.htable .hrow.today *{color:var(--paper)}
+.dchip.on,.dchip[aria-pressed="true"]{background:var(--vert);border-color:var(--vert);color:#fff}
+.chart .bar{background:color-mix(in srgb,var(--vert) 22%,transparent)}
+.chart .bar:hover,.chart .bar.now{background:var(--vert)}
+
+/* ---------- Liens dans le texte ---------- */
+:is(.sec-body,.contenu-libre,.origin-txt,.fq .ans,.x-intro,.lead-in) a:not(.btn){color:var(--vert);text-decoration-color:color-mix(in srgb,var(--vert) 40%,transparent);text-underline-offset:4px;text-decoration-thickness:1px;transition:text-decoration-color .3s}
+:is(.sec-body,.contenu-libre,.origin-txt,.fq .ans,.x-intro,.lead-in) a:not(.btn):hover{text-decoration-color:var(--vert)}
+
+/* ---------- Maillage : section sapin léger ---------- */
+.maillage{background:color-mix(in srgb,var(--vert) 7%,var(--paper));background-image:radial-gradient(60% 80% at 50% 0%,color-mix(in srgb,var(--vert) 10%,transparent),transparent 70%)}
+.ml-titre::after{content:"";display:block;width:44px;height:2px;margin:16px auto 0;background:var(--vert);border-radius:2px}
+
+/* ---------- Pied de page : chocolat, filet vert en tête ---------- */
+footer{box-shadow:inset 0 3px 0 var(--vert)}
+.fcol :is(h5,.fcol-titre){color:var(--mint)}
+.x-social a:hover{background:var(--vert);border-color:var(--vert);color:var(--paper)}
+
+/* ---------- Carte du Tea Room : en-tête vert ---------- */
+.carte .mn-bar{background:color-mix(in srgb,var(--vert) 96%,transparent);box-shadow:none}
+.carte .mtab{color:var(--paper);box-shadow:inset 0 0 0 1px var(--filet-sapin)}
+.carte .mtab-no{color:var(--mint)}
+.carte .mtab:hover{background:color-mix(in srgb,var(--paper) 12%,transparent);color:var(--paper);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--paper) 35%,transparent)}
+.carte .mtab:hover .mtab-no{color:var(--mint)}
+.carte .mtab.on{background:var(--paper);color:var(--vert);box-shadow:0 8px 18px -10px rgba(0,0,0,.5)}
+.carte .mtab.on .mtab-no{color:var(--vert);opacity:.8}
+.carte .mi-pr{color:var(--vert)}
+.carte .mi:hover{background:color-mix(in srgb,var(--vert) 7%,transparent)}
+.carte .mi:hover .mi-nm{color:var(--vert)}
+
+/* ---------- Interaction : retours plus nets, cibles confortables ---------- */
+a,button,[role="button"],.mtab,.dchip,.ochip{-webkit-tap-highlight-color:color-mix(in srgb,var(--vert) 18%,transparent)}
+.btn{min-height:48px}
+.btn:active,.mtab:active,.cat-row:active{transform:scale(.98)}
+.btn,.mtab,.cat-row{transition-property:background-color,color,border-color,box-shadow,translate,transform}
+.btn:focus-visible,.mtab:focus-visible{outline:2px solid var(--vert);outline-offset:3px}
+:is(.tl,.bg-ink,.cta,.carte .mn-bar,.vband,.sband,section.live,footer) :focus-visible{outline-color:var(--paper)}
+@media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+/* maillage : section vert sapin, cartes crème */
+.maillage{background-color:var(--vert);background-image:var(--surface-sapin);margin:0 var(--frame) var(--frame);border-radius:var(--r-l);color:var(--paper)}
+.ml-titre{color:var(--paper)}
+.ml-titre em{color:var(--mint)}
+.ml-titre::after{background:var(--mint)}
+.ml-tete .eyebrow{color:var(--mint)}
+.ml-carte{background:var(--paper-3);box-shadow:0 18px 36px -26px rgba(0,0,0,.55)}
+.ml-carte:hover{background:var(--paper);background-image:none;color:var(--ink);translate:0 -6px;box-shadow:0 30px 50px -28px rgba(0,0,0,.6)}
+.ml-carte:hover .ml-k,.ml-carte:hover .ml-d{color:color-mix(in srgb,var(--ink-soft) 70%,var(--text))}
+.ml-carte:hover .ml-a{background:var(--vert);border-color:var(--vert);color:var(--paper)}
+@media(max-width:600px){.maillage{margin:0 6px 6px;border-radius:18px}}
+.ochip .od{color:var(--sur-sapin-2)}
