@@ -1952,3 +1952,226 @@ footer::after{background:linear-gradient(180deg,color-mix(in srgb,var(--text) 16
   .hero--accueil::before,.vband .vt .dot{animation:none!important}
   .x-lecture{display:none}
 }
+
+/* =====================================================================
+   VERSION 0.12 · MODERNE
+   Même maison, même palette (crème, chocolat, vert sapin, menthe), mêmes
+   éléments : un dessin plus actuel. Angles adoucis, ornements allégés,
+   grandes images encadrées par l'espace plutôt que par des filets,
+   textes plus contrastés, rythme vertical plus régulier.
+   Uniquement de la mise en forme : aucun élément n'est retiré ni déplacé.
+   ===================================================================== */
+:root{
+  --r-s:8px;            /* petits éléments : vignettes, champs */
+  --r-m:16px;           /* cartes, photos */
+  --r-l:24px;           /* grandes photos, sections encadrées */
+  --ombre-douce:0 1px 2px color-mix(in srgb,var(--dark) 6%,transparent),0 18px 40px -26px color-mix(in srgb,var(--dark) 38%,transparent);
+  --ombre-haute:0 2px 4px color-mix(in srgb,var(--dark) 6%,transparent),0 34px 60px -34px color-mix(in srgb,var(--dark) 55%,transparent);
+  --ombre-lux:var(--ombre-douce);
+  --line:color-mix(in srgb,var(--text) 12%,transparent);
+  --line-2:color-mix(in srgb,var(--text) 7%,transparent);
+  --sec-y:clamp(72px,8.4vw,128px);
+  --frame:clamp(8px,1vw,14px);
+}
+
+/* ---------- Texte : secondaire plus lisible (même teinte, plus dense) ---------- */
+.sec-head .note,.cstep p,.fq .ans p,.origin-txt p,.ml-d,.cat-row .sub,.card-cat,.oc:not(.oc-dark) p,.val p{color:color-mix(in srgb,var(--ink-soft) 70%,var(--text))}
+::selection{background:color-mix(in srgb,var(--mint) 45%,transparent);color:var(--ink)}
+:focus-visible{outline:2px solid var(--vert);outline-offset:3px;border-radius:4px}
+
+/* ---------- Bandeau d'état et en-tête ---------- */
+.meta .wrap{min-height:34px;font-size:11.5px}
+.meta .r::before{width:5px;height:5px;border:0;border-radius:50%;background:var(--mint);transform:none}
+header{background:color-mix(in srgb,var(--paper) 80%,transparent);border-bottom-color:transparent;box-shadow:0 1px 0 var(--line-2)}
+header.scrolled{background:color-mix(in srgb,var(--paper) 90%,transparent);box-shadow:0 1px 0 var(--line-2),0 12px 32px -26px color-mix(in srgb,var(--dark) 45%,transparent)}
+@media(min-width:981px){
+  nav.main{gap:4px;padding:5px;border-radius:999px;background:color-mix(in srgb,var(--paper-3) 70%,transparent);box-shadow:inset 0 0 0 1px var(--line-2)}
+  nav.main a{padding:9px 16px;border-radius:999px;font-size:13px;letter-spacing:.01em;transition:background-color .3s var(--ease),color .3s}
+  nav.main a::after,nav.main a.on::before{display:none}
+  nav.main a:hover{background:color-mix(in srgb,var(--vert) 8%,transparent);color:var(--vert)}
+  nav.main a.on{background:var(--vert);color:#fff}
+}
+.lang{border:0;border-radius:999px;padding:3px;gap:0;background:color-mix(in srgb,var(--paper-3) 70%,transparent);box-shadow:inset 0 0 0 1px var(--line-2)}
+.lang :is(a,button){border-radius:999px}
+.lang a{display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:30px;padding:0 9px;font-size:11px;font-weight:600;letter-spacing:.12em;color:var(--ink-soft);text-decoration:none;transition:background-color .3s,color .3s}
+.lang a:hover{color:var(--vert)}
+.lang a.on{background:var(--vert);color:#fff}
+.burger{border-radius:999px;border-color:var(--line)}
+@media(max-width:980px){
+  nav.main{background:color-mix(in srgb,var(--paper) 97%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+  nav.main a{font-size:clamp(23px,5vw,28px)}
+}
+
+/* ---------- Boutons : pastilles ---------- */
+.btn{border-radius:999px;min-height:48px;padding:0 24px;letter-spacing:.1em;font-size:11.5px}
+.btn-line{border-color:color-mix(in srgb,var(--text) 22%,transparent)}
+.btn-kir{background:var(--vert)}
+.btn-kir:hover{background:var(--vert-deep)}
+.btn:hover{box-shadow:0 14px 28px -18px color-mix(in srgb,var(--dark) 60%,transparent)}
+
+/* ---------- Grande photo : encadrée par l'espace, coins arrondis ---------- */
+.hero{margin:var(--frame) var(--frame) 0;border-radius:var(--r-l);overflow:hidden}
+.hero::after,.hero-copy::before,.hero-copy::after{display:none}
+.hero-media::after{background:
+  linear-gradient(180deg,color-mix(in srgb,var(--voile) 35%,transparent) 0%,transparent 28%,color-mix(in srgb,var(--voile) 18%,transparent) 55%,color-mix(in srgb,var(--voile) 82%,transparent) 100%)}
+.hero .eyebrow{display:inline-flex;align-self:flex-start;gap:10px;padding:8px 14px;border-radius:999px;
+  background:color-mix(in srgb,var(--dark) 32%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--paper) 22%,transparent);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);letter-spacing:.2em;font-size:10.5px}
+.hero .eyebrow::before{width:6px;height:6px;border-radius:50%;background:var(--mint);opacity:1}
+.hero-sub{max-width:46ch}
+.hero--accueil::before{display:none}
+@media(max-width:600px){.hero{margin:6px 6px 0;border-radius:18px}}
+
+/* bandeau « état en direct » des pages intérieures : posé sous la photo, en carte */
+section.live{background:transparent;border:0;color:var(--text);padding:0 var(--frame)}
+section.live .wrap{background:var(--dark);color:var(--on-dark);border-radius:0 0 var(--r-l) var(--r-l);margin-top:0}
+.hero+section.live{margin-top:-1px}
+
+/* vitrine du jour : pastilles */
+.vband{background:transparent;border:0}
+.vband .wrap{border-bottom:1px solid var(--line-2)}
+.vband li{padding:7px 14px;border-radius:999px;background:var(--paper-3);box-shadow:inset 0 0 0 1px var(--line-2);font-size:14px}
+.vband li+li::before{display:none}
+.vband ul{gap:8px}
+.vband .vt .dot{border-radius:50%;transform:none}
+
+/* ---------- En-têtes de section : une étiquette au lieu du filet ---------- */
+.sec-head{margin-bottom:clamp(36px,4.4vw,64px)}
+.sec-head .idx{display:inline-flex;align-self:flex-start;justify-self:start;gap:8px;padding:6px 12px 6px 10px;border-radius:999px;
+  font:600 10.5px/1 var(--sans);font-style:normal;letter-spacing:.16em;color:var(--vert);
+  background:color-mix(in srgb,var(--vert) 7%,transparent)}
+.sec-head .idx::before{content:"N°";margin:0;font-size:10px;letter-spacing:.14em;opacity:.75}
+.sec-head .idx::after,.sec-head .idx .x-diamond{display:none}
+:is(.bg-ink,.tl,.cta) .sec-head .idx{color:var(--mint);background:color-mix(in srgb,var(--mint) 12%,transparent)}
+.sec-head h2{line-height:1.06}
+.sec-head .note{font-family:var(--sans);font-style:normal;font-size:15px;line-height:1.65;max-width:42ch}
+:is(.bg-ink,.tl,.cta) .sec-head .note{color:var(--on-dark-2)}
+.eyebrow{letter-spacing:.2em}
+.x-diamond{border-radius:50%;transform:none}
+
+/* ---------- Photos et cartes : coins arrondis, plus de filets intérieurs ---------- */
+.cat-preview .pv,.cm-stack,.gv-main,.dy,.dy-im,.mo-media,.vn-im,.origin-fig .im,.tl-card,.tl-media,.x-floor,.x-menupic,.x-front,
+.card-im,.compare,.gp,.cthumb,.vmap,.mapel,.carte,.oc,.dep,.sugg,.asc-stage,.sh-im,.lb-im,.arch .im,.arch img,.cat-thumb,.carte-pdf,.ml-carte{border-radius:var(--r-m)}
+.x-floor,.tl-card,.gv-main,.compare,.x-front,.asc-stage,.carte{border-radius:var(--r-l)}
+.cat-preview .pv::after,.cm-stack::after,.gv-main::after,.dy-im::after,.sugg .si::after,.mo-media::after,.vn-im::after,
+.origin-fig .im::after,.tl-media::after,.sh-im::after,.lb-im::after,.asc-stage::after,
+.x-floor::before,.x-menupic::before,.x-front::before,.cat-preview .pv::before,.carte::before,.carte::after,.ml-carte::before{display:none}
+.x-floor,.cat-preview .pv,.carte,.x-menupic{box-shadow:var(--ombre-douce)}
+.x-floor{transition:translate .6s var(--ease-out),box-shadow .6s var(--ease-out)}
+.x-floor:hover{translate:0 -4px;box-shadow:var(--ombre-haute)}
+.x-floor .x-num{-webkit-text-stroke:0;color:color-mix(in srgb,var(--paper) 22%,transparent)}
+.card-im{border-radius:var(--r-m);box-shadow:var(--ombre-douce)}
+.card:hover .card-im{box-shadow:var(--ombre-haute)}
+
+/* catalogue de l'accueil : rangées en cartes légères */
+.cat-row{padding:20px 18px;margin:0 -18px;border-bottom:0;border-radius:var(--r-m);transition:background-color .35s var(--ease)}
+.cat-row+.cat-row{box-shadow:0 -1px 0 var(--line-2)}
+.cat-row:hover{background:var(--paper-3);box-shadow:none}
+.cat-row:hover+.cat-row{box-shadow:none}
+.cat-preview .cap{border-top:0;padding-top:4px}
+
+/* savoir-faire : étapes moins hautes, moins de vide */
+@media(min-width:900px){
+  .cstep{min-height:54vh}
+  .craft-media{height:calc(76vh - var(--hh))}
+}
+
+/* ---------- Questions fréquentes : cartes ---------- */
+.fq{border-bottom:0;margin-bottom:10px;border-radius:var(--r-m);background:var(--paper-3);box-shadow:inset 0 0 0 1px var(--line-2);transition:background-color .4s,box-shadow .4s}
+.fq button,.fq>summary{padding:20px 22px}
+.fq .ans{padding-left:22px;padding-right:22px}
+.fq[open]{background:var(--paper-3);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--vert) 30%,transparent),var(--ombre-douce)}
+:is(.bg-ink,.tl) .fq{background:color-mix(in srgb,var(--paper) 5%,transparent);box-shadow:inset 0 0 0 1px var(--line-dark)}
+.faq,.cat-list{border-top:0}
+.tl-card::after{outline:0}
+.visit{border:0;border-radius:var(--r-l);overflow:hidden;box-shadow:var(--ombre-douce)}
+.visit :is(.vmap,.mapel){border-radius:0}
+.fq.open{background:var(--paper-3);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--vert) 30%,transparent),var(--ombre-douce)}
+.fq .pm{border-color:var(--line)}
+:is(.bg-soft,.sec-libre) .fq{background:var(--paper)}
+
+/* ---------- Bloc adresse, plan, fiches ---------- */
+.vinfo,.dep,.oc,.val{border-radius:var(--r-m)}
+.vinfo{background:var(--paper-3)}
+.oc{box-shadow:var(--ombre-douce);border-color:transparent}
+
+/* ---------- Carte du Tea Room ---------- */
+.carte{background:var(--paper-3)}
+.carte .mi{border-radius:var(--r-s)}
+.carte-pdf{border-color:var(--line);background:var(--paper)}
+.carte .mtab:hover{border-color:var(--line)}
+
+/* ---------- Champs du formulaire ---------- */
+.xg :is(input,textarea,select){border-radius:var(--r-s)}
+
+/* ---------- Galeries, archives, comparaison ---------- */
+.arch .im{overflow:hidden}
+.cmp-tag{border-radius:999px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cmp-handle{box-shadow:var(--ombre-haute)}
+
+/* ---------- Weiter im Haus ---------- */
+.maillage{background:transparent;border-top:0}
+.ml-carte{border:0;background:var(--paper-3);box-shadow:inset 0 0 0 1px var(--line-2)}
+.ml-carte:hover{box-shadow:var(--ombre-haute)}
+
+/* ---------- Pied de page : chocolat, plus contemporain ---------- */
+footer{margin:0 var(--frame) var(--frame);border-radius:var(--r-l);border-top:0;background:var(--dark);color:var(--on-dark);
+  background-image:radial-gradient(80% 60% at 0% 0%,color-mix(in srgb,var(--mint) 7%,transparent),transparent 60%)}
+.site-footer::before{display:none}
+footer::after{background:linear-gradient(180deg,color-mix(in srgb,var(--paper) 14%,transparent),transparent 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
+footer .brand,footer .x-lg-name{color:var(--on-dark)}
+footer .x-lg-over{color:var(--on-dark-3)}
+footer .x-lg-under,footer .x-lg-dia{color:var(--mint)}
+.fbrand p{color:var(--on-dark-2)}
+.fcol :is(h5,.fcol-titre){color:var(--mint)}
+.fcol :is(h5,.fcol-titre)::before{border-radius:50%;transform:none}
+.fcol a,.fcol .fcol-txt{color:var(--on-dark)}
+.fcol a:hover{color:var(--mint)}
+.fbottom{border-top-color:var(--line-dark);color:var(--on-dark-3)}
+.x-legal a{color:var(--on-dark-2)}
+.x-legal a:hover{color:var(--mint);border-color:var(--mint)}
+.x-social a{border-color:var(--line-dark);color:var(--on-dark)}
+.x-social a:hover{background:var(--mint);border-color:var(--mint);color:var(--dark)}
+@media(max-width:600px){footer{margin:0 6px 6px;border-radius:18px}}
+
+/* barre du téléphone et fenêtres : coins adoucis */
+.sel-boite,.sh-box,.lb-box{border-radius:var(--r-l)}
+.annonces .annonce{border-radius:0}
+
+/* finitions 0.12 */
+.hero:has(+section.live){border-bottom-left-radius:0;border-bottom-right-radius:0}
+section.live .wrap{max-width:none;padding-left:clamp(28px,4.4vw,64px);padding-right:clamp(28px,4.4vw,64px)}
+.asc-stage{border-radius:0}
+.gp::after{outline:0}
+.mo-clock{border-radius:999px;padding-left:14px;padding-right:14px}
+.cmp-tag,.mo-clock{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+/* grilles pratiques, affluence, itinéraires, formulaire */
+.prac .pi{border-radius:50%;transform:none}
+.prac .pi svg{transform:none}
+.dchip{border-radius:999px}
+.chart{border-bottom-color:var(--line)}
+.chart .bar{border-radius:6px 6px 0 0;border-top:0}
+.chart .bar.now::after{border-radius:50%;transform:translateX(-50%)}
+.chart .bar .bv{border-radius:6px}
+.orig,.jp-main{border-radius:var(--r-m);overflow:hidden}
+.ochip.on::before{left:0}
+/* grilles en cartes séparées (plus de fond gris dans les cases vides) */
+.prac,.vals{gap:12px;background:none;border:0}
+.pcell,.pc,.val{border-radius:var(--r-m);background:var(--paper-3);box-shadow:inset 0 0 0 1px var(--line-2)}
+.pcell:hover,.pc:hover,.val:hover{background:var(--paper)}
+.bg-soft :is(.pcell,.pc,.val){background:var(--paper)}
+/* plaque anniversaire et archives */
+.x-plate{border:0;outline:0;border-radius:var(--r-l);box-shadow:inset 0 0 0 1px var(--line-2),var(--ombre-douce)}
+.x-plate::before,.x-plate::after{border-radius:50%;transform:translateY(-50%)}
+.arch .aim{border:0;outline:0;border-radius:var(--r-m);box-shadow:var(--ombre-douce)}
+.arch:hover .aim{rotate:0deg;transform:translateY(-4px);box-shadow:var(--ombre-haute)}
+/* formulaire et appel final */
+.xf-form{border:0;outline:0;border-radius:var(--r-l);box-shadow:inset 0 0 0 1px var(--line-2),var(--ombre-douce)}
+.xf-form::before,.xf-form::after{display:none}
+.cta{margin:0 var(--frame) var(--frame);border-radius:var(--r-l);overflow:hidden}
+@media(max-width:600px){.cta{margin:0 6px 6px;border-radius:18px}}
+@media(max-width:600px){
+  section.live{padding:0 6px}
+  section.live .wrap{border-radius:0 0 18px 18px}
+  .cat-row{margin:0 -10px;padding:16px 10px}
+}

@@ -1,7 +1,18 @@
-# Thème Schiesser 0.11.1
+# Thème Schiesser 0.12
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.12 : design modernisé
+
+Même maison, mêmes couleurs (crème, chocolat, vert sapin, menthe), mêmes polices et tous les éléments conservés : seul le dessin change. Aucune fonction ni aucun contenu n'est modifié, il n'y a rien à réimporter.
+
+- **Grandes photos encadrées par l'espace** : coins arrondis, plus de filets ni de coins dorés ; bandeau d'état collé sous la photo.
+- **Menu en pastille** (page active en vert sapin), sélecteur de langue assorti, boutons arrondis.
+- **En-têtes de section allégés** : une étiquette « N° 01 » au lieu du losange et du long filet, notes en texte droit plus lisible.
+- **Cartes et photos arrondies** avec ombres douces : étages, catalogue, galeries, archives, carte du Tea Room, questions fréquentes, grilles pratiques, formulaire.
+- **Pied de page et appel final en chocolat**, posés comme des cartes.
+- Textes secondaires plus contrastés, section savoir-faire moins haute, rendu téléphone vérifié.
 
 ## Version 0.11.1 : typographie épurée et photos d'archives
 
