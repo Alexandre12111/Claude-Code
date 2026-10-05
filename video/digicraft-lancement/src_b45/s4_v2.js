@@ -16,7 +16,7 @@
         a.tiles = Array.from({ length: 16 }, (_, i) => {
           const t = U.dash(a.sp, i * 5 + 1, i % 4 === 3);
           t.style.transformOrigin = '50% 50%';
-          const ang = (i / 16) * Math.PI * 2 + r() * 0.3, rad = 520 + r() * 520;
+          const ang = (i / 16) * Math.PI * 2 + r() * 0.3, rad = 820 + r() * 480;
           return { t, x: Math.cos(ang) * rad * 1.35, y: Math.sin(ang) * rad * 0.75, z: 200 + r() * 2200, rr: (r() - 0.5) * 14 };
         });
         a.txt = el(root, { inset: '0', transformOrigin: '50% 50%', zIndex: '20000' });
@@ -39,7 +39,7 @@
           if (zz < 60) { it.t.style.opacity = '0'; return; }
           const k = 900 / zz;
           const blur = Math.min(18, Math.abs(zz - 900) / 120) + warp * 10;
-          S(it.t, { x: 960 + it.x * k - 140, y: 540 + it.y * k - 95, s: k, r: it.rr, o: P(T, 0.1 + i * 0.05, 0.6) * clamp((zz - 60) / 200), blur });
+          S(it.t, { x: 960 + it.x * k - 140, y: 540 + it.y * k - 95, s: k, r: it.rr, o: P(T, 0.1 + i * 0.05, 0.6) * clamp((zz - 60) / 200) * clamp((k - 0.45) / 0.15), blur });
           it.t.style.zIndex = String(Math.round(5000 - zz));
         });
         const tw = [0.3, 0.72, 0.95, 1.12, 1.32];
