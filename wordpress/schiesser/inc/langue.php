@@ -31,7 +31,14 @@ function schiesser_est_cote_admin() {
 
 /* Le site public en allemand. */
 add_filter( 'locale', function ( $locale ) {
-	return schiesser_est_cote_admin() ? $locale : SCHIESSER_LANGUE_SITE;
+	if ( schiesser_est_cote_admin() ) {
+		return $locale;
+	}
+	// Avec Polylang, chaque page a sa langue (allemand, français, anglais) : Polylang la fixe lui-même.
+	if ( function_exists( 'pll_current_language' ) ) {
+		return $locale;
+	}
+	return SCHIESSER_LANGUE_SITE;
 } );
 
 /* L'administration en français, même si la langue du site est réglée sur l'allemand. */
@@ -47,18 +54,41 @@ add_filter( 'determine_locale', function ( $locale ) {
 /* ------------------------------------------------------------------ */
 
 /**
- * Date en allemand. Formats reconnus : l (Montag), D (Mo.), j, d, F (April), M (Apr.), n, m, Y.
+ * Date dans la langue de la page. Formats reconnus : l (Montag), D (Mo.), j, d, F (April), M (Apr.), n, m, Y.
+ * Les formats allemands (« l, j. F ») sont adaptés au français et à l'anglais (« lundi 6 avril », « Monday 6 April »).
  *
  * @param string|int $date Date « AAAA-MM-JJ » ou horodatage.
  */
-function schiesser_datum( $date, $format = 'l, j. F' ) {
+function schiesser_datum( $date, $format = 'l, j. F', $langue = null ) {
 	$d = is_numeric( $date )
 		? ( new DateTimeImmutable( '@' . (int) $date ) )->setTimezone( wp_timezone() )
 		: new DateTimeImmutable( (string) $date . ( 10 === strlen( (string) $date ) ? ' 12:00' : '' ), wp_timezone() );
-	$jours  = array( 'Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag' );
-	$courts = array( 'So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.' );
-	$mois   = array( 1 => 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' );
-	$mcourt = array( 1 => 'Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.' );
+	$langue = $langue ?: ( function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de' );
+	$noms   = array(
+		'de' => array(
+			array( 'Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag' ),
+			array( 'So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.' ),
+			array( 1 => 'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember' ),
+			array( 1 => 'Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.' ),
+		),
+		'fr' => array(
+			array( 'dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi' ),
+			array( 'dim.', 'lun.', 'mar.', 'mer.', 'jeu.', 'ven.', 'sam.' ),
+			array( 1 => 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre' ),
+			array( 1 => 'janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.' ),
+		),
+		'en' => array(
+			array( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ),
+			array( 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ),
+			array( 1 => 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ),
+			array( 1 => 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ),
+		),
+	);
+	if ( 'de' !== $langue ) {
+		$format = str_replace( array( ', ', '. ' ), ' ', $format ); // « l, j. F » → « l j F »
+		$format = rtrim( $format, '.' );
+	}
+	list( $jours, $courts, $mois, $mcourt ) = $noms[ $langue ] ?? $noms['de'];
 	$w      = (int) $d->format( 'w' );
 	$n      = (int) $d->format( 'n' );
 	$sortie = '';
@@ -90,29 +120,39 @@ function schiesser_datum( $date, $format = 'l, j. F' ) {
 	return $sortie;
 }
 
-/** Heure à la suisse : « 07:30 » → « 7.30 Uhr », « 08:00 » → « 8 Uhr ». */
-function schiesser_uhr( $hhmm, $avec_uhr = true ) {
-	$p = explode( ':', (string) $hhmm );
-	$h = (int) $p[0];
-	$m = isset( $p[1] ) ? (int) $p[1] : 0;
+/**
+ * Heure dans la langue de la page : « 7.30 Uhr » (allemand), « 7 h 30 » (français), « 7:30 » (anglais).
+ * $avec_uhr : ajoute « Uhr » en allemand (sans effet dans les autres langues).
+ */
+function schiesser_uhr( $hhmm, $avec_uhr = true, $langue = null ) {
+	$p      = explode( ':', (string) $hhmm );
+	$h      = (int) $p[0];
+	$m      = isset( $p[1] ) ? (int) $p[1] : 0;
+	$langue = $langue ?: ( function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de' );
+	if ( 'fr' === $langue ) {
+		return $m ? sprintf( "%d\u{00A0}h\u{00A0}%02d", $h, $m ) : sprintf( "%d\u{00A0}h", $h );
+	}
+	if ( 'en' === $langue ) {
+		return sprintf( '%d:%02d', $h, $m );
+	}
 	return ( $m ? $h . '.' . sprintf( '%02d', $m ) : (string) $h ) . ( $avec_uhr ? "\u{00A0}Uhr" : '' );
 }
 
 /* Titres de WordPress visibles sur le site (onglet du navigateur), sans le pack de langue. */
 add_filter( 'document_title_parts', function ( $parts ) {
 	if ( is_404() ) {
-		$parts['title'] = 'Seite nicht gefunden';
+		$parts['title'] = schiesser_t( 'Seite nicht gefunden' );
 	} elseif ( is_search() ) {
-		$parts['title'] = sprintf( 'Suchergebnisse für «%s»', get_search_query( false ) );
+		$parts['title'] = sprintf( schiesser_t( 'Suchergebnisse für «%s»' ), get_search_query( false ) );
 	}
 	if ( isset( $parts['page'] ) && is_paged() ) {
-		$parts['page'] = sprintf( 'Seite %d', max( 1, (int) get_query_var( 'paged' ) ) );
+		$parts['page'] = sprintf( schiesser_t( 'Seite %d' ), max( 1, (int) get_query_var( 'paged' ) ) );
 	}
 	return $parts;
 } );
 add_filter( 'rank_math/frontend/title', function ( $titre ) {
 	if ( is_404() ) {
-		return 'Seite nicht gefunden | ' . get_bloginfo( 'name' );
+		return schiesser_t( 'Seite nicht gefunden' ) . ' | ' . get_bloginfo( 'name' );
 	}
 	return $titre;
 } );
@@ -124,30 +164,39 @@ add_filter( 'rank_math/frontend/title', function ( $titre ) {
 /** Pages du site : clé => [ adresse allemande, anciennes adresses… ]. */
 function schiesser_adresses_pages() {
 	return array(
-		'accueil'    => array( 'startseite', 'accueil' ),
-		'boutique'   => array( 'confiserie', 'boutique', 'la-boutique' ),
-		'salon'      => array( 'tea-room', 'salon-de-the' ),
-		'histoire'   => array( 'geschichte', 'notre-histoire', 'histoire' ),
-		'visiter'    => array( 'besuch', 'nous-visiter', 'visiter' ),
-		'contact'    => array( 'kontakt', 'contact' ),
-		'entreprise' => array( 'firmengeschenke', 'cadeaux-entreprise' ),
-		'mentions'   => array( 'impressum', 'mentions-legales' ),
+		'accueil'    => array( 'startseite', 'accueil', 'home' ),
+		'boutique'   => array( 'confiserie', 'boutique', 'la-boutique', 'confectionery' ),
+		'salon'      => array( 'tea-room', 'salon-de-the', 'tearoom' ),
+		'histoire'   => array( 'geschichte', 'notre-histoire', 'histoire', 'history' ),
+		'visiter'    => array( 'besuch', 'nous-visiter', 'visiter', 'visit-us' ),
+		'contact'    => array( 'kontakt', 'contact', 'contact-us' ),
+		'entreprise' => array( 'firmengeschenke', 'cadeaux-entreprise', 'corporate-gifts' ),
+		'mentions'   => array( 'impressum', 'mentions-legales', 'legal-notice' ),
 	);
 }
 
 /** Page du site par sa clé (« visiter », « contact »…), quelle que soit son adresse (allemande ou ancienne). */
 function schiesser_page( $cle, $publiee = true ) {
 	static $cache = array();
-	if ( array_key_exists( $cle, $cache ) ) {
-		return $cache[ $cle ];
+	$langue = function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de';
+	$k      = $cle . '|' . $langue . '|' . ( $publiee ? 1 : 0 );
+	if ( array_key_exists( $k, $cache ) ) {
+		return $cache[ $k ];
 	}
 	foreach ( (array) ( schiesser_adresses_pages()[ $cle ] ?? array() ) as $slug ) {
 		$p = get_page_by_path( $slug );
 		if ( $p && ( ! $publiee || 'publish' === $p->post_status ) ) {
-			return $cache[ $cle ] = $p;
+			// Avec Polylang : la version de la page dans la langue affichée.
+			if ( function_exists( 'schiesser_post_traduit' ) ) {
+				$t = get_post( schiesser_post_traduit( $p->ID, $langue ) );
+				if ( $t && ( ! $publiee || 'publish' === $t->post_status ) ) {
+					$p = $t;
+				}
+			}
+			return $cache[ $k ] = $p;
 		}
 	}
-	return $cache[ $cle ] = null;
+	return $cache[ $k ] = null;
 }
 
 /** Adresse d'une page du site par sa clé (accueil si elle n'existe pas). */

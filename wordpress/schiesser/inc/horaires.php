@@ -61,7 +61,11 @@ function schiesser_feries_liste() {
 /** Nom d'un jour férié : en français dans l'administration, en allemand sur le site. */
 function schiesser_nom_ferie( $cle ) {
 	$f = schiesser_feries_liste()[ $cle ] ?? array( '' );
-	return ( ! schiesser_est_cote_admin() && ! empty( $f[3] ) ) ? $f[3] : $f[0];
+	if ( schiesser_est_cote_admin() || empty( $f[3] ) ) {
+		return $f[0];
+	}
+	// Sur le site : allemand, français (le nom de l'administration) ou anglais.
+	return 'fr' === schiesser_langue() ? $f[0] : schiesser_t( $f[3] );
 }
 
 /** Réglages proposés pour chaque jour férié (modifiables dans Réglages maison). */
@@ -110,7 +114,7 @@ function schiesser_jour_particulier( $ymd ) {
 			return array(
 				'motif' => $x['motif'] ?: ( schiesser_est_cote_admin()
 					? ( 'ferme' === $x['mode'] ? 'Fermeture exceptionnelle' : 'Horaires exceptionnels' )
-					: ( 'ferme' === $x['mode'] ? 'Ausnahmsweise geschlossen' : 'Besondere Öffnungszeiten' ) ),
+					: ( 'ferme' === $x['mode'] ? schiesser_t( 'Ausnahmsweise geschlossen' ) : schiesser_t( 'Besondere Öffnungszeiten' ) ) ),
 				'plage' => 'ferme' === $x['mode'] ? null : array( $x['ouverture'], $x['fermeture'] ),
 			);
 		}
@@ -184,10 +188,10 @@ function schiesser_html_jours_particuliers( $nb_jours = 45, $max = 5 ) {
 	if ( ! $liste ) {
 		return '';
 	}
-	$html = '<div class="h-particuliers" data-nosnippet><p class="h-part-titre">Besondere Öffnungszeiten</p><ul>';
+	$html = '<div class="h-particuliers" data-nosnippet><p class="h-part-titre">' . esc_html( schiesser_t( 'Besondere Öffnungszeiten' ) ) . '</p><ul>';
 	foreach ( $liste as $p ) {
 		$html .= '<li><span class="h-part-jour"><strong>' . esc_html( schiesser_datum( $p['date'], 'l, j. F' ) ) . '</strong> · ' . esc_html( $p['motif'] ) . '</span>'
-			. '<span class="h-part-h">' . ( $p['plage'] ? esc_html( schiesser_uhr( $p['plage'][0], false ) . '–' . schiesser_uhr( $p['plage'][1] ) ) : 'Geschlossen' ) . '</span></li>';
+			. '<span class="h-part-h">' . ( $p['plage'] ? esc_html( schiesser_uhr( $p['plage'][0], false ) . '–' . schiesser_uhr( $p['plage'][1] ) ) : esc_html( schiesser_t( 'Geschlossen' ) ) ) . '</span></li>';
 	}
 	return $html . '</ul></div>';
 }

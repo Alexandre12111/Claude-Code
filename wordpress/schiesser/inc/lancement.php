@@ -31,14 +31,14 @@ function schiesser_boutique_prete() {
 function schiesser_html_bientot( $produits ) {
 	$rubriques = array();
 	foreach ( $produits as $p ) {
-		$cat                 = $p['categorie'] ?: 'Weitere Spezialitäten';
+		$cat                 = $p['categorie'] ?: schiesser_t( 'Weitere Spezialitäten' );
 		$rubriques[ $cat ][] = $p['nom'];
 	}
-	$html = '<div class="bientot rv"><div class="bientot-tete"><p class="bientot-k">Produktliste folgt in Kürze</p>'
-		. '<p class="bientot-texte">Die vollständige Produktliste mit Fotos und Preisen ist bald online. Bis dahin finden Sie alles an der Theke am Marktplatz, oder Sie bestellen bequem per Telefon.</p>'
+	$html = '<div class="bientot rv"><div class="bientot-tete"><p class="bientot-k">' . esc_html( schiesser_t( 'Produktliste folgt in Kürze' ) ) . '</p>'
+		. '<p class="bientot-texte">' . esc_html( schiesser_t( 'Die vollständige Produktliste mit Fotos und Preisen ist bald online. Bis dahin finden Sie alles an der Theke am Marktplatz, oder Sie bestellen bequem per Telefon.' ) ) . '</p>'
 		. '<div class="bientot-actions">'
-		. ( schiesser_reglage( 'telephone' ) ? '<a class="btn btn-kir" href="' . esc_url( schiesser_lien_tel() ) . '"><span>Anrufen: ' . esc_html( schiesser_reglage( 'telephone' ) ) . '</span></a>' : '' )
-		. '<a class="btn btn-line" href="' . esc_url( schiesser_url_page( 'visiter' ) ) . '"><span>Öffnungszeiten &amp; Anfahrt</span></a>'
+		. ( schiesser_reglage( 'telephone' ) ? '<a class="btn btn-kir" href="' . esc_url( schiesser_lien_tel() ) . '"><span>' . esc_html( schiesser_t( 'Anrufen:' ) ) . ' ' . esc_html( schiesser_reglage( 'telephone' ) ) . '</span></a>' : '' )
+		. '<a class="btn btn-line" href="' . esc_url( schiesser_url_page( 'visiter' ) ) . '"><span>' . esc_html( schiesser_t( 'Öffnungszeiten & Anfahrt' ) ) . '</span></a>'
 		. '</div></div>';
 	if ( $rubriques ) {
 		$html .= '<ul class="bientot-rubriken">';

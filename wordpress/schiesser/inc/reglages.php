@@ -84,6 +84,9 @@ function schiesser_reglages_defaut() {
 		'vitrine'            => array( 'Läckerli', 'Truffes', 'Fruchtwähe' ),
 		'presentation'       => 'Die Confiserie Schiesser wurde 1870 am Basler Marktplatz gegründet. Läckerli, Pralinen, Torten und Gebäck entstehen in der eigenen Backstube; im ersten Stock liegt der Tea Room, das älteste Kaffeehaus der Schweiz.',
 		'instagram'          => '',
+		'carte_pdf'          => '',
+		'carte_pdf_fr'       => '',
+		'carte_pdf_en'       => '',
 		'facebook'           => '',
 		// Établissement (SEO)
 		'nom_etablissement'  => 'Confiserie Schiesser',
@@ -109,12 +112,23 @@ function schiesser_reglages_defaut() {
  */
 function schiesser_reglage( $cle ) {
 	$valeurs = wp_parse_args( (array) get_option( SCHIESSER_OPTION, array() ), schiesser_reglages_defaut() );
-	return isset( $valeurs[ $cle ] ) ? $valeurs[ $cle ] : '';
+	$v       = isset( $valeurs[ $cle ] ) ? $valeurs[ $cle ] : '';
+	// Site en français ou en anglais (Polylang) : textes de présentation traduits (inc/i18n.php).
+	if ( ! is_admin() && did_action( 'wp' ) && function_exists( 'schiesser_reglage_traduit' ) && in_array( $cle, schiesser_reglages_traduisibles(), true ) ) {
+		$v = is_array( $v ) ? array_map( 'schiesser_reglage_traduit', $v ) : schiesser_reglage_traduit( $v );
+	}
+	return $v;
 }
 
 /** Adresse sur deux lignes : [ « Marktplatz », « 4001 Basel, Suisse » ]. */
 function schiesser_adresse_lignes() {
-	$pays = schiesser_pays()[ schiesser_reglage( 'pays' ) ] ?? '';
+	$noms = array(
+		'de' => array( 'CH' => 'Schweiz', 'FR' => 'Frankreich', 'DE' => 'Deutschland', 'AT' => 'Österreich', 'BE' => 'Belgien', 'LU' => 'Luxemburg', 'IT' => 'Italien' ),
+		'en' => array( 'CH' => 'Switzerland', 'FR' => 'France', 'DE' => 'Germany', 'AT' => 'Austria', 'BE' => 'Belgium', 'LU' => 'Luxembourg', 'IT' => 'Italy' ),
+	);
+	$code = schiesser_reglage( 'pays' );
+	$l    = is_admin() ? 'fr' : ( function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de' );
+	$pays = $noms[ $l ][ $code ] ?? ( schiesser_pays()[ $code ] ?? '' ); // le site public affiche le pays dans sa langue
 	$l2   = trim( schiesser_reglage( 'code_postal' ) . ' ' . schiesser_reglage( 'ville' ) );
 	return array( schiesser_reglage( 'rue' ), $pays ? $l2 . ', ' . $pays : $l2 );
 }
@@ -142,23 +156,21 @@ function schiesser_heure_decimale( $hhmm ) {
 	return (int) $p[0] + ( isset( $p[1] ) ? (int) $p[1] / 60 : 0 );
 }
 
-/** Jours de la semaine en allemand, pour le site (l'administration garde schiesser_jours()). */
-function schiesser_jours_site() {
-	return array(
-		1 => 'Montag',
-		2 => 'Dienstag',
-		3 => 'Mittwoch',
-		4 => 'Donnerstag',
-		5 => 'Freitag',
-		6 => 'Samstag',
-		0 => 'Sonntag',
+/** Jours de la semaine pour le site, dans la langue de la page (l'administration garde schiesser_jours()). */
+function schiesser_jours_site( $langue = null ) {
+	$langue = $langue ?: ( function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de' );
+	$noms   = array(
+		'de' => array( 1 => 'Montag', 2 => 'Dienstag', 3 => 'Mittwoch', 4 => 'Donnerstag', 5 => 'Freitag', 6 => 'Samstag', 0 => 'Sonntag' ),
+		'fr' => array( 1 => 'lundi', 2 => 'mardi', 3 => 'mercredi', 4 => 'jeudi', 5 => 'vendredi', 6 => 'samedi', 0 => 'dimanche' ),
+		'en' => array( 1 => 'Monday', 2 => 'Tuesday', 3 => 'Wednesday', 4 => 'Thursday', 5 => 'Friday', 6 => 'Saturday', 0 => 'Sunday' ),
 	);
+	return $noms[ $langue ] ?? $noms['de'];
 }
 
 /** Horaires du jour dans le fuseau du site, ex. « 7.30–18.30 Uhr », ou « Heute geschlossen ». */
 function schiesser_horaires_du_jour() {
 	$p = schiesser_horaires_date( current_datetime()->format( 'Y-m-d' ) ); // jours fériés compris
-	return $p ? schiesser_uhr( schiesser_heure_hhmm( $p[0] ), false ) . '–' . schiesser_uhr( schiesser_heure_hhmm( $p[1] ) ) : 'Heute geschlossen';
+	return $p ? schiesser_uhr( schiesser_heure_hhmm( $p[0] ), false ) . '–' . schiesser_uhr( schiesser_heure_hhmm( $p[1] ) ) : schiesser_t( 'Heute geschlossen' );
 }
 
 /** 7.5 → « 07:30 » */
@@ -179,17 +191,26 @@ function schiesser_heure_fr( $hhmm ) {
 }
 
 /**
- * Horaires en une phrase, ex. « Montag bis Freitag von 7.30 bis 18.30 Uhr, Samstag von 8 bis 18 Uhr
- * und Sonntag von 9 bis 17 Uhr ». Toujours à jour : elle est calculée depuis les réglages.
+ * Horaires en une phrase, dans la langue de la page. Ex. « Montag bis Freitag von 7.30 bis 18.30 Uhr,
+ * Samstag von 8 bis 18 Uhr und Sonntag von 9 bis 17 Uhr » ; « du lundi au vendredi de 7 h 30 à 18 h 30… ».
  */
 function schiesser_horaires_phrase() {
-	$noms    = schiesser_jours_site();
+	$l       = function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de';
+	$noms    = schiesser_jours_site( $l );
 	$tous    = schiesser_reglage( 'horaires' );
 	$groupes = array();
 	foreach ( schiesser_jours() as $n => $nom ) {
-		$h     = $tous[ $n ];
-		$texte = ! empty( $h['ferme'] ) ? 'geschlossen' : 'von ' . schiesser_uhr( $h['ouverture'], false ) . ' bis ' . schiesser_uhr( $h['fermeture'] );
-		$der   = count( $groupes ) - 1;
+		$h = $tous[ $n ];
+		if ( ! empty( $h['ferme'] ) ) {
+			$texte = schiesser_t( 'geschlossen' );
+		} elseif ( 'fr' === $l ) {
+			$texte = 'de ' . schiesser_uhr( $h['ouverture'] ) . ' à ' . schiesser_uhr( $h['fermeture'] );
+		} elseif ( 'en' === $l ) {
+			$texte = schiesser_uhr( $h['ouverture'] ) . '–' . schiesser_uhr( $h['fermeture'] );
+		} else {
+			$texte = 'von ' . schiesser_uhr( $h['ouverture'], false ) . ' bis ' . schiesser_uhr( $h['fermeture'] );
+		}
+		$der = count( $groupes ) - 1;
 		if ( $der >= 0 && $groupes[ $der ]['texte'] === $texte ) {
 			$groupes[ $der ]['fin'] = $noms[ $n ];
 		} else {
@@ -198,21 +219,34 @@ function schiesser_horaires_phrase() {
 	}
 	$parties = array();
 	foreach ( $groupes as $g ) {
-		$jours     = $g['fin'] ? $g['debut'] . ' bis ' . $g['fin'] : $g['debut'];
+		if ( 'fr' === $l ) {
+			$jours = $g['fin'] ? 'du ' . $g['debut'] . ' au ' . $g['fin'] : 'le ' . $g['debut'];
+		} elseif ( 'en' === $l ) {
+			$jours = $g['fin'] ? $g['debut'] . ' to ' . $g['fin'] : $g['debut'];
+		} else {
+			$jours = $g['fin'] ? $g['debut'] . ' bis ' . $g['fin'] : $g['debut'];
+		}
 		$parties[] = $jours . ' ' . $g['texte'];
 	}
 	$dernier = array_pop( $parties );
-	return $parties ? implode( ', ', $parties ) . ' und ' . $dernier : (string) $dernier;
+	$et      = array( 'de' => ' und ', 'fr' => ' et ', 'en' => ' and ' )[ $l ] ?? ' und ';
+	return $parties ? implode( ', ', $parties ) . $et . $dernier : (string) $dernier;
 }
 
-/** Résumé lisible, par ex. « Mo–Fr 7.30–18.30 · Sa 8–18 · So 9–17 ». */
+/** Résumé lisible, par ex. « Mo–Fr 7.30–18.30 · Sa 8–18 · So 9–17 » (dans la langue de la page). */
 function schiesser_horaires_resume() {
-	$courts  = array( 1 => 'Mo', 2 => 'Di', 3 => 'Mi', 4 => 'Do', 5 => 'Fr', 6 => 'Sa', 0 => 'So' );
+	$l       = ( ! is_admin() && function_exists( 'schiesser_langue' ) ) ? schiesser_langue() : 'de';
+	$tous    = array(
+		'de' => array( 1 => 'Mo', 2 => 'Di', 3 => 'Mi', 4 => 'Do', 5 => 'Fr', 6 => 'Sa', 0 => 'So' ),
+		'fr' => array( 1 => 'lun', 2 => 'mar', 3 => 'mer', 4 => 'jeu', 5 => 'ven', 6 => 'sam', 0 => 'dim' ),
+		'en' => array( 1 => 'Mon', 2 => 'Tue', 3 => 'Wed', 4 => 'Thu', 5 => 'Fri', 6 => 'Sat', 0 => 'Sun' ),
+	);
+	$courts  = $tous[ $l ] ?? $tous['de'];
 	$groupes = array();
-	$tous    = schiesser_reglage( 'horaires' );
+	$h_tous  = schiesser_reglage( 'horaires' );
 	foreach ( schiesser_jours() as $n => $nom ) {
-		$h     = $tous[ $n ];
-		$texte = ! empty( $h['ferme'] ) ? 'geschlossen' : schiesser_uhr( $h['ouverture'], false ) . '–' . schiesser_uhr( $h['fermeture'], false );
+		$h     = $h_tous[ $n ];
+		$texte = ! empty( $h['ferme'] ) ? schiesser_t( 'geschlossen', $l ) : schiesser_uhr( $h['ouverture'], false, $l ) . '–' . schiesser_uhr( $h['fermeture'], false, $l );
 		$der   = count( $groupes ) - 1;
 		if ( $der >= 0 && $groupes[ $der ]['texte'] === $texte ) {
 			$groupes[ $der ]['fin'] = $courts[ $n ];
@@ -266,7 +300,7 @@ function schiesser_nettoyer_reglages( $entree ) {
 		}
 	}
 	$propre['profils'] = implode( "\n", $profils );
-	foreach ( array( 'instagram', 'facebook' ) as $cle ) {
+	foreach ( array( 'instagram', 'facebook', 'carte_pdf', 'carte_pdf_fr', 'carte_pdf_en' ) as $cle ) {
 		$propre[ $cle ] = isset( $entree[ $cle ] ) ? esc_url_raw( $entree[ $cle ] ) : '';
 	}
 	$propre['lien_maps']     = schiesser_nettoyer_lien_maps( $entree['lien_maps'] ?? '', $propre['ville'] );

@@ -171,9 +171,9 @@
   /* Styles de l'éditeur (dans le cadre de la page) */
   function injecter() {
     var css = '.sch-programme{outline:2px dashed #b26200;outline-offset:-2px;position:relative}'
-      + '.sch-programme--pendant{outline-color:#23503B}.sch-programme--apres{opacity:.55}'
+      + '.sch-programme--pendant{outline-color:#174633}.sch-programme--apres{opacity:.55}'
       + '.sch-programme::before{content:attr(data-sch-programme);position:absolute;top:6px;left:6px;z-index:30;padding:4px 9px;border-radius:3px;background:#b26200;color:#fff;font:600 11px/1.3 system-ui,sans-serif;letter-spacing:0;text-transform:none;pointer-events:none}'
-      + '.sch-programme--pendant::before{background:#23503B}';
+      + '.sch-programme--pendant::before{background:#174633}';
     [document].concat(Array.prototype.map.call(document.querySelectorAll('iframe[name="editor-canvas"]'), function (f) { return f.contentDocument; })).forEach(function (d) {
       if (!d || d.getElementById('sch-programme-css')) return;
       var s = d.createElement('style'); s.id = 'sch-programme-css'; s.textContent = css; (d.head || d.body).appendChild(s);

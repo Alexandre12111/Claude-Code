@@ -37,22 +37,22 @@ foreach ( $produits as $p ) {
 		$lignes[] = array( $l[0] ?? '', $l[1] ?? '', 0 );
 	}
 	if ( $p['accord'] ) {
-		$lignes[] = array( 'Passt zu', $p['accord'], 1 );
+		$lignes[] = array( schiesser_t( 'Passt zu' ), $p['accord'], 1 );
 	}
 	if ( $p['origine'] ) {
-		$lignes[] = array( 'Herkunft', $p['origine'], 1 );
+		$lignes[] = array( schiesser_t( 'Herkunft' ), $p['origine'], 1 );
 	}
 	if ( ! empty( $p['al'] ) ) {
 		if ( $p['al']['renseigne'] ) {
-			$lignes[] = array( 'Allergene', schiesser_allergenes_texte( $p['al'] ), 1 );
+			$lignes[] = array( schiesser_t( 'Allergene' ), schiesser_allergenes_texte( $p['al'] ), 1 );
 		}
 		if ( $p['al']['regimes'] ) {
-			$lignes[] = array( 'Geeignet', implode( ', ', array_map( function ( $k ) {
+			$lignes[] = array( schiesser_t( 'Geeignet' ), implode( ', ', array_map( function ( $k ) {
 				return schiesser_regimes_liste()[ $k ][0];
 			}, $p['al']['regimes'] ) ), 1 );
 		}
 		if ( '' !== $p['al']['traces'] ) {
-			$lignes[] = array( 'Spuren', $p['al']['traces'], 1 );
+			$lignes[] = array( schiesser_t( 'Spuren' ), $p['al']['traces'], 1 );
 		}
 	}
 	$fiches[] = array(
@@ -71,7 +71,7 @@ foreach ( $produits as $p ) {
 	);
 }
 
-$pluriel = count( $produits ) > 1 ? 'Produkte' : 'Produkt';
+$pluriel = count( $produits ) > 1 ? schiesser_t( 'Produkte' ) : schiesser_t( 'Produkt' );
 $email   = schiesser_reglage( 'email' );
 $id_nom  = 'fiche-nom-' . ( sanitize_title( $a['ancre'] ?? '' ) ?: 'produits' );
 
@@ -83,8 +83,8 @@ ob_start();
 	<?php else : ?>
 		<?php if ( $filtres ) : ?>
 			<div class="shop-bar">
-				<div class="shop-filters" role="group" aria-label="Nach Kategorie filtern">
-					<button type="button" class="fchip on" data-filtre="" aria-pressed="true">Alle</button>
+				<div class="shop-filters" role="group" aria-label="<?php echo esc_attr( schiesser_t( 'Nach Kategorie filtern' ) ); ?>">
+					<button type="button" class="fchip on" data-filtre="" aria-pressed="true"><?php echo esc_html( schiesser_t( 'Alle' ) ); ?></button>
 					<?php foreach ( $categories as $slug => $nom ) : ?>
 						<button type="button" class="fchip" data-filtre="<?php echo esc_attr( $slug ); ?>" aria-pressed="false"><?php echo esc_html( $nom ); ?></button>
 					<?php endforeach; ?>
@@ -97,10 +97,10 @@ ob_start();
 		if ( ! $apercu ) {
 			if ( count( $produits ) > 3 ) {
 				// Recherche : par nom, mais aussi par ingrédient (« praliné », « kirsch »).
-				echo '<div class="shop-recherche"><label class="screen-reader-text" for="' . esc_attr( $id_nom ) . '-recherche">Produkt suchen</label>'
+				echo '<div class="shop-recherche"><label class="screen-reader-text" for="' . esc_attr( $id_nom ) . '-recherche">' . esc_html( schiesser_t( 'Produkt suchen' ) ) . '</label>'
 					. '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z M16 16l5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>'
-					. '<input type="search" id="' . esc_attr( $id_nom ) . '-recherche" class="js-recherche" placeholder="Suchen: Praliné, Kirsch, Läckerli…" autocomplete="off">'
-					. '<p class="shop-recherche-vide js-recherche-vide" hidden>Kein Produkt passt zu dieser Suche. Versuchen Sie ein anderes Wort oder rufen Sie uns an: Wir machen auch vieles auf Bestellung.</p></div>';
+					. '<input type="search" id="' . esc_attr( $id_nom ) . '-recherche" class="js-recherche" placeholder="' . esc_attr( schiesser_t( 'Suchen: Praliné, Kirsch, Läckerli…' ) ) . '" autocomplete="off">'
+					. '<p class="shop-recherche-vide js-recherche-vide" hidden>' . esc_html( schiesser_t( 'Kein Produkt passt zu dieser Suche. Versuchen Sie ein anderes Wort oder rufen Sie uns an: Wir machen auch vieles auf Bestellung.' ) ) . '</p></div>';
 			}
 			echo schiesser_allergenes_filtres( array_filter( array_column( $produits, 'al' ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 		}
@@ -117,7 +117,7 @@ ob_start();
 					<div class="sh-in">
 						<div class="sh-im">
 							<img class="js-sh-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async">
-							<button type="button" class="sh-close js-sh-fermer" aria-label="Schliessen">✕</button>
+							<button type="button" class="sh-close js-sh-fermer" aria-label="<?php echo esc_attr( schiesser_t( 'Schliessen' ) ); ?>">✕</button>
 						</div>
 						<div class="sh-tx">
 							<span class="sh-k js-sh-cat"></span>
@@ -127,15 +127,15 @@ ob_start();
 							<div class="sh-price"><span class="pk js-sh-unite"></span><span class="pv js-sh-prix"></span></div>
 							<div class="sh-foot">
 								<div class="sh-actions">
-									<p class="produit-epuise js-sh-epuise" hidden><strong>Heute ausverkauft.</strong> Ab morgen wieder da.</p>
-									<a class="btn btn-kir js-sh-action" href="#" hidden><span class="js-sh-action-texte">In den Warenkorb</span> <span class="a" aria-hidden="true">→</span></a>
+									<p class="produit-epuise js-sh-epuise" hidden><strong><?php echo esc_html( schiesser_t( 'Heute ausverkauft.' ) ); ?></strong> <?php echo esc_html( schiesser_t( 'Ab morgen wieder da.' ) ); ?></p>
+									<a class="btn btn-kir js-sh-action" href="#" hidden><span class="js-sh-action-texte"><?php echo esc_html( schiesser_t( 'In den Warenkorb' ) ); ?></span> <span class="a" aria-hidden="true">→</span></a>
 									<?php echo schiesser_boutons_commande( array( 'nom' => '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-									<a class="sh-lien js-sh-page" href="#">Zur Produktseite</a>
+									<a class="sh-lien js-sh-page" href="#"><?php echo esc_html( schiesser_t( 'Zur Produktseite' ) ); ?></a>
 									<?php echo schiesser_partage( home_url( '/' ), '' ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 								</div>
 								<div class="sh-nav">
-									<button type="button" class="js-sh-prec" aria-label="Vorheriges Produkt">←</button>
-									<button type="button" class="js-sh-suiv" aria-label="Nächstes Produkt">→</button>
+									<button type="button" class="js-sh-prec" aria-label="<?php echo esc_attr( schiesser_t( 'Vorheriges Produkt' ) ); ?>">←</button>
+									<button type="button" class="js-sh-suiv" aria-label="<?php echo esc_attr( schiesser_t( 'Nächstes Produkt' ) ); ?>">→</button>
 								</div>
 							</div>
 						</div>

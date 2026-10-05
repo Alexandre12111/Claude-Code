@@ -17,7 +17,7 @@ if ( is_singular() ) {
 		echo '</div>';
 	}
 } else {
-	$titre = is_search() ? sprintf( 'Suche: %s', get_search_query() ) : wp_strip_all_tags( get_the_archive_title() );
+	$titre = is_search() ? sprintf( schiesser_t( 'Suche: %s' ), get_search_query() ) : wp_strip_all_tags( get_the_archive_title() );
 	if ( is_home() && ! is_front_page() ) {
 		$titre = get_the_title( (int) get_option( 'page_for_posts' ) );
 	}
@@ -35,7 +35,7 @@ if ( is_singular() ) {
 		}
 		the_posts_pagination( array( 'prev_text' => '←', 'next_text' => '→' ) );
 	} else {
-		echo '<p>Keine Treffer. Versuchen Sie ein anderes Wort oder gehen Sie zur <a href="' . esc_url( home_url( '/' ) ) . '">Startseite</a>.</p>';
+		echo '<p>' . esc_html( schiesser_t( 'Keine Treffer. Versuchen Sie ein anderes Wort oder gehen Sie zur' ) ) . ' <a href="' . esc_url( schiesser_url_accueil() ) . '">' . esc_html( schiesser_t( 'Startseite' ) ) . '</a>.</p>';
 	}
 	echo '</div>';
 }

@@ -17,13 +17,14 @@ $mention = schiesser_page( 'mentions', false );
 $ancres  = ( is_page() && function_exists( 'schiesser_ancres_page' ) ) ? array_slice( schiesser_ancres_page(), 0, 5, true ) : array();
 $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 ?>
+<?php do_action( 'schiesser_avant_pied' ); // liens vers les autres pages de la maison (inc/maillage.php) ?>
 </main>
 
 <footer class="site-footer">
 	<div class="wrap">
 		<div class="fgrid<?php echo $ancres ? ' fgrid--4' : ''; ?>">
 			<div class="fbrand">
-				<span class="brand"><?php schiesser_logo( implode( ' · ', array_filter( array( $rue, $ville, $annee ? 'Seit ' . $annee : '' ) ) ) ); ?></span>
+				<span class="brand"><?php schiesser_logo( implode( ' · ', array_filter( array( $rue, $ville, $annee ? schiesser_t( 'Seit' ) . ' ' . $annee : '' ) ) ) ); ?></span>
 				<p><?php echo esc_html( schiesser_reglage( 'presentation' ) ); ?></p>
 				<div class="x-social">
 					<?php if ( $ig ) : ?>
@@ -38,22 +39,22 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 				</div>
 			</div>
 			<div class="fcol">
-				<h2 class="fcol-titre">So finden Sie uns</h2>
+				<h2 class="fcol-titre"><?php echo esc_html( schiesser_t( 'Adresse & Kontakt' ) ); ?></h2>
 				<span class="fcol-txt"><?php echo esc_html( implode( ', ', array_filter( schiesser_adresse_lignes() ) ) ); ?></span>
 				<span class="fcol-txt"><?php echo esc_html( schiesser_horaires_resume() ); ?></span>
 				<?php if ( $email ) : ?><a href="<?php echo esc_url( 'mailto:' . $email ); ?>"><?php echo esc_html( $email ); ?></a><?php endif; ?>
 				<?php if ( $tel ) : ?><a href="<?php echo esc_url( schiesser_lien_tel() ); ?>"><?php echo esc_html( $tel ); ?></a><?php endif; ?>
 			</div>
 			<?php if ( $ancres ) : ?>
-				<nav class="fcol" aria-label="Auf dieser Seite">
-					<h2 class="fcol-titre">Auf dieser Seite</h2>
+				<nav class="fcol" aria-label="<?php echo esc_attr( schiesser_t( 'Auf dieser Seite' ) ); ?>">
+					<h2 class="fcol-titre"><?php echo esc_html( schiesser_t( 'Auf dieser Seite' ) ); ?></h2>
 					<?php foreach ( $ancres as $ancre => $titre ) : ?>
 						<a href="#<?php echo esc_attr( $ancre ); ?>"><?php echo esc_html( $titre ); ?></a>
 					<?php endforeach; ?>
 				</nav>
 			<?php endif; ?>
 			<div class="fcol">
-				<h2 class="fcol-titre">Entdecken</h2>
+				<h2 class="fcol-titre"><?php echo esc_html( schiesser_t( 'Entdecken' ) ); ?></h2>
 				<?php foreach ( schiesser_liens_menu( 'pied' ) as $lien ) : ?>
 					<a href="<?php echo esc_url( $lien['url'] ); ?>"><?php echo esc_html( $lien['titre'] ); ?></a>
 				<?php endforeach; ?>
@@ -63,7 +64,7 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 			<span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
 			<span class="x-legal">
 				<?php if ( $mention && 'publish' === $mention->post_status ) : ?><a href="<?php echo esc_url( get_permalink( $mention ) ); ?>"><?php echo esc_html( get_the_title( $mention ) ); ?></a><?php endif; ?>
-				<?php if ( get_privacy_policy_url() ) : ?><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Datenschutz</a><?php endif; ?>
+				<?php if ( get_privacy_policy_url() ) : ?><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php echo esc_html( schiesser_t( 'Datenschutz' ) ); ?></a><?php endif; ?>
 			</span>
 			<span><?php echo esc_html( implode( ' · ', array_filter( array( $rue, $ville ) ) ) ); ?></span>
 		</div>

@@ -269,8 +269,8 @@ add_action( 'admin_head', function () {
 		return;
 	}
 	echo '<style>.s-msg-statut{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600;background:#f0f0f1;color:#50575e}'
-		. '.s-msg-statut--nouveau{background:#23503B;color:#fff}.s-msg-statut--traite{background:#e7f0ea;color:#23503B}.s-msg-statut--spam{background:#fcf0f1;color:#8a2424}'
-		. '.s-msg-alerte{color:#8a2424;font-weight:600}.s-msg-texte{max-width:680px;font-size:15px;line-height:1.6;padding:12px 16px;background:#f6f7f7;border-left:3px solid #23503B}'
+		. '.s-msg-statut--nouveau{background:#174633;color:#fff}.s-msg-statut--traite{background:#e7f0ea;color:#174633}.s-msg-statut--spam{background:#fcf0f1;color:#8a2424}'
+		. '.s-msg-alerte{color:#8a2424;font-weight:600}.s-msg-texte{max-width:680px;font-size:15px;line-height:1.6;padding:12px 16px;background:#f6f7f7;border-left:3px solid #174633}'
 		. '.column-m_statut{width:130px}.column-m_de{width:240px}.post-type-schiesser_message .page-title-action{display:none}</style>';
 } );
 

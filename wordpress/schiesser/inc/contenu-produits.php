@@ -136,7 +136,7 @@ function schiesser_getraenkekarte() {
 			array( 'Irish Coffee', 'CHF 14.50', 'Mit 2 cl Jameson Whiskey 40°, Schlagrahm.' ),
 			array( 'Kaffee Lutz', 'CHF 12.50', 'Mit 2 cl Zwetschgen 37°.' ),
 			array( 'Kaffee Fertig', 'CHF 12.50', 'Mit 2 cl Kernobst 37.5°.' ),
-			array( 'Extras zum Kaffee', 'ab CHF 1.—', 'Laktosefreie Milch 1.00 · Hafermilch 1.50 · Shot Espresso 2.50 · Schokoladentopping 1.50 · Caramelsirup 1.50 · 2 cl Baileys 17° 4.50 · 2 cl Amaretto 28° 4.50 · 2 cl Rum 37.5° 6.50' ),
+			array( 'Extras zum Kaffee', 'ab CHF 1.00', 'Laktosefreie Milch 1.00 · Hafermilch 1.50 · Shot Espresso 2.50 · Schokoladentopping 1.50 · Caramelsirup 1.50 · 2 cl Baileys 17° 4.50 · 2 cl Amaretto 28° 4.50 · 2 cl Rum 37.5° 6.50' ),
 		) ),
 		array( 'nom' => 'Tee', 'photo' => 'salon', 'alt' => 'Tee im Kännchen, serviert im Tea Room', 'plats' => array(
 			array( 'Portion Tee im Kännchen', 'CHF 12.20', 'Frisch aufgegossen, serviert mit Zitrone, Honig und hausgemachten Pralinen. Zur Auswahl: Earl Grey (der Klassische mit Bergamotte), Eisenkraut (zitroniger Geschmack), Darjeeling (der Champagner unter den Tees), Sencha (japanischer Grüntee), Nana-Minze aus Ägypten, Früchte-Beeren (Apfel, Orange, Hibiskus, Hagebutte, Schlehdorn), Ginger Lemongrass.' ),

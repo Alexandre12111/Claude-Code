@@ -51,9 +51,13 @@ function schiesser_allergenes_liste() {
 			'lupin'        => array( 'Lupinen', 'Lupinen' ),
 			'alcool'       => array( 'Alkohol (Kirsch, Likör…)', 'Alkohol' ),
 		);
+		$l = schiesser_langue();
 		foreach ( $de as $k => $n ) {
-			$liste[ $k ][0] = $n[0];
-			$liste[ $k ][1] = $n[1];
+			if ( 'fr' === $l ) {
+				continue; // les noms de l'administration sont déjà en français
+			}
+			$liste[ $k ][0] = schiesser_t( $n[0] );
+			$liste[ $k ][1] = schiesser_t( $n[1] );
 		}
 	}
 	return $liste;
@@ -69,7 +73,9 @@ function schiesser_regimes_liste() {
 	);
 	if ( ! schiesser_est_cote_admin() ) {
 		foreach ( array( 'vegetarien' => 'Vegetarisch', 'vegane' => 'Vegan', 'sans-gluten' => 'Glutenfrei', 'sans-lactose' => 'Laktosefrei' ) as $k => $n ) {
-			$liste[ $k ][0] = $n;
+			if ( 'fr' !== schiesser_langue() ) {
+				$liste[ $k ][0] = schiesser_t( $n );
+			}
 		}
 	}
 	return $liste;
@@ -127,7 +133,7 @@ function schiesser_allergenes_texte( $d ) {
 		return $liste[ $k ][0];
 	}, $d['allergenes'] );
 	if ( ! $noms && ! empty( $d['renseigne'] ) ) {
-		return 'Keines der 14 deklarationspflichtigen Allergene';
+		return schiesser_t( 'Keines der 14 deklarationspflichtigen Allergene' );
 	}
 	return implode( ', ', $noms );
 }
@@ -160,7 +166,7 @@ function schiesser_allergenes_filtres( $items ) {
 	$regimes = array_diff( $regimes, array( 'sans-gluten' ) );
 	foreach ( $ordre as $k ) {
 		if ( in_array( $k, $presents, true ) ) {
-			$boutons .= '<button type="button" class="fchip fchip--al" data-sans="' . esc_attr( $k ) . '" aria-pressed="false">Ohne ' . esc_html( $liste[ $k ][1] ) . '</button>';
+			$boutons .= '<button type="button" class="fchip fchip--al" data-sans="' . esc_attr( $k ) . '" aria-pressed="false">' . esc_html( schiesser_tf( 'Ohne %s', $liste[ $k ][1] ) ) . '</button>';
 		}
 	}
 	foreach ( schiesser_regimes_liste() as $k => $r ) {
@@ -171,8 +177,8 @@ function schiesser_allergenes_filtres( $items ) {
 	if ( '' === $boutons ) {
 		return '';
 	}
-	return '<div class="al-filtres js-al-filtres"><div class="al-filtres-in" role="group" aria-label="Allergene und Ernährung"><span class="al-filtres-k">Allergien</span>' . $boutons . '</div>'
-		. '<p class="al-filtres-vide js-al-vide" hidden>Kein Produkt passt zu dieser Auswahl. Produkte ohne Allergenangaben werden beim Filtern ausgeblendet.</p></div>';
+	return '<div class="al-filtres js-al-filtres"><div class="al-filtres-in" role="group" aria-label="' . esc_attr( schiesser_t( 'Allergene und Ernährung' ) ) . '"><span class="al-filtres-k">' . esc_html( schiesser_t( 'Allergien' ) ) . '</span>' . $boutons . '</div>'
+		. '<p class="al-filtres-vide js-al-vide" hidden>' . esc_html( schiesser_t( 'Kein Produkt passt zu dieser Auswahl. Produkte ohne Allergenangaben werden beim Filtern ausgeblendet.' ) ) . '</p></div>';
 }
 
 /** Remarque générale sur les allergènes (Réglages maison), sous les listes. */
@@ -243,5 +249,5 @@ add_action( 'admin_head', function () {
 	echo '<style>.s-al-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 16px;margin:12px 0;border:0;padding:0}'
 		. '.s-al-grille--regimes{margin-top:18px}.s-al-grille legend{margin-bottom:8px}'
 		. '.s-al-case{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid #dcdcde;border-radius:4px;background:#fff;cursor:pointer}'
-		. '.s-al-case:has(input:checked){border-color:#23503B;background:#f0f6f2}.s-al-case .al-svg{color:#23503B;flex-shrink:0}</style>';
+		. '.s-al-case:has(input:checked){border-color:#174633;background:#f0f6f2}.s-al-case .al-svg{color:#174633;flex-shrink:0}</style>';
 } );

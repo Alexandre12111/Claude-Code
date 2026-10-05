@@ -6,6 +6,9 @@
 (function () {
   'use strict';
   var S = window.SCHIESSER || {};
+  var LANG = S.lang || 'de';
+  function T(t) { return S.T ? S.T(t) : t; }
+  function TF(t) { return S.TF ? S.TF.apply(null, arguments) : t; }
 
   function tous(sel, racine) { return Array.prototype.slice.call((racine || document).querySelectorAll(sel)); }
   function un(sel, racine) { return (racine || document).querySelector(sel); }
@@ -45,9 +48,14 @@
     }
     return { jour: d.getDay(), h: d.getHours() + d.getMinutes() / 60, y: d.getFullYear(), m: d.getMonth() + 1, dj: d.getDate() };
   }
-  // Heure à la suisse : 7.5 → « 7.30 », 8 → « 8 ».
-  function hh(h) { var m = Math.round((h % 1) * 60); return Math.floor(h) + (m ? '.' + dd(m) : ''); }
-  var UHR = '\u00a0Uhr';
+  // Heure selon la langue : « 7.30 » (de, suivi de « Uhr »), « 7 h 30 » (fr), « 7:30 » (en).
+  function hh(h) {
+    var m = Math.round((h % 1) * 60);
+    if (LANG === 'fr') return Math.floor(h) + '\u00a0h' + (m ? '\u00a0' + dd(m) : '');
+    if (LANG === 'en') return Math.floor(h) + ':' + dd(m);
+    return Math.floor(h) + (m ? '.' + dd(m) : '');
+  }
+  var UHR = LANG === 'de' ? '\u00a0Uhr' : '';
   var P = S.particuliers || {};
   // Horaires dans k jours, jours fériés et dates exceptionnelles compris (même calcul que site.js).
   function dateDans(t, k) { var x = new Date(Date.UTC(t.y, t.m - 1, t.dj + k)); return x.getUTCFullYear() + '-' + dd(x.getUTCMonth() + 1) + '-' + dd(x.getUTCDate()); }
@@ -61,27 +69,27 @@
   function plage(t, k) { var x = horairesDans(t, k); return x ? hh(x[0]) + '–' + hh(x[1]) + UHR : null; }
 
   /* ---------- états en direct : bandeau, fiches, tableau des horaires ---------- */
-  var JOURS = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  var JOURS = S.jours || ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
   function direct() {
     var t = maintenant(), j = horairesDans(t, 0), ouvert = !!j && t.h >= j[0] && t.h < j[1];
     var minutes = null, libelle;
-    if (ouvert) { minutes = Math.round((j[1] - t.h) * 60); libelle = 'Schliesst in'; }
+    if (ouvert) { minutes = Math.round((j[1] - t.h) * 60); libelle = T('Schliesst in'); }
     else {
-      libelle = 'Öffnet in';
+      libelle = T('Öffnet in');
       if (j && t.h < j[0]) minutes = Math.round((j[0] - t.h) * 60);
       else for (var k = 1; k <= 7; k++) { var s = horairesDans(t, k); if (s) { minutes = Math.round((24 - t.h + 24 * (k - 1) + s[0]) * 60); break; } }
     }
-    var duree = minutes === null ? '' : (Math.floor(minutes / 60) ? Math.floor(minutes / 60) + ' Std. ' + dd(minutes % 60) + ' Min.' : (minutes % 60) + ' Min.');
+    var duree = minutes === null ? '' : (Math.floor(minutes / 60) ? Math.floor(minutes / 60) + ' ' + T('Std.') + ' ' + dd(minutes % 60) + ' ' + T('Min.') : (minutes % 60) + ' ' + T('Min.'));
     tous('.js-lv-dot').forEach(function (e) { e.classList.toggle('shut', !ouvert); });
-    tous('.js-lv-etat').forEach(function (e) { e.textContent = ouvert ? 'Geöffnet' : 'Geschlossen'; });
+    tous('.js-lv-etat').forEach(function (e) { e.textContent = T(ouvert ? 'Geöffnet' : 'Geschlossen'); });
     tous('.js-lv-compte').forEach(function (e) { e.innerHTML = libelle + ' <b>' + duree + '</b>'; });
     var m0 = motif(t, 0), m1 = motif(t, 1);
-    tous('.js-aujourdhui').forEach(function (e) { e.textContent = (plage(t, 0) || 'Heute geschlossen') + (m0 ? ' · ' + m0 : ''); });
-    tous('.js-demain').forEach(function (e) { e.textContent = 'Morgen · ' + (plage(t, 1) || 'geschlossen') + (m1 ? ' (' + m1 + ')' : ''); });
+    tous('.js-aujourdhui').forEach(function (e) { e.textContent = (plage(t, 0) || T('Heute geschlossen')) + (m0 ? ' · ' + m0 : ''); });
+    tous('.js-demain').forEach(function (e) { e.textContent = T('Morgen') + ' · ' + (plage(t, 1) || T('geschlossen')) + (m1 ? ' (' + m1 + ')' : ''); });
     S.etatDirect = { ouvert: ouvert, j: j, t: t, prochain: ouvert ? null : prochaineOuverture(t) };
-    tous('.js-live-court').forEach(function (e) { e.textContent = ouvert ? 'Geöffnet bis ' + hh(j[1]) + UHR : 'Geschlossen'; e.classList.toggle('shut', !ouvert); });
+    tous('.js-live-court').forEach(function (e) { e.textContent = ouvert ? TF('Geöffnet bis %s', hh(j[1]) + UHR) : T('Geschlossen'); e.classList.toggle('shut', !ouvert); });
     tous('.js-etat-plage').forEach(function (e) {
-      var txt = (ouvert ? 'Geöffnet' : 'Geschlossen') + (j ? ' · ' + hh(j[0]) + '–' + hh(j[1]) + UHR : '');
+      var txt = T(ouvert ? 'Geöffnet' : 'Geschlossen') + (j ? ' · ' + hh(j[0]) + '–' + hh(j[1]) + UHR : '');
       var span = un('span', e); if (span) span.textContent = txt; else e.textContent = txt;
       e.classList.toggle('shut', !ouvert);
     });
@@ -259,7 +267,7 @@
       img.alt = a.getAttribute('data-texte') || '';
       titre.textContent = a.getAttribute('data-titre') || '';
       texte.textContent = a.getAttribute('data-texte') || '';
-      num.textContent = 'Archiv ' + dd(cur + 1) + ' / ' + dd(items.length);
+      num.textContent = T('Archiv') + ' ' + dd(cur + 1) + ' / ' + dd(items.length);
       if (!lb.classList.contains('open')) {
         retour = document.activeElement;
         lb.classList.add('open');
@@ -330,21 +338,21 @@
     var donnees = {};
     try { donnees = JSON.parse(bloc.getAttribute('data-donnees') || '{}'); } catch (e) { return; }
     var debut = +bloc.getAttribute('data-debut') || 8, jours = tous('.dchip', bloc), chart = un('.js-aff-chart', bloc), calme = un('.js-aff-calme', bloc), anime = un('.js-aff-anime', bloc);
-    function niveau(v) { return v === 0 ? 'Geschlossen' : v > 75 ? 'Sehr belebt' : v > 50 ? 'Belebt' : 'Ruhig'; }
+    function niveau(v) { return T(v === 0 ? 'Geschlossen' : v > 75 ? 'Sehr belebt' : v > 50 ? 'Belebt' : 'Ruhig'); }
     function dessiner(j) {
       var t = maintenant(), data = donnees[j] || [], html = '', ouverts = [];
       data.forEach(function (v, k) {
         var h = debut + k, now = (+j === t.jour && h === Math.floor(t.h) && v > 0);
-        html += '<div class="bar' + (now ? ' now' : '') + '" style="height:' + Math.max(v, 4) + '%"><span class="bv">' + niveau(v) + '</span><span class="bl">' + h + ' Uhr</span></div>';
+        html += '<div class="bar' + (now ? ' now' : '') + '" style="height:' + Math.max(v, 4) + '%"><span class="bv">' + niveau(v) + '</span><span class="bl">' + hh(h) + UHR + '</span></div>';
         if (v > 0) ouverts.push({ v: v, h: h });
       });
       chart.innerHTML = html;
       if (ouverts.length) {
         var q = ouverts.reduce(function (a, b) { return b.v < a.v ? b : a; });
         var z = ouverts.reduce(function (a, b) { return b.v > a.v ? b : a; });
-        calme.textContent = q.h + '–' + (q.h + 1) + ' Uhr';
-        anime.textContent = z.h + '–' + (z.h + 1) + ' Uhr';
-      } else { calme.textContent = 'Geschlossen'; anime.textContent = 'Geschlossen'; }
+        calme.textContent = hh(q.h) + '–' + hh(q.h + 1) + (UHR || '');
+        anime.textContent = hh(z.h) + '–' + hh(z.h + 1) + (UHR || '');
+      } else { calme.textContent = T('Geschlossen'); anime.textContent = T('Geschlossen'); }
     }
     jours.forEach(function (b) {
       b.addEventListener('click', function () { var j = b.getAttribute('data-j'); activer(jours, +j, 'data-j'); dessiner(j); });
@@ -391,7 +399,7 @@
       if (params.get('selection') && S.texteSelection) liste = S.texteSelection();
       else if (produit) liste = '1 × ' + produit;
       if (liste) {
-        zone.value = 'Grüezi\n\nIch möchte gerne bestellen:\n' + liste + '\n\nGewünschtes Abholdatum: \nMeine Telefonnummer: \n\nVielen Dank!';
+        zone.value = T('Grüezi') + '\n\n' + T('Ich möchte gerne bestellen:') + '\n' + liste + '\n\n' + T('Gewünschtes Abholdatum:') + ' \n' + T('Meine Telefonnummer:') + ' \n\n' + T('Vielen Dank!');
         var xg = zone.closest('.xg'); if (xg) xg.classList.add('float');
       }
     }
@@ -477,8 +485,8 @@
   /* ---------- curseur dessiné (ordinateur) ---------- */
   var curseur = un('.x-cursor');
   if (curseur && window.matchMedia && window.matchMedia('(hover: hover) and (min-width: 821px)').matches) {
-    var ZONES = [['.card', 'Ansehen'], ['.gv-th', 'Ansehen'], ['.gv-main', 'Ansehen', 1], ['.compare', 'Ziehen', 1], ['.arch', 'Öffnen'],
-      ['.gp', 'Ansehen', 1], ['.x-menupic', 'Ansehen'], ['.x-floor', 'Öffnen', 1], ['.mapel', 'Entdecken'], ['.vmap', 'Entdecken']];
+    var ZONES = [['.card', T('Ansehen')], ['.gv-th', T('Ansehen')], ['.gv-main', T('Ansehen'), 1], ['.compare', T('Ziehen'), 1], ['.arch', T('Öffnen')],
+      ['.gp', T('Ansehen'), 1], ['.x-menupic', T('Ansehen')], ['.x-floor', T('Öffnen'), 1], ['.mapel', T('Entdecken')], ['.vmap', T('Entdecken')]];
     document.addEventListener('mousemove', function (e) { curseur.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)'; });
     ZONES.forEach(function (z) {
       tous(z[0]).forEach(function (zone) {

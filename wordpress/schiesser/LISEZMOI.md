@@ -1,7 +1,84 @@
-# Thème Schiesser 0.9
+# Thème Schiesser 0.12
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.12 : design modernisé
+
+Même maison, mêmes couleurs (crème, chocolat, vert sapin, menthe), mêmes polices et tous les éléments conservés : seul le dessin change. Aucune fonction ni aucun contenu n'est modifié, il n'y a rien à réimporter.
+
+- **Grandes photos encadrées par l'espace** : coins arrondis, plus de filets ni de coins dorés ; bandeau d'état collé sous la photo.
+- **Menu en pastille** (page active en vert sapin), sélecteur de langue assorti, boutons arrondis.
+- **En-têtes de section allégés** : une étiquette « N° 01 » au lieu du losange et du long filet, notes en texte droit plus lisible.
+- **Cartes et photos arrondies** avec ombres douces : étages, catalogue, galeries, archives, carte du Tea Room, questions fréquentes, grilles pratiques, formulaire.
+- **Pied de page et appel final en chocolat**, posés comme des cartes.
+- Textes secondaires plus contrastés, section savoir-faire moins haute, rendu téléphone vérifié.
+
+## Version 0.11.1 : typographie épurée et photos d'archives
+
+- **Titres et textes plus petits sur tout le site** : grand titre de l'accueil environ 40 % plus petit, titres de section environ 45 % plus petits, texte courant à 15 px. Mise en page plus aérée et plus lisible. L'accueil occupe un peu moins de hauteur.
+- La taille de tous les titres reste réglable dans Réglages maison → Charte graphique (échelle des titres).
+- **7 photos d'archives de la maison** intégrées : façade « Patisserie · Leckerly », la maison Schiesser sur le Marktplatz, la vitrine « Seit 1870 », le comptoir, l'atelier (deux photos) et la caisse du salon de thé. Elles illustrent l'accueil (savoir-faire), la Confiserie, le Tea Room et la page Histoire (8 images dans « Aus dem Archiv »), avec textes alternatifs en allemand, français et anglais.
+- Pour les mettre en place : Pages → « Mettre à jour le contenu des pages ».
+
+## Nouveautés de la version 0.11 : site en allemand, français et anglais
+
+L'allemand reste la langue principale. Avec l'extension gratuite **Polylang**, le thème fournit les versions **française** et **anglaise** complètes, rédigées à la main (pas de traduction automatique) :
+
+- **8 pages** traduites (textes, boutons, questions fréquentes, textes alternatifs), avec leurs adresses : `/accueil/`, `/boutique/`, `/salon-de-the/`, `/notre-histoire/`, `/nous-visiter/`, `/contact/`, `/cadeaux-entreprise/` en français ; `/home/`, `/confectionery/`, `/tearoom/`, `/history/`, `/visit-us/`, `/contact-us/`, `/corporate-gifts/` en anglais. Les liens internes pointent vers les pages de la même langue.
+- **Réglages Rank Math dans chaque langue** : titre SEO de 50 à 60 caractères, description de 140 à 160 caractères, 5 mots-clés (le premier est le principal).
+- **70 produits** (noms, accroches, catégories, SEO) et **carte du Tea Room** (78 plats, 8 rubriques, descriptions, mentions) en français et en anglais.
+- **Textes du thème** dans la langue de la page : état « Ouvert / Fermé », horaires (« 7 h 30 » en français, « 7:30 » en anglais), jours fériés, allergènes, formulaire, Merkliste, sélection, mentions de prix (« dès CHF 8.90 », « from CHF 8.90 »).
+- **Carte du Tea Room en PDF** dans les trois langues (le bouton ouvre celle de la langue de la page).
+- Prix, photos et allergènes sont **communs** aux trois langues : modifiés une fois, ils sont recopiés dans les traductions. « Épuisé aujourd'hui » et la suggestion du jour valent pour toutes les langues.
+
+### Mise en place (une fois)
+
+1. Extensions → Ajouter → **Polylang** → Installer, Activer.
+2. Langues : créer **Deutsch** (`de_CH`) en premier (langue par défaut), puis **Français** (`fr_FR`) et **English** (`en_GB`). Accepter d'attribuer la langue par défaut aux contenus existants.
+3. Langues → Réglages → URL modifiées : « La langue est définie par le nom de dossier » et « Cacher le code de langue pour la langue par défaut ».
+4. Pages → bouton **« Mettre à jour le contenu des pages »** : les versions FR et EN sont créées et reliées. Le bouton peut être relancé sans créer de doublon.
+5. Langues → Traductions : traduire le slogan du site et, si vous les avez changés, les textes des Réglages maison.
+6. Rank Math → Plan du site : vérifier que les trois langues y figurent ; Polylang ajoute les balises `hreflang`.
+
+## Version 0.10.1 : vert sapin
+
+- Les accents dorés laissent la place au **vert sapin** (#174633), couleur secondaire de la maison, avec une touche de chocolat pour les numéros et les filets. Contraste vérifié pour une lecture facile.
+- La couleur reste réglable dans Réglages maison → Charte graphique (« Vert maison ») : tous les accents suivent.
+- Correction : le zoom des photos au survol (cartes Confiserie et Tea Room de l'accueil, catalogue) est de nouveau progressif.
+- La carte du Tea Room en PDF reprend le vert sapin.
+
+## Nouveautés de la version 0.10 : design prestige, carte du Tea Room en PDF, maillage
+
+**Accueil**
+- Les **spécialités** restent en tête de l'accueil (Basler Läckerli, Pralinen, Truffes-Cake, Bonbonnière, Marrons glacés, Zopf), même pendant que la liste des produits est « en préparation ». Tant qu'un produit n'a pas sa photo, c'est celle de sa **catégorie** qui s'affiche (Produits boutique → Catégories → « Photo de la catégorie »), et le lien mène à la page Confiserie.
+
+**Tea Room**
+- **La carte passe en premier** sur la page Tea Room, juste sous la grande photo.
+- **Nouveau design** : carte encadrée de filets dorés, onglets en pastilles numérotées, titre de rubrique centré avec ornement, photo de la rubrique et suggestion de la maison à côté.
+- **Carte en PDF** : le bouton « Karte ansehen (PDF) » de la grande photo et le lien « Die ganze Karte als PDF » ouvrent la carte mise en page (couverture et 7 pages A4). Pour la remplacer : Réglages maison → Pied de page → « Carte du Tea Room en PDF ». Une **carte imprimable toujours à jour** (`/?schiesser_karte=druck`) permet de refaire le PDF après une modification des Produits Tea Room : Imprimer → Enregistrer au format PDF.
+- Dans un bouton, le lien `#karte-pdf` ouvre toujours le PDF de la carte.
+
+**Design prestige** (tous les blocs restent les mêmes)
+- Typographie affinée (titres plus grands et plus fins, notes en italique), dorures sur les filets, numéros et ornements, coins dorés sur la grande photo.
+- Titres qui montent mot par mot, photos qui se dévoilent en rideau, léger effet de profondeur sur la grande photo, boutons aimantés avec reflet, barre de lecture dorée, en-tête qui s'affine au défilement.
+- Les effets sont désactivés automatiquement pour les visiteurs qui ont choisi « mouvement réduit » ; contrastes vérifiés (0 erreur d'accessibilité).
+
+**SEO**
+- Section **« Weiter im Haus »** en bas de chaque page : trois liens vers les autres pages de la maison.
+- Davantage de **liens dans les textes** et les questions fréquentes, avec des textes de lien descriptifs.
+- **5 mots-clés Rank Math** par page et par produit (le premier reste le mot-clé principal).
+
+### Mise à jour depuis la version 0.9
+
+Remplacer le thème par le nouveau zip, puis cliquer sur **« Mettre à jour le contenu des pages »** sur le tableau de bord (carte du Tea Room en haut, liens, mots-clés). Les réglages SEO que vous avez modifiés à la main dans les fiches produits sont conservés.
+
+## Version 0.9.1 : SEO prêt pour la mise en ligne
+
+- Rapport SEO (`SEO-RAPPORT.md`) entièrement mis à jour pour le site en allemand.
+- H1 de la Startseite avec le mot-clé principal (« Confiserie in Basel, seit 1870 am Marktplatz »).
+- Fiches produits : titres SEO de 47 à 60 caractères, mot-clé principal égal au nom du produit, données Google avec le prix le plus bas, le plus haut et le nombre de formats.
+- Pied de page : colonne « Adresse & Kontakt » (évite deux titres « So finden Sie uns » sur la même page).
 
 ## Nouveautés de la version 0.9 : site en allemand, liste de prix et carte du Tea Room
 
@@ -161,7 +238,7 @@ Elementor n'est pas utilisé : il peut être désactivé. **Code Snippets** peut
 | **Code Snippets** (gratuit) | Quand un petit ajout de code vous est fourni | Ajouter une fonctionnalité sans toucher au thème ; conservé lors des mises à jour. |
 | Une extension de cache (selon l'hébergeur) | À la mise en ligne | Vitesse d'affichage. |
 | Une extension de sauvegarde (par exemple UpdraftPlus) | À la mise en ligne | Sauvegardes automatiques. |
-| Polylang | Si le site passe en allemand et en anglais | Versions linguistiques ; le sélecteur FR · DE · EN de la maquette apparaît alors dans l'en-tête. |
+| **Polylang** (gratuit) | Pour le français et l'anglais | Versions linguistiques fournies par le thème ; le sélecteur DE · FR · EN apparaît dans l'en-tête (voir la version 0.11). |
 
 Aucune extension de formulaire n'est nécessaire : le formulaire de la maquette est intégré au thème (bloc « Formulaire de contact »).
 
@@ -257,7 +334,8 @@ Règle d'or : ne jamais modifier les fichiers du thème directement (Apparence �
 1. Installer et activer **Rank Math SEO**, suivre l'assistant en mode « Facile ».
 2. Type de site : **Petite entreprise** ; nom : Confiserie Schiesser ; logo : le logo de la maison.
 3. Inutile de ressaisir l'adresse et les horaires dans Rank Math : le thème ajoute automatiquement les informations des Réglages maison à la fiche de Rank Math.
-4. **Plan du site** : inclure les Pages et les Produits ; exclure les Articles s'il n'y a pas de blog.
+4. **Plan du site** : inclure les Pages et les Produits ; exclure les Articles s'il n'y a pas de blog. Tant que la liste des produits est « en préparation », le thème retire lui-même les produits du plan du site.
+   Ne pas ressaisir l'adresse et les horaires dans le module SEO local de Rank Math : le thème les fournit déjà.
 5. Activer le module **Redirections** : chaque changement d'adresse d'une page créera une redirection.
 6. Dans chaque page, le panneau Rank Math affiche déjà le **mot-clé principal**, le **titre SEO** et la **méta description** préparés. Les textes des blocs de la maquette sont transmis à l'analyse de Rank Math. Viser un score de 80 ou plus, sans chercher 100 à tout prix.
 7. Après la mise en ligne : relier **Google Search Console** et envoyer le plan du site.
@@ -305,7 +383,13 @@ schiesser/
 ├── woocommerce.php                pages WooCommerce (utilisé seulement si WooCommerce est actif)
 ├── parts/titre-page.php           bandeau de titre des pages sans grande photo
 ├── inc/
+│   ├── carte-druck.php    carte du Tea Room en PDF et carte imprimable
+│   ├── maillage.php       section « Weiter im Haus » (liens vers les autres pages)
 │   ├── langue.php         site en allemand, administration en français, dates et heures, adresses des pages
+│   ├── i18n.php           trois langues avec Polylang : langue de la page, traductions liées, prix et photos communs
+│   ├── traductions.php    textes du thème en français et en anglais (boutons, horaires, fériés, allergènes…)
+│   ├── contenu-traductions.php  pages, produits et carte du Tea Room en français et en anglais (et leur SEO)
+│   ├── import-langues.php création des versions FR et EN à l'import (Polylang)
 │   ├── lancement.php      liste des produits « en préparation » et bouton de mise en ligne
 │   ├── contenu-produits.php  liste de prix de la boutique et carte du Tea Room
 │   ├── contenu-pages.php  texte allemand des pages
@@ -336,7 +420,7 @@ schiesser/
 ├── blocks/     hero/, section/, produits/  (block.json + index.js + render.php)
 └── assets/
     ├── css/     schiesser.css (site), editeur-maquette.css (éditeur), WooCommerce
-    ├── js/      site.js, maquette.js (animations du site), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), mise-en-page.js (espacements, boutons, copie de section), boutique, éditeur
+    ├── js/      site.js, maquette.js (animations du site), prestige.js (effets premium), blocs-maquette.js (éditeur des blocs), typographie.js (panneau Aa), mise-en-page.js (espacements, boutons, copie de section), boutique, éditeur
     ├── vendor/leaflet/   bibliothèque de carte (licence BSD)
     └── admin/, fonts/
 ```

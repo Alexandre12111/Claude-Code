@@ -86,7 +86,7 @@ function schiesser_demo_pages() {
 	$ids_produits = function ( $noms ) {
 		$ids = array();
 		foreach ( $noms as $nom ) {
-			$p = get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'publish', 'numberposts' => 1, 'fields' => 'ids' ) );
+			$p = schiesser_posts_allemands( array( 'post_type' => SCHIESSER_PRODUIT, 'title' => $nom, 'post_status' => 'publish', 'numberposts' => 1, 'fields' => 'ids' ) );
 			if ( $p ) {
 				$ids[] = $p[0];
 			}
@@ -107,11 +107,23 @@ function schiesser_demo_pages() {
 		'tables'   => '1600891964092-4316c288032e',
 		'relais'   => '1587248720327-8eb72564be1e',
 		'jour'     => '1551024506-0bccd828d307',
-		'a1889'    => 'theme:schiesser-fassade-1889.jpg',
+		'a1889'    => 'theme:archiv-fassade-patisserie-leckerly.jpg',
+		'neubau'   => 'theme:archiv-schiesserhaus-marktplatz.jpg',
+		'schaufenster' => 'theme:archiv-schaufenster-seit-1870.jpg',
+		'theke'    => 'theme:archiv-verkaufstheke-confiserie.jpg',
+		'torten'   => 'theme:archiv-konditoren-torten.jpg',
+		'backstube' => 'theme:archiv-backstube-confiserie.jpg',
+		'kasse'    => 'theme:archiv-kasse-tea-room.jpg',
 		'a1900'    => 'theme:schiesser-marktplatz-1900.jpg',
 	);
 	$alt1889 = 'Fassade der Confiserie Schiesser um 1889 mit den Schriftzügen Patisserie, Leckerly und Schiesser Confiseur';
 	$alt1900 = 'Markttag vor der Confiserie Schiesser am Basler Marktplatz um 1900';
+	$alt_neubau       = 'Das Schiesserhaus am Marktplatz mit Café, Tea-Room und Confiserie, davor der Markt';
+	$alt_schaufenster = 'Historisches Schaufenster der Confiserie Schiesser mit dem Schriftzug «Seit 1870 Schiesser»';
+	$alt_theke        = 'Historische Verkaufstheke der Confiserie Schiesser mit Pralinen in der Vitrine';
+	$alt_torten       = 'Drei Konditoren der Confiserie Schiesser dekorieren Torten in der Backstube';
+	$alt_backstube    = 'Junger Konditor in der historischen Backstube der Confiserie Schiesser';
+	$alt_kasse        = 'Kassiererin am Buffet des Tea Room der Confiserie Schiesser, Archivbild';
 
 	$url_confiserie = $u( '/confiserie/' );
 	$url_tearoom    = $u( '/tea-room/' );
@@ -133,8 +145,8 @@ function schiesser_demo_pages() {
 		'hauteur'      => 'accueil',
 		'ariane'       => false,
 		'sceau'        => true,
-		'surtitre'     => 'Confiserie & Tea Room · seit 1870',
-		'titre'        => 'Das älteste Kaffeehaus <br>der Schweiz, <em>am&nbsp;Basler Marktplatz</em>',
+		'surtitre'     => 'Das älteste Kaffeehaus der Schweiz · seit 1870',
+		'titre'        => 'Confiserie in Basel, <br><em>seit 1870 am&nbsp;Marktplatz</em>',
 		'texte'        => 'Confiserie mit eigener Backstube im Erdgeschoss, Tea Room und «Rathstübli» im ersten Stock, direkt gegenüber dem Rathaus.',
 		'bouton1Texte' => 'Unser Sortiment',
 		'bouton1Lien'  => '#kreationen',
@@ -152,10 +164,10 @@ function schiesser_demo_pages() {
 		. $sep
 		. $b( 'schiesser/savoir-faire', array( 'numero' => '03', 'titre' => 'Handwerk, das man sieht', 'note' => 'Vieles entsteht wie damals im Haus, zum Teil nach Rezepten aus den Gründerjahren.', 'fond' => 'clair', 'ancre' => 'handwerk' ),
 			$enfants( 'schiesser/geste', array(
-				array( 'titre' => 'Backen', 'texte' => 'Honig, Mandeln und Gewürze für die Läckerli, Butter und Mehl für die Gipfeli: gebacken wird im eigenen Haus.' ) + $img( $P['bisc'], 'backstube-confiserie-basel', 'Gebäck aus der eigenen Backstube' ),
-				array( 'titre' => 'Formen', 'texte' => 'Jedes Stück wird von Hand geschnitten, gerollt oder getunkt, ohne Abkürzung.' ) + $img( $P['relais'], 'handarbeit-confiserie', 'Handarbeit in der Backstube' ),
+				array( 'titre' => 'Backen', 'texte' => 'Honig, Mandeln und Gewürze für die Läckerli, Butter und Mehl für die Gipfeli: gebacken wird im eigenen Haus.' ) + $img( $P['backstube'], '', $alt_backstube ),
+				array( 'titre' => 'Formen', 'texte' => 'Jedes Stück wird von Hand geschnitten, gerollt oder getunkt, ohne Abkürzung.' ) + $img( $P['torten'], '', $alt_torten ),
 				array( 'titre' => 'Veredeln', 'texte' => 'Glasur, Dekor und Kontrolle: das Finish macht den Unterschied.' ) + $img( $P['tabl'], 'schokolade-handgemacht-basel', 'Veredeln der Schokolade von Hand' ),
-				array( 'titre' => 'Die Vitrine', 'texte' => 'Am Morgen wandert alles in die Vitrine am Marktplatz und hinauf in den Tea Room.' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Vitrine der Confiserie am Marktplatz' ),
+				array( 'titre' => 'Die Vitrine', 'texte' => 'Am Morgen wandert alles in die Vitrine am Marktplatz und hinauf in den Tea Room.' ) + $img( $P['schaufenster'], '', $alt_schaufenster ),
 			) ) )
 		. $b( 'schiesser/frise', array( 'numero' => '04', 'titre' => 'Die Zeitleiste', 'note' => 'Blättern Sie durch die Geschichte des Hauses. Ziehen oder mit den Pfeilen.', 'ancre' => 'geschichte', 'affichage' => 'cartes', 'indication' => 'Zum Entdecken ziehen →', 'retenirLibelle' => 'Gut zu wissen' ),
 			$enfants( 'schiesser/date', array(
@@ -174,10 +186,10 @@ function schiesser_demo_pages() {
 			schiesser_bm_p( 'Im Erdgeschoss die ' . $l( '/confiserie/', 'Confiserie' ) . ' mit eigener Backstube: Basler Läckerli, Pralinen, Torten und frisches Gebäck. Im ersten Stock der ' . $l( '/tea-room/', 'Tea Room' ) . ' und das «Rathstübli», wo Baslerinnen und Basler wie Gäste aus aller Welt seit über hundert Jahren debattieren und geniessen.' )
 			. schiesser_bm_p( 'Wir sind für Sie da: [schiesser_horaires_phrase]. Und hinter jeder Vitrine stecken über 150 Jahre ' . $l( '/geschichte/', 'Geschichte' ) . '.' ) )
 		. $b( 'schiesser/faq', array( 'numero' => '07', 'titre' => 'Häufige Fragen zur Confiserie', 'note' => 'Das Wichtigste vor Ihrem Besuch.', 'fond' => 'clair' ),
-			$q( 'Wo kauft man Basler Läckerli in Basel?', 'In der Confiserie Schiesser am Marktplatz, gegenüber dem Rathaus. Unsere Basler Läckerli gibt es zu 100 g, 200 g und 500 g sowie in der Geschenkbox. Sie halten mehrere Wochen und reisen sehr gut.' )
+			$q( 'Wo kauft man Basler Läckerli in Basel?', 'In der ' . $l( '/confiserie/', 'Confiserie Schiesser am Marktplatz' ) . ', gegenüber dem Rathaus. Unsere Basler Läckerli gibt es zu 100 g, 200 g und 500 g sowie in der Geschenkbox. Sie halten mehrere Wochen und reisen sehr gut.' )
 			. $q( 'Wann ist die Confiserie geöffnet?', 'Wir sind für Sie da: [schiesser_horaires_phrase]. An Feiertagen können die Zeiten abweichen: siehe ' . $l( '/besuch/', 'Besuch' ) . ', oder rufen Sie uns an.' )
 			. $q( 'Ist das wirklich das älteste Kaffeehaus der Schweiz?', 'Das Haus wurde 1870 gegründet und vereint Kaffeehaus, Tea Room und Confiserie mit eigener Backstube unter einem Dach: eine Verbindung, die in der Schweiz wohl nirgends sonst so weitgehend im Original erhalten ist. Mehr dazu in unserer ' . $l( '/geschichte/', 'Geschichte' ) . '.' )
-			. $q( 'Was bringt man aus Basel als süsses Souvenir mit?', 'Basler Läckerli, die mehrere Wochen halten, oder unsere Pralinen in der 9er- oder 16er-Box. Für grosse Geschenke gibt es die Bonbonnière bis 850 g.' ) );
+			. $q( 'Was bringt man aus Basel als süsses Souvenir mit?', 'Basler Läckerli, die mehrere Wochen halten, oder unsere Pralinen in der 9er- oder 16er-Box. Für grosse Geschenke gibt es die Bonbonnière bis 850 g, für Ihre Kundschaft unsere ' . $l( '/firmengeschenke/', 'Firmengeschenke aus Basel' ) . '.' ) );
 
 	/* ================= Confiserie ================= */
 	$confiserie = schiesser_demo_hero( array(
@@ -194,10 +206,10 @@ function schiesser_demo_pages() {
 		. $b( 'schiesser/produits', array( 'numero' => '01', 'titre' => 'Unser Sortiment', 'note' => 'Klicken Sie auf ein Produkt: alle Formate und Preise.', 'ancre' => 'sortiment', 'lienTexte' => '' ) )
 		. $b( 'schiesser/galerie', array( 'numero' => '02', 'titre' => 'Der Laden in Bildern', 'note' => 'Von der Vitrine bis zur Backstube: alles an einem Ort.', 'fond' => 'sombre', 'marque' => true, 'ancre' => 'bilder' ),
 			$enfants( 'schiesser/vue', array(
-				array( 'titre' => 'Die Vitrine', 'texte' => 'Jeden Morgen neu bestückt. Was Sie sehen, kommt wenige Stunden vorher aus der Backstube.' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Vitrine, jeden Morgen neu bestückt' ),
-				array( 'titre' => 'Die Theke', 'texte' => 'Hier wählt man Stück für Stück, lässt sich beraten und eine Box zusammenstellen.' ) + $img( $P['pral'], 'confiserie-basel-pralinen', 'Pralinen an der Theke, Stück für Stück ausgewählt' ),
-				array( 'titre' => 'Die Backstube', 'texte' => 'Sie arbeitet direkt hinter dem Laden, wie seit den Gründerjahren.' ) + $img( $P['bisc'], 'backstube-confiserie-basel', 'Die Backstube der Confiserie' ),
-				array( 'titre' => 'Das Finish', 'texte' => 'Glasieren, tunken, dekorieren: der langsamste Schritt, und der, der ein Haus ausmacht.' ) + $img( $P['tabl'], 'schokolade-handgemacht-basel', 'Schokolade, von Hand veredelt' ),
+				array( 'titre' => 'Die Vitrine', 'texte' => 'Jeden Morgen neu bestückt. Was Sie sehen, kommt wenige Stunden vorher aus der Backstube.' ) + $img( $P['schaufenster'], '', $alt_schaufenster ),
+				array( 'titre' => 'Die Theke', 'texte' => 'Hier wählt man Stück für Stück, lässt sich beraten und eine Box zusammenstellen.' ) + $img( $P['theke'], '', $alt_theke ),
+				array( 'titre' => 'Die Backstube', 'texte' => 'Sie arbeitet direkt hinter dem Laden, wie seit den Gründerjahren.' ) + $img( $P['backstube'], '', $alt_backstube ),
+				array( 'titre' => 'Das Finish', 'texte' => 'Glasieren, tunken, dekorieren: der langsamste Schritt, und der, der ein Haus ausmacht.' ) + $img( $P['torten'], '', $alt_torten ),
 				array( 'titre' => 'Die Verpackung', 'texte' => 'Jede Box wird von Hand gefüllt und verschlossen. Für Flug oder Zug verpacken wir auf Wunsch besonders sicher.' ) + $img( $P['coff'], 'geschenkbox-pralinen', 'Pralinenbox, von Hand verpackt' ),
 				array( 'titre' => 'Die Fassade', 'texte' => 'Am Marktplatz, gegenüber dem Rathaus. «Schiesser Confiseur» stand schon 1889 darauf.' ) + $img( $P['a1889'], '', $alt1889 ),
 			) ) )
@@ -221,9 +233,9 @@ function schiesser_demo_pages() {
 			schiesser_bm_p( 'Pralinen einzeln, pro 100 g oder in der 4er-, 9er- und 16er-Box; Basler Läckerli von 100 bis 500 g; Schokotafeln von 37 bis 83 % Kakao.' )
 			. schiesser_bm_p( 'Zum Verschenken: die Bonbonnière von 280 bis 850 g, Marrons glacés, Marzipanfrüchte und die Läckerli-Box. Und oben im ' . $l( '/tea-room/', 'Tea Room' ) . ' gibt es zum Tee hausgemachte Pralinen.' ) )
 		. $b( 'schiesser/faq', array( 'numero' => '06', 'titre' => 'Häufige Fragen zu unserer Confiserie', 'note' => 'Transport, Bestellung und Allergien.', 'fond' => 'clair' ),
-			$q( 'Reisen die Produkte gut?', 'Unsere Geschenkboxen sind zum Mitnehmen gemacht. Fragen Sie nach einer bruchsicheren Verpackung, wenn Sie fliegen oder mit dem Zug reisen: Läckerli, Tafeln und Boxen überstehen die Reise sehr gut.' )
-			. $q( 'Liefern oder versenden Sie Bestellungen?', 'Bestellungen holen Sie im Laden am Marktplatz ab. Für besondere Wünsche schreiben Sie uns, wir finden gemeinsam eine Lösung.' )
-			. $q( 'Enthalten Ihre Pralinen Alkohol?', 'Einige Spezialitäten ja, zum Beispiel die Liqueur-Stängeli. Fragen Sie an der Theke, wir zeigen Ihnen die Stücke ohne Alkohol.' )
+			$q( 'Reisen die Produkte gut?', 'Unsere Geschenkboxen sind zum Mitnehmen gemacht. Fragen Sie nach einer bruchsicheren Verpackung, wenn Sie fliegen oder mit dem Zug reisen: Läckerli, Tafeln und Boxen überstehen die Reise sehr gut. Für Firmen gibt es ' . $l( '/firmengeschenke/', 'Geschenkboxen mit Ihrem Logo' ) . '.' )
+			. $q( 'Liefern oder versenden Sie Bestellungen?', 'Bestellungen holen Sie im Laden am Marktplatz ab. Für besondere Wünsche ' . $l( '/kontakt/', 'schreiben Sie uns' ) . ', wir finden gemeinsam eine Lösung. ' . $l( '/besuch/', 'Öffnungszeiten und Anfahrt' ) . ' finden Sie hier.' )
+			. $q( 'Enthalten Ihre Pralinen Alkohol?', 'Einige Spezialitäten ja, zum Beispiel die Liqueur-Stängeli. Fragen Sie an der Theke, wir zeigen Ihnen die Stücke ohne Alkohol. Probieren können Sie unsere Pralinen auch im ' . $l( '/tea-room/', 'Tea Room im ersten Stock' ) . ', zu jedem Kännchen Tee.' )
 			. $q( 'Sind Ihre Produkte für Allergiker geeignet?', 'In unserer Backstube werden Nüsse, Milch, Soja, Gluten und Ei verarbeitet; Spuren lassen sich deshalb nicht ausschliessen. Die Zutaten jedes Produkts erfahren Sie an der Theke.' ) );
 
 	/* ================= Tea Room ================= */
@@ -233,13 +245,14 @@ function schiesser_demo_pages() {
 		'surtitre'     => 'Erster Stock · Marktplatz',
 		'titre'        => 'Tea Room in&nbsp;Basel, <br><em>über dem Marktplatz</em>',
 		'texte'        => 'Durch den Laden, die Treppe hinauf, und der Lärm des Marktplatzes bleibt unten. Hier sitzen Sie im ältesten Kaffeehaus der Schweiz.',
-		'bouton1Texte' => 'Zur Karte',
-		'bouton1Lien'  => '#karte',
-		'bouton2Texte' => 'Vorbeikommen',
-		'bouton2Lien'  => '#vorbeikommen',
+		'bouton1Texte' => 'Karte ansehen (PDF)',
+		'bouton1Lien'  => '#karte-pdf', // remplacé par le PDF de la carte (inc/carte-druck.php)
+		'bouton2Texte' => 'Zur Karte',
+		'bouton2Lien'  => '#karte',
 	), $P['salon'], 'tea-room-basel', 'Der Tea Room der Confiserie Schiesser im ersten Stock am Marktplatz Basel' )
 		. $live( array( 'Der Tea Room', 'Erster Stock', 'Zugang durch den Laden', '' ), array( 'Reservieren', '', 'Empfohlen ab sechs Personen', 'telephone' ) )
-		. $b( 'schiesser/intro', array( 'numero' => '01', 'titre' => 'Hinauf in den ersten Stock', 'note' => 'Ein paar Stufen trennen Laden und Tea Room. Sie machen den Unterschied.', 'ancre' => 'tea-room', 'suite' => true, 'lead' => 'Ein Ort, den man erst entdeckt, wenn man die Tür aufstösst und den Blick hebt.' ),
+		. $b( 'schiesser/carte-salon', array( 'numero' => '01', 'titre' => 'Die Karte des Tea Room', 'note' => 'Kaffee, Tee, hausgemachte Schokolade, Frühstück, Hausgemachtes, Desserts und Drinks. Die ganze Karte gibt es auch als PDF.', 'fond' => 'alterne', 'ancre' => 'karte', 'mention' => 'Preise in CHF. Änderungen vorbehalten.', 'sSurtitre' => 'Empfehlung des Hauses', 'sPied' => 'Den ganzen Tag' ) )
+		. $b( 'schiesser/intro', array( 'numero' => '02', 'titre' => 'Hinauf in den ersten Stock', 'note' => 'Ein paar Stufen trennen Laden und Tea Room. Sie machen den Unterschied.', 'ancre' => 'tea-room', 'suite' => true, 'lead' => 'Ein Ort, den man erst entdeckt, wenn man die Tür aufstösst und den Blick hebt.' ),
 			schiesser_bm_p( 'Sie sitzen im ältesten Kaffeehaus der Schweiz, gegründet 1870. Tea Room und «Rathstübli» liegen im ersten Stock des Schiesser am Marktplatz, direkt gegenüber dem Rathaus.' )
 			. schiesser_bm_p( 'Eingerichtet hat sie Hans Schiesser, der Sohn des Gründers. Seit über hundert Jahren debattieren und geniessen hier Baslerinnen und Basler wie Gäste aus aller Welt.' ) )
 		. $b( 'schiesser/ascension', array( 'indication' => 'Scrollen Sie, um hinaufzusteigen' ),
@@ -248,19 +261,18 @@ function schiesser_demo_pages() {
 				array( 'niveau' => '½', 'libelle' => 'Treppe', 'surtitre' => 'Die Treppe', 'titre' => 'Die Treppe hinauf', 'texte' => 'Ein paar Stufen, ein von vielen Händen polierter Handlauf. Der Lärm des Platzes wird leiser.' ) + $img( $P['facade'], 'treppe-tea-room', 'Die Treppe zum Tea Room' ),
 				array( 'niveau' => '1', 'libelle' => 'Tea Room', 'surtitre' => 'Erster Stock', 'titre' => 'Ankommen', 'texte' => 'Ein Tisch am Fenster, unten der Platz, gegenüber das Rathaus. Der Rest kann warten.' ) + $img( $P['salon'], 'tea-room-basel', 'Der Tea Room im ersten Stock' ),
 			) ) )
-		. $b( 'schiesser/encart', array( 'numero' => '02', 'titre' => 'Seit 1870', 'note' => 'Kaffeehaus, Tea Room und Confiserie unter einem Dach.', 'fond' => 'sombre', 'surtitre' => 'Eine Schweizer Besonderheit', 'encartTitre' => 'Das älteste Kaffeehaus der Schweiz', 'sousTitre' => 'Im ersten Stock, über der Confiserie', 'texte' => 'Kaffeehaus, Tea Room und Confiserie mit eigener Backstube unter einem Dach: eine Verbindung, die in der Schweiz wohl nirgends sonst so weitgehend im Original erhalten ist.', 'mention' => '' ) + $img( $P['a1889'], '', $alt1889 ),
+		. $b( 'schiesser/encart', array( 'numero' => '03', 'titre' => 'Seit 1870', 'note' => 'Kaffeehaus, Tea Room und Confiserie unter einem Dach.', 'fond' => 'sombre', 'surtitre' => 'Eine Schweizer Besonderheit', 'encartTitre' => 'Das älteste Kaffeehaus der Schweiz', 'sousTitre' => 'Im ersten Stock, über der Confiserie', 'texte' => 'Kaffeehaus, Tea Room und Confiserie mit eigener Backstube unter einem Dach: eine Verbindung, die in der Schweiz wohl nirgends sonst so weitgehend im Original erhalten ist.', 'mention' => '' ) + $img( $P['a1889'], '', $alt1889 ),
 			$enfants( 'schiesser/chiffre', array(
 				array( 'valeur' => '1870', 'libelle' => 'Gründung am Marktplatz' ),
 				array( 'valeur' => '1.', 'libelle' => 'Stock: Tea Room und Rathstübli' ),
 				array( 'valeur' => '100+', 'libelle' => 'Jahre Kaffeehauskultur' ),
 			) ) )
-		. $b( 'schiesser/carte-salon', array( 'numero' => '03', 'titre' => 'Die Karte', 'note' => 'Kaffee, Tee, hausgemachte Schokolade, Frühstück, Hausgemachtes und Desserts.', 'fond' => 'alterne', 'ancre' => 'karte', 'mention' => 'Preise in CHF. Änderungen vorbehalten.', 'sSurtitre' => 'Empfehlung des Hauses', 'sPied' => 'Den ganzen Tag' ) )
 		. $b( 'schiesser/panneaux', array( 'numero' => '04', 'titre' => 'Der Tea Room im Detail', 'note' => 'Fahren Sie über die Bilder oder tippen Sie darauf.', 'indication' => 'Zum Öffnen klicken oder darüberfahren' ),
 			$enfants( 'schiesser/panneau', array(
 				array( 'titre' => 'Die Fenster', 'texte' => 'Sie gehen direkt auf den Marktplatz und das Rathaus. Die schönsten Tische stehen an ihnen.' ) + $img( $P['salon'], 'tea-room-basel', 'Die Fenster des Tea Room zum Marktplatz' ),
 				array( 'titre' => 'Das Rathstübli', 'texte' => 'Ein Raum mit eigener Geschichte, eingerichtet von Hans Schiesser, dem Sohn des Gründers.' ) + $img( $P['tables'], 'rathstuebli-basel', 'Das Rathstübli im ersten Stock' ),
 				array( 'titre' => 'Der Service', 'texte' => 'Tee kommt frisch aufgegossen im Kännchen, mit Zitrone, Honig und hausgemachten Pralinen.' ) + $img( $P['tabl'], 'tee-service-tea-room', 'Tee-Service im Tea Room' ),
-				array( 'titre' => 'Die Verkaufstheke', 'texte' => 'Hier warten täglich frische Pâtisserie, Torten, Früchtewähen und feines Hausgebäck.' ) + $img( $P['truf'], 'patisserie-verkaufstheke', 'Pâtisserie an der Verkaufstheke' ),
+				array( 'titre' => 'Die Verkaufstheke', 'texte' => 'Hier warten täglich frische Pâtisserie, Torten, Früchtewähen und feines Hausgebäck.' ) + $img( $P['theke'], '', $alt_theke ),
 			) ) )
 		. $sep
 		. $b( 'schiesser/moments', array( 'numero' => '05', 'titre' => 'Wann kommen?', 'note' => 'Der Tea Room verändert sich im Lauf des Tages. Wählen Sie Ihren Moment.', 'fond' => 'sombre', 'marque' => true, 'conseilLibelle' => 'Unsere Empfehlung' ),
@@ -276,10 +288,10 @@ function schiesser_demo_pages() {
 			. $ligne( 'Reservation', '', 'Nicht nötig', 'Empfohlen ab sechs Personen oder für einen privaten Anlass' )
 			. $ligne( 'Gruppen', '', 'Auf Anfrage', 'Degustationen und private Anlässe' ) )
 		. $b( 'schiesser/faq', array( 'numero' => '07', 'titre' => 'Fragen zu unserem Tea Room in Basel', 'note' => 'Reservation, Gruppen und Karte.' ),
-			$q( 'Muss man im Tea Room reservieren?', 'Nein, der Zugang ist frei. Ab sechs Personen empfehlen wir eine Reservation.' )
+			$q( 'Muss man im Tea Room reservieren?', 'Nein, der Zugang ist frei. Ab sechs Personen empfehlen wir eine Reservation: ' . $l( '/kontakt/', 'rufen Sie uns an oder schreiben Sie uns' ) . '. ' . $l( '/besuch/', 'Öffnungszeiten und Anfahrt zum Marktplatz' ) . '.' )
 			. $q( 'Kann man den Tea Room privat mieten?', 'Je nach Zeit und Saison ist das möglich. ' . $l( '/kontakt/', 'Kontaktieren Sie uns' ) . ' mit Datum, Anzahl Personen und Ihren Wünschen.' )
-			. $q( 'Gibt es auch etwas Herzhaftes?', 'Ja: Tagessuppe und Tomatencreme mit Hausbrot, hausgemachte Quiches, Salatteller und Hauspasteten-Teller, dazu Schinkengipfel und Wurstwegge.' )
-			. $q( 'Kann man bei Ihnen frühstücken?', 'Ja: Marktplatz-, Schiesser- und Rathaus-Frühstück mit hausgemachten Buttergipfeln und frisch gepresstem Orangensaft, auf Wunsch mit einem Cüpli Prosecco oder Champagner.' ) );
+			. $q( 'Gibt es auch etwas Herzhaftes?', 'Ja: Tagessuppe und Tomatencreme mit Hausbrot, hausgemachte Quiches, Salatteller und Hauspasteten-Teller, dazu Schinkengipfel und Wurstwegge aus unserer ' . $l( '/confiserie/', 'Backstube am Marktplatz' ) . '.' )
+			. $q( 'Kann man bei Ihnen frühstücken?', 'Ja: Marktplatz-, Schiesser- und Rathaus-Frühstück mit hausgemachten Buttergipfeln und frisch gepresstem Orangensaft, auf Wunsch mit einem Cüpli Prosecco oder Champagner. Seit wann hier gefrühstückt wird, erzählt unsere ' . $l( '/geschichte/', 'Geschichte seit 1870' ) . '.' ) );
 
 	/* ================= Geschichte ================= */
 	$geschichte = schiesser_demo_hero( array(
@@ -299,8 +311,8 @@ function schiesser_demo_pages() {
 			) ) )
 		. $b( 'schiesser/plaque', array( 'nombre' => '150', 'libelle' => 'Jahre Schiesser', 'dates' => '1870 · 2020', 'texte' => 'Anderthalb Jahrhunderte Handwerk, von Generation zu Generation weitergegeben.' ) )
 		. $b( 'schiesser/origine', array( 'numero' => '01', 'titre' => 'Der Anfang', 'note' => 'Eine Geschichte, einfach erzählt. Der Rest lässt sich vor Ort geniessen.', 'legende' => 'Archiv · die Fassade um 1889', 'figure' => 'Abb. 01' ) + $img( $P['a1889'], '', $alt1889 ),
-			schiesser_bm_p( 'Der Glarner Konditor Rudolf Schiesser legte 1870 den Grundstein: eine Confiserie am Basler Marktplatz, direkt gegenüber dem Rathaus.' )
-			. schiesser_bm_p( 'Schon früh stand auf der Fassade, wofür das Haus bekannt wurde: «Patisserie», «Leckerly», «Schiesser Confiseur». Gebacken wurde im Haus, verkauft an der Theke, der Markt lag direkt vor der Tür.' )
+			schiesser_bm_p( 'Der Glarner Konditor Rudolf Schiesser legte 1870 den Grundstein: eine ' . $l( '/confiserie/', 'Confiserie am Basler Marktplatz' ) . ', direkt ' . $l( '/besuch/', 'gegenüber dem Rathaus' ) . '.' )
+			. schiesser_bm_p( 'Schon früh stand auf der Fassade, wofür das Haus bekannt wurde: «Patisserie», «Leckerly», «Schiesser Confiseur». Gebacken wurde im Haus, verkauft an der Theke, der Markt lag direkt vor der Tür. Die ' . $l( '/confiserie/', 'Basler Läckerli' ) . ' gehören bis heute dazu.' )
 			. $b( 'schiesser/exergue', array( 'texte' => 'Was wir Ihnen servieren, entsteht wie damals im Haus, zum Teil nach Rezepten aus den Gründerjahren.', 'auteur' => 'Confiserie Schiesser' ) )
 			. schiesser_bm_p( 'Sein Sohn Hans gab dem Haus die neugotische Fassade nach dem Vorbild des Rathauses und richtete im ersten Stock den ' . $l( '/tea-room/', 'Tea Room' ) . ' und das «Rathstübli» ein. Seither debattieren und geniessen dort Baslerinnen und Basler wie Gäste aus aller Welt.' ) )
 		. $b( 'schiesser/frise', array( 'numero' => '02', 'titre' => 'Die Chronik', 'note' => 'Wählen Sie ein Datum oder lassen Sie die Geschichte laufen.', 'ancre' => 'chronik', 'affichage' => 'onglets', 'indication' => 'Klicken Sie auf ein Datum', 'retenirLibelle' => 'Gut zu wissen' ),
@@ -308,18 +320,24 @@ function schiesser_demo_pages() {
 				array( 'annee' => '1870', 'libelle' => 'Gründung', 'titre' => 'Die Gründung', 'texte' => 'Rudolf Schiesser, Konditor aus Glarus, eröffnet seine Confiserie am Basler Marktplatz.', 'retenir' => 'Das Haus steht bis heute an derselben Adresse, gegenüber dem Rathaus.' ) + $img( $P['a1889'], '', $alt1889 ),
 				array( 'annee' => '1889', 'libelle' => 'Die Fassade', 'titre' => 'Patisserie und Leckerly', 'texte' => 'Die Aufnahme von 1889 zeigt die Fassade mit «Patisserie», «Leckerly» und «Schiesser Confiseur», in den Fenstern das Personal des Hauses.', 'retenir' => 'Läckerli gehören seit den Anfängen zum Haus.' ) + $img( $P['a1889'], '', $alt1889 ),
 				array( 'annee' => '1900', 'libelle' => 'Der Markt', 'titre' => 'Mitten im Markt', 'texte' => 'Um 1900: vor dem Haus die Marktstände, dahinter die Confiserie.', 'retenir' => 'Der Markt findet bis heute direkt vor unseren Fenstern statt.' ) + $img( $P['a1900'], '', $alt1900 ),
-				array( 'annee' => 'Nach 1900', 'libelle' => 'Zweite Generation', 'titre' => 'Tea Room und Rathstübli', 'texte' => 'Hans Schiesser gibt dem Haus die neugotische Fassade nach dem Vorbild des Rathauses und richtet im ersten Stock Tea Room und «Rathstübli» ein.', 'retenir' => 'Seit über hundert Jahren ein Treffpunkt für Basel.' ) + $img( $P['salon'], 'tea-room-basel', 'Der Tea Room im ersten Stock' ),
+				array( 'annee' => 'Nach 1900', 'libelle' => 'Zweite Generation', 'titre' => 'Tea Room und Rathstübli', 'texte' => 'Hans Schiesser gibt dem Haus die neugotische Fassade nach dem Vorbild des Rathauses und richtet im ersten Stock Tea Room und «Rathstübli» ein.', 'retenir' => 'Seit über hundert Jahren ein Treffpunkt für Basel.' ) + $img( $P['neubau'], '', $alt_neubau ),
 				array( 'annee' => 'Heute', 'libelle' => 'Marktplatz', 'titre' => 'Immer noch am Marktplatz', 'texte' => 'Kaffeehaus, Tea Room und Confiserie mit eigener Backstube unter einem Dach, wohl nirgends sonst in der Schweiz so im Original erhalten.', 'retenir' => 'Überzeugen Sie sich selbst: ' . $l( '/besuch/', 'Öffnungszeiten und Anfahrt' ) . '.' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Die Confiserie Schiesser heute' ),
 			) ) )
-		. $b( 'schiesser/archives', array( 'numero' => '03', 'titre' => 'Aus dem Archiv', 'note' => 'Zwei Aufnahmen aus den Anfängen des Hauses. Klicken Sie zum Vergrössern.', 'fond' => 'clair', 'credit' => 'Archivbilder: Confiserie Schiesser.' ),
+		. $b( 'schiesser/archives', array( 'numero' => '03', 'titre' => 'Aus dem Archiv', 'note' => 'Aufnahmen aus der Geschichte des Hauses. Klicken Sie zum Vergrössern.', 'fond' => 'clair', 'credit' => 'Archivbilder: Confiserie Schiesser.' ),
 			$enfants( 'schiesser/archive', array(
 				array( 'titre' => 'Die Fassade', 'meta' => '1889 · Fotografie', 'description' => 'Die Fassade mit den Schriftzügen «Patisserie», «Leckerly» und «Schiesser Confiseur»; in den Fenstern das Personal des Hauses.' ) + $img( $P['a1889'], '', $alt1889 ),
 				array( 'titre' => 'Der Marktplatz', 'meta' => 'Um 1900 · Fotografie', 'description' => 'Markttag vor dem Haus: Stände, Körbe und Karren, dahinter die Confiserie.' ) + $img( $P['a1900'], '', $alt1900 ),
+				array( 'titre' => 'Das Schiesserhaus', 'meta' => 'Archiv · Fotografie', 'description' => 'Das neue Haus am Marktplatz mit Café, Tea-Room und Confiserie; davor der Markt.' ) + $img( $P['neubau'], '', $alt_neubau ),
+				array( 'titre' => 'Das Schaufenster', 'meta' => 'Archiv · Fotografie', 'description' => '«Seit 1870 Schiesser»: Läckerli, Geschenkdosen und eine Lokomotive als Blickfang.' ) + $img( $P['schaufenster'], '', $alt_schaufenster ),
+				array( 'titre' => 'Die Verkaufstheke', 'meta' => 'Archiv · Fotografie', 'description' => 'Pralinen unter Glas, die Waage auf der Theke, Dosen und Tafeln in den Regalen.' ) + $img( $P['theke'], '', $alt_theke ),
+				array( 'titre' => 'Die Backstube', 'meta' => 'Archiv · Fotografie', 'description' => 'Drei Konditoren dekorieren Torten: Handarbeit, wie bis heute.' ) + $img( $P['torten'], '', $alt_torten ),
+				array( 'titre' => 'Am Rührwerk', 'meta' => 'Archiv · Fotografie', 'description' => 'Ein junger Konditor an der Arbeit, neben den grossen Rührmaschinen der Backstube.' ) + $img( $P['backstube'], '', $alt_backstube ),
+				array( 'titre' => 'Am Buffet', 'meta' => 'Archiv · Fotografie', 'description' => 'An der Kasse des Tea Room, zwischen Holztäfer und Kronleuchter.' ) + $img( $P['kasse'], '', $alt_kasse ),
 			) ) )
 		. $b( 'schiesser/avant-apres', array( 'numero' => '04', 'titre' => 'Gestern und heute', 'note' => 'Dasselbe Haus, im Abstand von über einem Jahrhundert. Ziehen Sie den Regler.', 'indication' => 'Zum Vergleichen ziehen' ),
 			$enfants( 'schiesser/comparaison', array(
 				array( 'onglet' => 'Die Fassade', 'avantLibelle' => '1889', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['a1889'], '', $alt1889, 'avant' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Confiserie heute', 'apres' ),
-				array( 'onglet' => 'Der Marktplatz', 'avantLibelle' => 'Um 1900', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['a1900'], '', $alt1900, 'avant' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Der Marktplatz heute', 'apres' ),
+				array( 'onglet' => 'Der Marktplatz', 'avantLibelle' => 'Damals', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['neubau'], '', $alt_neubau, 'avant' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Der Marktplatz heute', 'apres' ),
 			) ) )
 		. $sep
 		. $b( 'schiesser/cartes', array( 'numero' => '05', 'titre' => 'Was sich nicht geändert hat', 'note' => 'Drei Grundsätze, seit dem ersten Tag.', 'modele' => 'principes', 'fond' => 'papier' ),
@@ -383,10 +401,10 @@ function schiesser_demo_pages() {
 		. $sep
 		. $b( 'schiesser/devanture', array( 'numero' => '05', 'titre' => 'Das Haus erkennen', 'note' => 'Danach halten Sie Ausschau, wenn Sie auf den Platz kommen.', 'fond' => 'clair', 'surtitre' => 'Marktplatz · gegenüber dem Rathaus', 'encartTitre' => 'Die Fassade', 'texte' => 'Die neugotische Fassade nach dem Vorbild des Rathauses, die Vitrinen direkt am Platz. Der Eingang führt durch den Laden, die Treppe zum Tea Room liegt hinten.' ) + $img( $P['facade'], 'fassade-confiserie-schiesser', 'Die Fassade der Confiserie Schiesser am Marktplatz Basel' ) )
 		. $b( 'schiesser/faq', array( 'numero' => '06', 'titre' => 'Praktische Fragen vor Ihrem Besuch', 'note' => 'Das Wichtigste vor Ihrem Besuch.' ),
-			$q( 'Gibt es Parkplätze in der Nähe?', 'Der Marktplatz ist Fussgängerzone. Die Parkhäuser der Innenstadt liegen wenige Gehminuten entfernt.' )
+			$q( 'Gibt es Parkplätze in der Nähe?', 'Der Marktplatz ist Fussgängerzone. Die Parkhäuser der Innenstadt liegen wenige Gehminuten entfernt. Fragen vor Ihrem Besuch? ' . $l( '/kontakt/', 'Kontaktieren Sie uns' ) . '.' )
 			. $q( 'Kann man mit Euro bezahlen?', 'Ja, Euro werden im Laden angenommen. Ausserdem Karten, kontaktlos und bar in Schweizer Franken.' )
 			. $q( 'Wo kann man vor Ort etwas geniessen?', 'Im ' . $l( '/tea-room/', 'Tea Room' ) . ' im ersten Stock, während der Öffnungszeiten der Confiserie: Kaffee, Tee, hausgemachte Schokolade, Frühstück und Desserts.' )
-			. $q( 'Reisen die Produkte gut?', 'Unsere Geschenkboxen sind zum Mitnehmen gemacht. Fragen Sie nach einer bruchsicheren Verpackung, wenn Sie fliegen oder mit dem Zug reisen.' )
+			. $q( 'Reisen die Produkte gut?', 'Unsere Geschenkboxen sind zum Mitnehmen gemacht. Fragen Sie nach einer bruchsicheren Verpackung, wenn Sie fliegen oder mit dem Zug reisen. Alle Spezialitäten finden Sie in unserer ' . $l( '/confiserie/', 'Confiserie in Basel' ) . '.' )
 			. $q( 'Was gibt es rund um den Marktplatz zu sehen?', 'Das Rathaus liegt direkt gegenüber, die Altstadt beginnt gleich nebenan. Ideen für Spaziergänge auf <a href="https://www.basel.com/de">basel.com</a>.' ) );
 
 	/* ================= Kontakt ================= */
@@ -409,11 +427,11 @@ function schiesser_demo_pages() {
 			. $ligne( 'Für', '', 'Bestellungen, Torten, Geschenkboxen, Gruppen, Presse' ) )
 		. $b( 'schiesser/faq', array( 'numero' => '03', 'titre' => 'Bevor Sie uns schreiben', 'note' => 'Vielleicht steht die Antwort schon hier.', 'fond' => 'clair' ),
 			$q( 'Wie schnell antworten Sie?', 'Per E-Mail innert ein bis zwei Arbeitstagen. Bei dringenden Anliegen rufen Sie uns am besten während der Öffnungszeiten an.' )
-			. $q( 'Wie früh sollte man eine Torte bestellen?', 'Für die meisten Torten genügen wenige Tage, für grosse Bestellungen oder an Festtagen etwas mehr. Rufen Sie uns an, wir beraten Sie gerne.' )
+			. $q( 'Wie früh sollte man eine Torte bestellen?', 'Für die meisten Torten genügen wenige Tage, für grosse Bestellungen oder an Festtagen etwas mehr. Rufen Sie uns an, wir beraten Sie gerne. Unser Sortiment an Torten, Läckerli und Pralinen finden Sie in der ' . $l( '/confiserie/', 'Confiserie' ) . '.' )
 			. $q( 'Kann man im Tea Room einen Tisch reservieren?', 'Der Tea Room ist frei zugänglich. Ab sechs Personen oder für einen privaten Anlass empfehlen wir eine Reservation. Mehr dazu auf der Seite ' . $l( '/tea-room/', 'Tea Room' ) . '.' )
 			. $q( 'Liefern oder versenden Sie Bestellungen?', 'Bestellungen holen Sie im Laden am Marktplatz ab. Für besondere Wünsche schreiben Sie uns, wir finden gemeinsam eine Lösung.' )
 			. $q( 'Bieten Sie Firmengeschenke an?', 'Ja, wir stellen Pralinen- und Läckerli-Boxen für Ihre Kundschaft oder Ihr Team zusammen, mit Ihrer Botschaft oder Ihrem Logo. Siehe ' . $l( '/firmengeschenke/', 'Firmengeschenke' ) . '.' )
-			. $q( 'Gibt es einen Onlineshop?', 'Er folgt in Kürze. Bis dahin bestellen Sie telefonisch oder per E-Mail und holen alles im Laden am Marktplatz ab.' ) )
+			. $q( 'Gibt es einen Onlineshop?', 'Er folgt in Kürze. Bis dahin bestellen Sie telefonisch oder per E-Mail und holen alles im Laden am Marktplatz ab: ' . $l( '/besuch/', 'Öffnungszeiten und Anfahrt' ) . '.' ) )
 		. $b( 'schiesser/appel', array( 'surtitre' => 'Am einfachsten ist es immer noch', 'titre' => 'Kommen Sie an den Marktplatz', 'texte' => 'Wir sind vom Morgen bis am Abend für Sie da, die Vitrine ist jeden Tag frisch bestückt und oben wartet der Tea Room.', 'b1Texte' => 'So finden Sie uns', 'b1Lien' => $url_besuch, 'b2Texte' => 'Rufen Sie uns an', 'b2Lien' => schiesser_lien_tel() ) );
 
 	/* ================= Firmengeschenke ================= */
@@ -452,8 +470,8 @@ function schiesser_demo_pages() {
 			) ) )
 		. $b( 'schiesser/faq', array( 'numero' => '05', 'titre' => 'Fragen zu Firmengeschenken', 'note' => 'Degustation, Fristen, Transport.' ),
 			$q( 'Kann man vor der Bestellung probieren?', 'Ja: im ' . $l( '/tea-room/', 'Tea Room' ) . ' gibt es zum Tee hausgemachte Pralinen, und im Laden stellen Sie gerne eine kleine Box zusammen.' )
-			. $q( 'Wie früh sollte man bestellen?', 'Schreiben Sie uns, sobald das Datum feststeht. Für kleine Mengen genügen wenige Tage; für die Festtage besser einige Wochen im Voraus.' )
-			. $q( 'Reisen die Geschenke gut?', 'Ja, sie sind zum Mitnehmen gemacht, und auf Wunsch verpacken wir sie besonders sicher.' )
+			. $q( 'Wie früh sollte man bestellen?', '' . $l( '/kontakt/', 'Schreiben Sie uns' ) . ', sobald das Datum feststeht. Für kleine Mengen genügen wenige Tage; für die Festtage besser einige Wochen im Voraus.' )
+			. $q( 'Reisen die Geschenke gut?', 'Ja, sie sind zum Mitnehmen gemacht, und auf Wunsch verpacken wir sie besonders sicher. Basler Läckerli halten mehrere Wochen: mehr dazu in der ' . $l( '/confiserie/', 'Confiserie' ) . '.' )
 			. $q( 'Liefern Sie?', 'Bestellungen holen Sie im Laden am Marktplatz ab. Für besondere Wünsche schreiben Sie uns, wir finden gemeinsam eine Lösung.' ) )
 		. $b( 'schiesser/appel', array( 'surtitre' => 'Sprechen wir über Ihre Geschenke', 'titre' => 'Eine Offerte innert ein bis zwei Arbeitstagen', 'texte' => 'Nennen Sie uns Menge und Datum: wir antworten mit einem Vorschlag und einem Preis.', 'b1Texte' => 'Offerte anfragen', 'b1Lien' => $devis, 'b2Texte' => 'Rufen Sie uns an', 'b2Lien' => schiesser_lien_tel() ) );
 
@@ -471,19 +489,19 @@ function schiesser_demo_pages() {
 
 	return array(
 		array( 'titre' => 'Startseite', 'slug' => 'startseite', 'anciens' => array( 'accueil' ), 'contenu' => $startseite,
-			'seo' => array( 'titre' => 'Confiserie in Basel | Tea Room seit 1870 – Schiesser', 'description' => 'Confiserie in Basel seit 1870: Läckerli, Pralinen und Patisserie aus der eigenen Backstube, Tea Room im ersten Stock. Am Marktplatz, gegenüber dem Rathaus.', 'mots_cles' => array( 'Confiserie Basel', 'Tea Room Basel', 'Confiserie Schiesser' ) ) ),
+			'seo' => array( 'titre' => 'Confiserie in Basel | Tea Room seit 1870 – Schiesser', 'description' => 'Confiserie in Basel seit 1870: Läckerli, Pralinen und Patisserie aus der eigenen Backstube, Tea Room im ersten Stock. Am Marktplatz, gegenüber dem Rathaus.', 'mots_cles' => array( 'Confiserie Basel', 'Tea Room Basel', 'Confiserie Schiesser', 'Kaffeehaus Basel', 'Basler Läckerli' ) ) ),
 		array( 'titre' => 'Confiserie', 'slug' => 'confiserie', 'anciens' => array( 'boutique' ), 'contenu' => $confiserie,
-			'seo' => array( 'titre' => 'Läckerli & Pralinen Basel | Confiserie Schiesser', 'description' => 'Basler Läckerli, Pralinen, Torten und frisches Gebäck aus der eigenen Backstube am Marktplatz: das Sortiment der Confiserie Schiesser in Basel.', 'mots_cles' => array( 'Läckerli Basel', 'Pralinen Basel', 'Confiserie Marktplatz' ) ) ),
+			'seo' => array( 'titre' => 'Läckerli & Pralinen Basel | Confiserie Schiesser', 'description' => 'Basler Läckerli, Pralinen, Torten und frisches Gebäck aus der eigenen Backstube am Marktplatz: das Sortiment der Confiserie Schiesser in Basel.', 'mots_cles' => array( 'Läckerli Basel', 'Pralinen Basel', 'Basler Läckerli kaufen', 'Confiserie Marktplatz Basel', 'Torten Basel' ) ) ),
 		array( 'titre' => 'Tea Room', 'slug' => 'tea-room', 'anciens' => array( 'salon-de-the' ), 'contenu' => $tearoom,
-			'seo' => array( 'titre' => 'Tea Room Basel | Ältestes Kaffeehaus der Schweiz – Schiesser', 'description' => 'Tea Room in Basel im ältesten Kaffeehaus der Schweiz: Kaffee, Tee, hausgemachte Schokolade, Frühstück und Coupes im ersten Stock am Marktplatz.', 'mots_cles' => array( 'Tea Room Basel', 'Kaffeehaus Basel', 'Frühstück Basel Marktplatz' ) ) ),
+			'seo' => array( 'titre' => 'Tea Room Basel | Ältestes Kaffeehaus der Schweiz – Schiesser', 'description' => 'Tea Room in Basel im ältesten Kaffeehaus der Schweiz: Kaffee, Tee, hausgemachte Schokolade, Frühstück und Coupes im ersten Stock am Marktplatz.', 'mots_cles' => array( 'Tea Room Basel', 'Kaffeehaus Basel', 'Frühstück Basel Marktplatz', 'ältestes Kaffeehaus der Schweiz', 'Café Marktplatz Basel' ) ) ),
 		array( 'titre' => 'Geschichte', 'slug' => 'geschichte', 'anciens' => array( 'notre-histoire' ), 'contenu' => $geschichte,
-			'seo' => array( 'titre' => 'Geschichte seit 1870 | Basler Confiserie – Schiesser', 'description' => 'Seit 1870 am Basler Marktplatz: wie der Glarner Konditor Rudolf Schiesser die Confiserie gründete und sein Sohn Hans Tea Room und Rathstübli einrichtete.', 'mots_cles' => array( 'Basler Confiserie seit 1870', 'Confiserie Schiesser Geschichte' ) ) ),
+			'seo' => array( 'titre' => 'Geschichte seit 1870 | Basler Confiserie – Schiesser', 'description' => 'Seit 1870 am Basler Marktplatz: wie der Glarner Konditor Rudolf Schiesser die Confiserie gründete und sein Sohn Hans Tea Room und Rathstübli einrichtete.', 'mots_cles' => array( 'Basler Confiserie seit 1870', 'Confiserie Schiesser Geschichte', 'Rudolf Schiesser', 'Rathstübli Basel', 'Geschichte Marktplatz Basel' ) ) ),
 		array( 'titre' => 'Besuch', 'slug' => 'besuch', 'anciens' => array( 'nous-visiter' ), 'contenu' => $besuch,
-			'seo' => array( 'titre' => 'Öffnungszeiten & Anfahrt | Confiserie Marktplatz Basel', 'description' => 'Öffnungszeiten, Adresse und Anfahrt der Confiserie Schiesser am Marktplatz Basel, gegenüber dem Rathaus und wenige Schritte vom Tram.', 'mots_cles' => array( 'Confiserie Marktplatz Basel', 'Öffnungszeiten Confiserie Schiesser' ) ) ),
+			'seo' => array( 'titre' => 'Öffnungszeiten & Anfahrt | Confiserie Marktplatz Basel', 'description' => 'Öffnungszeiten, Adresse und Anfahrt der Confiserie Schiesser am Marktplatz Basel, gegenüber dem Rathaus und wenige Schritte vom Tram.', 'mots_cles' => array( 'Confiserie Marktplatz Basel', 'Öffnungszeiten Confiserie Schiesser', 'Confiserie Schiesser Adresse', 'Anfahrt Marktplatz Basel', 'Confiserie beim Rathaus Basel' ) ) ),
 		array( 'titre' => 'Kontakt', 'slug' => 'kontakt', 'anciens' => array( 'contact' ), 'contenu' => $kontakt,
-			'seo' => array( 'titre' => 'Kontakt & Bestellung | Confiserie Schiesser Basel', 'description' => 'Kontakt zur Confiserie Schiesser in Basel: Torten und Geschenkboxen bestellen, Gruppen anmelden oder eine Frage stellen. Schreiben Sie uns oder rufen Sie an.', 'mots_cles' => array( 'Confiserie Schiesser Kontakt', 'Torte bestellen Basel' ) ) ),
+			'seo' => array( 'titre' => 'Kontakt & Bestellung | Confiserie Schiesser Basel', 'description' => 'Kontakt zur Confiserie Schiesser in Basel: Torten und Geschenkboxen bestellen, Gruppen anmelden oder eine Frage stellen. Schreiben Sie uns oder rufen Sie an.', 'mots_cles' => array( 'Confiserie Schiesser Kontakt', 'Torte bestellen Basel', 'Pralinen bestellen Basel', 'Tea Room Basel reservieren', 'Geschenkbox Basel' ) ) ),
 		array( 'titre' => 'Firmengeschenke', 'slug' => 'firmengeschenke', 'anciens' => array( 'cadeaux-entreprise' ), 'contenu' => $firmen,
-			'seo' => array( 'titre' => 'Firmengeschenke Basel | Pralinen & Läckerli – Schiesser', 'description' => 'Firmengeschenke aus Basel: Pralinen, Läckerli und Bonbonnières aus der eigenen Backstube, mit Ihrer Botschaft oder Ihrem Logo. Schnelle Offerte.', 'mots_cles' => array( 'Firmengeschenke Basel', 'Kundengeschenke Basel' ) ) ),
+			'seo' => array( 'titre' => 'Firmengeschenke Basel | Pralinen & Läckerli – Schiesser', 'description' => 'Firmengeschenke aus Basel: Pralinen, Läckerli und Bonbonnières aus der eigenen Backstube, mit Ihrer Botschaft oder Ihrem Logo. Schnelle Offerte.', 'mots_cles' => array( 'Firmengeschenke Basel', 'Kundengeschenke Basel', 'Pralinen Firmengeschenk', 'Läckerli Geschenkbox', 'Weihnachtsgeschenke Firmen Basel' ) ) ),
 		array( 'titre' => 'Impressum', 'slug' => 'impressum', 'anciens' => array( 'mentions-legales' ), 'contenu' => $impressum, 'statut' => 'draft',
 			'seo' => array( 'titre' => 'Impressum | Confiserie Schiesser', 'description' => 'Impressum der Website der Confiserie Schiesser, Confiserie und Tea Room am Marktplatz Basel: Betreiberin, Hosting und Bildnachweis.', 'mots_cles' => array( 'Impressum' ) ) ),
 	);

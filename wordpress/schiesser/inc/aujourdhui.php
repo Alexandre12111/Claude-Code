@@ -29,7 +29,8 @@ function schiesser_epuises() {
 }
 
 function schiesser_est_epuise( $id ) {
-	return in_array( (int) $id, schiesser_epuises(), true );
+	// Coché sur la version allemande : épuisé aussi en français et en anglais.
+	return (bool) array_intersect( function_exists( 'schiesser_ids_traductions' ) ? schiesser_ids_traductions( $id ) : array( (int) $id ), schiesser_epuises() );
 }
 
 /* ------------------------------------------------------------------ */
@@ -76,7 +77,7 @@ add_action( 'admin_post_schiesser_aujourdhui', function () {
 		if ( $id && SCHIESSER_TEAROOM === get_post_type( $id ) ) {
 			schiesser_tearoom_definir_suggestion( $id, true );
 		} elseif ( ! $id ) {
-			foreach ( get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_t_suggestion' ) ) as $autre ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+			foreach ( get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_t_suggestion', 'lang' => '' ) ) as $autre ) { // phpcs:ignore WordPress.DB.SlowDBQuery
 				delete_post_meta( $autre, '_t_suggestion' );
 			}
 		}
@@ -177,7 +178,7 @@ function schiesser_page_aujourdhui() {
 			<?php schiesser_carte_fin(); ?>
 
 			<?php
-			$plats = defined( 'SCHIESSER_TEAROOM' ) ? get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'post_status' => 'publish', 'numberposts' => 200, 'orderby' => 'title', 'order' => 'ASC' ) ) : array();
+			$plats = defined( 'SCHIESSER_TEAROOM' ) ? get_posts( array( 'post_type' => SCHIESSER_TEAROOM, 'post_status' => 'publish', 'numberposts' => 200, 'orderby' => 'title', 'order' => 'ASC' ) + schiesser_args_langue_principale() ) : array();
 			$sugg  = 0;
 			foreach ( $plats as $p ) {
 				if ( get_post_meta( $p->ID, '_t_suggestion', true ) ) {
@@ -198,7 +199,7 @@ function schiesser_page_aujourdhui() {
 			<?php
 			schiesser_carte_debut( 'Épuisé aujourd’hui', 'Cochez ce qui n’est plus disponible : le site affiche « Épuisé aujourd’hui ». Demain matin, tout redevient disponible tout seul.', 'dismiss' );
 			$groupes = array(
-				'Boutique' => get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'post_status' => 'publish', 'numberposts' => 200, 'orderby' => array( 'menu_order' => 'ASC', 'title' => 'ASC' ) ) ),
+				'Boutique' => get_posts( array( 'post_type' => SCHIESSER_PRODUIT, 'post_status' => 'publish', 'numberposts' => 200, 'orderby' => array( 'menu_order' => 'ASC', 'title' => 'ASC' ) ) + schiesser_args_langue_principale() ),
 				'Tea Room' => $plats,
 			);
 			foreach ( $groupes as $titre => $liste ) :

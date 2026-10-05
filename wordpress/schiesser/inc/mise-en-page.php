@@ -79,7 +79,7 @@ function schiesser_styles_texte() {
 		// Deux exemples pour commencer (modifiables ou supprimables depuis le panneau « Aa »).
 		$c     = function_exists( 'schiesser_charte' ) ? schiesser_charte()['couleurs'] : array();
 		$liste = array(
-			array( 'id' => 'accroche-verte', 'nom' => 'Accroche verte', 'css' => array( 'font-family' => 'var(--serif)', 'font-style' => 'italic', 'font-size' => '1.3em', '--fs-m' => '1.1em', 'color' => $c['vert'] ?? '#23503B' ) ),
+			array( 'id' => 'accroche-verte', 'nom' => 'Accroche verte', 'css' => array( 'font-family' => 'var(--serif)', 'font-style' => 'italic', 'font-size' => '1.3em', '--fs-m' => '1.1em', 'color' => $c['vert'] ?? '#174633' ) ),
 			array( 'id' => 'petit-label', 'nom' => 'Petit label', 'css' => array( 'font-family' => 'var(--sans)', 'font-size' => '0.75em', 'font-weight' => '600', 'text-transform' => 'uppercase', 'letter-spacing' => '0.16em' ) ),
 		);
 	}

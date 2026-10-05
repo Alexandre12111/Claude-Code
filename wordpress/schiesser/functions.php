@@ -14,6 +14,8 @@
  * - produits.php      : type de contenu « Produits boutique », ses champs et ses pages
  * - lancement.php     : liste des produits « en préparation » (Produktliste folgt) et bouton de mise en ligne
  * - tea-room.php      : type de contenu « Produits Tea Room » (la carte du salon de thé)
+ * - carte-druck.php   : carte du Tea Room en PDF et carte imprimable
+ * - maillage.php      : section « Weiter im Haus » (liens vers les autres pages)
  * - allergenes.php    : allergènes et régimes des produits et du Tea Room, pictogrammes, filtres
  * - blocs.php         : blocs sur mesure (Hero, Section, Grille) et styles des blocs
  * - messages.php      : messages du formulaire gardés dans l'administration (« Messages reçus »)
@@ -34,11 +36,13 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.9.0' );
+define( 'SCHIESSER_VERSION', '0.12.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
 require SCHIESSER_DIR . '/inc/langue.php';
+require SCHIESSER_DIR . '/inc/i18n.php';        // trois langues avec Polylang
+require SCHIESSER_DIR . '/inc/traductions.php'; // textes du thème en français et en anglais
 require SCHIESSER_DIR . '/inc/setup.php';
 require SCHIESSER_DIR . '/inc/charte.php';
 require SCHIESSER_DIR . '/inc/reglages.php';
@@ -49,6 +53,8 @@ require SCHIESSER_DIR . '/inc/shortcodes.php';
 require SCHIESSER_DIR . '/inc/produits.php';
 require SCHIESSER_DIR . '/inc/lancement.php';
 require SCHIESSER_DIR . '/inc/tea-room.php';
+require SCHIESSER_DIR . '/inc/carte-druck.php';
+require SCHIESSER_DIR . '/inc/maillage.php';
 require SCHIESSER_DIR . '/inc/allergenes.php';
 require SCHIESSER_DIR . '/inc/blocs.php';
 require SCHIESSER_DIR . '/inc/maquette.php';
@@ -66,3 +72,5 @@ require SCHIESSER_DIR . '/inc/edition.php';
 require SCHIESSER_DIR . '/inc/contenu-produits.php';
 require SCHIESSER_DIR . '/inc/contenu-pages.php';
 require SCHIESSER_DIR . '/inc/demo.php';
+require SCHIESSER_DIR . '/inc/contenu-traductions.php'; // pages, produits et carte en français et en anglais
+require SCHIESSER_DIR . '/inc/import-langues.php';       // import des traductions avec Polylang

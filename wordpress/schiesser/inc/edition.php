@@ -131,8 +131,8 @@ add_action( 'wp_footer', function () {
 		[data-sch-section]{position:relative}
 		.sch-modifier{position:absolute;top:10px;right:10px;z-index:900;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:4px;background:#1e1e1e;color:#fff;font:600 12px/1.2 system-ui,sans-serif;text-decoration:none;box-shadow:0 6px 18px rgba(0,0,0,.25);opacity:0;transform:translateY(-4px);transition:opacity .2s,transform .2s;pointer-events:none}
 		[data-sch-section]:hover>.sch-modifier,.sch-modifier:focus{opacity:1;transform:none;pointer-events:auto}
-		[data-sch-section]:hover{outline:2px dashed rgba(35,80,59,.55);outline-offset:-2px}
-		.sch-modifier:hover{background:#23503B;color:#fff}
+		[data-sch-section]:hover{outline:2px dashed rgba(23,70,51,.55);outline-offset:-2px}
+		.sch-modifier:hover{background:#174633;color:#fff}
 		@media(hover:none){.sch-modifier{opacity:1;pointer-events:auto;transform:none;padding:6px 10px}}
 	</style>
 	<script>
@@ -241,7 +241,7 @@ add_action( 'rest_api_init', function () {
 add_action( 'admin_enqueue_scripts', function () {
 	wp_add_inline_style( 'schiesser-admin', '.sch-point-cadre{position:relative;display:inline-block;max-width:100%;cursor:crosshair;line-height:0}'
 		. '.sch-point-cadre img{max-width:100%;max-height:260px;height:auto;user-select:none}'
-		. '.sch-point-cible{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #23503B,0 2px 8px rgba(0,0,0,.4);background:rgba(35,80,59,.35);pointer-events:none}' );
+		. '.sch-point-cible{position:absolute;width:26px;height:26px;margin:-13px 0 0 -13px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #174633,0 2px 8px rgba(0,0,0,.4);background:rgba(23,70,51,.35);pointer-events:none}' );
 	wp_add_inline_script( 'jquery-core', "jQuery(function($){\n"
 		. "function poser(c,x,y){var v=c.find('.js-sch-point-valeur');c.find('.sch-point-cible').css({left:x+'%',top:y+'%'});v.val(x+'% '+y+'%').trigger('change');}\n"
 		. "$(document).on('click','.js-sch-point .sch-point-cadre',function(e){var r=this.getBoundingClientRect();var x=Math.round((e.clientX-r.left)/r.width*100),y=Math.round((e.clientY-r.top)/r.height*100);poser($(this).closest('.js-sch-point'),Math.max(0,Math.min(100,x)),Math.max(0,Math.min(100,y)));});\n"

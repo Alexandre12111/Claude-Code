@@ -21,7 +21,7 @@ add_action( 'admin_init', function () {
 		'schiesser',
 		'Schiesser',
 		SCHIESSER_URI . '/assets/admin/colors-schiesser.css',
-		array( '#271B12', '#1C130C', '#23503B', '#8CC5A6' ),
+		array( '#271B12', '#1C130C', '#174633', '#8CC5A6' ),
 		array( 'base' => '#D9CEBD', 'focus' => '#8CC5A6', 'current' => '#fff' )
 	);
 } );
@@ -145,6 +145,13 @@ function schiesser_page_guide() {
 			'Suggestion du jour : cochez la case sur le produit à mettre en avant ; l’ancienne suggestion est décochée toute seule.',
 			'La page Salon de thé se met à jour automatiquement : rien à modifier dans la page.',
 		) ),
+		array( 'translation', 'Site en trois langues (Polylang)', array(
+			'Installez l’extension gratuite <strong>Polylang</strong> (Extensions → Ajouter). Dans <strong>Langues</strong>, créez d’abord <strong>Deutsch</strong> (de_CH, langue par défaut), puis <strong>Français</strong> (fr_FR) et <strong>English</strong> (en_GB). Si Polylang propose d’attribuer la langue par défaut aux contenus existants, acceptez.',
+			'Langues → Réglages → « URL modifiées » : choisissez « La langue est définie par le nom de dossier » et cochez « Cacher le code de langue pour la langue par défaut » : l’allemand reste à l’adresse actuelle, le français sous /fr/, l’anglais sous /en/.',
+			'Puis ' . $lien( admin_url( 'edit.php?post_type=page' ), 'Pages' ) . ' : bouton « Mettre à jour le contenu des pages » en haut. Le thème crée les versions française et anglaise des 8 pages, des 70 produits et de la carte du Tea Room, reliées à l’allemand (sélecteur DE · FR · EN dans l’en-tête).',
+			'Prix, photos et allergènes sont communs aux trois langues : modifiés sur un produit, ils sont recopiés dans ses traductions. Les textes (nom, description, accroche) se modifient dans chaque langue.',
+			'Les textes des Réglages maison (présentation, mention, notes) ont leur traduction dans Langues → <strong>Traductions</strong>. Le PDF de la carte existe en trois langues ; vous pouvez en déposer un autre par langue dans Réglages maison.',
+		) ),
 		array( 'edit-page', 'Modifier le texte ou la photo d\'une page', array(
 			'Menu ' . $lien( admin_url( 'edit.php?post_type=page' ), 'Pages' ) . ', survolez la page puis « Modifier ».',
 			'Cliquez directement sur un texte pour l\'écrire. Pour une photo, cliquez sur le bloc puis sur « Photo » dans la petite barre d\'outils.',
@@ -166,6 +173,11 @@ function schiesser_page_guide() {
 		array( 'translation', 'Site en allemand, administration en français', array(
 			'Tout ce que voient les visiteurs est en allemand : écrivez les textes des pages, des produits et des Réglages maison (présentation, vitrine, annonces…) <strong>en allemand</strong>.',
 			'L\'administration (menus, écrans, ce guide) reste en français. Les horaires, les jours fériés et les boutons du site sont traduits automatiquement.',
+		) ),
+		array( 'media-document', 'Carte du Tea Room en PDF', array(
+			'Le bouton « Karte ansehen (PDF) » de la page Tea Room ouvre la carte mise en page. Pour en mettre une nouvelle : Médias → Ajouter, puis collez l’adresse du fichier dans ' . $lien( admin_url( 'admin.php?page=schiesser-reglages' ), 'Réglages maison' ) . ' → « Carte du Tea Room en PDF ».',
+			'Après avoir modifié les Produits Tea Room, ouvrez <a href="' . esc_url( add_query_arg( 'schiesser_karte', 'druck', home_url( '/' ) ) ) . '" target="_blank" rel="noopener">la carte imprimable</a> puis Imprimer → Enregistrer au format PDF : vous obtenez un PDF à jour, à téléverser.',
+			'Dans n’importe quel bouton, le lien <code>#karte-pdf</code> ouvre la carte en PDF.',
 		) ),
 		array( 'products', 'Mettre en ligne la liste des produits', array(
 			'Tant que les photos ne sont pas prêtes, la boutique affiche « Produktliste folgt in Kürze » avec un aperçu des rubriques ; les fiches produits ne sont pas visibles.',

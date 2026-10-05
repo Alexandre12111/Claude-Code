@@ -33,9 +33,9 @@ function schiesser_sc_horaires() {
 		$h      = $tous[ $n ];
 		$classe = $n === $aujourdhui ? ' is-aujourdhui' : '';
 		$texte  = ! empty( $h['ferme'] )
-			? 'Geschlossen'
+			? esc_html( schiesser_t( 'Geschlossen' ) )
 			: '<time>' . esc_html( schiesser_uhr( $h['ouverture'], false ) ) . '</time>–<time>' . esc_html( schiesser_uhr( $h['fermeture'] ) ) . '</time>';
-		$html  .= '<div class="hrow' . $classe . '"><dt class="d"' . ( $classe ? ' data-today="Heute"' : '' ) . '>' . esc_html( $jour ) . '</dt><dd class="h">' . $texte . '</dd></div>';
+		$html  .= '<div class="hrow' . $classe . '"><dt class="d"' . ( $classe ? ' data-today="' . esc_attr( schiesser_t( 'Heute' ) ) . '"' : '' ) . '>' . esc_html( $jour ) . '</dt><dd class="h">' . $texte . '</dd></div>';
 	}
 	$html .= '</dl>' . schiesser_html_jours_particuliers();
 	if ( schiesser_reglage( 'horaires_note' ) ) {
@@ -45,7 +45,7 @@ function schiesser_sc_horaires() {
 }
 
 function schiesser_sc_statut() {
-	return '<span class="s-statut" data-nosnippet><span class="led js-led"></span><span class="js-statut">Heute</span> · <span class="js-heures">' . esc_html( schiesser_horaires_du_jour() ) . '</span></span>';
+	return '<span class="s-statut" data-nosnippet><span class="led js-led"></span><span class="js-statut">' . esc_html( schiesser_t( 'Heute' ) ) . '</span> · <span class="js-heures">' . esc_html( schiesser_horaires_du_jour() ) . '</span></span>';
 }
 
 function schiesser_sc_horaires_phrase() {
@@ -68,7 +68,7 @@ function schiesser_sc_email() {
 }
 
 function schiesser_sc_itineraire( $atts ) {
-	$a   = shortcode_atts( array( 'texte' => 'Route planen' ), $atts, 'schiesser_itineraire' );
+	$a   = shortcode_atts( array( 'texte' => schiesser_t( 'Route planen' ) ), $atts, 'schiesser_itineraire' );
 	$url = schiesser_reglage( 'lien_maps' );
 	return $url ? '<a class="btn btn-kir" href="' . esc_url( $url ) . '" target="_blank" rel="noopener"><span>' . esc_html( $a['texte'] ) . '</span> <span class="a" aria-hidden="true">↗</span></a>' : '';
 }

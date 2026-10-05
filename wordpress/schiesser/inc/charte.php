@@ -26,7 +26,7 @@ function schiesser_couleurs_charte() {
 		'ink'        => array( 'Titres', '#2A1C12', 'Grands titres et noms de produits.', 'encre' ),
 		'text'       => array( 'Texte courant', '#3A2818', 'Paragraphes, menu, pied de page.', 'texte' ),
 		'ink-soft'   => array( 'Texte secondaire', '#6B5A47', 'Notes, légendes, descriptions.', 'texte-secondaire' ),
-		'vert'       => array( 'Vert maison', '#23503B', 'Boutons principaux, liens, numéros, badges.', 'vert' ),
+		'vert'       => array( 'Vert maison', '#174633', 'Boutons principaux, liens, numéros, badges.', 'vert' ),
 		'mint'       => array( 'Menthe', '#8CC5A6', 'Accents sur les fonds sombres.', 'menthe' ),
 		'dark'       => array( 'Chocolat', '#271B12', 'Sections sombres, bandeau du haut.', 'chocolat' ),
 	);
