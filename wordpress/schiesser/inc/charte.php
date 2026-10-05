@@ -27,7 +27,7 @@ function schiesser_couleurs_charte() {
 		'text'       => array( 'Texte courant', '#3A2818', 'Paragraphes, menu, pied de page.', 'texte' ),
 		'ink-soft'   => array( 'Texte secondaire', '#6B5A47', 'Notes, légendes, descriptions.', 'texte-secondaire' ),
 		'vert'       => array( 'Vert maison', '#174633', 'Boutons principaux, liens, numéros, badges.', 'vert' ),
-		'mint'       => array( 'Menthe', '#8CC5A6', 'Accents sur les fonds sombres.', 'menthe' ),
+		'mint'       => array( 'Accent clair', '#E4D3B4', 'Accents (petits titres, numéros) sur les fonds sombres. Le vert de la maison reste le vert sapin.', 'menthe' ),
 		'dark'       => array( 'Chocolat', '#271B12', 'Sections sombres, bandeau du haut.', 'chocolat' ),
 	);
 }
@@ -80,6 +80,10 @@ function schiesser_charte() {
 	$defaut = schiesser_charte_defaut();
 	$c      = wp_parse_args( (array) get_option( SCHIESSER_CHARTE, array() ), $defaut );
 	$c['couleurs'] = wp_parse_args( (array) $c['couleurs'], $defaut['couleurs'] );
+	// Ancien accent menthe (jusqu'à la version 0.12) : remplacé par l'accent clair, seul le vert sapin reste.
+	if ( '#8CC5A6' === strtoupper( (string) $c['couleurs']['mint'] ) ) {
+		$c['couleurs']['mint'] = $defaut['couleurs']['mint'];
+	}
 	return $c;
 }
 
@@ -118,7 +122,7 @@ function schiesser_verifier_contrastes( $couleurs ) {
 		array( '#FFFFFF', $couleurs['vert'], 'Texte blanc des boutons verts', 4.5 ),
 		array( $couleurs['vert'], $couleurs['paper'], 'Liens verts sur le fond clair', 4.5 ),
 		array( $couleurs['paper'], $couleurs['dark'], 'Texte clair sur les sections chocolat', 4.5 ),
-		array( $couleurs['mint'], $couleurs['dark'], 'Accents menthe sur les sections chocolat', 3 ),
+		array( $couleurs['mint'], $couleurs['dark'], 'Accents clairs sur les sections chocolat', 3 ),
 	);
 	$alertes = array();
 	foreach ( $paires as $p ) {

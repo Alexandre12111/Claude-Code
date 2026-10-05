@@ -94,7 +94,8 @@
   /* ---------- carte du Tea Room : l'onglet choisi reste visible sur téléphone ---------- */
   tous('.carte .mtab').forEach(function (t) {
     t.addEventListener('click', function () {
-      if (t.scrollIntoView && window.innerWidth < 761) t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      var rang = t.parentNode; // l'onglet choisi se centre dans la barre, sans faire bouger la page
+      if (rang && rang.scrollWidth > rang.clientWidth) rang.scrollTo({ left: t.offsetLeft - (rang.clientWidth - t.offsetWidth) / 2, behavior: 'smooth' });
     });
   });
 })();

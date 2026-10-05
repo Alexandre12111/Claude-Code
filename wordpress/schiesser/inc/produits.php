@@ -328,7 +328,7 @@ function schiesser_boite_produit( $post ) {
 				<?php elseif ( 'select' === $c[2] ) : ?>
 					<select id="<?php echo esc_attr( $id ); ?>" name="s[<?php echo esc_attr( $cle ); ?>]">
 						<option value="vert" <?php selected( $valeur, 'vert' ); ?>>Vert maison</option>
-						<option value="menthe" <?php selected( $valeur, 'menthe' ); ?>>Menthe</option>
+						<option value="menthe" <?php selected( $valeur, 'menthe' ); ?>>Clair (sable)</option>
 					</select>
 				<?php else : ?>
 					<input id="<?php echo esc_attr( $id ); ?>" type="text" name="s[<?php echo esc_attr( $cle ); ?>]" value="<?php echo esc_attr( $valeur ); ?>">

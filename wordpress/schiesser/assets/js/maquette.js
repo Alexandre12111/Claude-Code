@@ -223,7 +223,13 @@
         activer(onglets, i, 'data-c');
         activer(photos, i, 'data-c');
         montrer(listes, i, 'data-c');
-        if (legende) legende.textContent = t.textContent;
+        if (legende) legende.textContent = t.getAttribute('data-nom') || t.textContent;
+        // Liste déjà défilée : on revient au début de la rubrique choisie (la barre des onglets reste visible).
+        var mn = un('.mn', bloc), barre = un('.mn-bar', bloc);
+        if (mn && barre) {
+          var haut = mn.getBoundingClientRect().top, decalage = barre.getBoundingClientRect().bottom + 16;
+          if (haut < decalage - 4) window.scrollTo({ top: window.scrollY + haut - decalage, behavior: 'smooth' });
+        }
       });
     });
   });

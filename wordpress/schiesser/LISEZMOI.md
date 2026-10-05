@@ -1,7 +1,26 @@
-# Thème Schiesser 0.12
+# Thème Schiesser 0.14
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.14 : le vert sapin, couleur principale
+
+Trois couleurs, trois rôles : **vert sapin** pour les grandes surfaces et les actions, **chocolat** pour le pied de page et les contrastes, **beige** pour la lecture. Mêmes éléments, mêmes polices, aucune fonction modifiée.
+
+- Sections sombres (chronologie, galerie de la Confiserie, encart et moments du Tea Room, itinéraires, appel final) en **vert sapin**, avec une lumière douce et des cartes intérieures chocolat.
+- Bandeau du haut, bandeau « ouvert / fermé », vitrine du jour et chiffres de l'Histoire en vert sapin.
+- Étiquettes « N° » pleines, petit filet vert sous chaque titre de section, numéros et flèches en vert.
+- Carte du Tea Room : barre des rubriques verte, rubrique active en crème.
+- « Weiter im Haus » : bloc vert sapin avec cartes crème qui se soulèvent au survol.
+- Questions fréquentes ouvertes, ligne du jour des horaires, graphique d'affluence : vert sapin.
+- Retours plus nets au toucher et au clic, défilement doux, contours de focus visibles sur toutes les surfaces.
+
+## Version 0.13 : lumière sapin et nouvelle carte du Tea Room
+
+- **Un seul vert : le vert sapin.** Le vert clair (menthe) est retiré partout (site, éditeur, PDF). Sur les fonds chocolat, le vert sapin apparaît en lumière dans les arrière-plans ; les petits accents passent en sable clair. Un ancien réglage « Menthe » est remplacé automatiquement (Réglages maison → Charte graphique → « Accent clair »).
+- **Carte du Tea Room plus pratique** : la barre des rubriques reste visible en haut pendant la lecture, sur une ligne qui défile ; choisir une rubrique ramène au début de sa liste ; en-tête compact avec le nombre de plats ; plats en lignes claires avec prix alignés ; photo, PDF (bouton vert) et suggestion du jour dans la colonne de droite qui suit la lecture.
+- **Accueil** : le zoom des photos « Confiserie » et « Tea Room » au survol est de nouveau fluide.
+- PDF de la carte régénérés (couverture en lumière sapin), finitions de boutons et de survols.
 
 ## Version 0.12 : design modernisé
 
