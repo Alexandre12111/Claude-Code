@@ -101,7 +101,7 @@ function schiesser_carte_druck_html() {
 @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda-italic.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Inter';font-weight:100 900;src:url(<?php echo esc_url( $f . 'inter.woff2' ); ?>) format('woff2')}
 @page{size:A4;margin:0}
-:root{--paper:#F4EEE3;--ink:#2A1C12;--soft:#6B5A47;--vert:#174633;--gold:#174633;--mint:#8CC5A6;--dark:#271B12;--line:rgba(58,40,24,.18)}
+:root{--paper:#F4EEE3;--ink:#2A1C12;--soft:#6B5A47;--vert:#174633;--gold:#174633;--mint:#E4D3B4;--dark:#271B12;--line:rgba(58,40,24,.18)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:#8a7a68}
 body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -112,7 +112,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 .page::before{content:"";position:absolute;inset:8mm;border:.6pt solid var(--vert);pointer-events:none}
 .page::after{content:"";position:absolute;inset:9.6mm;border:.3pt solid rgba(58,40,24,.35);pointer-events:none}
 /* couverture */
-.couv{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--dark);color:var(--paper)}
+.couv{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--dark);background-image:radial-gradient(85% 70% at 0% 0%,rgba(23,70,51,.85),transparent 64%),radial-gradient(75% 60% at 100% 100%,rgba(23,70,51,.6),transparent 68%);color:var(--paper);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .couv::before{border-color:rgba(140,197,166,.6)}.couv::after{border-color:rgba(140,197,166,.3)}
 .couv .sceau{width:46mm;height:46mm;color:var(--mint);margin-bottom:14mm}
 .couv .k{font-size:8pt;letter-spacing:.42em;text-transform:uppercase;color:var(--mint);font-weight:600}

@@ -1187,7 +1187,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	foreach ( $rubriques as $i => $r ) {
 		$nom      = schiesser_mq_brut( $r['nom'] );
 		$photos  .= schiesser_mq_image( $r, 'image', 'full', array( 'data-c' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '(min-width: 1200px) 1140px, 100vw' ) );
-		$onglets .= '<button type="button" class="mtab' . ( 0 === $i ? ' on' : '' ) . '" data-c="' . $i . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '"><span class="mtab-no" aria-hidden="true">' . schiesser_mq_num( $i + 1 ) . '</span>' . esc_html( $nom ) . '</button>';
+		$onglets .= '<button type="button" class="mtab' . ( 0 === $i ? ' on' : '' ) . '" data-c="' . $i . '" data-nom="' . esc_attr( $nom ) . '" data-nb="' . count( $r['plats'] ) . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '"><span class="mtab-no" aria-hidden="true">' . schiesser_mq_num( $i + 1 ) . '</span>' . esc_html( $nom ) . '</button>';
 		$plats    = '';
 		foreach ( $r['plats'] as $k => $q ) {
 			$al     = $q['al'] ?? null;
@@ -1225,9 +1225,9 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 			. '<span><b>' . esc_html( schiesser_t( 'Die ganze Karte als PDF' ) ) . '</b><small>' . esc_html( schiesser_t( 'Zum Lesen, Drucken oder Teilen' ) ) . '</small></span><span class="a" aria-hidden="true">↗</span></a>'
 		: '';
 	$contenu = '<div class="carte rv js-carte-salon">'
-		. '<div class="mn-tabs" role="group" aria-label="' . esc_attr( schiesser_t( 'Rubriken der Karte' ) ) . '">' . $onglets . '</div>'
+		. '<div class="mn-bar"><div class="mn-tabs" role="group" aria-label="' . esc_attr( schiesser_t( 'Rubriken der Karte' ) ) . '">' . $onglets . '</div></div>'
 		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">'
-		. '<div class="x-menupic">' . $photos . '<span class="x-mc js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></div>'
+		. '<div class="x-menupic">' . $photos . '<span class="x-mc"><span class="js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></span></div>'
 		. $pdf . $suggestion
 		. ( array_filter( $tous_al ) ? schiesser_allergenes_note() : '' )
 		. ( empty( $a['apercu'] ) && is_singular() ? schiesser_partage( get_permalink(), schiesser_t( 'Die Karte des Tea Room' ) . ' · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ), 'partage--carte' ) : '' )
