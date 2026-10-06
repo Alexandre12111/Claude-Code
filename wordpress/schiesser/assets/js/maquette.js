@@ -492,7 +492,7 @@
   var curseur = un('.x-cursor');
   if (curseur && window.matchMedia && window.matchMedia('(hover: hover) and (min-width: 821px)').matches) {
     var ZONES = [['.card', T('Ansehen')], ['.gv-th', T('Ansehen')], ['.gv-main', T('Ansehen'), 1], ['.compare', T('Ziehen'), 1], ['.arch', T('Öffnen')],
-      ['.gp', T('Ansehen'), 1], ['.x-menupic', T('Ansehen')], ['.x-floor', T('Öffnen'), 1], ['.mapel', T('Entdecken')], ['.vmap', T('Entdecken')]];
+      ['.gp', T('Ansehen'), 1], ['.x-menupic', T('Ansehen')], ['.x-floor', T('Öffnen'), 1]];
     document.addEventListener('mousemove', function (e) { curseur.style.transform = 'translate(' + e.clientX + 'px,' + e.clientY + 'px)'; });
     ZONES.forEach(function (z) {
       tous(z[0]).forEach(function (zone) {
@@ -500,5 +500,10 @@
         zone.addEventListener('mouseleave', function () { curseur.classList.remove('on'); });
       });
     });
+    // Les cartes Google (iframe) ne transmettent plus la souris : le curseur ne doit jamais y rester figé.
+    var cacher = function () { curseur.classList.remove('on'); };
+    tous('iframe, .mapel, .vmap').forEach(function (el) { el.addEventListener('mouseenter', cacher); });
+    document.documentElement.addEventListener('mouseleave', cacher);
+    window.addEventListener('blur', cacher);
   }
 })();

@@ -3,6 +3,13 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.16 : langues réparées, photo partagée entre les langues
+
+* **Réparer les langues** : si Polylang a pris le français comme langue par défaut, il a marqué tous les produits, plats et pages « Français ». Un avis dans Produits (et le tableau de bord) indique le nombre de contenus par langue ; le bouton « Réparer les langues » retrouve la vraie langue de chacun d’après son nom, relie les versions DE, FR et EN, met les doublons à la corbeille (récupérables) et crée les traductions manquantes. Prix, photos et textes retouchés sont conservés.
+* L’import du contenu donne désormais toujours la langue Deutsch au contenu allemand, quelle que soit la langue par défaut de Polylang.
+* **Photo partagée** : après l’enregistrement d’une page dont une photo a changé, l’éditeur propose de mettre la même photo sur les autres langues (toutes, une seule, ou aucune). Les textes de chaque langue ne bougent pas.
+* Carte Google : le libellé « Découvrir » qui restait figé au survol de la carte a disparu.
+
 ## Version 0.15 : photos au naturel et finitions
 
 * Les photos ne sont plus teintées en vert : un voile neutre chocolat, placé seulement sous le texte, garde la lecture confortable et laisse aux pâtisseries leurs vraies couleurs. Le vert sapin reste sur les bandeaux, les sections et les boutons.

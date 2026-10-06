@@ -195,11 +195,11 @@ function schiesser_importer_preisliste() {
 	);
 	$ordre = 0;
 	foreach ( schiesser_preisliste() as $rubrique => $produits ) {
-		$t = term_exists( $rubrique, SCHIESSER_CATEGORIE ) ?: wp_insert_term( $rubrique, SCHIESSER_CATEGORIE );
-		if ( is_wp_error( $t ) ) {
+		$t = schiesser_terme_allemand( $rubrique, SCHIESSER_CATEGORIE );
+		if ( ! $t ) {
 			continue;
 		}
-		$cat = (int) ( is_array( $t ) ? $t['term_id'] : $t );
+		$cat = $t;
 		// Photo d'illustration de la catégorie : montrée sur l'accueil tant que les produits n'ont pas leur photo.
 		if ( ! get_term_meta( $cat, 'photo', true ) && isset( $photos_categories[ $rubrique ] ) ) {
 			$photo = schiesser_demo_image( $photos_categories[ $rubrique ][0], 'confiserie-basel-' . sanitize_title( $rubrique ), $photos_categories[ $rubrique ][1] );
@@ -222,6 +222,7 @@ function schiesser_importer_preisliste() {
 				$id            = wp_update_post( $donnees );
 			} else {
 				$id = wp_insert_post( $donnees );
+				schiesser_forcer_allemand( $id );
 			}
 			if ( ! $id || is_wp_error( $id ) ) {
 				continue;
@@ -316,11 +317,10 @@ function schiesser_importer_tearoom() {
 	);
 	$suggestion = 0;
 	foreach ( schiesser_getraenkekarte() as $i => $r ) {
-		$t = term_exists( $r['nom'], SCHIESSER_RUBRIQUE ) ?: wp_insert_term( $r['nom'], SCHIESSER_RUBRIQUE );
-		if ( is_wp_error( $t ) ) {
+		$term_id = schiesser_terme_allemand( $r['nom'], SCHIESSER_RUBRIQUE );
+		if ( ! $term_id ) {
 			continue;
 		}
-		$term_id = (int) ( is_array( $t ) ? $t['term_id'] : $t );
 		update_term_meta( $term_id, 'ordre', $i + 1 );
 		$photo = schiesser_demo_image( $photos[ $r['photo'] ], 'tea-room-' . sanitize_title( $r['nom'] ), $r['alt'] ); // photo déjà importée : texte alternatif mis en allemand
 		if ( $photo && ! get_term_meta( $term_id, 'photo', true ) ) {
@@ -344,6 +344,7 @@ function schiesser_importer_tearoom() {
 					'ordre'       => $k + 1,
 					'rubrique'    => $term_id,
 				) );
+				schiesser_forcer_allemand( $id );
 			}
 			if ( $id && schiesser_getraenkekarte_suggestion() === $p[0] ) {
 				$suggestion = $id;
@@ -371,6 +372,10 @@ function schiesser_importer_tearoom() {
  * @param bool $remplacer Met à jour le contenu des pages et produits existants (nouvelle version du thème).
  */
 function schiesser_importer_demo( $remplacer = false ) {
+	/* Langues d'abord remises en ordre : un produit allemand marqué « Français » ne doit pas être recréé. */
+	if ( function_exists( 'schiesser_reparer_langues' ) ) {
+		schiesser_reparer_langues( false );
+	}
 	/* Produits de la boutique (liste de prix) et carte du Tea Room */
 	schiesser_importer_preisliste();
 	schiesser_importer_tearoom();
@@ -407,6 +412,7 @@ function schiesser_importer_demo( $remplacer = false ) {
 			$ids[ $p['slug'] ] = wp_update_post( $donnees );
 		} else {
 			$ids[ $p['slug'] ] = wp_insert_post( $donnees );
+			schiesser_forcer_allemand( $ids[ $p['slug'] ] );
 		}
 		if ( $ids[ $p['slug'] ] && ! is_wp_error( $ids[ $p['slug'] ] ) ) {
 			schiesser_demo_seo( $ids[ $p['slug'] ], $p['seo'] );
@@ -510,6 +516,25 @@ function schiesser_importer_demo( $remplacer = false ) {
 }
 
 /** Page de la langue allemande (ou sans langue) ; null pour une traduction. */
+/** Catégorie ou rubrique allemande (créée au besoin, langue « Deutsch »). Renvoie son identifiant. */
+function schiesser_terme_allemand( $nom, $taxonomie ) {
+	$tous = get_terms( array( 'taxonomy' => $taxonomie, 'name' => $nom, 'hide_empty' => false, 'lang' => '' ) );
+	$tous = is_wp_error( $tous ) ? array() : $tous;
+	foreach ( $tous as $t ) { // la version allemande (ou sans langue) d'abord
+		$l = function_exists( 'pll_get_term_language' ) ? (string) pll_get_term_language( $t->term_id ) : '';
+		if ( '' === $l || 'de' === substr( $l, 0, 2 ) ) {
+			schiesser_forcer_allemand( $t->term_id, true );
+			return (int) $t->term_id;
+		}
+	}
+	$r = wp_insert_term( $nom, $taxonomie, $tous ? array( 'slug' => sanitize_title( $nom . '-de' ) ) : array() );
+	if ( is_wp_error( $r ) ) {
+		return $tous ? (int) $tous[0]->term_id : 0;
+	}
+	schiesser_forcer_allemand( $r['term_id'], true );
+	return (int) $r['term_id'];
+}
+
 function schiesser_demo_page_allemande( $page ) {
 	if ( ! $page || ! function_exists( 'pll_get_post_language' ) ) {
 		return $page;
