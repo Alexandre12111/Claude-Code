@@ -2485,3 +2485,57 @@ a,button,[role="button"],.mtab,.dchip,.ochip{-webkit-tap-highlight-color:color-m
 .ml-carte:hover .ml-a{background:var(--vert);border-color:var(--vert);color:var(--paper)}
 @media(max-width:600px){.maillage{margin:0 6px 6px;border-radius:18px}}
 .ochip .od{color:var(--sur-sapin-2)}
+
+/* ==========================================================================
+   0.15 · PHOTOS AU NATUREL ET FINITIONS
+   Le vert sapin reste sur les aplats (bandeaux, sections, boutons) mais ne
+   teinte plus jamais une photo : un voile neutre chocolat assure la lecture
+   du texte et laisse aux pâtisseries leurs vraies couleurs.
+   ========================================================================== */
+:root{--voile-photo:color-mix(in srgb,var(--dark) 55%,#000)}
+
+/* photos : voile neutre, seulement là où se trouve le texte */
+.x-floor::after,.x-floor:first-child::after{background:
+  linear-gradient(0deg,color-mix(in srgb,var(--voile-photo) 86%,transparent) 0%,color-mix(in srgb,var(--voile-photo) 52%,transparent) 34%,color-mix(in srgb,var(--voile-photo) 10%,transparent) 68%,transparent 100%)}
+.hero-media::before{background:
+  linear-gradient(90deg,color-mix(in srgb,var(--voile-photo) 66%,transparent) 0%,color-mix(in srgb,var(--voile-photo) 30%,transparent) 46%,transparent 78%),
+  linear-gradient(0deg,color-mix(in srgb,var(--voile-photo) 34%,transparent) 0%,transparent 40%)}
+.hero-media::after{background:
+  linear-gradient(180deg,color-mix(in srgb,var(--voile-photo) 38%,transparent) 0%,transparent 26%,transparent 50%,color-mix(in srgb,var(--voile-photo) 72%,transparent) 100%)}
+.x-floor img,.js .rev.x-floor img{filter:brightness(calc(.92 * var(--lum,1)))}
+.x-floor:hover img{filter:brightness(calc(.98 * var(--lum,1)))}
+.x-floor .x-ft,.x-floor .x-fd,.x-floor .x-lv{text-shadow:0 1px 18px color-mix(in srgb,var(--voile-photo) 55%,transparent)}
+.x-floor .x-lv{color:var(--or-lt,var(--paper))}
+.x-floor .x-fd{color:color-mix(in srgb,var(--paper) 90%,transparent)}
+.x-floor .x-num{display:none}
+
+/* appel à l'action des deux étages : vrai bouton, cible tactile de 44 px */
+.x-floor .x-fb{min-height:44px;padding:0 20px;border:0;border-radius:999px;background:var(--paper);color:var(--ink);
+  box-shadow:0 10px 24px -14px color-mix(in srgb,#000 70%,transparent);transition:gap .45s var(--ease-out),background .3s,color .3s}
+.x-floor:hover .x-fb,.x-floor:focus-visible .x-fb{gap:16px;background:var(--vert);color:var(--paper);border:0}
+.x-floor:focus-visible{outline:2px solid var(--vert);outline-offset:4px}
+
+/* savoir-faire : moins de vide entre les étapes, étapes en attente lisibles */
+@media(min-width:900px){
+  .cstep{min-height:36vh}
+  .cstep:not(.active) h3{opacity:.72}
+  .cstep:not(.active) .cn{opacity:.78}
+}
+
+/* titres : coupures de ligne équilibrées, paragraphes sans mot orphelin */
+h1,h2,h3,.x-ft,.ml-t{text-wrap:balance}
+p,.x-fd,.note{text-wrap:pretty}
+
+/* FAQ : survol et ouverture plus nets */
+.fq{transition:background .3s,box-shadow .3s}
+.fq:not([open]):not(.open):hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--vert) 35%,transparent)}
+.fq>summary{min-height:48px;cursor:pointer}
+
+/* cartes photo du site : léger relief au survol, pas de teinte */
+.ml-carte,.x-floor{will-change:auto}
+@media (hover:hover){.ml-carte:hover{translate:0 -3px}}
+.ml-carte{transition:translate .5s var(--ease-out),background .3s,box-shadow .5s var(--ease-out)}
+
+@media (prefers-reduced-motion:reduce){
+  .x-floor,.x-floor img,.ml-carte,.x-floor .x-fb{transition:none!important;translate:none!important}
+}

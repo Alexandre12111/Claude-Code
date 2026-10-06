@@ -3,6 +3,14 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.15 : photos au naturel et finitions
+
+* Les photos ne sont plus teintées en vert : un voile neutre chocolat, placé seulement sous le texte, garde la lecture confortable et laisse aux pâtisseries leurs vraies couleurs. Le vert sapin reste sur les bandeaux, les sections et les boutons.
+* Accueil, « Zwei Etagen, ein Haus » : le lien de chaque carte devient un vrai bouton crème (cible de 44 px), qui passe en vert sapin au survol.
+* Savoir faire : moins de vide entre les étapes, étapes en attente plus lisibles.
+* Titres équilibrés sur plusieurs lignes, FAQ plus nette au survol, mouvements coupés quand le visiteur demande moins d'animations.
+* Mise à jour : installer le nouveau zip suffit, rien à réimporter.
+
 ## Version 0.14 : le vert sapin, couleur principale
 
 Trois couleurs, trois rôles : **vert sapin** pour les grandes surfaces et les actions, **chocolat** pour le pied de page et les contrastes, **beige** pour la lecture. Mêmes éléments, mêmes polices, aucune fonction modifiée.
