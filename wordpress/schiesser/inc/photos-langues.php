@@ -42,8 +42,12 @@ add_action( 'enqueue_block_editor_assets', function () {
 	wp_enqueue_script( 'schiesser-photos-langues', SCHIESSER_URI . '/assets/js/photos-langues.js', array( 'wp-data', 'wp-api-fetch', 'wp-notices', 'wp-editor' ), SCHIESSER_VERSION, true );
 	wp_localize_script( 'schiesser-photos-langues', 'SCHIESSER_PHOTOS', array(
 		'post'   => (int) $post->ID,
+		'langue' => schiesser_pl_nom_langue( (string) pll_get_post_language( $post->ID ) ),
 		'trads'  => $trads,
 	) );
+	// Fenêtre « Dans les autres langues » (textes de l'élément sélectionné) : inc/textes-langues.php.
+	wp_enqueue_script( 'schiesser-textes-langues', SCHIESSER_URI . '/assets/js/textes-langues.js', array( 'schiesser-photos-langues', 'wp-plugins', 'wp-element', 'wp-components', 'wp-data', 'wp-api-fetch', 'wp-block-editor' ), SCHIESSER_VERSION, true );
+	wp_enqueue_style( 'schiesser-textes-langues', SCHIESSER_URI . '/assets/css/textes-langues.css', array(), SCHIESSER_VERSION );
 } );
 
 /**

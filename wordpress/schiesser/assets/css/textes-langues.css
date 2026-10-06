@@ -1,0 +1,24 @@
+/* Fenêtre « Dans les autres langues » de l'éditeur (inc/textes-langues.php) */
+.schiesser-tl{position:fixed;right:16px;bottom:40px;z-index:100;width:340px;max-width:calc(100vw - 32px);max-height:min(70vh,560px);display:flex;flex-direction:column;
+  background:#fff;border:1px solid #dcdcde;border-radius:12px;box-shadow:0 12px 32px -12px rgba(0,0,0,.28);font-size:13px;overflow:hidden}
+.schiesser-tl .stl-tete{display:flex;align-items:center;gap:8px;width:100%;padding:10px 14px;border:0;background:#174633;color:#fff;font:inherit;font-weight:600;cursor:pointer;text-align:left}
+.schiesser-tl .stl-tete span:first-child{flex:1}
+.schiesser-tl .stl-langues{font-size:11px;letter-spacing:.08em;opacity:.8;font-weight:500}
+.schiesser-tl .stl-tete:focus-visible{outline:2px solid #E4D3B4;outline-offset:-4px}
+.schiesser-tl .stl-corps{padding:12px 14px 14px;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.schiesser-tl .stl-vide{margin:0;color:#646970}
+.schiesser-tl .stl-champ{font-weight:600}
+.schiesser-tl .stl-ici{padding:8px 10px;border-radius:8px;background:#f6f3ee;color:#3c434a}
+.schiesser-tl .stl-ici span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#646970;margin-bottom:2px}
+.schiesser-tl .stl-ici q{quotes:none}
+.schiesser-tl .stl-langue{display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid #f0f0f1}
+.schiesser-tl .stl-langue strong{font-size:12px;color:#174633}
+.schiesser-tl .stl-actions{display:flex;align-items:center;gap:10px}
+.schiesser-tl .stl-ok{color:#174633;font-weight:600}
+.schiesser-tl .stl-err{color:#b32d2e}
+.schiesser-tl.is-ferme{width:auto}
+/* à gauche du panneau des réglages quand il est ouvert, pour ne rien cacher */
+body:has(.interface-interface-skeleton__sidebar .interface-complementary-area) .schiesser-tl{right:296px}
+.schiesser-tl .stl-ici q{white-space:pre-line}
+.schiesser-tl .stl-aide{margin:-4px 0 0;font-size:12px;color:#646970}
+.schiesser-tl textarea{font-size:13px;line-height:1.45}

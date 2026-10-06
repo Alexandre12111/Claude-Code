@@ -151,6 +151,7 @@ function schiesser_page_guide() {
 			'Puis ' . $lien( admin_url( 'edit.php?post_type=page' ), 'Pages' ) . ' : bouton « Mettre à jour le contenu des pages » en haut. Le thème crée les versions française et anglaise des 8 pages, des 70 produits et de la carte du Tea Room, reliées à l’allemand (sélecteur DE · FR · EN dans l’en-tête).',
 			'Prix, photos et allergènes sont communs aux trois langues : modifiés sur un produit, ils sont recopiés dans ses traductions. Les textes (nom, description, accroche) se modifient dans chaque langue.',
 			'Photo d’une page changée (ex. l’accueil en français) : après « Mettre à jour », l’éditeur propose de mettre la même photo sur les versions allemande et anglaise, en un clic.',
+			'Textes : dans l’éditeur d’une page, la fenêtre « Dans les autres langues » (en bas à droite) montre le texte sélectionné sur les versions allemande et anglaise ; corrigez le et cliquez sur « Enregistrer en Deutsch » ou « Enregistrer en English ».',
 			'Produits tous marqués « Français » (Polylang a pris le français comme langue par défaut) : un avis « Réparer les langues » apparaît dans Produits. Il remet chaque produit, plat et page dans sa vraie langue, relie les trois versions et crée celles qui manquent.',
 			'Les textes des Réglages maison (présentation, mention, notes) ont leur traduction dans Langues → <strong>Traductions</strong>. Le PDF de la carte existe en trois langues ; vous pouvez en déposer un autre par langue dans Réglages maison.',
 		) ),

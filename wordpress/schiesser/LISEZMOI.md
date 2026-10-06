@@ -3,6 +3,13 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.17 : textes dans les autres langues, depuis l'éditeur
+
+* En modifiant une page (ex. l'accueil en français), une petite fenêtre « Dans les autres langues » s'affiche en bas à droite de l'éditeur. Cliquez sur une section ou un élément : la fenêtre montre le même texte sur les versions Deutsch et English de la page. Corrigez le texte et cliquez sur « Enregistrer en Deutsch » (ou Ctrl+Entrée) : la version allemande est mise à jour aussitôt, sans ouvrir l'autre page.
+* Le texte que vous êtes en train de modifier est choisi automatiquement ; le menu « Texte » permet d'en choisir un autre (titre, texte, boutons, description de la photo…). Les mots entre *étoiles* s'affichent en italique sur le site.
+* Si la mise en page d'une version est différente (section ajoutée ou déplacée), la fenêtre le signale et propose d'ouvrir la page.
+* Évitez d'avoir la page allemande ouverte dans un autre onglet en même temps : en l'enregistrant, elle remplacerait le texte corrigé depuis la fenêtre.
+
 ## Version 0.16 : langues réparées, photo partagée entre les langues
 
 * **Réparer les langues** : si Polylang a pris le français comme langue par défaut, il a marqué tous les produits, plats et pages « Français ». Un avis dans Produits (et le tableau de bord) indique le nombre de contenus par langue ; le bouton « Réparer les langues » retrouve la vraie langue de chacun d’après son nom, relie les versions DE, FR et EN, met les doublons à la corbeille (récupérables) et crée les traductions manquantes. Prix, photos et textes retouchés sont conservés.
