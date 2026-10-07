@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       BQP Bibliothèque
  * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents classés selon l'arborescence du client, page Bibliothèque unique, shortcodes et fiches.
- * Version:           3.4.0
+ * Version:           3.5.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -22,7 +22,7 @@
  *
  * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
  *
- * Version : 3.4.0
+ * Version : 3.5.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '3.4.0' );
+	define( 'BQB_VERSION', '3.5.0' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -3164,6 +3164,10 @@ function bqb_sc_documents( $atts ) {
 			'ancre'       => '',
 			'affichage'   => 'cartes',
 			'sousfiltres' => 'oui',
+			'entete'      => 'oui',
+			'recherche'   => 'oui',
+			'outils'      => 'oui',
+			'lien'        => 'oui',
 		)
 	);
 
@@ -3275,11 +3279,17 @@ function bqb_render_documents( $atts, $locked = array() ) {
 
 	$html = '<section class="bqb-docs' . ( $cards ? ' is-cards' : '' ) . '" id="' . esc_attr( $list_id ) . '" data-bqb-list="' . (int) $instance . '">';
 
-	if ( '' !== trim( $atts['titre'] ) ) {
+	// En-tête de la liste : la collection ou le thème présenté, ses chiffres
+	// et une recherche limitée à ses documents.
+	$header = ( $listens && 'oui' === strtolower( isset( $atts['entete'] ) ? (string) $atts['entete'] : 'non' ) ) ? bqb_render_docs_header( $criteria, $url_f, $atts, $anchor ) : '';
+
+	if ( $header ) {
+		$html .= $header;
+	} elseif ( '' !== trim( $atts['titre'] ) ) {
 		$html .= '<h2 class="bqb-docs__title">' . esc_html( $atts['titre'] ) . '</h2>';
 	}
 
-	// Onglets des sous-catégories, pour filtrer sans quitter la liste.
+	// Rubriques en cartes, puis sous-catégories, pour filtrer sans quitter la liste.
 	$has_tabs = false;
 	if ( $listens && 'non' !== strtolower( isset( $atts['sousfiltres'] ) ? (string) $atts['sousfiltres'] : 'oui' ) ) {
 		$tabs     = bqb_render_subtabs( $criteria, $url_f, $anchor );
@@ -3345,6 +3355,110 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	wp_reset_postdata();
 
 	return $html;
+}
+
+/**
+ * En-tête d'une liste [bqp_documents] : bandeau aux couleurs de l'espace,
+ * avec numéro, présentation, chiffres clés, recherche dans la collection et
+ * lien vers la page Bibliothèque.
+ */
+function bqb_render_docs_header( $criteria, $url_f, $atts, $anchor ) {
+	$base  = null;
+	$short = '';
+
+	foreach ( array( 'collection' => 'bqb_collection', 'theme' => 'bqb_theme', 'personne' => 'bqb_personne', 'organisation' => 'bqb_organisation', 'nature' => 'bqb_nature' ) as $key => $taxonomy ) {
+		if ( ! empty( $criteria[ $key ] ) && 1 === count( $criteria[ $key ] ) ) {
+			$found = get_term_by( 'slug', $criteria[ $key ][0], $taxonomy );
+			if ( $found ) {
+				$base  = $found;
+				$short = $key;
+				break;
+			}
+		}
+	}
+
+	$title = trim( (string) $atts['titre'] );
+	$title = '' !== $title ? $title : ( $base ? $base->name : '' );
+
+	if ( '' === $title ) {
+		return '';
+	}
+
+	$palette = bqb_palette();
+	$color   = $palette['bordeaux'];
+	if ( $base && 'bqb_collection' === $base->taxonomy ) {
+		$color = bqb_root_color( $base->term_id );
+	} elseif ( $base && 'bqb_theme' === $base->taxonomy ) {
+		$color = bqb_settings()['bloc5_couleur'];
+	}
+
+	// Chiffres de la liste elle-même, sans les filtres choisis par le visiteur.
+	$fixed = array_filter( array_diff_key( $criteria, array( 'and' => 1, 'tri' => 1, 'q' => 1 ) ) );
+	$total = bqb_count( $fixed );
+	$subs  = 0;
+
+	if ( $base && is_taxonomy_hierarchical( $base->taxonomy ) ) {
+		$map = bqb_term_children_map( $base->taxonomy );
+		foreach ( isset( $map[ $base->term_id ] ) ? $map[ $base->term_id ] : array() as $child ) {
+			if ( bqb_count( array_merge( $fixed, array( $short => array( $child->slug ) ) ) ) ) {
+				$subs++;
+			}
+		}
+	}
+
+	$number  = $base ? bqb_term_number( $base ) : '';
+	$eyebrow = 'Bibliothèque numérique';
+	if ( $number ) {
+		$eyebrow .= false === strpos( $number, '.' ) ? ' · Espace ' . sprintf( '%02d', (int) $number ) : ' · Rubrique ' . $number;
+	} elseif ( $base && 'bqb_theme' === $base->taxonomy ) {
+		$eyebrow .= ' · Thème';
+	}
+
+	$mark = $number && false === strpos( $number, '.' ) ? '<span class="bqb-dhead__num">' . esc_html( sprintf( '%02d', (int) $number ) ) . '</span>' : bqb_icon( 'theme' === $short ? 'globe' : 'stack' );
+	$text = $base ? trim( $base->description ) : '';
+	$link = ( 'non' !== strtolower( (string) $atts['lien'] ) && $base && bqb_library_url() && (int) get_queried_object_id() !== bqb_library_id() ) ? bqb_library_link( array( 'f_' . $short => $base->slug ) ) : '';
+
+	$html  = '<header class="bqb-dhead" style="--bqb-accent:' . esc_attr( $color ) . ';">';
+	$html .= '<div class="bqb-dhead__top">';
+	$html .= '<span class="bqb-dhead__mark" aria-hidden="true">' . $mark . '</span>';
+	$html .= '<div class="bqb-dhead__intro"><span class="bqb-dhead__eyebrow">' . esc_html( $eyebrow ) . '</span>';
+	$html .= '<h2 class="bqb-dhead__title">' . esc_html( $title ) . '</h2>';
+	$html .= $text ? '<p class="bqb-dhead__text">' . esc_html( $text ) . '</p>' : '';
+	$html .= '</div>';
+	$html .= '<dl class="bqb-dhead__stats"><div><dt>' . _n( 'Document', 'Documents', $total ) . '</dt><dd>' . number_format_i18n( $total ) . '</dd></div>'
+		. ( $subs ? '<div><dt>' . _n( 'Rubrique', 'Rubriques', $subs ) . '</dt><dd>' . (int) $subs . '</dd></div>' : '' ) . '</dl>';
+	$html .= '</div>';
+
+	$search = 'non' !== strtolower( (string) $atts['recherche'] );
+
+	if ( $search || $link ) {
+		$html .= '<div class="bqb-dhead__bar">';
+
+		if ( $search ) {
+			// La recherche garde la rubrique choisie et l'ordre de tri.
+			$keep = '';
+			foreach ( array( 'collection', 'theme', 'tri' ) as $key ) {
+				if ( ! empty( $url_f[ $key ] ) ) {
+					$keep .= '<input type="hidden" name="f_' . esc_attr( $key ) . '" value="' . esc_attr( $url_f[ $key ] ) . '" />';
+				}
+			}
+
+			$html .= '<form class="bqb-dsearch" role="search" method="get" action="' . esc_url( remove_query_arg( bqb_filter_params() ) . $anchor ) . '">'
+				. bqb_icon( 'search' )
+				. '<label class="screen-reader-text" for="bqb-dsearch-' . esc_attr( $anchor ? substr( $anchor, 1 ) : 'liste' ) . '">Rechercher dans « ' . esc_html( $title ) . ' »</label>'
+				. '<input type="search" class="bqb-input" name="f_q" id="bqb-dsearch-' . esc_attr( $anchor ? substr( $anchor, 1 ) : 'liste' ) . '" value="' . esc_attr( isset( $url_f['q'] ) ? $url_f['q'] : '' ) . '" placeholder="Rechercher dans ' . esc_attr( $total > 1 ? 'ces ' . number_format_i18n( $total ) . ' documents' : 'cette collection' ) . '…" />'
+				. $keep
+				. '<button type="submit" class="bqb-btn">Rechercher</button></form>';
+		}
+
+		if ( $link ) {
+			$html .= '<a class="bqb-dhead__link" href="' . esc_url( $link ) . '">Explorer dans la bibliothèque' . bqb_icon( 'arrow' ) . '</a>';
+		}
+
+		$html .= '</div>';
+	}
+
+	return $html . '</header>';
 }
 
 /**
@@ -3433,9 +3547,22 @@ function bqb_render_subtabs( $criteria, $url_f, $anchor ) {
 			$color = bqb_root_color( $base->term_id );
 		}
 
-		$html  = '<nav class="bqb-tabs" aria-label="Sous-catégories"' . ( $color ? ' style="--bqb-accent:' . esc_attr( $color ) . ';"' : '' ) . '>';
-		$html .= '<div class="bqb-tabs__row">';
-		$html .= '<a class="bqb-tab' . ( $level1 ? '' : ' is-on' ) . '" href="' . esc_url( $link( '' ) ) . '" data-bqb-refresh' . ( $level1 ? '' : ' aria-current="true"' ) . '>Tout <span>' . (int) $count( $base ) . '</span></a>';
+		if ( 'bqb_theme' === $taxonomy ) {
+			$color = bqb_settings()['bloc5_couleur'];
+		}
+
+		$card = function ( $url, $num, $name, $text, $n, $on ) {
+			return '<a class="bqb-rubcard' . ( $on ? ' is-on' : '' ) . '" href="' . esc_url( $url ) . '" data-bqb-refresh' . ( $on ? ' aria-current="true"' : '' ) . '>'
+				. '<span class="bqb-rubcard__num">' . esc_html( $num ) . '</span>'
+				. '<span class="bqb-rubcard__name">' . esc_html( $name ) . '</span>'
+				. ( $text ? '<span class="bqb-rubcard__text">' . esc_html( $text ) . '</span>' : '' )
+				. '<span class="bqb-rubcard__count">' . sprintf( _n( '%s document', '%s documents', (int) $n ), number_format_i18n( (int) $n ) ) . '</span>'
+				. '</a>';
+		};
+
+		$html  = '<nav class="bqb-rubnav" aria-label="Rubriques"' . ( $color ? ' style="--bqb-accent:' . esc_attr( $color ) . ';"' : '' ) . '>';
+		$html .= '<div class="bqb-rubnav__cards">';
+		$html .= $card( $link( '' ), 'Tout', 'Tous les documents', 'L\'ensemble de « ' . $base->name . ' »', $count( $base ), ! $level1 );
 
 		foreach ( $map[ $base->term_id ] as $child ) {
 			$n = $count( $child );
@@ -3443,15 +3570,13 @@ function bqb_render_subtabs( $criteria, $url_f, $anchor ) {
 				continue;
 			}
 			$on     = $level1 && (int) $level1->term_id === (int) $child->term_id;
-			$number = bqb_term_number( $child );
-			$html  .= '<a class="bqb-tab' . ( $on ? ' is-on' : '' ) . '" href="' . esc_url( $link( $child->slug ) ) . '" data-bqb-refresh' . ( $on ? ' aria-current="true"' : '' ) . '>'
-				. ( $number ? '<em>' . esc_html( $number ) . '</em>' : '' ) . esc_html( $child->name ) . ' <span>' . (int) $n . '</span></a>';
+			$html  .= $card( $link( $child->slug ), bqb_term_number( $child ), $child->name, $child->description, $n, $on );
 		}
 
 		$html .= '</div>';
 
 		if ( $level1 && ! empty( $map[ $level1->term_id ] ) ) {
-			$html .= '<div class="bqb-tabs__sub">';
+			$html .= '<div class="bqb-rubnav__sub"><span class="bqb-rubnav__label">Affiner « ' . esc_html( $level1->name ) . ' »</span>';
 			$html .= '<a class="bqb-subtab' . ( $level2 ? '' : ' is-on' ) . '" href="' . esc_url( $link( $level1->slug ) ) . '" data-bqb-refresh>Tous</a>';
 			foreach ( $map[ $level1->term_id ] as $element ) {
 				$n = $count( $element );
@@ -5417,6 +5542,15 @@ function bqb_front_js() {
 			next.click();
 		});
 
+		// Sur mobile, les rubriques défilent : la rubrique choisie reste visible.
+		function showCurrentRub(scope){
+			each((scope || document).querySelectorAll('.bqb-rubnav__cards'), function(row){
+				var on = row.querySelector('.bqb-rubcard.is-on');
+				if (on && row.scrollWidth > row.clientWidth) { row.scrollLeft = Math.max(0, on.offsetLeft - row.offsetLeft - 8); }
+			});
+		}
+		showCurrentRub();
+
 		function fetchPage(href){
 			return fetch(href, { credentials: 'same-origin' })
 				.then(function(r){ if (!r.ok) { throw new Error(r.status); } return r.text(); })
@@ -5463,12 +5597,42 @@ function bqb_front_js() {
 				if (!fresh) { throw new Error('liste'); }
 				list.innerHTML = fresh.innerHTML;
 				list.classList.remove('is-loading');
+				showCurrentRub(list);
 				if (window.history && history.pushState) { history.pushState({ bqbList: 1 }, '', a.href); }
 				if (list.getBoundingClientRect().top < 0) { list.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 			}).catch(function(){ window.location.href = a.href; });
 		});
 
-		if (document.querySelector('[data-bqb-refresh]') && !document.querySelector('[data-bqb-lib]') && window.history && history.replaceState) {
+		// Recherche et tri d'une liste [bqp_documents] : la liste se met à jour sur place.
+		document.addEventListener('submit', function(e){
+			var form = e.target;
+			if (!form.matches || !form.matches('.bqb-dsearch, .bqb-sortbar') || form.closest('[data-bqb-lib]') || !window.fetch || !window.DOMParser || !window.URLSearchParams) { return; }
+			var list = form.closest('[data-bqb-list]');
+			if (!list) { return; }
+			e.preventDefault();
+			var url = new URL(form.getAttribute('action') || location.href, location.href);
+			var params = new URLSearchParams();
+			each(form.querySelectorAll('input[name], select[name]'), function(el){ if (el.value) { params.append(el.name, el.value); } });
+			url.search = params.toString();
+			var isSort = form.matches('.bqb-sortbar');
+			list.classList.add('is-loading');
+			fetchPage(url.href).then(function(doc){
+				var fresh = sameList(doc, list);
+				if (!fresh) { throw new Error('liste'); }
+				list.innerHTML = fresh.innerHTML;
+				list.classList.remove('is-loading');
+				showCurrentRub(list);
+				if (window.history && history.pushState) { history.pushState({ bqbList: 1 }, '', url.href); }
+				var focus = list.querySelector(isSort ? '.bqb-sortbar select' : '.bqb-dsearch input[name="f_q"]');
+				if (focus) { focus.focus({ preventScroll: true }); }
+				if (!isSort) {
+					var results = list.querySelector('.bqb-results, .bqb-docs__empty');
+					if (results && results.getBoundingClientRect().top > window.innerHeight * 0.8) { results.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+				}
+			}).catch(function(){ window.location.href = url.href; });
+		});
+
+		if ((document.querySelector('[data-bqb-refresh]') || document.querySelector('.bqb-dsearch')) && !document.querySelector('[data-bqb-lib]') && window.history && history.replaceState) {
 			history.replaceState({ bqbList: 1 }, '', location.href);
 			window.addEventListener('popstate', function(e){ if (e.state && e.state.bqbList) { window.location.reload(); } });
 		}
@@ -5993,6 +6157,79 @@ function bqb_front_css() {
 		.bqb-vpanel__rubs{flex-wrap:nowrap;margin-left:-16px;margin-right:-16px;padding:0 16px 16px;overflow-x:auto;scrollbar-width:none;}
 		.bqb-vpanel__rubs::-webkit-scrollbar{display:none;}
 		.bqb-vpanel__rubs .bqb-pillink{flex:0 0 auto;white-space:nowrap;}
+	}
+
+	/* =====================================================================
+	 * Listes [bqp_documents] : en-tête, rubriques en cartes
+	 * =================================================================== */
+	.bqb-dhead{position:relative;margin:0 0 22px;padding:30px 32px 26px;border-radius:18px;overflow:hidden;color:#fff;background:var(--bqb-accent);background-image:radial-gradient(circle at 92% -20%,rgba(255,255,255,.18),transparent 45%),linear-gradient(135deg,rgba(255,255,255,.06),rgba(0,0,0,.32));box-shadow:0 30px 60px -42px rgba(49,2,12,.9);}
+	.bqb-dhead::after{content:"";position:absolute;right:-80px;bottom:-130px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,.12);box-shadow:0 0 0 44px rgba(255,255,255,.035);pointer-events:none;}
+	.bqb-dhead > *{position:relative;z-index:1;}
+	.bqb-dhead__top{display:flex;align-items:flex-start;gap:20px;}
+	.bqb-dhead__mark{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);}
+	.bqb-dhead__mark .bqb-ico{width:26px;height:26px;}
+	.bqb-dhead__num{font-family:var(--bqb-serif);font-size:1.7rem;font-weight:600;line-height:1;}
+	.bqb-dhead__intro{flex:1;min-width:0;}
+	.bqb-dhead__eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.75);}
+	.bqb-dhead__eyebrow::before{content:"";width:24px;height:2px;background:#C75A18;}
+	.bqb-docs .bqb-dhead__title{margin:8px 0 0 !important;font-family:var(--bqb-serif) !important;font-size:clamp(1.8rem,3.4vw,2.5rem) !important;font-weight:600 !important;line-height:1.1 !important;color:#fff !important;}
+	.bqb-dhead__text{max-width:68ch;margin:10px 0 0;font-size:.94rem;line-height:1.6;color:rgba(255,255,255,.84);}
+	.bqb-dhead__stats{flex:0 0 auto;display:flex;gap:26px;margin:0;}
+	.bqb-dhead__stats div{text-align:right;}
+	.bqb-dhead__stats dt{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+	.bqb-dhead__stats dd{margin:2px 0 0;font-family:var(--bqb-serif);font-size:2.2rem;font-weight:600;line-height:1;color:#fff;}
+	.bqb-dhead__bar{display:flex;flex-wrap:wrap;align-items:center;gap:14px 24px;margin:24px 0 0;}
+	.bqb-dsearch{position:relative;flex:1 1 420px;display:flex;align-items:center;gap:8px;max-width:720px;padding:5px;border-radius:12px;background:#fff;box-shadow:0 22px 40px -28px rgba(0,0,0,.7);}
+	.bqb-dsearch > .bqb-ico{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:19px;height:19px;color:#8d8a88;pointer-events:none;}
+	.bqb-docs .bqb-dsearch .bqb-input{flex:1;min-width:0;border:0 !important;padding:13px 12px 13px 46px !important;background:transparent !important;box-shadow:none !important;font-size:.98rem !important;}
+	.bqb-docs .bqb-dsearch .bqb-btn{align-self:stretch;padding:0 22px !important;border-radius:8px !important;background:var(--bqb-accent) !important;background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.2)) !important;}
+	.bqb-docs .bqb-dhead__link{display:inline-flex;align-items:center;gap:9px;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#fff !important;opacity:.9;}
+	.bqb-docs .bqb-dhead__link:hover{color:#fff !important;opacity:1;}
+	.bqb-dhead__link .bqb-ico{transition:transform .25s;}
+	.bqb-dhead__link:hover .bqb-ico{transform:translateX(4px);}
+	@media (max-width:760px){
+		.bqb-dhead{padding:22px 18px 20px;border-radius:14px;}
+		.bqb-dhead__top{flex-wrap:wrap;gap:14px;}
+		.bqb-dhead__mark{width:48px;height:48px;border-radius:13px;}
+		.bqb-dhead__intro{flex-basis:calc(100% - 62px);}
+		.bqb-dhead__stats{width:100%;gap:22px;padding-top:12px;border-top:1px solid rgba(255,255,255,.18);}
+		.bqb-dhead__stats div{text-align:left;}
+		.bqb-dhead__stats dd{font-size:1.6rem;}
+		.bqb-dsearch{flex-basis:100%;flex-wrap:wrap;}
+		.bqb-dsearch > .bqb-ico{top:26px;}
+		.bqb-docs .bqb-dsearch .bqb-btn{flex-basis:100%;justify-content:center;padding:13px !important;}
+	}
+
+	.bqb-rubnav{margin:0 0 6px;}
+	.bqb-rubnav__cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;}
+	.bqb-docs .bqb-rubcard{position:relative;display:flex;flex-direction:column;gap:4px;min-width:0;padding:16px 18px 14px;border:1px solid var(--bqb-line);border-radius:14px;background:#fff;color:var(--bqb-ink) !important;box-shadow:0 1px 2px rgba(49,2,12,.05);transition:transform .25s,box-shadow .25s,border-color .25s,background .25s;}
+	.bqb-rubcard::before{content:"";position:absolute;left:18px;right:18px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--bqb-accent);opacity:.35;transition:opacity .25s;}
+	.bqb-docs .bqb-rubcard:hover{transform:translateY(-2px);border-color:var(--bqb-accent);box-shadow:0 20px 36px -28px rgba(49,2,12,.6);color:var(--bqb-ink) !important;}
+	.bqb-rubcard:hover::before{opacity:1;}
+	.bqb-rubcard__num{font-size:.72rem;font-weight:700;letter-spacing:.06em;color:var(--bqb-accent);font-variant-numeric:tabular-nums;}
+	.bqb-rubcard__num:empty{display:none;}
+	.bqb-rubcard__name{font-family:var(--bqb-serif);font-size:1.15rem;font-weight:600;line-height:1.2;color:var(--bqb-dark);}
+	.bqb-rubcard__text{font-size:.76rem;line-height:1.45;color:var(--bqb-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+	.bqb-rubcard__count{margin-top:auto;padding-top:8px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-docs .bqb-rubcard.is-on{border-color:var(--bqb-accent);background:var(--bqb-accent);background-image:linear-gradient(150deg,rgba(255,255,255,.1),rgba(0,0,0,.22));color:#fff !important;box-shadow:0 22px 40px -26px rgba(49,2,12,.7);transform:none;}
+	.bqb-rubcard.is-on::before{display:none;}
+	.bqb-rubcard.is-on::after{content:"";position:absolute;left:28px;bottom:-8px;width:14px;height:14px;background:var(--bqb-accent);transform:rotate(45deg);border-radius:2px;}
+	.bqb-rubcard.is-on .bqb-rubcard__num,.bqb-rubcard.is-on .bqb-rubcard__text,.bqb-rubcard.is-on .bqb-rubcard__count{color:rgba(255,255,255,.8);}
+	.bqb-rubcard.is-on .bqb-rubcard__name{color:#fff;}
+	.bqb-rubnav__sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:16px 0 0;padding:14px 16px;border:1px solid var(--bqb-line);border-radius:12px;background:var(--bqb-soft);}
+	.bqb-rubnav__label{margin-right:6px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-rubnav__sub .bqb-subtab{background:#fff;box-shadow:inset 0 0 0 1px var(--bqb-line);}
+	.bqb-docs .bqb-rubnav__sub .bqb-subtab.is-on{background:var(--bqb-accent);box-shadow:none;color:#fff !important;}
+	.bqb-docs .bqb-rubnav__sub .bqb-subtab.is-on span{background:rgba(255,255,255,.2);color:#fff;}
+	@media (max-width:760px){
+		.bqb-rubnav__cards{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);}
+		.bqb-rubnav__cards::-webkit-scrollbar{display:none;}
+		.bqb-docs .bqb-rubcard{flex:0 0 200px;scroll-snap-align:start;}
+		.bqb-rubcard.is-on::after{display:none;}
+		.bqb-rubnav__sub{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
+		.bqb-rubnav__sub::-webkit-scrollbar{display:none;}
+		.bqb-rubnav__sub .bqb-subtab{flex:0 0 auto;}
+		.bqb-rubnav__label{display:none;}
 	}
 
 	/* =====================================================================

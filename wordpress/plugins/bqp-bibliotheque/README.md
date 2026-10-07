@@ -1,6 +1,6 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.4.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.5.0.
 
 Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit une barre de recherche simple ou avancée, les 5 espaces à déplier, le catalogue filtré et l'annuaire des auteurs et organisations.
 
@@ -133,11 +133,16 @@ Au premier passage dans l'administration : s'il n'y a encore aucun document, l'a
 Liste de documents, en **cartes** par défaut : nature et année, titre, auteurs, résumé court, emplacement numéroté (« 1.1 › Articles ») et « Voir la fiche ». Toute la carte est cliquable.
 
 - **6 documents**, puis un bouton **« Afficher plus de documents »** juste en dessous, qui ajoute les suivants sans recharger la page (sans JavaScript, il ouvre la page suivante)
-- quand la liste porte sur **une seule collection ou un seul thème** qui a des sous-catégories, des **onglets** apparaissent : « Tout », puis les rubriques numérotées avec leur nombre de documents ; une rubrique choisie affiche ses éléments sur une seconde ligne. La liste se met à jour sur place, et le bouton retour du navigateur fonctionne
+- quand la liste porte sur **une seule collection, un seul thème, une personne, une organisation ou une nature**, un **en-tête** la présente, dans le même style que la page Bibliothèque : bandeau aux couleurs de l'espace, numéro (« 01 »), « Bibliothèque numérique · Espace 01 », titre, description, nombre de documents et de rubriques, **recherche limitée à ces documents** et lien « Explorer dans la bibliothèque »
+- quand cette collection ou ce thème a des sous-catégories, les **rubriques s'affichent en cartes** : « Tout », puis chaque rubrique numérotée avec sa description et son nombre de documents ; la rubrique choisie se colore et pointe vers ses sous-catégories, proposées en pastilles dans une ligne « Affiner » ; sur mobile, les cartes défilent et la rubrique choisie reste visible
+- au-dessus des documents : le **nombre de résultats** et **« Trier par »** (plus récents, plus anciens, titre)
+- rubriques, recherche, tri et « Afficher plus » mettent la liste à jour **sur place**, sans recharger la page ; l'adresse change et le bouton retour du navigateur fonctionne
 
-Exemple : `[bqp_documents collection="fonds-jean-michel-quatrepoint"]` donne les onglets Tout (22), 1.1 Écrits de Jean-Michel Quatrepoint (12), 1.2 Documents de son fonds documentaire (10), puis Livres et ouvrages, Articles, Chroniques… sous 1.1.
+Exemple : `[bqp_documents collection="fonds-jean-michel-quatrepoint"]` donne l'en-tête « 01 Fonds Jean-Michel Quatrepoint » (22 documents, 2 rubriques), puis les cartes Tout (22), 1.1 Écrits de Jean-Michel Quatrepoint (12), 1.2 Documents de son fonds documentaire (10) ; sous 1.1, Livres et ouvrages, Articles, Chroniques…
 
-Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs : l'un ET l'autre. Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs : l'un ET l'autre.
+Le titre de l'en-tête est le nom de la collection ; l'attribut `titre` le remplace. C'est un H2 : la page garde son H1.
+
+Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs : l'un ET l'autre.
 
 | Attribut | Valeurs |
 |---|---|
@@ -148,9 +153,13 @@ Plusieurs valeurs dans un même attribut : l'une OU l'autre. Plusieurs attributs
 | `tri` | `recent` (défaut), `ancien`, `titre` |
 | `nombre` | documents affichés avant « Afficher plus » (6 par défaut en cartes) |
 | `affichage` | `cartes` (défaut) ou `liste` |
-| `sousfiltres` | `non` pour masquer les onglets de sous-catégories |
-| `filtres` | `oui` pour afficher la barre de filtres |
-| `titre` | titre au-dessus de la liste |
+| `entete` | `non` pour masquer l'en-tête |
+| `recherche` | `non` pour retirer la recherche de l'en-tête |
+| `lien` | `non` pour retirer le lien « Explorer dans la bibliothèque » |
+| `sousfiltres` | `non` pour masquer les rubriques en cartes |
+| `outils` | `non` pour masquer le nombre de résultats et le tri |
+| `filtres` | `oui` pour afficher la barre de filtres complète |
+| `titre` | titre de l'en-tête (ou titre simple au-dessus de la liste sans en-tête) |
 | `vide` | message si aucun document |
 | `pagination` | `non` pour masquer « Afficher plus » |
 
@@ -233,6 +242,7 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 
 ## Historique
 
+- **3.5.0** : `[bqp_documents]` au design de la page Bibliothèque : en-tête aux couleurs de l'espace (numéro, présentation, chiffres, recherche dans la collection, lien vers la bibliothèque), rubriques en cartes avec ligne « Affiner », nombre de résultats et tri ; recherche et tri sans rechargement ; options `entete`, `recherche`, `lien`, `outils`
 - **3.4.0** : vitrine `[bqp_vitrine]` au design de la page Bibliothèque : bandeau bordeaux avec recherche et lien « Recherche avancée », espaces en cartes numérotées comme onglets, panneau avec rubriques en raccourcis et « Voir les N documents » ; le lien `#recherche-avancee` ouvre la page Bibliothèque en mode avancé
 - **3.3.0** : page Bibliothèque simplifiée. Une seule barre de recherche en haut, avec un sélecteur « Recherche simple / Recherche avancée » (période de… à…, compteur de critères, ouverture automatique quand un filtre est actif) ; la barre de filtres du catalogue disparaît, remplacée par le nombre de résultats et « Trier par ». Les 5 blocs deviennent 5 cartes compactes à déplier : espace, puis rubriques, puis sous-catégories, ouverts d'avance selon le filtre en cours. Accès rapide « Lauréats ». Pastilles « Filtres actifs » restylées, lien « Effacer les filtres » quand aucun document ne correspond
 - **3.2.0** : refonte du design. Page Bibliothèque : en-tête de recherche avec accès transversaux et chiffres clés ; blocs en 2 × 2 avec numéro, total, rubriques, éléments en pastilles, regroupements en liens, encart « Page dédiée » avec monogramme et « Explorer » en pied ; bloc 5 en grille de thématiques et raccourcis « Autres filtres ». Filtres : barre compacte, filtre actif en bordeaux, application immédiate partout, « Effacer les filtres » et « Trier par ». Fiche : en-tête pleine largeur (nature, rubrique numérotée, titre H1, auteurs avec initiales, date, accès, résumé, action principale, Partager), couverture ou couverture générée aux couleurs du bloc, texte à 70 caractères par ligne, encadré Informations qui reste visible, bloc « Citer », documents associés en cartes (sinon « Dans la même rubrique ») ; le titre du thème Hello est masqué pour garder un seul H1
@@ -255,6 +265,7 @@ Dans un WordPress 6.8 réel avec le thème Hello Elementor et les quatre plugins
 - Page unique (2.1) : lien de bloc, filtre par liste, retrait d'une pastille, annuaire, lauréats, fiche personne, recherche, bouton retour, tous sans rechargement ; redirections 301 des anciennes adresses, filtres conservés ; exclusion des sitemaps ; filtres repliables sur mobile, sans débordement horizontal
 - Arborescence du client (3.0) : migration depuis la 2.1 vérifiée en base (54 collections, 51 thèmes, 22 natures, anciennes familles supprimées) ; blocs identiques au schéma, numérotation conservée quand des rubriques sont masquées ; nature automatique puis manuelle ; page dédiée, fiche par lauréat, liens 5.2 qui ouvrent le bon filtre ; fiche document avec Collection / origine, Thèmes, Secteurs, Pays séparés
 - Listes et vitrine (3.1) : 6 cartes puis « Afficher plus » (6, 12… sur 22, sans rechargement), onglets 1.1 et 1.2 puis éléments, bouton retour, vitrine avec 5 onglets et « En savoir plus », catalogue en cartes, mode liste, vue groupée, mobile sans débordement
+- Listes (3.5) : en-tête avec chiffres justes, cartes de rubriques, sous-catégories, recherche dans la collection (qui garde la rubrique choisie), tri, « Afficher plus », bouton retour, tous sans rechargement ; page Bibliothèque et vitrine inchangées ; mobile 390 px sans débordement ; aucune erreur JavaScript ni PHP
 - Simplification (3.3) : ouverture d'un espace (panneau sous la bonne rangée, focus sur son titre), changement d'espace, fermeture par la croix et Échap ; dépliage d'une rubrique ; clic sur une sous-catégorie qui filtre le catalogue et la met en évidence ; passage simple / avancée, compteur de critères, recherche avancée avec période, tri conservé, recherche simple qui ignore les critères avancés ; lien partagé qui ouvre le bon espace et la bonne rubrique ; « Affiner par secteur » qui ouvre la recherche avancée sur ce champ ; bouton retour ; liste vide avec effacement ; mobile 390 px sans débordement ; [bqp_documents], [bqp_vitrine] et fiches inchangés ; aucune erreur JavaScript ni PHP
 - Design (3.2) : liens des rubriques, pastilles d'éléments, regroupements, page dédiée, tuiles de thèmes et raccourcis 5.2 filtrent le catalogue sans rechargement ; filtre appliqué et mis en évidence, effacement ; un seul H1 sur la fiche ; Partager et Copier la référence ; couverture générée sans visuel ; mobile sans débordement
 - Front : toutes les pages en HTTP 200, aucune erreur PHP ni JavaScript, liens du plugin en bordeaux malgré le rose du thème
