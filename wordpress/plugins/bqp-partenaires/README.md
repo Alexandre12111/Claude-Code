@@ -1,6 +1,6 @@
 # BQP Partenaires
 
-Plugin WordPress pour gérer et afficher les partenaires de boursequatrepoint.fr. Version 2.2.0.
+Plugin WordPress pour gérer et afficher les partenaires de boursequatrepoint.fr. Version 2.3.0.
 
 Les partenaires ne sont plus mélangés : **un bloc par catégorie** (Académiques, Institutionnels, Entreprises, Associations, Médias), chacun avec sa couleur, son pictogramme, son titre et son texte d'introduction. Comme sur la page Bibliothèque, les catégories sont **repliées** : un clic sur une catégorie affiche ses partenaires, la page reste courte. Un clic sur un partenaire ouvre sa **fiche détaillée** dans une fenêtre, comme pour la Gouvernance.
 
@@ -101,7 +101,7 @@ La fenêtre montre à gauche le logo en grand, la catégorie, l'année, la local
 | `sommaire` | oui / non (liens vers les blocs, quand ils sont dépliés) | oui |
 | `intro` | oui / non (texte sous le titre du bloc) | oui |
 | `fenetre` | oui / non (fiche détaillée au clic) | oui |
-| `colonnes` | 2, 3 ou 4 | 3 |
+| `colonnes` | 2, 3 ou 4 (3 sous 1100 px, 2 sous 860 px, 1 sur mobile) | 4 |
 | `filtres` | oui / non (affichage grille) | oui |
 | `compteurs` | oui / non | oui |
 | `titre` | texte libre | vide |
@@ -140,6 +140,7 @@ Versions 2.0.0 et 2.1.0, sur WordPress 6.8 avec le thème Hello Elementor et 17 
 
 ## Historique
 
+- **2.3.0** : partenaires sur 4 colonnes par défaut, cartes resserrées en conséquence (titre, marges, logo) ; la description coupée à trois lignes ne laisse plus apparaître une quatrième ligne
 - **2.2.0** : nouveau design des cartes de catégories : bandeau coloré avec pictogramme et nombre de partenaires en grand, nom court sur une ligne, introduction complète, pied « Découvrir » qui devient « Replier » en couleur ; les initiales des partenaires sont retirées ; grille adaptée aux tablettes
 - **2.1.0** : catégories repliées par défaut, comme sur la page Bibliothèque : une carte par catégorie, un clic déplie ses partenaires sous la rangée ; options `replie` et `ouvert` ; lien direct vers une catégorie ; le lien direct d'un partenaire ouvre sa catégorie avant sa fiche
 - **2.0.0** : un bloc par catégorie avec sommaire, couleur, pictogramme, titre et introduction ; fiche détaillée dans une fenêtre (depuis, localisation, LinkedIn, domaines, notre partenariat, présentation) ; nouvelles options `affichage`, `sommaire`, `intro`, `fenetre` ; couleurs distinctes pour Associations et Médias ; correction du texte « Aucun logo » qui restait visible à côté d'un logo en administration
