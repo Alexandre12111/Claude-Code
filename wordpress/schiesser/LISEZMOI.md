@@ -3,6 +3,13 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.17.1 : rubriques du Tea Room sans doublon
+
+* Carte du Tea Room : chaque langue n'affiche que ses rubriques. Une rubrique restée dans une autre langue (ex. « Kaffee » sur la carte française) rejoint sa traduction (« Café ») au lieu d'apparaître deux fois.
+* « Réparer les langues » range aussi chaque plat et chaque produit dans la rubrique de sa propre langue ; l'avis signale ces cas.
+* La réparation et l'import des langues ne remplacent plus jamais une photo choisie à la main (plat, produit ou rubrique) ; le contenu des pages n'est pas touché.
+* Mise à jour sans risque : installer le nouveau zip ne touche ni aux photos de la médiathèque, ni aux pages, ni aux produits (tout est dans la base de données). Ne cliquez pas sur « Mettre à jour le contenu des pages », qui remet les textes du thème.
+
 ## Version 0.17 : textes dans les autres langues, depuis l'éditeur
 
 * En modifiant une page (ex. l'accueil en français), une petite fenêtre « Dans les autres langues » s'affiche en bas à droite de l'éditeur. Cliquez sur une section ou un élément : la fenêtre montre le même texte sur les versions Deutsch et English de la page. Corrigez le texte et cliquez sur « Enregistrer en Deutsch » (ou Ctrl+Entrée) : la version allemande est mise à jour aussitôt, sans ouvrir l'autre page.

@@ -85,6 +85,9 @@ function schiesser_traduire_contenu( $id_de, $l, $donnees, $metas = array() ) {
 	$communes = array_merge( schiesser_metas_communes( get_post_type( $id_de ) ), array( '_s_preisliste', '_t_suggestion' ) );
 	foreach ( array_unique( $communes ) as $cle ) {
 		$v = get_post_meta( $id_de, $cle, true );
+		if ( '_thumbnail_id' === $cle && get_post_meta( $id, $cle, true ) ) {
+			continue; // photo déjà choisie sur cette version : on n'y touche pas
+		}
 		if ( '' === $v || array() === $v ) {
 			delete_post_meta( $id, $cle );
 		} else {
@@ -118,6 +121,9 @@ function schiesser_traduire_terme( $term_id, $taxonomie, $l, $nom ) {
 	pll_save_term_translations( $trads );
 	foreach ( array( 'photo', 'ordre' ) as $cle ) {
 		$v = get_term_meta( $term_id, $cle, true );
+		if ( 'photo' === $cle && get_term_meta( $id, $cle, true ) ) {
+			continue; // photo de rubrique déjà choisie dans cette langue
+		}
 		if ( '' !== $v ) {
 			update_term_meta( $id, $cle, $v );
 		}

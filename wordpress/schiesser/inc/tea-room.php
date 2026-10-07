@@ -367,6 +367,33 @@ function schiesser_rubriques_triees() {
 	return $termes;
 }
 
+/**
+ * Rubrique à afficher pour un plat, dans la langue de la page : sa traduction si elle existe.
+ * Une rubrique d'une autre langue sans traduction n'est pas affichée (0).
+ */
+function schiesser_rubrique_de_la_langue( $term_id ) {
+	if ( is_admin() || ! schiesser_polylang() || ! function_exists( 'pll_get_term_language' ) ) {
+		return $term_id;
+	}
+	$l = schiesser_langue();
+	$t = (string) pll_get_term_language( $term_id );
+	if ( '' === $t || substr( $t, 0, 2 ) === $l ) {
+		return $term_id;
+	}
+	$tr = (int) pll_get_term( $term_id, schiesser_slug_polylang( $l ) );
+	return $tr ?: 0;
+}
+
+/** Nom d'une rubrique dans la langue de la page (« Kaffee » devient « Café » sur la page française). */
+function schiesser_rubrique_nom_traduit( $nom ) {
+	$l = function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de';
+	if ( 'de' === $l || is_admin() || ! function_exists( 'schiesser_tr_carte' ) ) {
+		return $nom;
+	}
+	$dico = schiesser_tr_carte();
+	return isset( $dico[ $nom ] ) ? schiesser_tr( $dico, $nom, $l ) : $nom;
+}
+
 /** Données d'un produit du Tea Room, au format des plats du bloc « Carte du salon ». */
 function schiesser_donnees_tearoom( $post ) {
 	$post  = get_post( $post );
@@ -411,18 +438,38 @@ function schiesser_carte_tearoom( $rafraichir = false ) {
 		if ( ! $carte['suggestion'] && get_post_meta( $post->ID, '_t_suggestion', true ) ) {
 			$carte['suggestion'] = $d;
 		}
-		foreach ( (array) wp_get_object_terms( $post->ID, SCHIESSER_RUBRIQUE, array( 'fields' => 'ids' ) ) as $term_id ) {
-			$par_rubrique[ (int) $term_id ][] = $d;
+		$vus = array();
+		foreach ( (array) wp_get_object_terms( $post->ID, SCHIESSER_RUBRIQUE, array( 'fields' => 'ids', 'lang' => '' ) ) as $term_id ) {
+			$term_id = schiesser_rubrique_de_la_langue( (int) $term_id );
+			if ( $term_id && ! isset( $vus[ $term_id ] ) ) { // un plat ne figure qu'une fois par rubrique
+				$vus[ $term_id ]           = true;
+				$par_rubrique[ $term_id ][] = $d;
+			}
 		}
 	}
+	// Une rubrique par nom : « Kaffee » restée sur la page française rejoint « Café » (sa traduction).
+	$par_nom = array();
 	foreach ( schiesser_rubriques_triees() as $t ) {
 		if ( empty( $par_rubrique[ $t->term_id ] ) ) {
 			continue;
 		}
+		$nom = html_entity_decode( $t->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		$cle = mb_strtolower( schiesser_rubrique_nom_traduit( $nom ) );
+		if ( isset( $par_nom[ $cle ] ) ) {
+			$i     = $par_nom[ $cle ];
+			$noms  = wp_list_pluck( $carte['rubriques'][ $i ]['plats'], 'nom' );
+			foreach ( $par_rubrique[ $t->term_id ] as $plat ) {
+				if ( ! in_array( $plat['nom'], $noms, true ) ) {
+					$carte['rubriques'][ $i ]['plats'][] = $plat;
+				}
+			}
+			continue;
+		}
 		$photo                = (int) get_term_meta( $t->term_id, 'photo', true );
+		$par_nom[ $cle ]      = count( $carte['rubriques'] );
 		$carte['rubriques'][] = array(
 			'id'       => $t->term_id,
-			'nom'      => html_entity_decode( $t->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+			'nom'      => schiesser_rubrique_nom_traduit( $nom ),
 			'imageId'  => $photo,
 			'imageUrl' => '',
 			'imageAlt' => $photo ? ( (string) get_post_meta( $photo, '_wp_attachment_image_alt', true ) ?: $t->name ) : '',

@@ -240,6 +240,8 @@ function schiesser_reparer_langues( $creer_traductions = true ) {
 	if ( $creer_traductions ) {
 		schiesser_importer_langues( $ids, false );
 	}
+	/* ---- Chaque produit et chaque plat dans la rubrique de sa langue (pas « Kaffee » sur un plat français) ---- */
+	$bilan['termes'] += schiesser_rl_rattacher();
 	update_option( 'schiesser_langues_reparees', time() );
 	return $bilan;
 }
@@ -298,6 +300,53 @@ function schiesser_rl_diagnostic() {
 	return $compte;
 }
 
+/**
+ * Produits et plats rangés dans une catégorie ou rubrique d'une autre langue.
+ *
+ * @param bool $corriger Les rattacher à la traduction de la rubrique dans leur langue.
+ * @return int Nombre de contenus concernés.
+ */
+function schiesser_rl_rattacher( $corriger = true ) {
+	if ( ! function_exists( 'pll_get_term' ) || ! schiesser_langues_a_traduire() ) {
+		return 0;
+	}
+	$n = 0;
+	foreach ( array( SCHIESSER_PRODUIT => SCHIESSER_CATEGORIE, SCHIESSER_TEAROOM => SCHIESSER_RUBRIQUE ) as $type => $taxo ) {
+		foreach ( array_keys( schiesser_rl_contenus( $type ) ) as $id ) {
+			$l = schiesser_rl_langue( $id );
+			if ( '' === $l ) {
+				continue;
+			}
+			$avant = array_map( 'intval', (array) wp_get_object_terms( $id, $taxo, array( 'fields' => 'ids', 'lang' => '' ) ) );
+			$apres = array();
+			foreach ( $avant as $t ) {
+				$lt = schiesser_rl_langue( $t, true );
+				if ( '' === $lt || $lt === $l ) {
+					$apres[] = $t;
+					continue;
+				}
+				$tr = (int) pll_get_term( $t, schiesser_slug_polylang( $l ) );
+				if ( $tr ) {
+					$apres[] = $tr;
+				}
+			}
+			$apres = array_values( array_unique( $apres ) );
+			if ( ! $apres ) {
+				continue; // aucune rubrique dans sa langue : on laisse tel quel plutôt que de vider
+			}
+			sort( $avant );
+			sort( $apres );
+			if ( $avant !== $apres ) {
+				++$n;
+				if ( $corriger ) {
+					wp_set_object_terms( $id, $apres, $taxo );
+				}
+			}
+		}
+	}
+	return $n;
+}
+
 /** Vrai si une langue a nettement moins de contenus que l'allemand (ou l'allemand aucun). */
 function schiesser_rl_desordre( $compte ) {
 	foreach ( $compte as $par_langue ) {
@@ -327,8 +376,9 @@ add_action( 'admin_notices', function () {
 		};
 		echo '<div class="notice notice-success is-dismissible"><p><strong>Langues remises en ordre.</strong> ' . esc_html( $pl( $b[0] ?? 0, 'produit ou plat', 'produits ou plats' ) . ' et ' . $pl( $b[3] ?? 0, 'page', 'pages' ) . ' remis dans leur langue, ' . $pl( $b[1] ?? 0, 'catégorie corrigée', 'catégories corrigées' ) . ', ' . $pl( $b[2] ?? 0, 'doublon mis à la corbeille', 'doublons mis à la corbeille' ) . ' (récupérables). Les traductions manquantes ont été créées.' ) . '</p></div>';
 	}
-	$compte = schiesser_rl_diagnostic();
-	if ( ! $compte || ! schiesser_rl_desordre( $compte ) ) {
+	$compte   = schiesser_rl_diagnostic();
+	$melanges = $compte ? schiesser_rl_rattacher( false ) : 0;
+	if ( ! $compte || ( ! schiesser_rl_desordre( $compte ) && ! $melanges ) ) {
 		return;
 	}
 	$noms  = array( 'de' => 'Deutsch', 'fr' => 'Français', 'en' => 'English' );
@@ -342,7 +392,7 @@ add_action( 'admin_notices', function () {
 	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_reparer_langues' ), 'schiesser_reparer_langues' );
 	?>
 	<div class="notice notice-warning">
-		<p><strong>Thème Schiesser : les langues des produits ne sont pas en ordre.</strong> Boutique : <?php echo esc_html( $ligne( $compte[ SCHIESSER_PRODUIT ] ) ); ?>. Carte du Tea Room : <?php echo esc_html( $ligne( $compte[ SCHIESSER_TEAROOM ] ) ); ?>.</p>
+		<p><strong>Thème Schiesser : les langues des produits ne sont pas en ordre.</strong> Boutique : <?php echo esc_html( $ligne( $compte[ SCHIESSER_PRODUIT ] ) ); ?>. Carte du Tea Room : <?php echo esc_html( $ligne( $compte[ SCHIESSER_TEAROOM ] ) ); ?>.<?php if ( $melanges ) : ?> <?php echo esc_html( $melanges . ( $melanges > 1 ? ' produits ou plats sont rangés' : ' produit ou plat est rangé' ) . ' dans une rubrique d’une autre langue (ex. « Kaffee » sur la carte française).' ); ?><?php endif; ?></p>
 		<p>La réparation retrouve la vraie langue de chaque produit, plat et page d’après son nom, relie les versions allemande, française et anglaise, met les doublons à la corbeille (récupérables) et crée les traductions qui manquent. Vos prix, photos et textes retouchés sont conservés.</p>
 		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>">Réparer les langues</a></p>
 	</div>
