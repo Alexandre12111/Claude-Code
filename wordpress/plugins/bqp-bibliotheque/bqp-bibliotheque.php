@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       BQP Bibliothèque
  * Description:       Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint : documents classés selon l'arborescence du client, page Bibliothèque unique, shortcodes et fiches.
- * Version:           3.2.0
+ * Version:           3.3.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -15,13 +15,14 @@
  * Back-office : type de contenu « Document », arborescence du client à l'identique,
  * gestionnaire d'arborescence, panneau de classement, générateur de shortcodes.
  * Site : les 5 blocs, listes de documents par shortcode, fiches documents,
- * page unique « Bibliothèque » : blocs, catalogue filtré et annuaire.
+ * page unique « Bibliothèque » : recherche simple ou avancée, espaces à
+ * déplier, catalogue filtré et annuaire.
  *
  * Compatible extension classique ET Code Snippets.
  *
  * Shortcodes : [bqp_bibliotheque] [bqp_documents] [bqp_personnes] [bqp_document_fiche]
  *
- * Version : 3.2.0
+ * Version : 3.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQB_VERSION' ) ) {
-	define( 'BQB_VERSION', '3.2.0' );
+	define( 'BQB_VERSION', '3.3.0' );
 }
 if ( ! defined( 'BQB_CPT' ) ) {
 	define( 'BQB_CPT', 'bqb_document' );
@@ -1329,8 +1330,9 @@ function bqb_render_help_page() {
 	$html .= '</tbody></table></div>';
 
 	$html .= '<h2 class="bqb-help__subtitle">Mettre la bibliothèque en place</h2><ol class="bqb-help__list">';
-	$html .= '<li>Créez <strong>une seule page</strong> « Bibliothèque » et collez-y <code>[bqp_bibliotheque]</code>. Elle contient tout : la recherche, les cinq blocs, le catalogue filtré et l\'annuaire des auteurs et organisations.</li>';
-	$html .= '<li>C\'est tout : la page est détectée automatiquement. Chaque lien des blocs filtre le catalogue, sur la même page, sans rechargement.</li>';
+	$html .= '<li>Créez <strong>une seule page</strong> « Bibliothèque » et collez-y <code>[bqp_bibliotheque]</code>. Elle contient tout : la barre de recherche (simple ou avancée), les cinq espaces à déplier, le catalogue filtré et l\'annuaire des auteurs et organisations.</li>';
+	$html .= '<li>C\'est tout : la page est détectée automatiquement. Un clic sur un espace affiche ses rubriques, un clic sur une rubrique ses sous-catégories, et chaque lien filtre le catalogue, sur la même page, sans rechargement.</li>
+	<li>Options : <code>recherche="avancee"</code> ouvre la recherche avancée d\'office, <code>blocs="non"</code> masque les espaces, <code>navigation="non"</code> masque la barre de recherche.</li>';
 	$html .= '<li>Pour afficher une sélection ailleurs sur le site (accueil, actualité), utilisez le <strong>Générateur de shortcode</strong>.</li>';
 	$html .= '</ol>';
 
@@ -1723,7 +1725,7 @@ function bqb_forget_library_page() {
  * entrer en conflit avec ceux de WordPress.
  */
 function bqb_filter_keys() {
-	return array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'tri', 'groupe', 'annuaire', 'role' ) );
+	return array_merge( array_keys( bqb_short_map() ), array( 'q', 'annee', 'de', 'jusqua', 'tri', 'groupe', 'annuaire', 'role' ) );
 }
 
 function bqb_filter_params() {
@@ -2801,9 +2803,9 @@ function bqb_render_generator_page() {
 	$html .= '<div class="bqb-card">';
 	$html .= '<span class="bqb-admin__label">Les autres shortcodes</span>';
 	$codes = array(
-		'[bqp_bibliotheque]'                  => 'La page Bibliothèque complète : recherche, cinq blocs, catalogue filtré et annuaire. À coller une seule fois.',
+		'[bqp_bibliotheque]'                  => 'La page Bibliothèque complète : recherche simple ou avancée, cinq espaces à déplier, catalogue filtré et annuaire. À coller une seule fois. Option recherche="avancee" pour ouvrir la recherche avancée d\'office.',
 		'[bqp_vitrine]'                       => 'Pour l\'accueil : trois documents par onglet (Nouveautés, puis les quatre blocs), avec « En savoir plus ». Options : nombre="2", onglets="themes", titre="…", texte="…".',
-		'[bqp_bibliotheque catalogue="non"]'  => 'Les cinq blocs seuls : leurs liens mènent à la page Bibliothèque.',
+		'[bqp_bibliotheque catalogue="non"]'  => 'La recherche et les cinq espaces seuls : leurs liens mènent à la page Bibliothèque.',
 		'[bqp_documents nombre="6" pagination="non"]' => 'Les six derniers documents, pour l\'accueil ou une actualité.',
 		'[bqp_personnes role="laureat"]'      => 'Les lauréats, groupés par année du prix.',
 	);
@@ -3206,6 +3208,18 @@ function bqb_url_filters() {
 		}
 	}
 
+	// Période de la recherche avancée : « de » et « jusqu'à », tous deux facultatifs.
+	$de = isset( $_GET['f_de'] ) ? absint( $_GET['f_de'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification
+	$a  = isset( $_GET['f_jusqua'] ) ? absint( $_GET['f_jusqua'] ) : 0; // phpcs:ignore WordPress.Security.NonceVerification
+	$de = ( $de >= 1000 && $de <= 2100 ) ? $de : 0;
+	$a  = ( $a >= 1000 && $a <= 2100 ) ? $a : 0;
+
+	if ( empty( $out['annee'] ) && ( $de || $a ) ) {
+		$de           = $de ? $de : 1000;
+		$a            = $a ? $a : 2100;
+		$out['annee'] = ( $de === $a ) ? (string) $de : min( $de, $a ) . '-' . max( $de, $a );
+	}
+
 	return $out;
 }
 
@@ -3286,7 +3300,8 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	$total = (int) $query->found_posts;
 
 	if ( ! $query->have_posts() ) {
-		$html .= '<p class="bqb-docs__empty">' . esc_html( $atts['vide'] ) . '</p></section>';
+		$reset = ( $listens && array_diff_key( $url_f, array( 'tri' => 1 ) ) ) ? '<a href="' . esc_url( remove_query_arg( bqb_filter_params() ) . $anchor ) . '" data-bqb-refresh>Effacer les filtres</a>' : '';
+		$html .= '<p class="bqb-docs__empty">' . esc_html( $atts['vide'] ) . $reset . '</p></section>';
 		wp_reset_postdata();
 		return $html;
 	}
@@ -3294,12 +3309,17 @@ function bqb_render_documents( $atts, $locked = array() ) {
 	$ids   = wp_list_pluck( $query->posts, 'ID' );
 	$shown = min( $total, ( $paged - 1 ) * $per_page + count( $ids ) );
 
-	$html .= '<p class="bqb-docs__count">' . sprintf( _n( '%s document', '%s documents', $total ), number_format_i18n( $total ) );
+	$count = '<p class="bqb-docs__count">' . sprintf( _n( '%s document', '%s documents', $total ), number_format_i18n( $total ) );
 	if ( $groupe ) {
 		$names  = array( 'annee' => 'par année', 'personne' => 'par auteur', 'theme' => 'par thème', 'organisation' => 'par organisation', 'nature' => 'par type', 'collection' => 'par collection' );
-		$html  .= ', regroupés ' . esc_html( $names[ $groupe ] );
+		$count .= ', regroupés ' . esc_html( $names[ $groupe ] );
 	}
-	$html .= '</p>';
+	$count .= '</p>';
+
+	// Le nombre de résultats et le tri, côte à côte au-dessus de la liste.
+	$html .= ( $listens && 'oui' === ( isset( $atts['outils'] ) ? $atts['outils'] : 'non' ) )
+		? '<div class="bqb-results">' . $count . bqb_render_sortbar( $criteria['tri'], $anchor ) . '</div>'
+		: $count;
 
 	if ( $groupe ) {
 		$html .= bqb_render_grouped( $ids, $groupe, $criteria['tri'], $cards );
@@ -3618,13 +3638,16 @@ function bqb_render_active_filters( $url_f, $anchor = '' ) {
 			$label = isset( $names[ $value ] ) ? $names[ $value ] : $value;
 		} elseif ( 'q' === $key ) {
 			$label = '« ' . $value . ' »';
+		} elseif ( 'annee' === $key ) {
+			$label = bqb_year_label( $value );
 		} elseif ( 'tri' === $key ) {
 			continue;
 		} else {
 			$label = $value;
 		}
 
-		$chips[] = '<a class="bqb-chip" href="' . esc_url( remove_query_arg( array( 'f_' . $key, 'pg' ) ) . $anchor ) . '">' . esc_html( $label ) . ' <span aria-hidden="true">×</span><span class="screen-reader-text"> (retirer ce filtre)</span></a>';
+		$remove  = ( 'annee' === $key ) ? array( 'f_annee', 'f_de', 'f_jusqua', 'pg' ) : array( 'f_' . $key, 'pg' );
+		$chips[] = '<a class="bqb-chip" href="' . esc_url( remove_query_arg( $remove ) . $anchor ) . '">' . esc_html( $label ) . ' <span aria-hidden="true">×</span><span class="screen-reader-text"> (retirer ce filtre)</span></a>';
 	}
 
 	if ( count( $chips ) > 1 ) {
@@ -3716,19 +3739,6 @@ function bqb_laureats_count() {
 
 	return is_wp_error( $terms ) ? 0 : count( $terms );
 }
-
-/**
- * Un lien de bloc, masqué s'il ne mène à rien et que le réglage le demande.
- */
-function bqb_block_link( $url, $label, $count, $show_empty, $class = '' ) {
-	if ( ! $url || ( ! $count && ! $show_empty ) ) {
-		return '';
-	}
-
-	return '<li class="bqb-blink' . ( $class ? ' ' . $class : '' ) . ( $count ? '' : ' is-empty' ) . '"><a href="' . esc_url( $url ) . '">' . esc_html( $label ) . '</a>' . ( $count ? '<span class="bqb-blink__n">' . (int) $count . '</span>' : '' ) . '</li>';
-}
-
-
 
 /**
  * Nom court d'un sous-thème dans le bloc 5 : « Souveraineté industrielle »
@@ -3845,11 +3855,22 @@ function bqb_initials( $name ) {
 }
 
 function bqb_sc_blocks( $atts ) {
-	$atts = shortcode_atts( array( 'vides' => '', 'navigation' => 'oui', 'catalogue' => 'oui', 'titre_catalogue' => 'Tous les documents' ), $atts, 'bqp_bibliotheque' );
+	$atts = shortcode_atts(
+		array(
+			'vides'           => '',
+			'navigation'      => 'oui',
+			'recherche'       => 'simple',
+			'blocs'           => 'oui',
+			'catalogue'       => 'oui',
+			'titre_blocs'     => 'Parcourir la bibliothèque',
+			'titre_catalogue' => 'Tous les documents',
+		),
+		$atts,
+		'bqp_bibliotheque'
+	);
 
 	$settings   = bqb_settings();
 	$show_empty = ( '' !== $atts['vides'] ) ? in_array( strtolower( $atts['vides'] ), array( 'oui', 'afficher', '1' ), true ) : (bool) $settings['afficher_vides'];
-	$map        = bqb_term_children_map( 'bqb_collection' );
 	$catalog    = ( 'non' !== strtolower( $atts['catalogue'] ) );
 
 	wp_enqueue_style( 'bqb-front' );
@@ -3857,103 +3878,286 @@ function bqb_sc_blocks( $atts ) {
 
 	$html = '<div class="bqb-lib"' . ( $catalog ? ' data-bqb-lib' : '' ) . '>';
 
+	// Une seule barre de recherche, simple ou avancée au choix du visiteur.
 	if ( 'non' !== strtolower( $atts['navigation'] ) ) {
-		$html .= bqb_render_lib_nav();
+		$html .= bqb_render_search( 'avancee' === strtolower( remove_accents( $atts['recherche'] ) ) );
 	}
 
-	$html .= '<div class="bqb-blocks">';
-	$num   = 0;
+	// Les grands espaces : un clic affiche leurs rubriques, puis leurs éléments.
+	if ( 'non' !== strtolower( $atts['blocs'] ) ) {
+		$html .= bqb_render_explorer( $show_empty, $atts['titre_blocs'] );
+	}
 
-	// Blocs 1 à 4 : espace › rubriques numérotées › éléments et regroupements.
+	// Le catalogue, sur la même page : les liens des espaces le filtrent.
+	if ( $catalog ) {
+		$html .= '<section id="bqb-catalogue" class="bqb-catalog" data-bqb-catalog aria-live="polite">' . bqb_render_catalog( $atts ) . '</section>';
+	}
+
+	return $html . '</div>';
+}
+
+/**
+ * Les couleurs d'un espace, en variables CSS.
+ */
+function bqb_block_style( $color ) {
+	return '--bqb-block:' . esc_attr( $color ) . ';--bqb-block-soft:' . esc_attr( bqb_hex_to_rgba( $color, 0.06 ) ) . ';--bqb-block-line:' . esc_attr( bqb_hex_to_rgba( $color, 0.22 ) ) . ';';
+}
+
+/**
+ * Une rubrique dans le panneau d'un espace. Si elle a des sous-catégories
+ * ou des regroupements, un clic les déplie ; sinon elle mène directement
+ * à ses documents.
+ */
+function bqb_render_rub( $args ) {
+	$args = wp_parse_args(
+		$args,
+		array(
+			'id'      => '',
+			'num'     => '',
+			'name'    => '',
+			'text'    => '',
+			'count'   => 0,
+			'url'     => '',
+			'key'     => '',
+			'inner'   => '',
+			'subs'    => 0,
+			'open'    => false,
+			'current' => false,
+		)
+	);
+
+	$head = ( $args['num'] ? '<span class="bqb-rub__num">' . esc_html( $args['num'] ) . '</span>' : '' )
+		. '<span class="bqb-rub__label"><span class="bqb-rub__name">' . esc_html( $args['name'] ) . '</span>'
+		. ( $args['text'] ? '<span class="bqb-rub__text">' . esc_html( $args['text'] ) . '</span>' : '' ) . '</span>'
+		. '<span class="bqb-rub__count">' . sprintf( _n( '%s document', '%s documents', (int) $args['count'] ), number_format_i18n( (int) $args['count'] ) ) . '</span>';
+
+	if ( '' === $args['inner'] ) {
+		return '<li class="bqb-rub is-link"><a class="bqb-rub__head' . ( $args['current'] ? ' is-current' : '' ) . '" href="' . esc_url( $args['url'] ) . '"' . ( $args['key'] ? ' data-bqb-key="' . esc_attr( $args['key'] ) . '"' : '' ) . '>'
+			. $head . '<span class="bqb-rub__icon">' . bqb_icon( 'arrow' ) . '</span></a></li>';
+	}
+
+	$body_id = 'bqb-rub-' . $args['id'];
+	$all     = $args['url'] ? '<a class="bqb-pillink bqb-pillink--all' . ( $args['current'] ? ' is-current' : '' ) . '" href="' . esc_url( $args['url'] ) . '"' . ( $args['key'] ? ' data-bqb-key="' . esc_attr( $args['key'] ) . '"' : '' ) . '>Tous les documents <span>' . (int) $args['count'] . '</span></a>' : '';
+
+	return '<li class="bqb-rub' . ( $args['open'] ? ' is-open' : '' ) . '">'
+		. '<button type="button" class="bqb-rub__head" aria-expanded="' . ( $args['open'] ? 'true' : 'false' ) . '" aria-controls="' . esc_attr( $body_id ) . '" data-bqb-rub>'
+		. $head . '<span class="bqb-rub__icon"><span class="screen-reader-text">' . ( $args['subs'] ? sprintf( _n( '%s sous-catégorie', '%s sous-catégories', (int) $args['subs'] ), (int) $args['subs'] ) : 'Afficher les choix' ) . '</span>' . bqb_icon( 'chevron' ) . '</span></button>'
+		. '<div class="bqb-rub__body" id="' . esc_attr( $body_id ) . '"' . ( $args['open'] ? '' : ' hidden' ) . '>' . $all . $args['inner'] . '</div>'
+		. '</li>';
+}
+
+/**
+ * Les éléments d'une rubrique (pastilles) et ses regroupements (« Par
+ * lauréat », « Par année »), avec le repère du filtre en cours.
+ */
+function bqb_rub_inner( $term, $show_empty, $map, $current_slug ) {
+	list( $views ) = bqb_collection_items( $term, $show_empty, array() );
+	$elements      = '';
+	$subs          = 0;
+
+	foreach ( isset( $map[ $term->term_id ] ) ? $map[ $term->term_id ] : array() as $element ) {
+		$n   = bqb_count( array( 'collection' => array( $element->slug ) ) );
+		$url = bqb_term_url( $element );
+
+		if ( $url && ( $n || $show_empty ) ) {
+			$subs++;
+			$elements .= '<a class="bqb-pillink' . ( $n ? '' : ' is-empty' ) . ( $current_slug === $element->slug ? ' is-current' : '' ) . '" href="' . esc_url( $url ) . '" data-bqb-key="collection:' . esc_attr( $element->slug ) . '">' . esc_html( $element->name ) . ( $n ? '<span>' . (int) $n . '</span>' : '' ) . '</a>';
+		}
+	}
+
+	return array(
+		( $elements ? '<div class="bqb-pillinks">' . $elements . '</div>' : '' ) . ( $views ? '<div class="bqb-views"><span class="bqb-views__label">Regrouper</span>' . $views . '</div>' : '' ),
+		$subs,
+	);
+}
+
+/**
+ * « Parcourir la bibliothèque » : les cinq espaces du schéma en cartes.
+ * Un clic sur une carte ouvre son panneau (les rubriques), un clic sur une
+ * rubrique déplie ses éléments, un clic sur un élément filtre le catalogue.
+ * Tout est rendu d'avance : rien n'est chargé au clic.
+ */
+function bqb_render_explorer( $show_empty, $title ) {
+	$settings = bqb_settings();
+	$map      = bqb_term_children_map( 'bqb_collection' );
+	$themes   = bqb_term_children_map( 'bqb_theme' );
+	$url_f    = bqb_url_filters();
+	$spaces   = array();
+
+	// Le filtre en cours ouvre d'avance le bon espace et la bonne rubrique.
+	$chain = array( 'collection' => array(), 'theme' => array() );
+	foreach ( array( 'collection' => 'bqb_collection', 'theme' => 'bqb_theme' ) as $short => $taxonomy ) {
+		$term = empty( $url_f[ $short ] ) ? null : get_term_by( 'slug', $url_f[ $short ], $taxonomy );
+		if ( $term ) {
+			$chain[ $short ]   = array_map( 'intval', array_reverse( get_ancestors( $term->term_id, $taxonomy, 'taxonomy' ) ) );
+			$chain[ $short ][] = (int) $term->term_id;
+		}
+	}
+
+	$current_coll  = isset( $url_f['collection'] ) ? $url_f['collection'] : '';
+	$current_theme = isset( $url_f['theme'] ) ? $url_f['theme'] : '';
+	$num           = 0;
+
+	/* Espaces 1 à 4 : les collections. */
 	foreach ( isset( $map[0] ) ? $map[0] : array() as $root ) {
 		$num++;
-		$color = bqb_root_color( $root->term_id );
 		$total = bqb_count( array( 'collection' => array( $root->slug ) ) );
-		$body  = '';
+		$open  = isset( $chain['collection'][0] ) && $chain['collection'][0] === (int) $root->term_id;
+		$rubs  = '';
+		$nrub  = 0;
 		$sub   = 0;
 
 		foreach ( isset( $map[ $root->term_id ] ) ? $map[ $root->term_id ] : array() as $child ) {
 			// La numérotation suit le schéma, même si une rubrique est masquée.
 			$sub++;
 			$count = bqb_count( array( 'collection' => array( $child->slug ) ) );
-			list( $views, $elements ) = bqb_collection_items( $child, $show_empty, $map );
+			list( $inner, $subs ) = bqb_rub_inner( $child, $show_empty, $map, $current_coll );
 
-			if ( ! $count && ! $views && ! $elements && ! $show_empty ) {
+			if ( ! $count && ! $show_empty ) {
 				continue;
 			}
 
-			$body .= '<div class="bqb-sec">';
-			$body .= '<h4 class="bqb-sec__head"><a href="' . esc_url( bqb_term_url( $child ) ) . '"><span class="bqb-sec__num">' . $num . '.' . $sub . '</span><span class="bqb-sec__name">' . esc_html( $child->name ) . '</span></a>'
-				. ( $count ? '<span class="bqb-sec__count">' . (int) $count . '</span>' : '' ) . '</h4>';
-			$body .= $elements ? '<div class="bqb-pillinks">' . $elements . '</div>' : '';
-			$body .= $views ? '<div class="bqb-views">' . $views . '</div>' : '';
-			$body .= '</div>';
+			$nrub++;
+			$rubs .= bqb_render_rub(
+				array(
+					'id'      => $child->term_id,
+					'num'     => $num . '.' . $sub,
+					'name'    => $child->name,
+					'text'    => $child->description,
+					'count'   => $count,
+					'url'     => bqb_term_url( $child ),
+					'key'     => 'collection:' . $child->slug,
+					'inner'   => $inner,
+					'subs'    => $subs,
+					'open'    => isset( $chain['collection'][1] ) && $chain['collection'][1] === (int) $child->term_id,
+					'current' => $current_coll === $child->slug,
+				)
+			);
 		}
 
-		$body .= bqb_render_dedicated( $root, $show_empty );
+		if ( ! $total && ! $show_empty ) {
+			continue;
+		}
 
-		$html .= bqb_render_block_card( $num, $root->name, $root->description, $color, ( $total || $show_empty ) ? bqb_term_url( $root ) : '', $body, '', $total );
+		$spaces[] = array(
+			'num'   => $num,
+			'title' => $root->name,
+			'text'  => $root->description,
+			'color' => bqb_root_color( $root->term_id ),
+			'count' => $total,
+			'url'   => bqb_term_url( $root ),
+			'key'   => 'collection:' . $root->slug,
+			'rubs'  => $rubs,
+			'nrub'  => $nrub,
+			'extra' => bqb_render_dedicated( $root, $show_empty ),
+			'open'  => $open,
+			'all'   => 'Voir les ' . number_format_i18n( $total ) . ' documents',
+		);
 	}
 
-	// Bloc 5 : 5.1 Thématiques principales, 5.2 Autres filtres.
+	/* Espace 5 : les thèmes, avec secteurs et pays. */
 	$num++;
-	$themes = bqb_term_children_map( 'bqb_theme' );
-	$tiles  = '';
+	$rubs  = '';
+	$nrub  = 0;
+	$roots = isset( $themes[0] ) ? $themes[0] : array();
+	$total = $roots ? bqb_count( array( 'theme' => wp_list_pluck( $roots, 'slug' ) ) ) : 0;
 
-	foreach ( isset( $themes[0] ) ? $themes[0] : array() as $root ) {
+	foreach ( $roots as $root ) {
 		$count = bqb_count( array( 'theme' => array( $root->slug ) ) );
 
 		if ( ! $count && ! $show_empty ) {
 			continue;
 		}
 
-		$kids = '';
+		$pills = '';
+		$subs  = 0;
 		foreach ( isset( $themes[ $root->term_id ] ) ? $themes[ $root->term_id ] : array() as $child ) {
 			$n = bqb_count( array( 'theme' => array( $child->slug ) ) );
 			if ( $n || $show_empty ) {
-				$kids .= '<a class="bqb-pillink bqb-pillink--sm' . ( $n ? '' : ' is-empty' ) . '" href="' . esc_url( bqb_term_url( $child ) ) . '">' . esc_html( bqb_short_label( $child, $root ) ) . '</a>';
+				$subs++;
+				$pills .= '<a class="bqb-pillink' . ( $n ? '' : ' is-empty' ) . ( $current_theme === $child->slug ? ' is-current' : '' ) . '" href="' . esc_url( bqb_term_url( $child ) ) . '" data-bqb-key="theme:' . esc_attr( $child->slug ) . '">' . esc_html( bqb_short_label( $child, $root ) ) . ( $n ? '<span>' . (int) $n . '</span>' : '' ) . '</a>';
 			}
 		}
 
-		$tiles .= '<div class="bqb-theme-tile">'
-			. '<a class="bqb-theme-tile__head" href="' . esc_url( bqb_term_url( $root ) ) . '"><span class="bqb-theme-tile__name">' . esc_html( $root->name ) . '</span>'
-			. '<span class="bqb-theme-tile__count">' . sprintf( _n( '%s document', '%s documents', $count ), number_format_i18n( $count ) ) . '</span></a>'
-			. ( $kids ? '<div class="bqb-pillinks">' . $kids . '</div>' : '' ) . '</div>';
+		$nrub++;
+		$rubs .= bqb_render_rub(
+			array(
+				'id'      => $root->term_id,
+				'num'     => $num . '.' . $nrub,
+				'name'    => $root->name,
+				'count'   => $count,
+				'url'     => bqb_term_url( $root ),
+				'key'     => 'theme:' . $root->slug,
+				'inner'   => $pills ? '<div class="bqb-pillinks">' . $pills . '</div>' : '',
+				'subs'    => $subs,
+				'open'    => isset( $chain['theme'][0] ) && $chain['theme'][0] === (int) $root->term_id,
+				'current' => $current_theme === $root->slug,
+			)
+		);
 	}
 
-	$body  = '<div class="bqb-sec bqb-sec--themes"><h4 class="bqb-sec__head"><span><span class="bqb-sec__num">' . $num . '.1</span><span class="bqb-sec__name">Thématiques principales</span></span></h4>';
-	$body .= $tiles ? '<div class="bqb-theme-grid">' . $tiles . '</div>' : '<p class="bqb-block__soon">Les premiers documents arrivent bientôt.</p>';
-	$body .= '</div>';
-
-	$filters = array(
-		array( 'Secteurs', 'f_secteur', 'factory' ),
-		array( 'Pays / territoires', 'f_pays', 'globe' ),
-		array( 'Périodes / chronologie', '', 'calendar' ),
-		array( 'Nature du document', 'f_nature', 'doc' ),
-		array( 'Collection / origine', 'f_collection', 'stack' ),
-	);
-
-	$links = '';
-	foreach ( $filters as $filter ) {
-		$url    = $filter[1] ? bqb_library_link() : bqb_library_link( array( 'f_groupe' => 'annee' ) );
-		$links .= $url ? '<a class="bqb-filterlink" href="' . esc_url( $url ) . '"' . ( $filter[1] ? ' data-bqb-focus="' . esc_attr( $filter[1] ) . '"' : '' ) . '>' . bqb_icon( $filter[2] ) . '<span>' . esc_html( $filter[0] ) . '</span></a>' : '';
+	// « 5.2 Autres filtres » : ouvrent la recherche avancée sur le bon champ.
+	$refine = '';
+	foreach ( array( array( 'Secteurs', 'f_secteur', 'factory' ), array( 'Pays / territoires', 'f_pays', 'globe' ), array( 'Périodes', 'f_de', 'calendar' ), array( 'Nature du document', 'f_nature', 'doc' ), array( 'Collection / origine', 'f_collection', 'stack' ) ) as $filter ) {
+		$refine .= '<a class="bqb-filterlink" href="' . esc_url( bqb_library_link() ) . '" data-bqb-focus="' . esc_attr( $filter[1] ) . '">' . bqb_icon( $filter[2] ) . '<span>' . esc_html( $filter[0] ) . '</span></a>';
 	}
 
-	if ( $links ) {
-		$body .= '<div class="bqb-sec bqb-sec--filters"><h4 class="bqb-sec__head"><span><span class="bqb-sec__num">' . $num . '.2</span><span class="bqb-sec__name">Autres filtres</span></span></h4><div class="bqb-filterlinks">' . $links . '</div></div>';
+	if ( $total || $show_empty ) {
+		$spaces[] = array(
+			'num'   => $num,
+			'title' => $settings['bloc5_titre'],
+			'text'  => $settings['bloc5_texte'],
+			'color' => $settings['bloc5_couleur'],
+			'count' => $total,
+			'url'   => bqb_library_link( array( 'f_groupe' => 'theme' ) ),
+			'key'   => '',
+			'rubs'  => $rubs,
+			'nrub'  => $nrub,
+			'extra' => '<div class="bqb-refine"><span class="bqb-refine__label">Affiner aussi par</span><div class="bqb-filterlinks">' . $refine . '</div></div>',
+			'open'  => ! empty( $chain['theme'] ),
+			'all'   => '',
+		);
 	}
 
-	$html .= bqb_render_block_card( $num, $settings['bloc5_titre'], $settings['bloc5_texte'], $settings['bloc5_couleur'], '', $body, 'bqb-block--wide' );
-	$html .= '</div>';
-
-	// Le catalogue, sur la même page : les liens des blocs le filtrent.
-	if ( $catalog ) {
-		$html .= '<section id="bqb-catalogue" class="bqb-catalog" data-bqb-catalog aria-live="polite">' . bqb_render_catalog( $atts ) . '</section>';
+	if ( ! $spaces ) {
+		return '';
 	}
 
-	$html .= '</div>';
+	$cards  = '';
+	$panels = '';
 
-	return $html;
+	foreach ( $spaces as $space ) {
+		$pid   = 'bqb-espace-' . (int) $space['num'];
+		$style = bqb_block_style( $space['color'] );
+
+		$cards .= '<a class="bqb-ecard' . ( $space['open'] ? ' is-on' : '' ) . '" href="' . esc_url( $space['url'] ) . '" role="button" aria-expanded="' . ( $space['open'] ? 'true' : 'false' ) . '" aria-controls="' . esc_attr( $pid ) . '" data-bqb-open style="' . $style . '">'
+			. '<span class="bqb-ecard__num" aria-hidden="true">' . sprintf( '%02d', (int) $space['num'] ) . '</span>'
+			. '<span class="bqb-ecard__title">' . esc_html( $space['title'] ) . '</span>'
+			. ( $space['text'] ? '<span class="bqb-ecard__text">' . esc_html( $space['text'] ) . '</span>' : '' )
+			. '<span class="bqb-ecard__foot"><span class="bqb-ecard__count"><strong>' . sprintf( _n( '%s document', '%s documents', (int) $space['count'] ), number_format_i18n( (int) $space['count'] ) ) . '</strong>'
+			. '<em>' . sprintf( _n( '%s rubrique', '%s rubriques', (int) $space['nrub'] ), (int) $space['nrub'] ) . '</em></span>'
+			. '<span class="bqb-ecard__more">' . bqb_icon( 'chevron' ) . '</span></span>'
+			. '</a>';
+
+		$panels .= '<div class="bqb-epanel" id="' . esc_attr( $pid ) . '" role="region" aria-labelledby="' . esc_attr( $pid ) . '-titre" style="' . $style . '"' . ( $space['open'] ? '' : ' hidden' ) . '>'
+			. '<div class="bqb-epanel__head"><div class="bqb-epanel__intro">'
+			. '<span class="bqb-epanel__eyebrow">Espace ' . sprintf( '%02d', (int) $space['num'] ) . '</span>'
+			. '<h3 class="bqb-epanel__title" id="' . esc_attr( $pid ) . '-titre" tabindex="-1">' . esc_html( $space['title'] ) . '</h3>'
+			. ( $space['text'] ? '<p class="bqb-epanel__text">' . esc_html( $space['text'] ) . '</p>' : '' )
+			. '</div><div class="bqb-epanel__actions">'
+			. ( $space['all'] && $space['count'] ? '<a class="bqb-btn" href="' . esc_url( $space['url'] ) . '"' . ( $space['key'] ? ' data-bqb-key="' . esc_attr( $space['key'] ) . '"' : '' ) . '>' . esc_html( $space['all'] ) . bqb_icon( 'arrow' ) . '</a>' : '' )
+			. '<button type="button" class="bqb-epanel__close" data-bqb-close>' . bqb_icon( 'close' ) . '<span class="screen-reader-text">Fermer « ' . esc_html( $space['title'] ) . ' »</span></button>'
+			. '</div></div>'
+			. ( $space['rubs'] ? '<p class="bqb-epanel__hint">Choisissez une rubrique pour afficher ses sous-catégories.</p><ul class="bqb-rubs">' . $space['rubs'] . '</ul>' : '<p class="bqb-block__soon">Les premiers documents arrivent bientôt.</p>' )
+			. $space['extra']
+			. '</div>';
+	}
+
+	return '<section class="bqb-explore" data-bqb-explore aria-labelledby="bqb-explore-titre">'
+		. '<header class="bqb-explore__head"><div><span class="bqb-catalog__eyebrow">Explorer</span><h2 class="bqb-explore__title" id="bqb-explore-titre">' . esc_html( $title ) . '</h2></div>'
+		. '<p class="bqb-explore__hint">Cliquez sur un espace pour découvrir ses rubriques.</p></header>'
+		. '<div class="bqb-explore__grid">' . $cards . $panels . '</div>'
+		. '</section>';
 }
 
 /**
@@ -3976,81 +4180,195 @@ function bqb_icon( $name ) {
 		'lock'     => '<rect x="4" y="9" width="12" height="8.5" rx="1.5"/><path d="M6.5 9V6.5a3.5 3.5 0 017 0V9"/>',
 		'share'    => '<circle cx="15" cy="4.5" r="2"/><circle cx="5" cy="10" r="2"/><circle cx="15" cy="15.5" r="2"/><path d="M6.8 9l6.4-3.5M6.8 11l6.4 3.5"/>',
 		'quote'    => '<path d="M4 14.5c0-3 1-5.5 4-7M11 14.5c0-3 1-5.5 4-7"/><circle cx="5.5" cy="14" r="2"/><circle cx="12.5" cy="14" r="2"/>',
+		'chevron'  => '<path d="M5.5 8 10 12.5 14.5 8"/>',
+		'close'    => '<path d="M5 5l10 10M15 5 5 15"/>',
+		'sliders'  => '<path d="M3 5.5h8M15 5.5h2M3 14.5h2M9 14.5h8"/><circle cx="13" cy="5.5" r="2"/><circle cx="7" cy="14.5" r="2"/>',
 	);
 
 	return '<svg class="bqb-ico" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' . ( isset( $paths[ $name ] ) ? $paths[ $name ] : '' ) . '</svg>';
 }
 
-function bqb_render_block_card( $num, $title, $text, $color, $url, $body, $class = '', $total = null ) {
-	$html  = '<article class="bqb-block' . ( $class ? ' ' . esc_attr( $class ) : '' ) . '" style="--bqb-block:' . esc_attr( $color ) . ';--bqb-block-soft:' . esc_attr( bqb_hex_to_rgba( $color, 0.06 ) ) . ';--bqb-block-line:' . esc_attr( bqb_hex_to_rgba( $color, 0.2 ) ) . ';">';
-	$html .= '<header class="bqb-block__head">';
-	$html .= '<span class="bqb-block__num" aria-hidden="true">' . sprintf( '%02d', (int) $num ) . '</span>';
-	$html .= '<div class="bqb-block__intro">';
-	$html .= '<h3 class="bqb-block__title">' . ( $url ? '<a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a>' : esc_html( $title ) ) . '</h3>';
-	if ( $text ) {
-		$html .= '<p class="bqb-block__text">' . esc_html( $text ) . '</p>';
+/**
+ * Les critères de la recherche avancée, dans l'ordre d'affichage.
+ */
+function bqb_search_fields() {
+	return array(
+		'collection'   => 'Collection / origine',
+		'nature'       => 'Nature du document',
+		'theme'        => 'Thème',
+		'periode'      => 'Période',
+		'secteur'      => 'Secteur',
+		'pays'         => 'Pays / territoire',
+		'personne'     => 'Auteur / personne',
+		'organisation' => 'Organisation / source',
+	);
+}
+
+/**
+ * La barre de recherche de la page Bibliothèque. Une seule barre : en mode
+ * simple, un champ libre ; en mode avancé, le même champ et tous les
+ * critères. Un sélecteur « Simple / Avancée » passe de l'un à l'autre.
+ * Le mode avancé s'ouvre d'office quand un critère est déjà actif.
+ */
+function bqb_render_search( $advanced = false ) {
+	if ( ! bqb_library_url() ) {
+		return '';
 	}
+
+	$url_f  = bqb_url_filters();
+	$action = bqb_library_link();
+	$val    = function ( $key ) use ( $url_f ) {
+		return isset( $url_f[ $key ] ) ? $url_f[ $key ] : '';
+	};
+
+	// La période arrive sous la forme « 1990-1999 » ou « 2004 ».
+	$range = array_map( 'intval', explode( '-', $val( 'annee' ) ) );
+	$from  = ( $range[0] > 1000 ) ? $range[0] : 0;
+	$to    = isset( $range[1] ) ? ( $range[1] < 2100 ? $range[1] : 0 ) : $from;
+
+	$active = 0;
+	foreach ( array_keys( bqb_search_fields() ) as $key ) {
+		if ( '' !== ( 'periode' === $key ? $val( 'annee' ) : $val( $key ) ) ) {
+			$active++;
+		}
+	}
+	$advanced = $advanced || $active > 0;
+
+	$field = function ( $key, $label, $control, $set ) {
+		return '<div class="bqb-field' . ( $set ? ' is-set' : '' ) . ( 'periode' === $key ? ' bqb-field--period' : '' ) . '"><label class="bqb-field__label" for="bqb-s-' . esc_attr( $key ) . '">' . esc_html( $label ) . '</label>' . $control . '</div>';
+	};
+
+	$map      = bqb_short_map();
+	$controls = '';
+
+	foreach ( bqb_search_fields() as $key => $label ) {
+		if ( 'periode' === $key ) {
+			$years = bqb_years();
+			$from_opts = '<option value="">Toutes</option>';
+			foreach ( array_reverse( $years ) as $year ) {
+				$from_opts .= '<option value="' . (int) $year . '"' . selected( $from, $year, false ) . '>' . (int) $year . '</option>';
+			}
+			$to_opts = '<option value="">Toutes</option>';
+			foreach ( $years as $year ) {
+				$to_opts .= '<option value="' . (int) $year . '"' . selected( $to, $year, false ) . '>' . (int) $year . '</option>';
+			}
+			$controls .= $field(
+				$key,
+				$label,
+				'<div class="bqb-field__range"><select class="bqb-input" name="f_de" id="bqb-s-periode" aria-label="Période : à partir de">' . $from_opts . '</select>'
+					. '<span aria-hidden="true">à</span><select class="bqb-input" name="f_jusqua" aria-label="Période : jusqu\'à">' . $to_opts . '</select></div>',
+				'' !== $val( 'annee' )
+			);
+			continue;
+		}
+
+		if ( in_array( $key, array( 'secteur', 'pays' ), true ) ) {
+			$select = '<select class="bqb-input" name="f_' . esc_attr( $key ) . '" id="bqb-s-' . esc_attr( $key ) . '"><option value="">Tous</option>';
+			foreach ( bqb_filter_terms( $key ) as $term ) {
+				$select .= '<option value="' . esc_attr( $term->slug ) . '"' . selected( $val( $key ), $term->slug, false ) . '>' . esc_html( $term->name ) . '</option>';
+			}
+			$controls .= $field( $key, $label, $select . '</select>', '' !== $val( $key ) );
+			continue;
+		}
+
+		$all    = in_array( $key, array( 'collection', 'nature' ), true ) ? 'Toutes' : 'Tous';
+		$select = str_replace(
+			array( 'bqb-admin__input', '<select ' ),
+			array( 'bqb-input', '<select id="bqb-s-' . esc_attr( $key ) . '" ' ),
+			bqb_term_select( $map[ $key ], 'f_' . $key, $val( $key ), $all )
+		);
+		$controls .= $field( $key, $label, $select, '' !== $val( $key ) );
+	}
+
+	$docs    = bqb_count( array() );
+	$persons = wp_count_terms( array( 'taxonomy' => 'bqb_personne', 'hide_empty' => true ) );
+	$links   = array(
+		array( bqb_library_link( array( 'f_groupe' => 'annee' ) ), 'Chronologie', 'calendar' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'personnes' ) ), 'Auteurs / Personnes', 'person' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'personnes', 'f_role' => 'laureat' ) ), 'Lauréats', 'quote' ),
+		array( bqb_library_link( array( 'f_annuaire' => 'organisations' ) ), 'Organisations / Sources', 'building' ),
+	);
+
+	$html  = '<section class="bqb-search' . ( $advanced ? ' is-advanced' : '' ) . '" data-bqb-search aria-label="Rechercher dans la bibliothèque">';
+	$html .= '<form class="bqb-search__form" role="search" method="get" action="' . esc_url( $action ) . '">';
+
+	$html .= '<div class="bqb-search__top">';
+	$html .= '<div class="bqb-mode" role="group" aria-label="Type de recherche">'
+		. '<button type="button" class="bqb-mode__btn" data-bqb-mode="simple" aria-pressed="' . ( $advanced ? 'false' : 'true' ) . '">Recherche simple</button>'
+		. '<button type="button" class="bqb-mode__btn" data-bqb-mode="avancee" aria-pressed="' . ( $advanced ? 'true' : 'false' ) . '" aria-controls="bqb-search-avancee">' . bqb_icon( 'sliders' ) . 'Recherche avancée<span class="bqb-mode__n" data-bqb-count' . ( $active ? '' : ' hidden' ) . '>' . (int) $active . '</span></button>'
+		. '</div>';
+	$html .= '<p class="bqb-search__stats"><span><strong>' . number_format_i18n( $docs ) . '</strong> ' . _n( 'document', 'documents', $docs ) . '</span>'
+		. ( ! is_wp_error( $persons ) && $persons ? '<span><strong>' . number_format_i18n( (int) $persons ) . '</strong> ' . _n( 'auteur', 'auteurs', (int) $persons ) . '</span>' : '' )
+		. '</p>';
 	$html .= '</div>';
-	if ( null !== $total ) {
-		$html .= '<span class="bqb-block__total"><strong>' . number_format_i18n( (int) $total ) . '</strong>' . _n( 'document', 'documents', (int) $total ) . '</span>';
-	}
-	$html .= '</header>';
-	$html .= '<div class="bqb-block__body">' . ( $body ? $body : '<p class="bqb-block__soon">Les premiers documents arrivent bientôt.</p>' ) . '</div>';
 
-	if ( $url ) {
-		$html .= '<a class="bqb-block__cta" href="' . esc_url( $url ) . '"><span>Explorer « ' . esc_html( $title ) . ' »</span>' . bqb_icon( 'arrow' ) . '</a>';
-	}
+	$html .= '<div class="bqb-search__main">' . bqb_icon( 'search' )
+		. '<label class="screen-reader-text" for="bqb-s-q">Mots-clés</label>'
+		. '<input type="search" name="f_q" id="bqb-s-q" class="bqb-input" value="' . esc_attr( $val( 'q' ) ) . '" placeholder="Rechercher un titre, un auteur, un mot-clé…" />'
+		. '<button type="submit" class="bqb-btn">Rechercher</button></div>';
 
-	$html .= '</article>';
+	$html .= '<div class="bqb-search__adv" id="bqb-search-avancee"' . ( $advanced ? '' : ' hidden' ) . '>';
+	$html .= '<div class="bqb-search__grid">' . $controls . '</div>';
+	$html .= '<div class="bqb-search__foot"><a class="bqb-search__reset" href="' . esc_url( $action ) . '">Effacer les critères</a>'
+		. '<button type="submit" class="bqb-btn">Afficher les résultats' . bqb_icon( 'arrow' ) . '</button></div>';
+	$html .= '</div>';
+
+	// L'ordre choisi dans la liste est conservé d'une recherche à l'autre.
+	$html .= '<input type="hidden" name="f_tri" value="' . esc_attr( $val( 'tri' ) ) . '" />';
+	$html .= '</form>';
+
+	$html .= '<nav class="bqb-search__links" aria-label="Accès rapides"><span class="bqb-search__links-label">Accès rapides</span>';
+	foreach ( $links as $link ) {
+		$html .= '<a href="' . esc_url( $link[0] ) . '">' . bqb_icon( $link[2] ) . esc_html( $link[1] ) . '</a>';
+	}
+	$html .= '</nav></section>';
 
 	return $html;
 }
 
 /**
- * L'en-tête de la page Bibliothèque : une grande recherche, les accès
- * transversaux du schéma et quelques chiffres clés.
+ * Au-dessus des résultats : le nombre de documents et l'ordre de tri.
  */
-function bqb_render_lib_nav() {
-	$catalogue = bqb_library_url();
+function bqb_render_sortbar( $tri, $anchor ) {
+	$keep = '';
 
-	if ( ! $catalogue ) {
-		return '';
+	foreach ( bqb_filter_params() as $param ) {
+		if ( in_array( $param, array( 'f_tri', 'pg' ), true ) || ! isset( $_GET[ $param ] ) || ! is_string( $_GET[ $param ] ) || '' === $_GET[ $param ] ) { // phpcs:ignore WordPress.Security.NonceVerification
+			continue;
+		}
+		$keep .= '<input type="hidden" name="' . esc_attr( $param ) . '" value="' . esc_attr( sanitize_text_field( wp_unslash( $_GET[ $param ] ) ) ) . '" />'; // phpcs:ignore WordPress.Security.NonceVerification
 	}
 
-	$links = array(
-		array( bqb_library_link(), 'Recherche avancée', 'search', ' data-bqb-focus="f_q"' ),
-		array( bqb_library_link( array( 'f_groupe' => 'annee' ) ), 'Chronologie', 'calendar', '' ),
-		array( bqb_library_link( array( 'f_annuaire' => 'personnes' ) ), 'Auteurs / Personnes', 'person', '' ),
-		array( bqb_library_link( array( 'f_annuaire' => 'organisations' ) ), 'Organisations / Sources', 'building', '' ),
-	);
-
-	$docs    = bqb_count( array() );
-	$persons = wp_count_terms( array( 'taxonomy' => 'bqb_personne', 'hide_empty' => true ) );
-	$themes  = wp_count_terms( array( 'taxonomy' => 'bqb_theme', 'hide_empty' => true ) );
-
-	$html  = '<nav class="bqb-libnav" aria-label="Navigation de la bibliothèque">';
-	$html .= '<form class="bqb-libnav__search" role="search" method="get" action="' . esc_url( bqb_library_link() ) . '">'
-		. bqb_icon( 'search' )
-		. '<input type="search" name="f_q" class="bqb-input" placeholder="Rechercher un document, un auteur, un thème…" aria-label="Rechercher dans la bibliothèque" />'
-		. '<button type="submit" class="bqb-btn">Rechercher</button></form>';
-
-	$html .= '<div class="bqb-libnav__bar"><ul class="bqb-libnav__links">';
-	foreach ( $links as $link ) {
-		$html .= '<li><a href="' . esc_url( $link[0] ) . '"' . $link[3] . '>' . bqb_icon( $link[2] ) . esc_html( $link[1] ) . '</a></li>';
+	$options = array( '' => 'Plus récents', 'ancien' => 'Plus anciens', 'titre' => 'Titre, de A à Z' );
+	$select  = '';
+	foreach ( $options as $value => $label ) {
+		$select .= '<option value="' . esc_attr( $value ) . '"' . selected( 'recent' === $tri ? '' : $tri, $value, false ) . '>' . esc_html( $label ) . '</option>';
 	}
-	$html .= '</ul>';
 
-	$html .= '<p class="bqb-libnav__stats">'
-		. '<span><strong>' . number_format_i18n( $docs ) . '</strong> ' . _n( 'document', 'documents', $docs ) . '</span>'
-		. ( ! is_wp_error( $persons ) && $persons ? '<span><strong>' . number_format_i18n( (int) $persons ) . '</strong> ' . _n( 'auteur', 'auteurs', (int) $persons ) . '</span>' : '' )
-		. ( ! is_wp_error( $themes ) && $themes ? '<span><strong>' . number_format_i18n( (int) $themes ) . '</strong> ' . _n( 'thème', 'thèmes', (int) $themes ) . '</span>' : '' )
-		. '</p>';
-
-	$html .= '</div></nav>';
-
-	return $html;
+	return '<form class="bqb-sortbar" method="get" action="' . esc_url( remove_query_arg( bqb_filter_params() ) . $anchor ) . '">' . $keep
+		. '<label for="bqb-tri">Trier par</label><select class="bqb-input" name="f_tri" id="bqb-tri">' . $select . '</select>'
+		. '<noscript><button type="submit" class="bqb-btn bqb-btn--sm">OK</button></noscript></form>';
 }
 
+/**
+ * Libellé lisible d'une période : « 2004 », « De 1990 à 1999 »,
+ * « Depuis 2010 », « Jusqu'en 1985 ».
+ */
+function bqb_year_label( $value ) {
+	$range = array_map( 'intval', explode( '-', (string) $value ) );
+
+	if ( 2 === count( $range ) && $range[0] && $range[1] && $range[0] !== $range[1] ) {
+		if ( $range[0] <= 1000 ) {
+			return 'Jusqu\'en ' . $range[1];
+		}
+		if ( $range[1] >= 2100 ) {
+			return 'Depuis ' . $range[0];
+		}
+		return 'De ' . $range[0] . ' à ' . $range[1];
+	}
+
+	return (string) $range[0];
+}
 
 /**
  * Le catalogue de la page Bibliothèque : un en-tête qui présente le filtre
@@ -4096,7 +4414,8 @@ function bqb_render_catalog( $atts ) {
 	$docs['groupe']  = '';
 	$docs['tri']     = '';
 	$docs['nombre']  = '';
-	$docs['filtres'] = 'oui';
+	$docs['filtres'] = 'non';
+	$docs['outils']  = 'oui';
 	$docs['titre']   = '';
 	$docs['vide']    = 'Aucun document ne correspond à ces critères pour le moment.';
 	$docs['pagination'] = 'oui';
@@ -4985,14 +5304,14 @@ function bqb_front_js() {
 		// Adresses de recherche propres : les filtres vides ne sont pas envoyés.
 		document.addEventListener('submit', function(e){
 			var form = e.target;
-			if (e.defaultPrevented || !form.matches('.bqb-filters, .bqb-libnav__search')) { return; }
+			if (e.defaultPrevented || !form.matches('.bqb-filters, .bqb-search__form, .bqb-sortbar')) { return; }
 			each(form.querySelectorAll('input, select'), function(el){ if (!el.value) { el.disabled = true; } });
 		});
 
 		// Hors page Bibliothèque aussi, un filtre choisi s'applique aussitôt.
 		document.addEventListener('change', function(e){
 			var el = e.target;
-			if (!el.matches || !el.matches('.bqb-filters select') || el.closest('[data-bqb-lib]')) { return; }
+			if (!el.matches || !el.matches('.bqb-filters select, .bqb-sortbar select') || el.closest('[data-bqb-lib]')) { return; }
 			if (el.form.requestSubmit) { el.form.requestSubmit(); } else { el.form.submit(); }
 		});
 
@@ -5094,8 +5413,169 @@ function bqb_front_js() {
 			window.addEventListener('popstate', function(e){ if (e.state && e.state.bqbList) { window.location.reload(); } });
 		}
 
-		// Page Bibliothèque : les blocs, les filtres, l'annuaire et la
-		// pagination mettent à jour le catalogue sans recharger la page.
+		// Barre de recherche : passage du mode simple au mode avancé.
+		var search = document.querySelector('[data-bqb-search]');
+		var sform  = search ? search.querySelector('form') : null;
+		var adv    = search ? search.querySelector('.bqb-search__adv') : null;
+
+		function advFields(){ return adv ? adv.querySelectorAll('select[name], input[name]') : []; }
+
+		function countAdv(){
+			if (!adv) { return 0; }
+			var n = 0;
+			each(adv.querySelectorAll('.bqb-field'), function(box){
+				var set = Array.prototype.some.call(box.querySelectorAll('[name]'), function(x){ return !!x.value; });
+				box.classList.toggle('is-set', set);
+				if (set) { n++; }
+			});
+			var badge = search.querySelector('[data-bqb-count]');
+			if (badge) { badge.textContent = n; badge.hidden = !n; }
+			return n;
+		}
+
+		function setMode(advanced){
+			if (!search) { return; }
+			search.classList.toggle('is-advanced', advanced);
+			adv.hidden = !advanced;
+			each(search.querySelectorAll('[data-bqb-mode]'), function(b){
+				b.setAttribute('aria-pressed', ('avancee' === b.getAttribute('data-bqb-mode')) === advanced ? 'true' : 'false');
+			});
+		}
+
+		if (search && sform && adv) {
+			search.addEventListener('click', function(e){
+				var b = e.target.closest('[data-bqb-mode]');
+				if (!b) { return; }
+				var advanced = 'avancee' === b.getAttribute('data-bqb-mode');
+				setMode(advanced);
+				if (advanced) { var first = adv.querySelector('select'); if (first) { first.focus(); } }
+				else { sform.querySelector('[name="f_q"]').focus(); }
+			});
+			adv.addEventListener('change', countAdv);
+
+			// En recherche simple, les critères avancés ne sont pas envoyés.
+			sform.addEventListener('submit', function(){
+				if (search.classList.contains('is-advanced')) { return; }
+				each(advFields(), function(el){ el.disabled = true; });
+				setTimeout(function(){ each(advFields(), function(el){ el.disabled = false; }); }, 0);
+			});
+		}
+
+		// « Affiner par secteur, pays… » : ouvre la recherche avancée sur ce champ.
+		document.addEventListener('click', function(e){
+			var a = e.target.closest('[data-bqb-focus]');
+			if (!a || !sform) { return; }
+			var field = sform.querySelector('[name="' + a.getAttribute('data-bqb-focus') + '"]');
+			if (!field) { return; }
+			e.preventDefault();
+			if (adv && adv.contains(field)) { setMode(true); }
+			search.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			setTimeout(function(){ field.focus({ preventScroll: true }); }, 450);
+		});
+
+		// Les espaces : une carte ouvre son panneau de rubriques, juste sous
+		// la rangée de cartes ; une rubrique déplie ses sous-catégories.
+		var explore = document.querySelector('[data-bqb-explore]');
+
+		function placePanel(card, panel){
+			var top = card.offsetTop, last = card;
+			each(card.parentNode.querySelectorAll('.bqb-ecard'), function(c){ if (c.offsetTop === top) { last = c; } });
+			if (last.nextElementSibling !== panel) { last.parentNode.insertBefore(panel, last.nextElementSibling); }
+		}
+
+		function toggleSpace(card, focus){
+			var grid  = card.parentNode;
+			var panel = document.getElementById(card.getAttribute('aria-controls'));
+			var open  = 'true' !== card.getAttribute('aria-expanded');
+			each(grid.querySelectorAll('.bqb-ecard'), function(c){ c.setAttribute('aria-expanded', 'false'); c.classList.remove('is-on'); });
+			each(grid.querySelectorAll('.bqb-epanel'), function(p){ p.hidden = true; });
+			if (!open || !panel) { return; }
+			card.setAttribute('aria-expanded', 'true');
+			card.classList.add('is-on');
+			placePanel(card, panel);
+			panel.hidden = false;
+			if (!focus) { return; }
+			var title = panel.querySelector('.bqb-epanel__title');
+			if (title) { title.focus({ preventScroll: true }); }
+			var top = card.getBoundingClientRect().top;
+			if (top < 0 || top > window.innerHeight * 0.45) { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+		}
+
+		function cardOf(panel){ return explore.querySelector('[aria-controls="' + panel.id + '"]'); }
+
+		if (explore) {
+			explore.addEventListener('click', function(e){
+				var card = e.target.closest('[data-bqb-open]');
+				if (card) {
+					if (e.metaKey || e.ctrlKey || e.shiftKey || e.button) { return; }
+					e.preventDefault();
+					toggleSpace(card, true);
+					return;
+				}
+				var close = e.target.closest('[data-bqb-close]');
+				if (close) {
+					var c = cardOf(close.closest('.bqb-epanel'));
+					if (c) { toggleSpace(c, false); c.focus(); }
+					return;
+				}
+				var rub = e.target.closest('[data-bqb-rub]');
+				if (rub) {
+					var on = 'true' !== rub.getAttribute('aria-expanded');
+					rub.setAttribute('aria-expanded', on ? 'true' : 'false');
+					rub.parentNode.classList.toggle('is-open', on);
+					document.getElementById(rub.getAttribute('aria-controls')).hidden = !on;
+				}
+			});
+
+			explore.addEventListener('keydown', function(e){
+				if (' ' === e.key && e.target.matches('[data-bqb-open]')) { e.preventDefault(); e.target.click(); return; }
+				if ('Escape' !== e.key) { return; }
+				var panel = e.target.closest('.bqb-epanel');
+				var c = panel ? cardOf(panel) : null;
+				if (c) { toggleSpace(c, false); c.focus(); }
+			});
+
+			// La rangée change avec la largeur de l'écran : le panneau suit.
+			var resizeTimer = null;
+			var replace = function(){
+				var card = explore.querySelector('.bqb-ecard[aria-expanded="true"]');
+				var panel = card ? document.getElementById(card.getAttribute('aria-controls')) : null;
+				if (!panel) { return; }
+				panel.hidden = true;
+				placePanel(card, panel);
+				panel.hidden = false;
+			};
+			window.addEventListener('resize', function(){ clearTimeout(resizeTimer); resizeTimer = setTimeout(replace, 150); });
+			replace();
+		}
+
+		// Après chaque mise à jour du catalogue : la recherche et les espaces
+		// reflètent les filtres de l'adresse.
+		function sync(){
+			var params = new URLSearchParams(location.search);
+			if (sform) {
+				var range = (params.get('f_annee') || '').split('-');
+				each(sform.querySelectorAll('[name^="f_"]'), function(el){
+					var v = params.get(el.name) || '';
+					if (!v && range[0] && 'f_de' === el.name) { v = range[0] > 1000 ? range[0] : ''; }
+					if (!v && range[0] && 'f_jusqua' === el.name) { v = range[1] ? (range[1] < 2100 ? range[1] : '') : range[0]; }
+					el.value = v;
+					if (el.value !== v) { el.value = ''; }
+				});
+				if (countAdv()) { setMode(true); }
+			}
+			if (explore) {
+				each(explore.querySelectorAll('[data-bqb-key]'), function(a){
+					var k = a.getAttribute('data-bqb-key').split(':');
+					a.classList.toggle('is-current', params.get('f_' + k[0]) === k[1]);
+				});
+			}
+		}
+
+		if (search) { countAdv(); }
+
+		// Page Bibliothèque : la recherche, les espaces, l'annuaire, le tri et
+		// la pagination mettent à jour le catalogue sans recharger la page.
 		var lib = document.querySelector('[data-bqb-lib]');
 		var cat = lib ? lib.querySelector('[data-bqb-catalog]') : null;
 
@@ -5125,6 +5605,7 @@ function bqb_front_js() {
 					cat.classList.remove('is-loading');
 					cat.removeAttribute('aria-busy');
 					if (push) { history.pushState({ bqb: 1 }, '', href); }
+					sync();
 					if (after) { after(); return; }
 					var title = cat.querySelector('.bqb-catalog__title');
 					if (title) { title.setAttribute('tabindex', '-1'); title.focus({ preventScroll: true }); }
@@ -5144,29 +5625,6 @@ function bqb_front_js() {
 			if (!a || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || '_blank' === a.target) { return; }
 			if (a.hasAttribute('data-bqb-more')) { return; }
 
-			// « Recherche avancée » et « 5.2 Autres filtres » : ouvrent le bon
-			// filtre du catalogue, au lieu de changer la liste affichée.
-			if (a.hasAttribute('data-bqb-focus')) {
-				e.preventDefault();
-				var name = a.getAttribute('data-bqb-focus');
-				var focus = function(){
-					var field = cat.querySelector('.bqb-filters [name="' + name + '"]');
-					if (!field) { return false; }
-					var form = field.form;
-					var more = field.closest('.bqb-filters__more');
-					if (more) { more.open = true; }
-					if (form && form.querySelector('[data-bqb-toggle]') && window.matchMedia('(max-width: 640px)').matches) {
-						form.classList.add('is-open');
-						form.querySelector('[data-bqb-toggle]').setAttribute('aria-expanded', 'true');
-					}
-					field.closest('.bqb-filter').scrollIntoView({ behavior: 'smooth', block: 'center' });
-					setTimeout(function(){ field.focus({ preventScroll: true }); }, 350);
-					return true;
-				};
-				if (!focus()) { load(new URL(a.href, location.href).href, true, focus); }
-				return;
-			}
-
 			var url = new URL(a.href, location.href);
 			if (!samePage(url) || '#bqb-catalogue' !== url.hash) { return; }
 
@@ -5176,23 +5634,28 @@ function bqb_front_js() {
 
 		lib.addEventListener('submit', function(e){
 			var form = e.target;
-			if (!form.matches('.bqb-filters, .bqb-libnav__search')) { return; }
+			if (!form.matches('.bqb-search__form, .bqb-sortbar, .bqb-filters')) { return; }
 
 			var url = new URL(form.getAttribute('action') || location.href, location.href);
 			if (!samePage(url)) { return; }
 
 			e.preventDefault();
 			var params = new URLSearchParams();
-			each(form.querySelectorAll('input[name], select[name]'), function(el){ if (el.value) { params.append(el.name, el.value); } });
+			each(form.querySelectorAll('input[name], select[name]'), function(el){ if (el.value && !el.disabled) { params.append(el.name, el.value); } });
 			url.search = params.toString();
 			url.hash = 'bqb-catalogue';
-			load(url.href, true);
+
+			// Changer l'ordre ne déplace pas la page : le focus reste sur la liste.
+			load(url.href, true, form.matches('.bqb-sortbar') ? function(){
+				var select = cat.querySelector('.bqb-sortbar select');
+				if (select) { select.focus({ preventScroll: true }); }
+			} : null);
 		});
 
-		// Un filtre choisi dans une liste s'applique aussitôt.
+		// L'ordre de tri s'applique aussitôt choisi.
 		lib.addEventListener('change', function(e){
 			var el = e.target;
-			if (!el.matches('.bqb-filters select')) { return; }
+			if (!el.matches('.bqb-sortbar select, .bqb-filters select')) { return; }
 			if (el.form.requestSubmit) { el.form.requestSubmit(); }
 			else { el.form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })); }
 		});
@@ -5411,7 +5874,7 @@ function bqb_front_css() {
 	@media (max-width:620px){.bqb-vitrine__head .bqb-btn{width:100%;justify-content:center;}.bqb-vtabs{gap:20px;}}
 
 	/* =====================================================================
-	 * Design 3.2 : en-tête de recherche, blocs, filtres, fiche
+	 * Design 3.3 : recherche simple ou avancée, espaces à déplier, fiche
 	 * =================================================================== */
 	.bqb-ico{flex:0 0 auto;display:inline-block;vertical-align:middle;}
 	.bqb-lib .bqb-link-more,.bqb-docs .bqb-link-more,.bqb-fiche .bqb-link-more,.bqb-vitrine .bqb-link-more{display:inline-flex;align-items:center;gap:8px;font-size:.76rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-accent,var(--bqb-bordeaux)) !important;}
@@ -5421,103 +5884,201 @@ function bqb_front_css() {
 	.bqb-lib .bqb-btn--lg,.bqb-fiche .bqb-btn--lg{padding:15px 24px !important;font-size:.76rem !important;}
 	.bqb-lib .bqb-btn--sm,.bqb-fiche .bqb-btn--sm{padding:10px 14px !important;font-size:.68rem !important;}
 
-	/* En-tête de la bibliothèque : recherche et accès transversaux */
-	.bqb-libnav{position:relative;margin:0 0 34px;padding:34px 36px 28px;border-radius:16px;overflow:hidden;color:#fff;
+	/* Barre de recherche : simple ou avancée */
+	.bqb-search{position:relative;margin:0 0 44px;padding:26px 30px 22px;border-radius:16px;overflow:hidden;color:#fff;scroll-margin-top:100px;
 		background:var(--bqb-dark);background-image:radial-gradient(circle at 92% -10%,rgba(199,90,24,.35),transparent 42%),linear-gradient(135deg,var(--bqb-dark) 0%,var(--bqb-bordeaux) 78%);box-shadow:0 30px 60px -40px rgba(49,2,12,.9);}
-	.bqb-libnav::after{content:"";position:absolute;right:-90px;bottom:-120px;width:320px;height:320px;border-radius:50%;border:1px solid rgba(255,255,255,.1);box-shadow:0 0 0 46px rgba(255,255,255,.03),0 0 0 92px rgba(255,255,255,.02);pointer-events:none;}
-	.bqb-libnav__search{position:relative;z-index:1;display:flex;align-items:center;gap:8px;padding:6px;border-radius:12px;background:#fff;box-shadow:0 24px 44px -28px rgba(0,0,0,.7);}
-	.bqb-libnav__search > .bqb-ico{position:absolute;left:22px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#8d8a88;pointer-events:none;}
-	.bqb-lib .bqb-libnav__search .bqb-input{flex:1;border:0 !important;padding:16px 16px 16px 52px !important;font-size:1.05rem !important;box-shadow:none !important;background:transparent !important;}
-	.bqb-lib .bqb-libnav__search .bqb-btn{align-self:stretch;padding:0 28px !important;border-radius:8px !important;}
-	.bqb-libnav__bar{position:relative;z-index:1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 24px;margin-top:20px;}
-	.bqb-libnav__links{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none;}
-	.bqb-lib .bqb-libnav__links a{display:inline-flex;align-items:center;gap:8px;padding:9px 15px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06);font-size:.84rem;font-weight:600;color:#fff !important;transition:background .2s,border-color .2s;}
-	.bqb-lib .bqb-libnav__links a:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4);color:#fff !important;}
-	.bqb-libnav__links .bqb-ico{width:16px;height:16px;opacity:.85;}
-	.bqb-libnav__stats{display:flex;flex-wrap:wrap;gap:6px 22px;margin:0;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);}
-	.bqb-libnav__stats strong{margin-right:6px;font-family:var(--bqb-serif);font-size:1.45rem;font-weight:600;letter-spacing:0;color:#fff;}
+	.bqb-search::after{content:"";position:absolute;right:-90px;bottom:-120px;width:320px;height:320px;border-radius:50%;border:1px solid rgba(255,255,255,.1);box-shadow:0 0 0 46px rgba(255,255,255,.03),0 0 0 92px rgba(255,255,255,.02);pointer-events:none;}
+	.bqb-search__form,.bqb-search__links{position:relative;z-index:1;}
+	.bqb-search__top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 24px;margin:0 0 16px;}
+	.bqb-mode{display:inline-flex;gap:4px;padding:4px;border:1px solid rgba(255,255,255,.2);border-radius:999px;background:rgba(0,0,0,.18);}
+	.bqb-lib .bqb-mode .bqb-mode__btn,.bqb-lib .bqb-mode .bqb-mode__btn:hover,.bqb-lib .bqb-mode .bqb-mode__btn:focus{
+		display:inline-flex !important;align-items:center;gap:8px;margin:0 !important;padding:9px 18px !important;border:0 !important;border-radius:999px !important;
+		background:transparent !important;box-shadow:none !important;color:rgba(255,255,255,.78) !important;
+		font-family:var(--bqb-sans) !important;font-size:.84rem !important;font-weight:600 !important;letter-spacing:0 !important;text-transform:none !important;line-height:1.2 !important;white-space:nowrap;cursor:pointer;transition:background .2s,color .2s;
+	}
+	.bqb-lib .bqb-mode .bqb-mode__btn:hover{background:rgba(255,255,255,.1) !important;color:#fff !important;}
+	.bqb-lib .bqb-mode .bqb-mode__btn[aria-pressed="true"]{background:#fff !important;color:var(--bqb-bordeaux) !important;box-shadow:0 8px 18px -12px rgba(0,0,0,.6) !important;}
+	.bqb-lib .bqb-mode .bqb-mode__btn:focus-visible{outline:2px solid #fff !important;outline-offset:2px;}
+	.bqb-mode__btn .bqb-ico{width:16px;height:16px;}
+	.bqb-mode__n{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#C75A18;color:#fff;font-size:.7rem;font-weight:700;}
+	.bqb-mode__n[hidden]{display:none;}
+	.bqb-search__stats{display:flex;flex-wrap:wrap;gap:4px 20px;margin:0;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.7);}
+	.bqb-search__stats strong{margin-right:6px;font-family:var(--bqb-serif);font-size:1.35rem;font-weight:600;letter-spacing:0;color:#fff;}
+	.bqb-search__main{position:relative;display:flex;align-items:center;gap:8px;padding:6px;border-radius:12px;background:#fff;box-shadow:0 24px 44px -28px rgba(0,0,0,.7);}
+	.bqb-search__main > .bqb-ico{position:absolute;left:22px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#8d8a88;pointer-events:none;}
+	.bqb-lib .bqb-search__main .bqb-input{flex:1;border:0 !important;padding:16px 16px 16px 52px !important;font-size:1.05rem !important;box-shadow:none !important;background:transparent !important;}
+	.bqb-lib .bqb-search__main .bqb-btn{align-self:stretch;padding:0 28px !important;border-radius:8px !important;}
+	.bqb-search__adv{margin:12px 0 0;padding:22px 22px 18px;border-radius:12px;background:#fff;color:var(--bqb-ink);box-shadow:0 24px 44px -30px rgba(0,0,0,.7);animation:bqb-fade .3s ease;}
+	.bqb-search__adv[hidden]{display:none !important;}
+	.bqb-search__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 16px;}
+	@media (max-width:1100px){.bqb-search__grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+	@media (max-width:620px){.bqb-search__grid{grid-template-columns:1fr;}}
+	.bqb-field{display:flex;flex-direction:column;gap:7px;min-width:0;}
+	.bqb-field__label{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-field.is-set .bqb-field__label{color:var(--bqb-bordeaux);}
+	.bqb-search__adv .bqb-input{height:46px;border-radius:8px !important;border-color:#E3DEDB !important;padding-right:30px !important;text-overflow:ellipsis;cursor:pointer;}
+	.bqb-field.is-set .bqb-input{border-color:var(--bqb-bordeaux) !important;background-color:rgba(116,4,28,.04) !important;color:var(--bqb-bordeaux) !important;font-weight:600 !important;}
+	.bqb-field__range{display:flex;align-items:center;gap:8px;}
+	.bqb-field__range span{font-size:.82rem;color:var(--bqb-muted);}
+	.bqb-field__range .bqb-input{flex:1;min-width:0;}
+	.bqb-search__foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--bqb-line);}
+	.bqb-lib .bqb-search__reset{font-size:.84rem;font-weight:700;color:var(--bqb-bordeaux) !important;}
+	.bqb-lib .bqb-search__reset:hover{text-decoration:underline !important;text-underline-offset:3px;}
+	.bqb-search__links{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 0;}
+	.bqb-search__links-label{margin-right:6px;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.6);}
+	.bqb-lib .bqb-search__links a{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.06);font-size:.82rem;font-weight:600;color:#fff !important;white-space:nowrap;transition:background .2s,border-color .2s;}
+	.bqb-lib .bqb-search__links a:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.4);color:#fff !important;}
+	.bqb-search__links .bqb-ico{width:16px;height:16px;opacity:.85;}
 	@media (max-width:640px){
-		.bqb-libnav{padding:22px 18px 20px;border-radius:12px;}
-		.bqb-libnav__search{flex-wrap:wrap;}
-		.bqb-lib .bqb-libnav__search .bqb-btn{flex-basis:100%;justify-content:center;padding:14px !important;}
-		.bqb-libnav__search > .bqb-ico{top:30px;}
-		.bqb-lib .bqb-libnav__search .bqb-input{padding:14px 12px 14px 48px !important;font-size:1rem !important;}
-		.bqb-libnav__bar{gap:14px;}
-		.bqb-libnav__links{flex-wrap:nowrap;width:calc(100% + 36px);margin:0 -18px;padding:0 18px 2px;overflow-x:auto;scrollbar-width:none;}
-		.bqb-libnav__links::-webkit-scrollbar{display:none;}
-		.bqb-lib .bqb-libnav__links a{white-space:nowrap;}
-		.bqb-libnav__stats{gap:4px 16px;}
-		.bqb-libnav__stats strong{font-size:1.2rem;}
+		.bqb-search{padding:18px 16px;border-radius:12px;margin-bottom:34px;}
+		.bqb-search__top{flex-direction:column;align-items:stretch;}
+		.bqb-mode{display:flex;}
+		.bqb-lib .bqb-mode .bqb-mode__btn,.bqb-lib .bqb-mode .bqb-mode__btn:hover,.bqb-lib .bqb-mode .bqb-mode__btn:focus{flex:1;justify-content:center;padding:9px 10px !important;font-size:.8rem !important;}
+		.bqb-search__stats{justify-content:center;}
+		.bqb-search__main{flex-wrap:wrap;}
+		.bqb-search__main > .bqb-ico{top:30px;}
+		.bqb-lib .bqb-search__main .bqb-input{padding:14px 12px 14px 48px !important;font-size:1rem !important;}
+		.bqb-lib .bqb-search__main .bqb-btn{flex-basis:100%;justify-content:center;padding:14px !important;}
+		.bqb-search__adv{padding:18px 16px 16px;}
+		.bqb-search__foot{flex-direction:column-reverse;align-items:stretch;text-align:center;}
+		.bqb-search__foot .bqb-btn{justify-content:center;}
+		.bqb-search__links{flex-wrap:nowrap;margin-left:-16px;margin-right:-16px;padding:0 16px 2px;overflow-x:auto;scrollbar-width:none;}
+		.bqb-search__links::-webkit-scrollbar{display:none;}
+		.bqb-search__links-label{display:none;}
 	}
 
-	/* Les blocs */
-	.bqb-blocks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:stretch;}
-	@media (max-width:880px){.bqb-blocks{grid-template-columns:1fr;}}
-	.bqb-block{display:flex;flex-direction:column;min-width:0;background:#fff;border:1px solid var(--bqb-line);border-radius:14px;overflow:hidden;box-shadow:0 1px 2px rgba(49,2,12,.05);transition:box-shadow .35s,transform .35s;}
-	.bqb-block:hover{box-shadow:0 30px 60px -40px rgba(49,2,12,.6);transform:translateY(-2px);}
-	.bqb-block__head{position:relative;display:flex;align-items:flex-start;gap:18px;padding:26px 28px 24px;overflow:hidden;color:#fff;background:var(--bqb-block);background-image:linear-gradient(135deg,rgba(255,255,255,.12),rgba(0,0,0,.24));}
-	.bqb-block__head::after{content:"";position:absolute;right:-70px;top:-80px;width:200px;height:200px;border-radius:50%;border:1px solid rgba(255,255,255,.14);box-shadow:0 0 0 34px rgba(255,255,255,.035);pointer-events:none;}
-	.bqb-block__num{position:relative;z-index:1;font-family:var(--bqb-serif);font-size:2.5rem;font-weight:600;line-height:.9;color:rgba(255,255,255,.5);letter-spacing:-.02em;}
-	.bqb-block__intro{position:relative;z-index:1;flex:1;min-width:0;}
-	.bqb-block__title{margin:0 !important;font-family:var(--bqb-serif) !important;font-size:1.6rem !important;font-weight:600 !important;line-height:1.15 !important;color:#fff !important;}
-	.bqb-lib .bqb-block__title a{color:#fff !important;}
-	.bqb-lib .bqb-block__title a:hover{color:#fff !important;text-decoration:underline !important;text-underline-offset:4px;text-decoration-thickness:1px !important;}
-	.bqb-block__text{max-width:48ch;margin:8px 0 0;font-size:.86rem;line-height:1.55;color:rgba(255,255,255,.82);}
-	.bqb-block__total{position:relative;z-index:1;flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.72);}
-	.bqb-block__total strong{font-family:var(--bqb-serif);font-size:1.9rem;font-weight:600;line-height:1;letter-spacing:0;color:#fff;}
-	.bqb-block__body{flex:1;padding:4px 28px 10px;}
-	.bqb-block__soon{margin:18px 0;font-size:.88rem;font-style:italic;color:var(--bqb-muted);}
-	.bqb-sec{padding:18px 0;border-bottom:1px solid var(--bqb-line);}
-	.bqb-sec:last-child{border-bottom:0;}
-	.bqb-sec__head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 12px !important;font-family:var(--bqb-sans) !important;font-size:.96rem !important;font-weight:700 !important;line-height:1.35 !important;color:var(--bqb-dark) !important;}
-	.bqb-sec__head > a,.bqb-sec__head > span{display:flex;gap:10px;min-width:0;}
-	.bqb-lib .bqb-sec__head a{color:var(--bqb-dark) !important;}
-	.bqb-lib .bqb-sec__head a:hover .bqb-sec__name{color:var(--bqb-block) !important;}
-	.bqb-sec__num{flex:0 0 auto;color:var(--bqb-block);font-variant-numeric:tabular-nums;}
-	.bqb-sec__count{flex:0 0 auto;padding:2px 9px;border-radius:999px;background:var(--bqb-block-soft);font-size:.7rem;font-weight:700;color:var(--bqb-block);}
+	/* Les espaces de la bibliothèque, à déplier */
+	.bqb-explore{margin:0;}
+	.bqb-explore__head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px;margin:0 0 20px;}
+	.bqb-explore__title{margin:8px 0 0 !important;font-family:var(--bqb-serif) !important;font-size:clamp(1.8rem,3.2vw,2.4rem) !important;font-weight:600 !important;line-height:1.1 !important;color:var(--bqb-dark) !important;}
+	.bqb-explore__hint{margin:0;font-size:.88rem;color:var(--bqb-muted);}
+	.bqb-explore__grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;align-items:stretch;}
+	@media (max-width:1100px){.bqb-explore__grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+	@media (max-width:760px){.bqb-explore__grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+	@media (max-width:480px){.bqb-explore__grid{grid-template-columns:1fr;gap:10px;}}
+	.bqb-lib .bqb-ecard{position:relative;display:flex;flex-direction:column;min-width:0;min-height:208px;padding:20px 20px 16px;border:1px solid var(--bqb-line);border-radius:14px;background:#fff;color:var(--bqb-ink) !important;scroll-margin-top:110px;box-shadow:0 1px 2px rgba(49,2,12,.05);transition:transform .25s,box-shadow .25s,border-color .25s,background .25s;}
+	.bqb-ecard::before{content:"";position:absolute;left:20px;right:20px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--bqb-block);}
+	.bqb-lib .bqb-ecard:hover{transform:translateY(-3px);border-color:var(--bqb-block-line);box-shadow:0 24px 44px -30px rgba(49,2,12,.55);color:var(--bqb-ink) !important;}
+	.bqb-lib .bqb-ecard:focus-visible{outline:3px solid var(--bqb-block-line);outline-offset:2px;}
+	.bqb-ecard__num{font-family:var(--bqb-serif);font-size:2rem;font-weight:600;line-height:1;color:var(--bqb-block);}
+	.bqb-ecard__title{margin:12px 0 0;font-family:var(--bqb-serif);font-size:1.32rem;font-weight:600;line-height:1.15;color:var(--bqb-dark);}
+	.bqb-ecard__text{margin:8px 0 0;font-size:.8rem;line-height:1.5;color:var(--bqb-muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+	.bqb-ecard__foot{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:16px;}
+	.bqb-ecard__count{display:flex;flex-direction:column;gap:2px;min-width:0;}
+	.bqb-ecard__count strong{font-size:.86rem;font-weight:700;color:var(--bqb-dark);white-space:nowrap;}
+	.bqb-ecard__count em{font-style:normal;font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--bqb-block);}
+	.bqb-ecard__more{flex:0 0 auto;display:inline-flex;color:var(--bqb-block);}
+	.bqb-ecard__more .bqb-ico{width:32px;height:32px;padding:7px;border-radius:50%;background:var(--bqb-block-soft);transition:transform .25s,background .25s;}
+	.bqb-lib .bqb-ecard:hover .bqb-ecard__more .bqb-ico{transform:translateY(2px);}
+	.bqb-lib .bqb-ecard.is-on{border-color:var(--bqb-block);background:var(--bqb-block);background-image:linear-gradient(150deg,rgba(255,255,255,.12),rgba(0,0,0,.22));color:#fff !important;box-shadow:0 24px 44px -26px rgba(49,2,12,.7);transform:none;}
+	.bqb-ecard.is-on::before{display:none;}
+	.bqb-ecard.is-on::after{content:"";position:absolute;left:50%;bottom:-9px;width:16px;height:16px;margin-left:-8px;background:var(--bqb-block);transform:rotate(45deg);border-radius:2px;}
+	.bqb-ecard.is-on .bqb-ecard__num{color:rgba(255,255,255,.55);}
+	.bqb-ecard.is-on .bqb-ecard__title,.bqb-ecard.is-on .bqb-ecard__count strong{color:#fff;}
+	.bqb-ecard.is-on .bqb-ecard__text,.bqb-ecard.is-on .bqb-ecard__count em,.bqb-ecard.is-on .bqb-ecard__more{color:rgba(255,255,255,.82);}
+	.bqb-lib .bqb-ecard.is-on .bqb-ecard__more .bqb-ico{background:rgba(255,255,255,.18);transform:rotate(180deg);}
+	@media (max-width:480px){
+		.bqb-lib .bqb-ecard{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 14px;min-height:0;padding:16px 16px;}
+		.bqb-ecard__num{grid-row:1 / 3;font-size:1.6rem;}
+		.bqb-ecard__title{margin:0;font-size:1.18rem;}
+		.bqb-ecard__text{display:none;}
+		.bqb-ecard__foot{display:contents;}
+		.bqb-ecard__count{grid-column:2;flex-direction:row;align-items:baseline;gap:10px;}
+		.bqb-ecard__more{grid-column:3;grid-row:1 / 3;}
+		.bqb-ecard.is-on::after{bottom:-7px;width:12px;height:12px;margin-left:-6px;}
+	}
+
+	.bqb-epanel{grid-column:1 / -1;margin:6px 0 10px;padding:26px 28px 24px;border:1px solid var(--bqb-block-line);border-top:3px solid var(--bqb-block);border-radius:14px;background:#fff;box-shadow:0 30px 60px -44px rgba(49,2,12,.7);animation:bqb-fade .3s ease;}
+	.bqb-epanel[hidden]{display:none !important;}
+	.bqb-epanel__head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px 30px;}
+	.bqb-epanel__intro{flex:1 1 420px;min-width:0;}
+	.bqb-epanel__eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bqb-block);}
+	.bqb-epanel__eyebrow::before{content:"";width:24px;height:2px;background:var(--bqb-block);}
+	.bqb-epanel__title{margin:8px 0 0 !important;font-family:var(--bqb-serif) !important;font-size:clamp(1.6rem,3vw,2.1rem) !important;font-weight:600 !important;line-height:1.12 !important;color:var(--bqb-dark) !important;outline:none;}
+	.bqb-epanel__text{max-width:70ch;margin:8px 0 0;font-size:.92rem;line-height:1.6;color:var(--bqb-muted);}
+	.bqb-epanel__actions{display:flex;align-items:center;gap:10px;}
+	.bqb-lib .bqb-epanel__actions .bqb-btn{background:var(--bqb-block) !important;background-image:linear-gradient(180deg,rgba(255,255,255,.08),rgba(0,0,0,.18)) !important;}
+	.bqb-lib .bqb-epanel .bqb-epanel__close,.bqb-lib .bqb-epanel .bqb-epanel__close:hover,.bqb-lib .bqb-epanel .bqb-epanel__close:focus{
+		display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;margin:0 !important;padding:0 !important;
+		border:1px solid var(--bqb-line) !important;border-radius:50% !important;background:#fff !important;box-shadow:none !important;color:var(--bqb-muted) !important;cursor:pointer;transition:border-color .2s,color .2s;
+	}
+	.bqb-lib .bqb-epanel .bqb-epanel__close:hover{border-color:var(--bqb-block) !important;color:var(--bqb-block) !important;}
+	.bqb-lib .bqb-epanel .bqb-epanel__close:focus-visible{outline:2px solid var(--bqb-block) !important;outline-offset:2px;}
+	.bqb-epanel__hint{margin:20px 0 10px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-rubs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start;margin:0 !important;padding:0 !important;list-style:none !important;}
+	@media (max-width:860px){.bqb-rubs{grid-template-columns:1fr;}}
+	.bqb-rub{margin:0 !important;border:1px solid var(--bqb-line);border-radius:12px;background:#fff;transition:border-color .2s,background .2s,box-shadow .2s;}
+	.bqb-rub:hover{border-color:var(--bqb-block-line);}
+	.bqb-rub.is-open{border-color:var(--bqb-block-line);background:var(--bqb-block-soft);box-shadow:0 16px 30px -28px rgba(0,0,0,.6);}
+	.bqb-lib .bqb-rub .bqb-rub__head,.bqb-lib .bqb-rub .bqb-rub__head:hover,.bqb-lib .bqb-rub .bqb-rub__head:focus{
+		display:grid !important;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:14px;width:100%;margin:0 !important;padding:15px 16px !important;
+		border:0 !important;border-radius:12px !important;background:transparent !important;box-shadow:none !important;color:var(--bqb-ink) !important;
+		font-family:var(--bqb-sans) !important;font-size:1rem !important;font-weight:400 !important;letter-spacing:0 !important;text-transform:none !important;line-height:1.3 !important;text-align:left !important;white-space:normal !important;cursor:pointer;
+	}
+	.bqb-lib .bqb-rub .bqb-rub__head:focus-visible{outline:2px solid var(--bqb-block) !important;outline-offset:-2px;}
+	.bqb-rub__num{font-size:.8rem;font-weight:700;color:var(--bqb-block);font-variant-numeric:tabular-nums;}
+	.bqb-rub__label{display:flex;flex-direction:column;gap:2px;min-width:0;}
+	.bqb-rub__name{font-size:.96rem;font-weight:700;line-height:1.3;color:var(--bqb-dark);}
+	.bqb-rub__head:hover .bqb-rub__name{color:var(--bqb-block);}
+	.bqb-rub__text{font-size:.78rem;line-height:1.45;color:var(--bqb-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+	.bqb-rub.is-open .bqb-rub__text{white-space:normal;}
+	.bqb-rub__count{padding:3px 9px;border-radius:999px;background:var(--bqb-soft);font-size:.68rem;font-weight:700;color:var(--bqb-muted);white-space:nowrap;}
+	.bqb-rub__icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;background:var(--bqb-block-soft);color:var(--bqb-block);transition:transform .25s,background .25s,color .25s;}
+	.bqb-rub__icon .bqb-ico{width:16px;height:16px;}
+	.bqb-rub.is-open .bqb-rub__icon{transform:rotate(180deg);background:var(--bqb-block);color:#fff;}
+	.bqb-rub.is-link .bqb-rub__head:hover .bqb-rub__icon{transform:translateX(3px);}
+	.bqb-lib .bqb-rub .bqb-rub__head.is-current .bqb-rub__name{color:var(--bqb-block);}
+	.bqb-rub__body{padding:2px 16px 16px;animation:bqb-fade .25s ease;}
+	.bqb-rub__body[hidden]{display:none !important;}
 	.bqb-pillinks{display:flex;flex-wrap:wrap;gap:7px;}
-	.bqb-lib .bqb-pillink,.bqb-fiche .bqb-pillink{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--bqb-line);border-radius:999px;background:#fff;font-size:.8rem;font-weight:500;line-height:1.3;color:var(--bqb-ink) !important;transition:border-color .2s,color .2s,background .2s;}
+	.bqb-lib .bqb-pillink,.bqb-fiche .bqb-pillink{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border:1px solid var(--bqb-line);border-radius:999px;background:#fff;font-size:.82rem;font-weight:500;line-height:1.3;color:var(--bqb-ink) !important;transition:border-color .2s,color .2s,background .2s;}
 	.bqb-pillink span{font-size:.68rem;font-weight:700;color:var(--bqb-muted);}
-	.bqb-lib .bqb-pillink:hover{border-color:var(--bqb-block);background:var(--bqb-block-soft);color:var(--bqb-block) !important;}
+	.bqb-lib .bqb-pillink:hover{border-color:var(--bqb-block);background:#fff;color:var(--bqb-block) !important;}
 	.bqb-fiche .bqb-pillink:hover{border-color:var(--bqb-accent);background:var(--bqb-accent-soft);color:var(--bqb-accent) !important;}
 	.bqb-lib .bqb-pillink.is-empty{border-style:dashed;color:#a3a09e !important;}
-	.bqb-lib .bqb-pillink--sm{padding:4px 10px;font-size:.76rem;}
-	.bqb-views{display:flex;flex-wrap:wrap;gap:6px 18px;}
-	.bqb-pillinks + .bqb-views{margin-top:12px;}
+	.bqb-lib .bqb-pillink--all{border-color:var(--bqb-block);background:var(--bqb-block);color:#fff !important;font-weight:600;margin:0 0 10px;}
+	.bqb-lib .bqb-pillink--all span{color:rgba(255,255,255,.8);}
+	.bqb-lib .bqb-pillink--all:hover{background:var(--bqb-block);color:#fff !important;filter:brightness(1.12);}
+	.bqb-lib .bqb-pillink.is-current{border-color:var(--bqb-block);box-shadow:inset 0 0 0 1px var(--bqb-block);color:var(--bqb-block) !important;font-weight:700;}
+	.bqb-lib .bqb-pillink--all.is-current{color:#fff !important;box-shadow:0 0 0 3px var(--bqb-block-line);}
+	.bqb-rub__body > .bqb-pillink--all{display:inline-flex;}
+	.bqb-views{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;}
+	.bqb-pillinks + .bqb-views{margin-top:12px;padding-top:12px;border-top:1px dashed var(--bqb-block-line);}
+	.bqb-views__label{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
 	.bqb-lib .bqb-view{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;color:var(--bqb-block) !important;}
-	.bqb-view::before{content:"";width:14px;height:1px;background:currentColor;opacity:.5;}
+	.bqb-view::before{content:"";width:12px;height:1px;background:currentColor;opacity:.5;}
 	.bqb-lib .bqb-view:hover{color:var(--bqb-dark) !important;}
 	.bqb-lib .bqb-view.is-empty{color:#a3a09e !important;}
-	.bqb-dedicated{display:flex;align-items:center;gap:16px;margin:16px 0 14px;padding:16px 18px;border:1px solid var(--bqb-block-line);border-radius:12px;background:var(--bqb-block-soft);}
+	.bqb-block__soon{margin:18px 0 0;font-size:.88rem;font-style:italic;color:var(--bqb-muted);}
+	.bqb-dedicated{display:flex;align-items:center;gap:16px;margin:16px 0 0;padding:16px 18px;border:1px solid var(--bqb-block-line);border-radius:12px;background:var(--bqb-block-soft);}
 	.bqb-dedicated__visual{flex:0 0 58px;display:flex;align-items:center;justify-content:center;width:58px;height:58px;overflow:hidden;border-radius:50%;background:var(--bqb-block);color:#fff;font-family:var(--bqb-serif);font-size:1.25rem;font-weight:600;box-shadow:0 10px 20px -14px rgba(0,0,0,.7);}
 	.bqb-dedicated__visual img{width:100% !important;height:100% !important;object-fit:cover;}
 	.bqb-dedicated__body{min-width:0;}
 	.bqb-dedicated__eyebrow{display:block;font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--bqb-block);}
 	.bqb-lib .bqb-dedicated__name{display:inline-block;margin:2px 0 6px;font-family:var(--bqb-serif);font-size:1.25rem;font-weight:600;line-height:1.2;color:var(--bqb-dark) !important;}
-	.bqb-lib .bqb-block__cta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 28px;border-top:1px solid var(--bqb-line);font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-block) !important;transition:background .2s;}
-	.bqb-lib .bqb-block__cta:hover{background:var(--bqb-block-soft);color:var(--bqb-block) !important;}
-	.bqb-block__cta .bqb-ico{transition:transform .25s;}
-	.bqb-block__cta:hover .bqb-ico{transform:translateX(4px);}
-	.bqb-block--wide{grid-column:1 / -1;}
-	.bqb-block--wide .bqb-block__body{padding-bottom:22px;}
-	.bqb-theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;}
-	.bqb-theme-tile{display:flex;flex-direction:column;gap:12px;padding:16px 16px 18px;border:1px solid var(--bqb-line);border-radius:12px;background:#fff;transition:border-color .2s,box-shadow .2s;}
-	.bqb-theme-tile:hover{border-color:var(--bqb-block-line);box-shadow:0 16px 30px -26px rgba(0,0,0,.6);}
-	.bqb-lib .bqb-theme-tile__head{display:flex;flex-direction:column;gap:3px;padding-bottom:12px;border-bottom:1px solid var(--bqb-line);}
-	.bqb-theme-tile__name{font-family:var(--bqb-serif);font-size:1.22rem;font-weight:600;line-height:1.2;color:var(--bqb-dark);}
-	.bqb-theme-tile__head:hover .bqb-theme-tile__name{color:var(--bqb-block);}
-	.bqb-theme-tile__count{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
-	.bqb-sec--filters{padding-bottom:4px;}
-	.bqb-filterlinks{display:flex;flex-wrap:wrap;gap:10px;}
-	.bqb-lib .bqb-filterlink{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border:1px solid var(--bqb-block-line);border-radius:10px;background:var(--bqb-block-soft);font-size:.84rem;font-weight:600;color:var(--bqb-block) !important;transition:background .2s,color .2s;}
+	.bqb-refine{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:18px 0 0;padding:16px 0 0;border-top:1px solid var(--bqb-line);}
+	.bqb-refine__label{font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
+	.bqb-filterlinks{display:flex;flex-wrap:wrap;gap:8px;}
+	.bqb-lib .bqb-filterlink{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--bqb-block-line);border-radius:999px;background:var(--bqb-block-soft);font-size:.8rem;font-weight:600;color:var(--bqb-block) !important;transition:background .2s,color .2s;}
 	.bqb-lib .bqb-filterlink:hover{background:var(--bqb-block);color:#fff !important;}
+	.bqb-filterlink .bqb-ico{width:16px;height:16px;}
 	@media (max-width:640px){
-		.bqb-block__head{padding:22px 20px 20px;gap:14px;}
-		.bqb-block__num{font-size:2rem;}
-		.bqb-block__total{display:none;}
-		.bqb-block__body{padding:2px 20px 8px;}
-		.bqb-lib .bqb-block__cta{padding:15px 20px;}
+		.bqb-epanel{padding:20px 16px 18px;}
+		.bqb-epanel__actions{width:100%;}
+		.bqb-epanel__actions .bqb-btn{flex:1;justify-content:center;}
+		.bqb-epanel__head{position:relative;}
+		.bqb-lib .bqb-rub .bqb-rub__head,.bqb-lib .bqb-rub .bqb-rub__head:hover,.bqb-lib .bqb-rub .bqb-rub__head:focus{grid-template-columns:auto minmax(0,1fr) auto;gap:10px;padding:13px 14px !important;}
+		.bqb-rub__count{display:none;}
+		.bqb-rub__body{padding:2px 14px 14px;}
 	}
+
+	/* Au-dessus des résultats : nombre et tri */
+	.bqb-results{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;margin:20px 0 16px;}
+	.bqb-docs.is-cards .bqb-results .bqb-docs__count{margin:0;}
+	.bqb-sortbar{display:flex;align-items:center;gap:10px;margin:0;}
+	.bqb-sortbar label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);white-space:nowrap;}
+	.bqb-docs .bqb-sortbar .bqb-input{width:auto !important;height:40px;padding:8px 32px 8px 12px !important;border-radius:8px !important;cursor:pointer;}
+	.bqb-docs__empty a{margin-left:6px;font-style:normal;font-weight:700;}
 
 	/* Filtres : barre compacte */
 	.bqb-filters{margin:0 0 6px;padding:14px;border:1px solid var(--bqb-line);border-radius:14px;background:#fff;box-shadow:0 14px 34px -30px rgba(49,2,12,.7);}
@@ -5622,7 +6183,14 @@ function bqb_front_css() {
 		.bqb-filters.is-open .bqb-filters__body{display:block;}
 	}
 	.bqb-active__label{align-self:center;margin-right:4px;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqb-muted);}
-	.bqb-chip--clear{border-style:dashed;color:var(--bqb-muted) !important;}
+	.bqb-active{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 0;}
+	.bqb-lib .bqb-chip,.bqb-docs .bqb-chip,.bqb-page .bqb-chip,.bqb-people .bqb-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border:1px solid var(--bqb-line);border-radius:999px;background:#fff;font-size:.8rem;font-weight:600;line-height:1.3;color:var(--bqb-bordeaux) !important;transition:border-color .2s,background .2s,color .2s;}
+	.bqb-lib .bqb-chip:hover,.bqb-docs .bqb-chip:hover,.bqb-page .bqb-chip:hover,.bqb-people .bqb-chip:hover{border-color:var(--bqb-bordeaux);background:rgba(116,4,28,.04);color:var(--bqb-dark) !important;}
+	.bqb-active .bqb-chip{border-color:rgba(116,4,28,.22);background:rgba(116,4,28,.06);}
+	.bqb-chip > span:not(.screen-reader-text){font-size:.72rem;font-weight:700;color:var(--bqb-muted);}
+	.bqb-active .bqb-chip > span[aria-hidden]{font-size:1rem;line-height:1;color:var(--bqb-bordeaux);}
+	.bqb-lib .bqb-chip--nav.is-on,.bqb-people .bqb-chip--nav.is-on{border-color:var(--bqb-bordeaux);background:var(--bqb-bordeaux);color:#fff !important;}
+	.bqb-lib .bqb-active .bqb-chip--clear,.bqb-docs .bqb-active .bqb-chip--clear{border-style:dashed;background:#fff;color:var(--bqb-muted) !important;}
 	';
 }
 

@@ -1,8 +1,8 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.2.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.3.0.
 
-Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit les 5 blocs, le catalogue filtré et l'annuaire des auteurs et organisations.
+Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit une barre de recherche simple ou avancée, les 5 espaces à déplier, le catalogue filtré et l'annuaire des auteurs et organisations.
 
 Indépendant des plugins Partenaires, Gouvernance et Formulaires : préfixe `bqb_`, aucun conflit.
 
@@ -26,11 +26,28 @@ Créer une page « Bibliothèque » avec le shortcode `[bqp_bibliotheque]`. C'es
 
 Elle contient, de haut en bas :
 
-1. la recherche et les raccourcis (Tous les documents, Chronologie, Auteurs et personnes, Organisations et sources)
-2. les 5 blocs
-3. le catalogue (`#bqb-catalogue`) avec ses filtres, ou l'annuaire
+1. **une seule barre de recherche**, avec un sélecteur « Recherche simple / Recherche avancée », et les accès rapides (Chronologie, Auteurs et personnes, Lauréats, Organisations et sources)
+2. **les 5 espaces** (« Parcourir la bibliothèque »), à déplier
+3. le catalogue (`#bqb-catalogue`) avec le nombre de résultats, le tri et les filtres actifs, ou l'annuaire
 
-Chaque lien des blocs, chaque filtre, chaque fiche de l'annuaire et chaque page de résultats met à jour le catalogue **sans recharger la page**. L'adresse change quand même (bouton retour, partage et favoris fonctionnent) ; sans JavaScript, les mêmes liens rechargent la page et descendent au catalogue.
+### La recherche : simple ou avancée
+
+- **Simple** : un champ libre (titre, auteur, mot-clé). Les critères avancés ne sont pas envoyés.
+- **Avancée** : le même champ, plus Collection / origine, Nature, Thème, Période (de… à…), Secteur, Pays / territoire, Auteur, Organisation. Un compteur sur le bouton indique le nombre de critères remplis ; « Afficher les résultats » lance la recherche, « Effacer les critères » repart de zéro.
+- Le mode avancé s'ouvre de lui-même quand un critère est déjà actif (lien partagé, clic dans un espace) : la barre montre toujours ce qui filtre la liste.
+- `[bqp_bibliotheque recherche="avancee"]` ouvre le mode avancé d'office.
+
+### Les espaces : un clic, puis un autre
+
+Les 5 grands espaces s'affichent en cartes compactes (numéro, nom, description, nombre de documents et de rubriques). On descend dans l'arborescence au clic, sans rien charger :
+
+1. **un espace** ouvre son panneau sous la rangée de cartes : description, bouton « Voir les N documents », et ses rubriques numérotées (1.1, 1.2…) ;
+2. **une rubrique** se déplie : « Tous les documents », puis ses sous-catégories en pastilles et ses regroupements (« Par lauréat », « Par année ») ; une rubrique sans sous-catégorie mène directement à ses documents ;
+3. **une sous-catégorie** filtre le catalogue.
+
+Un seul espace est ouvert à la fois ; la croix ou la touche Échap le referme. L'espace « Explorer par thème » propose aussi « Affiner par » secteur, pays, période, nature et collection, qui ouvrent la recherche avancée sur le bon champ. Quand l'adresse contient déjà un filtre, l'espace et la rubrique correspondants sont ouverts dès le chargement, et l'élément en cours est mis en évidence.
+
+Chaque lien des espaces, chaque recherche, chaque fiche de l'annuaire, chaque tri et chaque page de résultats met à jour le catalogue **sans recharger la page**. L'adresse change quand même (bouton retour, partage et favoris fonctionnent) ; sans JavaScript, les mêmes liens rechargent la page et descendent au catalogue.
 
 Quand un sujet est choisi (collection, thème, personne, organisation), un en-tête le présente au-dessus des résultats : description, photo et biographie, logo, sous-catégories.
 
@@ -147,13 +164,16 @@ Exemples :
 
 ### `[bqp_bibliotheque]`
 
-La page Bibliothèque complète : recherche, 5 blocs, catalogue et annuaire.
+La page Bibliothèque complète : recherche simple ou avancée, 5 espaces à déplier, catalogue et annuaire.
 
 | Attribut | Valeurs |
 |---|---|
 | `vides` | `oui` ou `non`, prioritaire sur le réglage |
-| `navigation` | `non` pour masquer la recherche et les raccourcis |
-| `catalogue` | `non` pour n'afficher que les blocs (par exemple sur l'accueil) ; leurs liens mènent alors à la page Bibliothèque |
+| `navigation` | `non` pour masquer la barre de recherche et les accès rapides |
+| `recherche` | `simple` (par défaut) ou `avancee` : mode de la barre au chargement |
+| `blocs` | `non` pour masquer les 5 espaces |
+| `titre_blocs` | titre des espaces, « Parcourir la bibliothèque » par défaut |
+| `catalogue` | `non` pour n'afficher que la recherche et les espaces ; leurs liens mènent alors à la page Bibliothèque |
 | `titre_catalogue` | titre du catalogue, « Tous les documents » par défaut |
 
 ### `[bqp_vitrine]`
@@ -183,7 +203,7 @@ Fiche d'un document dans une mise en page Elementor. `id="123"` facultatif.
 
 ## Paramètres d'adresse
 
-La barre de filtres utilise des paramètres préfixés pour ne pas entrer en conflit avec WordPress : `f_q`, `f_collection`, `f_nature`, `f_theme`, `f_secteur`, `f_pays`, `f_personne`, `f_organisation`, `f_motcle`, `f_annee`, `f_tri`, `f_groupe`, `pg` pour la page, et pour l'annuaire `f_annuaire` (`personnes` ou `organisations`) et `f_role` (rôle ou type). Seule la première liste d'une page écoute l'adresse.
+La barre de filtres utilise des paramètres préfixés pour ne pas entrer en conflit avec WordPress : `f_q`, `f_collection`, `f_nature`, `f_theme`, `f_secteur`, `f_pays`, `f_personne`, `f_organisation`, `f_motcle`, `f_annee`, `f_de` et `f_jusqua` (période de la recherche avancée), `f_tri`, `f_groupe`, `pg` pour la page, et pour l'annuaire `f_annuaire` (`personnes` ou `organisations`) et `f_role` (rôle ou type). Seule la première liste d'une page écoute l'adresse.
 
 Les vues filtrées gardent l'adresse canonique de la page Bibliothèque : Google n'indexe qu'une page, pas une par combinaison de filtres.
 
@@ -211,6 +231,7 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 
 ## Historique
 
+- **3.3.0** : page Bibliothèque simplifiée. Une seule barre de recherche en haut, avec un sélecteur « Recherche simple / Recherche avancée » (période de… à…, compteur de critères, ouverture automatique quand un filtre est actif) ; la barre de filtres du catalogue disparaît, remplacée par le nombre de résultats et « Trier par ». Les 5 blocs deviennent 5 cartes compactes à déplier : espace, puis rubriques, puis sous-catégories, ouverts d'avance selon le filtre en cours. Accès rapide « Lauréats ». Pastilles « Filtres actifs » restylées, lien « Effacer les filtres » quand aucun document ne correspond
 - **3.2.0** : refonte du design. Page Bibliothèque : en-tête de recherche avec accès transversaux et chiffres clés ; blocs en 2 × 2 avec numéro, total, rubriques, éléments en pastilles, regroupements en liens, encart « Page dédiée » avec monogramme et « Explorer » en pied ; bloc 5 en grille de thématiques et raccourcis « Autres filtres ». Filtres : barre compacte, filtre actif en bordeaux, application immédiate partout, « Effacer les filtres » et « Trier par ». Fiche : en-tête pleine largeur (nature, rubrique numérotée, titre H1, auteurs avec initiales, date, accès, résumé, action principale, Partager), couverture ou couverture générée aux couleurs du bloc, texte à 70 caractères par ligne, encadré Informations qui reste visible, bloc « Citer », documents associés en cartes (sinon « Dans la même rubrique ») ; le titre du thème Hello est masqué pour garder un seul H1
 - **3.1.0** : listes en cartes, « Afficher plus » à la place de la pagination, onglets de sous-catégories, shortcode `[bqp_vitrine]` pour l'accueil, nouvelles options dans le Générateur
 - **3.0.1** : le bouton « Rechercher et filtrer », prévu pour le mobile, n'apparaît plus sur ordinateur (le thème Hello forçait son affichage) ; intertitres de la notice aux couleurs du site ; taille des fichiers arrondie (« 180 Ko »)
@@ -231,5 +252,6 @@ Dans un WordPress 6.8 réel avec le thème Hello Elementor et les quatre plugins
 - Page unique (2.1) : lien de bloc, filtre par liste, retrait d'une pastille, annuaire, lauréats, fiche personne, recherche, bouton retour, tous sans rechargement ; redirections 301 des anciennes adresses, filtres conservés ; exclusion des sitemaps ; filtres repliables sur mobile, sans débordement horizontal
 - Arborescence du client (3.0) : migration depuis la 2.1 vérifiée en base (54 collections, 51 thèmes, 22 natures, anciennes familles supprimées) ; blocs identiques au schéma, numérotation conservée quand des rubriques sont masquées ; nature automatique puis manuelle ; page dédiée, fiche par lauréat, liens 5.2 qui ouvrent le bon filtre ; fiche document avec Collection / origine, Thèmes, Secteurs, Pays séparés
 - Listes et vitrine (3.1) : 6 cartes puis « Afficher plus » (6, 12… sur 22, sans rechargement), onglets 1.1 et 1.2 puis éléments, bouton retour, vitrine avec 5 onglets et « En savoir plus », catalogue en cartes, mode liste, vue groupée, mobile sans débordement
+- Simplification (3.3) : ouverture d'un espace (panneau sous la bonne rangée, focus sur son titre), changement d'espace, fermeture par la croix et Échap ; dépliage d'une rubrique ; clic sur une sous-catégorie qui filtre le catalogue et la met en évidence ; passage simple / avancée, compteur de critères, recherche avancée avec période, tri conservé, recherche simple qui ignore les critères avancés ; lien partagé qui ouvre le bon espace et la bonne rubrique ; « Affiner par secteur » qui ouvre la recherche avancée sur ce champ ; bouton retour ; liste vide avec effacement ; mobile 390 px sans débordement ; [bqp_documents], [bqp_vitrine] et fiches inchangés ; aucune erreur JavaScript ni PHP
 - Design (3.2) : liens des rubriques, pastilles d'éléments, regroupements, page dédiée, tuiles de thèmes et raccourcis 5.2 filtrent le catalogue sans rechargement ; filtre appliqué et mis en évidence, effacement ; un seul H1 sur la fiche ; Partager et Copier la référence ; couverture générée sans visuel ; mobile sans débordement
 - Front : toutes les pages en HTTP 200, aucune erreur PHP ni JavaScript, liens du plugin en bordeaux malgré le rose du thème
