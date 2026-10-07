@@ -8,6 +8,8 @@
 defined( 'ABSPATH' ) || exit;
 
 $a       = $attributes;
+// Photo : l'adresse fait foi si elle a été changée à la main sans le numéro de la médiathèque.
+$a['imageId'] = function_exists( 'schiesser_mq_image_id' ) ? schiesser_mq_image_id( $a, 'image' ) : (int) ( $a['imageId'] ?? 0 );
 $hauteur = in_array( $a['hauteur'] ?? 'page', array( 'accueil', 'page', 'compacte' ), true ) ? $a['hauteur'] : 'page';
 $accent  = in_array( $a['accent'] ?? 'creme', array( 'creme', 'menthe', 'blanc' ), true ) ? $a['accent'] : 'creme';
 $styles  = array( 'creme' => 'btn btn-solid', 'vert' => 'btn btn-kir', 'contour' => 'btn btn-ghost' );

@@ -3,6 +3,10 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.17.3 : photos changées par leur adresse
+
+* Une photo dont l'adresse (imageUrl, avantUrl, apresUrl…) a été changée à la main dans l'éditeur de code, sans changer son numéro de médiathèque (imageId, avantId…), s'affiche désormais aussi sur le site, comme dans l'aperçu de l'éditeur. Le thème retrouve la photo correspondante dans la médiathèque (images adaptées à chaque écran conservées).
+
 ## Version 0.17.2 : chaque plat et chaque produit dans la bonne rubrique
 
 * Carte du Tea Room et boutique : une rubrique est reconnue sous ses trois noms (Kaffee, Café, Coffee). Un plat ou un produit rangé dans la rubrique d'une autre langue s'affiche quand même, sous le nom de la rubrique dans la langue de la page : plus de rubrique vide ni de doublon, plus de produit sans catégorie.

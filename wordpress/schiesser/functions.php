@@ -36,7 +36,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.17.2' );
+define( 'SCHIESSER_VERSION', '0.17.3' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
