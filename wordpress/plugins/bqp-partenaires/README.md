@@ -1,6 +1,6 @@
 # BQP Partenaires
 
-Plugin WordPress pour gérer et afficher les partenaires de boursequatrepoint.fr. Version 2.1.0.
+Plugin WordPress pour gérer et afficher les partenaires de boursequatrepoint.fr. Version 2.2.0.
 
 Les partenaires ne sont plus mélangés : **un bloc par catégorie** (Académiques, Institutionnels, Entreprises, Associations, Médias), chacun avec sa couleur, son pictogramme, son titre et son texte d'introduction. Comme sur la page Bibliothèque, les catégories sont **repliées** : un clic sur une catégorie affiche ses partenaires, la page reste courte. Un clic sur un partenaire ouvre sa **fiche détaillée** dans une fenêtre, comme pour la Gouvernance.
 
@@ -46,12 +46,12 @@ Puis coller le shortcode dans une page :
 
 ## Les catégories repliées
 
-`[bqp_partenaires]` affiche d'abord une **carte par catégorie**, sur une rangée : pictogramme, titre, introduction, initiales des premiers partenaires et nombre de partenaires. Rien d'autre : la page reste courte.
+`[bqp_partenaires]` affiche d'abord une **carte par catégorie**, sur une rangée. Chaque carte a un bandeau teinté de la couleur de la catégorie, avec son pictogramme et le nombre de partenaires en grand (« 04 partenaires ») ; puis le nom court de la catégorie (« Académiques »), son texte d'introduction en entier, et en pied « Découvrir ». Rien d'autre : la page reste courte.
 
-- un clic sur une carte **déplie la catégorie** juste sous la rangée : son titre, son introduction et ses partenaires ; la carte se colore et pointe vers le bloc ouvert ;
+- un clic sur une carte **déplie la catégorie** juste sous la rangée : son titre complet (« Partenaires académiques »), son introduction et ses partenaires ; le pied de la carte se colore, affiche « Replier » et pointe vers le bloc ouvert ;
 - une seule catégorie est ouverte à la fois ; un nouveau clic, la croix ou la touche Échap la replient ;
 - `#partenaires-academiques` dans l'adresse ouvre directement cette catégorie, et le lien direct d'un partenaire ouvre sa catégorie puis sa fiche ;
-- sur mobile, les cartes deviennent des lignes compactes et la catégorie s'ouvre sous la ligne touchée ;
+- sur tablette, les cartes passent sur deux colonnes ; sur mobile, elles deviennent des lignes compactes (pictogramme, nom, nombre) et la catégorie s'ouvre sous la ligne touchée ;
 - `ouvert="academiques"` ouvre une catégorie dès le chargement ; sans JavaScript, toutes les catégories restent visibles.
 
 Pour afficher tous les blocs dépliés les uns sous les autres, comme en 2.0 : `[bqp_partenaires replie="non"]`.
@@ -140,6 +140,7 @@ Versions 2.0.0 et 2.1.0, sur WordPress 6.8 avec le thème Hello Elementor et 17 
 
 ## Historique
 
+- **2.2.0** : nouveau design des cartes de catégories : bandeau coloré avec pictogramme et nombre de partenaires en grand, nom court sur une ligne, introduction complète, pied « Découvrir » qui devient « Replier » en couleur ; les initiales des partenaires sont retirées ; grille adaptée aux tablettes
 - **2.1.0** : catégories repliées par défaut, comme sur la page Bibliothèque : une carte par catégorie, un clic déplie ses partenaires sous la rangée ; options `replie` et `ouvert` ; lien direct vers une catégorie ; le lien direct d'un partenaire ouvre sa catégorie avant sa fiche
 - **2.0.0** : un bloc par catégorie avec sommaire, couleur, pictogramme, titre et introduction ; fiche détaillée dans une fenêtre (depuis, localisation, LinkedIn, domaines, notre partenariat, présentation) ; nouvelles options `affichage`, `sommaire`, `intro`, `fenetre` ; couleurs distinctes pour Associations et Médias ; correction du texte « Aucun logo » qui restait visible à côté d'un logo en administration
 - **1.1.0** : filtres bordeaux compacts, logos en grisaille
