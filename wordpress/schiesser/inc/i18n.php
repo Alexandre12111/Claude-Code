@@ -272,3 +272,49 @@ function schiesser_reglage_traduit( $texte ) {
 	}
 	return schiesser_t( $texte );
 }
+
+/* ------------------------------------------------------------------ */
+/* Rubriques et catégories : un même nom dans les trois langues          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Nom allemand (de référence) d'une rubrique ou d'une catégorie, à partir de son nom dans
+ * n'importe quelle langue : « Café », « Coffee » et « Kaffee » donnent « Kaffee ».
+ *
+ * @param string $nom  Nom affiché du terme.
+ * @param string $type 'carte' (Tea Room) ou 'boutique'.
+ * @return string Nom allemand, ou '' s'il n'est pas connu (rubrique créée à la main).
+ */
+function schiesser_rubrique_reference( $nom, $type = 'carte' ) {
+	static $index = array();
+	if ( ! isset( $index[ $type ] ) ) {
+		$index[ $type ] = array();
+		$dico           = 'carte' === $type
+			? ( function_exists( 'schiesser_tr_carte' ) ? schiesser_tr_carte() : array() )
+			: ( function_exists( 'schiesser_tr_boutique' ) ? schiesser_tr_boutique() : array() );
+		$noms           = 'carte' === $type
+			? ( function_exists( 'schiesser_getraenkekarte' ) ? wp_list_pluck( schiesser_getraenkekarte(), 'nom' ) : array() )
+			: ( function_exists( 'schiesser_preisliste' ) ? array_keys( schiesser_preisliste() ) : array() );
+		foreach ( $noms as $de ) {
+			foreach ( array_merge( array( $de ), (array) ( $dico[ $de ] ?? array() ) ) as $variante ) {
+				$index[ $type ][ mb_strtolower( trim( $variante ) ) ] = $de;
+			}
+		}
+	}
+	return $index[ $type ][ mb_strtolower( trim( html_entity_decode( (string) $nom, ENT_QUOTES | ENT_HTML5, 'UTF-8' ) ) ) ] ?? '';
+}
+
+/** Nom d'une rubrique ou catégorie dans la langue de la page (ou $langue). */
+function schiesser_rubrique_nom_langue( $nom, $type = 'carte', $langue = null ) {
+	$nom = html_entity_decode( (string) $nom, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+	$de  = schiesser_rubrique_reference( $nom, $type );
+	if ( '' === $de ) {
+		return $nom;
+	}
+	$langue = $langue ?: schiesser_langue();
+	if ( 'de' === $langue ) {
+		return $de;
+	}
+	$dico = 'carte' === $type ? schiesser_tr_carte() : schiesser_tr_boutique();
+	return schiesser_tr( $dico, $de, $langue );
+}

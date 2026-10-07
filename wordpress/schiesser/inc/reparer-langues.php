@@ -311,32 +311,49 @@ function schiesser_rl_rattacher( $corriger = true ) {
 		return 0;
 	}
 	$n = 0;
-	foreach ( array( SCHIESSER_PRODUIT => SCHIESSER_CATEGORIE, SCHIESSER_TEAROOM => SCHIESSER_RUBRIQUE ) as $type => $taxo ) {
+	foreach ( array( SCHIESSER_PRODUIT => array( SCHIESSER_CATEGORIE, 'boutique' ), SCHIESSER_TEAROOM => array( SCHIESSER_RUBRIQUE, 'carte' ) ) as $type => $infos ) {
+		list( $taxo, $genre ) = $infos;
+		// Termes connus : nom de référence (allemand) => langue => terme.
+		$par_ref = array();
+		$tous    = get_terms( array( 'taxonomy' => $taxo, 'hide_empty' => false, 'lang' => '', 'orderby' => 'term_id' ) );
+		foreach ( is_wp_error( $tous ) ? array() : $tous as $t ) {
+			$ref = schiesser_rubrique_reference( $t->name, $genre );
+			$lt  = schiesser_rl_langue( $t->term_id, true ) ?: 'de';
+			if ( $ref && ! isset( $par_ref[ $ref ][ $lt ] ) ) {
+				$par_ref[ $ref ][ $lt ] = (int) $t->term_id;
+			}
+		}
 		foreach ( array_keys( schiesser_rl_contenus( $type ) ) as $id ) {
 			$l = schiesser_rl_langue( $id );
 			if ( '' === $l ) {
 				continue;
 			}
-			$avant = array_map( 'intval', (array) wp_get_object_terms( $id, $taxo, array( 'fields' => 'ids', 'lang' => '' ) ) );
+			$avant = (array) wp_get_object_terms( $id, $taxo, array( 'lang' => '' ) );
 			$apres = array();
 			foreach ( $avant as $t ) {
-				$lt = schiesser_rl_langue( $t, true );
-				if ( '' === $lt || $lt === $l ) {
-					$apres[] = $t;
-					continue;
-				}
-				$tr = (int) pll_get_term( $t, schiesser_slug_polylang( $l ) );
-				if ( $tr ) {
-					$apres[] = $tr;
+				$lt  = schiesser_rl_langue( $t->term_id, true );
+				$ref = schiesser_rubrique_reference( $t->name, $genre );
+				if ( $ref ) {
+					// Rubrique connue : sa version dans la langue du contenu (créée au besoin).
+					if ( empty( $par_ref[ $ref ][ $l ] ) && $corriger && ! empty( $par_ref[ $ref ]['de'] ) && 'de' !== $l ) {
+						$nouveau = schiesser_traduire_terme( $par_ref[ $ref ]['de'], $taxo, $l, schiesser_rubrique_nom_langue( $ref, $genre, $l ) );
+						if ( $nouveau ) {
+							$par_ref[ $ref ][ $l ] = $nouveau;
+						}
+					}
+					$apres[] = $par_ref[ $ref ][ $l ] ?? (int) $t->term_id;
+				} elseif ( '' === $lt || $lt === $l ) {
+					$apres[] = (int) $t->term_id;
+				} else {
+					$tr      = (int) pll_get_term( $t->term_id, schiesser_slug_polylang( $l ) );
+					$apres[] = $tr ?: (int) $t->term_id;
 				}
 			}
+			$avant = array_map( 'intval', wp_list_pluck( $avant, 'term_id' ) );
 			$apres = array_values( array_unique( $apres ) );
-			if ( ! $apres ) {
-				continue; // aucune rubrique dans sa langue : on laisse tel quel plutôt que de vider
-			}
 			sort( $avant );
 			sort( $apres );
-			if ( $avant !== $apres ) {
+			if ( $apres && $avant !== $apres ) {
 				++$n;
 				if ( $corriger ) {
 					wp_set_object_terms( $id, $apres, $taxo );

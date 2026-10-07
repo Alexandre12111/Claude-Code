@@ -154,14 +154,16 @@ function schiesser_donnees_produit( $post ) {
 		$d['alt'] = $d['nom'];
 	}
 
-	$termes          = get_the_terms( $post, SCHIESSER_CATEGORIE );
+	$termes          = wp_get_object_terms( $post->ID, SCHIESSER_CATEGORIE, array( 'lang' => '' ) ); // toutes langues : nom traduit plus bas
 	$d['categories'] = array();
 	$d['categorie']  = '';
 	if ( $termes && ! is_wp_error( $termes ) ) {
 		foreach ( $termes as $t ) {
-			$d['categories'][ $t->slug ] = $t->name;
+			// Sur le site : nom de la catégorie dans la langue de la page, même si le produit est rangé dans sa version allemande.
+			$d['categories'][ $t->slug ] = is_admin() || ! function_exists( 'schiesser_rubrique_nom_langue' ) ? $t->name : schiesser_rubrique_nom_langue( $t->name, 'boutique' );
 		}
-		$d['categorie'] = $termes[0]->name;
+		$d['categories'] = array_unique( $d['categories'] );
+		$d['categorie']  = reset( $d['categories'] );
 	}
 	return $d;
 }
