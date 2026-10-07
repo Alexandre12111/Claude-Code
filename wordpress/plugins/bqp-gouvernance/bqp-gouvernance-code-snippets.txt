@@ -9,7 +9,7 @@
  * Un clic sur un membre ouvre sa fiche dans une fenêtre : profession, rôle
  * dans l'association, parcours (CV en texte) et CV au format PDF.
  *
- * Version : 1.2.0
+ * Version : 1.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQG_VERSION' ) ) {
-	define( 'BQG_VERSION', '1.2.0' );
+	define( 'BQG_VERSION', '1.3.0' );
 }
 if ( ! defined( 'BQG_CPT' ) ) {
 	define( 'BQG_CPT', 'bqg_membre' );
@@ -53,9 +53,23 @@ function bqg_default_terms() {
 	$p = bqg_palette();
 
 	return array(
-		'bureau'              => array( 'Bureau', $p['bordeaux'] ),
-		'conseil-scientifique' => array( 'Conseil scientifique', $p['navy'] ),
+		'bureau'               => array( 'Bureau', $p['bordeaux'], 'Les membres élus qui dirigent l\'association et conduisent ses projets.' ),
+		'conseil-scientifique' => array( 'Conseil scientifique', $p['navy'], 'Les chercheurs et experts qui garantissent la qualité du prix et accompagnent les lauréats.' ),
 	);
+}
+
+/**
+ * Pictogramme d'une instance : un groupe pour le Bureau, un livre pour le
+ * Conseil scientifique, une étoile pour les autres.
+ */
+function bqg_icon_svg( $slug, $size = 22 ) {
+	$paths = array(
+		'bureau'               => '<circle cx="7" cy="7" r="2.6"/><circle cx="14" cy="7.5" r="2.1"/><path d="M2.5 16c.4-2.8 2.2-4.3 4.5-4.3s4.1 1.5 4.5 4.3M12 12c2.6-.4 4.8.9 5.5 3.7"/>',
+		'conseil-scientifique' => '<path d="M10 5.5C8.5 4.2 6.2 3.5 3 3.5v11c3.2 0 5.5.7 7 2 1.5-1.3 3.8-2 7-2v-11c-3.2 0-5.5.7-7 2zM10 5.5v11"/>',
+	);
+	$path = isset( $paths[ $slug ] ) ? $paths[ $slug ] : '<path d="M10 2.8l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5L2.8 8.1l5-.7z"/>';
+
+	return '<svg viewBox="0 0 20 20" width="' . (int) $size . '" height="' . (int) $size . '" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' . $path . '</svg>';
 }
 
 /**
@@ -220,7 +234,7 @@ function bqg_maybe_seed_terms() {
 			continue;
 		}
 
-		$term = wp_insert_term( $data[0], BQG_TAX, array( 'slug' => $slug ) );
+		$term = wp_insert_term( $data[0], BQG_TAX, array( 'slug' => $slug, 'description' => $data[2] ) );
 
 		if ( ! is_wp_error( $term ) ) {
 			add_term_meta( $term['term_id'], 'bqg_color', $data[1], true );
@@ -228,6 +242,26 @@ function bqg_maybe_seed_terms() {
 	}
 
 	update_option( 'bqg_terms_seeded', BQG_VERSION, false );
+}
+
+/**
+ * Passage en 1.3 : les instances existantes reçoivent leur texte
+ * d'introduction, affiché sur leur carte, s'il est encore vide.
+ */
+add_action( 'admin_init', 'bqg_maybe_add_intros' );
+function bqg_maybe_add_intros() {
+	if ( get_option( 'bqg_intros_v13' ) || ! current_user_can( 'manage_categories' ) ) {
+		return;
+	}
+
+	foreach ( bqg_default_terms() as $slug => $data ) {
+		$term = get_term_by( 'slug', $slug, BQG_TAX );
+		if ( $term && '' === trim( $term->description ) ) {
+			wp_update_term( $term->term_id, BQG_TAX, array( 'description' => $data[2] ) );
+		}
+	}
+
+	update_option( 'bqg_intros_v13', 1, false );
 }
 
 /**
@@ -602,13 +636,14 @@ function bqg_render_help_page() {
 		array( 'instances', 'Limite le bloc à certaines instances (slugs séparés par une virgule).', 'toutes', '[bqp_gouvernance instances="bureau"]' ),
 		array( 'colonnes', 'Nombre de colonnes sur grand écran : 2, 3 ou 4.', '3', '[bqp_gouvernance colonnes="4"]' ),
 		array( 'format', 'Forme des photos : carre, portrait ou rond.', 'carre', '[bqp_gouvernance format="rond"]' ),
-		array( 'filtres', 'Affiche ou masque la barre de filtres : oui ou non.', 'oui', '[bqp_gouvernance filtres="non"]' ),
-		array( 'defaut', 'Instance affichée au chargement de la page, ou tous.', 'bureau', '[bqp_gouvernance defaut="conseil-scientifique"]' ),
-		array( 'tous', 'Ajoute un bouton Tous devant les instances.', 'non', '[bqp_gouvernance tous="oui"]' ),
-		array( 'compteurs', 'Affiche le nombre de membres dans chaque filtre.', 'oui', '[bqp_gouvernance compteurs="non"]' ),
+		array( 'affichage', 'replie : une carte par instance, un clic affiche ses membres. onglets : boutons de filtre au-dessus d\'une grille, comme en 1.2.', 'replie', '[bqp_gouvernance affichage="onglets"]' ),
+		array( 'defaut', 'Instance ouverte au chargement de la page. aucun : toutes repliées (ou, en onglets, tous : tous les membres).', 'bureau', '[bqp_gouvernance defaut="conseil-scientifique"]' ),
+		array( 'filtres', 'En onglets : affiche ou masque la barre de filtres.', 'oui', '[bqp_gouvernance affichage="onglets" filtres="non"]' ),
+		array( 'tous', 'En onglets : ajoute un bouton Tous devant les instances.', 'non', '[bqp_gouvernance affichage="onglets" tous="oui"]' ),
+		array( 'compteurs', 'Affiche le nombre de membres de chaque instance.', 'oui', '[bqp_gouvernance compteurs="non"]' ),
 		array( 'titre', 'Ajoute un titre au-dessus du bloc.', 'vide', '[bqp_gouvernance titre="Notre gouvernance"]' ),
 		array( 'photos', 'Rendu des photos : couleur ou grisaille (couleur au survol).', 'couleur', '[bqp_gouvernance photos="grisaille"]' ),
-		array( 'badges', 'Affiche ou masque l\'étiquette d\'instance sur les cartes.', 'oui', '[bqp_gouvernance badges="non"]' ),
+		array( 'badges', 'En onglets : affiche ou masque l\'étiquette d\'instance sur les cartes (en replié, l\'instance est déjà indiquée par son bloc).', 'oui', '[bqp_gouvernance affichage="onglets" badges="non"]' ),
 		array( 'limite', 'Nombre maximum de membres affichés.', 'tous', '[bqp_gouvernance limite="6"]' ),
 		array( 'ordre', 'Tri : manuel, nom ou recent.', 'manuel', '[bqp_gouvernance ordre="nom"]' ),
 		array( 'fenetre', 'Ouvre la fiche détaillée au clic sur un membre : oui ou non.', 'oui', '[bqp_gouvernance fenetre="non"]' ),
@@ -618,6 +653,9 @@ function bqg_render_help_page() {
 		'Les photos sont recadrées automatiquement au format choisi, cadrées sur le haut pour ne jamais couper le visage. Elles remplissent toujours tout le cadre, quelle que soit la taille du fichier envoyé.',
 		'Au chargement de la page, c\'est le <strong>Bureau</strong> qui s\'affiche. Pour ouvrir sur une autre instance, utilisez <code>defaut</code>.',
 		'Pour les photos envoyées <strong>avant</strong> l\'installation de ce bloc, lancez une régénération des miniatures (extension <em>Regenerate Thumbnails</em>) afin qu\'elles bénéficient du recadrage. En attendant, elles restent correctement cadrées à l\'affichage.',
+		'Les instances sont <strong>repliées</strong> : une carte par instance (pictogramme, introduction, photos des premiers membres, nombre de membres). Le <strong>Bureau</strong> est ouvert à l\'arrivée sur la page ; un clic sur l\'autre carte affiche le Conseil scientifique à sa place.',
+		'Le texte de chaque carte est la <strong>Description</strong> de l\'instance, dans <strong>Gouvernance &rsaquo; Instances</strong>.',
+		'Lien direct vers une instance : l\'adresse de la page suivie de <strong>#gouvernance-conseil-scientifique</strong>. Le lien direct d\'un membre ouvre son instance puis sa fiche.',
 		'L\'ordre d\'affichage se règle avec le champ <strong>Ordre</strong> de chaque membre (0 en premier).',
 		'La couleur de chaque étiquette se modifie dans <strong>Gouvernance &rsaquo; Instances</strong>.',
 		'Un membre sans photo affiche ses initiales dans un médaillon aux couleurs de son instance.',
@@ -876,6 +914,7 @@ function bqg_shortcode( $atts ) {
 			'limite'    => '-1',
 			'ordre'     => 'manuel',
 			'fenetre'   => 'oui',
+			'affichage' => 'replie',
 		),
 		$atts,
 		'bqp_gouvernance'
@@ -1027,120 +1066,174 @@ function bqg_shortcode( $atts ) {
 	static $block = 0;
 	$block++;
 
-	$classes   = 'bqg-team bqg-team--' . $format . ( $grayscale ? ' bqg-team--grayscale' : '' ) . ( $popup ? ' bqg-team--popup' : '' );
+	// Instances repliées en cartes (par défaut), ou onglets de filtre.
+	$fold = ( 'onglets' !== strtolower( $atts['affichage'] ) ) && count( $tabs ) > 1;
+
+	if ( $fold ) {
+		$show_filters = false;
+		$active       = '*';
+	}
+
+	$titled    = '' !== trim( $atts['titre'] );
+	$h_card    = ( $fold && $titled ) ? 'h4' : 'h3';
+	$classes   = 'bqg-team bqg-team--' . $format . ( $grayscale ? ' bqg-team--grayscale' : '' ) . ( $popup ? ' bqg-team--popup' : '' ) . ( $fold ? ' bqg-team--replie' : '' );
 	$modal_id  = 'bqg-modal-' . $block;
-	$templates = '';
+	$templates = array();
 
-	$html  = '<section class="' . esc_attr( $classes ) . '" style="--bqg-cols-max:' . esc_attr( $columns ) . ';">';
-
-	if ( '' !== trim( $atts['titre'] ) ) {
-		$html .= '<h2 class="bqg-team__title">' . esc_html( $atts['titre'] ) . '</h2>';
-		$html .= '<span class="bqg-team__rule" aria-hidden="true"></span>';
-	}
-
-	if ( $show_filters ) {
-		$html .= '<div class="bqg-filters" role="group" aria-label="Filtrer les membres par instance">';
-
-		if ( $show_all ) {
-			$is_on  = ( '*' === $active );
-			$html  .= '<button type="button" class="bqg-filter' . ( $is_on ? ' is-active' : '' ) . '" data-filter="*" aria-pressed="' . ( $is_on ? 'true' : 'false' ) . '">'
-				. '<span class="bqg-filter__label">Tous</span>'
-				. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( count( $members ) ) . '</span>' : '' )
-				. '</button>';
-		}
-
-		foreach ( $tabs as $slug => $tab ) {
-			$is_on = ( $slug === $active );
-			$html .= '<button type="button" class="bqg-filter' . ( $is_on ? ' is-active' : '' ) . '" data-filter="' . esc_attr( $slug ) . '" aria-pressed="' . ( $is_on ? 'true' : 'false' ) . '">'
-				. '<span class="bqg-filter__label">' . esc_html( $tab['name'] ) . '</span>'
-				. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( $tab['count'] ) . '</span>' : '' )
-				. '</button>';
-		}
-
-		$html .= '</div>';
-	}
-
-	$html .= '<div class="bqg-grid">';
-
-	$visible = 0;
-
-	foreach ( $members as $member ) {
+	/* Une carte membre ; sa fiche est rendue une seule fois. */
+	$render_card = function ( $member, $is_shown, $badge ) use ( $popup, $block, $modal_id, $image_size, $h_card, &$templates ) {
 		$style = '--bqg-cat:' . $member['color']
 			. ';--bqg-cat-soft:' . bqg_hex_to_rgba( $member['color'], 0.09 )
 			. ';--bqg-cat-line:' . bqg_hex_to_rgba( $member['color'], 0.22 ) . ';';
-
-		// L'etat initial est calcule cote serveur : la bonne instance est
-		// deja affichee au chargement, sans attendre le JavaScript.
-		$is_shown = ( '*' === $active ) || in_array( $active, $member['slugs'], true );
-
-		if ( $is_shown ) {
-			$visible++;
-		}
 
 		// Fiche détaillée : la carte devient cliquable dès qu'il y a
 		// quelque chose de plus à montrer que la carte elle-même.
 		$has_profile = $popup && ( $member['profession'] || $member['engagement'] || trim( wp_strip_all_tags( $member['cv_text'] ) ) || $member['cv_url'] || $member['link'] || $member['desc'] );
 		$tpl_id      = 'bqg-tpl-' . $block . '-' . $member['id'];
 
-		$html .= '<article class="bqg-card' . ( $has_profile ? ' is-clickable' : '' ) . '" data-cats="' . esc_attr( implode( ' ', $member['slugs'] ) ) . '"' . ( $has_profile ? ' data-slug="' . esc_attr( $member['slug'] ) . '"' : '' ) . ' style="' . esc_attr( $style ) . '"' . ( $is_shown ? '' : ' hidden' ) . '>';
+		$html = '<article class="bqg-card' . ( $has_profile ? ' is-clickable' : '' ) . '" data-cats="' . esc_attr( implode( ' ', $member['slugs'] ) ) . '"' . ( $has_profile ? ' data-slug="' . esc_attr( $member['slug'] ) . '"' : '' ) . ' style="' . esc_attr( $style ) . '"' . ( $is_shown ? '' : ' hidden' ) . '>';
 
 		if ( $has_profile ) {
-			$html      .= '<button type="button" class="bqg-card__open" data-bqg-open="' . esc_attr( $tpl_id ) . '" aria-haspopup="dialog" aria-controls="' . esc_attr( $modal_id ) . '"><span class="bqg-sr">Voir le profil de ' . esc_html( $member['name'] ) . '</span></button>';
-			$templates .= '<template id="' . esc_attr( $tpl_id ) . '" data-slug="' . esc_attr( $member['slug'] ) . '">' . bqg_render_profile( $member, $show_bdg ) . '</template>';
+			$html .= '<button type="button" class="bqg-card__open" data-bqg-open="' . esc_attr( $tpl_id ) . '" aria-haspopup="dialog" aria-controls="' . esc_attr( $modal_id ) . '"><span class="bqg-sr">Voir le profil de ' . esc_html( $member['name'] ) . '</span></button>';
+			if ( ! isset( $templates[ $tpl_id ] ) ) {
+				$templates[ $tpl_id ] = '<template id="' . esc_attr( $tpl_id ) . '" data-slug="' . esc_attr( $member['slug'] ) . '">' . bqg_render_profile( $member, true ) . '</template>';
+			}
 		}
 
 		$html .= '<div class="bqg-card__photo">';
-		if ( $member['photo'] ) {
-			$html .= wp_get_attachment_image(
-				$member['photo'],
-				$image_size,
-				false,
-				array(
-					'class'   => 'bqg-card__img',
-					'alt'     => 'Portrait de ' . $member['name'],
-					'loading' => 'lazy',
-				)
-			);
-		} else {
-			$html .= '<span class="bqg-card__initials" aria-hidden="true">' . esc_html( bqg_initials( $member['name'] ) ) . '</span>';
-		}
+		$html .= $member['photo']
+			? wp_get_attachment_image( $member['photo'], $image_size, false, array( 'class' => 'bqg-card__img', 'alt' => 'Portrait de ' . $member['name'], 'loading' => 'lazy' ) )
+			: '<span class="bqg-card__initials" aria-hidden="true">' . esc_html( bqg_initials( $member['name'] ) ) . '</span>';
 		$html .= '</div>';
 
 		$html .= '<div class="bqg-card__body">';
-
-		if ( $show_bdg && $member['label'] ) {
+		if ( $badge && $member['label'] ) {
 			$html .= '<span class="bqg-card__badge">' . esc_html( $member['label'] ) . '</span>';
 		}
-
-		$html .= '<h3 class="bqg-card__name">' . esc_html( $member['name'] ) . '</h3>';
-
+		$html .= '<' . $h_card . ' class="bqg-card__name">' . esc_html( $member['name'] ) . '</' . $h_card . '>';
 		if ( $member['role'] ) {
 			$html .= '<p class="bqg-card__role">' . esc_html( $member['role'] ) . '</p>';
 		}
-
 		if ( $member['desc'] ) {
 			$html .= '<div class="bqg-card__desc">' . wpautop( esc_html( $member['desc'] ) ) . '</div>';
 		}
-
 		if ( $has_profile ) {
 			$html .= '<span class="bqg-card__more" aria-hidden="true">Voir le profil'
 				. ( $member['cv_url'] ? '<span class="bqg-card__cv">CV</span>' : '' )
 				. '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11.5 5.5 16 10l-4.5 4.5"/></svg></span>';
 		}
 
-		$html .= '</div></article>';
+		return $html . '</div></article>';
+	};
+
+	$html  = '<section class="' . esc_attr( $classes ) . '" style="--bqg-cols-max:' . esc_attr( $columns ) . ';">';
+
+	if ( $titled ) {
+		$html .= '<h2 class="bqg-team__title">' . esc_html( $atts['titre'] ) . '</h2>';
+		$html .= '<span class="bqg-team__rule" aria-hidden="true"></span>';
 	}
 
-	$html .= '</div>';
-	$html .= '<p class="bqg-noresult"' . ( $visible > 0 ? ' hidden' : '' ) . '>Aucun membre dans cette instance pour le moment.</p>';
+	if ( $fold ) {
+		/* Une carte par instance ; un clic affiche ses membres. Le Bureau
+		 * (ou l'instance choisie avec defaut="…") est ouvert d'avance. */
+		$open    = sanitize_title( $raw_default );
+		$h_group = $titled ? 'h3' : 'h2';
+		$cats    = '';
+		$panels  = '';
+
+		foreach ( $tabs as $slug => $tab ) {
+			$term    = get_term_by( 'slug', $slug, BQG_TAX );
+			$color   = $term ? bqg_term_color( $term->term_id ) : bqg_palette()['bordeaux'];
+			$intro   = $term ? trim( $term->description ) : '';
+			$group   = array_values( array_filter( $members, function ( $m ) use ( $slug ) { return in_array( $slug, $m['slugs'], true ); } ) );
+			$n       = count( $group );
+			$anchor  = 'gouvernance-' . $slug . ( $block > 1 ? '-' . $block : '' );
+			$is_open = ( $open === $slug );
+			$style   = '--bqg-cat:' . $color . ';--bqg-cat-soft:' . bqg_hex_to_rgba( $color, 0.08 ) . ';--bqg-cat-line:' . bqg_hex_to_rgba( $color, 0.22 ) . ';';
+			$icon    = bqg_icon_svg( $slug, 22 );
+
+			$faces = '';
+			foreach ( array_slice( $group, 0, 5 ) as $m ) {
+				$faces .= '<span class="bqg-cat__face">' . ( $m['photo'] ? wp_get_attachment_image( $m['photo'], 'thumbnail', false, array( 'alt' => '', 'loading' => 'lazy' ) ) : esc_html( bqg_initials( $m['name'] ) ) ) . '</span>';
+			}
+			if ( $n > 5 ) {
+				$faces .= '<span class="bqg-cat__face is-more">+' . (int) ( $n - 5 ) . '</span>';
+			}
+
+			$cats .= '<button type="button" class="bqg-cat' . ( $is_open ? ' is-on' : '' ) . '" aria-expanded="' . ( $is_open ? 'true' : 'false' ) . '" aria-controls="' . esc_attr( $anchor ) . '" data-bqg-cat style="' . esc_attr( $style ) . '">'
+				. '<span class="bqg-cat__icon">' . $icon . '</span>'
+				. '<span class="bqg-cat__title">' . esc_html( $tab['name'] ) . '</span>'
+				. ( $intro ? '<span class="bqg-cat__text">' . esc_html( $intro ) . '</span>' : '' )
+				. '<span class="bqg-cat__faces" aria-hidden="true">' . $faces . '</span>'
+				. '<span class="bqg-cat__foot"><span class="bqg-cat__count"><strong>' . (int) $n . '</strong> ' . _n( 'membre', 'membres', $n ) . '</span>'
+				. '<span class="bqg-cat__chevron"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8 10 12.5 14.5 8"/></svg></span></span>'
+				. '</button>';
+
+			$panels .= '<section class="bqg-group" id="' . esc_attr( $anchor ) . '" aria-labelledby="' . esc_attr( $anchor ) . '-titre" style="' . esc_attr( $style ) . '"' . ( $is_open ? '' : ' hidden' ) . '>';
+			$panels .= '<header class="bqg-group__head"><span class="bqg-group__icon">' . bqg_icon_svg( $slug, 24 ) . '</span>';
+			$panels .= '<div class="bqg-group__intro"><' . $h_group . ' class="bqg-group__title" id="' . esc_attr( $anchor ) . '-titre" tabindex="-1">' . esc_html( $tab['name'] ) . '</' . $h_group . '>'
+				. ( $intro ? '<p class="bqg-group__text">' . esc_html( $intro ) . '</p>' : '' ) . '</div>';
+			if ( $show_nb ) {
+				$panels .= '<span class="bqg-group__count"><strong>' . (int) $n . '</strong> ' . _n( 'membre', 'membres', $n ) . '</span>';
+			}
+			$panels .= '<button type="button" class="bqg-group__close" data-bqg-fold-close><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="bqg-sr">Replier « ' . esc_html( $tab['name'] ) . ' »</span></button>';
+			$panels .= '</header><div class="bqg-grid">';
+			foreach ( $group as $m ) {
+				$panels .= $render_card( $m, true, false );
+			}
+			$panels .= '</div></section>';
+		}
+
+		$html .= '<p class="bqg-cats__hint">Cliquez sur une instance pour afficher ses membres.</p>';
+		$html .= '<div class="bqg-cats" data-bqg-cats style="--bqg-cats-cols:' . (int) min( 4, count( $tabs ) ) . ';">' . $cats . $panels . '</div>';
+		// Sans JavaScript, toutes les instances restent lisibles.
+		$html .= '<noscript><style>.bqg-cats .bqg-group[hidden]{display:block !important;}</style></noscript>';
+	} else {
+		if ( $show_filters ) {
+			$html .= '<div class="bqg-filters" role="group" aria-label="Filtrer les membres par instance">';
+
+			if ( $show_all ) {
+				$is_on  = ( '*' === $active );
+				$html  .= '<button type="button" class="bqg-filter' . ( $is_on ? ' is-active' : '' ) . '" data-filter="*" aria-pressed="' . ( $is_on ? 'true' : 'false' ) . '">'
+					. '<span class="bqg-filter__label">Tous</span>'
+					. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( count( $members ) ) . '</span>' : '' )
+					. '</button>';
+			}
+
+			foreach ( $tabs as $slug => $tab ) {
+				$is_on = ( $slug === $active );
+				$html .= '<button type="button" class="bqg-filter' . ( $is_on ? ' is-active' : '' ) . '" data-filter="' . esc_attr( $slug ) . '" aria-pressed="' . ( $is_on ? 'true' : 'false' ) . '">'
+					. '<span class="bqg-filter__label">' . esc_html( $tab['name'] ) . '</span>'
+					. ( $show_nb ? '<span class="bqg-filter__count">' . esc_html( $tab['count'] ) . '</span>' : '' )
+					. '</button>';
+			}
+
+			$html .= '</div>';
+		}
+
+		$html   .= '<div class="bqg-grid">';
+		$visible = 0;
+
+		foreach ( $members as $member ) {
+			// L'etat initial est calcule cote serveur : la bonne instance est
+			// deja affichee au chargement, sans attendre le JavaScript.
+			$is_shown = ( '*' === $active ) || in_array( $active, $member['slugs'], true );
+			$visible += $is_shown ? 1 : 0;
+			$html    .= $render_card( $member, $is_shown, $show_bdg );
+		}
+
+		$html .= '</div>';
+		$html .= '<p class="bqg-noresult"' . ( $visible > 0 ? ' hidden' : '' ) . '>Aucun membre dans cette instance pour le moment.</p>';
+	}
 
 	if ( $templates ) {
-		$html .= $templates;
+		$html .= implode( '', $templates );
 		$html .= '<dialog class="bqg-modal" id="' . esc_attr( $modal_id ) . '" aria-label="Profil du membre">'
 			. '<div class="bqg-modal__bar">'
 			. '<button type="button" class="bqg-modal__nav" data-bqg-prev aria-label="Membre précédent"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button>'
 			. '<span class="bqg-modal__pos" data-bqg-pos></span>'
 			. '<button type="button" class="bqg-modal__nav" data-bqg-next aria-label="Membre suivant"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button>'
+			. '<span class="bqg-modal__where" data-bqg-where></span>'
 			. '<button type="button" class="bqg-modal__close" data-bqg-close aria-label="Fermer"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5 5 15"/></svg></button>'
 			. '</div>'
 			. '<div class="bqg-modal__body" data-bqg-body></div>'
@@ -1408,6 +1501,77 @@ function bqg_front_css() {
 	.bqg-card__cv{padding:2px 7px;border:1px solid var(--bqg-cat-line);border-radius:999px;font-size:.58rem;letter-spacing:.06em;}
 	.bqg-team--rond .bqg-card__more{justify-content:center;}
 
+	/* --- Instances repliées : une carte par instance, à déplier --- */
+	.bqg-cats__hint{margin:4px 0 20px;text-align:center;font-family:var(--bqg-sans);font-size:.88rem;color:var(--bqg-muted);}
+	.bqg-cats{display:grid;grid-template-columns:repeat(var(--bqg-cats-cols,2),minmax(0,1fr));gap:16px;align-items:stretch;}
+	@media (max-width:760px){.bqg-cats{grid-template-columns:1fr;gap:10px;}}
+	.bqg-team .bqg-cat,.bqg-team .bqg-cat:hover,.bqg-team .bqg-cat:focus{
+		position:relative;display:grid !important;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"icon title faces" "icon text faces" "foot foot foot";align-items:center;gap:4px 18px;min-width:0;margin:0 !important;padding:22px 24px 18px !important;
+		border:1px solid var(--bqg-line) !important;border-radius:18px !important;background:#fff !important;background-image:none !important;box-shadow:0 1px 2px rgba(49,2,12,.05) !important;
+		color:var(--bqg-ink) !important;font-family:var(--bqg-sans) !important;font-size:1rem !important;font-weight:400 !important;letter-spacing:0 !important;text-transform:none !important;line-height:1.3 !important;text-align:left !important;white-space:normal !important;
+		cursor:pointer;scroll-margin-top:110px;transition:transform .25s,box-shadow .25s,border-color .25s,background .25s;
+	}
+	.bqg-cat::before{content:"";position:absolute;left:24px;right:24px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--bqg-cat);}
+	.bqg-team .bqg-cat:hover{transform:translateY(-3px);border-color:var(--bqg-cat-line) !important;box-shadow:0 24px 44px -30px rgba(49,2,12,.55) !important;}
+	.bqg-team .bqg-cat:focus-visible{outline:3px solid var(--bqg-cat-line) !important;outline-offset:2px;}
+	.bqg-cat__icon{grid-area:icon;align-self:start;display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:15px;background:var(--bqg-cat-soft);color:var(--bqg-cat);transition:background .25s,color .25s;}
+	.bqg-cat__title{grid-area:title;align-self:end;font-family:var(--bqg-serif);font-size:1.55rem;font-weight:600;line-height:1.1;color:var(--bqg-bordeaux-dark);}
+	.bqg-cat__text{grid-area:text;align-self:start;font-size:.84rem;line-height:1.5;color:#6a6a6a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+	.bqg-cat__faces{grid-area:faces;display:inline-flex;padding-left:10px;}
+	.bqg-cat__face{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin-left:-10px;overflow:hidden;border:2px solid #fff;border-radius:50%;background:var(--bqg-cat-soft);color:var(--bqg-cat);font-size:.66rem;font-weight:700;box-shadow:0 6px 12px -8px rgba(0,0,0,.5);}
+	.bqg-team .bqg-cat__face img{width:100% !important;height:100% !important;max-width:none !important;object-fit:cover;}
+	.bqg-cat__face.is-more{background:var(--bqg-cat);color:#fff;}
+	.bqg-cat__foot{grid-area:foot;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--bqg-line);}
+	.bqg-cat__count{font-size:.78rem;color:var(--bqg-muted);white-space:nowrap;}
+	.bqg-cat__count strong{font-size:.98rem;color:var(--bqg-bordeaux-dark);}
+	.bqg-cat__chevron{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--bqg-cat-soft);color:var(--bqg-cat);transition:transform .25s,background .25s,color .25s;}
+	.bqg-team .bqg-cat.is-on,.bqg-team .bqg-cat.is-on:hover,.bqg-team .bqg-cat.is-on:focus{border-color:var(--bqg-cat) !important;background:var(--bqg-cat) !important;background-image:linear-gradient(150deg,rgba(255,255,255,.12),rgba(0,0,0,.22)) !important;box-shadow:0 24px 44px -26px rgba(49,2,12,.7) !important;transform:none;}
+	.bqg-cat.is-on::before{display:none;}
+	.bqg-cat.is-on::after{content:"";position:absolute;left:50%;bottom:-9px;width:16px;height:16px;margin-left:-8px;background:var(--bqg-cat);transform:rotate(45deg);border-radius:2px;}
+	.bqg-cat.is-on .bqg-cat__icon{background:rgba(255,255,255,.16);color:#fff;}
+	.bqg-cat.is-on .bqg-cat__title,.bqg-cat.is-on .bqg-cat__count strong{color:#fff;}
+	.bqg-cat.is-on .bqg-cat__text,.bqg-cat.is-on .bqg-cat__count{color:rgba(255,255,255,.82);}
+	.bqg-cat.is-on .bqg-cat__foot{border-top-color:rgba(255,255,255,.2);}
+	.bqg-cat.is-on .bqg-cat__face{border-color:var(--bqg-cat);background:#fff;}
+	.bqg-cat.is-on .bqg-cat__face.is-more{background:rgba(255,255,255,.22);color:#fff;}
+	.bqg-cat.is-on .bqg-cat__chevron{background:rgba(255,255,255,.18);color:#fff;transform:rotate(180deg);}
+	@media (max-width:760px){
+		.bqg-team .bqg-cat,.bqg-team .bqg-cat:hover,.bqg-team .bqg-cat:focus{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"icon title" "icon text" "faces faces" "foot foot";padding:18px 18px 14px !important;}
+		.bqg-cat__icon{width:44px;height:44px;}
+		.bqg-cat__title{font-size:1.3rem;}
+		.bqg-cat__faces{margin-top:12px;}
+		.bqg-cat__face{width:34px;height:34px;}
+		.bqg-cat.is-on::after{bottom:-7px;width:12px;height:12px;margin-left:-6px;}
+	}
+
+	.bqg-group{grid-column:1 / -1;margin:6px 0 10px;padding:30px 30px 32px;border:1px solid var(--bqg-cat-line);border-top:3px solid var(--bqg-cat);border-radius:20px;background:linear-gradient(180deg,var(--bqg-cat-soft),rgba(255,255,255,0) 260px),#fff;scroll-margin-top:110px;animation:bqg-in .35s cubic-bezier(.2,.7,.3,1);}
+	.bqg-group[hidden]{display:none;}
+	.bqg-group__head{display:flex;align-items:center;gap:18px;margin:0 0 26px;}
+	.bqg-group__icon{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:var(--bqg-cat);color:#fff;box-shadow:0 14px 26px -16px var(--bqg-cat);}
+	.bqg-group__intro{flex:1;min-width:0;}
+	.bqg-team .bqg-group__title{margin:0 !important;font-family:var(--bqg-serif) !important;font-size:clamp(1.6rem,2.8vw,2.1rem) !important;font-weight:600 !important;line-height:1.12 !important;color:var(--bqg-bordeaux-dark) !important;outline:none;}
+	.bqg-group__text{max-width:68ch;margin:6px 0 0;font-family:var(--bqg-sans);font-size:.92rem;line-height:1.6;color:#5d5d5d;}
+	.bqg-group__count{flex:0 0 auto;display:flex;flex-direction:column;align-items:flex-end;font-family:var(--bqg-sans);font-size:.64rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bqg-muted);}
+	.bqg-group__count strong{font-family:var(--bqg-serif);font-size:2rem;font-weight:600;line-height:1;letter-spacing:0;color:var(--bqg-cat);}
+	.bqg-team .bqg-group__close,.bqg-team .bqg-group__close:hover,.bqg-team .bqg-group__close:focus{
+		flex:0 0 auto;display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;margin:0 !important;padding:0 !important;
+		border:1px solid var(--bqg-line) !important;border-radius:50% !important;background:#fff !important;background-image:none !important;box-shadow:none !important;color:var(--bqg-muted) !important;cursor:pointer;transition:border-color .2s,color .2s;
+	}
+	.bqg-team .bqg-group__close:hover{border-color:var(--bqg-cat) !important;color:var(--bqg-cat) !important;}
+	.bqg-team .bqg-group__close:focus-visible{outline:2px solid var(--bqg-cat) !important;outline-offset:2px;}
+	@media (max-width:620px){
+		.bqg-group{padding:22px 16px 20px;border-radius:16px;}
+		.bqg-group__head{position:relative;flex-wrap:wrap;gap:14px;margin-bottom:20px;padding-right:48px;}
+		.bqg-group__icon{width:46px;height:46px;border-radius:13px;}
+		.bqg-group__intro{flex-basis:calc(100% - 60px);}
+		.bqg-group__count{flex-direction:row;align-items:baseline;gap:6px;}
+		.bqg-group__count strong{font-size:1.3rem;}
+		.bqg-team .bqg-group__close{position:absolute;top:0;right:0;}
+	}
+	.bqg-modal__where{margin-left:10px;font-size:.66rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bqg-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+	.bqg-modal__where:empty{display:none;}
+	@media (max-width:760px){.bqg-modal__where{display:none;}}
+
 	/* --- Fenêtre de profil --- */
 	html.bqg-lock{overflow:hidden;}
 	.bqg-modal{
@@ -1543,6 +1707,82 @@ function bqg_front_js() {
 		}
 
 
+		/* Instances repliées : une carte ouvre ses membres sous sa rangée */
+		function initFold(root){
+			var grid = root.querySelector('[data-bqg-cats]');
+			if (!grid) { return; }
+			var each = function(list, fn){ Array.prototype.forEach.call(list, fn); };
+
+			function cardFor(panel){ return grid.querySelector('[aria-controls="' + panel.id + '"]'); }
+
+			function place(card, panel){
+				var top = card.offsetTop, last = card;
+				each(grid.querySelectorAll('.bqg-cat'), function(c){ if (c.offsetTop === top) { last = c; } });
+				if (last.nextElementSibling !== panel) { grid.insertBefore(panel, last.nextElementSibling); }
+			}
+
+			function toggle(card, focus, force){
+				var panel = document.getElementById(card.getAttribute('aria-controls'));
+				var open  = (undefined !== force) ? force : 'true' !== card.getAttribute('aria-expanded');
+				each(grid.querySelectorAll('.bqg-cat'), function(c){ c.setAttribute('aria-expanded', 'false'); c.classList.remove('is-on'); });
+				each(grid.querySelectorAll('.bqg-group'), function(p){ p.hidden = true; });
+				if (!open || !panel) { return; }
+				card.setAttribute('aria-expanded', 'true');
+				card.classList.add('is-on');
+				place(card, panel);
+				panel.hidden = false;
+				if (!focus) { return; }
+				var title = panel.querySelector('.bqg-group__title');
+				if (title) { title.focus({ preventScroll: true }); }
+				var y = card.getBoundingClientRect().top;
+				if (y < 0 || y > window.innerHeight * 0.45) { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+			}
+
+			// Ouverture d'une instance depuis le lien direct d'un membre.
+			root.bqgOpenGroup = function(panel){ var c = cardFor(panel); if (c) { toggle(c, false, true); } };
+
+			grid.addEventListener('click', function(e){
+				var card = e.target.closest('[data-bqg-cat]');
+				if (card) { toggle(card, true); return; }
+				var close = e.target.closest('[data-bqg-fold-close]');
+				if (close) {
+					var c = cardFor(close.closest('.bqg-group'));
+					if (c) { toggle(c, false, false); c.focus(); }
+				}
+			});
+
+			grid.addEventListener('keydown', function(e){
+				if ('Escape' !== e.key || document.querySelector('.bqg-modal[open]')) { return; }
+				var panel = e.target.closest('.bqg-group');
+				var c = panel ? cardFor(panel) : null;
+				if (c) { toggle(c, false, false); c.focus(); }
+			});
+
+			var timer = null;
+			function replace(){
+				var card = grid.querySelector('.bqg-cat[aria-expanded="true"]');
+				var panel = card ? document.getElementById(card.getAttribute('aria-controls')) : null;
+				if (!panel) { return; }
+				panel.hidden = true;
+				place(card, panel);
+				panel.hidden = false;
+			}
+			window.addEventListener('resize', function(){ clearTimeout(timer); timer = setTimeout(replace, 150); });
+			replace();
+
+			// Lien direct vers une instance : /gouvernance/#gouvernance-conseil-scientifique.
+			function openFromHash(){
+				var id = decodeURIComponent((location.hash || '').slice(1));
+				var panel = id ? document.getElementById(id) : null;
+				if (!panel || !grid.contains(panel) || !panel.classList.contains('bqg-group')) { return; }
+				var c = cardFor(panel);
+				if (c) { toggle(c, false, true); c.scrollIntoView({ block: 'start' }); }
+			}
+			openFromHash();
+			window.addEventListener('hashchange', openFromHash);
+		}
+
+
 		/* Fenêtre de profil */
 		function initModal(root){
 			var dialog = root.querySelector('.bqg-modal');
@@ -1554,8 +1794,10 @@ function bqg_front_js() {
 			var next    = dialog.querySelector('[data-bqg-next]');
 			var current = null;
 
-			function visibleCards(){
-				return Array.prototype.filter.call(root.querySelectorAll('.bqg-card.is-clickable'), function(c){ return !c.hidden; });
+			// Les flèches parcourent l'instance du membre, sans passer à l'autre.
+			function visibleCards(card){
+				var scope = (card && card.closest('.bqg-group')) || root;
+				return Array.prototype.filter.call(scope.querySelectorAll('.bqg-card.is-clickable'), function(c){ return !c.hidden; });
 			}
 
 			function show(card){
@@ -1571,8 +1813,12 @@ function bqg_front_js() {
 				if (profile) { dialog.setAttribute('aria-labelledby', profile.getAttribute('data-title')); dialog.removeAttribute('aria-label'); }
 
 				current = card;
-				var list = visibleCards();
+				var list = visibleCards(card);
 				var i    = list.indexOf(card);
+				var group = card.closest('.bqg-group');
+				var where = dialog.querySelector('[data-bqg-where]');
+				var gtitle = group ? group.querySelector('.bqg-group__title') : null;
+				if (where) { where.textContent = gtitle ? gtitle.textContent : ''; }
 				var many = list.length > 1 && i !== -1;
 				prev.hidden = next.hidden = !many;
 				pos.textContent = many ? (i + 1) + ' / ' + list.length : '';
@@ -1589,7 +1835,7 @@ function bqg_front_js() {
 			}
 
 			function step(delta){
-				var list = visibleCards();
+				var list = visibleCards(current);
 				var i    = list.indexOf(current);
 				if (list.length < 2 || i === -1) { return; }
 				show(list[(i + delta + list.length) % list.length]);
@@ -1636,6 +1882,8 @@ function bqg_front_js() {
 				if (!hash || (current && current.getAttribute('data-slug') === hash)) { return; }
 				var target = root.querySelector('.bqg-card.is-clickable[data-slug="' + hash.replace(/"/g, '') + '"]');
 				if (!target) { return; }
+				var tgroup = target.closest('.bqg-group');
+				if (tgroup && tgroup.hidden && root.bqgOpenGroup) { root.bqgOpenGroup(tgroup); }
 				if (target.hidden) {
 					var cats = (target.getAttribute('data-cats') || '').split(' ');
 					var tab  = Array.prototype.filter.call(root.querySelectorAll('.bqg-filter'), function(b){ return cats.indexOf(b.getAttribute('data-filter')) !== -1; })[0];
@@ -1655,6 +1903,7 @@ function bqg_front_js() {
 
 		function boot(){
 			Array.prototype.forEach.call(document.querySelectorAll('.bqg-team'), initBlock);
+			Array.prototype.forEach.call(document.querySelectorAll('.bqg-team'), initFold);
 			Array.prototype.forEach.call(document.querySelectorAll('.bqg-team'), initModal);
 		}
 

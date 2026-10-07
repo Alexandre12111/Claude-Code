@@ -43,13 +43,14 @@ Puis coller le shortcode dans une page :
 | `instances` | slugs séparés par une virgule | toutes |
 | `colonnes` | 2, 3 ou 4 | 3 |
 | `format` | carre, portrait, rond | carre |
-| `filtres` | oui / non | oui |
-| `defaut` | slug de l'instance ouverte au chargement, ou `tous` | bureau |
-| `tous` | oui / non (bouton « Tous » devant les instances) | non |
+| `affichage` | replie (une carte par instance, à déplier) / onglets | replie |
+| `defaut` | slug de l'instance ouverte au chargement ; `aucun` pour tout replier (en onglets : `tous`) | bureau |
+| `filtres` | oui / non (affichage onglets) | oui |
+| `tous` | oui / non (bouton « Tous », affichage onglets) | non |
 | `compteurs` | oui / non | oui |
 | `titre` | texte libre | vide |
 | `photos` | couleur / grisaille | couleur |
-| `badges` | oui / non | oui |
+| `badges` | oui / non (affichage onglets) | oui |
 | `limite` | nombre | tous |
 | `ordre` | manuel / nom / recent | manuel |
 | `fenetre` | oui / non (fiche détaillée au clic) | oui |
@@ -59,14 +60,28 @@ Exemples :
 ```
 [bqp_gouvernance titre="Notre gouvernance"]
 [bqp_gouvernance defaut="conseil-scientifique"]
-[bqp_gouvernance tous="oui" format="rond" photos="grisaille"]
+[bqp_gouvernance affichage="onglets" tous="oui" format="rond" photos="grisaille"]
 ```
 
-## Comportement des filtres
+## Les instances repliées (par défaut depuis la 1.3.0)
 
-Deux onglets seulement : **Bureau** et **Conseil scientifique**, dans cet ordre. Il n'y a pas de bouton « Tous » par défaut, on peut le rajouter avec `tous="oui"`.
+Comme sur les pages Bibliothèque et Partenaires, chaque instance est d'abord une **carte** : pictogramme (un groupe pour le Bureau, un livre pour le Conseil scientifique), nom, texte d'introduction, photos des premiers membres et nombre de membres. Un clic sur une carte **déplie ses membres** juste en dessous ; la carte se colore et pointe vers le bloc ouvert.
 
-Au chargement de la page, c'est le Bureau qui s'affiche. Ce choix est calculé côté serveur, donc la bonne instance est déjà en place dans le HTML : pas de clignotement ni d'attente du JavaScript. Pour ouvrir sur une autre instance, utiliser `defaut="conseil-scientifique"` ou `defaut="tous"`.
+- **Le Bureau est ouvert à l'arrivée sur la page.** Pour ouvrir une autre instance : `defaut="conseil-scientifique"` ; pour tout replier : `defaut="aucun"`. Ce choix est fait côté serveur : pas de clignotement.
+- Une seule instance ouverte à la fois ; un nouveau clic sur la carte, la croix ou la touche Échap la replient.
+- Le texte de chaque carte est la **Description** de l'instance (Gouvernance › Instances). Les deux instances d'origine reçoivent un texte par défaut à la mise à jour, s'il était vide.
+- Lien direct vers une instance : `/gouvernance/#gouvernance-conseil-scientifique`. Le lien direct d'un membre (`/gouvernance/#prenom-nom`) ouvre son instance puis sa fiche.
+- Dans la fiche, les flèches passent au membre suivant **de la même instance**, avec son nom dans la barre.
+- Un membre des deux instances apparaît dans les deux blocs.
+- Sans JavaScript, les deux instances restent visibles.
+
+Titres : sans `titre`, les instances sont des H2 et les membres des H3 ; avec `titre`, le titre est un H2, les instances des H3 et les membres des H4.
+
+## L'affichage en onglets
+
+Avec `affichage="onglets"`, on retrouve l'affichage de la 1.2 : deux onglets seulement : **Bureau** et **Conseil scientifique**, dans cet ordre. Il n'y a pas de bouton « Tous » par défaut, on peut le rajouter avec `tous="oui"`.
+
+Au chargement de la page, c'est le Bureau qui s'affiche. Ce choix aussi est calculé côté serveur, donc la bonne instance est déjà en place dans le HTML : pas de clignotement ni d'attente du JavaScript. Pour ouvrir sur une autre instance, utiliser `defaut="conseil-scientifique"` ou `defaut="tous"`.
 
 ## La fiche détaillée (fenêtre au clic)
 
@@ -122,3 +137,12 @@ Taille source conseillée : au moins 560 × 560 px, sujet centré et cadré en b
 - La fiche détaillée utilise l'élément natif `<dialog>` : piège du focus, touche Échap et lecture par les lecteurs d'écran (`aria-labelledby` sur le nom) sont gérés par le navigateur. Le contenu de chaque fiche est rendu côté serveur dans un `<template>`, donc rien n'est chargé en AJAX.
 - Le parcours est filtré avec `wp_kses_post` (aucun script possible), l'engagement avec `sanitize_textarea_field`, le lien avec `esc_url_raw`. Le CV n'est conservé que si son type MIME est `application/pdf`.
 - Une colonne « Fiche détaillée » dans la liste des membres indique d'un coup d'œil les champs remplis (Profession, Rôle, Parcours, CV PDF).
+
+## Historique
+
+- **1.3.0** : instances repliées en cartes, comme la Bibliothèque et les Partenaires ; le Bureau est ouvert à l'arrivée ; texte d'introduction et pictogramme par instance ; navigation de la fiche limitée à l'instance ; liens directs vers une instance ; option `affichage="onglets"` pour l'ancien affichage
+- **1.2.0** : fiche détaillée dans une fenêtre (profession, rôle dans l'association, parcours, CV en PDF, lien)
+
+## Testé (1.3.0)
+
+Sur WordPress 6.8 avec le thème Hello Elementor et les 11 membres de démonstration : Bureau ouvert au chargement, passage au Conseil scientifique, repli par la croix et par Échap (qui ferme d'abord la fiche si elle est ouverte), membre présent dans les deux instances, carte simple sans fiche, fiche ouverte avec la position « 1 / 6 » et le nom de l'instance, flèches limitées à l'instance, liens directs vers un membre et vers une instance, affichage en onglets inchangé, titres H2, H3, H4, mobile 390 px sans débordement, aucune erreur JavaScript ni PHP.
