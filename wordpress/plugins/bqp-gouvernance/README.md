@@ -41,7 +41,7 @@ Puis coller le shortcode dans une page :
 | Option | Valeurs | Défaut |
 |---|---|---|
 | `instances` | slugs séparés par une virgule | toutes |
-| `colonnes` | 2, 3 ou 4 | 3 |
+| `colonnes` | 2, 3 ou 4 | 4 |
 | `format` | carre, portrait, rond | carre |
 | `affichage` | replie (une carte par instance, à déplier) / onglets | replie |
 | `defaut` | slug de l'instance ouverte au chargement ; `aucun` pour tout replier (en onglets : `tous`) | bureau |
@@ -65,7 +65,7 @@ Exemples :
 
 ## Les instances repliées (par défaut depuis la 1.3.0)
 
-Comme sur les pages Bibliothèque et Partenaires, chaque instance est d'abord une **carte** : pictogramme (un groupe pour le Bureau, un livre pour le Conseil scientifique), nom, texte d'introduction, photos des premiers membres et nombre de membres. Un clic sur une carte **déplie ses membres** juste en dessous ; la carte se colore et pointe vers le bloc ouvert.
+Comme sur les pages Bibliothèque et Partenaires, chaque instance est d'abord une **carte**, dans le même design que les catégories de partenaires : bandeau teinté de la couleur de l'instance avec son pictogramme (un groupe pour le Bureau, un livre pour le Conseil scientifique) et le nombre de membres en grand (« 05 membres »), puis le nom et le texte d'introduction en entier, et en pied les photos des premiers membres avec « Découvrir ». Un clic sur une carte **déplie ses membres** juste en dessous, **4 par ligne** ; le pied de la carte se colore, affiche « Replier » et pointe vers le bloc ouvert.
 
 - **Le Bureau est ouvert à l'arrivée sur la page.** Pour ouvrir une autre instance : `defaut="conseil-scientifique"` ; pour tout replier : `defaut="aucun"`. Ce choix est fait côté serveur : pas de clignotement.
 - Une seule instance ouverte à la fois ; un nouveau clic sur la carte, la croix ou la touche Échap la replient.
@@ -140,6 +140,7 @@ Taille source conseillée : au moins 560 × 560 px, sujet centré et cadré en b
 
 ## Historique
 
+- **1.4.0** : cartes d'instance au design des Partenaires (bandeau coloré, nombre de membres en grand, introduction complète, photos et « Découvrir » / « Replier » en pied) ; membres sur 4 colonnes par défaut (3 sous 1100 px, 2 sous 860 px, 1 sur mobile)
 - **1.3.0** : instances repliées en cartes, comme la Bibliothèque et les Partenaires ; le Bureau est ouvert à l'arrivée ; texte d'introduction et pictogramme par instance ; navigation de la fiche limitée à l'instance ; liens directs vers une instance ; option `affichage="onglets"` pour l'ancien affichage
 - **1.2.0** : fiche détaillée dans une fenêtre (profession, rôle dans l'association, parcours, CV en PDF, lien)
 

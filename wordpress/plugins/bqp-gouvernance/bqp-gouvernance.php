@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       BQP Gouvernance
  * Description:       Gestion et affichage des membres de la gouvernance avec le shortcode [bqp_gouvernance], et instances repliées en cartes, fiche détaillée de chaque membre (profession, rôle, parcours, CV PDF).
- * Version:           1.3.0
+ * Version:           1.4.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -20,7 +20,7 @@
  * Un clic sur un membre ouvre sa fiche dans une fenêtre : profession, rôle
  * dans l'association, parcours (CV en texte) et CV au format PDF.
  *
- * Version : 1.3.0
+ * Version : 1.4.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQG_VERSION' ) ) {
-	define( 'BQG_VERSION', '1.3.0' );
+	define( 'BQG_VERSION', '1.4.0' );
 }
 if ( ! defined( 'BQG_CPT' ) ) {
 	define( 'BQG_CPT', 'bqg_membre' );
@@ -645,7 +645,7 @@ function bqg_admin_help_page() {
 function bqg_render_help_page() {
 	$options = array(
 		array( 'instances', 'Limite le bloc à certaines instances (slugs séparés par une virgule).', 'toutes', '[bqp_gouvernance instances="bureau"]' ),
-		array( 'colonnes', 'Nombre de colonnes sur grand écran : 2, 3 ou 4.', '3', '[bqp_gouvernance colonnes="4"]' ),
+		array( 'colonnes', 'Nombre de colonnes sur grand écran : 2, 3 ou 4.', '4', '[bqp_gouvernance colonnes="4"]' ),
 		array( 'format', 'Forme des photos : carre, portrait ou rond.', 'carre', '[bqp_gouvernance format="rond"]' ),
 		array( 'affichage', 'replie : une carte par instance, un clic affiche ses membres. onglets : boutons de filtre au-dessus d\'une grille, comme en 1.2.', 'replie', '[bqp_gouvernance affichage="onglets"]' ),
 		array( 'defaut', 'Instance ouverte au chargement de la page. aucun : toutes repliées (ou, en onglets, tous : tous les membres).', 'bureau', '[bqp_gouvernance defaut="conseil-scientifique"]' ),
@@ -913,7 +913,7 @@ function bqg_shortcode( $atts ) {
 	$atts = shortcode_atts(
 		array(
 			'instances' => '',
-			'colonnes'  => '3',
+			'colonnes'  => '4',
 			'format'    => 'carre',
 			'filtres'   => 'oui',
 			'compteurs' => 'oui',
@@ -1172,12 +1172,19 @@ function bqg_shortcode( $atts ) {
 			}
 
 			$cats .= '<button type="button" class="bqg-cat' . ( $is_open ? ' is-on' : '' ) . '" aria-expanded="' . ( $is_open ? 'true' : 'false' ) . '" aria-controls="' . esc_attr( $anchor ) . '" data-bqg-cat style="' . esc_attr( $style ) . '">'
-				. '<span class="bqg-cat__icon">' . $icon . '</span>'
+				. '<span class="bqg-cat__band">'
+				. '<span class="bqg-cat__icon">' . bqg_icon_svg( $slug, 26 ) . '</span>'
+				. '<span class="bqg-cat__count"><strong>' . esc_html( sprintf( '%02d', $n ) ) . '</strong><em>' . _n( 'membre', 'membres', $n ) . '</em></span>'
+				. '</span>'
+				. '<span class="bqg-cat__body">'
 				. '<span class="bqg-cat__title">' . esc_html( $tab['name'] ) . '</span>'
 				. ( $intro ? '<span class="bqg-cat__text">' . esc_html( $intro ) . '</span>' : '' )
+				. '</span>'
+				. '<span class="bqg-cat__foot">'
 				. '<span class="bqg-cat__faces" aria-hidden="true">' . $faces . '</span>'
-				. '<span class="bqg-cat__foot"><span class="bqg-cat__count"><strong>' . (int) $n . '</strong> ' . _n( 'membre', 'membres', $n ) . '</span>'
-				. '<span class="bqg-cat__chevron"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8 10 12.5 14.5 8"/></svg></span></span>'
+				. '<span class="bqg-cat__cta"><span class="bqg-cat__see">Découvrir</span><span class="bqg-cat__hide">Replier</span></span>'
+				. '<span class="bqg-cat__chevron"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8 10 12.5 14.5 8"/></svg></span>'
+				. '</span>'
 				. '</button>';
 
 			$panels .= '<section class="bqg-group" id="' . esc_attr( $anchor ) . '" aria-labelledby="' . esc_attr( $anchor ) . '-titre" style="' . esc_attr( $style ) . '"' . ( $is_open ? '' : ' hidden' ) . '>';
@@ -1392,8 +1399,9 @@ function bqg_front_css() {
 	.bqg-team .bqg-filter.is-active .bqg-filter__count{background:rgba(255,255,255,.22);}
 
 	/* --- Grille --- */
-	.bqg-grid{display:grid;grid-template-columns:repeat(var(--bqg-cols),minmax(0,1fr));gap:28px;align-items:stretch;}
-	@media (max-width:1024px){.bqg-team{--bqg-cols:2;}}
+	.bqg-grid{display:grid;grid-template-columns:repeat(var(--bqg-cols),minmax(0,1fr));gap:24px;align-items:stretch;}
+	@media (max-width:1100px){.bqg-team{--bqg-cols:min(3,var(--bqg-cols-max,3));}}
+	@media (max-width:860px){.bqg-team{--bqg-cols:2;}}
 	@media (max-width:620px){
 		.bqg-team{--bqg-cols:1;}
 		.bqg-grid{gap:22px;}
@@ -1517,41 +1525,50 @@ function bqg_front_css() {
 	.bqg-cats{display:grid;grid-template-columns:repeat(var(--bqg-cats-cols,2),minmax(0,1fr));gap:16px;align-items:stretch;}
 	@media (max-width:760px){.bqg-cats{grid-template-columns:1fr;gap:10px;}}
 	.bqg-team .bqg-cat,.bqg-team .bqg-cat:hover,.bqg-team .bqg-cat:focus{
-		position:relative;display:grid !important;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"icon title faces" "icon text faces" "foot foot foot";align-items:center;gap:4px 18px;min-width:0;margin:0 !important;padding:22px 24px 18px !important;
+		position:relative;display:flex !important;flex-direction:column;align-items:stretch;min-width:0;margin:0 !important;padding:0 !important;
 		border:1px solid var(--bqg-line) !important;border-radius:18px !important;background:#fff !important;background-image:none !important;box-shadow:0 1px 2px rgba(49,2,12,.05) !important;
 		color:var(--bqg-ink) !important;font-family:var(--bqg-sans) !important;font-size:1rem !important;font-weight:400 !important;letter-spacing:0 !important;text-transform:none !important;line-height:1.3 !important;text-align:left !important;white-space:normal !important;
-		cursor:pointer;scroll-margin-top:110px;transition:transform .25s,box-shadow .25s,border-color .25s,background .25s;
+		cursor:pointer;scroll-margin-top:110px;transition:transform .3s cubic-bezier(.2,.7,.3,1),box-shadow .3s,border-color .3s;
 	}
-	.bqg-cat::before{content:"";position:absolute;left:24px;right:24px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--bqg-cat);}
-	.bqg-team .bqg-cat:hover{transform:translateY(-3px);border-color:var(--bqg-cat-line) !important;box-shadow:0 24px 44px -30px rgba(49,2,12,.55) !important;}
-	.bqg-team .bqg-cat:focus-visible{outline:3px solid var(--bqg-cat-line) !important;outline-offset:2px;}
-	.bqg-cat__icon{grid-area:icon;align-self:start;display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:15px;background:var(--bqg-cat-soft);color:var(--bqg-cat);transition:background .25s,color .25s;}
-	.bqg-cat__title{grid-area:title;align-self:end;font-family:var(--bqg-serif);font-size:1.55rem;font-weight:600;line-height:1.1;color:var(--bqg-bordeaux-dark);}
-	.bqg-cat__text{grid-area:text;align-self:start;font-size:.84rem;line-height:1.5;color:#6a6a6a;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-	.bqg-cat__faces{grid-area:faces;display:inline-flex;padding-left:10px;}
-	.bqg-cat__face{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin-left:-10px;overflow:hidden;border:2px solid #fff;border-radius:50%;background:var(--bqg-cat-soft);color:var(--bqg-cat);font-size:.66rem;font-weight:700;box-shadow:0 6px 12px -8px rgba(0,0,0,.5);}
+	.bqg-team .bqg-cat:hover{transform:translateY(-4px);border-color:var(--bqg-cat-line) !important;box-shadow:0 28px 50px -32px rgba(49,2,12,.6) !important;}
+	.bqg-team .bqg-cat:focus-visible{outline:3px solid var(--bqg-cat-line) !important;outline-offset:3px;}
+	.bqg-cat__band{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 24px 20px;overflow:hidden;border-radius:17px 17px 0 0;background:var(--bqg-cat-soft);border-bottom:1px solid var(--bqg-cat-line);}
+	.bqg-cat__band::after{content:"";position:absolute;right:-70px;bottom:-110px;width:180px;height:180px;border-radius:50%;border:1px solid var(--bqg-cat-line);box-shadow:0 0 0 26px var(--bqg-cat-soft);pointer-events:none;}
+	.bqg-cat__icon{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:var(--bqg-cat);color:#fff;box-shadow:0 14px 24px -14px var(--bqg-cat);transition:transform .3s;}
+	.bqg-team .bqg-cat:hover .bqg-cat__icon{transform:scale(1.05) rotate(-3deg);}
+	.bqg-cat__count{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-end;}
+	.bqg-cat__count strong{font-family:var(--bqg-serif);font-size:2.6rem;font-weight:600;line-height:.95;color:var(--bqg-cat);}
+	.bqg-cat__count em{margin-top:4px;font-style:normal;font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--bqg-muted);}
+	.bqg-cat__body{display:flex;flex-direction:column;flex:1;padding:20px 24px 0;}
+	.bqg-cat__title{font-family:var(--bqg-serif);font-size:1.75rem;font-weight:600;line-height:1.1;color:var(--bqg-bordeaux-dark);}
+	.bqg-cat__text{margin:10px 0 0;max-width:52ch;font-size:.9rem;line-height:1.6;color:#626262;}
+	.bqg-cat__foot{display:flex;align-items:center;gap:14px;margin-top:20px;padding:14px 18px 14px 24px;border-top:1px solid var(--bqg-line);border-radius:0 0 17px 17px;transition:background .25s,border-color .25s;}
+	.bqg-cat__faces{display:inline-flex;padding-left:9px;}
+	.bqg-cat__face{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-left:-9px;overflow:hidden;border:2px solid #fff;border-radius:50%;background:var(--bqg-cat-soft);color:var(--bqg-cat);font-size:.62rem;font-weight:700;box-shadow:0 6px 12px -8px rgba(0,0,0,.5);}
 	.bqg-team .bqg-cat__face img{width:100% !important;height:100% !important;max-width:none !important;object-fit:cover;}
 	.bqg-cat__face.is-more{background:var(--bqg-cat);color:#fff;}
-	.bqg-cat__foot{grid-area:foot;display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid var(--bqg-line);}
-	.bqg-cat__count{font-size:.78rem;color:var(--bqg-muted);white-space:nowrap;}
-	.bqg-cat__count strong{font-size:.98rem;color:var(--bqg-bordeaux-dark);}
-	.bqg-cat__chevron{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--bqg-cat-soft);color:var(--bqg-cat);transition:transform .25s,background .25s,color .25s;}
-	.bqg-team .bqg-cat.is-on,.bqg-team .bqg-cat.is-on:hover,.bqg-team .bqg-cat.is-on:focus{border-color:var(--bqg-cat) !important;background:var(--bqg-cat) !important;background-image:linear-gradient(150deg,rgba(255,255,255,.12),rgba(0,0,0,.22)) !important;box-shadow:0 24px 44px -26px rgba(49,2,12,.7) !important;transform:none;}
-	.bqg-cat.is-on::before{display:none;}
-	.bqg-cat.is-on::after{content:"";position:absolute;left:50%;bottom:-9px;width:16px;height:16px;margin-left:-8px;background:var(--bqg-cat);transform:rotate(45deg);border-radius:2px;}
-	.bqg-cat.is-on .bqg-cat__icon{background:rgba(255,255,255,.16);color:#fff;}
-	.bqg-cat.is-on .bqg-cat__title,.bqg-cat.is-on .bqg-cat__count strong{color:#fff;}
-	.bqg-cat.is-on .bqg-cat__text,.bqg-cat.is-on .bqg-cat__count{color:rgba(255,255,255,.82);}
-	.bqg-cat.is-on .bqg-cat__foot{border-top-color:rgba(255,255,255,.2);}
+	.bqg-cat__cta{margin-left:auto;white-space:nowrap;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bqg-cat);}
+	.bqg-cat__hide{display:none;}
+	.bqg-cat__chevron{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--bqg-cat-soft);color:var(--bqg-cat);transition:transform .3s,background .25s,color .25s;}
+	.bqg-team .bqg-cat:hover .bqg-cat__chevron{background:var(--bqg-cat);color:#fff;transform:translateY(2px);}
+	.bqg-team .bqg-cat.is-on,.bqg-team .bqg-cat.is-on:hover,.bqg-team .bqg-cat.is-on:focus{border-color:var(--bqg-cat) !important;box-shadow:0 0 0 1px var(--bqg-cat),0 28px 50px -32px rgba(49,2,12,.6) !important;transform:none;}
+	.bqg-cat.is-on .bqg-cat__foot{background:var(--bqg-cat);border-top-color:var(--bqg-cat);}
+	.bqg-cat.is-on .bqg-cat__cta{color:#fff;}
+	.bqg-cat.is-on .bqg-cat__see{display:none;}
+	.bqg-cat.is-on .bqg-cat__hide{display:inline;}
 	.bqg-cat.is-on .bqg-cat__face{border-color:var(--bqg-cat);background:#fff;}
 	.bqg-cat.is-on .bqg-cat__face.is-more{background:rgba(255,255,255,.22);color:#fff;}
-	.bqg-cat.is-on .bqg-cat__chevron{background:rgba(255,255,255,.18);color:#fff;transform:rotate(180deg);}
+	.bqg-team .bqg-cat.is-on .bqg-cat__chevron{background:rgba(255,255,255,.2);color:#fff;transform:rotate(180deg);}
+	.bqg-cat.is-on::after{content:"";position:absolute;left:50%;bottom:-8px;width:16px;height:16px;margin-left:-8px;background:var(--bqg-cat);transform:rotate(45deg);border-radius:2px;}
 	@media (max-width:760px){
-		.bqg-team .bqg-cat,.bqg-team .bqg-cat:hover,.bqg-team .bqg-cat:focus{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"icon title" "icon text" "faces faces" "foot foot";padding:18px 18px 14px !important;}
-		.bqg-cat__icon{width:44px;height:44px;}
-		.bqg-cat__title{font-size:1.3rem;}
-		.bqg-cat__faces{margin-top:12px;}
-		.bqg-cat__face{width:34px;height:34px;}
+		.bqg-cat__band{padding:18px 18px 16px;}
+		.bqg-cat__icon{width:48px;height:48px;border-radius:14px;}
+		.bqg-cat__count strong{font-size:2.1rem;}
+		.bqg-cat__body{padding:16px 18px 0;}
+		.bqg-cat__title{font-size:1.45rem;}
+		.bqg-cat__text{font-size:.86rem;}
+		.bqg-cat__foot{margin-top:16px;padding:12px 14px 12px 18px;}
+		.bqg-cat__face{width:30px;height:30px;}
 		.bqg-cat.is-on::after{bottom:-7px;width:12px;height:12px;margin-left:-6px;}
 	}
 
