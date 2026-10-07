@@ -6,7 +6,10 @@
  *
  * Shortcode : [bqp_gouvernance]
  *
- * Version : 1.1.0
+ * Un clic sur un membre ouvre sa fiche dans une fenêtre : profession, rôle
+ * dans l'association, parcours (CV en texte) et CV au format PDF.
+ *
+ * Version : 1.2.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQG_VERSION' ) ) {
-	define( 'BQG_VERSION', '1.1.0' );
+	define( 'BQG_VERSION', '1.2.0' );
 }
 if ( ! defined( 'BQG_CPT' ) ) {
 	define( 'BQG_CPT', 'bqg_membre' );
@@ -353,6 +356,66 @@ function bqg_render_meta_box( $post ) {
 
 	$html .= '</div></div>';
 
+	/* Fiche détaillée, affichée dans la fenêtre au clic sur le membre */
+	$profession = (string) get_post_meta( $post->ID, '_bqg_profession', true );
+	$engagement = (string) get_post_meta( $post->ID, '_bqg_engagement', true );
+	$cv_text    = (string) get_post_meta( $post->ID, '_bqg_cv_texte', true );
+	$cv_id      = (int) get_post_meta( $post->ID, '_bqg_cv_id', true );
+	$link       = (string) get_post_meta( $post->ID, '_bqg_lien', true );
+	$cv_name    = $cv_id ? basename( (string) get_attached_file( $cv_id ) ) : '';
+
+	$html .= '<div class="bqg-admin__profile">';
+	$html .= '<div class="bqg-admin__profile-head"><span class="dashicons dashicons-id-alt"></span><div><strong>Fiche détaillée</strong><span>Affichée dans une fenêtre quand un visiteur clique sur le membre. Tous les champs sont facultatifs : seuls ceux remplis apparaissent.</span></div></div>';
+
+	$html .= '<div class="bqg-admin__cols">';
+	$html .= '<p class="bqg-admin__field">';
+	$html .= '<label class="bqg-admin__label" for="bqg_profession">Profession</label>';
+	$html .= '<input type="text" class="bqg-admin__input" name="bqg_profession" id="bqg_profession" value="' . esc_attr( $profession ) . '" maxlength="160" placeholder="Économiste, professeure associée à Sciences Po" />';
+	$html .= '<span class="bqg-admin__hint">Son métier, en dehors de l\'association.</span>';
+	$html .= '</p>';
+
+	$html .= '<p class="bqg-admin__field">';
+	$html .= '<label class="bqg-admin__label" for="bqg_lien">Page personnelle ou LinkedIn</label>';
+	$html .= '<input type="url" class="bqg-admin__input" name="bqg_lien" id="bqg_lien" value="' . esc_attr( $link ) . '" placeholder="https://" />';
+	$html .= '<span class="bqg-admin__hint">Facultatif. Ouvert dans un nouvel onglet.</span>';
+	$html .= '</p>';
+	$html .= '</div>';
+
+	$html .= '<p class="bqg-admin__field">';
+	$html .= '<label class="bqg-admin__label" for="bqg_engagement">Son rôle dans l\'association</label>';
+	$html .= '<textarea class="bqg-admin__input bqg-admin__textarea" name="bqg_engagement" id="bqg_engagement" rows="4" maxlength="1500" placeholder="Pourquoi elle a rejoint la Bourse, ce qu\'elle y apporte, ses missions.">' . esc_textarea( $engagement ) . '</textarea>';
+	$html .= '</p>';
+
+	$html .= '<div class="bqg-admin__field"><span class="bqg-admin__label">Parcours (CV en texte)</span>';
+
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+	wp_editor(
+		$cv_text,
+		'bqg_cv_texte',
+		array(
+			'textarea_name' => 'bqg_cv_texte',
+			'textarea_rows' => 9,
+			'media_buttons' => false,
+			'teeny'         => true,
+			'quicktags'     => array( 'buttons' => 'strong,em,ul,ol,li,link' ),
+			'tinymce'       => array( 'toolbar1' => 'formatselect,bold,italic,bullist,numlist,link,unlink,undo,redo' ),
+		)
+	);
+
+	$html  = '<span class="bqg-admin__hint">Formations, postes, publications. Les listes à puces rendent le parcours plus lisible.</span></div>';
+
+	$html .= '<div class="bqg-admin__field"><span class="bqg-admin__label">CV au format PDF</span>';
+	$html .= '<div class="bqg-admin__file" id="bqg-cv-box">';
+	$html .= '<span class="dashicons dashicons-media-document"></span>';
+	$html .= '<span class="bqg-admin__file-name" id="bqg-cv-name">' . ( $cv_name ? esc_html( $cv_name ) : 'Aucun fichier' ) . '</span>';
+	$html .= '<input type="hidden" name="bqg_cv_id" id="bqg-cv-id" value="' . esc_attr( $cv_id ? $cv_id : '' ) . '" />';
+	$html .= '<button type="button" class="button" id="bqg-cv-select">' . ( $cv_id ? 'Remplacer' : 'Choisir un PDF' ) . '</button>';
+	$html .= '<button type="button" class="button-link bqg-admin__remove" id="bqg-cv-remove"' . ( $cv_id ? '' : ' hidden' ) . '>Retirer</button>';
+	$html .= '</div>';
+	$html .= '<span class="bqg-admin__hint">Les visiteurs pourront l\'ouvrir ou le télécharger. Un CV contient des données personnelles : publiez-le avec l\'accord du membre.</span></div>';
+	$html .= '</div>';
+
 	$html .= '<div class="bqg-admin__shortcode">';
 	$html .= '<span class="dashicons dashicons-shortcode"></span>';
 	$html .= '<span>Pour afficher le bloc sur une page :</span>';
@@ -396,6 +459,28 @@ function bqg_save_membre( $post_id, $post ) {
 	} else {
 		delete_post_meta( $post_id, '_bqg_description' );
 	}
+
+	// Fiche détaillée.
+	$cv_id = isset( $_POST['bqg_cv_id'] ) ? absint( $_POST['bqg_cv_id'] ) : 0;
+	if ( $cv_id && 'application/pdf' !== get_post_mime_type( $cv_id ) ) {
+		$cv_id = 0;
+	}
+
+	$fields = array(
+		'_bqg_profession' => isset( $_POST['bqg_profession'] ) ? sanitize_text_field( wp_unslash( $_POST['bqg_profession'] ) ) : '',
+		'_bqg_engagement' => isset( $_POST['bqg_engagement'] ) ? sanitize_textarea_field( wp_unslash( $_POST['bqg_engagement'] ) ) : '',
+		'_bqg_cv_texte'   => isset( $_POST['bqg_cv_texte'] ) ? wp_kses_post( wp_unslash( $_POST['bqg_cv_texte'] ) ) : '',
+		'_bqg_lien'       => isset( $_POST['bqg_lien'] ) ? esc_url_raw( trim( wp_unslash( $_POST['bqg_lien'] ) ) ) : '',
+		'_bqg_cv_id'      => $cv_id ? $cv_id : '',
+	);
+
+	foreach ( $fields as $key => $value ) {
+		if ( '' !== trim( wp_strip_all_tags( (string) $value ) ) || ( '_bqg_cv_texte' === $key && '' !== trim( (string) $value ) ) ) {
+			update_post_meta( $post_id, $key, $value );
+		} else {
+			delete_post_meta( $post_id, $key );
+		}
+	}
 }
 
 /* -------------------------------------------------------------------------
@@ -418,6 +503,7 @@ function bqg_admin_columns( $columns ) {
 	}
 
 	$new['bqg_fonction'] = 'Fonction';
+	$new['bqg_fiche']    = 'Fiche détaillée';
 	$new['bqg_order']    = 'Ordre';
 	$new['date']         = isset( $columns['date'] ) ? $columns['date'] : 'Date';
 
@@ -447,6 +533,24 @@ function bqg_admin_column_content( $column, $post_id ) {
 			echo '<span style="color:#b0b0b0;">&mdash;</span>';
 		}
 
+		return;
+	}
+
+	if ( 'bqg_fiche' === $column ) {
+		$parts = array();
+		if ( get_post_meta( $post_id, '_bqg_profession', true ) ) {
+			$parts[] = 'Profession';
+		}
+		if ( get_post_meta( $post_id, '_bqg_engagement', true ) ) {
+			$parts[] = 'Rôle';
+		}
+		if ( get_post_meta( $post_id, '_bqg_cv_texte', true ) ) {
+			$parts[] = 'Parcours';
+		}
+		if ( get_post_meta( $post_id, '_bqg_cv_id', true ) ) {
+			$parts[] = 'CV PDF';
+		}
+		echo $parts ? '<span class="bqg-col-tags">' . implode( '', array_map( function ( $p ) { return '<span>' . esc_html( $p ) . '</span>'; }, $parts ) ) . '</span>' : '<span style="color:#b0b0b0;">&mdash;</span>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		return;
 	}
 
@@ -507,6 +611,7 @@ function bqg_render_help_page() {
 		array( 'badges', 'Affiche ou masque l\'étiquette d\'instance sur les cartes.', 'oui', '[bqp_gouvernance badges="non"]' ),
 		array( 'limite', 'Nombre maximum de membres affichés.', 'tous', '[bqp_gouvernance limite="6"]' ),
 		array( 'ordre', 'Tri : manuel, nom ou recent.', 'manuel', '[bqp_gouvernance ordre="nom"]' ),
+		array( 'fenetre', 'Ouvre la fiche détaillée au clic sur un membre : oui ou non.', 'oui', '[bqp_gouvernance fenetre="non"]' ),
 	);
 
 	$notes = array(
@@ -517,6 +622,9 @@ function bqg_render_help_page() {
 		'La couleur de chaque étiquette se modifie dans <strong>Gouvernance &rsaquo; Instances</strong>.',
 		'Un membre sans photo affiche ses initiales dans un médaillon aux couleurs de son instance.',
 		'Les retours à la ligne saisis dans la description sont conservés à l\'affichage.',
+		'Un clic sur un membre ouvre sa <strong>fiche détaillée</strong> : profession, rôle dans l\'association, parcours et CV au format PDF. Ces champs se remplissent dans l\'encadré <strong>Fiche détaillée</strong> du membre ; seuls ceux remplis apparaissent.',
+		'Chaque fiche a son adresse (par exemple <code>/gouvernance/#claire-bonnefoy</code>) : on peut envoyer le lien direct vers un membre.',
+		'Dans la fenêtre, les flèches permettent de passer au membre précédent ou suivant ; la touche Échap la ferme.',
 		'Les fiches des membres ne créent aucune page publique, pour ne pas diluer le référencement du site.',
 	);
 
@@ -604,6 +712,19 @@ function bqg_admin_css() {
 	.bqg-admin__shortcode{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:8px;padding:14px 18px;border-radius:10px;background:' . bqg_hex_to_rgba( $p['bordeaux'], 0.05 ) . ';border:1px solid ' . bqg_hex_to_rgba( $p['bordeaux'], 0.14 ) . ';color:' . $p['bordeaux_dark'] . ';}
 	.bqg-admin__shortcode code{background:#fff;border:1px solid ' . bqg_hex_to_rgba( $p['bordeaux'], 0.2 ) . ';color:' . $p['bordeaux'] . ';padding:5px 11px;border-radius:6px;font-weight:600;}
 	.bqg-admin__shortcode .dashicons{color:' . $p['bordeaux'] . ';}
+	.bqg-admin__profile{margin:6px 0 22px;padding:22px 22px 4px;border:1px solid ' . bqg_hex_to_rgba( $p['bordeaux'], 0.16 ) . ';border-radius:12px;background:' . bqg_hex_to_rgba( $p['bordeaux'], 0.025 ) . ';}
+	.bqg-admin__profile-head{display:flex;gap:12px;align-items:flex-start;margin:0 0 20px;}
+	.bqg-admin__profile-head .dashicons{color:' . $p['bordeaux'] . ';font-size:24px;width:24px;height:24px;}
+	.bqg-admin__profile-head strong{display:block;font-size:15px;color:' . $p['bordeaux_dark'] . ';}
+	.bqg-admin__profile-head span{display:block;margin-top:3px;color:#787c82;font-size:12.5px;}
+	.bqg-admin__cols{display:grid;grid-template-columns:1fr 1fr;gap:0 22px;}
+	@media (max-width:960px){.bqg-admin__cols{grid-template-columns:1fr;}}
+	.bqg-admin__profile .wp-editor-wrap{border-radius:8px;overflow:hidden;}
+	.bqg-admin__file{display:flex;align-items:center;flex-wrap:wrap;gap:12px;padding:12px 14px;border:1px dashed #dcdcde;border-radius:8px;background:#fff;}
+	.bqg-admin__file .dashicons{color:' . $p['bordeaux'] . ';}
+	.bqg-admin__file-name{flex:1;min-width:140px;font-weight:600;color:#3c434a;word-break:break-all;}
+	.bqg-col-tags{display:flex;flex-wrap:wrap;gap:4px;}
+	.bqg-col-tags span{padding:2px 8px;border-radius:999px;background:' . bqg_hex_to_rgba( $p['bordeaux'], 0.07 ) . ';color:' . $p['bordeaux'] . ';font-size:11px;font-weight:600;}
 	.column-bqg_photo{width:90px;}
 	.column-bqg_order{width:70px;}
 	.bqg-col-photo{display:flex;align-items:center;justify-content:center;width:64px;height:80px;border:1px solid #e6e6e8;border-radius:8px;background:#fff;overflow:hidden;}
@@ -680,6 +801,35 @@ function bqg_admin_js() {
 			\$('#bqg_description').on('input', function(){
 				\$('#bqg-count').text(\$(this).val().length);
 			});
+
+			// CV au format PDF.
+			var cvFrame;
+			\$('#bqg-cv-select').on('click', function(e){
+				e.preventDefault();
+				if (cvFrame) { cvFrame.open(); return; }
+				cvFrame = wp.media({
+					title: 'Choisir le CV (PDF)',
+					button: { text: 'Utiliser ce fichier' },
+					library: { type: 'application/pdf' },
+					multiple: false
+				});
+				cvFrame.on('select', function(){
+					var att = cvFrame.state().get('selection').first().toJSON();
+					if (att.mime && 'application/pdf' !== att.mime) { window.alert('Choisissez un fichier PDF.'); return; }
+					\$('#bqg-cv-id').val(att.id);
+					\$('#bqg-cv-name').text(att.filename || att.title);
+					\$('#bqg-cv-select').text('Remplacer');
+					\$('#bqg-cv-remove').prop('hidden', false);
+				});
+				cvFrame.open();
+			});
+			\$('#bqg-cv-remove').on('click', function(e){
+				e.preventDefault();
+				\$('#bqg-cv-id').val('');
+				\$('#bqg-cv-name').text('Aucun fichier');
+				\$('#bqg-cv-select').text('Choisir un PDF');
+				\$(this).prop('hidden', true);
+			});
 		});
 	})(jQuery);
 	";
@@ -725,6 +875,7 @@ function bqg_shortcode( $atts ) {
 			'badges'    => 'oui',
 			'limite'    => '-1',
 			'ordre'     => 'manuel',
+			'fenetre'   => 'oui',
 		),
 		$atts,
 		'bqp_gouvernance'
@@ -736,6 +887,7 @@ function bqg_shortcode( $atts ) {
 	$show_bdg  = in_array( strtolower( $atts['badges'] ), array( 'oui', 'yes', 'true', '1' ), true );
 	$show_all  = in_array( strtolower( $atts['tous'] ), array( 'oui', 'yes', 'true', '1' ), true );
 	$grayscale = 'grisaille' === strtolower( $atts['photos'] );
+	$popup     = ! in_array( strtolower( $atts['fenetre'] ), array( 'non', 'no', 'false', '0' ), true );
 	$limit     = (int) $atts['limite'];
 
 	$format = strtolower( $atts['format'] );
@@ -815,14 +967,25 @@ function bqg_shortcode( $atts ) {
 		$main_term = $terms ? reset( $terms ) : null;
 		$palette   = bqg_palette();
 
+		$cv_id = (int) get_post_meta( $post_id, '_bqg_cv_id', true );
+		$cv    = $cv_id ? get_attached_file( $cv_id ) : '';
+
 		$members[] = array(
-			'name'  => get_the_title(),
-			'photo' => (int) get_post_meta( $post_id, '_bqg_photo_id', true ),
-			'role'  => (string) get_post_meta( $post_id, '_bqg_fonction', true ),
-			'desc'  => (string) get_post_meta( $post_id, '_bqg_description', true ),
-			'label' => $main_term ? $main_term->name : '',
-			'color' => $main_term ? bqg_term_color( $main_term->term_id ) : $palette['bordeaux'],
-			'slugs' => $term_slugs,
+			'id'         => $post_id,
+			'slug'       => get_post_field( 'post_name', $post_id ) ? get_post_field( 'post_name', $post_id ) : sanitize_title( get_the_title() ),
+			'name'       => get_the_title(),
+			'photo'      => (int) get_post_meta( $post_id, '_bqg_photo_id', true ),
+			'role'       => (string) get_post_meta( $post_id, '_bqg_fonction', true ),
+			'desc'       => (string) get_post_meta( $post_id, '_bqg_description', true ),
+			'profession' => (string) get_post_meta( $post_id, '_bqg_profession', true ),
+			'engagement' => (string) get_post_meta( $post_id, '_bqg_engagement', true ),
+			'cv_text'    => (string) get_post_meta( $post_id, '_bqg_cv_texte', true ),
+			'cv_url'     => $cv_id ? (string) wp_get_attachment_url( $cv_id ) : '',
+			'cv_size'    => ( $cv && file_exists( $cv ) ) ? size_format( filesize( $cv ), filesize( $cv ) >= MB_IN_BYTES ? 1 : 0 ) : '',
+			'link'       => (string) get_post_meta( $post_id, '_bqg_lien', true ),
+			'label'      => $main_term ? $main_term->name : '',
+			'color'      => $main_term ? bqg_term_color( $main_term->term_id ) : $palette['bordeaux'],
+			'slugs'      => $term_slugs,
 		);
 	}
 
@@ -861,7 +1024,12 @@ function bqg_shortcode( $atts ) {
 		$active = '*';
 	}
 
-	$classes = 'bqg-team bqg-team--' . $format . ( $grayscale ? ' bqg-team--grayscale' : '' );
+	static $block = 0;
+	$block++;
+
+	$classes   = 'bqg-team bqg-team--' . $format . ( $grayscale ? ' bqg-team--grayscale' : '' ) . ( $popup ? ' bqg-team--popup' : '' );
+	$modal_id  = 'bqg-modal-' . $block;
+	$templates = '';
 
 	$html  = '<section class="' . esc_attr( $classes ) . '" style="--bqg-cols-max:' . esc_attr( $columns ) . ';">';
 
@@ -909,7 +1077,17 @@ function bqg_shortcode( $atts ) {
 			$visible++;
 		}
 
-		$html .= '<article class="bqg-card" data-cats="' . esc_attr( implode( ' ', $member['slugs'] ) ) . '" style="' . esc_attr( $style ) . '"' . ( $is_shown ? '' : ' hidden' ) . '>';
+		// Fiche détaillée : la carte devient cliquable dès qu'il y a
+		// quelque chose de plus à montrer que la carte elle-même.
+		$has_profile = $popup && ( $member['profession'] || $member['engagement'] || trim( wp_strip_all_tags( $member['cv_text'] ) ) || $member['cv_url'] || $member['link'] || $member['desc'] );
+		$tpl_id      = 'bqg-tpl-' . $block . '-' . $member['id'];
+
+		$html .= '<article class="bqg-card' . ( $has_profile ? ' is-clickable' : '' ) . '" data-cats="' . esc_attr( implode( ' ', $member['slugs'] ) ) . '"' . ( $has_profile ? ' data-slug="' . esc_attr( $member['slug'] ) . '"' : '' ) . ' style="' . esc_attr( $style ) . '"' . ( $is_shown ? '' : ' hidden' ) . '>';
+
+		if ( $has_profile ) {
+			$html      .= '<button type="button" class="bqg-card__open" data-bqg-open="' . esc_attr( $tpl_id ) . '" aria-haspopup="dialog" aria-controls="' . esc_attr( $modal_id ) . '"><span class="bqg-sr">Voir le profil de ' . esc_html( $member['name'] ) . '</span></button>';
+			$templates .= '<template id="' . esc_attr( $tpl_id ) . '" data-slug="' . esc_attr( $member['slug'] ) . '">' . bqg_render_profile( $member, $show_bdg ) . '</template>';
+		}
 
 		$html .= '<div class="bqg-card__photo">';
 		if ( $member['photo'] ) {
@@ -944,12 +1122,93 @@ function bqg_shortcode( $atts ) {
 			$html .= '<div class="bqg-card__desc">' . wpautop( esc_html( $member['desc'] ) ) . '</div>';
 		}
 
+		if ( $has_profile ) {
+			$html .= '<span class="bqg-card__more" aria-hidden="true">Voir le profil'
+				. ( $member['cv_url'] ? '<span class="bqg-card__cv">CV</span>' : '' )
+				. '<svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12M11.5 5.5 16 10l-4.5 4.5"/></svg></span>';
+		}
+
 		$html .= '</div></article>';
 	}
 
 	$html .= '</div>';
 	$html .= '<p class="bqg-noresult"' . ( $visible > 0 ? ' hidden' : '' ) . '>Aucun membre dans cette instance pour le moment.</p>';
+
+	if ( $templates ) {
+		$html .= $templates;
+		$html .= '<dialog class="bqg-modal" id="' . esc_attr( $modal_id ) . '" aria-label="Profil du membre">'
+			. '<div class="bqg-modal__bar">'
+			. '<button type="button" class="bqg-modal__nav" data-bqg-prev aria-label="Membre précédent"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 4.5 7 10l5.5 5.5"/></svg></button>'
+			. '<span class="bqg-modal__pos" data-bqg-pos></span>'
+			. '<button type="button" class="bqg-modal__nav" data-bqg-next aria-label="Membre suivant"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4.5 13 10l-5.5 5.5"/></svg></button>'
+			. '<button type="button" class="bqg-modal__close" data-bqg-close aria-label="Fermer"><svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5l10 10M15 5 5 15"/></svg></button>'
+			. '</div>'
+			. '<div class="bqg-modal__body" data-bqg-body></div>'
+			. '</dialog>';
+	}
+
 	$html .= '</section>';
+
+	return $html;
+}
+
+/**
+ * Le contenu de la fenêtre d'un membre : portrait et repères à gauche,
+ * profession, rôle dans l'association, présentation et parcours à droite.
+ */
+function bqg_render_profile( $member, $show_badge = true ) {
+	$style = '--bqg-cat:' . $member['color'] . ';--bqg-cat-soft:' . bqg_hex_to_rgba( $member['color'], 0.08 ) . ';--bqg-cat-line:' . bqg_hex_to_rgba( $member['color'], 0.22 ) . ';';
+	$title = 'bqg-profile-title-' . $member['id'];
+
+	$html  = '<div class="bqg-profile" style="' . esc_attr( $style ) . '" data-title="' . esc_attr( $title ) . '">';
+	$html .= '<aside class="bqg-profile__side">';
+	$html .= '<div class="bqg-profile__photo">';
+	$html .= $member['photo']
+		? wp_get_attachment_image( $member['photo'], 'bqg_portrait', false, array( 'alt' => 'Portrait de ' . $member['name'], 'loading' => 'lazy' ) )
+		: '<span class="bqg-profile__initials" aria-hidden="true">' . esc_html( bqg_initials( $member['name'] ) ) . '</span>';
+	$html .= '</div>';
+
+	$actions = '';
+	if ( $member['cv_url'] ) {
+		$actions .= '<a class="bqg-btn" href="' . esc_url( $member['cv_url'] ) . '" download>'
+			. '<svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v10M5.5 8.5 10 13l4.5-4.5M3.5 16.5h13"/></svg>'
+			. 'Télécharger le CV' . ( $member['cv_size'] ? '<span class="bqg-btn__meta">PDF, ' . esc_html( $member['cv_size'] ) . '</span>' : '' ) . '</a>';
+		$actions .= '<a class="bqg-btn bqg-btn--ghost" href="' . esc_url( $member['cv_url'] ) . '" target="_blank" rel="noopener">Ouvrir le CV</a>';
+	}
+	if ( $member['link'] ) {
+		$host     = wp_parse_url( $member['link'], PHP_URL_HOST );
+		$actions .= '<a class="bqg-btn bqg-btn--ghost" href="' . esc_url( $member['link'] ) . '" target="_blank" rel="noopener">'
+			. ( false !== stripos( (string) $host, 'linkedin' ) ? 'Profil LinkedIn' : 'Page personnelle' ) . '</a>';
+	}
+	if ( $actions ) {
+		$html .= '<div class="bqg-profile__actions">' . $actions . '</div>';
+	}
+
+	$html .= '</aside>';
+
+	$html .= '<div class="bqg-profile__main">';
+	if ( $show_badge && $member['label'] ) {
+		$html .= '<span class="bqg-card__badge">' . esc_html( $member['label'] ) . '</span>';
+	}
+	$html .= '<h2 class="bqg-profile__name" id="' . esc_attr( $title ) . '">' . esc_html( $member['name'] ) . '</h2>';
+	if ( $member['role'] ) {
+		$html .= '<p class="bqg-card__role">' . esc_html( $member['role'] ) . '</p>';
+	}
+	if ( $member['profession'] ) {
+		$html .= '<p class="bqg-profile__profession"><svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="15" height="10.5" rx="1.5"/><path d="M7 6V4.5A1.5 1.5 0 0 1 8.5 3h3A1.5 1.5 0 0 1 13 4.5V6M2.5 11h15"/></svg><span><em>Profession</em>' . esc_html( $member['profession'] ) . '</span></p>';
+	}
+
+	if ( $member['engagement'] ) {
+		$html .= '<section class="bqg-profile__section bqg-profile__section--quote"><h3>Son rôle dans l\'association</h3>' . wpautop( esc_html( $member['engagement'] ) ) . '</section>';
+	}
+	if ( $member['desc'] ) {
+		$html .= '<section class="bqg-profile__section"><h3>Présentation</h3>' . wpautop( esc_html( $member['desc'] ) ) . '</section>';
+	}
+	if ( trim( wp_strip_all_tags( $member['cv_text'] ) ) ) {
+		$html .= '<section class="bqg-profile__section bqg-profile__cv"><h3>Parcours</h3>' . wpautop( wp_kses_post( $member['cv_text'] ) ) . '</section>';
+	}
+
+	$html .= '</div></div>';
 
 	return $html;
 }
@@ -1130,6 +1389,100 @@ function bqg_front_css() {
 		font-family:"Inter",sans-serif;font-size:.95rem;
 	}
 
+
+	/* --- Carte cliquable --- */
+	.bqg-sr{position:absolute !important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+	.bqg-team .bqg-card__open,.bqg-team .bqg-card__open:hover,.bqg-team .bqg-card__open:focus{
+		position:absolute;inset:0;z-index:3;width:100%;height:100%;margin:0 !important;padding:0 !important;
+		border:0 !important;border-radius:16px !important;background:transparent !important;box-shadow:none !important;cursor:pointer;
+	}
+	.bqg-team .bqg-card__open:focus-visible{outline:3px solid var(--bqg-cat) !important;outline-offset:-3px;}
+	.bqg-team--popup .bqg-card.is-clickable .bqg-card__desc{flex:0 1 auto;max-height:10.4em;overflow:hidden;}
+	.bqg-card__desc.is-clamped{-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent);}
+	.bqg-card__more{
+		display:flex;align-items:center;gap:9px;margin-top:auto;padding-top:16px;
+		font-family:var(--bqg-sans);font-size:.68rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--bqg-cat);
+	}
+	.bqg-card__more svg{transition:transform .3s cubic-bezier(.2,.7,.3,1);}
+	.bqg-card:hover .bqg-card__more svg,.bqg-card:focus-within .bqg-card__more svg{transform:translateX(5px);}
+	.bqg-card__cv{padding:2px 7px;border:1px solid var(--bqg-cat-line);border-radius:999px;font-size:.58rem;letter-spacing:.06em;}
+	.bqg-team--rond .bqg-card__more{justify-content:center;}
+
+	/* --- Fenêtre de profil --- */
+	html.bqg-lock{overflow:hidden;}
+	.bqg-modal{
+		width:min(1000px,calc(100vw - 32px));max-width:none;max-height:calc(100vh - 48px);margin:auto;padding:0;
+		border:0;border-radius:20px;background:#fff;color:var(--bqg-ink);overflow:hidden;
+		box-shadow:0 50px 120px -40px rgba(31,2,12,.7);font-family:var(--bqg-sans);
+	}
+	.bqg-modal[open]{display:flex;flex-direction:column;animation:bqg-modal-in .38s cubic-bezier(.2,.7,.3,1);}
+	.bqg-modal::backdrop{background:rgba(31,2,12,.58);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);}
+	@keyframes bqg-modal-in{from{opacity:0;transform:translateY(18px) scale(.985);}to{opacity:1;transform:none;}}
+	.bqg-modal__bar{display:flex;align-items:center;gap:8px;padding:12px 14px 12px 18px;border-bottom:1px solid var(--bqg-line);background:#fff;}
+	.bqg-modal__pos{min-width:48px;font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--bqg-muted);text-align:center;}
+	.bqg-modal .bqg-modal__nav,.bqg-modal .bqg-modal__close,
+	.bqg-modal .bqg-modal__nav:hover,.bqg-modal .bqg-modal__close:hover,
+	.bqg-modal .bqg-modal__nav:focus,.bqg-modal .bqg-modal__close:focus{
+		-webkit-appearance:none;appearance:none;display:inline-flex;align-items:center;justify-content:center;
+		width:40px;height:40px;min-height:0;margin:0 !important;padding:0 !important;
+		border:1px solid var(--bqg-line) !important;border-radius:50% !important;
+		background:#fff !important;background-image:none !important;color:var(--bqg-bordeaux-dark) !important;
+		box-shadow:none !important;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s;
+	}
+	.bqg-modal .bqg-modal__nav:hover,.bqg-modal .bqg-modal__close:hover{background:var(--bqg-bordeaux-soft) !important;border-color:var(--bqg-bordeaux) !important;color:var(--bqg-bordeaux) !important;}
+	.bqg-modal .bqg-modal__nav[hidden]{display:none !important;}
+	.bqg-modal .bqg-modal__bar .bqg-modal__close.bqg-modal__close{margin-left:auto !important;}
+	.bqg-modal button:focus-visible{outline:2px solid var(--bqg-bordeaux) !important;outline-offset:2px;}
+	.bqg-modal__body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
+
+	.bqg-profile{display:grid;grid-template-columns:310px minmax(0,1fr);min-height:100%;}
+	.bqg-profile__side{display:flex;flex-direction:column;gap:20px;padding:30px;background:var(--bqg-cat-soft);border-right:1px solid var(--bqg-cat-line);}
+	.bqg-profile__photo{position:relative;width:100%;padding-bottom:125%;overflow:hidden;border-radius:14px;background:#fff;box-shadow:0 24px 40px -26px rgba(0,0,0,.55);}
+	.bqg-modal .bqg-profile__photo img{position:absolute !important;inset:0;width:100% !important;height:100% !important;max-width:none !important;object-fit:cover !important;object-position:center top;}
+	.bqg-profile__initials{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--bqg-serif);font-size:3.6rem;font-weight:600;color:var(--bqg-cat);}
+	.bqg-profile__actions{display:flex;flex-direction:column;gap:8px;}
+	.bqg-modal .bqg-btn,.bqg-modal .bqg-btn:hover,.bqg-modal .bqg-btn:focus{
+		display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 9px;padding:13px 16px;border:1px solid transparent;border-radius:8px;
+		background:var(--bqg-bordeaux);background-image:linear-gradient(180deg,var(--bqg-bordeaux),var(--bqg-bordeaux-dark) 170%);
+		color:#fff !important;font-family:var(--bqg-sans);font-size:.72rem;font-weight:700;letter-spacing:.09em;line-height:1.2;text-transform:uppercase;text-decoration:none !important;
+		box-shadow:0 12px 22px -16px rgba(49,2,12,.9);transition:filter .2s,transform .2s;
+	}
+	.bqg-modal .bqg-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+	.bqg-modal .bqg-btn--ghost,.bqg-modal .bqg-btn--ghost:hover,.bqg-modal .bqg-btn--ghost:focus{background:#fff;background-image:none;border-color:var(--bqg-cat-line);color:var(--bqg-cat) !important;box-shadow:none;}
+	.bqg-modal .bqg-btn--ghost:hover{border-color:var(--bqg-cat);filter:none;}
+	.bqg-btn__meta{font-weight:500;letter-spacing:.02em;text-transform:none;opacity:.8;}
+
+	.bqg-profile__main{padding:34px 40px 40px;}
+	.bqg-profile__main .bqg-card__badge{display:inline-block;}
+	.bqg-modal .bqg-profile__name{margin:12px 0 6px !important;font-family:var(--bqg-serif) !important;font-size:clamp(1.9rem,3vw,2.6rem) !important;font-weight:600 !important;line-height:1.08 !important;color:var(--bqg-bordeaux-dark) !important;}
+	.bqg-profile__main .bqg-card__role{margin:0;}
+	.bqg-profile__profession{display:flex;align-items:flex-start;gap:12px;margin:22px 0 0;padding:14px 16px;border:1px solid var(--bqg-line);border-radius:12px;background:#FAF8F7;}
+	.bqg-profile__profession svg{flex:0 0 auto;margin-top:2px;color:var(--bqg-cat);}
+	.bqg-profile__profession span{font-size:.98rem;font-weight:600;line-height:1.45;color:var(--bqg-ink);}
+	.bqg-profile__profession em{display:block;margin-bottom:3px;font-style:normal;font-size:.6rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--bqg-muted);}
+	.bqg-profile__section{margin:30px 0 0;font-size:.96rem;line-height:1.75;color:#4d4d4d;}
+	.bqg-modal .bqg-profile__section h3{display:flex;align-items:center;gap:12px;margin:0 0 12px !important;font-family:var(--bqg-sans) !important;font-size:.66rem !important;font-weight:700 !important;letter-spacing:.13em !important;text-transform:uppercase;line-height:1.4 !important;color:var(--bqg-cat) !important;}
+	.bqg-profile__section h3::after{content:"";flex:1;height:1px;background:var(--bqg-line);}
+	.bqg-profile__section p{margin:0 0 .9em;}
+	.bqg-profile__section p:last-child{margin-bottom:0;}
+	.bqg-profile__section--quote{padding:4px 0 4px 20px;border-left:3px solid var(--bqg-cat);}
+	.bqg-profile__section--quote p{font-family:var(--bqg-serif);font-size:1.22rem;line-height:1.55;color:var(--bqg-bordeaux-dark);}
+	.bqg-profile__cv ul,.bqg-profile__cv ol{margin:0 0 1em;padding-left:1.25em;}
+	.bqg-profile__cv li{margin:.35em 0;}
+	.bqg-profile__cv li::marker{color:var(--bqg-cat);}
+	.bqg-profile__cv strong{color:var(--bqg-ink);}
+	.bqg-modal .bqg-profile__cv a{color:var(--bqg-bordeaux) !important;}
+
+	@media (max-width:760px){
+		.bqg-modal{width:100vw;height:100dvh;max-height:100dvh;border-radius:0;}
+		.bqg-profile{grid-template-columns:1fr;}
+		.bqg-profile__side{display:grid;grid-template-columns:118px minmax(0,1fr);align-items:start;gap:16px;padding:20px;border-right:0;border-bottom:1px solid var(--bqg-cat-line);}
+		.bqg-profile__photo{border-radius:10px;}
+		.bqg-profile__initials{font-size:2.2rem;}
+		.bqg-profile__main{padding:24px 20px 32px;}
+	}
+	@media (prefers-reduced-motion:reduce){.bqg-modal[open]{animation:none;}.bqg-card__more svg{transition:none;}}
+
 	@media (prefers-reduced-motion:reduce){
 		.bqg-card,.bqg-card::after,.bqg-card__img,.bqg-team .bqg-filter{transition:none;animation:none;}
 		.bqg-card:hover{transform:none;}
@@ -1143,7 +1496,7 @@ function bqg_front_css() {
  * ---------------------------------------------------------------------- */
 
 function bqg_front_js() {
-	return "
+	return <<<'JS'
 	(function(){
 		function initBlock(root){
 			var filters = root.querySelectorAll('.bqg-filter');
@@ -1189,8 +1542,120 @@ function bqg_front_js() {
 			});
 		}
 
+
+		/* Fenêtre de profil */
+		function initModal(root){
+			var dialog = root.querySelector('.bqg-modal');
+			if (!dialog) { return; }
+
+			var body    = dialog.querySelector('[data-bqg-body]');
+			var pos     = dialog.querySelector('[data-bqg-pos]');
+			var prev    = dialog.querySelector('[data-bqg-prev]');
+			var next    = dialog.querySelector('[data-bqg-next]');
+			var current = null;
+
+			function visibleCards(){
+				return Array.prototype.filter.call(root.querySelectorAll('.bqg-card.is-clickable'), function(c){ return !c.hidden; });
+			}
+
+			function show(card){
+				var button = card.querySelector('[data-bqg-open]');
+				var tpl    = button ? document.getElementById(button.getAttribute('data-bqg-open')) : null;
+				if (!tpl) { return; }
+
+				body.innerHTML = '';
+				body.appendChild(tpl.content.cloneNode(true));
+				body.scrollTop = 0;
+
+				var profile = body.querySelector('.bqg-profile');
+				if (profile) { dialog.setAttribute('aria-labelledby', profile.getAttribute('data-title')); dialog.removeAttribute('aria-label'); }
+
+				current = card;
+				var list = visibleCards();
+				var i    = list.indexOf(card);
+				var many = list.length > 1 && i !== -1;
+				prev.hidden = next.hidden = !many;
+				pos.textContent = many ? (i + 1) + ' / ' + list.length : '';
+
+				if (!dialog.open) {
+					if (dialog.showModal) { dialog.showModal(); } else { dialog.setAttribute('open', ''); }
+					document.documentElement.classList.add('bqg-lock');
+				}
+
+				var slug = card.getAttribute('data-slug');
+				if (slug && window.history && history.replaceState) { history.replaceState(null, '', '#' + slug); }
+				var close = dialog.querySelector('[data-bqg-close]');
+				if (close) { close.focus({ preventScroll: true }); }
+			}
+
+			function step(delta){
+				var list = visibleCards();
+				var i    = list.indexOf(current);
+				if (list.length < 2 || i === -1) { return; }
+				show(list[(i + delta + list.length) % list.length]);
+			}
+
+			function closeModal(){
+				if (dialog.close) { dialog.close(); } else { dialog.removeAttribute('open'); onClose(); }
+			}
+
+			function onClose(){
+				document.documentElement.classList.remove('bqg-lock');
+				if (current && window.history && history.replaceState && location.hash === '#' + current.getAttribute('data-slug')) {
+					history.replaceState(null, '', location.pathname + location.search);
+				}
+				var button = current ? current.querySelector('[data-bqg-open]') : null;
+				if (button) { button.focus({ preventScroll: true }); }
+				current = null;
+			}
+
+			dialog.addEventListener('close', onClose);
+
+			root.addEventListener('click', function(e){
+				var button = e.target.closest('[data-bqg-open]');
+				if (button && root.contains(button)) { show(button.closest('.bqg-card')); }
+			});
+
+			dialog.addEventListener('click', function(e){
+				if (e.target === dialog) { closeModal(); return; }
+				if (e.target.closest('[data-bqg-close]')) { closeModal(); }
+				else if (e.target.closest('[data-bqg-prev]')) { step(-1); }
+				else if (e.target.closest('[data-bqg-next]')) { step(1); }
+			});
+
+			dialog.addEventListener('keydown', function(e){
+				if (e.target.closest('a, input, textarea')) { return; }
+				if ('ArrowLeft' === e.key) { step(-1); e.preventDefault(); }
+				if ('ArrowRight' === e.key) { step(1); e.preventDefault(); }
+			});
+
+			// Lien direct vers un membre : /gouvernance/#claire-bonnefoy, à
+			// l'arrivée sur la page comme depuis un lien de la même page.
+			function openFromHash(){
+				var hash = decodeURIComponent((location.hash || '').slice(1));
+				if (!hash || (current && current.getAttribute('data-slug') === hash)) { return; }
+				var target = root.querySelector('.bqg-card.is-clickable[data-slug="' + hash.replace(/"/g, '') + '"]');
+				if (!target) { return; }
+				if (target.hidden) {
+					var cats = (target.getAttribute('data-cats') || '').split(' ');
+					var tab  = Array.prototype.filter.call(root.querySelectorAll('.bqg-filter'), function(b){ return cats.indexOf(b.getAttribute('data-filter')) !== -1; })[0];
+					if (tab) { tab.click(); }
+				}
+				target.scrollIntoView({ block: 'center' });
+				show(target);
+			}
+			openFromHash();
+			window.addEventListener('hashchange', openFromHash);
+
+			// Description tronquée sur la carte : fondu seulement si elle dépasse.
+			Array.prototype.forEach.call(root.querySelectorAll('.bqg-card.is-clickable .bqg-card__desc'), function(desc){
+				if (desc.scrollHeight > desc.clientHeight + 4) { desc.classList.add('is-clamped'); }
+			});
+		}
+
 		function boot(){
 			Array.prototype.forEach.call(document.querySelectorAll('.bqg-team'), initBlock);
+			Array.prototype.forEach.call(document.querySelectorAll('.bqg-team'), initModal);
 		}
 
 		if ('loading' === document.readyState) {
@@ -1199,5 +1664,6 @@ function bqg_front_js() {
 			boot();
 		}
 	})();
-	";
+	
+JS;
 }

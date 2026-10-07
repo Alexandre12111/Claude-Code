@@ -26,7 +26,7 @@ Dans les deux cas, les instances **Bureau** et **Conseil scientifique** sont cr�
 Un menu **Gouvernance** apparaît dans la colonne de gauche :
 
 - **Tous les membres** : la liste, avec aperçu des photos et tri manuel
-- **Ajouter un membre** : prénom et nom, photo, fonction, description, instance, ordre
+- **Ajouter un membre** : prénom et nom, photo, fonction, description, instance, ordre, et la **fiche détaillée** (profession, rôle dans l'association, parcours, CV en PDF, lien)
 - **Instances** : Bureau, Conseil scientifique, couleur des étiquettes
 - **Mode d'emploi** : rappel du shortcode et de ses options
 
@@ -52,6 +52,7 @@ Puis coller le shortcode dans une page :
 | `badges` | oui / non | oui |
 | `limite` | nombre | tous |
 | `ordre` | manuel / nom / recent | manuel |
+| `fenetre` | oui / non (fiche détaillée au clic) | oui |
 
 Exemples :
 
@@ -66,6 +67,35 @@ Exemples :
 Deux onglets seulement : **Bureau** et **Conseil scientifique**, dans cet ordre. Il n'y a pas de bouton « Tous » par défaut, on peut le rajouter avec `tous="oui"`.
 
 Au chargement de la page, c'est le Bureau qui s'affiche. Ce choix est calculé côté serveur, donc la bonne instance est déjà en place dans le HTML : pas de clignotement ni d'attente du JavaScript. Pour ouvrir sur une autre instance, utiliser `defaut="conseil-scientifique"` ou `defaut="tous"`.
+
+## La fiche détaillée (fenêtre au clic)
+
+Depuis la version 1.2.0, chaque membre peut avoir une fiche complète qui s'ouvre dans une fenêtre quand on clique sur sa carte. Les champs se remplissent dans le bloc **Fiche détaillée** de l'écran d'édition du membre :
+
+| Champ | Rôle |
+|---|---|
+| Profession | Le métier exercé en dehors de l'association, affiché dans un encadré sous la fonction |
+| Son rôle dans l'association | Pourquoi la personne est là, ce qu'elle apporte, mis en valeur sous forme de citation |
+| Parcours (CV texte) | Éditeur simple : intertitres, gras, italique, listes, liens |
+| CV en PDF | Choisi dans la médiathèque, seuls les fichiers PDF sont acceptés |
+| Lien | Profil LinkedIn ou page personnelle |
+
+La description courte existante s'affiche dans la fiche sous le titre « Présentation ».
+
+Une carte devient cliquable dès qu'au moins un de ces champs (ou la description) est rempli. Elle affiche alors un pied « Voir le profil », avec une pastille « CV » si un PDF est joint. Les cartes sans contenu supplémentaire restent statiques. Sur la grille, les descriptions trop longues sont coupées avec un léger fondu : le texte complet est dans la fiche.
+
+Dans la fenêtre :
+
+- colonne de gauche : portrait, boutons **Télécharger le CV** (avec le poids du fichier), **Ouvrir le CV**, **Profil LinkedIn** ou **Page personnelle** ;
+- colonne principale : instance, nom, fonction, profession, rôle dans l'association, présentation, parcours ;
+- flèches précédent et suivant, ou touches ← et →, pour passer d'un membre à l'autre parmi ceux visibles dans l'onglet actif, avec la position « 2 / 5 » ;
+- fermeture par la croix, la touche Échap ou un clic en dehors ; le focus revient sur la carte.
+
+Chaque fiche a son lien direct : `/gouvernance/#prenom-nom` (le slug du membre). Ouvrir ce lien affiche la page avec la fiche déjà ouverte, en basculant sur le bon onglet si besoin. Sur mobile, la fenêtre passe en plein écran.
+
+Pour désactiver la fenêtre et garder des cartes simples : `[bqp_gouvernance fenetre="non"]`.
+
+**RGPD** : un CV contient des données personnelles. Ne publier le PDF et le parcours qu'avec l'accord écrit de la personne, et retirer le fichier de la médiathèque si elle le demande. Un CV allégé (sans adresse ni téléphone) est préférable.
 
 ## Le recadrage des photos
 
@@ -89,3 +119,6 @@ Taille source conseillée : au moins 560 × 560 px, sujet centré et cadré en b
 - Les couleurs des filtres sont en `!important` : elles résistent aux règles de bouton du thème et d'Elementor.
 - Les retours à la ligne de la description sont conservés via `wpautop`, après échappement.
 - Les photos reçoivent un `alt` automatique du type « Portrait de Prénom Nom ».
+- La fiche détaillée utilise l'élément natif `<dialog>` : piège du focus, touche Échap et lecture par les lecteurs d'écran (`aria-labelledby` sur le nom) sont gérés par le navigateur. Le contenu de chaque fiche est rendu côté serveur dans un `<template>`, donc rien n'est chargé en AJAX.
+- Le parcours est filtré avec `wp_kses_post` (aucun script possible), l'engagement avec `sanitize_textarea_field`, le lien avec `esc_url_raw`. Le CV n'est conservé que si son type MIME est `application/pdf`.
+- Une colonne « Fiche détaillée » dans la liste des membres indique d'un coup d'œil les champs remplis (Profession, Rôle, Parcours, CV PDF).
