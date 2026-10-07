@@ -1,8 +1,8 @@
 # BQP Partenaires
 
-Plugin WordPress pour gérer et afficher les partenaires de boursequatrepoint.fr. Version 2.0.0.
+Plugin WordPress pour gérer et afficher les partenaires de boursequatrepoint.fr. Version 2.1.0.
 
-Les partenaires ne sont plus mélangés : **un bloc par catégorie** (Académiques, Institutionnels, Entreprises, Associations, Médias), chacun avec sa couleur, son pictogramme, son titre et son texte d'introduction. Un clic sur un partenaire ouvre sa **fiche détaillée** dans une fenêtre, comme pour la Gouvernance.
+Les partenaires ne sont plus mélangés : **un bloc par catégorie** (Académiques, Institutionnels, Entreprises, Associations, Médias), chacun avec sa couleur, son pictogramme, son titre et son texte d'introduction. Comme sur la page Bibliothèque, les catégories sont **repliées** : un clic sur une catégorie affiche ses partenaires, la page reste courte. Un clic sur un partenaire ouvre sa **fiche détaillée** dans une fenêtre, comme pour la Gouvernance.
 
 ## Installation
 
@@ -44,9 +44,21 @@ Puis coller le shortcode dans une page :
 [bqp_partenaires]
 ```
 
+## Les catégories repliées
+
+`[bqp_partenaires]` affiche d'abord une **carte par catégorie**, sur une rangée : pictogramme, titre, introduction, initiales des premiers partenaires et nombre de partenaires. Rien d'autre : la page reste courte.
+
+- un clic sur une carte **déplie la catégorie** juste sous la rangée : son titre, son introduction et ses partenaires ; la carte se colore et pointe vers le bloc ouvert ;
+- une seule catégorie est ouverte à la fois ; un nouveau clic, la croix ou la touche Échap la replient ;
+- `#partenaires-academiques` dans l'adresse ouvre directement cette catégorie, et le lien direct d'un partenaire ouvre sa catégorie puis sa fiche ;
+- sur mobile, les cartes deviennent des lignes compactes et la catégorie s'ouvre sous la ligne touchée ;
+- `ouvert="academiques"` ouvre une catégorie dès le chargement ; sans JavaScript, toutes les catégories restent visibles.
+
+Pour afficher tous les blocs dépliés les uns sous les autres, comme en 2.0 : `[bqp_partenaires replie="non"]`.
+
 ## Un bloc par catégorie
 
-`[bqp_partenaires]` affiche, dans l'ordre choisi :
+Avec `replie="non"`, `[bqp_partenaires]` affiche, dans l'ordre choisi :
 
 1. un **sommaire** : une pastille par catégorie (pictogramme, nom, nombre), qui fait défiler jusqu'au bloc ;
 2. **un bloc par catégorie** : pictogramme sur fond de couleur, titre (« Partenaires académiques »), introduction, nombre de partenaires, puis les cartes. Chaque bloc a sa couleur, reprise sur le filet des cartes : on distingue les catégories au premier coup d'œil.
@@ -84,7 +96,9 @@ La fenêtre montre à gauche le logo en grand, la catégorie, l'année, la local
 |---|---|---|
 | `categories` | slugs séparés par une virgule | toutes |
 | `affichage` | blocs / grille | blocs |
-| `sommaire` | oui / non (liens vers les blocs) | oui |
+| `replie` | oui / non (catégories repliées en cartes) | oui |
+| `ouvert` | identifiant de la catégorie ouverte au chargement | aucune |
+| `sommaire` | oui / non (liens vers les blocs, quand ils sont dépliés) | oui |
 | `intro` | oui / non (texte sous le titre du bloc) | oui |
 | `fenetre` | oui / non (fiche détaillée au clic) | oui |
 | `colonnes` | 2, 3 ou 4 | 3 |
@@ -122,9 +136,10 @@ Typographies : Cormorant Garamond pour les titres, Inter et Montserrat pour le t
 
 ## Testé
 
-Version 2.0.0, sur WordPress 6.8 avec le thème Hello Elementor et 17 partenaires de démonstration : migration depuis la 1.1 (titres, ordre, introductions et couleurs ajoutés sans écraser), cinq blocs dans l'ordre, sommaire et défilement vers un bloc, ouverture de la fiche, flèches limitées au bloc avec retour au début, Échap et clic en dehors, focus rendu à la carte, lien direct, bouton « Site » qui n'ouvre pas la fiche, carte simple sans fiche, affichage grille avec filtres et fiche, bloc unique avec `categories`, enregistrement des champs en administration, mobile 390 px sans débordement, aucune erreur JavaScript ni PHP.
+Versions 2.0.0 et 2.1.0, sur WordPress 6.8 avec le thème Hello Elementor et 17 partenaires de démonstration : migration depuis la 1.1 (titres, ordre, introductions et couleurs ajoutés sans écraser), cinq blocs dans l'ordre, sommaire et défilement vers un bloc, ouverture de la fiche, flèches limitées au bloc avec retour au début, Échap et clic en dehors, focus rendu à la carte, lien direct, bouton « Site » qui n'ouvre pas la fiche, carte simple sans fiche, affichage grille avec filtres et fiche, bloc unique avec `categories`, enregistrement des champs en administration, mobile 390 px sans débordement, aucune erreur JavaScript ni PHP. En 2.1 : catégories repliées au chargement, ouverture sous la bonne rangée (ordinateur et mobile), changement de catégorie, repli par la carte, la croix ou Échap (qui ferme d'abord la fiche si elle est ouverte), focus sur le titre à l'ouverture et rendu à la carte au repli, liens directs vers une catégorie et vers un partenaire d'une catégorie repliée, fiche ouverte depuis une catégorie dépliée avec le bon nom de bloc.
 
 ## Historique
 
+- **2.1.0** : catégories repliées par défaut, comme sur la page Bibliothèque : une carte par catégorie, un clic déplie ses partenaires sous la rangée ; options `replie` et `ouvert` ; lien direct vers une catégorie ; le lien direct d'un partenaire ouvre sa catégorie avant sa fiche
 - **2.0.0** : un bloc par catégorie avec sommaire, couleur, pictogramme, titre et introduction ; fiche détaillée dans une fenêtre (depuis, localisation, LinkedIn, domaines, notre partenariat, présentation) ; nouvelles options `affichage`, `sommaire`, `intro`, `fenetre` ; couleurs distinctes pour Associations et Médias ; correction du texte « Aucun logo » qui restait visible à côté d'un logo en administration
 - **1.1.0** : filtres bordeaux compacts, logos en grisaille

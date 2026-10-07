@@ -2,15 +2,16 @@
  * BQP Partenaires : gestion et affichage des partenaires.
  *
  * Un bloc par catégorie (Académiques, Institutionnels, Entreprises,
- * Associations, Médias), chacun avec sa couleur et son pictogramme, et une
- * fiche détaillée qui s'ouvre dans une fenêtre au clic sur un partenaire.
+ * Associations, Médias), chacun avec sa couleur et son pictogramme, replié
+ * en carte : un clic affiche ses partenaires. Une fiche détaillée s'ouvre
+ * dans une fenêtre au clic sur un partenaire.
  *
  * Compatible extension classique ET Code Snippets (aucune balise de fermeture
  * PHP, aucun hook d'activation : les catégories se créent toutes seules).
  *
  * Shortcode : [bqp_partenaires]
  *
- * Version : 2.0.0
+ * Version : 2.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! defined( 'BQP_PARTENAIRES_VERSION' ) ) {
-	define( 'BQP_PARTENAIRES_VERSION', '2.0.0' );
+	define( 'BQP_PARTENAIRES_VERSION', '2.1.0' );
 }
 if ( ! defined( 'BQP_PARTENAIRES_CPT' ) ) {
 	define( 'BQP_PARTENAIRES_CPT', 'bqp_partenaire' );
@@ -727,7 +728,9 @@ function bqp_render_help_page() {
 	$options = array(
 		array( 'categories', 'Limite l\'affichage à certaines catégories (slugs séparés par une virgule). Avec une seule catégorie, on obtient un seul bloc, à placer où l\'on veut.', 'toutes', '[bqp_partenaires categories="academiques"]' ),
 		array( 'affichage', 'blocs : un bloc par catégorie. grille : une seule grille avec des filtres, comme en version 1.', 'blocs', '[bqp_partenaires affichage="grille"]' ),
-		array( 'sommaire', 'Liens vers chaque bloc, en haut, quand il y en a plusieurs.', 'oui', '[bqp_partenaires sommaire="non"]' ),
+		array( 'replie', 'Catégories repliées : une carte par catégorie, un clic affiche ses partenaires. non : tous les blocs dépliés les uns sous les autres.', 'oui', '[bqp_partenaires replie="non"]' ),
+		array( 'ouvert', 'Catégorie ouverte au chargement, quand elles sont repliées (son identifiant).', 'aucune', '[bqp_partenaires ouvert="academiques"]' ),
+		array( 'sommaire', 'Blocs dépliés : liens vers chaque bloc, en haut.', 'oui', '[bqp_partenaires replie="non" sommaire="non"]' ),
 		array( 'intro', 'Affiche la description de la catégorie sous le titre du bloc.', 'oui', '[bqp_partenaires intro="non"]' ),
 		array( 'fenetre', 'Ouvre la fiche détaillée au clic sur un partenaire.', 'oui', '[bqp_partenaires fenetre="non"]' ),
 		array( 'colonnes', 'Nombre de colonnes sur grand écran : 2, 3 ou 4.', '3', '[bqp_partenaires colonnes="4"]' ),
@@ -1133,6 +1136,8 @@ function bqp_shortcode( $atts ) {
 		array(
 			'categories' => '',
 			'affichage'  => 'blocs',
+			'replie'     => 'oui',
+			'ouvert'     => '',
 			'sommaire'   => 'oui',
 			'intro'      => 'oui',
 			'fenetre'    => 'oui',
@@ -1264,9 +1269,13 @@ function bqp_shortcode( $atts ) {
 
 		$h_group = $titled ? 'h3' : 'h2';
 		$h_card  = $titled ? 'h4' : 'h3';
+		$fold    = $yes( $atts['replie'] ) && count( $groups ) > 1;
+		$open    = sanitize_title( $atts['ouvert'] );
+		$cats    = '';
+		$panels  = '';
 
-		// Sommaire : un accès direct à chaque bloc.
-		if ( count( $groups ) > 1 && $yes( $atts['sommaire'] ) ) {
+		// Sommaire : un accès direct à chaque bloc (blocs tous dépliés).
+		if ( ! $fold && count( $groups ) > 1 && $yes( $atts['sommaire'] ) ) {
 			$html .= '<nav class="bqp-toc" aria-label="Catégories de partenaires">';
 			foreach ( $groups as $group ) {
 				list( $term, $members ) = $group;
@@ -1282,23 +1291,51 @@ function bqp_shortcode( $atts ) {
 		foreach ( $groups as $group ) {
 			list( $term, $members ) = $group;
 			$color   = $term ? bqp_term_color( $term->term_id ) : bqp_palette()['bordeaux'];
-			$anchor  = 'partenaires-' . ( $term ? $term->slug : 'autres' ) . ( $instance > 1 ? '-' . $instance : '' );
+			$slug    = $term ? $term->slug : 'autres';
+			$anchor  = 'partenaires-' . $slug . ( $instance > 1 ? '-' . $instance : '' );
 			$heading = $term ? bqp_term_setting( $term, 'titre' ) : 'Autres partenaires';
 			$intro   = ( $term && $yes( $atts['intro'] ) ) ? trim( $term->description ) : '';
+			$icon    = $term ? bqp_term_setting( $term, 'icone' ) : 'etoile';
 			$n       = count( $members );
+			$is_open = $fold && $open === $slug;
+			$style   = esc_attr( bqp_cat_style( $color ) );
 
-			$html .= '<section class="bqp-group" id="' . esc_attr( $anchor ) . '" aria-labelledby="' . esc_attr( $anchor ) . '-titre" style="' . esc_attr( bqp_cat_style( $color ) ) . '">';
-			$html .= '<header class="bqp-group__head">';
-			$html .= '<span class="bqp-group__icon">' . bqp_icon_svg( $term ? bqp_term_setting( $term, 'icone' ) : 'etoile', 24 ) . '</span>';
-			$html .= '<div class="bqp-group__intro"><' . $h_group . ' class="bqp-group__title" id="' . esc_attr( $anchor ) . '-titre">' . esc_html( $heading ) . '</' . $h_group . '>'
+			// Replié : une carte par catégorie ; un clic déplie ses partenaires.
+			if ( $fold ) {
+				$faces = '';
+				foreach ( array_slice( $members, 0, 4 ) as $p ) {
+					$faces .= '<span class="bqp-cat__face">' . esc_html( bqp_initials( $p['name'] ) ) . '</span>';
+				}
+				if ( $n > 4 ) {
+					$faces .= '<span class="bqp-cat__face is-more">+' . (int) ( $n - 4 ) . '</span>';
+				}
+
+				$cats .= '<button type="button" class="bqp-cat' . ( $is_open ? ' is-on' : '' ) . '" aria-expanded="' . ( $is_open ? 'true' : 'false' ) . '" aria-controls="' . esc_attr( $anchor ) . '" data-bqp-cat style="' . $style . '">'
+					. '<span class="bqp-cat__icon">' . bqp_icon_svg( $icon, 22 ) . '</span>'
+					. '<span class="bqp-cat__title">' . esc_html( $heading ) . '</span>'
+					. ( $intro ? '<span class="bqp-cat__text">' . esc_html( $intro ) . '</span>' : '' )
+					. '<span class="bqp-cat__faces" aria-hidden="true">' . $faces . '</span>'
+					. '<span class="bqp-cat__foot">'
+					. '<span class="bqp-cat__count"><strong>' . (int) $n . '</strong> ' . _n( 'partenaire', 'partenaires', $n ) . '</span>'
+					. '<span class="bqp-cat__chevron"><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 8 10 12.5 14.5 8"/></svg></span></span>'
+					. '</button>';
+			}
+
+			$block  = '<section class="bqp-group' . ( $fold ? ' is-panel' : '' ) . '" id="' . esc_attr( $anchor ) . '" aria-labelledby="' . esc_attr( $anchor ) . '-titre" style="' . $style . '"' . ( $fold && ! $is_open ? ' hidden' : '' ) . '>';
+			$block .= '<header class="bqp-group__head">';
+			$block .= '<span class="bqp-group__icon">' . bqp_icon_svg( $icon, 24 ) . '</span>';
+			$block .= '<div class="bqp-group__intro"><' . $h_group . ' class="bqp-group__title" id="' . esc_attr( $anchor ) . '-titre" tabindex="-1">' . esc_html( $heading ) . '</' . $h_group . '>'
 				. ( $intro ? '<p class="bqp-group__text">' . esc_html( $intro ) . '</p>' : '' ) . '</div>';
 			if ( $show_nb ) {
-				$html .= '<span class="bqp-group__count"><strong>' . (int) $n . '</strong> ' . _n( 'partenaire', 'partenaires', $n ) . '</span>';
+				$block .= '<span class="bqp-group__count"><strong>' . (int) $n . '</strong> ' . _n( 'partenaire', 'partenaires', $n ) . '</span>';
 			}
-			$html .= '</header><div class="bqp-grid">';
+			if ( $fold ) {
+				$block .= '<button type="button" class="bqp-group__close" data-bqp-fold-close><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="screen-reader-text">Replier « ' . esc_html( $heading ) . ' »</span></button>';
+			}
+			$block .= '</header><div class="bqp-grid">';
 
 			foreach ( $members as $p ) {
-				$html .= bqp_render_card(
+				$block .= bqp_render_card(
 					$p,
 					array(
 						'popup'   => $popup,
@@ -1310,7 +1347,20 @@ function bqp_shortcode( $atts ) {
 				);
 			}
 
-			$html .= '</div></section>';
+			$block .= '</div></section>';
+
+			if ( $fold ) {
+				$panels .= $block;
+			} else {
+				$html .= $block;
+			}
+		}
+
+		if ( $fold ) {
+			$html .= '<p class="bqp-cats__hint">Cliquez sur une catégorie pour afficher ses partenaires.</p>';
+			$html .= '<div class="bqp-cats" data-bqp-cats>' . $cats . $panels . '</div>';
+			// Sans JavaScript, toutes les catégories restent lisibles.
+			$html .= '<noscript><style>.bqp-cats .bqp-group[hidden]{display:block !important;}</style></noscript>';
 		}
 	} else {
 		/* Une seule grille, avec les filtres par catégorie (affichage 1.x). */
@@ -1572,6 +1622,63 @@ function bqp_front_css() {
 		.bqp-partners .bqp-toc__item{flex:0 0 auto;white-space:nowrap;}
 	}
 
+	/* --- Catégories repliées : une carte par catégorie, à déplier --- */
+	.bqp-cats__hint{margin:4px 0 20px;text-align:center;font-family:var(--bqp-sans);font-size:.88rem;color:var(--bqp-muted);}
+	.bqp-cats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;align-items:stretch;}
+	@media (max-width:1100px){.bqp-cats{grid-template-columns:repeat(3,minmax(0,1fr));}}
+	@media (max-width:760px){.bqp-cats{grid-template-columns:repeat(2,minmax(0,1fr));}}
+	@media (max-width:480px){.bqp-cats{grid-template-columns:1fr;gap:10px;}}
+	.bqp-partners .bqp-cat,.bqp-partners .bqp-cat:hover,.bqp-partners .bqp-cat:focus{
+		position:relative;display:flex !important;flex-direction:column;align-items:flex-start;min-width:0;min-height:220px;margin:0 !important;padding:20px 20px 16px !important;
+		border:1px solid var(--bqp-line) !important;border-radius:16px !important;background:#fff !important;background-image:none !important;box-shadow:0 1px 2px rgba(49,2,12,.05) !important;
+		color:var(--bqp-ink) !important;font-family:var(--bqp-sans) !important;font-size:1rem !important;font-weight:400 !important;letter-spacing:0 !important;text-transform:none !important;line-height:1.3 !important;text-align:left !important;white-space:normal !important;
+		cursor:pointer;scroll-margin-top:110px;transition:transform .25s,box-shadow .25s,border-color .25s,background .25s;
+	}
+	.bqp-cat::before{content:"";position:absolute;left:20px;right:20px;top:-1px;height:3px;border-radius:0 0 3px 3px;background:var(--bqp-cat);}
+	.bqp-partners .bqp-cat:hover{transform:translateY(-3px);border-color:var(--bqp-cat-line) !important;box-shadow:0 24px 44px -30px rgba(49,2,12,.55) !important;}
+	.bqp-partners .bqp-cat:focus-visible{outline:3px solid var(--bqp-cat-line) !important;outline-offset:2px;}
+	.bqp-cat__icon{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:13px;background:var(--bqp-cat-soft);color:var(--bqp-cat);transition:background .25s,color .25s;}
+	.bqp-cat__title{margin:14px 0 0;font-family:var(--bqp-serif);font-size:1.3rem;font-weight:600;line-height:1.15;color:var(--bqp-bordeaux-dark);}
+	.bqp-cat__text{margin:8px 0 0;font-size:.8rem;line-height:1.5;color:#6a6a6a;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+	.bqp-cat__foot{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;margin-top:10px;}
+	.bqp-cat__faces{display:inline-flex;margin-top:auto;padding:16px 0 0 6px;}
+	.bqp-cat__face{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin-left:-6px;border:2px solid #fff;border-radius:50%;background:var(--bqp-cat-soft);color:var(--bqp-cat);font-size:.55rem;font-weight:700;letter-spacing:0;}
+	.bqp-cat__face.is-more{background:var(--bqp-cat);color:#fff;}
+	.bqp-cat__count{font-size:.74rem;color:var(--bqp-muted);white-space:nowrap;}
+	.bqp-cat__count strong{font-size:.92rem;color:var(--bqp-bordeaux-dark);}
+	.bqp-cat__chevron{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--bqp-cat-soft);color:var(--bqp-cat);transition:transform .25s,background .25s,color .25s;}
+	.bqp-partners .bqp-cat.is-on,.bqp-partners .bqp-cat.is-on:hover,.bqp-partners .bqp-cat.is-on:focus{border-color:var(--bqp-cat) !important;background:var(--bqp-cat) !important;background-image:linear-gradient(150deg,rgba(255,255,255,.12),rgba(0,0,0,.22)) !important;box-shadow:0 24px 44px -26px rgba(49,2,12,.7) !important;transform:none;}
+	.bqp-cat.is-on::before{display:none;}
+	.bqp-cat.is-on::after{content:"";position:absolute;left:50%;bottom:-9px;width:16px;height:16px;margin-left:-8px;background:var(--bqp-cat);transform:rotate(45deg);border-radius:2px;}
+	.bqp-cat.is-on .bqp-cat__icon{background:rgba(255,255,255,.16);color:#fff;}
+	.bqp-cat.is-on .bqp-cat__title,.bqp-cat.is-on .bqp-cat__count strong{color:#fff;}
+	.bqp-cat.is-on .bqp-cat__text,.bqp-cat.is-on .bqp-cat__count{color:rgba(255,255,255,.82);}
+	.bqp-cat.is-on .bqp-cat__face{border-color:var(--bqp-cat);background:rgba(255,255,255,.9);}
+	.bqp-cat.is-on .bqp-cat__chevron{background:rgba(255,255,255,.18);color:#fff;transform:rotate(180deg);}
+	.bqp-cats .bqp-group{grid-column:1 / -1;margin:6px 0 10px;animation:bqp-in .35s cubic-bezier(.2,.7,.3,1);}
+	.bqp-cats .bqp-group[hidden]{display:none;}
+	.bqp-cats .bqp-group::before{display:none;}
+	.bqp-cats .bqp-group{border-top:3px solid var(--bqp-cat);}
+	.bqp-partners .bqp-group__title{outline:none;}
+	.bqp-partners .bqp-group__close,.bqp-partners .bqp-group__close:hover,.bqp-partners .bqp-group__close:focus{
+		flex:0 0 auto;display:inline-flex !important;align-items:center;justify-content:center;width:42px;height:42px;margin:0 !important;padding:0 !important;
+		border:1px solid var(--bqp-line) !important;border-radius:50% !important;background:#fff !important;background-image:none !important;box-shadow:none !important;color:var(--bqp-muted) !important;cursor:pointer;transition:border-color .2s,color .2s;
+	}
+	.bqp-partners .bqp-group__close:hover{border-color:var(--bqp-cat) !important;color:var(--bqp-cat) !important;}
+	.bqp-partners .bqp-group__close:focus-visible{outline:2px solid var(--bqp-cat) !important;outline-offset:2px;}
+	@media (max-width:480px){
+		.bqp-partners .bqp-cat,.bqp-partners .bqp-cat:hover,.bqp-partners .bqp-cat:focus{display:grid !important;grid-template-columns:auto 1fr auto;align-items:center;gap:2px 14px;min-height:0;padding:14px 16px !important;}
+		.bqp-cat__icon{grid-row:1 / 3;}
+		.bqp-cat__title{margin:0;font-size:1.15rem;}
+		.bqp-cat__text,.bqp-cat__faces{display:none;}
+		.bqp-cat__foot{display:contents;}
+		.bqp-cat__count{grid-column:2;}
+		.bqp-cat__chevron{grid-column:3;grid-row:1 / 3;}
+		.bqp-cat.is-on::after{bottom:-7px;width:12px;height:12px;margin-left:-6px;}
+		.bqp-cats .bqp-group__head{position:relative;padding-right:48px;}
+		.bqp-partners .bqp-group__close{position:absolute;top:0;right:0;}
+	}
+
 	/* --- Carte cliquable --- */
 	.bqp-card__meta{margin:-4px 0 0;font-family:var(--bqp-sans);font-size:.76rem;font-weight:600;color:var(--bqp-cat);}
 	.bqp-card.is-clickable{cursor:pointer;}
@@ -1744,6 +1851,80 @@ function bqp_front_js() {
 		});
 	}
 
+	/* Catégories repliées : une carte ouvre ses partenaires sous sa rangée */
+	function initFold(root){
+		var grid = root.querySelector('[data-bqp-cats]');
+		if (!grid) { return; }
+
+		function cardFor(panel){ return grid.querySelector('[aria-controls="' + panel.id + '"]'); }
+
+		function place(card, panel){
+			var top = card.offsetTop, last = card;
+			each(grid.querySelectorAll('.bqp-cat'), function(c){ if (c.offsetTop === top) { last = c; } });
+			if (last.nextElementSibling !== panel) { grid.insertBefore(panel, last.nextElementSibling); }
+		}
+
+		function toggle(card, focus, force){
+			var panel = document.getElementById(card.getAttribute('aria-controls'));
+			var open  = (undefined !== force) ? force : 'true' !== card.getAttribute('aria-expanded');
+			each(grid.querySelectorAll('.bqp-cat'), function(c){ c.setAttribute('aria-expanded', 'false'); c.classList.remove('is-on'); });
+			each(grid.querySelectorAll('.bqp-group'), function(p){ p.hidden = true; });
+			if (!open || !panel) { return; }
+			card.setAttribute('aria-expanded', 'true');
+			card.classList.add('is-on');
+			place(card, panel);
+			panel.hidden = false;
+			if (!focus) { return; }
+			var title = panel.querySelector('.bqp-group__title');
+			if (title) { title.focus({ preventScroll: true }); }
+			var y = card.getBoundingClientRect().top;
+			if (y < 0 || y > window.innerHeight * 0.45) { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+		}
+
+		// Ouverture d'une catégorie depuis la fiche d'un partenaire (lien direct).
+		root.bqpOpenGroup = function(panel){ var c = cardFor(panel); if (c) { toggle(c, false, true); } };
+
+		grid.addEventListener('click', function(e){
+			var card = e.target.closest('[data-bqp-cat]');
+			if (card) { toggle(card, true); return; }
+			var close = e.target.closest('[data-bqp-fold-close]');
+			if (close) {
+				var c = cardFor(close.closest('.bqp-group'));
+				if (c) { toggle(c, false, false); c.focus(); }
+			}
+		});
+
+		grid.addEventListener('keydown', function(e){
+			if ('Escape' !== e.key || document.querySelector('.bqp-modal[open]')) { return; }
+			var panel = e.target.closest('.bqp-group');
+			var c = panel ? cardFor(panel) : null;
+			if (c) { toggle(c, false, false); c.focus(); }
+		});
+
+		var timer = null;
+		function replace(){
+			var card = grid.querySelector('.bqp-cat[aria-expanded="true"]');
+			var panel = card ? document.getElementById(card.getAttribute('aria-controls')) : null;
+			if (!panel) { return; }
+			panel.hidden = true;
+			place(card, panel);
+			panel.hidden = false;
+		}
+		window.addEventListener('resize', function(){ clearTimeout(timer); timer = setTimeout(replace, 150); });
+		replace();
+
+		// Lien direct vers une catégorie : /partenaires/#partenaires-academiques.
+		function openFromHash(){
+			var id = decodeURIComponent((location.hash || '').slice(1));
+			var panel = id ? document.getElementById(id) : null;
+			if (!panel || !grid.contains(panel) || !panel.classList.contains('bqp-group')) { return; }
+			var c = cardFor(panel);
+			if (c) { toggle(c, false, true); c.scrollIntoView({ block: 'start' }); }
+		}
+		openFromHash();
+		window.addEventListener('hashchange', openFromHash);
+	}
+
 	/* Fiche du partenaire, dans une fenêtre */
 	function initModal(root){
 		var dialog = root.querySelector('.bqp-modal');
@@ -1843,6 +2024,8 @@ function bqp_front_js() {
 			if (!hash || (current && current.getAttribute('data-slug') === hash)) { return; }
 			var target = root.querySelector('.bqp-card.is-clickable[data-slug="' + hash.replace(/"/g, '') + '"]');
 			if (!target) { return; }
+			var group = target.closest('.bqp-group');
+			if (group && group.hidden && root.bqpOpenGroup) { root.bqpOpenGroup(group); }
 			if (target.hidden) {
 				var cats = (target.getAttribute('data-cats') || '').split(' ');
 				var tab  = Array.prototype.filter.call(root.querySelectorAll('.bqp-filter'), function(b){ return cats.indexOf(b.getAttribute('data-filter')) !== -1; })[0];
@@ -1859,6 +2042,7 @@ function bqp_front_js() {
 		each(document.querySelectorAll('.bqp-partners'), function(root){
 			initFilters(root);
 			initToc(root);
+			initFold(root);
 			initModal(root);
 		});
 	}
