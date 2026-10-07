@@ -1,6 +1,6 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.3.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.4.0.
 
 Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit une barre de recherche simple ou avancée, les 5 espaces à déplier, le catalogue filtré et l'annuaire des auteurs et organisations.
 
@@ -178,13 +178,13 @@ La page Bibliothèque complète : recherche simple ou avancée, 5 espaces à dé
 
 ### `[bqp_vitrine]`
 
-Pour l'accueil : la bibliothèque mise en avant, sans surcharger la page.
+Pour l'accueil : la bibliothèque mise en avant, dans le même design que la page Bibliothèque.
 
-- en-tête (« Bibliothèque numérique », titre, texte) et bouton « Explorer la bibliothèque »
-- onglets : **Nouveautés**, puis les quatre blocs numérotés (ou les cinq thématiques)
-- **3 documents** par onglet, en cartes « En savoir plus »
-- sous chaque onglet, la description du bloc et **« En savoir plus sur « … » »** vers la page Bibliothèque filtrée
+- **bandeau bordeaux** : titre, texte, chiffres clés, champ de recherche (qui mène aux résultats de la page Bibliothèque), bouton « Explorer la bibliothèque » et lien « Recherche avancée » (la page Bibliothèque s'ouvre alors en mode avancé)
+- **les espaces en cartes numérotées**, qui servent d'onglets et chevauchent le bas du bandeau : Nouveautés, puis les quatre collections (ou les cinq thématiques) avec leur nombre de documents ; la carte choisie se colore et pointe vers son panneau
+- **le panneau de l'onglet** : présentation de l'espace, bouton « Voir les N documents », rubriques numérotées en raccourcis (1.1, 1.2…), puis **3 documents** en cartes « En savoir plus »
 - changement d'onglet instantané (tout est déjà dans la page), navigation au clavier avec les flèches ; les onglets sans document sont masqués
+- sur mobile, les cartes défilent horizontalement et les rubriques aussi : la page reste courte
 
 | Attribut | Valeurs |
 |---|---|
@@ -192,6 +192,8 @@ Pour l'accueil : la bibliothèque mise en avant, sans surcharger la page.
 | `onglets` | `collections` (défaut) ou `themes` |
 | `titre`, `texte`, `bouton` | textes de l'en-tête ; vide pour les masquer |
 | `nouveautes` | `non` pour retirer l'onglet Nouveautés |
+| `recherche` | `non` pour retirer le champ de recherche du bandeau |
+| `rubriques` | `non` pour retirer les raccourcis vers les rubriques |
 
 ### `[bqp_personnes]`
 
@@ -231,6 +233,7 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 
 ## Historique
 
+- **3.4.0** : vitrine `[bqp_vitrine]` au design de la page Bibliothèque : bandeau bordeaux avec recherche et lien « Recherche avancée », espaces en cartes numérotées comme onglets, panneau avec rubriques en raccourcis et « Voir les N documents » ; le lien `#recherche-avancee` ouvre la page Bibliothèque en mode avancé
 - **3.3.0** : page Bibliothèque simplifiée. Une seule barre de recherche en haut, avec un sélecteur « Recherche simple / Recherche avancée » (période de… à…, compteur de critères, ouverture automatique quand un filtre est actif) ; la barre de filtres du catalogue disparaît, remplacée par le nombre de résultats et « Trier par ». Les 5 blocs deviennent 5 cartes compactes à déplier : espace, puis rubriques, puis sous-catégories, ouverts d'avance selon le filtre en cours. Accès rapide « Lauréats ». Pastilles « Filtres actifs » restylées, lien « Effacer les filtres » quand aucun document ne correspond
 - **3.2.0** : refonte du design. Page Bibliothèque : en-tête de recherche avec accès transversaux et chiffres clés ; blocs en 2 × 2 avec numéro, total, rubriques, éléments en pastilles, regroupements en liens, encart « Page dédiée » avec monogramme et « Explorer » en pied ; bloc 5 en grille de thématiques et raccourcis « Autres filtres ». Filtres : barre compacte, filtre actif en bordeaux, application immédiate partout, « Effacer les filtres » et « Trier par ». Fiche : en-tête pleine largeur (nature, rubrique numérotée, titre H1, auteurs avec initiales, date, accès, résumé, action principale, Partager), couverture ou couverture générée aux couleurs du bloc, texte à 70 caractères par ligne, encadré Informations qui reste visible, bloc « Citer », documents associés en cartes (sinon « Dans la même rubrique ») ; le titre du thème Hello est masqué pour garder un seul H1
 - **3.1.0** : listes en cartes, « Afficher plus » à la place de la pagination, onglets de sous-catégories, shortcode `[bqp_vitrine]` pour l'accueil, nouvelles options dans le Générateur
