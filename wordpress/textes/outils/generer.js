@@ -58,14 +58,16 @@ function cellule(paragraphes, largeur, opts = {}) {
     margins: { top: 70, bottom: 70, left: 100, right: 100 }, verticalAlign: VerticalAlign.TOP,
   });
 }
+// editable : true = dernière colonne à remplir ; tableau d'indices = colonnes modifiables ; false = aucune.
 function tableau(colonnes, titres, lignes, editable = true) {
+  const modifiable = i => Array.isArray(editable) ? editable.includes(i) : (editable && i === titres.length - 1);
   const entete = new TableRow({
     tableHeader: true, cantSplit: true,
-    children: titres.map((x, i) => cellule([p(t(x, { bold: true, color: 'FFFFFF', size: 18 }))], colonnes[i], { fond: editable && i === titres.length - 1 ? '2E5E49' : SAPIN })),
+    children: titres.map((x, i) => cellule([p(t(x, { bold: true, color: 'FFFFFF', size: 18 }))], colonnes[i], { fond: modifiable(i) ? '2E5E49' : SAPIN })),
   });
   return new Table({
     width: { size: LARGEUR, type: WidthType.DXA }, columnWidths: colonnes, layout: TableLayoutType.FIXED,
-    rows: [entete, ...lignes.map(cs => new TableRow({ cantSplit: true, children: cs.map((c, i) => cellule(c, colonnes[i], { fond: editable && i === cs.length - 1 ? CREME : undefined })) }))],
+    rows: [entete, ...lignes.map(cs => new TableRow({ cantSplit: true, children: cs.map((c, i) => cellule(c, colonnes[i], { fond: modifiable(i) ? CREME : undefined })) }))],
   });
 }
 const ref = r => [p(t(r, { bold: true, size: 17, color: SAPIN }))];
@@ -81,19 +83,26 @@ enfants.push(
   new Paragraph({ spacing: { after: 120 }, children: [t(TOUT ? 'Textes du site internet' : 'Textes des pages du site', { size: 56, bold: true })] }),
   new Paragraph({ spacing: { after: 600 }, children: [t('Texte der Website · relecture et modifications', { size: 28, color: GRIS })] }),
 );
-const consignes = [
+const consignes = TOUT ? [
   ['Mode d’emploi', [
     'Écrivez le nouveau texte dans la colonne de droite « Modification ». Si le texte actuel convient, laissez la case vide.',
-    'Vous pouvez écrire dans la langue de votre choix : nous adaptons ensuite le texte dans les trois langues du site. Pour corriger une seule langue (une traduction par exemple), précisez la langue au début de la case : « EN : … ».',
-    'Ne modifiez pas les colonnes « Deutsch », « Français » et « English », ne supprimez aucune ligne et gardez la colonne « Réf. » : elle nous permet de retrouver chaque texte sur le site.',
-    'Les mots en italique s’affichent aussi en italique sur le site (par exemple dans les grands titres). Pour mettre un mot en italique, mettez le simplement en italique dans Word.',
+    'Vous pouvez écrire en allemand ou en français : nous adaptons ensuite le texte dans les trois langues du site.',
+    'Ne supprimez aucune ligne et gardez la colonne « Réf. » : elle nous permet de retrouver chaque texte sur le site.',
+    'Pour une remarque qui n’est pas un texte (photo à changer, section à retirer…), écrivez dans la dernière partie « Autres demandes ».',
+  ]],
+] : [
+  ['Mode d’emploi', [
+    'Corrigez le texte directement dans la case de la langue concernée (colonnes « Deutsch », « Français », « English », sur fond crème). Ce qui est écrit dans chaque case est ce qui s’affichera sur le site dans cette langue.',
+    'Si un texte convient, ne touchez à rien. Si vous ne corrigez qu’une langue, nous vous signalerons les traductions à adapter dans les autres.',
+    'Ne supprimez aucune ligne et ne modifiez pas les colonnes « Réf. » et « Élément » : elles nous permettent de retrouver chaque texte sur le site.',
+    'Les mots en italique s’affichent aussi en italique sur le site (par exemple dans les grands titres). Pour mettre un mot en italique, mettez le simplement en italique dans Word. Un retour à la ligne dans une case donne un retour à la ligne sur le site.',
     'Pour une remarque qui n’est pas un texte (photo à changer, section à retirer…), ajoutez un commentaire Word ou écrivez dans la dernière partie « Autres demandes ».',
   ]],
   ['Anleitung', [
-    'Schreiben Sie den neuen Text in die rechte Spalte « Modification ». Passt der Text, lassen Sie das Feld leer.',
-    'Sie können in der Sprache Ihrer Wahl schreiben: Wir übernehmen die Änderung in alle drei Sprachen der Website. Um nur eine Sprache zu korrigieren (z. B. eine Übersetzung), geben Sie die Sprache am Anfang an: « EN: … ».',
-    'Bitte die Spalten « Deutsch », « Français » und « English » nicht ändern, keine Zeilen löschen und die Spalte « Réf. » behalten: Damit finden wir jeden Text auf der Website wieder.',
-    'Kursive Wörter erscheinen auch auf der Website kursiv (z. B. in den grossen Titeln). Für ein kursives Wort formatieren Sie es in Word einfach kursiv.',
+    'Korrigieren Sie den Text direkt im Feld der jeweiligen Sprache (Spalten « Deutsch », « Français », « English », cremefarben). Was in einem Feld steht, erscheint so auf der Website in dieser Sprache.',
+    'Passt ein Text, ändern Sie nichts. Korrigieren Sie nur eine Sprache, weisen wir Sie auf die anzupassenden Übersetzungen hin.',
+    'Bitte keine Zeilen löschen und die Spalten « Réf. » und « Élément » nicht ändern: Damit finden wir jeden Text auf der Website wieder.',
+    'Kursive Wörter erscheinen auch auf der Website kursiv (z. B. in den grossen Titeln). Für ein kursives Wort formatieren Sie es in Word einfach kursiv. Ein Zeilenumbruch im Feld ergibt einen Zeilenumbruch auf der Website.',
     'Für Hinweise, die keinen Text betreffen (Foto ersetzen, Abschnitt entfernen …), fügen Sie einen Word‑Kommentar ein oder schreiben Sie im letzten Teil « Autres demandes ».',
   ]],
 ];
@@ -121,8 +130,8 @@ enfants.push(tableau([4200, 8200, 2998], ['Partie', 'Deutsch · Français · Eng
   sommaire.map(r => [[p(t(r[0], { bold: true, size: 18 }))], [p(t(r[1], { size: 18 }))], [p(t(r[2], { size: 18, color: SAPIN }))]]), false));
 
 // Pages
-const COLS = [900, 1900, 3150, 3150, 3150, 3148];
-const TITRES = ['Réf.', 'Élément', 'Deutsch (actuel)', 'Français (actuel)', 'English (actuel)', 'Modification'];
+const COLS = [900, 1900, 4200, 4199, 4199];
+const TITRES = ['Réf.', 'Élément', 'Deutsch', 'Français', 'English'];
 data.pages.forEach(pg => {
   enfants.push(new Paragraph({ children: [new PageBreak()] }));
   enfants.push(titreSection(`${NOMS_PAGES[pg.code] || pg.titre_fr} · ${pg.titre_de}`, HeadingLevel.HEADING_1));
@@ -131,8 +140,8 @@ data.pages.forEach(pg => {
     const nom = brut(s.titre);
     enfants.push(titreSection(`Section ${i + 1} · ${s.bloc}${nom ? ' · ' + nom : ''}`, HeadingLevel.HEADING_2));
     enfants.push(tableau(COLS, TITRES, s.lignes.map(l => [
-      ref(l.ref), [p(t(l.element, { size: 17, color: GRIS }))], [p(runs(l.de))], [p(runs(l.fr))], [p(runs(l.en))], vide(),
-    ])));
+      ref(l.ref), [p(t(l.element, { size: 17, color: GRIS }))], [p(runs(l.de))], [p(runs(l.fr))], [p(runs(l.en))],
+    ]), [2, 3, 4]));
   });
 });
 
