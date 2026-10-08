@@ -82,6 +82,19 @@ Points techniques :
 - côté serveur, les champs d'un autre profil ne sont ni exigés, ni validés, ni inclus dans l'e-mail ;
 - l'objet de l'e-mail reçoit le profil en suffixe, et le profil est enregistré avec le message archivé.
 
+## Design (version 1.3.0)
+
+Le formulaire reprend l'univers des blocs Partenaires, Gouvernance et Bibliothèque :
+
+- **En-tête teinté** : pictogramme bordeaux plein, surtitre en capitales (« Nous écrire » par défaut), titre en Cormorant Garamond et introduction. Après l'envoi, le pictogramme devient une coche ;
+- **Profils en tuiles** : chaque profil est une carte avec son pictogramme (Candidat, Adhérent, Donateur, Entreprise ou mécène, Partenaire, Presse et médias, Demande générale) et une coche. La tuile active passe en bordeaux plein. Sous les tuiles, un encadré indique à quel service le message sera transmis ;
+- **Champs** : coins arrondis, fond légèrement teinté, libellé qui passe en bordeaux quand on remplit le champ, flèche bordeaux sur les listes déroulantes ;
+- **Pièce jointe** : zone en pointillés entièrement cliquable, avec le nom du fichier choisi, les formats acceptés et le poids maximum ;
+- **Pied de carte** : la mention de confidentialité à gauche, le bouton d'envoi arrondi avec sa flèche à droite. Le libellé du bouton suit le profil choisi ;
+- **Messages** : encadré d'erreurs avec titre, panneau « Message envoyé » avec un lien pour écrire un nouveau message.
+
+La mise en page s'adapte à **la largeur du formulaire** et non à celle de l'écran (requêtes de conteneur) : posé dans une colonne Elementor à côté des coordonnées, il passe de lui-même en version compacte.
+
 ## Options du shortcode
 
 | Option | Rôle | Exemple |
@@ -90,6 +103,7 @@ Points techniques :
 | `titre` | Remplace ou masque le titre | `[bqp_formulaire id="12" titre="non"]` |
 | `carte` | Carte blanche encadrée, oui ou non | `[bqp_formulaire id="12" carte="non"]` |
 | `colonnes` | `1` force un champ par ligne, quelles que soient les largeurs réglées | `[bqp_formulaire id="12" colonnes="1"]` |
+| `surtitre` | Petit texte au-dessus du titre, ou `non` pour le retirer | `[bqp_formulaire id="12" surtitre="Candidater"]` |
 
 Sans `id`, le premier formulaire publié est affiché.
 
