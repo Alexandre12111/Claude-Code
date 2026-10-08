@@ -1,6 +1,6 @@
 # BQP Bibliothèque
 
-Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.5.0.
+Bibliothèque numérique de la Bourse Jean-Michel Quatrepoint. Version 3.6.0.
 
 Type de contenu Document, classement qui reprend **à l'identique l'arborescence du client** (6 familles au lieu de 9), gestion visuelle de l'arborescence, sélection simple des catégories dans chaque document, générateur de shortcodes, et **une seule page Bibliothèque** qui réunit une barre de recherche simple ou avancée, les 5 espaces à déplier, le catalogue filtré et l'annuaire des auteurs et organisations.
 
@@ -39,7 +39,7 @@ Elle contient, de haut en bas :
 
 ### Les espaces : un clic, puis un autre
 
-Les 5 grands espaces s'affichent en cartes compactes (numéro, nom, description, nombre de documents et de rubriques). On descend dans l'arborescence au clic, sans rien charger :
+Les 5 grands espaces s'affichent en cartes, dans le même design que les catégories de partenaires et les instances de la gouvernance : bandeau teinté de la couleur de l'espace avec son numéro (« 01 ») sur fond plein et le nombre de documents en grand, puis le nom, la description, le nombre de rubriques, et en pied « Découvrir » (qui devient « Replier » en couleur quand l'espace est ouvert). Sur tablette, 2 ou 3 cartes par ligne ; sur mobile, des lignes compactes (numéro, nom, rubriques, documents). On descend dans l'arborescence au clic, sans rien charger :
 
 1. **un espace** ouvre son panneau sous la rangée de cartes : description, bouton « Voir les N documents », et ses rubriques numérotées (1.1, 1.2…) ;
 2. **une rubrique** se déplie : « Tous les documents », puis ses sous-catégories en pastilles et ses regroupements (« Par lauréat », « Par année ») ; une rubrique sans sous-catégorie mène directement à ses documents ;
@@ -242,6 +242,7 @@ Identifiants des éléments : préfixe de la rubrique, car un même nom revient 
 
 ## Historique
 
+- **3.6.0** : cartes des 5 espaces au design des Partenaires et de la Gouvernance (bandeau coloré, numéro sur fond plein, nombre de documents en grand, « Découvrir » / « Replier ») ; panneau ouvert avec le numéro de l'espace et un fond teinté ; grille adaptée aux tablettes
 - **3.5.0** : `[bqp_documents]` au design de la page Bibliothèque : en-tête aux couleurs de l'espace (numéro, présentation, chiffres, recherche dans la collection, lien vers la bibliothèque), rubriques en cartes avec ligne « Affiner », nombre de résultats et tri ; recherche et tri sans rechargement ; options `entete`, `recherche`, `lien`, `outils`
 - **3.4.0** : vitrine `[bqp_vitrine]` au design de la page Bibliothèque : bandeau bordeaux avec recherche et lien « Recherche avancée », espaces en cartes numérotées comme onglets, panneau avec rubriques en raccourcis et « Voir les N documents » ; le lien `#recherche-avancee` ouvre la page Bibliothèque en mode avancé
 - **3.3.0** : page Bibliothèque simplifiée. Une seule barre de recherche en haut, avec un sélecteur « Recherche simple / Recherche avancée » (période de… à…, compteur de critères, ouverture automatique quand un filtre est actif) ; la barre de filtres du catalogue disparaît, remplacée par le nombre de résultats et « Trier par ». Les 5 blocs deviennent 5 cartes compactes à déplier : espace, puis rubriques, puis sous-catégories, ouverts d'avance selon le filtre en cours. Accès rapide « Lauréats ». Pastilles « Filtres actifs » restylées, lien « Effacer les filtres » quand aucun document ne correspond
