@@ -1,5 +1,6 @@
 // Document Word des textes du site Confiserie Schiesser, à faire relire et modifier par le client.
-// Usage : node generer.js textes.json sortie.docx
+// Usage : node generer.js textes.json sortie.docx [--tout]
+// Par défaut : textes des pages en allemand, français et anglais. --tout ajoute la carte du Tea Room et les produits.
 const fs = require('fs');
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, ShadingType,
@@ -8,6 +9,7 @@ const {
 } = require('docx');
 
 const data = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+const TOUT = process.argv.includes('--tout');
 const SAPIN = '174633', CHOCO = '3B2A20', GRIS = '6B625B', CREME = 'FBF6EC', LIGNE = 'D9CFC2', BEIGE = 'F3EDE4';
 const POLICE = 'Arial';
 
@@ -76,21 +78,21 @@ const titreSection = (texte, niveau) => new Paragraph({ heading: niveau, childre
 // Page de garde
 enfants.push(
   new Paragraph({ spacing: { before: 1400, after: 120 }, children: [t('CONFISERIE SCHIESSER · BASEL', { size: 20, bold: true, color: SAPIN })] }),
-  new Paragraph({ spacing: { after: 120 }, children: [t('Textes du site internet', { size: 56, bold: true })] }),
+  new Paragraph({ spacing: { after: 120 }, children: [t(TOUT ? 'Textes du site internet' : 'Textes des pages du site', { size: 56, bold: true })] }),
   new Paragraph({ spacing: { after: 600 }, children: [t('Texte der Website · relecture et modifications', { size: 28, color: GRIS })] }),
 );
 const consignes = [
   ['Mode d’emploi', [
     'Écrivez le nouveau texte dans la colonne de droite « Modification ». Si le texte actuel convient, laissez la case vide.',
-    'Vous pouvez écrire en allemand ou en français : nous adaptons ensuite le texte dans les trois langues du site (allemand, français, anglais).',
-    'Ne modifiez pas les colonnes « Deutsch » et « Français », ne supprimez aucune ligne et gardez la colonne « Réf. » : elle nous permet de retrouver chaque texte sur le site.',
+    'Vous pouvez écrire dans la langue de votre choix : nous adaptons ensuite le texte dans les trois langues du site. Pour corriger une seule langue (une traduction par exemple), précisez la langue au début de la case : « EN : … ».',
+    'Ne modifiez pas les colonnes « Deutsch », « Français » et « English », ne supprimez aucune ligne et gardez la colonne « Réf. » : elle nous permet de retrouver chaque texte sur le site.',
     'Les mots en italique s’affichent aussi en italique sur le site (par exemple dans les grands titres). Pour mettre un mot en italique, mettez le simplement en italique dans Word.',
     'Pour une remarque qui n’est pas un texte (photo à changer, section à retirer…), ajoutez un commentaire Word ou écrivez dans la dernière partie « Autres demandes ».',
   ]],
   ['Anleitung', [
     'Schreiben Sie den neuen Text in die rechte Spalte « Modification ». Passt der Text, lassen Sie das Feld leer.',
-    'Sie können auf Deutsch oder Französisch schreiben: Wir übernehmen die Änderung in alle drei Sprachen der Website (Deutsch, Französisch, Englisch).',
-    'Bitte die Spalten « Deutsch » und « Français » nicht ändern, keine Zeilen löschen und die Spalte « Réf. » behalten: Damit finden wir jeden Text auf der Website wieder.',
+    'Sie können in der Sprache Ihrer Wahl schreiben: Wir übernehmen die Änderung in alle drei Sprachen der Website. Um nur eine Sprache zu korrigieren (z. B. eine Übersetzung), geben Sie die Sprache am Anfang an: « EN: … ».',
+    'Bitte die Spalten « Deutsch », « Français » und « English » nicht ändern, keine Zeilen löschen und die Spalte « Réf. » behalten: Damit finden wir jeden Text auf der Website wieder.',
     'Kursive Wörter erscheinen auch auf der Website kursiv (z. B. in den grossen Titeln). Für ein kursives Wort formatieren Sie es in Word einfach kursiv.',
     'Für Hinweise, die keinen Text betreffen (Foto ersetzen, Abschnitt entfernen …), fügen Sie einen Word‑Kommentar ein oder schreiben Sie im letzten Teil « Autres demandes ».',
   ]],
@@ -99,7 +101,7 @@ for (const [titre, points] of consignes) {
   enfants.push(new Paragraph({ spacing: { before: 200, after: 100 }, children: [t(titre, { size: 24, bold: true, color: SAPIN })] }));
   points.forEach(x => enfants.push(new Paragraph({ numbering: { reference: 'puces', level: 0 }, spacing: { after: 80 }, children: [t(x, { size: 20 })] })));
 }
-enfants.push(new Paragraph({ spacing: { before: 300 }, children: [t('Textes du site au 8 octobre 2026. Les prix de la carte et des produits se modifient aussi ici. Pour les horaires, l’adresse ou le téléphone, écrivez le simplement dans « Autres demandes ». Les titres et descriptions Google (référencement) sont adaptés par nos soins.', { size: 18, italics: true, color: GRIS })] }));
+enfants.push(new Paragraph({ spacing: { before: 300 }, children: [t(TOUT ? 'Textes du site au 8 octobre 2026. Les prix de la carte et des produits se modifient aussi ici. Pour les horaires, l’adresse ou le téléphone, écrivez le simplement dans « Autres demandes ». Les titres et descriptions Google (référencement) sont adaptés par nos soins.' : 'Textes des pages au 8 octobre 2026. La carte du Tea Room et les produits de la boutique feront l’objet d’un document séparé. Pour les horaires, l’adresse ou le téléphone, écrivez le simplement dans « Autres demandes ». Les titres et descriptions Google (référencement) sont adaptés par nos soins.', { size: 18, italics: true, color: GRIS })] }));
 
 // Sommaire
 enfants.push(new Paragraph({ children: [new PageBreak()] }), titreSection('Sommaire · Inhalt', HeadingLevel.HEADING_1));
@@ -107,32 +109,35 @@ const NOMS_PAGES = { A: 'Page d’accueil', C: 'Confiserie (boutique)', T: 'Tea 
 const sommaire = [];
 data.pages.forEach(pg => {
   const lignes = pg.sections.flatMap(s => s.lignes);
-  sommaire.push([`${NOMS_PAGES[pg.code] || pg.titre_fr}`, `${pg.titre_de} · ${pg.titre_fr}`, `${lignes[0].ref} à ${lignes[lignes.length - 1].ref}`]);
+  sommaire.push([`${NOMS_PAGES[pg.code] || pg.titre_fr}`, `${pg.titre_de} · ${pg.titre_fr} · ${pg.titre_en}`, `${lignes[0].ref} à ${lignes[lignes.length - 1].ref}`]);
 });
 const derniere = l => l[l.length - 1].ref;
-sommaire.push(['Carte du Tea Room', 'Getränke- und Speisekarte · Carte', `${data.carte[0].ref} à ${derniere(data.carte[data.carte.length - 1].plats)}`]);
-sommaire.push(['Produits de la boutique', 'Produkte · Produits', `${data.boutique[0].ref} à ${derniere(data.boutique[data.boutique.length - 1].produits)}`]);
+if (TOUT) {
+  sommaire.push(['Carte du Tea Room', 'Getränke- und Speisekarte · Carte', `${data.carte[0].ref} à ${derniere(data.carte[data.carte.length - 1].plats)}`]);
+  sommaire.push(['Produits de la boutique', 'Produkte · Produits', `${data.boutique[0].ref} à ${derniere(data.boutique[data.boutique.length - 1].produits)}`]);
+}
 sommaire.push(['Autres demandes', 'Weitere Wünsche', '']);
-enfants.push(tableau([5200, 6600, 3598], ['Partie', 'Deutsch · Français', 'Références'],
+enfants.push(tableau([4200, 8200, 2998], ['Partie', 'Deutsch · Français · English', 'Références'],
   sommaire.map(r => [[p(t(r[0], { bold: true, size: 18 }))], [p(t(r[1], { size: 18 }))], [p(t(r[2], { size: 18, color: SAPIN }))]]), false));
 
 // Pages
-const COLS = [1000, 2300, 4050, 4050, 3998];
-const TITRES = ['Réf.', 'Élément', 'Deutsch (actuel)', 'Français (actuel)', 'Modification'];
+const COLS = [900, 1900, 3150, 3150, 3150, 3148];
+const TITRES = ['Réf.', 'Élément', 'Deutsch (actuel)', 'Français (actuel)', 'English (actuel)', 'Modification'];
 data.pages.forEach(pg => {
   enfants.push(new Paragraph({ children: [new PageBreak()] }));
   enfants.push(titreSection(`${NOMS_PAGES[pg.code] || pg.titre_fr} · ${pg.titre_de}`, HeadingLevel.HEADING_1));
-  enfants.push(p([t(`Page allemande « ${pg.titre_de} » (/${pg.slug}/) · page française « ${pg.titre_fr} » (/${pg.slug_fr}/)${pg.statut === 'draft' ? ' · brouillon, pas encore publiée' : ''}`, { size: 18, color: GRIS, italics: true })], { spacing: { after: 160 } }));
+  enfants.push(p([t(`Deutsch « ${pg.titre_de} » (/${pg.slug}/) · Français « ${pg.titre_fr} » (/${pg.slug_fr}/) · English « ${pg.titre_en} » (/${pg.slug_en}/)${pg.statut === 'draft' ? ' · brouillon, pas encore publiée' : ''}`, { size: 18, color: GRIS, italics: true })], { spacing: { after: 160 } }));
   pg.sections.forEach((s, i) => {
     const nom = brut(s.titre);
     enfants.push(titreSection(`Section ${i + 1} · ${s.bloc}${nom ? ' · ' + nom : ''}`, HeadingLevel.HEADING_2));
     enfants.push(tableau(COLS, TITRES, s.lignes.map(l => [
-      ref(l.ref), [p(t(l.element, { size: 17, color: GRIS }))], [p(runs(l.de))], [p(runs(l.fr))], vide(),
+      ref(l.ref), [p(t(l.element, { size: 17, color: GRIS }))], [p(runs(l.de))], [p(runs(l.fr))], [p(runs(l.en))], vide(),
     ])));
   });
 });
 
 // Carte du Tea Room
+if (TOUT) {
 enfants.push(new Paragraph({ children: [new PageBreak()] }));
 enfants.push(titreSection('Carte du Tea Room · Getränke- und Speisekarte', HeadingLevel.HEADING_1));
 enfants.push(p([t(`Noms, descriptions et prix de la carte, identiques sur le site et dans la carte en PDF. Suggestion de la maison actuelle : « ${data.suggestion} ». Pour ajouter ou retirer un plat, écrivez le dans la colonne « Modification » ou dans « Autres demandes ».`, { size: 18, color: GRIS, italics: true })], { spacing: { after: 160 } }));
@@ -166,6 +171,8 @@ data.boutique.forEach(r => {
   ]));
 });
 
+}
+
 // Autres demandes
 enfants.push(new Paragraph({ children: [new PageBreak()] }));
 enfants.push(titreSection('Autres demandes · Weitere Wünsche', HeadingLevel.HEADING_1));
@@ -174,7 +181,7 @@ enfants.push(tableau([1000, 3000, 11398], ['N°', 'Page / Réf.', 'Demande'],
   Array.from({ length: 12 }, (_, i) => [[p(t(String(i + 1), { size: 18, color: SAPIN, bold: true }))], vide(), [p(t('', { size: 18 })), p(t('', { size: 18 }))]])));
 
 const doc = new Document({
-  creator: 'Confiserie Schiesser', title: 'Textes du site Confiserie Schiesser', description: 'Textes du site à relire et modifier',
+  creator: 'Confiserie Schiesser', title: TOUT ? 'Textes du site Confiserie Schiesser' : 'Textes des pages Confiserie Schiesser', description: 'Textes du site à relire et modifier',
   styles: {
     default: { document: { run: { font: POLICE, size: 20, color: CHOCO } } },
     paragraphStyles: [

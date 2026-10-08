@@ -41,7 +41,10 @@ def lire(chemin):
                 autres.append({'page_ref': cellules[1], 'demande': cellules[2]})
             elif re.match(r'^[A-Z]-\d{3}$', cellules[0]) and entete[-1] == 'Modification' and cellules[-1]:
                 col = lambda nom: cellules[entete.index(nom)] if nom in entete and entete.index(nom) < len(cellules) else ''
-                modifs.append({'ref': cellules[0], 'actuel_de': col('Deutsch (actuel)'), 'actuel_fr': col('Français (actuel)'), 'modification': cellules[-1]})
+                demande = cellules[-1]
+                langue = re.match(r'^\s*(DE|FR|EN)\s*:\s*', demande, re.I)  # « EN : … » = correction de cette langue seulement
+                modifs.append({'ref': cellules[0], 'actuel_de': col('Deutsch (actuel)'), 'actuel_fr': col('Français (actuel)'), 'actuel_en': col('English (actuel)'),
+                               'langue': langue.group(1).lower() if langue else 'toutes', 'modification': demande[langue.end():] if langue else demande})
     return modifs, autres
 
 if __name__ == '__main__':
@@ -52,10 +55,10 @@ if __name__ == '__main__':
         for pg in d['pages']:
             for s in pg['sections']:
                 for l in s['lignes']:
-                    refs[l['ref']] = {'page': pg['slug'], 'chemin': l['chemin'], 'bloc': l['bloc'], 'cle': l['cle'], 'de': l['de'], 'fr': l['fr']}
+                    refs[l['ref']] = {'page': pg['slug'], 'chemin': l['chemin'], 'bloc': l['bloc'], 'cle': l['cle'], 'de': l['de'], 'fr': l['fr'], 'en': l.get('en', '')}
     for m in modifs:
         m.update({'cible': refs.get(m['ref'])} if refs else {})
-        print('%s | %s\n      -> %s' % (m['ref'], re.sub('<[^>]+>', '', m['actuel_de'])[:80], m['modification']))
+        print('%s [%s] | %s\n      -> %s' % (m['ref'], m['langue'], re.sub('<[^>]+>', '', m['actuel_de'])[:80], m['modification']))
     for a in autres:
         print('AUTRE | %s | %s' % (a['page_ref'], a['demande']))
     sortie = re.sub(r'\.docx$', '', sys.argv[1]) + '-modifications.json'

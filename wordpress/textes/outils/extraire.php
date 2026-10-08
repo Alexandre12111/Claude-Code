@@ -61,9 +61,13 @@ foreach ( schiesser_demo_pages() as $p ) {
 	$code = $codes[ $slug ] ?? strtoupper( substr( $slug, 0, 1 ) );
 	$de   = $elements( $p['contenu'] );
 	$fr   = $elements( schiesser_traduire_blocs( $p['contenu'], 'fr' ) );
+	$en   = $elements( schiesser_traduire_blocs( $p['contenu'], 'en' ) );
 	$fr_i = array();
+	$en_i = array();
 	foreach ( $fr as $e ) { $fr_i[ $e[0] . '|' . $e[2] ][] = $e[3]; }
-	$page = array( 'code' => $code, 'slug' => $slug, 'titre_de' => $p['titre'], 'titre_fr' => $meta[ $slug ]['fr'][0] ?? '', 'slug_fr' => $meta[ $slug ]['fr'][1] ?? '', 'statut' => $p['statut'] ?? 'publish', 'sections' => array() );
+	foreach ( $en as $e ) { $en_i[ $e[0] . '|' . $e[2] ][] = $e[3]; }
+	$page = array( 'code' => $code, 'slug' => $slug, 'titre_de' => $p['titre'], 'titre_fr' => $meta[ $slug ]['fr'][0] ?? '', 'slug_fr' => $meta[ $slug ]['fr'][1] ?? '',
+		'titre_en' => $meta[ $slug ]['en'][0] ?? '', 'slug_en' => $meta[ $slug ]['en'][1] ?? '', 'statut' => $p['statut'] ?? 'publish', 'sections' => array() );
 	$n = 0; $sec = null;
 	foreach ( $de as $e ) {
 		list( $chemin, $bloc, $cle, $texte ) = $e;
@@ -75,11 +79,12 @@ foreach ( schiesser_demo_pages() as $p ) {
 		if ( '' === $sec['titre'] && 'titre' === $cle && $chemin === $racine ) { $sec['titre'] = wp_strip_all_tags( $texte ); }
 		$k = $chemin . '|' . $cle;
 		$fr_t = isset( $fr_i[ $k ] ) ? array_shift( $fr_i[ $k ] ) : '';
+		$en_t = isset( $en_i[ $k ] ) ? array_shift( $en_i[ $k ] ) : '';
 		++$n;
 		$sec['lignes'][] = array(
 			'ref' => sprintf( '%s-%03d', $code, $n ), 'chemin' => $chemin, 'bloc' => $bloc, 'cle' => $cle,
 			'element' => ( $chemin !== $racine ? $titre_bloc( $bloc ) . ' · ' : '' ) . ( 'contenu' === $cle ? 'Paragraphe' : ( $NOMS[ $cle ] ?? $cle ) ),
-			'de' => $texte, 'fr' => $fr_t,
+			'de' => $texte, 'fr' => $fr_t, 'en' => $en_t,
 		);
 	}
 	if ( $sec ) { $page['sections'][] = $sec; }
