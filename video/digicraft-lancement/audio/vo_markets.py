@@ -108,17 +108,17 @@ NL = [
 ]
 
 PL = [
-    "Czym zajmujemy się od prawie trzydziestu lat? Odkrywamy wartość, której firmy nie dostrzegają.",
-    "A dziś największy potencjał kryje się w waszej codziennej pracy.",
-    "Pomysłów na narzędzia, które zwiększą produktywność, wasze zespoły mają mnóstwo.",
+    "Czym zajmujemy się od prawie trzydziestu lat? Odkrywamy wartość, której firmy nie widzą.",
+    "A dziś największy potencjał kryje się w waszej codzienności.",
+    "Pomysłów na produktywne narzędzia wasze zespoły mają mnóstwo.",
     "Brakuje im sposobu, by je zbudować, szybko i prosto.",
-    "To narzędzie istnieje: to DigiCraft.",
-    "Zasada jest bardzo prosta.",
-    "Opisujecie, czego potrzebujecie, własnymi słowami.",
+    "To narzędzie istnieje: DigiCraft.",
+    "Zasada jest prosta.",
+    "Opisujecie potrzebę własnymi słowami.",
     "A DigiCraft buduje aplikację na waszych oczach: ekrany, dane, obliczenia, kod.",
-    "Jedno kliknięcie i wasze narzędzie działa online. Na komputerze i w telefonie.",
-    "DigiCraft sprawdził się już w praktyce: ponad 750 użytkowników i 350 wdrożonych aplikacji.|DigiCraft sprawdził się już w praktyce: ponad siedemset pięćdziesiąt użytkowników i trzysta pięćdziesiąt wdrożonych aplikacji.",
-    "Jeśli chodzi o bezpieczeństwo, wasze dane zostają w Europie, dostęp jest w pełni kontrolowany, a start jest natychmiastowy, bez żadnych szkoleń.",
+    "Jedno kliknięcie i gotowe, na komputerze i w telefonie.",
+    "DigiCraft sprawdził się w praktyce: ponad 750 użytkowników i 350 aplikacji.|DigiCraft sprawdził się w praktyce: ponad siedemset pięćdziesiąt użytkowników i trzysta pięćdziesiąt aplikacji.",
+    "Bezpieczeństwo: wasze dane zostają w Europie, dostęp jest w pełni kontrolowany, a start jest natychmiastowy, bez szkoleń.",
     "Bo to wasze narzędzie.",
     "Naprawdę wasze.",
 ]
