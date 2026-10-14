@@ -1,0 +1,30 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:06.83,Sub,,0,0,0,,{\fad(120,120)}Unser Kerngeschäft seit fast\Ndreißig Jahren? Den Wert finden,
+Dialogue: 0,0:00:06.87,0:00:08.49,Sub,,0,0,0,,{\fad(120,120)}den Unternehmen nicht sehen.
+Dialogue: 0,0:00:08.85,0:00:12.17,Sub,,0,0,0,,{\fad(120,120)}Und heute liegt das größte\NPotenzial in Ihrem Arbeitsalltag.
+Dialogue: 0,0:00:12.80,0:00:17.02,Sub,,0,0,0,,{\fad(120,120)}Ideen für Tools, die produktiver machen,\Nhaben Ihre Teams mehr als genug.
+Dialogue: 0,0:00:17.05,0:00:20.66,Sub,,0,0,0,,{\fad(120,120)}Was fehlt, ist eine Möglichkeit,\Nsie schnell und einfach zu bauen.
+Dialogue: 0,0:00:20.70,0:00:22.61,Sub,,0,0,0,,{\fad(120,120)}Dieses Tool gibt es: DigiCraft.
+Dialogue: 0,0:00:22.64,0:00:24.32,Sub,,0,0,0,,{\fad(120,120)}Das Prinzip ist ganz einfach.
+Dialogue: 0,0:00:24.36,0:00:27.09,Sub,,0,0,0,,{\fad(120,120)}Sie beschreiben Ihren Bedarf\Nin Ihren eigenen Worten.
+Dialogue: 0,0:00:27.13,0:00:31.11,Sub,,0,0,0,,{\fad(120,120)}Und DigiCraft baut die App vor Ihren\NAugen: die Oberflächen, die Daten,
+Dialogue: 0,0:00:31.15,0:00:32.70,Sub,,0,0,0,,{\fad(120,120)}die Berechnungen, den Code.
+Dialogue: 0,0:00:33.60,0:00:37.77,Sub,,0,0,0,,{\fad(120,120)}Ein Klick, und Ihr Tool ist online.\NAm Computer wie auf dem Smartphone.
+Dialogue: 0,0:00:37.80,0:00:44.04,Sub,,0,0,0,,{\fad(120,120)}DigiCraft hat sich bereits bewährt:\Nüber 750 Nutzer und 350 eingesetzte Apps.
+Dialogue: 0,0:00:44.08,0:00:46.74,Sub,,0,0,0,,{\fad(120,120)}In Sachen Sicherheit bleiben\NIhre Daten in Europa,
+Dialogue: 0,0:00:46.78,0:00:50.73,Sub,,0,0,0,,{\fad(120,120)}die Zugriffe sind voll kontrolliert,\Nund der Einstieg gelingt sofort,
+Dialogue: 0,0:00:50.77,0:00:52.25,Sub,,0,0,0,,{\fad(120,120)}ganz ohne Schulung.
+Dialogue: 0,0:00:52.29,0:00:53.56,Sub,,0,0,0,,{\fad(120,120)}Denn es ist Ihr Tool.
+Dialogue: 0,0:00:53.60,0:00:54.62,Sub,,0,0,0,,{\fad(120,120)}Wirklich Ihres.
