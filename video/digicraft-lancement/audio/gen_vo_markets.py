@@ -13,6 +13,7 @@ TTS = os.environ.get('TTS_DIR', '/tmp/claude-0/-home-user-Claude-Code/b2d349ab-5
 SR = 48000
 LAG = 0.8   # retard toléré sur le plan suivant
 CAPS = {'kokoro': 1.08, 'supertonic': 1.15}   # vitesse maximale restant naturelle pour chaque voix
+SAYAS = {'nl': [(r'\btools\b', 'toels'), (r'\btool\b', 'toel')]}   # graphies phonétiques lues par la voix
 _eng = {}
 
 
@@ -36,6 +37,10 @@ def say(kind, lang, text, speed):
     else:
         # Deux-points lus comme une virgule : la voix y marquait une pause trop longue.
         text = text.replace(' : ', ', ').replace(': ', ', ')
+        # Prononciation des mots anglais d'usage courant (le néerlandais lisait « tool » comme « tol »).
+        import re
+        for pat, rep in SAYAS.get(lang, []):
+            text = re.sub(pat, rep, text)
         g = so.GenerationConfig(); g.sid = 5; g.speed = speed; g.num_steps = 32; g.extra = {'lang': lang}
         a = tts.generate(text, g)
     x = np.asarray(a.samples, dtype=np.float64)

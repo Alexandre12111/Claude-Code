@@ -94,7 +94,7 @@ IT = [
 NL = [
     "Ons vak, al bijna dertig jaar? De waarde vinden die bedrijven niet zien.",
     "En vandaag ligt de grootste kans verborgen in uw dagelijkse werk.",
-    "Ideeën voor tools die hen productiever maken, hebben uw teams genoeg.",
+    "Uw teams hebben genoeg ideeën voor tools om productiever te werken.",
     "Wat ze missen, is een manier om ze snel en eenvoudig te bouwen.",
     "Die tool bestaat: het is DigiCraft.",
     "Het principe is heel eenvoudig.",
