@@ -1,0 +1,28 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:07.81,Sub,,0,0,0,,{\fad(120,120)}What we've done for almost thirty years?\NFind the value companies don't see.
+Dialogue: 0,0:00:08.85,0:00:12.95,Sub,,0,0,0,,{\fad(120,120)}And today, the biggest opportunity\Nis hiding in your day-to-day work.
+Dialogue: 0,0:00:12.99,0:00:17.47,Sub,,0,0,0,,{\fad(120,120)}Your teams are full of ideas for tools\Nthat would make them more productive.
+Dialogue: 0,0:00:17.51,0:00:21.09,Sub,,0,0,0,,{\fad(120,120)}What they're missing is a way to\Nbuild them, quickly and easily.
+Dialogue: 0,0:00:21.13,0:00:23.47,Sub,,0,0,0,,{\fad(120,120)}That tool exists: it's DigiCraft.
+Dialogue: 0,0:00:23.51,0:00:25.29,Sub,,0,0,0,,{\fad(120,120)}The idea is very simple.
+Dialogue: 0,0:00:25.33,0:00:28.00,Sub,,0,0,0,,{\fad(120,120)}You describe what you need,\Nin your own words.
+Dialogue: 0,0:00:28.04,0:00:32.33,Sub,,0,0,0,,{\fad(120,120)}And DigiCraft builds the app right\Nbefore your eyes: the screens, the data,
+Dialogue: 0,0:00:32.37,0:00:34.03,Sub,,0,0,0,,{\fad(120,120)}the calculations, the code.
+Dialogue: 0,0:00:34.07,0:00:37.87,Sub,,0,0,0,,{\fad(120,120)}One click, and your tool is live.\NOn desktop and on mobile.
+Dialogue: 0,0:00:37.91,0:00:44.57,Sub,,0,0,0,,{\fad(120,120)}DigiCraft has already proven itself:\Nmore than 750 users, and 350 apps deployed.
+Dialogue: 0,0:00:44.61,0:00:48.27,Sub,,0,0,0,,{\fad(120,120)}When it comes to security, your\Ndata stays in the United States,
+Dialogue: 0,0:00:48.31,0:00:53.15,Sub,,0,0,0,,{\fad(120,120)}access is fully under control, and getting\Nstarted is instant, no training needed.
+Dialogue: 0,0:00:53.19,0:00:54.60,Sub,,0,0,0,,{\fad(120,120)}Because it's your tool.
+Dialogue: 0,0:00:54.64,0:00:55.87,Sub,,0,0,0,,{\fad(120,120)}Truly yours.
