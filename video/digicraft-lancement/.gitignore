@@ -95,3 +95,4 @@ out/finish.out
 out/gen_vo.out
 out/subtest*.png
 audio/vo_mk/
+out/gen_vo*.out
