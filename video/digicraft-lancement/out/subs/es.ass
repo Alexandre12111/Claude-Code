@@ -1,0 +1,29 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:06.00,Sub,,0,0,0,,{\fad(120,120)}¿Nuestro oficio desde\Nhace casi treinta años?
+Dialogue: 0,0:00:06.04,0:00:08.81,Sub,,0,0,0,,{\fad(120,120)}Encontrar el valor que las empresas no ven.
+Dialogue: 0,0:00:08.85,0:00:12.17,Sub,,0,0,0,,{\fad(120,120)}Y hoy, la mayor oportunidad\Nse esconde en su día a día.
+Dialogue: 0,0:00:12.80,0:00:17.41,Sub,,0,0,0,,{\fad(120,120)}Ideas de herramientas para ser más\Nproductivos, sus equipos tienen de sobra.
+Dialogue: 0,0:00:17.45,0:00:21.27,Sub,,0,0,0,,{\fad(120,120)}Lo que les falta es poder construirlas,\Nde forma rápida y sencilla.
+Dialogue: 0,0:00:21.31,0:00:23.74,Sub,,0,0,0,,{\fad(120,120)}Esa herramienta existe: es DigiCraft.
+Dialogue: 0,0:00:23.78,0:00:24.97,Sub,,0,0,0,,{\fad(120,120)}Es muy sencillo.
+Dialogue: 0,0:00:25.01,0:00:27.44,Sub,,0,0,0,,{\fad(120,120)}Describa lo que necesita, con sus palabras.
+Dialogue: 0,0:00:27.48,0:00:31.88,Sub,,0,0,0,,{\fad(120,120)}Y DigiCraft construye la aplicación\Nante sus ojos: las pantallas, los datos,
+Dialogue: 0,0:00:31.92,0:00:33.71,Sub,,0,0,0,,{\fad(120,120)}los cálculos, el código.
+Dialogue: 0,0:00:33.75,0:00:37.80,Sub,,0,0,0,,{\fad(120,120)}Un clic, y su herramienta está en línea,\Nen el ordenador y en el móvil.
+Dialogue: 0,0:00:37.84,0:00:44.87,Sub,,0,0,0,,{\fad(120,120)}DigiCraft ya ha demostrado su valor:\Nmás de 750 usuarios y 350 apps desplegadas.
+Dialogue: 0,0:00:44.91,0:00:49.68,Sub,,0,0,0,,{\fad(120,120)}En seguridad, sus datos se quedan en\NEuropa, los accesos están bajo control,
+Dialogue: 0,0:00:49.72,0:00:52.44,Sub,,0,0,0,,{\fad(120,120)}y se empieza al instante, sin formación.
+Dialogue: 0,0:00:52.48,0:00:53.80,Sub,,0,0,0,,{\fad(120,120)}Porque es su herramienta.
+Dialogue: 0,0:00:53.84,0:00:54.89,Sub,,0,0,0,,{\fad(120,120)}De verdad, la suya.
