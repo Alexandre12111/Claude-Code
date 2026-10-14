@@ -405,30 +405,65 @@ function schiesser_carte_tearoom( $rafraichir = false ) {
 	if ( ! $posts ) {
 		return $carte;
 	}
-	$par_rubrique = array();
+	/*
+	 * Regroupement par rubrique « de référence » : une rubrique est reconnue sous ses trois noms
+	 * (Kaffee, Café, Coffee). Un plat rangé dans la rubrique d'une autre langue reste donc affiché,
+	 * sous le nom de la rubrique dans la langue de la page : aucune rubrique vide, aucun doublon.
+	 */
+	$groupes = array();
+	$l       = function_exists( 'schiesser_langue' ) ? schiesser_langue() : 'de';
 	foreach ( $posts as $post ) {
 		$d = schiesser_donnees_tearoom( $post );
 		if ( ! $carte['suggestion'] && get_post_meta( $post->ID, '_t_suggestion', true ) ) {
 			$carte['suggestion'] = $d;
 		}
-		foreach ( (array) wp_get_object_terms( $post->ID, SCHIESSER_RUBRIQUE, array( 'fields' => 'ids' ) ) as $term_id ) {
-			$par_rubrique[ (int) $term_id ][] = $d;
+		$vus = array();
+		foreach ( (array) wp_get_object_terms( $post->ID, SCHIESSER_RUBRIQUE, array( 'lang' => '' ) ) as $t ) {
+			$nom = html_entity_decode( $t->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+			$ref = schiesser_rubrique_reference( $nom ) ?: 'terme-' . $t->term_id;
+			if ( isset( $vus[ $ref ] ) ) {
+				continue; // un plat ne figure qu'une fois par rubrique
+			}
+			$vus[ $ref ] = true;
+			if ( ! isset( $groupes[ $ref ] ) ) {
+				$groupes[ $ref ] = array( 'termes' => array(), 'plats' => array(), 'noms' => array() );
+			}
+			$groupes[ $ref ]['termes'][ $t->term_id ] = $t;
+			if ( ! isset( $groupes[ $ref ]['noms'][ $d['nom'] ] ) ) {
+				$groupes[ $ref ]['noms'][ $d['nom'] ] = true;
+				$groupes[ $ref ]['plats'][]           = $d;
+			}
 		}
 	}
-	foreach ( schiesser_rubriques_triees() as $t ) {
-		if ( empty( $par_rubrique[ $t->term_id ] ) ) {
-			continue;
+	foreach ( $groupes as $ref => $g ) {
+		// Terme affiché : celui de la langue de la page de préférence (photo, ordre).
+		$terme = null;
+		foreach ( $g['termes'] as $t ) {
+			$lt = function_exists( 'pll_get_term_language' ) ? substr( (string) pll_get_term_language( $t->term_id ), 0, 2 ) : '';
+			if ( ! $terme || $lt === $l ) {
+				$terme = $t;
+			}
 		}
-		$photo                = (int) get_term_meta( $t->term_id, 'photo', true );
+		$photo = (int) get_term_meta( $terme->term_id, 'photo', true );
+		$ordre = (int) get_term_meta( $terme->term_id, 'ordre', true );
+		foreach ( $g['termes'] as $t ) {
+			$photo = $photo ?: (int) get_term_meta( $t->term_id, 'photo', true );
+			$ordre = $ordre ?: (int) get_term_meta( $t->term_id, 'ordre', true );
+		}
+		$nom                  = schiesser_rubrique_nom_langue( $terme->name );
 		$carte['rubriques'][] = array(
-			'id'       => $t->term_id,
-			'nom'      => html_entity_decode( $t->name, ENT_QUOTES | ENT_HTML5, 'UTF-8' ),
+			'id'       => $terme->term_id,
+			'nom'      => $nom,
+			'ordre'    => $ordre ?: PHP_INT_MAX,
 			'imageId'  => $photo,
 			'imageUrl' => '',
-			'imageAlt' => $photo ? ( (string) get_post_meta( $photo, '_wp_attachment_image_alt', true ) ?: $t->name ) : '',
-			'plats'    => $par_rubrique[ $t->term_id ],
+			'imageAlt' => $photo ? ( (string) get_post_meta( $photo, '_wp_attachment_image_alt', true ) ?: $nom ) : '',
+			'plats'    => $g['plats'],
 		);
 	}
+	usort( $carte['rubriques'], function ( $a, $b ) {
+		return $a['ordre'] === $b['ordre'] ? strcasecmp( $a['nom'], $b['nom'] ) : ( $a['ordre'] < $b['ordre'] ? -1 : 1 );
+	} );
 	$carte['nombre'] = count( $posts );
 	return $carte;
 }

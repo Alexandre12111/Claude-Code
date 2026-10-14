@@ -377,8 +377,47 @@ function schiesser_mq_enfants( $block ) {
  * @param string $taille  Taille WordPress.
  * @param array  $attrs   Attributs HTML supplémentaires (class, data-…).
  */
-function schiesser_mq_image( $a, $prefixe = 'image', $taille = 'large', $attrs = array() ) {
+/**
+ * Photo d'un bloc : numéro de la médiathèque, vérifié contre l'adresse.
+ * Si l'adresse a été changée à la main (éditeur de code) sans le numéro, c'est l'adresse qui
+ * compte, comme dans l'aperçu de l'éditeur : on retrouve la photo correspondante.
+ */
+function schiesser_mq_image_id( $a, $prefixe = 'image' ) {
+	static $cache = array();
 	$id  = (int) ( $a[ $prefixe . 'Id' ] ?? 0 );
+	$url = trim( (string) ( $a[ $prefixe . 'Url' ] ?? '' ) );
+	if ( '' === $url ) {
+		return $id;
+	}
+	$cle = $id . '|' . $url;
+	if ( isset( $cache[ $cle ] ) ) {
+		return $cache[ $cle ];
+	}
+	// Nom de fichier sans taille (-1024x683), sans « -scaled » ni extension.
+	$base = function ( $chemin ) {
+		$nom = pathinfo( (string) wp_parse_url( $chemin, PHP_URL_PATH ), PATHINFO_FILENAME );
+		return strtolower( preg_replace( '/(-\d+x\d+|-scaled)+$/', '', $nom ) );
+	};
+	if ( $id && wp_attachment_is_image( $id ) ) {
+		$fichier = (string) get_post_meta( $id, '_wp_attached_file', true );
+		if ( $base( $fichier ) === $base( $url ) ) {
+			return $cache[ $cle ] = $id;
+		}
+	}
+	// Adresse d'une autre photo : on la retrouve dans la médiathèque (toutes tailles).
+	$trouve = attachment_url_to_postid( $url );
+	if ( ! $trouve ) {
+		$sans_taille = preg_replace( '/-\d+x\d+(\.[a-z0-9]+)$/i', '$1', $url );
+		$trouve      = attachment_url_to_postid( $sans_taille );
+		if ( ! $trouve ) {
+			$trouve = attachment_url_to_postid( preg_replace( '/(\.[a-z0-9]+)$/i', '-scaled$1', $sans_taille ) );
+		}
+	}
+	return $cache[ $cle ] = ( $trouve && wp_attachment_is_image( $trouve ) ) ? (int) $trouve : 0;
+}
+
+function schiesser_mq_image( $a, $prefixe = 'image', $taille = 'large', $attrs = array() ) {
+	$id  = schiesser_mq_image_id( $a, $prefixe );
 	$url = (string) ( $a[ $prefixe . 'Url' ] ?? '' );
 	$alt = trim( wp_strip_all_tags( (string) ( $a[ $prefixe . 'Alt' ] ?? '' ) ) );
 	if ( '' === $alt && $id ) {
@@ -407,7 +446,7 @@ function schiesser_mq_image( $a, $prefixe = 'image', $taille = 'large', $attrs =
 
 /** Adresse d'une photo (pour les agrandissements). */
 function schiesser_mq_image_url( $a, $prefixe = 'image', $taille = 'full' ) {
-	$id = (int) ( $a[ $prefixe . 'Id' ] ?? 0 );
+	$id = schiesser_mq_image_id( $a, $prefixe );
 	if ( $id && wp_attachment_is_image( $id ) ) {
 		return (string) wp_get_attachment_image_url( $id, $taille );
 	}

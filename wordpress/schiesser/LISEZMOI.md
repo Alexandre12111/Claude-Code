@@ -3,6 +3,36 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.17.3 : photos changées par leur adresse
+
+* Une photo dont l'adresse (imageUrl, avantUrl, apresUrl…) a été changée à la main dans l'éditeur de code, sans changer son numéro de médiathèque (imageId, avantId…), s'affiche désormais aussi sur le site, comme dans l'aperçu de l'éditeur. Le thème retrouve la photo correspondante dans la médiathèque (images adaptées à chaque écran conservées).
+
+## Version 0.17.2 : chaque plat et chaque produit dans la bonne rubrique
+
+* Carte du Tea Room et boutique : une rubrique est reconnue sous ses trois noms (Kaffee, Café, Coffee). Un plat ou un produit rangé dans la rubrique d'une autre langue s'affiche quand même, sous le nom de la rubrique dans la langue de la page : plus de rubrique vide ni de doublon, plus de produit sans catégorie.
+* « Réparer les langues » range chaque plat et chaque produit dans la rubrique de sa propre langue, et crée la rubrique traduite si elle manque.
+
+## Version 0.17.1 : rubriques du Tea Room sans doublon
+
+* Carte du Tea Room : chaque langue n'affiche que ses rubriques. Une rubrique restée dans une autre langue (ex. « Kaffee » sur la carte française) rejoint sa traduction (« Café ») au lieu d'apparaître deux fois.
+* « Réparer les langues » range aussi chaque plat et chaque produit dans la rubrique de sa propre langue ; l'avis signale ces cas.
+* La réparation et l'import des langues ne remplacent plus jamais une photo choisie à la main (plat, produit ou rubrique) ; le contenu des pages n'est pas touché.
+* Mise à jour sans risque : installer le nouveau zip ne touche ni aux photos de la médiathèque, ni aux pages, ni aux produits (tout est dans la base de données). Ne cliquez pas sur « Mettre à jour le contenu des pages », qui remet les textes du thème.
+
+## Version 0.17 : textes dans les autres langues, depuis l'éditeur
+
+* En modifiant une page (ex. l'accueil en français), une petite fenêtre « Dans les autres langues » s'affiche en bas à droite de l'éditeur. Cliquez sur une section ou un élément : la fenêtre montre le même texte sur les versions Deutsch et English de la page. Corrigez le texte et cliquez sur « Enregistrer en Deutsch » (ou Ctrl+Entrée) : la version allemande est mise à jour aussitôt, sans ouvrir l'autre page.
+* Le texte que vous êtes en train de modifier est choisi automatiquement ; le menu « Texte » permet d'en choisir un autre (titre, texte, boutons, description de la photo…). Les mots entre *étoiles* s'affichent en italique sur le site.
+* Si la mise en page d'une version est différente (section ajoutée ou déplacée), la fenêtre le signale et propose d'ouvrir la page.
+* Évitez d'avoir la page allemande ouverte dans un autre onglet en même temps : en l'enregistrant, elle remplacerait le texte corrigé depuis la fenêtre.
+
+## Version 0.16 : langues réparées, photo partagée entre les langues
+
+* **Réparer les langues** : si Polylang a pris le français comme langue par défaut, il a marqué tous les produits, plats et pages « Français ». Un avis dans Produits (et le tableau de bord) indique le nombre de contenus par langue ; le bouton « Réparer les langues » retrouve la vraie langue de chacun d’après son nom, relie les versions DE, FR et EN, met les doublons à la corbeille (récupérables) et crée les traductions manquantes. Prix, photos et textes retouchés sont conservés.
+* L’import du contenu donne désormais toujours la langue Deutsch au contenu allemand, quelle que soit la langue par défaut de Polylang.
+* **Photo partagée** : après l’enregistrement d’une page dont une photo a changé, l’éditeur propose de mettre la même photo sur les autres langues (toutes, une seule, ou aucune). Les textes de chaque langue ne bougent pas.
+* Carte Google : le libellé « Découvrir » qui restait figé au survol de la carte a disparu.
+
 ## Version 0.15 : photos au naturel et finitions
 
 * Les photos ne sont plus teintées en vert : un voile neutre chocolat, placé seulement sous le texte, garde la lecture confortable et laisse aux pâtisseries leurs vraies couleurs. Le vert sapin reste sur les bandeaux, les sections et les boutons.
