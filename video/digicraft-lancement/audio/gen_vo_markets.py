@@ -11,7 +11,8 @@ from vo_markets import CUES, END, MARKETS, split
 HERE = os.path.dirname(os.path.abspath(__file__))
 TTS = os.environ.get('TTS_DIR', '/tmp/claude-0/-home-user-Claude-Code/b2d349ab-5523-52d5-8843-d14029de2d00/scratchpad/tts')
 SR = 48000
-CAP, LAG = 1.08, 0.8   # vitesse maximale (naturel), retard toléré sur le plan suivant
+LAG = 0.8   # retard toléré sur le plan suivant
+CAPS = {'kokoro': 1.08, 'supertonic': 1.15}   # vitesse maximale restant naturelle pour chaque voix
 _eng = {}
 
 
@@ -33,7 +34,9 @@ def say(kind, lang, text, speed):
     if kind == 'kokoro':
         a = tts.generate(text.replace('DigiCraft', 'Didgy Craft'), sid=16, speed=speed)
     else:
-        g = so.GenerationConfig(); g.sid = 5; g.speed = speed; g.num_steps = 40; g.extra = {'lang': lang}
+        # Deux-points lus comme une virgule : la voix y marquait une pause trop longue.
+        text = text.replace(' : ', ', ').replace(': ', ', ')
+        g = so.GenerationConfig(); g.sid = 5; g.speed = speed; g.num_steps = 32; g.extra = {'lang': lang}
         a = tts.generate(text, g)
     x = np.asarray(a.samples, dtype=np.float64)
     x = resample_poly(x, SR, a.sample_rate)
@@ -62,7 +65,8 @@ def fit(durs, capped=()):
 
 def run(code):
     kind, lang, lines, _ = MARKETS[code]
-    base = 0.97 if kind == 'kokoro' else 1.0
+    base = 0.97 if kind == 'kokoro' else 1.05
+    CAP = CAPS[kind]
     out = os.path.join(HERE, 'vo_mk', code); os.makedirs(out, exist_ok=True)
     speeds = [base] * len(lines)
     clips = [say(kind, lang, split(l)[1], base) for l in lines]
