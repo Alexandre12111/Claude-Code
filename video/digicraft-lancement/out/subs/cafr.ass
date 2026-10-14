@@ -1,0 +1,30 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:05.85,Sub,,0,0,0,,{\fad(120,120)}Notre métier, depuis près de trente ans ?
+Dialogue: 0,0:00:05.89,0:00:08.86,Sub,,0,0,0,,{\fad(120,120)}Trouver la valeur que les\Nentreprises ne voient pas.
+Dialogue: 0,0:00:08.90,0:00:12.34,Sub,,0,0,0,,{\fad(120,120)}Et aujourd'hui, le plus gros gisement\Nse cache dans votre quotidien.
+Dialogue: 0,0:00:12.80,0:00:16.96,Sub,,0,0,0,,{\fad(120,120)}Des idées d'outils pour gagner en\Nproductivité, vos équipes en ont plein.
+Dialogue: 0,0:00:17.00,0:00:21.07,Sub,,0,0,0,,{\fad(120,120)}Ce qui leur manque, c'est de pouvoir\Nles construire rapidement et simplement.
+Dialogue: 0,0:00:21.11,0:00:22.96,Sub,,0,0,0,,{\fad(120,120)}Cet outil existe : c'est DigiCraft.
+Dialogue: 0,0:00:23.00,0:00:24.63,Sub,,0,0,0,,{\fad(120,120)}Le principe est très simple.
+Dialogue: 0,0:00:24.67,0:00:27.41,Sub,,0,0,0,,{\fad(120,120)}Vous décrivez votre besoin\Navec vos propres mots.
+Dialogue: 0,0:00:27.45,0:00:32.34,Sub,,0,0,0,,{\fad(120,120)}Et DigiCraft construit l'application\Nsous vos yeux : les écrans, les données,
+Dialogue: 0,0:00:32.38,0:00:33.60,Sub,,0,0,0,,{\fad(120,120)}les calculs, le code.
+Dialogue: 0,0:00:33.64,0:00:37.49,Sub,,0,0,0,,{\fad(120,120)}Un clic, et votre outil est en ligne.\NSur ordinateur comme sur mobile.
+Dialogue: 0,0:00:37.53,0:00:41.78,Sub,,0,0,0,,{\fad(120,120)}DigiCraft a déjà fait ses preuves :\Nplus de 750 utilisateurs,
+Dialogue: 0,0:00:41.82,0:00:44.43,Sub,,0,0,0,,{\fad(120,120)}et 350 applications déployées.
+Dialogue: 0,0:00:44.47,0:00:48.87,Sub,,0,0,0,,{\fad(120,120)}Côté sécurité, vos données restent\Nau Canada, les accès sont maîtrisés,
+Dialogue: 0,0:00:48.91,0:00:52.71,Sub,,0,0,0,,{\fad(120,120)}et la prise en main est immédiate,\Nsans aucune formation.
+Dialogue: 0,0:00:52.75,0:00:53.98,Sub,,0,0,0,,{\fad(120,120)}Parce que c'est votre outil.
+Dialogue: 0,0:00:54.02,0:00:55.06,Sub,,0,0,0,,{\fad(120,120)}Vraiment le vôtre.
