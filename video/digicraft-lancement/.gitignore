@@ -87,3 +87,6 @@ out/render_b47.out
 out/parts_b48/
 out/video_b48_silent.mp4
 out/render_b48.out
+out/parts_lt_*/
+out/video_lt_*_silent.mp4
+out/render_lt.out
