@@ -99,3 +99,6 @@ out/gen_vo*.out
 out/reburn*.log
 out/reburn.out
 out/subtest2*.png
+out/parts_b49/
+out/video_b49_silent.mp4
+out/stills_b49_sheet.jpg
