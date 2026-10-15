@@ -1,0 +1,16 @@
+.ui { font-family: 'DM Sans', sans-serif; color: #0B2545; }
+.win { position: absolute; background: #fff; border-radius: 22px; overflow: hidden; box-shadow: 0 40px 120px rgba(1,36,70,0.28), 0 8px 24px rgba(1,36,70,0.12); }
+.win-bar { position: absolute; left: 0; right: 0; top: 0; height: 52px; background: #F4F7FA; border-bottom: 1px solid #E5ECF2; display: flex; align-items: center; padding: 0 20px; gap: 9px; }
+.win-bar i { width: 13px; height: 13px; border-radius: 50%; display: block; }
+.url { margin-left: 22px; height: 30px; padding: 0 16px; border-radius: 15px; background: #fff; border: 1px solid #E2E8F0; display: flex; align-items: center; gap: 8px; font-size: 15px; color: #64748B; }
+.glass { position: absolute; border-radius: 28px; background: rgba(255,255,255,0.72); border: 1.5px solid rgba(255,255,255,0.85); box-shadow: 0 30px 90px rgba(1,30,60,0.30); overflow: hidden; }
+.glass.dark { background: rgba(6,28,52,0.62); border-color: rgba(255,255,255,0.18); color: #fff; }
+.pill { display: inline-flex; align-items: center; gap: 8px; height: 34px; padding: 0 16px; border-radius: 17px; font-size: 15px; font-weight: 600; white-space: nowrap; }
+.chip { display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 18px; border-radius: 20px; background: #fff; border: 1px solid #DCE5EE; font-size: 16px; font-weight: 500; color: #334155; white-space: nowrap; }
+.card { position: absolute; background: #fff; border-radius: 16px; border: 1px solid #E5ECF2; }
+.tile { position: absolute; border-radius: 26px; overflow: hidden; }
+.caret { display: inline-block; width: 2px; height: 1em; background: currentColor; vertical-align: -0.12em; margin-left: 2px; }
+.dcgrad { background: linear-gradient(90deg, #2E8BC0 0%, #6D5DF6 55%, #A855F7 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.dcgrad-l { background: linear-gradient(90deg, #8FC6E7 0%, #B7A6FF 60%, #E2D4FF 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.lbl { position: absolute; font-family: 'DM Sans', sans-serif; font-size: 22px; color: rgba(255,255,255,0.9); white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+.lbl::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #8FC6E7; display: block; }

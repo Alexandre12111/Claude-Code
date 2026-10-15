@@ -1,0 +1,4 @@
+Fonds V7 générés par make50.py à partir des photos Unsplash (licence Unsplash : usage commercial libre, sans attribution obligatoire).
+soft_skyline, blur_skyline 1514565131-fce0801e5785 · soft_citydusk, bokeh_citydusk 1496568816309-51d7c20e3b21
+soft_citynight 1444723121867-7a241cacace9 · dof_boardroom 1462826303086-329426d1aef5
+horizon_glow, studio_navy : dégradés de synthèse aux couleurs DigiCraft (aucune photo).
