@@ -18,22 +18,26 @@ Dialogue: 0,0:00:06.78,0:00:08.40,Box,,0,0,0,,{\an7\pos(648,960)\1c&H462402&\1a&
 Dialogue: 1,0:00:06.78,0:00:08.40,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}den Unternehmen nicht sehen.
 Dialogue: 0,0:00:08.85,0:00:12.28,Box,,0,0,0,,{\an7\pos(640,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 619 0 b 639 0 639 0 639 20 l 639 98 b 639 118 639 118 619 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:08.85,0:00:12.28,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Und heute liegt das größte\NPotenzial in Ihrem Arbeitsalltag.
-Dialogue: 0,0:00:12.80,0:00:17.13,Box,,0,0,0,,{\an7\pos(566,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 767 0 b 787 0 787 0 787 20 l 787 98 b 787 118 787 118 767 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:12.80,0:00:17.13,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Ideen für Tools, die produktiver machen,\Nhaben Ihre Teams mehr als genug.
-Dialogue: 0,0:00:17.17,0:00:20.91,Box,,0,0,0,,{\an7\pos(631,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 638 0 b 658 0 658 0 658 20 l 658 98 b 658 118 658 118 638 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:17.17,0:00:20.91,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Was fehlt, ist eine Möglichkeit,\Nsie schnell und einfach zu bauen.
+Dialogue: 0,0:00:12.80,0:00:17.13,Box,,0,0,0,,{\an7\pos(566,934)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 767 0 b 787 0 787 0 787 20 l 787 98 b 787 118 787 118 767 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:12.80,0:00:17.13,Sub,,0,0,0,,{\an2\pos(960,1044)\fad(140,140)}Ideen für Tools, die produktiver machen,\Nhaben Ihre Teams mehr als genug.
+Dialogue: 0,0:00:17.17,0:00:19.01,Box,,0,0,0,,{\an7\pos(654,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 592 0 b 612 0 612 0 612 20 l 612 46 b 612 66 612 66 592 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:17.17,0:00:19.01,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Was fehlt, ist eine Möglichkeit,
+Dialogue: 0,0:00:19.01,0:00:20.91,Box,,0,0,0,,{\an7\pos(631,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 638 0 b 658 0 658 0 658 20 l 658 46 b 658 66 658 66 638 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:19.01,0:00:20.91,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}sie schnell und einfach zu bauen.
 Dialogue: 0,0:00:20.95,0:00:22.71,Box,,0,0,0,,{\an7\pos(671,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 559 0 b 579 0 579 0 579 20 l 579 46 b 579 66 579 66 559 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:20.95,0:00:22.71,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Dieses Tool gibt es: YouCraft.
 Dialogue: 0,0:00:22.75,0:00:24.27,Box,,0,0,0,,{\an7\pos(676,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 549 0 b 569 0 569 0 569 20 l 569 46 b 569 66 569 66 549 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:22.75,0:00:24.27,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Das Prinzip ist ganz einfach.
-Dialogue: 0,0:00:24.31,0:00:27.08,Box,,0,0,0,,{\an7\pos(668,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 565 0 b 585 0 585 0 585 20 l 585 98 b 585 118 585 118 565 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:24.31,0:00:27.08,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Sie beschreiben Ihren Bedarf\Nin Ihren eigenen Worten.
-Dialogue: 0,0:00:27.12,0:00:31.03,Box,,0,0,0,,{\an7\pos(603,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 694 0 b 714 0 714 0 714 20 l 714 98 b 714 118 714 118 694 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:27.12,0:00:31.03,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Und YouCraft baut die App vor Ihren\NAugen: die Oberflächen, die Daten,
+Dialogue: 0,0:00:24.31,0:00:25.81,Box,,0,0,0,,{\an7\pos(1148,986)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 565 0 b 585 0 585 0 585 20 l 585 46 b 585 66 585 66 565 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:24.31,0:00:25.81,Sub,,0,0,0,,{\an2\pos(1440,1044)\fad(140,140)}Sie beschreiben Ihren Bedarf
+Dialogue: 0,0:00:25.81,0:00:27.08,Box,,0,0,0,,{\an7\pos(944,986)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 492 0 b 512 0 512 0 512 20 l 512 46 b 512 66 512 66 492 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:25.81,0:00:27.08,Sub,,0,0,0,,{\an2\pos(1200,1044)\fad(140,140)}in Ihren eigenen Worten.
+Dialogue: 0,0:00:27.12,0:00:31.03,Box,,0,0,0,,{\an7\pos(843,934)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 694 0 b 714 0 714 0 714 20 l 714 98 b 714 118 714 118 694 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:27.12,0:00:31.03,Sub,,0,0,0,,{\an2\pos(1200,1044)\fad(140,140)}Und YouCraft baut die App vor Ihren\NAugen: die Oberflächen, die Daten,
 Dialogue: 0,0:00:31.07,0:00:32.67,Box,,0,0,0,,{\an7\pos(662,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 576 0 b 596 0 596 0 596 20 l 596 46 b 596 66 596 66 576 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:31.07,0:00:32.67,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}die Berechnungen, den Code.
-Dialogue: 0,0:00:33.60,0:00:38.04,Box,,0,0,0,,{\an7\pos(565,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 771 0 b 791 0 791 0 791 20 l 791 98 b 791 118 791 118 771 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:33.60,0:00:38.04,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Ein Klick, und Ihr Tool ist online.\NAm Computer wie auf dem Smartphone.
+Dialogue: 0,0:00:33.60,0:00:38.04,Box,,0,0,0,,{\an7\pos(325,934)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 771 0 b 791 0 791 0 791 20 l 791 98 b 791 118 791 118 771 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:33.60,0:00:38.04,Sub,,0,0,0,,{\an2\pos(720,1044)\fad(140,140)}Ein Klick, und Ihr Tool ist online.\NAm Computer wie auf dem Smartphone.
 Dialogue: 0,0:00:38.08,0:00:44.33,Box,,0,0,0,,{\an7\pos(543,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 815 0 b 835 0 835 0 835 20 l 835 98 b 835 118 835 118 815 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:38.08,0:00:44.33,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}YouCraft hat sich bereits bewährt:\Nüber 750 Nutzer und 350 eingesetzte Apps.
 Dialogue: 0,0:00:44.37,0:00:47.13,Box,,0,0,0,,{\an7\pos(671,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 558 0 b 578 0 578 0 578 20 l 578 98 b 578 118 578 118 558 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
