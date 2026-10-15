@@ -109,7 +109,9 @@ def chunks(text, maxc=84, line=44):
         def cost(i):
             a, b = i, len(s) - i - 1
             c = abs(a - b) + (40 if max(a, b) > line else 0)
-            return c - (14 if s[i - 1] in '.?!:;' else 8 if s[i - 1] == ',' else 0)
+            prev = s[:i].split(' ')[-1]
+            short = 30 if len(prev.strip(',.')) <= 1 else 0   # pas de mot d'une lettre en fin de ligne (« w », « à », « a »)
+            return c + short - (14 if s[i - 1] in '.?!:;' else 8 if s[i - 1] == ',' else 0)
         best = min(sp, key=cost)
         return s[:best] + r'\N' + s[best + 1:]
     return [(r, wrap(r)) for r in res]
