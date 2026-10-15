@@ -3,14 +3,14 @@
   "sub": "What we've done for almost thirty years? Find the value companies don't see.",
   "tts": "What we've done for almost thirty years? Find the value companies don't see.",
   "start": 3.4,
-  "dur": 4.384,
+  "dur": 4.378,
   "speed": 0.97
  },
  {
   "sub": "And today, the biggest opportunity is hiding in your day-to-day work.",
   "tts": "And today, the biggest opportunity is hiding in your day-to-day work.",
   "start": 8.85,
-  "dur": 4.002,
+  "dur": 4.003,
   "speed": 0.97
  },
  {
@@ -24,70 +24,70 @@
   "sub": "What they're missing is a way to build them, quickly and easily.",
   "tts": "What they're missing is a way to build them, quickly and easily.",
   "start": 17.506,
-  "dur": 3.483,
+  "dur": 3.482,
   "speed": 0.97
  },
  {
-  "sub": "That tool exists: it's DigiCraft.",
-  "tts": "That tool exists: it's DigiCraft.",
+  "sub": "That tool exists: it's YouCraft.",
+  "tts": "That tool exists: it's YouCraft.",
   "start": 21.128,
-  "dur": 2.246,
-  "speed": 1.08
+  "dur": 2.059,
+  "speed": 1.067
  },
  {
   "sub": "The idea is very simple.",
   "tts": "The idea is very simple.",
-  "start": 23.514,
-  "dur": 1.687,
-  "speed": 1.08
+  "start": 23.327,
+  "dur": 1.821,
+  "speed": 0.97
  },
  {
   "sub": "You describe what you need, in your own words.",
   "tts": "You describe what you need, in your own words.",
-  "start": 25.341,
-  "dur": 2.554,
-  "speed": 1.036
+  "start": 25.287,
+  "dur": 2.583,
+  "speed": 0.97
  },
  {
-  "sub": "And DigiCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
-  "tts": "And DigiCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
-  "start": 28.035,
-  "dur": 5.893,
-  "speed": 1.08
+  "sub": "And YouCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
+  "tts": "And YouCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
+  "start": 28.011,
+  "dur": 5.821,
+  "speed": 1.033
  },
  {
   "sub": "One click, and your tool is live. On desktop and on mobile.",
   "tts": "One click, and your tool is live. On desktop and on mobile.",
-  "start": 34.067,
+  "start": 33.972,
   "dur": 3.7,
   "speed": 1.08
  },
  {
-  "sub": "DigiCraft has already proven itself: more than 750 users, and 350 apps deployed.",
-  "tts": "DigiCraft has already proven itself: more than seven hundred and fifty users, and three hundred and fifty apps deployed.",
-  "start": 37.907,
-  "dur": 6.904,
+  "sub": "YouCraft has already proven itself: more than 750 users, and 350 apps deployed.",
+  "tts": "YouCraft has already proven itself: more than seven hundred and fifty users, and three hundred and fifty apps deployed.",
+  "start": 37.812,
+  "dur": 6.797,
   "speed": 1.08
  },
  {
   "sub": "When it comes to security, your data stays in the UK, access is fully under control, and getting started is instant, no training needed.",
   "tts": "When it comes to security, your data stays in the UK, access is fully under control, and getting started is instant, no training needed.",
-  "start": 44.951,
-  "dur": 7.648,
-  "speed": 1.068
+  "start": 44.748,
+  "dur": 7.896,
+  "speed": 1.041
  },
  {
   "sub": "Because it's your tool.",
   "tts": "Because it's your tool.",
-  "start": 52.739,
+  "start": 52.784,
   "dur": 1.371,
   "speed": 0.97
  },
  {
   "sub": "Truly yours.",
   "tts": "Truly yours.",
-  "start": 54.25,
-  "dur": 1.205,
+  "start": 54.295,
+  "dur": 1.202,
   "speed": 0.97
  }
 ]
