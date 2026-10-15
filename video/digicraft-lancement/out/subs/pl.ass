@@ -1,0 +1,28 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:07.88,Sub,,0,0,0,,{\fad(120,120)}Czym zajmujemy się od prawie\Ntrzydziestu lat? Odkrywamy wartość,
+Dialogue: 0,0:00:07.92,0:00:09.44,Sub,,0,0,0,,{\fad(120,120)}której firmy nie widzą.
+Dialogue: 0,0:00:09.48,0:00:13.77,Sub,,0,0,0,,{\fad(120,120)}A dziś największy potencjał\Nkryje się w waszej codzienności.
+Dialogue: 0,0:00:13.81,0:00:18.01,Sub,,0,0,0,,{\fad(120,120)}Pomysłów na produktywne narzędzia\Nwasze zespoły mają mnóstwo.
+Dialogue: 0,0:00:18.05,0:00:21.64,Sub,,0,0,0,,{\fad(120,120)}Brakuje im sposobu, by je\Nzbudować, szybko i prosto.
+Dialogue: 0,0:00:21.68,0:00:23.64,Sub,,0,0,0,,{\fad(120,120)}To narzędzie istnieje: DigiCraft.
+Dialogue: 0,0:00:23.68,0:00:25.01,Sub,,0,0,0,,{\fad(120,120)}Zasada jest prosta.
+Dialogue: 0,0:00:25.05,0:00:27.48,Sub,,0,0,0,,{\fad(120,120)}Opisujecie potrzebę własnymi słowami.
+Dialogue: 0,0:00:27.52,0:00:32.72,Sub,,0,0,0,,{\fad(120,120)}A DigiCraft buduje aplikację na waszych\Noczach: ekrany, dane, obliczenia, kod.
+Dialogue: 0,0:00:33.60,0:00:37.05,Sub,,0,0,0,,{\fad(120,120)}Jedno kliknięcie i gotowe,\Nna komputerze i w telefonie.
+Dialogue: 0,0:00:37.09,0:00:44.37,Sub,,0,0,0,,{\fad(120,120)}DigiCraft sprawdził się w praktyce:\Nponad 750 użytkowników i 350 aplikacji.
+Dialogue: 0,0:00:44.41,0:00:49.23,Sub,,0,0,0,,{\fad(120,120)}Bezpieczeństwo: wasze dane zostają w\NEuropie, dostęp jest w pełni kontrolowany,
+Dialogue: 0,0:00:49.27,0:00:52.39,Sub,,0,0,0,,{\fad(120,120)}a start jest natychmiastowy, bez szkoleń.
+Dialogue: 0,0:00:52.43,0:00:53.87,Sub,,0,0,0,,{\fad(120,120)}Bo to wasze narzędzie.
+Dialogue: 0,0:00:53.91,0:00:54.90,Sub,,0,0,0,,{\fad(120,120)}Naprawdę wasze.
