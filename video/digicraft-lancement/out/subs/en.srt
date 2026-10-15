@@ -1,5 +1,5 @@
 1
-00:00:03,400 --> 00:00:07,813
+00:00:03,400 --> 00:00:07,853
 What we've done for almost thirty years?
 Find the value companies don't see.
 
@@ -65,6 +65,6 @@ no training needed.
 Because it's your tool.
 
 15
-00:00:54,307 --> 00:00:55,539
+00:00:54,307 --> 00:00:55,579
 Truly yours.
 

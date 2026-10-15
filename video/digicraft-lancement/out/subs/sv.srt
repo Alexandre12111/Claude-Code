@@ -1,10 +1,10 @@
 1
-00:00:03,400 --> 00:00:08,357
+00:00:03,400 --> 00:00:08,397
 Vad vi har gjort i nästan trettio år?
 Hittat värdet som företag inte ser.
 
 2
-00:00:08,850 --> 00:00:12,131
+00:00:08,850 --> 00:00:12,171
 Och i dag finns den största
 möjligheten i din vardag.
 
@@ -65,6 +65,6 @@ kommer i gång direkt, utan utbildning.
 För det är ditt verktyg.
 
 15
-00:00:54,648 --> 00:00:55,760
+00:00:54,648 --> 00:00:55,800
 Verkligen ditt.
 

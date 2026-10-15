@@ -4,7 +4,7 @@ Il nostro mestiere da quasi trent'anni?
 Trovare il valore che le aziende non vedono.
 
 2
-00:00:08,850 --> 00:00:12,298
+00:00:08,850 --> 00:00:12,338
 E oggi, il potenziale più
 grande è nel vostro quotidiano.
 
@@ -32,15 +32,15 @@ Descrivete cosa vi serve, con parole vostre.
 
 8
 00:00:27,437 --> 00:00:32,443
-E DigiCraft crea l'applicazione sotto i
-vostri occhi: schermate, dati, calcoli,
+E DigiCraft crea l'applicazione sotto
+i vostri occhi: schermate, dati, calcoli,
 
 9
 00:00:32,483 --> 00:00:33,560
 codice.
 
 10
-00:00:33,600 --> 00:00:36,535
+00:00:33,600 --> 00:00:36,810
 Un clic, ed è online,
 su computer e su mobile.
 
@@ -63,6 +63,6 @@ e si parte subito, senza formazione.
 Perché è il vostro strumento.
 
 15
-00:00:54,208 --> 00:00:55,285
+00:00:54,208 --> 00:00:55,325
 Davvero vostro.
 

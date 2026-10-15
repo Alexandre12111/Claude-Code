@@ -7,23 +7,40 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+Style: Sub,Montserrat SemiBold,52,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0.3,0,1,0,0,2,0,0,62,1
+Style: Box,Montserrat SemiBold,52,&H00462402,&H00462402,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:03.40,0:00:07.73,Sub,,0,0,0,,{\fad(120,120)}Ons vak, al bijna dertig jaar?\NDe waarde vinden die bedrijven niet zien.
-Dialogue: 0,0:00:08.85,0:00:12.41,Sub,,0,0,0,,{\fad(120,120)}En vandaag ligt de grootste kans\Nverborgen in uw dagelijkse werk.
-Dialogue: 0,0:00:12.80,0:00:16.62,Sub,,0,0,0,,{\fad(120,120)}Uw teams hebben genoeg ideeën voor\Ntools om productiever te werken.
-Dialogue: 0,0:00:17.00,0:00:20.78,Sub,,0,0,0,,{\fad(120,120)}Wat ze missen, is een manier om\Nze snel en eenvoudig te bouwen.
-Dialogue: 0,0:00:20.82,0:00:22.82,Sub,,0,0,0,,{\fad(120,120)}Die tool bestaat: het is DigiCraft.
-Dialogue: 0,0:00:22.86,0:00:24.68,Sub,,0,0,0,,{\fad(120,120)}Het principe is heel eenvoudig.
-Dialogue: 0,0:00:24.72,0:00:27.62,Sub,,0,0,0,,{\fad(120,120)}U beschrijft wat u nodig\Nhebt, in uw eigen woorden.
-Dialogue: 0,0:00:27.66,0:00:32.17,Sub,,0,0,0,,{\fad(120,120)}En DigiCraft bouwt de app voor uw ogen:\Nde schermen, de gegevens, de berekeningen,
-Dialogue: 0,0:00:32.21,0:00:33.11,Sub,,0,0,0,,{\fad(120,120)}de code.
-Dialogue: 0,0:00:33.60,0:00:37.54,Sub,,0,0,0,,{\fad(120,120)}Eén klik, en uw tool staat online.\NOp de computer en op mobiel.
-Dialogue: 0,0:00:37.58,0:00:44.07,Sub,,0,0,0,,{\fad(120,120)}DigiCraft heeft zich al bewezen: meer dan\N750 gebruikers en 350 apps in gebruik.
-Dialogue: 0,0:00:44.11,0:00:47.40,Sub,,0,0,0,,{\fad(120,120)}Wat beveiliging betreft,\Nblijven uw gegevens in Europa,
-Dialogue: 0,0:00:47.44,0:00:51.39,Sub,,0,0,0,,{\fad(120,120)}is de toegang volledig onder controle,\Nen kunt u meteen aan de slag,
-Dialogue: 0,0:00:51.43,0:00:52.75,Sub,,0,0,0,,{\fad(120,120)}zonder training.
-Dialogue: 0,0:00:52.79,0:00:54.09,Sub,,0,0,0,,{\fad(120,120)}Omdat het uw tool is.
-Dialogue: 0,0:00:54.13,0:00:55.03,Sub,,0,0,0,,{\fad(120,120)}Echt van u.
+Dialogue: 0,0:00:03.40,0:00:07.77,Box,,0,0,0,,{\an7\pos(557,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 785 0 b 805 0 805 0 805 20 l 805 98 b 805 118 805 118 785 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:03.40,0:00:07.77,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Ons vak, al bijna dertig jaar?\NDe waarde vinden die bedrijven niet zien.
+Dialogue: 0,0:00:08.85,0:00:12.45,Box,,0,0,0,,{\an7\pos(631,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 638 0 b 658 0 658 0 658 20 l 658 98 b 658 118 658 118 638 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:08.85,0:00:12.45,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}En vandaag ligt de grootste kans\Nverborgen in uw dagelijkse werk.
+Dialogue: 0,0:00:12.80,0:00:16.66,Box,,0,0,0,,{\an7\pos(581,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 739 0 b 759 0 759 0 759 20 l 759 98 b 759 118 759 118 739 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:12.80,0:00:16.66,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Uw teams hebben genoeg ideeën voor\Ntools om productiever te werken.
+Dialogue: 0,0:00:17.00,0:00:20.78,Box,,0,0,0,,{\an7\pos(633,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 633 0 b 653 0 653 0 653 20 l 653 98 b 653 118 653 118 633 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:17.00,0:00:20.78,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Wat ze missen, is een manier om\Nze snel en eenvoudig te bouwen.
+Dialogue: 0,0:00:20.82,0:00:22.82,Box,,0,0,0,,{\an7\pos(639,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 623 0 b 643 0 643 0 643 20 l 643 46 b 643 66 643 66 623 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:20.82,0:00:22.82,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Die tool bestaat: het is DigiCraft.
+Dialogue: 0,0:00:22.86,0:00:24.68,Box,,0,0,0,,{\an7\pos(650,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 599 0 b 619 0 619 0 619 20 l 619 46 b 619 66 619 66 599 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:22.86,0:00:24.68,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Het principe is heel eenvoudig.
+Dialogue: 0,0:00:24.72,0:00:27.62,Box,,0,0,0,,{\an7\pos(682,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 535 0 b 555 0 555 0 555 20 l 555 98 b 555 118 555 118 535 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:24.72,0:00:27.62,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}U beschrijft wat u nodig\Nhebt, in uw eigen woorden.
+Dialogue: 0,0:00:27.66,0:00:32.17,Box,,0,0,0,,{\an7\pos(521,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 858 0 b 878 0 878 0 878 20 l 878 98 b 878 118 878 118 858 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:27.66,0:00:32.17,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}En DigiCraft bouwt de app voor uw ogen:\Nde schermen, de gegevens, de berekeningen,
+Dialogue: 0,0:00:32.21,0:00:33.11,Box,,0,0,0,,{\an7\pos(851,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 198 0 b 218 0 218 0 218 20 l 218 46 b 218 66 218 66 198 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:32.21,0:00:33.11,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}de code.
+Dialogue: 0,0:00:33.60,0:00:37.54,Box,,0,0,0,,{\an7\pos(638,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 624 0 b 644 0 644 0 644 20 l 644 98 b 644 118 644 118 624 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:33.60,0:00:37.54,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Eén klik, en uw tool staat online.\NOp de computer en op mobiel.
+Dialogue: 0,0:00:37.58,0:00:44.07,Box,,0,0,0,,{\an7\pos(554,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 792 0 b 812 0 812 0 812 20 l 812 98 b 812 118 812 118 792 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:37.58,0:00:44.07,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}DigiCraft heeft zich al bewezen: meer dan\N750 gebruikers en 350 apps in gebruik.
+Dialogue: 0,0:00:44.11,0:00:47.40,Box,,0,0,0,,{\an7\pos(649,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 602 0 b 622 0 622 0 622 20 l 622 98 b 622 118 622 118 602 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:44.11,0:00:47.40,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Wat beveiliging betreft,\Nblijven uw gegevens in Europa,
+Dialogue: 0,0:00:47.44,0:00:51.39,Box,,0,0,0,,{\an7\pos(589,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 723 0 b 743 0 743 0 743 20 l 743 98 b 743 118 743 118 723 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:47.44,0:00:51.39,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}is de toegang volledig onder controle,\Nen kunt u meteen aan de slag,
+Dialogue: 0,0:00:51.43,0:00:52.75,Box,,0,0,0,,{\an7\pos(785,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 330 0 b 350 0 350 0 350 20 l 350 46 b 350 66 350 66 330 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:51.43,0:00:52.75,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}zonder training.
+Dialogue: 0,0:00:52.79,0:00:54.09,Box,,0,0,0,,{\an7\pos(735,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 431 0 b 451 0 451 0 451 20 l 451 46 b 451 66 451 66 431 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:52.79,0:00:54.09,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Omdat het uw tool is.
+Dialogue: 0,0:00:54.13,0:00:55.03,Box,,0,0,0,,{\an7\pos(828,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 244 0 b 264 0 264 0 264 20 l 264 46 b 264 66 264 66 244 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:54.13,0:00:55.03,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Echt van u.

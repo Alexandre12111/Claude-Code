@@ -8,7 +8,7 @@ Trouver la valeur que les
 entreprises ne voient pas.
 
 3
-00:00:08,901 --> 00:00:12,341
+00:00:08,901 --> 00:00:12,381
 Et aujourd'hui, le plus gros gisement
 se cache dans votre quotidien.
 
@@ -51,8 +51,8 @@ Sur ordinateur comme sur mobile.
 
 12
 00:00:37,534 --> 00:00:41,777
-DigiCraft a déjà fait ses preuves :
-plus de 750 utilisateurs,
+DigiCraft a déjà fait ses preuves
+: plus de 750 utilisateurs,
 
 13
 00:00:41,817 --> 00:00:44,431
@@ -73,6 +73,6 @@ sans aucune formation.
 Parce que c'est votre outil.
 
 17
-00:00:54,025 --> 00:00:55,059
+00:00:54,025 --> 00:00:55,099
 Vraiment le vôtre.
 

@@ -7,24 +7,42 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+Style: Sub,Montserrat SemiBold,52,&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,0.3,0,1,0,0,2,0,0,62,1
+Style: Box,Montserrat SemiBold,52,&H00462402,&H00462402,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:03.40,0:00:06.83,Sub,,0,0,0,,{\fad(120,120)}Unser Kerngeschäft seit fast\Ndreißig Jahren? Den Wert finden,
-Dialogue: 0,0:00:06.87,0:00:08.49,Sub,,0,0,0,,{\fad(120,120)}den Unternehmen nicht sehen.
-Dialogue: 0,0:00:08.85,0:00:12.17,Sub,,0,0,0,,{\fad(120,120)}Und heute liegt das größte\NPotenzial in Ihrem Arbeitsalltag.
-Dialogue: 0,0:00:12.80,0:00:17.02,Sub,,0,0,0,,{\fad(120,120)}Ideen für Tools, die produktiver machen,\Nhaben Ihre Teams mehr als genug.
-Dialogue: 0,0:00:17.05,0:00:20.66,Sub,,0,0,0,,{\fad(120,120)}Was fehlt, ist eine Möglichkeit,\Nsie schnell und einfach zu bauen.
-Dialogue: 0,0:00:20.70,0:00:22.61,Sub,,0,0,0,,{\fad(120,120)}Dieses Tool gibt es: DigiCraft.
-Dialogue: 0,0:00:22.64,0:00:24.32,Sub,,0,0,0,,{\fad(120,120)}Das Prinzip ist ganz einfach.
-Dialogue: 0,0:00:24.36,0:00:27.09,Sub,,0,0,0,,{\fad(120,120)}Sie beschreiben Ihren Bedarf\Nin Ihren eigenen Worten.
-Dialogue: 0,0:00:27.13,0:00:31.11,Sub,,0,0,0,,{\fad(120,120)}Und DigiCraft baut die App vor Ihren\NAugen: die Oberflächen, die Daten,
-Dialogue: 0,0:00:31.15,0:00:32.70,Sub,,0,0,0,,{\fad(120,120)}die Berechnungen, den Code.
-Dialogue: 0,0:00:33.60,0:00:37.77,Sub,,0,0,0,,{\fad(120,120)}Ein Klick, und Ihr Tool ist online.\NAm Computer wie auf dem Smartphone.
-Dialogue: 0,0:00:37.80,0:00:44.04,Sub,,0,0,0,,{\fad(120,120)}DigiCraft hat sich bereits bewährt:\Nüber 750 Nutzer und 350 eingesetzte Apps.
-Dialogue: 0,0:00:44.08,0:00:46.74,Sub,,0,0,0,,{\fad(120,120)}In Sachen Sicherheit bleiben\NIhre Daten in Europa,
-Dialogue: 0,0:00:46.78,0:00:50.73,Sub,,0,0,0,,{\fad(120,120)}die Zugriffe sind voll kontrolliert,\Nund der Einstieg gelingt sofort,
-Dialogue: 0,0:00:50.77,0:00:52.25,Sub,,0,0,0,,{\fad(120,120)}ganz ohne Schulung.
-Dialogue: 0,0:00:52.29,0:00:53.56,Sub,,0,0,0,,{\fad(120,120)}Denn es ist Ihr Tool.
-Dialogue: 0,0:00:53.60,0:00:54.62,Sub,,0,0,0,,{\fad(120,120)}Wirklich Ihres.
+Dialogue: 0,0:00:03.40,0:00:06.83,Box,,0,0,0,,{\an7\pos(630,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 640 0 b 660 0 660 0 660 20 l 660 98 b 660 118 660 118 640 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:03.40,0:00:06.83,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Unser Kerngeschäft seit fast\Ndreißig Jahren? Den Wert finden,
+Dialogue: 0,0:00:06.87,0:00:08.53,Box,,0,0,0,,{\an7\pos(648,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 604 0 b 624 0 624 0 624 20 l 624 46 b 624 66 624 66 604 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:06.87,0:00:08.53,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}den Unternehmen nicht sehen.
+Dialogue: 0,0:00:08.85,0:00:12.21,Box,,0,0,0,,{\an7\pos(640,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 619 0 b 639 0 639 0 639 20 l 639 98 b 639 118 639 118 619 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:08.85,0:00:12.21,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Und heute liegt das größte\NPotenzial in Ihrem Arbeitsalltag.
+Dialogue: 0,0:00:12.80,0:00:17.02,Box,,0,0,0,,{\an7\pos(566,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 767 0 b 787 0 787 0 787 20 l 787 98 b 787 118 787 118 767 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:12.80,0:00:17.02,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Ideen für Tools, die produktiver machen,\Nhaben Ihre Teams mehr als genug.
+Dialogue: 0,0:00:17.05,0:00:20.66,Box,,0,0,0,,{\an7\pos(631,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 638 0 b 658 0 658 0 658 20 l 658 98 b 658 118 658 118 638 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:17.05,0:00:20.66,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Was fehlt, ist eine Möglichkeit,\Nsie schnell und einfach zu bauen.
+Dialogue: 0,0:00:20.70,0:00:22.61,Box,,0,0,0,,{\an7\pos(668,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 565 0 b 585 0 585 0 585 20 l 585 46 b 585 66 585 66 565 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:20.70,0:00:22.61,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Dieses Tool gibt es: DigiCraft.
+Dialogue: 0,0:00:22.64,0:00:24.32,Box,,0,0,0,,{\an7\pos(676,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 549 0 b 569 0 569 0 569 20 l 569 46 b 569 66 569 66 549 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:22.64,0:00:24.32,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Das Prinzip ist ganz einfach.
+Dialogue: 0,0:00:24.36,0:00:27.09,Box,,0,0,0,,{\an7\pos(668,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 565 0 b 585 0 585 0 585 20 l 585 98 b 585 118 585 118 565 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:24.36,0:00:27.09,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Sie beschreiben Ihren Bedarf\Nin Ihren eigenen Worten.
+Dialogue: 0,0:00:27.13,0:00:31.11,Box,,0,0,0,,{\an7\pos(600,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 700 0 b 720 0 720 0 720 20 l 720 98 b 720 118 720 118 700 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:27.13,0:00:31.11,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Und DigiCraft baut die App vor Ihren\NAugen: die Oberflächen, die Daten,
+Dialogue: 0,0:00:31.15,0:00:32.74,Box,,0,0,0,,{\an7\pos(662,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 576 0 b 596 0 596 0 596 20 l 596 46 b 596 66 596 66 576 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:31.15,0:00:32.74,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}die Berechnungen, den Code.
+Dialogue: 0,0:00:33.60,0:00:37.77,Box,,0,0,0,,{\an7\pos(565,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 771 0 b 791 0 791 0 791 20 l 791 98 b 791 118 791 118 771 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:33.60,0:00:37.77,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Ein Klick, und Ihr Tool ist online.\NAm Computer wie auf dem Smartphone.
+Dialogue: 0,0:00:37.80,0:00:44.04,Box,,0,0,0,,{\an7\pos(543,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 815 0 b 835 0 835 0 835 20 l 835 98 b 835 118 835 118 815 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:37.80,0:00:44.04,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}DigiCraft hat sich bereits bewährt:\Nüber 750 Nutzer und 350 eingesetzte Apps.
+Dialogue: 0,0:00:44.08,0:00:46.74,Box,,0,0,0,,{\an7\pos(671,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 558 0 b 578 0 578 0 578 20 l 578 98 b 578 118 578 118 558 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:44.08,0:00:46.74,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}In Sachen Sicherheit bleiben\NIhre Daten in Europa,
+Dialogue: 0,0:00:46.78,0:00:50.73,Box,,0,0,0,,{\an7\pos(635,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 629 0 b 649 0 649 0 649 20 l 649 98 b 649 118 649 118 629 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:46.78,0:00:50.73,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}die Zugriffe sind voll kontrolliert,\Nund der Einstieg gelingt sofort,
+Dialogue: 0,0:00:50.77,0:00:52.25,Box,,0,0,0,,{\an7\pos(738,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 423 0 b 443 0 443 0 443 20 l 443 46 b 443 66 443 66 423 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:50.77,0:00:52.25,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}ganz ohne Schulung.
+Dialogue: 0,0:00:52.29,0:00:53.56,Box,,0,0,0,,{\an7\pos(752,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 397 0 b 417 0 417 0 417 20 l 417 46 b 417 66 417 66 397 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:52.29,0:00:53.56,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Denn es ist Ihr Tool.
+Dialogue: 0,0:00:53.60,0:00:54.66,Box,,0,0,0,,{\an7\pos(798,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 303 0 b 323 0 323 0 323 20 l 323 46 b 323 66 323 66 303 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:53.60,0:00:54.66,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Wirklich Ihres.

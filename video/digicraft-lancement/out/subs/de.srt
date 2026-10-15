@@ -4,11 +4,11 @@ Unser Kerngeschäft seit fast
 dreißig Jahren? Den Wert finden,
 
 2
-00:00:06,867 --> 00:00:08,489
+00:00:06,867 --> 00:00:08,529
 den Unternehmen nicht sehen.
 
 3
-00:00:08,850 --> 00:00:12,172
+00:00:08,850 --> 00:00:12,212
 Und heute liegt das größte
 Potenzial in Ihrem Arbeitsalltag.
 
@@ -41,7 +41,7 @@ Und DigiCraft baut die App vor Ihren
 Augen: die Oberflächen, die Daten,
 
 10
-00:00:31,146 --> 00:00:32,702
+00:00:31,146 --> 00:00:32,742
 die Berechnungen, den Code.
 
 11
@@ -73,6 +73,6 @@ ganz ohne Schulung.
 Denn es ist Ihr Tool.
 
 17
-00:00:53,601 --> 00:00:54,622
+00:00:53,601 --> 00:00:54,662
 Wirklich Ihres.
 

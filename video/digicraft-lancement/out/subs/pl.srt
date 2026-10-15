@@ -35,7 +35,7 @@ Zasada jest prosta.
 Opisujecie potrzebę własnymi słowami.
 
 9
-00:00:27,522 --> 00:00:32,716
+00:00:27,522 --> 00:00:32,756
 A DigiCraft buduje aplikację na waszych
 oczach: ekrany, dane, obliczenia, kod.
 
@@ -51,8 +51,8 @@ ponad 750 użytkowników i 350 aplikacji.
 
 12
 00:00:44,409 --> 00:00:49,233
-Bezpieczeństwo: wasze dane zostają w
-Europie, dostęp jest w pełni kontrolowany,
+Bezpieczeństwo: wasze dane zostają
+w Europie, dostęp jest w pełni kontrolowany,
 
 13
 00:00:49,273 --> 00:00:52,388
@@ -63,6 +63,6 @@ a start jest natychmiastowy, bez szkoleń.
 Bo to wasze narzędzie.
 
 15
-00:00:53,912 --> 00:00:54,901
+00:00:53,912 --> 00:00:54,941
 Naprawdę wasze.
 
