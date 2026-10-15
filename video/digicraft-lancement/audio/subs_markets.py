@@ -106,29 +106,53 @@ ORIG = {'fr': 'video_cxfr2_silent.mp4', 'en': 'video_cxen_silent.mp4', 'uk': 'vi
         'pl': 'video_lt_pl_silent.mp4', 'sv': 'video_lt_sv_silent.mp4'}
 
 
-def edges(video, t):
-    r = subprocess.run(['ffmpeg', '-v', 'error', '-ss', f'{t:.3f}', '-i', video, '-frames:v', '1', '-vf', 'scale=960:540,format=gray', '-f', 'rawvideo', '-'], capture_output=True, check=True)
-    f = np.frombuffer(r.stdout, np.uint8).reshape(540, 960).astype(np.float32)
-    return np.hypot(ndimage.sobel(f, 0), ndimage.sobel(f, 1)) / 8 > 6
+BAND = 780          # haut de la bande analysée (px) : les sous-titres vivent entre 780 et 1080
+FPS = 10            # cadence d'analyse
+_bands = {}
 
 
-def density(E, lines, cx, bottom, m):
+def band_edges(video):
+    """Contours de la bande basse de toute la vidéo, 10 images par seconde, demi-résolution."""
+    if video not in _bands:
+        r = subprocess.run(['ffmpeg', '-v', 'error', '-i', video, '-vf', f'fps={FPS},crop=1920:{1080 - BAND}:0:{BAND},scale=960:{(1080 - BAND) // 2},format=gray',
+                            '-f', 'rawvideo', '-'], capture_output=True, check=True)
+        h = (1080 - BAND) // 2
+        f = np.frombuffer(r.stdout, np.uint8).reshape(-1, h, 960).astype(np.float32)
+        _bands[video] = np.stack([np.hypot(ndimage.sobel(x, 0), ndimage.sobel(x, 1)) / 8 > 6 for x in f])
+    return _bands[video]
+
+
+def conflicts(E, lines, cx, bottom, a, b, m=4):
+    """Pour chaque image entre a et b : vrai si le bandeau à cet endroit recouvre une interface."""
     x0, top, x1, bot = rect(lines, cx, bottom)
     if x0 < 40 or x1 > 1880:
         return None
-    return E[int((top - m) / 2):int((bot + m) / 2), int((x0 - m) / 2):int((x1 + m) / 2)].mean()
+    i0, i1 = int(np.ceil(a * FPS)), int(b * FPS) + 1
+    reg = E[i0:i1, max(0, int((top - m - BAND) / 2)):int((bot + m - BAND) / 2), int((x0 - m) / 2):int((x1 + m) / 2)]
+    return reg.reshape(len(reg), -1).mean(1) > 0.004
 
 
-def best_spot(E, lines, m):
+def best_spot(E, lines, a, b, tol=2):
+    """Premier emplacement (dans l'ordre de préférence) qui ne recouvre l'interface que sur tol images au plus
+    (passage d'une transition) ; si le recouvrement n'arrive qu'en fin de sous-titre, on abrège celui-ci."""
     best = None
     for cx, bottom in SPOTS:
-        d = density(E, lines, cx, bottom, m)
-        if d is None:
+        c = conflicts(E, lines, cx, bottom, a, b)
+        if c is None:
             continue
-        if best is None or d < best[0] - 1e-4:
-            best = (d, cx, bottom)
-        if d < 0.004:
-            break
+        end = b
+        if c[-1]:
+            k = len(c) - 1
+            while k > 0 and c[k - 1]:
+                k -= 1
+            t = np.ceil(a * FPS) / FPS + k / FPS - 0.05
+            if t - a >= 0.8:
+                end, c = t, c[:k]
+        n = int(c.sum())
+        if n <= tol:
+            return n, cx, bottom, end
+        if best is None or n < best[0]:
+            best = (n, cx, bottom, end)
     return best
 
 
@@ -138,23 +162,22 @@ def place(code, ev):
     v = os.path.join(ROOT, 'out', MARKETS[code][3]) if code in MARKETS else ''
     if not os.path.exists(v):
         v = os.path.join(ROOT, 'out', ORIG[code])
+    E = band_edges(v)
     out = []
     for a, b, txt in ev:
         lines = txt.split(r'\N')
-        E = edges(v, a + 0.15) | edges(v, (a + b) / 2) | edges(v, b - 0.15)
-        best = best_spot(E, lines, 4)
-        if best[0] >= 0.004 and len(lines) == 2:
+        n, cx, bottom, end = best_spot(E, lines, a, b)
+        if n and len(lines) == 2:
             # Une ligne à la fois, partage du temps au prorata des caractères.
             t = a + (b - a) * len(lines[0]) / (len(lines[0]) + len(lines[1]))
             for (a2, b2, l) in ((a, t, lines[0]), (t, b, lines[1])):
-                E2 = edges(v, a2 + 0.1) | edges(v, (a2 + b2) / 2) | edges(v, b2 - 0.1)
-                bs = best_spot(E2, [l], 0)
-                out.append((a2, b2, l, bs[1], bs[2]))
-                print(f'  {code} {(a2 + b2) / 2:5.1f} s ligne seule en {bs[1]},{bs[2]} (contours {bs[0]:.3f}) | {l[:42]}')
+                n2, cx2, bo2, e2 = best_spot(E, [l], a2, b2)
+                out.append((a2, e2, l, cx2, bo2))
+                print(f'  {code} {a2:5.1f} s ligne seule en {cx2},{bo2}{" (fin abrégée)" if e2 < b2 else ""}{" (reste " + str(n2) + " images)" if n2 else ""} | {l[:42]}')
             continue
-        out.append((a, b, txt, best[1], best[2]))
-        if (best[1], best[2]) != SPOTS[0]:
-            print(f'  {code} {(a + b) / 2:5.1f} s décalé en {best[1]},{best[2]} (contours {best[0]:.3f}) | {txt[:42]}')
+        out.append((a, end, txt, cx, bottom))
+        if (cx, bottom) != SPOTS[0] or end < b or n:
+            print(f'  {code} {a:5.1f} s en {cx},{bottom}{" (fin abrégée)" if end < b else ""}{" (reste " + str(n) + " images)" if n else ""} | {txt[:42]}')
     return out
 
 

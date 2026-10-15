@@ -1,78 +1,78 @@
 1
-00:00:03,400 --> 00:00:05,606
+00:00:03,400 --> 00:00:05,445
 Notre métier, depuis près de trente ans ?
 
 2
-00:00:05,646 --> 00:00:08,534
+00:00:05,485 --> 00:00:08,256
 Trouver la valeur que les
 entreprises ne voient pas.
 
 3
-00:00:08,850 --> 00:00:12,245
+00:00:08,850 --> 00:00:12,146
 Et aujourd'hui, le plus gros gisement
 se cache dans votre quotidien.
 
 4
-00:00:12,800 --> 00:00:16,960
+00:00:12,800 --> 00:00:16,579
 Des idées d'outils pour gagner en
 productivité, vos équipes en ont plein.
 
 5
-00:00:17,000 --> 00:00:20,908
+00:00:17,000 --> 00:00:20,790
 Ce qui leur manque, c'est de pouvoir
 les construire rapidement et simplement.
 
 6
-00:00:20,948 --> 00:00:22,826
+00:00:20,830 --> 00:00:22,915
 Et cet outil existe : c'est YouCraft.
 
 7
-00:00:22,866 --> 00:00:24,435
+00:00:22,955 --> 00:00:24,652
 Le principe est très simple.
 
 8
-00:00:24,475 --> 00:00:27,215
+00:00:24,692 --> 00:00:27,445
 Vous décrivez votre besoin
 avec vos propres mots.
 
 9
-00:00:27,255 --> 00:00:31,841
+00:00:27,485 --> 00:00:31,265
 Et YouCraft construit l'application
 sous vos yeux : les écrans, les données,
 
 10
-00:00:31,881 --> 00:00:33,564
+00:00:31,305 --> 00:00:33,560
 les agents IA, les calculs, le code.
 
 11
-00:00:33,604 --> 00:00:37,325
+00:00:33,600 --> 00:00:37,501
 Un clic, et votre outil est en ligne.
 Sur ordinateur comme sur mobile.
 
 12
-00:00:37,365 --> 00:00:41,927
+00:00:37,541 --> 00:00:41,832
 YouCraft a déjà fait ses
 preuves : plus de 750 utilisateurs,
 
 13
-00:00:41,967 --> 00:00:44,867
+00:00:41,872 --> 00:00:44,715
 et plus de 350 applications déployées.
 
 14
-00:00:44,907 --> 00:00:48,856
+00:00:44,755 --> 00:00:48,973
 Côté sécurité, vos données restent
 en Europe, les accès sont maîtrisés,
 
 15
-00:00:48,896 --> 00:00:52,296
+00:00:49,013 --> 00:00:52,239
 et la prise en main est immédiate,
 sans aucune formation.
 
 16
-00:00:52,336 --> 00:00:53,689
+00:00:52,279 --> 00:00:53,717
 Parce que c'est votre outil.
 
 17
-00:00:53,729 --> 00:00:54,810
+00:00:53,757 --> 00:00:54,945
 Vraiment le vôtre.
 

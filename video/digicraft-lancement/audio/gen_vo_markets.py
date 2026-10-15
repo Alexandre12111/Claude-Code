@@ -12,10 +12,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TTS = os.environ.get('TTS_DIR', '/tmp/claude-0/-home-user-Claude-Code/b2d349ab-5523-52d5-8843-d14029de2d00/scratchpad/tts')
 SR = 48000
 LAG = 0.8   # retard toléré sur le plan suivant
-CAPS = {'kokoro': 1.08, 'supertonic': 1.15}   # vitesse maximale restant naturelle pour chaque voix
-# Version FR (texte plus long que celui du Canada) : pauses de ponctuation resserrées et marge de vitesse un peu plus grande.
-TIGHT = {'fr': 0.22}
-CAP_CODE = {'fr': 1.2}
+CAPS = {'kokoro': 1.08, 'kokoro_fr': 1.08, 'supertonic': 1.15}   # vitesse maximale restant naturelle pour chaque voix
+BASE = {'kokoro': 0.97, 'kokoro_fr': 1.0, 'supertonic': 1.05}
+# Français : voix Kokoro « ff_siwis » (n° 30), seule voix entraînée sur du français natif. Débit naturel : le texte
+# tient dans le minutage sans accélération ni pauses resserrées (Supertonic parlait 35 % trop lentement en français).
+TIGHT = {}
+CAP_CODE = {}
 YC = [(r'\bYouCraft\b', 'You Craft')]
 # Graphies lues par la voix : « tool » néerlandais, et « YouCraft » en deux mots là où cette graphie sonne
 # le plus près de l'anglais (mesuré par alignement sur la voix anglaise et par les formants du « you »).
@@ -26,9 +28,10 @@ _eng = {}
 def engine(kind):
     if kind in _eng:
         return _eng[kind]
-    if kind == 'kokoro':
+    if kind in ('kokoro', 'kokoro_fr'):
         M = f'{TTS}/kokoro-multi-lang-v1_0'
-        mc = so.OfflineTtsModelConfig(kokoro=so.OfflineTtsKokoroModelConfig(model=f'{M}/model.onnx', voices=f'{M}/voices.bin', tokens=f'{M}/tokens.txt', data_dir=f'{M}/espeak-ng-data', lexicon=f'{M}/lexicon-us-en.txt'), num_threads=4)
+        extra = {'lang': 'fr'} if kind == 'kokoro_fr' else {}
+        mc = so.OfflineTtsModelConfig(kokoro=so.OfflineTtsKokoroModelConfig(model=f'{M}/model.onnx', voices=f'{M}/voices.bin', tokens=f'{M}/tokens.txt', data_dir=f'{M}/espeak-ng-data', lexicon=f'{M}/lexicon-us-en.txt', **extra), num_threads=4)
     else:
         T = f'{TTS}/sherpa-onnx-supertonic-3-tts-int8-2026-05-11'
         mc = so.OfflineTtsModelConfig(supertonic=so.OfflineTtsSupertonicModelConfig(duration_predictor=f'{T}/duration_predictor.int8.onnx', text_encoder=f'{T}/text_encoder.int8.onnx', vector_estimator=f'{T}/vector_estimator.int8.onnx', vocoder=f'{T}/vocoder.int8.onnx', tts_json=f'{T}/tts.json', unicode_indexer=f'{T}/unicode_indexer.bin', voice_style=f'{T}/voice.bin'), num_threads=4)
@@ -40,6 +43,8 @@ def say(kind, lang, text, speed):
     tts = engine(kind)
     if kind == 'kokoro':
         a = tts.generate(text.replace('DigiCraft', 'Didgy Craft').replace('YouCraft', 'You Craft'), sid=16, speed=speed)
+    elif kind == 'kokoro_fr':
+        a = tts.generate(text.replace('YouCraft', 'You Craft'), sid=30, speed=speed)
     else:
         # Deux-points lus comme une virgule : la voix y marquait une pause trop longue.
         text = text.replace(' : ', ', ').replace(': ', ', ')
@@ -98,7 +103,7 @@ def fit(durs, capped=()):
 
 def run(code):
     kind, lang, lines, _ = MARKETS[code]
-    base = 0.97 if kind == 'kokoro' else 1.05
+    base = BASE[kind]
     CAP = CAP_CODE.get(code, CAPS[kind])
     keep = TIGHT.get(code)
     say_ = lambda text, sp: tighten(say(kind, lang, text, sp), keep) if keep else say(kind, lang, text, sp)
