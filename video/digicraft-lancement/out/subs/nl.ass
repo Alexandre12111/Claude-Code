@@ -24,8 +24,8 @@ Dialogue: 0,0:00:18.95,0:00:20.89,Box,,0,0,0,,{\an7\pos(634,960)\1c&H462402&\1a&
 Dialogue: 1,0:00:18.95,0:00:20.89,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}ze snel en eenvoudig te bouwen.
 Dialogue: 0,0:00:20.93,0:00:22.91,Box,,0,0,0,,{\an7\pos(642,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 616 0 b 636 0 636 0 636 20 l 636 46 b 636 66 636 66 616 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:20.93,0:00:22.91,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Die tool bestaat: het is YouCraft.
-Dialogue: 0,0:00:22.95,0:00:24.77,Box,,0,0,0,,{\an7\pos(170,986)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 599 0 b 619 0 619 0 619 20 l 619 46 b 619 66 619 66 599 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:22.95,0:00:24.77,Sub,,0,0,0,,{\an2\pos(480,1044)\fad(140,140)}Het principe is heel eenvoudig.
+Dialogue: 0,0:00:22.95,0:00:24.77,Box,,0,0,0,,{\an7\pos(1130,986)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 599 0 b 619 0 619 0 619 20 l 619 46 b 619 66 619 66 599 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:22.95,0:00:24.77,Sub,,0,0,0,,{\an2\pos(1440,1044)\fad(140,140)}Het principe is heel eenvoudig.
 Dialogue: 0,0:00:24.81,0:00:27.60,Box,,0,0,0,,{\an7\pos(682,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 535 0 b 555 0 555 0 555 20 l 555 98 b 555 118 555 118 535 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:24.81,0:00:27.60,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}U beschrijft wat u nodig\Nhebt, in uw eigen woorden.
 Dialogue: 0,0:00:27.64,0:00:32.18,Box,,0,0,0,,{\an7\pos(761,934)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 858 0 b 878 0 878 0 878 20 l 878 98 b 878 118 878 118 858 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
