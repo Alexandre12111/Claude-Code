@@ -20,25 +20,25 @@ Dialogue: 0,0:00:12.99,0:00:17.47,Box,,0,0,0,,{\an7\pos(564,908)\1c&H462402&\1a&
 Dialogue: 1,0:00:12.99,0:00:17.47,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Your teams are full of ideas for tools\Nthat would make them more productive.
 Dialogue: 0,0:00:17.51,0:00:21.09,Box,,0,0,0,,{\an7\pos(638,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 623 0 b 643 0 643 0 643 20 l 643 98 b 643 118 643 118 623 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
 Dialogue: 1,0:00:17.51,0:00:21.09,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}What they're missing is a way to\Nbuild them, quickly and easily.
-Dialogue: 0,0:00:21.13,0:00:23.47,Box,,0,0,0,,{\an7\pos(668,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 563 0 b 583 0 583 0 583 20 l 583 46 b 583 66 583 66 563 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:21.13,0:00:23.47,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}That tool exists: it's DigiCraft.
-Dialogue: 0,0:00:23.51,0:00:25.29,Box,,0,0,0,,{\an7\pos(720,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 459 0 b 479 0 479 0 479 20 l 479 46 b 479 66 479 66 459 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:23.51,0:00:25.29,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}The idea is very simple.
-Dialogue: 0,0:00:25.33,0:00:28.00,Box,,0,0,0,,{\an7\pos(670,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 560 0 b 580 0 580 0 580 20 l 580 98 b 580 118 580 118 560 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:25.33,0:00:28.00,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}You describe what you need,\Nin your own words.
-Dialogue: 0,0:00:28.04,0:00:32.33,Box,,0,0,0,,{\an7\pos(579,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 743 0 b 763 0 763 0 763 20 l 763 98 b 763 118 763 118 743 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:28.04,0:00:32.33,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}And DigiCraft builds the app right\Nbefore your eyes: the screens, the data,
-Dialogue: 0,0:00:32.37,0:00:34.03,Box,,0,0,0,,{\an7\pos(693,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 515 0 b 535 0 535 0 535 20 l 535 46 b 535 66 535 66 515 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:32.37,0:00:34.03,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}the calculations, the code.
-Dialogue: 0,0:00:34.07,0:00:37.87,Box,,0,0,0,,{\an7\pos(657,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 585 0 b 605 0 605 0 605 20 l 605 98 b 605 118 605 118 585 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:34.07,0:00:37.87,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}One click, and your tool is live.\NOn desktop and on mobile.
-Dialogue: 0,0:00:37.91,0:00:44.57,Box,,0,0,0,,{\an7\pos(525,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 851 0 b 871 0 871 0 871 20 l 871 98 b 871 118 871 118 851 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:37.91,0:00:44.57,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}DigiCraft has already proven itself:\Nmore than 750 users, and 350 apps deployed.
-Dialogue: 0,0:00:44.61,0:00:48.27,Box,,0,0,0,,{\an7\pos(645,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 610 0 b 630 0 630 0 630 20 l 630 98 b 630 118 630 118 610 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:44.61,0:00:48.27,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}When it comes to security, your\Ndata stays in the United States,
-Dialogue: 0,0:00:48.31,0:00:53.15,Box,,0,0,0,,{\an7\pos(565,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 770 0 b 790 0 790 0 790 20 l 790 98 b 790 118 790 118 770 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:48.31,0:00:53.15,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}access is fully under control, and getting\Nstarted is instant, no training needed.
-Dialogue: 0,0:00:53.19,0:00:54.60,Box,,0,0,0,,{\an7\pos(732,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 436 0 b 456 0 456 0 456 20 l 456 46 b 456 66 456 66 436 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:53.19,0:00:54.60,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Because it's your tool.
-Dialogue: 0,0:00:54.64,0:00:55.91,Box,,0,0,0,,{\an7\pos(824,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 252 0 b 272 0 272 0 272 20 l 272 46 b 272 66 272 66 252 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
-Dialogue: 1,0:00:54.64,0:00:55.91,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Truly yours.
+Dialogue: 0,0:00:21.13,0:00:23.28,Box,,0,0,0,,{\an7\pos(671,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 557 0 b 577 0 577 0 577 20 l 577 46 b 577 66 577 66 557 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:21.13,0:00:23.28,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}That tool exists: it's YouCraft.
+Dialogue: 0,0:00:23.32,0:00:25.24,Box,,0,0,0,,{\an7\pos(720,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 459 0 b 479 0 479 0 479 20 l 479 46 b 479 66 479 66 459 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:23.32,0:00:25.24,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}The idea is very simple.
+Dialogue: 0,0:00:25.28,0:00:27.96,Box,,0,0,0,,{\an7\pos(670,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 560 0 b 580 0 580 0 580 20 l 580 98 b 580 118 580 118 560 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:25.28,0:00:27.96,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}You describe what you need,\Nin your own words.
+Dialogue: 0,0:00:28.00,0:00:32.25,Box,,0,0,0,,{\an7\pos(579,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 743 0 b 763 0 763 0 763 20 l 763 98 b 763 118 763 118 743 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:28.00,0:00:32.25,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}And YouCraft builds the app right\Nbefore your eyes: the screens, the data,
+Dialogue: 0,0:00:32.29,0:00:33.95,Box,,0,0,0,,{\an7\pos(693,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 515 0 b 535 0 535 0 535 20 l 535 46 b 535 66 535 66 515 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:32.29,0:00:33.95,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}the calculations, the code.
+Dialogue: 0,0:00:33.99,0:00:37.95,Box,,0,0,0,,{\an7\pos(657,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 585 0 b 605 0 605 0 605 20 l 605 98 b 605 118 605 118 585 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:33.99,0:00:37.95,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}One click, and your tool is live.\NOn desktop and on mobile.
+Dialogue: 0,0:00:37.99,0:00:44.41,Box,,0,0,0,,{\an7\pos(525,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 851 0 b 871 0 871 0 871 20 l 871 98 b 871 118 871 118 851 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:37.99,0:00:44.41,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}YouCraft has already proven itself:\Nmore than 750 users, and 350 apps deployed.
+Dialogue: 0,0:00:44.45,0:00:48.10,Box,,0,0,0,,{\an7\pos(645,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 610 0 b 630 0 630 0 630 20 l 630 98 b 630 118 630 118 610 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:44.45,0:00:48.10,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}When it comes to security, your\Ndata stays in the United States,
+Dialogue: 0,0:00:48.14,0:00:52.97,Box,,0,0,0,,{\an7\pos(565,908)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 770 0 b 790 0 790 0 790 20 l 790 98 b 790 118 790 118 770 118 l 20 118 b 0 118 0 118 0 98 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:48.14,0:00:52.97,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}access is fully under control, and getting\Nstarted is instant, no training needed.
+Dialogue: 0,0:00:53.01,0:00:54.48,Box,,0,0,0,,{\an7\pos(732,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 436 0 b 456 0 456 0 456 20 l 456 46 b 456 66 456 66 436 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:53.01,0:00:54.48,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Because it's your tool.
+Dialogue: 0,0:00:54.52,0:00:55.79,Box,,0,0,0,,{\an7\pos(824,960)\1c&H462402&\1a&H2E&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 252 0 b 272 0 272 0 272 20 l 272 46 b 272 66 272 66 252 66 l 20 66 b 0 66 0 66 0 46 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:54.52,0:00:55.79,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Truly yours.

@@ -1,5 +1,5 @@
 1
-00:00:03,400 --> 00:00:07,854
+00:00:03,400 --> 00:00:07,848
 What we've done for almost thirty years?
 Find the value companies don't see.
 
@@ -19,52 +19,52 @@ What they're missing is a way to
 build them, quickly and easily.
 
 5
-00:00:21,128 --> 00:00:23,474
-That tool exists: it's DigiCraft.
+00:00:21,128 --> 00:00:23,287
+That tool exists: it's YouCraft.
 
 6
-00:00:23,514 --> 00:00:25,301
+00:00:23,327 --> 00:00:25,247
 The idea is very simple.
 
 7
-00:00:25,341 --> 00:00:27,995
+00:00:25,287 --> 00:00:27,971
 You describe what you need,
 in your own words.
 
 8
-00:00:28,035 --> 00:00:32,328
-And DigiCraft builds the app right
+00:00:28,011 --> 00:00:32,347
+And YouCraft builds the app right
 before your eyes: the screens, the data,
 
 9
-00:00:32,368 --> 00:00:34,027
+00:00:32,387 --> 00:00:33,932
 the calculations, the code.
 
 10
-00:00:34,067 --> 00:00:37,867
+00:00:33,972 --> 00:00:37,772
 One click, and your tool is live.
 On desktop and on mobile.
 
 11
-00:00:37,907 --> 00:00:44,911
-DigiCraft has already proven itself:
+00:00:37,812 --> 00:00:44,708
+YouCraft has already proven itself:
 more than 750 users, and 350 apps deployed.
 
 12
-00:00:44,951 --> 00:00:49,670
+00:00:44,748 --> 00:00:49,621
 When it comes to security, your data stays
 in the UK, access is fully under control,
 
 13
-00:00:49,710 --> 00:00:52,699
+00:00:49,661 --> 00:00:52,744
 and getting started is instant,
 no training needed.
 
 14
-00:00:52,739 --> 00:00:54,210
+00:00:52,784 --> 00:00:54,255
 Because it's your tool.
 
 15
-00:00:54,250 --> 00:00:55,525
+00:00:54,295 --> 00:00:55,567
 Truly yours.
 

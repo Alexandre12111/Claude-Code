@@ -1,72 +1,72 @@
 1
-00:00:03,400 --> 00:00:06,004
+00:00:03,400 --> 00:00:06,160
 ¿Nuestro oficio desde
 hace casi treinta años?
 
 2
-00:00:06,044 --> 00:00:08,810
+00:00:06,200 --> 00:00:08,866
 Encontrar el valor que las empresas no ven.
 
 3
-00:00:08,850 --> 00:00:12,205
+00:00:08,906 --> 00:00:12,124
 Y hoy, la mayor oportunidad
 se esconde en su día a día.
 
 4
-00:00:12,800 --> 00:00:17,405
+00:00:12,800 --> 00:00:17,468
 Ideas de herramientas para ser más
 productivos, sus equipos tienen de sobra.
 
 5
-00:00:17,445 --> 00:00:21,268
+00:00:17,508 --> 00:00:21,467
 Lo que les falta es poder construirlas,
 de forma rápida y sencilla.
 
 6
-00:00:21,308 --> 00:00:23,743
-Esa herramienta existe: es DigiCraft.
+00:00:21,507 --> 00:00:23,647
+Esa herramienta existe: es YouCraft.
 
 7
-00:00:23,783 --> 00:00:24,969
+00:00:23,687 --> 00:00:24,876
 Es muy sencillo.
 
 8
-00:00:25,009 --> 00:00:27,442
+00:00:24,916 --> 00:00:27,233
 Describa lo que necesita, con sus palabras.
 
 9
-00:00:27,482 --> 00:00:31,879
-Y DigiCraft construye la aplicación
-ante sus ojos: las pantallas, los datos,
+00:00:27,273 --> 00:00:31,628
+Y YouCraft construye la aplicación ante
+sus ojos: las pantallas, los datos,
 
 10
-00:00:31,919 --> 00:00:33,707
+00:00:31,668 --> 00:00:33,560
 los cálculos, el código.
 
 11
-00:00:33,747 --> 00:00:37,795
+00:00:33,600 --> 00:00:37,638
 Un clic, y su herramienta está en línea,
 en el ordenador y en el móvil.
 
 12
-00:00:37,835 --> 00:00:44,873
-DigiCraft ya ha demostrado su valor:
+00:00:37,678 --> 00:00:44,906
+YouCraft ya ha demostrado su valor:
 más de 750 usuarios y 350 apps desplegadas.
 
 13
-00:00:44,913 --> 00:00:49,683
+00:00:44,946 --> 00:00:49,824
 En seguridad, sus datos se quedan en
 Europa, los accesos están bajo control,
 
 14
-00:00:49,723 --> 00:00:52,439
+00:00:49,864 --> 00:00:52,704
 y se empieza al instante, sin formación.
 
 15
-00:00:52,479 --> 00:00:53,800
+00:00:52,744 --> 00:00:54,071
 Porque es su herramienta.
 
 16
-00:00:53,840 --> 00:00:54,931
+00:00:54,111 --> 00:00:55,213
 De verdad, la suya.
 
