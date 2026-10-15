@@ -7,13 +7,13 @@ from scipy.signal import resample_poly
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 W = os.environ.get('WHISPER', '/tmp/claude-0/-home-user-Claude-Code/b2d349ab-5523-52d5-8843-d14029de2d00/scratchpad/tts/sherpa-onnx-whisper-small') + '/small-'
-LANG = {'en': 'en', 'uk': 'en', 'us': 'en', 'caen': 'en', 'cafr': 'fr', 'de': 'de', 'es': 'es', 'it': 'it', 'nl': 'nl', 'pl': 'pl', 'sv': 'sv'}
+LANG = {'fr': 'fr', 'en': 'en', 'uk': 'en', 'us': 'en', 'caen': 'en', 'cafr': 'fr', 'de': 'de', 'es': 'es', 'it': 'it', 'nl': 'nl', 'pl': 'pl', 'sv': 'sv'}
 
 
 def norm(t):
     t = unicodedata.normalize('NFKD', t.lower())
     t = ''.join(c for c in t if not unicodedata.combining(c))
-    return re.sub(r'[^a-z0-9 ]+', ' ', t.replace('didgy craft', 'digicraft').replace('digi craft', 'digicraft')).split()
+    return re.sub(r'[^a-z0-9 ]+', ' ', t.replace('didgy craft', 'digicraft').replace('digi craft', 'digicraft').replace('you craft', 'youcraft').replace('u craft', 'youcraft').replace('ucraft', 'youcraft')).split()
 
 
 for code in sys.argv[1:]:

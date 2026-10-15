@@ -60,7 +60,8 @@ def clip_events(start, dur, text, audio):
 
 def events_for(code):
     ev = []
-    if code == 'fr':
+    if not os.path.exists(os.path.join(HERE, 'vo_mk', code, 'meta.json')):
+        # Ancienne version FR : voix enregistrée du client.
         x, _ = sf.read(os.path.join(HERE, 'stems', 'vo14_src.wav'))
         for (a, b), t, text in FR_CLIPS:
             ev += clip_events(t, b - a, text, x[int(a * SR):int(b * SR)])

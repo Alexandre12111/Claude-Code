@@ -13,7 +13,10 @@ TTS = os.environ.get('TTS_DIR', '/tmp/claude-0/-home-user-Claude-Code/b2d349ab-5
 SR = 48000
 LAG = 0.8   # retard toléré sur le plan suivant
 CAPS = {'kokoro': 1.08, 'supertonic': 1.15}   # vitesse maximale restant naturelle pour chaque voix
-SAYAS = {'nl': [(r'\btools\b', 'toels'), (r'\btool\b', 'toel')]}   # graphies phonétiques lues par la voix
+YC = [(r'\bYouCraft\b', 'You Craft')]
+# Graphies lues par la voix : « tool » néerlandais, et « YouCraft » en deux mots là où cette graphie sonne
+# le plus près de l'anglais (mesuré par alignement sur la voix anglaise et par les formants du « you »).
+SAYAS = {'nl': [(r'\btools\b', 'toels'), (r'\btool\b', 'toel')], 'fr': YC, 'de': YC, 'sv': YC}
 _eng = {}
 
 
@@ -33,7 +36,7 @@ def engine(kind):
 def say(kind, lang, text, speed):
     tts = engine(kind)
     if kind == 'kokoro':
-        a = tts.generate(text.replace('DigiCraft', 'Didgy Craft'), sid=16, speed=speed)
+        a = tts.generate(text.replace('DigiCraft', 'Didgy Craft').replace('YouCraft', 'You Craft'), sid=16, speed=speed)
     else:
         # Deux-points lus comme une virgule : la voix y marquait une pause trop longue.
         text = text.replace(' : ', ', ').replace(': ', ', ')

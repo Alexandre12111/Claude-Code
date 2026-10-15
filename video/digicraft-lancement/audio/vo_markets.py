@@ -1,6 +1,9 @@
 """Textes de voix off de la vidéo de lancement CognitX pour les 11 marchés.
 Base : texte français fourni par le client et sa traduction anglaise validée ; la phrase sécurité
-cite l'hébergement local (Canada, États-Unis, Royaume-Uni) ou l'Europe. Minutage long (58,25 s)."""
+cite l'hébergement local (Canada, États-Unis, Royaume-Uni) ou l'Europe. Minutage long (58,25 s).
+Le produit s'appelle désormais YouCraft : le nom est remplacé dans tous les textes (BRAND)."""
+
+BRAND = 'YouCraft'
 
 # Instant d'apparition de chaque plan (minutage long), une réplique par plan.
 CUES = [3.4, 9.2, 13.15, 17.35, 21.05, 22.95, 24.35, 27.1, 33.95, 37.2, 44.1, 51.9, 53.6]
@@ -139,20 +142,39 @@ SV = [
     "Verkligen ditt.",
 ]
 
-# marché -> (moteur, langue, lignes, vidéo muette)
+# Version française : texte de la voix off enregistrée par le client, désormais lu par la voix de synthèse.
+FR = [
+    "Notre métier, depuis près de trente ans ? Trouver la valeur que les entreprises ne voient pas.",
+    "Et aujourd'hui, le plus gros gisement se cache dans votre quotidien.",
+    "Des idées d'outils pour gagner en productivité, vos équipes en ont plein.",
+    "Ce qui leur manque, c'est de pouvoir les construire rapidement et simplement.",
+    "Et cet outil existe : c'est DigiCraft.",
+    "Le principe est très simple.",
+    "Vous décrivez votre besoin avec vos propres mots.",
+    "Et DigiCraft construit l'application sous vos yeux : les écrans, les données, les agents IA, les calculs, le code.",
+    "Un clic, et votre outil est en ligne. Sur ordinateur comme sur mobile.",
+    "DigiCraft a déjà fait ses preuves : plus de 750 utilisateurs, et plus de 350 applications déployées.|DigiCraft a déjà fait ses preuves : plus de sept cent cinquante utilisateurs, et plus de trois cent cinquante applications déployées.",
+    "Côté sécurité, vos données restent en Europe, les accès sont maîtrisés, et la prise en main est immédiate, sans aucune formation.",
+    "Parce que c'est votre outil.",
+    "Vraiment le vôtre.",
+]
+
+# marché -> (moteur, langue, lignes, vidéo muette avec le nom YouCraft à l'écran)
 MARKETS = {
-    'en': ('kokoro', 'en', en('Europe'), 'video_cxen_silent.mp4'),
-    'uk': ('kokoro', 'en', en('the UK'), 'video_lt_uken_silent.mp4'),
-    'us': ('kokoro', 'en', en('the United States', us=True), 'video_lt_usen_silent.mp4'),
-    'caen': ('kokoro', 'en', en('Canada'), 'video_lt_caen_silent.mp4'),
-    'cafr': ('supertonic', 'fr', FR_CA, 'video_lt_cafr_silent.mp4'),
-    'de': ('supertonic', 'de', DE, 'video_lt_de_silent.mp4'),
-    'es': ('supertonic', 'es', ES, 'video_lt_es_silent.mp4'),
-    'it': ('supertonic', 'it', IT, 'video_lt_it_silent.mp4'),
-    'nl': ('supertonic', 'nl', NL, 'video_lt_nl_silent.mp4'),
-    'pl': ('supertonic', 'pl', PL, 'video_lt_pl_silent.mp4'),
-    'sv': ('supertonic', 'sv', SV, 'video_lt_sv_silent.mp4'),
+    'fr': ('supertonic', 'fr', FR, 'video_yc_fr_silent.mp4'),
+    'en': ('kokoro', 'en', en('Europe'), 'video_yc_en_silent.mp4'),
+    'uk': ('kokoro', 'en', en('the UK'), 'video_yc_uk_silent.mp4'),
+    'us': ('kokoro', 'en', en('the United States', us=True), 'video_yc_us_silent.mp4'),
+    'caen': ('kokoro', 'en', en('Canada'), 'video_yc_caen_silent.mp4'),
+    'cafr': ('supertonic', 'fr', FR_CA, 'video_yc_cafr_silent.mp4'),
+    'de': ('supertonic', 'de', DE, 'video_yc_de_silent.mp4'),
+    'es': ('supertonic', 'es', ES, 'video_yc_es_silent.mp4'),
+    'it': ('supertonic', 'it', IT, 'video_yc_it_silent.mp4'),
+    'nl': ('supertonic', 'nl', NL, 'video_yc_nl_silent.mp4'),
+    'pl': ('supertonic', 'pl', PL, 'video_yc_pl_silent.mp4'),
+    'sv': ('supertonic', 'sv', SV, 'video_yc_sv_silent.mp4'),
 }
+MARKETS = {k: (e, l, [x.replace('DigiCraft', BRAND) for x in lines], v) for k, (e, l, lines, v) in MARKETS.items()}
 
 
 def split(line):
