@@ -13,6 +13,9 @@ TTS = os.environ.get('TTS_DIR', '/tmp/claude-0/-home-user-Claude-Code/b2d349ab-5
 SR = 48000
 LAG = 0.8   # retard toléré sur le plan suivant
 CAPS = {'kokoro': 1.08, 'supertonic': 1.15}   # vitesse maximale restant naturelle pour chaque voix
+# Version FR (texte plus long que celui du Canada) : pauses de ponctuation resserrées et marge de vitesse un peu plus grande.
+TIGHT = {'fr': 0.22}
+CAP_CODE = {'fr': 1.2}
 YC = [(r'\bYouCraft\b', 'You Craft')]
 # Graphies lues par la voix : « tool » néerlandais, et « YouCraft » en deux mots là où cette graphie sonne
 # le plus près de l'anglais (mesuré par alignement sur la voix anglaise et par les formants du « you »).
@@ -54,6 +57,28 @@ def say(kind, lang, text, speed):
     return x
 
 
+def tighten(x, keep):
+    """Ramène les silences internes plus longs que keep à keep (fondu de 10 ms), sans toucher au débit."""
+    from scipy.ndimage import uniform_filter1d
+    e = np.sqrt(uniform_filter1d(x ** 2, int(0.02 * SR)))
+    q = e < 0.04 * e.max()
+    out, last, i, f = [], 0, 0, int(0.01 * SR)
+    while i < len(q):
+        if q[i]:
+            j = i
+            while j < len(q) and q[j]:
+                j += 1
+            if i > 0 and j < len(q) and (j - i) / SR > keep:
+                a = i + int(keep * SR / 2); b = j - int(keep * SR / 2)
+                seg = x[last:a].copy(); seg[-f:] *= np.linspace(1, 0, f)
+                out.append(seg); x = x.copy(); x[b:b + f] *= np.linspace(0, 1, f); last = b
+            i = j
+        else:
+            i += 1
+    out.append(x[last:])
+    return np.concatenate(out)
+
+
 def fit(durs, capped=()):
     """Pose chaque réplique sur son plan. Renvoie les débuts et la réplique à accélérer (ou None) :
     si une réplique déborde parce qu'elle a commencé en retard, on accélère la précédente."""
@@ -74,10 +99,12 @@ def fit(durs, capped=()):
 def run(code):
     kind, lang, lines, _ = MARKETS[code]
     base = 0.97 if kind == 'kokoro' else 1.05
-    CAP = CAPS[kind]
+    CAP = CAP_CODE.get(code, CAPS[kind])
+    keep = TIGHT.get(code)
+    say_ = lambda text, sp: tighten(say(kind, lang, text, sp), keep) if keep else say(kind, lang, text, sp)
     out = os.path.join(HERE, 'vo_mk', code); os.makedirs(out, exist_ok=True)
     speeds = [base] * len(lines)
-    clips = [say(kind, lang, split(l)[1], base) for l in lines]
+    clips = [say_(split(l)[1], base) for l in lines]
     capped = set()
     for _ in range(40):
         starts, todo = fit([len(c) / SR for c in clips], capped)
@@ -91,7 +118,7 @@ def run(code):
         speeds[j] = sp
         if sp >= CAP:
             capped.add(j)
-        clips[j] = say(kind, lang, split(lines[j])[1], speeds[j])
+        clips[j] = say_(split(lines[j])[1], speeds[j])
     starts, _ = fit([len(c) / SR for c in clips])
     for i, st in enumerate(starts):
         lim = CUES[i + 1] + LAG if i + 1 < len(CUES) else END - 1.2
