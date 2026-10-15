@@ -1,0 +1,29 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,Montserrat SemiBold,44,&H00FFFFFF,&H00FFFFFF,&H40462402,&H00000000,0,0,0,0,100,100,0.3,0,3,16,0,2,160,160,64,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:07.73,Sub,,0,0,0,,{\fad(120,120)}Ons vak, al bijna dertig jaar?\NDe waarde vinden die bedrijven niet zien.
+Dialogue: 0,0:00:08.85,0:00:12.41,Sub,,0,0,0,,{\fad(120,120)}En vandaag ligt de grootste kans\Nverborgen in uw dagelijkse werk.
+Dialogue: 0,0:00:12.80,0:00:16.62,Sub,,0,0,0,,{\fad(120,120)}Uw teams hebben genoeg ideeën voor\Ntools om productiever te werken.
+Dialogue: 0,0:00:17.00,0:00:20.78,Sub,,0,0,0,,{\fad(120,120)}Wat ze missen, is een manier om\Nze snel en eenvoudig te bouwen.
+Dialogue: 0,0:00:20.82,0:00:22.82,Sub,,0,0,0,,{\fad(120,120)}Die tool bestaat: het is DigiCraft.
+Dialogue: 0,0:00:22.86,0:00:24.68,Sub,,0,0,0,,{\fad(120,120)}Het principe is heel eenvoudig.
+Dialogue: 0,0:00:24.72,0:00:27.62,Sub,,0,0,0,,{\fad(120,120)}U beschrijft wat u nodig\Nhebt, in uw eigen woorden.
+Dialogue: 0,0:00:27.66,0:00:32.17,Sub,,0,0,0,,{\fad(120,120)}En DigiCraft bouwt de app voor uw ogen:\Nde schermen, de gegevens, de berekeningen,
+Dialogue: 0,0:00:32.21,0:00:33.11,Sub,,0,0,0,,{\fad(120,120)}de code.
+Dialogue: 0,0:00:33.60,0:00:37.54,Sub,,0,0,0,,{\fad(120,120)}Eén klik, en uw tool staat online.\NOp de computer en op mobiel.
+Dialogue: 0,0:00:37.58,0:00:44.07,Sub,,0,0,0,,{\fad(120,120)}DigiCraft heeft zich al bewezen: meer dan\N750 gebruikers en 350 apps in gebruik.
+Dialogue: 0,0:00:44.11,0:00:47.40,Sub,,0,0,0,,{\fad(120,120)}Wat beveiliging betreft,\Nblijven uw gegevens in Europa,
+Dialogue: 0,0:00:47.44,0:00:51.39,Sub,,0,0,0,,{\fad(120,120)}is de toegang volledig onder controle,\Nen kunt u meteen aan de slag,
+Dialogue: 0,0:00:51.43,0:00:52.75,Sub,,0,0,0,,{\fad(120,120)}zonder training.
+Dialogue: 0,0:00:52.79,0:00:54.09,Sub,,0,0,0,,{\fad(120,120)}Omdat het uw tool is.
+Dialogue: 0,0:00:54.13,0:00:55.03,Sub,,0,0,0,,{\fad(120,120)}Echt van u.
