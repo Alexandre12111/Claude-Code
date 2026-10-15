@@ -23,70 +23,70 @@
  {
   "sub": "What they're missing is a way to build them, quickly and easily.",
   "tts": "What they're missing is a way to build them, quickly and easily.",
-  "start": 17.506,
+  "start": 17.505,
   "dur": 3.482,
   "speed": 0.97
  },
  {
-  "sub": "That tool exists: it's DigiCraft.",
-  "tts": "That tool exists: it's DigiCraft.",
+  "sub": "That tool exists: it's YouCraft.",
+  "tts": "That tool exists: it's YouCraft.",
   "start": 21.128,
-  "dur": 2.24,
-  "speed": 1.08
+  "dur": 2.059,
+  "speed": 1.066
  },
  {
   "sub": "The idea is very simple.",
   "tts": "The idea is very simple.",
-  "start": 23.508,
-  "dur": 1.69,
-  "speed": 1.08
+  "start": 23.327,
+  "dur": 1.821,
+  "speed": 0.97
  },
  {
   "sub": "You describe what you need, in your own words.",
   "tts": "You describe what you need, in your own words.",
-  "start": 25.339,
-  "dur": 2.554,
-  "speed": 1.033
+  "start": 25.288,
+  "dur": 2.583,
+  "speed": 0.97
  },
  {
-  "sub": "And DigiCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
-  "tts": "And DigiCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
-  "start": 28.032,
-  "dur": 5.892,
-  "speed": 1.08
+  "sub": "And YouCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
+  "tts": "And YouCraft builds the app right before your eyes: the screens, the data, the calculations, the code.",
+  "start": 28.011,
+  "dur": 5.775,
+  "speed": 1.038
  },
  {
   "sub": "One click, and your tool is live. On desktop and on mobile.",
   "tts": "One click, and your tool is live. On desktop and on mobile.",
-  "start": 34.064,
+  "start": 33.926,
   "dur": 3.7,
-  "speed": 1.08
+  "speed": 1.079
  },
  {
-  "sub": "DigiCraft has already proven itself: more than 750 users, and 350 apps deployed.",
-  "tts": "DigiCraft has already proven itself: more than seven hundred and fifty users, and three hundred and fifty apps deployed.",
-  "start": 37.904,
-  "dur": 6.899,
+  "sub": "YouCraft has already proven itself: more than 750 users, and 350 apps deployed.",
+  "tts": "YouCraft has already proven itself: more than seven hundred and fifty users, and three hundred and fifty apps deployed.",
+  "start": 37.766,
+  "dur": 6.716,
   "speed": 1.08
  },
  {
   "sub": "When it comes to security, your data stays in Europe, access is fully under control, and getting started is instant, no training needed.",
   "tts": "When it comes to security, your data stays in Europe, access is fully under control, and getting started is instant, no training needed.",
-  "start": 44.943,
-  "dur": 7.714,
-  "speed": 1.03
+  "start": 44.622,
+  "dur": 7.952,
+  "speed": 0.995
  },
  {
   "sub": "Because it's your tool.",
   "tts": "Because it's your tool.",
-  "start": 52.797,
-  "dur": 1.37,
+  "start": 52.714,
+  "dur": 1.371,
   "speed": 0.97
  },
  {
   "sub": "Truly yours.",
   "tts": "Truly yours.",
-  "start": 54.307,
+  "start": 54.225,
   "dur": 1.202,
   "speed": 0.97
  }
