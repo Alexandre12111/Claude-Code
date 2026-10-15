@@ -1,11 +1,13 @@
 """Sous-titres v2 : un seul bandeau arrondi ajusté au texte (plus de rectangles qui se chevauchent),
 texte plus grand, calage sur les pauses de la voix. Marchés : voix de synthèse ; 'fr' : voix enregistrée du client.
 Usage : python3 subs_markets.py en uk ... fr"""
-import json, os, sys
+import json, os, subprocess, sys
 import numpy as np
+from scipy import ndimage
 import soundfile as sf
 from PIL import ImageFont
 from mix_markets import chunks, pauses, ts_ass, ts_srt
+from vo_markets import MARKETS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, '..')
@@ -81,17 +83,79 @@ def width(line):
     return _font.getlength(line) + SPACING * max(0, len(line) - 1)
 
 
-def box(lines):
-    """Rectangle arrondi qui englobe les glyphes de toutes les lignes, avec une marge régulière."""
+def rect(lines, cx=960, bottom=BOTTOM):
     n = len(lines)
     w = max(width(l) for l in lines) + 2 * PAD_X
-    top = BOTTOM - n * FS + 0.2 * FS - PAD_Y
-    bot = BOTTOM - 0.14 * FS + PAD_Y
-    h = bot - top
-    r = RADIUS
+    return cx - w / 2, bottom - n * FS + 0.2 * FS - PAD_Y, cx + w / 2, bottom - 0.14 * FS + PAD_Y
+
+
+def box(lines, cx=960, bottom=BOTTOM):
+    """Rectangle arrondi qui englobe les glyphes de toutes les lignes, avec une marge régulière."""
+    x0, top, x1, bot = rect(lines, cx, bottom)
+    w, h, r = x1 - x0, bot - top, RADIUS
     path = (f'm {r} 0 l {w - r:.0f} 0 b {w:.0f} 0 {w:.0f} 0 {w:.0f} {r} l {w:.0f} {h - r:.0f} b {w:.0f} {h:.0f} {w:.0f} {h:.0f} {w - r:.0f} {h:.0f} '
             f'l {r} {h:.0f} b 0 {h:.0f} 0 {h:.0f} 0 {h - r:.0f} l 0 {r} b 0 0 0 0 {r} 0')
-    return 960 - w / 2, top, path
+    return x0, top, path
+
+
+# Placement : le bandeau reste centré en bas, sauf si l'image montre une interface à cet endroit pendant
+# le sous-titre (contours détectés sur trois images) ; il descend alors un peu, puis se décale de côté.
+SPOTS = [(960, BOTTOM), (960, BOTTOM + 26), (1200, BOTTOM + 26), (720, BOTTOM + 26), (1440, BOTTOM + 26), (480, BOTTOM + 26)]
+ORIG = {'fr': 'video_cxfr2_silent.mp4', 'en': 'video_cxen_silent.mp4', 'uk': 'video_lt_uken_silent.mp4', 'us': 'video_lt_usen_silent.mp4', 'caen': 'video_lt_caen_silent.mp4',
+        'cafr': 'video_lt_cafr_silent.mp4', 'de': 'video_lt_de_silent.mp4', 'es': 'video_lt_es_silent.mp4', 'it': 'video_lt_it_silent.mp4', 'nl': 'video_lt_nl_silent.mp4',
+        'pl': 'video_lt_pl_silent.mp4', 'sv': 'video_lt_sv_silent.mp4'}
+
+
+def edges(video, t):
+    r = subprocess.run(['ffmpeg', '-v', 'error', '-ss', f'{t:.3f}', '-i', video, '-frames:v', '1', '-vf', 'scale=960:540,format=gray', '-f', 'rawvideo', '-'], capture_output=True, check=True)
+    f = np.frombuffer(r.stdout, np.uint8).reshape(540, 960).astype(np.float32)
+    return np.hypot(ndimage.sobel(f, 0), ndimage.sobel(f, 1)) / 8 > 6
+
+
+def density(E, lines, cx, bottom, m):
+    x0, top, x1, bot = rect(lines, cx, bottom)
+    if x0 < 40 or x1 > 1880:
+        return None
+    return E[int((top - m) / 2):int((bot + m) / 2), int((x0 - m) / 2):int((x1 + m) / 2)].mean()
+
+
+def best_spot(E, lines, m):
+    best = None
+    for cx, bottom in SPOTS:
+        d = density(E, lines, cx, bottom, m)
+        if d is None:
+            continue
+        if best is None or d < best[0] - 1e-4:
+            best = (d, cx, bottom)
+        if d < 0.004:
+            break
+    return best
+
+
+def place(code, ev):
+    """Renvoie (début, fin, texte, x, bas) ; un sous-titre de deux lignes sans place libre est scindé en deux lignes successives."""
+    # Image muette renommée si elle existe déjà, sinon l'originale (même mise en page, seul le nom change).
+    v = os.path.join(ROOT, 'out', MARKETS[code][3]) if code in MARKETS else ''
+    if not os.path.exists(v):
+        v = os.path.join(ROOT, 'out', ORIG[code])
+    out = []
+    for a, b, txt in ev:
+        lines = txt.split(r'\N')
+        E = edges(v, a + 0.15) | edges(v, (a + b) / 2) | edges(v, b - 0.15)
+        best = best_spot(E, lines, 4)
+        if best[0] >= 0.004 and len(lines) == 2:
+            # Une ligne à la fois, partage du temps au prorata des caractères.
+            t = a + (b - a) * len(lines[0]) / (len(lines[0]) + len(lines[1]))
+            for (a2, b2, l) in ((a, t, lines[0]), (t, b, lines[1])):
+                E2 = edges(v, a2 + 0.1) | edges(v, (a2 + b2) / 2) | edges(v, b2 - 0.1)
+                bs = best_spot(E2, [l], 0)
+                out.append((a2, b2, l, bs[1], bs[2]))
+                print(f'  {code} {(a2 + b2) / 2:5.1f} s ligne seule en {bs[1]},{bs[2]} (contours {bs[0]:.3f}) | {l[:42]}')
+            continue
+        out.append((a, b, txt, best[1], best[2]))
+        if (best[1], best[2]) != SPOTS[0]:
+            print(f'  {code} {(a + b) / 2:5.1f} s décalé en {best[1]},{best[2]} (contours {best[0]:.3f}) | {txt[:42]}')
+    return out
 
 
 def write(code, ev):
@@ -113,10 +177,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
     with open(os.path.join(SUBS, f'{code}.ass'), 'w', encoding='utf-8') as f:
         f.write(head)
-        for a, b, txt in ev:
-            x0, y0, path = box(txt.split(r'\N'))
+        for a, b, txt, cx, bottom in place(code, ev):
+            x0, y0, path = box(txt.split(r'\N'), cx, bottom)
             f.write(f'Dialogue: 0,{ts_ass(a)},{ts_ass(b)},Box,,0,0,0,,{{\\an7\\pos({x0:.0f},{y0:.0f})\\1c{BOX}\\1a{BOX_ALPHA}\\bord0\\shad0\\blur0.6\\fad(140,140)\\p1}}{path}{{\\p0}}\n')
-            f.write(f'Dialogue: 1,{ts_ass(a)},{ts_ass(b)},Sub,,0,0,0,,{{\\an2\\pos(960,{BOTTOM})\\fad(140,140)}}{txt}\n')
+            f.write(f'Dialogue: 1,{ts_ass(a)},{ts_ass(b)},Sub,,0,0,0,,{{\\an2\\pos({cx},{bottom})\\fad(140,140)}}{txt}\n')
     with open(os.path.join(SUBS, f'{code}.srt'), 'w', encoding='utf-8') as f:
         for k, (a, b, txt) in enumerate(ev, 1):
             f.write(f'{k}\n{ts_srt(a)} --> {ts_srt(b)}\n{txt.replace(chr(92) + "N", chr(10))}\n\n')

@@ -105,7 +105,7 @@ def chunks(text, maxc=84, line=44):
     def wrap(s):
         if len(s) <= line:
             return s
-        sp = [i for i, ch in enumerate(s) if ch == ' ']
+        sp = [i for i, ch in enumerate(s) if ch == ' ' and (i + 1 >= len(s) or s[i + 1] not in ':;?!»')]
         def cost(i):
             a, b = i, len(s) - i - 1
             c = abs(a - b) + (40 if max(a, b) > line else 0)
