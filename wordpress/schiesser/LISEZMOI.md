@@ -3,6 +3,14 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.18 : textes relus par le client (document v3)
+
+* **Schiesser → Corrections de textes** : les 215 textes corrigés par le client (432 entrées en allemand, français et anglais) s'appliquent au site réel en un clic, après un aperçu. Chaque texte est cherché dans la page de sa langue, à son emplacement puis d'après son ancien texte ; seul le texte change (photos, mise en page et réglages des blocs restent) et les liens internes sont remis sur les mêmes mots. Un texte déjà retouché sur le site est laissé tel quel et signalé « À vérifier ». Un bouton remet l'état d'avant (pages, titres Google, présentation).
+* Suivi des commentaires du client : grille des produits (Confiserie) et affluence (Besuch) masquées sans être supprimées, numéros des sections remis à la suite ; rubrique « Sprachen », ligne « Für » et question « Onlineshop » retirées ; renvois « * » en petits caractères ; horaires de l'accueil et du contact reliés aux Réglages maison ; photo de 1889 dans le comparateur.
+* « Le plus ancien café de Suisse » retiré aussi des titres et descriptions Google (pages Tea Room et Histoire, seulement s'ils n'ont pas été retouchés), de la présentation de la maison, de la carte de maillage et de la carte du Tea Room en PDF (régénérée dans les trois langues).
+* La balise `<small>` est autorisée dans les textes des blocs.
+* Fichier des corrections : `corrections/textes-2026-10-v3.json` (construit par `wordpress/textes/outils/construire-corrections.py`).
+
 ## Version 0.17.3 : photos changées par leur adresse
 
 * Une photo dont l'adresse (imageUrl, avantUrl, apresUrl…) a été changée à la main dans l'éditeur de code, sans changer son numéro de médiathèque (imageId, avantId…), s'affiche désormais aussi sur le site, comme dans l'aperçu de l'éditeur. Le thème retrouve la photo correspondante dans la médiathèque (images adaptées à chaque écran conservées).

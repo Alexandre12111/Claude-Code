@@ -2539,3 +2539,6 @@ p,.x-fd,.note{text-wrap:pretty}
 @media (prefers-reduced-motion:reduce){
   .x-floor,.x-floor img,.ml-carte,.x-floor .x-fb{transition:none!important;translate:none!important}
 }
+
+/* 0.18 · Renvois en petits caractères (astérisque sous une réponse ou un texte) */
+.ans small,.cta small,.x-fd small,.lead small{display:inline-block;margin-top:6px;font-size:.82em;line-height:1.5;opacity:.78}

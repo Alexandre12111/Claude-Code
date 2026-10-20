@@ -86,6 +86,7 @@ function schiesser_traductions_base() {
 		'Erster Stock'                               => array( 'Premier étage', 'First floor' ),
 		'Tea Room am Marktplatz'                     => array( 'Salon de thé sur le Marktplatz', 'Tea Room on the Marktplatz' ),
 		'Frühstück, Kaffee, Tee und hausgemachte Schokolade im ältesten Kaffeehaus der Schweiz.' => array( 'Petit-déjeuner, café, thé et chocolat maison dans le plus ancien café de Suisse.', 'Breakfast, coffee, tea and homemade hot chocolate in Switzerland’s oldest coffee house.' ),
+		'Frühstück, Kaffee, Tee und hausgemachte heisse Schokolade in einem der ältesten Kaffeehäuser der Schweiz.' => array( 'Petit-déjeuner, café, thé et chocolat chaud maison dans l’un des plus anciens cafés de Suisse.', 'Breakfast, coffee, tea and homemade hot chocolate in one of Switzerland’s oldest coffee houses.' ),
 		'Geschichte des Hauses'                      => array( 'Histoire de la maison', 'History of the house' ),
 		'Vom Glarner Konditor Rudolf Schiesser bis heute, mit Bildern aus dem Archiv.' => array( 'Du confiseur glaronais Rudolf Schiesser à aujourd’hui, avec des images d’archives.', 'From the Glarus confectioner Rudolf Schiesser to the present day, with pictures from the archive.' ),
 		'Marktplatz 19'                              => array( 'Marktplatz 19', 'Marktplatz 19' ),
@@ -231,6 +232,7 @@ function schiesser_traductions_base() {
 		'Unser Tipp'                                 => array( 'Notre conseil', 'Our tip' ),
 		'Empfehlung des Hauses'                      => array( 'Recommandation de la maison', 'House recommendation' ),
 		'Das älteste Kaffeehaus der Schweiz'         => array( 'Le plus ancien café de Suisse', 'Switzerland’s oldest coffee house' ),
+		'Ein Kaffeehaus mit über 100 Jahren Geschichte' => array( 'Un café avec plus de 100 ans d’histoire', 'A coffee house with more than 100 years of history' ),
 		'Alle Preise in CHF inkl. MwSt. · Auskunft zu Allergenen erhalten Sie gerne bei unserem Team.' => array( 'Tous les prix en CHF, TVA comprise · Notre équipe vous renseigne volontiers sur les allergènes.', 'All prices in CHF incl. VAT · Our team will gladly inform you about allergens.' ),
 
 		/* ----- cartes, accès, trajets ----- */
@@ -311,6 +313,7 @@ function schiesser_traductions_base() {
 		'An Feiertagen können die Öffnungszeiten abweichen. Im Zweifel genügt ein Anruf.' => array( 'Les horaires peuvent varier les jours fériés. En cas de doute, un appel suffit.', 'Opening hours may differ on public holidays. If in doubt, just give us a call.' ),
 		'In unserer Backstube werden auch Gluten, Nüsse, Milch und Eier verarbeitet: Spuren sind möglich. Unser Team gibt Ihnen gerne Auskunft.' => array( 'Notre atelier travaille aussi le gluten, les fruits à coque, le lait et les œufs : des traces sont possibles. Notre équipe vous renseigne volontiers.', 'Our bakehouse also handles gluten, nuts, milk and eggs: traces are possible. Our team will gladly advise you.' ),
 		'Die Confiserie Schiesser wurde 1870 am Basler Marktplatz gegründet. Läckerli, Pralinen, Torten und Gebäck entstehen in der eigenen Backstube; im ersten Stock liegt der Tea Room, das älteste Kaffeehaus der Schweiz.' => array( 'La Confiserie Schiesser a été fondée en 1870 sur le Marktplatz de Bâle. Läckerli, pralinés, gâteaux et viennoiseries naissent dans notre propre atelier ; au premier étage se trouve le salon de thé, le plus ancien café de Suisse.', 'Confiserie Schiesser was founded in 1870 on the Marktplatz in Basel. Läckerli, pralines, cakes and pastries are made in our own bakehouse; on the first floor is the Tea Room, Switzerland’s oldest coffee house.' ),
+		'Die Confiserie Schiesser geht auf das Jahr 1870 zurück. Am Basler Marktplatz entstehen Läckerli, Pralinés, Torten und Gebäck in der eigenen Backstube; im ersten Stock liegt der Tea Room, eines der ältesten Kaffeehäuser der Schweiz.' => array( 'Les origines de la Confiserie Schiesser remontent à 1870. Sur le Marktplatz de Bâle, Läckerli, pralinés, gâteaux et viennoiseries naissent dans notre propre atelier ; au premier étage se trouve le Tea Room, l’un des plus anciens cafés de Suisse.', 'Confiserie Schiesser’s roots go back to 1870. On Basel’s Marktplatz, Läckerli, pralines, cakes and pastries are made in our own bakery; on the first floor is the Tea Room, one of Switzerland’s oldest coffee houses.' ),
 		'Läckerli'                                   => array( 'Läckerli', 'Läckerli' ),
 		'Truffes'                                    => array( 'Truffes', 'Truffles' ),
 		'Fruchtwähe'                                 => array( 'Tarte aux fruits', 'Fruit tart' ),

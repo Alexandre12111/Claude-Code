@@ -19,3 +19,12 @@ php outils/extraire.php textes-references.json      # avec le site de test WordP
 npm install docx@9 && node outils/generer.js textes-references.json Textes-pages-Confiserie-Schiesser.docx          # pages, DE · FR · EN
 node outils/generer.js textes-references.json Textes-site-Confiserie-Schiesser.docx --tout   # avec carte et produits
 ```
+
+## Retours du client
+
+* **2026-10 · document v3** (`retours/2026-10-v3/`) : 215 textes et 36 commentaires. Corrections construites par `outils/construire-corrections.py` (décisions sur les commentaires écrites dans le script) puis appliquées par le thème 0.18 (Schiesser → Corrections de textes). `textes-references.json` contient désormais les textes corrigés (v4) ; `textes-references-v3.json` garde la version envoyée au client. `Textes-pages-Confiserie-Schiesser.docx` est régénéré avec les textes à jour pour une prochaine relecture.
+
+```
+python3 -I outils/lire-modifications.py rendu.docx textes-references-v3.json
+python3 -I outils/construire-corrections.py rendu-modifications.json textes-references-v3.json ../schiesser/corrections/textes-AAAA-MM-vN.json seo-ancien.json
+```

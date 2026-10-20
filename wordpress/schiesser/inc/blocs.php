@@ -174,6 +174,7 @@ function schiesser_kses_mise_en_forme( $liens = false ) {
 		'sup'    => array(),
 		'mark'   => array( 'class' => true, 'style' => true ),
 		'span'   => array( 'class' => true, 'style' => true ),
+		'small'  => array( 'class' => true ),
 	);
 	if ( $liens ) {
 		$balises['a'] = array( 'href' => true, 'target' => true, 'rel' => true, 'class' => true );

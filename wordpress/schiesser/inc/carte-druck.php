@@ -151,7 +151,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 	<?php echo $sceau; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 	<p class="k"><?php echo esc_html( schiesser_t( 'Seit 1870 · Marktplatz Basel' ) ); ?></p>
 	<h1>Schiesser<em>Tea Room &amp; Rathstübli</em></h1>
-	<p class="sous"><?php echo esc_html( schiesser_t( 'Das älteste Kaffeehaus der Schweiz' ) ); ?></p>
+	<p class="sous"><?php echo esc_html( schiesser_t( 'Ein Kaffeehaus mit über 100 Jahren Geschichte' ) ); ?></p>
 	<?php echo $orn; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 	<p class="k"><?php echo esc_html( schiesser_t( 'Die Karte' ) ); ?></p>
 	<p class="bas"><?php echo esc_html( trim( $adr . ( $tel ? ' · ' . $tel : '' ) . ' · ' . $web, ' ·' ) ); ?></p>

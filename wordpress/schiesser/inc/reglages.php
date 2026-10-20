@@ -82,7 +82,7 @@ function schiesser_reglages_defaut() {
 		'allergenes_note'    => 'In unserer Backstube werden auch Gluten, Nüsse, Milch und Eier verarbeitet: Spuren sind möglich. Unser Team gibt Ihnen gerne Auskunft.',
 		// Accueil et pied de page
 		'vitrine'            => array( 'Läckerli', 'Truffes', 'Fruchtwähe' ),
-		'presentation'       => 'Die Confiserie Schiesser wurde 1870 am Basler Marktplatz gegründet. Läckerli, Pralinen, Torten und Gebäck entstehen in der eigenen Backstube; im ersten Stock liegt der Tea Room, das älteste Kaffeehaus der Schweiz.',
+		'presentation'       => 'Die Confiserie Schiesser geht auf das Jahr 1870 zurück. Am Basler Marktplatz entstehen Läckerli, Pralinés, Torten und Gebäck in der eigenen Backstube; im ersten Stock liegt der Tea Room, eines der ältesten Kaffeehäuser der Schweiz.',
 		'instagram'          => '',
 		'carte_pdf'          => '',
 		'carte_pdf_fr'       => '',
