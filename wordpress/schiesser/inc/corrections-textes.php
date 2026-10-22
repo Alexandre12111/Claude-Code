@@ -15,8 +15,10 @@
  * - supprime les éléments vidés par le client, masque les sections demandées (réversible) ;
  * - met à jour les titres et descriptions Google et la présentation s'ils n'ont pas été retouchés ;
  * - « sections » : masque une section d'après son type de bloc (réversible : « Afficher à partir du ») ;
- * - « attributs » : change un réglage de bloc (fond, lien d'un bouton…) s'il a encore sa valeur d'avant ;
- *   « {page:confiserie} » devient l'adresse de cette page dans la langue de la page modifiée ;
+ * - « attributs » : change un réglage de bloc (fond, lien d'un bouton, photo…) s'il a encore sa valeur
+ *   d'avant (« * » : quelle qu'elle soit) ; « {page:confiserie} » devient l'adresse de cette page dans la
+ *   langue de la page modifiée, « {media:…} » une photo de la médiathèque (voir schiesser_corr_valeur_langue()) ;
+ * - « ajouts » : ajoute un élément dans une section (un onglet de comparateur…) s'il n'y est pas encore ;
  * - garde une copie de tout ce qu'il change : un bouton remet l'état d'avant.
  */
 
@@ -384,25 +386,110 @@ function schiesser_corr_attribut( $b, $cle ) {
 	return $type && isset( $type->attributes[ $cle ]['default'] ) ? $type->attributes[ $cle ]['default'] : '';
 }
 
-/** Valeur d'une opération pour une langue (texte commun ou { de, fr, en }), adresses de pages remplacées. */
-function schiesser_corr_valeur_langue( $v, $l ) {
+/**
+ * Photo de la médiathèque d'après sa référence : « 2026/10/fichier.jpg » (fichier de la médiathèque) ou
+ * « theme:fichier.jpg » (photo livrée avec le thème, ajoutée à la médiathèque si besoin, à l'application
+ * seulement). Plusieurs références séparées par « | » : la première trouvée.
+ */
+function schiesser_corr_media( $refs, $importer = false ) {
+	global $wpdb;
+	foreach ( explode( '|', (string) $refs ) as $ref ) {
+		$ref = trim( $ref );
+		if ( 0 === strpos( $ref, 'theme:' ) ) {
+			$ids = get_posts( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'meta_key' => '_schiesser_source', 'meta_value' => $ref, 'numberposts' => 1, 'fields' => 'ids', 'lang' => '' ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
+			if ( $ids ) {
+				return (int) $ids[0];
+			}
+			if ( $importer && function_exists( 'schiesser_demo_image_theme' ) ) {
+				$id = (int) schiesser_demo_image_theme( substr( $ref, 6 ), '' );
+				if ( $id ) {
+					return $id;
+				}
+			}
+		} elseif ( '' !== $ref ) {
+			$id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_wp_attached_file' AND meta_value = %s ORDER BY post_id ASC LIMIT 1", $ref ) );
+			if ( $id && wp_attachment_is_image( $id ) ) {
+				return $id;
+			}
+		}
+	}
+	return 0;
+}
+
+/**
+ * Valeur d'une opération pour une langue (commune ou { de, fr, en }), avec ses renvois :
+ * {page:confiserie} (adresse de la page dans cette langue), {media:…} et {media-url:…} (photo, voir
+ * schiesser_corr_media()), {bloc:page:type:rang:réglage} (réglage du n-ième bloc de ce type sur cette page,
+ * dans cette langue). Un renvoi seul garde son type (identifiant de photo en nombre) ; introuvable : null.
+ */
+function schiesser_corr_valeur_langue( $v, $l, $appliquer = false ) {
 	if ( is_array( $v ) ) {
 		$v = $v[ $l ] ?? null;
+	}
+	if ( is_bool( $v ) || is_int( $v ) || is_float( $v ) ) {
+		return $v;
 	}
 	if ( ! is_string( $v ) ) {
 		return null;
 	}
-	return preg_replace_callback( '/\{page:([a-z0-9-]+)\}/', function ( $m ) use ( $l ) {
-		$id = schiesser_corr_pages( $m[1] )[ $l ] ?? 0;
-		return $id ? (string) get_permalink( $id ) : $m[0];
+	$resoudre = function ( $type, $arg ) use ( $l, $appliquer ) {
+		if ( 'page' === $type ) {
+			$id = schiesser_corr_pages( $arg )[ $l ] ?? 0;
+			return $id ? (string) get_permalink( $id ) : null;
+		}
+		if ( 'media' === $type || 'media-url' === $type ) {
+			$id = schiesser_corr_media( $arg, $appliquer );
+			if ( ! $id ) {
+				return null;
+			}
+			return 'media' === $type ? $id : ( (string) wp_get_attachment_image_url( $id, 'large' ) ?: null );
+		}
+		$p = explode( ':', $arg ); // bloc:page:type:rang:réglage
+		if ( 4 !== count( $p ) ) {
+			return null;
+		}
+		$id = schiesser_corr_pages( $p[0] )[ $l ] ?? 0;
+		$n  = 0;
+		foreach ( $id ? schiesser_corr_index( parse_blocks( (string) get_post_field( 'post_content', $id ) ) ) : array() as $b ) {
+			if ( $b['blockName'] === $p[1] && $n++ === (int) $p[2] ) {
+				$x = schiesser_corr_attribut( $b, $p[3] );
+				return ( '' === $x || null === $x || 0 === $x ) ? null : $x;
+			}
+		}
+		return null;
+	};
+	if ( preg_match( '/^\{(page|media|media-url|bloc):([^}]+)\}$/', $v, $m ) ) {
+		return $resoudre( $m[1], $m[2] );
+	}
+	return preg_replace_callback( '/\{(page|media|media-url|bloc):([^}]+)\}/', function ( $m ) use ( $resoudre ) {
+		$r = $resoudre( $m[1], $m[2] );
+		return null === $r ? $m[0] : (string) $r;
 	}, $v );
 }
 
-/** Le bloc remplit-il les conditions d'une opération (« si » : réglage => valeur, commune ou { de, fr, en }) ? */
+/** Une valeur contient-elle encore un renvoi introuvable ? */
+function schiesser_corr_renvoi_manquant( $v ) {
+	return null === $v || ( is_string( $v ) && preg_match( '/\{(page|media|media-url|bloc):/', $v ) );
+}
+
+/**
+ * Le bloc remplit-il les conditions d'une opération (« si » : réglage => valeur, commune ou { de, fr, en }) ?
+ * Une liste de valeurs accepte chacune d'elles (ancien ou nouveau nom, par exemple).
+ */
 function schiesser_corr_conditions( $b, $si, $l ) {
 	foreach ( (array) $si as $cle => $valeur ) {
-		$attendu = schiesser_corr_valeur_langue( $valeur, $l );
-		if ( null === $attendu || schiesser_corr_norm( (string) schiesser_corr_attribut( $b, $cle ) ) !== schiesser_corr_norm( $attendu ) ) {
+		$attendu = is_array( $valeur ) && array_key_exists( $l, $valeur ) ? $valeur[ $l ] : $valeur;
+		$options = is_array( $attendu ) && isset( $attendu[0] ) ? $attendu : array( $attendu );
+		$actuel  = schiesser_corr_norm( (string) schiesser_corr_attribut( $b, $cle ) );
+		$trouve  = false;
+		foreach ( $options as $option ) {
+			$x = schiesser_corr_valeur_langue( $option, $l );
+			if ( null !== $x && $actuel === schiesser_corr_norm( (string) $x ) ) {
+				$trouve = true;
+				break;
+			}
+		}
+		if ( ! $trouve ) {
 			return false;
 		}
 	}
@@ -490,7 +577,7 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 		}
 	}
 	// Sections (d'après leur type de bloc) et réglages de blocs : sur chaque langue du site.
-	foreach ( array( 'sections', 'attributs' ) as $type ) {
+	foreach ( array( 'sections', 'attributs', 'ajouts' ) as $type ) {
 		foreach ( (array) ( $d[ $type ] ?? array() ) as $c ) {
 			foreach ( (array) ( $c['langues'] ?? array( 'de', 'fr', 'en' ) ) as $l ) {
 				$travail[ $c['page'] ][ $l ][ $type ][] = $c;
@@ -508,7 +595,7 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 		foreach ( $par_langue as $l => $t ) {
 			$id = $pages[ $l ] ?? 0;
 			if ( ! $id ) {
-				foreach ( array( 'textes' => 'texte', 'sections' => 'section', 'attributs' => 'reglage-bloc' ) as $cle => $type ) {
+				foreach ( array( 'textes' => 'texte', 'sections' => 'section', 'attributs' => 'reglage-bloc', 'ajouts' => 'ajout' ) as $cle => $type ) {
 					foreach ( (array) ( $t[ $cle ] ?? array() ) as $c ) {
 						$note( $type, $c['ref'], $l, 'introuvable', 'Page « ' . $slug . ' » introuvable en ' . strtoupper( $l ) );
 					}
@@ -597,9 +684,9 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 			// 5. Réglages de blocs (fond, lien…), seulement s'ils ont encore leur valeur d'avant.
 			foreach ( (array) ( $t['attributs'] ?? array() ) as $c ) {
 				$ancien  = schiesser_corr_valeur_langue( $c['ancien'], $l );
-				$nouveau = schiesser_corr_valeur_langue( $c['nouveau'], $l );
-				if ( null === $ancien || null === $nouveau || false !== strpos( $nouveau, '{page:' ) ) {
-					$note( 'reglage-bloc', $c['ref'], $l, 'introuvable', $c['raison'] . ' (valeur ou page introuvable dans cette langue)' );
+				$nouveau = schiesser_corr_valeur_langue( $c['nouveau'], $l, $appliquer );
+				if ( null === $ancien || schiesser_corr_renvoi_manquant( $nouveau ) ) {
+					$note( 'reglage-bloc', $c['ref'], $l, 'introuvable', $c['raison'] . ' (valeur, page ou photo introuvable dans cette langue)' );
 					continue;
 				}
 				$vus      = 0;
@@ -620,9 +707,9 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 						continue; // un seul bloc visé : le n-ième de ce type
 					}
 					$actuel = (string) schiesser_corr_attribut( $b, $c['cle'] );
-					if ( schiesser_corr_norm( $actuel ) === schiesser_corr_norm( $nouveau ) ) {
+					if ( schiesser_corr_norm( $actuel ) === schiesser_corr_norm( (string) $nouveau ) ) {
 						++$deja;
-					} elseif ( schiesser_corr_norm( $actuel ) === schiesser_corr_norm( $ancien ) ) {
+					} elseif ( '*' === $ancien || schiesser_corr_norm( $actuel ) === schiesser_corr_norm( (string) $ancien ) ) { // « * » : quelle que soit la valeur actuelle
 						$s                     = &schiesser_corr_bloc( $blocs, $chemin );
 						$s['attrs'][ $c['cle'] ] = $nouveau;
 						unset( $s );
@@ -645,7 +732,59 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 				}
 			}
 
-			// 6. Comparateur : photo de 1889.
+			// 6. Éléments ajoutés dans une section (un onglet de comparateur…), s'ils n'y sont pas encore.
+			foreach ( (array) ( $t['ajouts'] ?? array() ) as $c ) {
+				$parent = null;
+				$n      = 0;
+				foreach ( schiesser_corr_index( $blocs ) as $chemin => $b ) {
+					if ( $b['blockName'] === $c['parent'] && $n++ === (int) ( $c['rang'] ?? 0 ) ) {
+						$parent = $chemin;
+						break;
+					}
+				}
+				if ( null === $parent ) {
+					$note( 'ajout', $c['ref'], $l, 'introuvable', $c['raison'] . ' (section absente de la page)' );
+					continue;
+				}
+				// Déjà là : un élément du même type qui porte la même valeur « unique » (dans l'une des langues).
+				$uniques = array_map( function ( $x ) {
+					return schiesser_corr_norm( (string) $x );
+				}, array_values( (array) $c['attrs'][ $c['unique'] ] ) );
+				$p       = schiesser_corr_bloc( $blocs, $parent );
+				$deja    = false;
+				foreach ( (array) $p['innerBlocks'] as $e ) {
+					if ( $e['blockName'] === $c['bloc'] && in_array( schiesser_corr_norm( (string) schiesser_corr_attribut( $e, $c['unique'] ) ), $uniques, true ) ) {
+						$deja = true;
+					}
+				}
+				if ( $deja ) {
+					$note( 'ajout', $c['ref'], $l, 'deja', $c['raison'] );
+					continue;
+				}
+				$attrs  = array();
+				$manque = '';
+				foreach ( (array) $c['attrs'] as $cle => $v ) {
+					$x = schiesser_corr_valeur_langue( $v, $l, $appliquer );
+					if ( schiesser_corr_renvoi_manquant( $x ) ) {
+						$manque = $cle;
+						break;
+					}
+					$attrs[ $cle ] = $x;
+				}
+				if ( '' !== $manque ) {
+					$note( 'ajout', $c['ref'], $l, 'introuvable', $c['raison'] . ' (introuvable : ' . $manque . ')' );
+					continue;
+				}
+				$s                   = &schiesser_corr_bloc( $blocs, $parent );
+				$s['innerBlocks'][]  = array( 'blockName' => $c['bloc'], 'attrs' => $attrs, 'innerBlocks' => array(), 'innerHTML' => '', 'innerContent' => array() );
+				$s['innerContent'][] = null; // place du nouvel élément, à la suite des autres
+				$s['innerContent'][] = "\n";
+				unset( $s );
+				$change = true;
+				$note( 'ajout', $c['ref'], $l, 'applique', $c['raison'] );
+			}
+
+			// 7. Comparateur : photo de 1889.
 			if ( ! empty( $t['comparateur'] ) ) {
 				$photo = schiesser_corr_photo( $t['comparateur']['fichier'] );
 				$fait  = false;
@@ -685,7 +824,7 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 		}
 	}
 
-	// 7. Titres et descriptions Google (Rank Math), seulement s'ils sont encore ceux du thème.
+	// 8. Titres et descriptions Google (Rank Math), seulement s'ils sont encore ceux du thème.
 	foreach ( (array) ( $d['seo'] ?? array() ) as $s ) {
 		$id = schiesser_corr_pages( $s['page'] )[ $s['langue'] ] ?? 0;
 		$actuel = $id ? (string) get_post_meta( $id, $s['champ'], true ) : '';
@@ -706,7 +845,7 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 		}
 	}
 
-	// 8. Présentation de la maison (Réglages), si c'est encore le texte du thème.
+	// 9. Présentation de la maison (Réglages), si c'est encore le texte du thème.
 	foreach ( (array) ( $d['reglages'] ?? array() ) as $r ) {
 		$reglages = (array) get_option( SCHIESSER_OPTION, array() );
 		$actuel   = (string) ( $reglages[ $r['cle'] ] ?? '' );
@@ -724,7 +863,7 @@ function schiesser_corr_executer( $appliquer = false, $version = '' ) {
 		}
 	}
 
-	// 9. Produits et plats : textes français et anglais redevenus allemands, remis d'après les traductions du thème.
+	// 10. Produits et plats : textes français et anglais redevenus allemands, remis d'après les traductions du thème.
 	if ( ! empty( $d['produits_langues'] ) ) {
 		$liste = schiesser_corr_produits_a_retraduire();
 		foreach ( $liste as $x ) {
@@ -856,7 +995,7 @@ function schiesser_corr_page() {
 	$rapport = $fait ? schiesser_corr_rapport( $version ) : schiesser_corr_executer( false, $version );
 	$dernier = schiesser_corr_dernier_applique();
 	$etats   = array( 'applique' => array( $fait ? 'Appliqué' : 'À appliquer', '#174633' ), 'deja' => array( 'Déjà en place', '#646970' ), 'introuvable' => array( 'À vérifier', '#b32d2e' ) );
-	$types   = array( 'texte' => 'Texte', 'supprimer' => 'Élément retiré', 'masquer' => 'Section masquée', 'section' => 'Section masquée', 'reglage-bloc' => 'Réglage de bloc', 'produit' => 'Produit (langue)', 'photo' => 'Photo', 'google' => 'Google', 'reglage' => 'Réglage' );
+	$types   = array( 'texte' => 'Texte', 'supprimer' => 'Élément retiré', 'masquer' => 'Section masquée', 'section' => 'Section masquée', 'reglage-bloc' => 'Réglage de bloc', 'ajout' => 'Élément ajouté', 'produit' => 'Produit (langue)', 'photo' => 'Photo', 'google' => 'Google', 'reglage' => 'Réglage' );
 	$etat    = sanitize_key( $_GET['etat'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification
 	$lien    = function ( $v ) {
 		return admin_url( 'admin.php?page=schiesser-corrections&lot=' . rawurlencode( $v ) );

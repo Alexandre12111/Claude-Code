@@ -336,8 +336,9 @@ function schiesser_demo_pages() {
 			) ) )
 		. $b( 'schiesser/avant-apres', array( 'numero' => '04', 'titre' => 'Gestern und heute', 'note' => 'Dasselbe Haus, im Abstand von über einem Jahrhundert. Ziehen Sie den Regler.', 'indication' => 'Zum Vergleichen ziehen' ),
 			$enfants( 'schiesser/comparaison', array(
-				array( 'onglet' => 'Die Fassade', 'avantLibelle' => '1889', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['a1889'], '', $alt1889, 'avant' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Confiserie heute', 'apres' ),
+				array( 'onglet' => 'Die Vitrine', 'avantLibelle' => 'Damals', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['schaufenster'], '', $alt_schaufenster, 'avant' ) + $img( $P['boutique'], 'confiserie-marktplatz-basel', 'Die Confiserie heute', 'apres' ),
 				array( 'onglet' => 'Der Marktplatz', 'avantLibelle' => 'Damals', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['neubau'], '', $alt_neubau, 'avant' ) + $img( $P['jour'], 'confiserie-schiesser-heute', 'Der Marktplatz heute', 'apres' ),
+				array( 'onglet' => 'Die Backstube', 'avantLibelle' => 'Damals', 'apresLibelle' => 'Heute', 'vieillir' => false ) + $img( $P['torten'], '', $alt_torten, 'avant' ) + $img( $P['tabl'], 'schokolade-handgemacht-basel', 'Veredeln der Schokolade von Hand', 'apres' ),
 			) ) )
 		. $sep
 		. $b( 'schiesser/cartes', array( 'numero' => '05', 'titre' => 'Was sich nicht geändert hat', 'note' => 'Drei Grundsätze, seit dem ersten Tag.', 'modele' => 'principes', 'fond' => 'papier' ),

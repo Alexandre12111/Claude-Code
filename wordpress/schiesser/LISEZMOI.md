@@ -1,7 +1,14 @@
-# Thème Schiesser 0.19
+# Thème Schiesser 0.20
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.20 : savoir-faire, « Gut zu wissen » et comparateurs de l'histoire
+
+* **« Handwerk, das man sieht »** (accueil) : la photo reste centrée à gauche, à mi-hauteur de l'écran, pendant qu'on lit les étapes. L'étape active est celle qui passe au milieu de l'écran : en descendant comme en remontant, on passe d'une étape à la voisine, sans en sauter. La dernière étape a elle aussi le temps de s'afficher avec la photo centrée.
+* **« Gut zu wissen »** (Confiserie, Besuch, Firmengeschenke) redessiné : une seule feuille claire posée sur le fond sable, partagée par de fins filets, avec un médaillon vert sapin et un petit numéro en italique pour chaque information. Une dernière ligne incomplète est occupée par la dernière information (médaillon à gauche) ; sur téléphone, une liste.
+* **Mises à jour des pages** : deux possibilités de plus pour les lots, ajouter un élément dans une section (un onglet de comparateur) et choisir une photo de la médiathèque par son fichier (`{media:2026/10/fichier.jpg}`) ou celle d'un autre bloc (`{bloc:page:type:rang:réglage}`).
+* Lot `corrections/mise-a-jour-2026-10-22-histoire.json` (page Geschichte, bloc N°4) : le premier comparateur devient « Die Vitrine », avec l'ancienne vitrine (`2026/10/archiv-schaufenster-seit-1870.jpg`) face à la vitrine d'aujourd'hui ; un troisième comparateur « Die Backstube » (l'atelier) montre les confiseurs d'archive face à la photo actuelle de l'étape « Veredeln » de l'accueil.
 
 ## Version 0.19 : logo, mise en page allégée, produits dans les trois langues
 

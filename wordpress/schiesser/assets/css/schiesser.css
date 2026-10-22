@@ -2544,3 +2544,57 @@ p,.x-fd,.note{text-wrap:pretty}
 
 /* 0.18 · Renvois en petits caractères (astérisque sous une réponse ou un texte) */
 .ans small,.cta small,.x-fd small,.lead small{display:inline-block;margin-top:6px;font-size:.82em;line-height:1.5;opacity:.78}
+
+/* =====================================================================
+   VERSION 0.20
+   ===================================================================== */
+
+/* savoir-faire : la photo reste centrée à gauche, à mi-hauteur de l'écran, pendant qu'on lit les étapes */
+@media(min-width:900px){
+  .craft-media{--cm-h:min(calc(100vh - var(--hh) - 120px),640px);height:var(--cm-h);top:calc(var(--hh) + (100vh - var(--hh) - var(--cm-h)) / 2)}
+  /* la dernière étape passe elle aussi au milieu de l'écran pendant que la photo est encore centrée */
+  .craft-steps{padding-bottom:max(0px,calc((100vh - var(--hh)) / 2 - 18vh))}
+}
+
+/* « Bon à savoir » : un carnet pratique. Une seule feuille claire posée sur le fond, partagée par des
+   filets ; chaque information a son médaillon vert sapin et un petit numéro en italique. */
+.prac{--prac-cols:1;counter-reset:prac;display:grid;grid-template-columns:repeat(var(--prac-cols),minmax(0,1fr));gap:1px;padding:0;border:0;
+  border-radius:var(--r-l);overflow:hidden;background:color-mix(in srgb,var(--vert) 9%,var(--paper-deep));
+  box-shadow:0 30px 60px -38px color-mix(in srgb,var(--dark) 55%,transparent),0 0 0 1px color-mix(in srgb,var(--vert) 14%,transparent)}
+@media(min-width:620px){.prac{--prac-cols:2}}
+@media(min-width:1000px){.prac{--prac-cols:3}.prac:has(>.pcell:nth-child(4):last-child){--prac-cols:2}}
+.prac .pcell{position:relative;counter-increment:prac;display:flex;flex-direction:column;align-items:flex-start;gap:0;
+  padding:clamp(30px,3.2vw,48px) clamp(26px,3vw,44px) clamp(30px,3vw,42px);border-radius:0;background:var(--paper-3);box-shadow:none;transition:background-color .5s var(--ease)}
+.prac .pcell::before{content:counter(prac,decimal-leading-zero);position:absolute;top:clamp(26px,2.8vw,40px);right:clamp(24px,2.8vw,40px);
+  font-family:var(--serif);font-style:italic;font-size:15px;line-height:1;color:color-mix(in srgb,var(--ink-soft) 55%,transparent);transition:color .5s var(--ease)}
+.prac .pcell:hover{background:color-mix(in srgb,var(--paper-3) 55%,#fff);box-shadow:none}
+.prac .pcell:hover::before{color:var(--vert)}
+.prac .pi{width:58px;height:58px;margin:0;border:0;border-radius:50%;transform:none;background:var(--vert);
+  background-image:radial-gradient(120% 120% at 30% 20%,color-mix(in srgb,#fff 16%,transparent),transparent 60%);
+  box-shadow:0 0 0 7px color-mix(in srgb,var(--vert) 9%,transparent),0 12px 24px -14px color-mix(in srgb,var(--vert) 90%,transparent);
+  transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out)}
+.prac .pi svg{width:25px;height:25px;transform:none;stroke:var(--paper);stroke-width:1.5}
+.prac .pcell:hover .pi{transform:translateY(-3px);background-color:var(--vert);box-shadow:0 0 0 10px color-mix(in srgb,var(--vert) 12%,transparent),0 16px 28px -14px color-mix(in srgb,var(--vert) 90%,transparent)}
+.prac .pcell:hover .pi svg{stroke:var(--paper)}
+.prac h3{margin:28px 0 10px;font-family:var(--serif);font-weight:500;font-size:clamp(21px,1.75vw,24px);line-height:1.15;color:var(--ink)}
+.prac p{max-width:36ch;font-size:15.5px;line-height:1.65;color:color-mix(in srgb,var(--ink-soft) 80%,var(--text))}
+/* dernière ligne incomplète : la dernière information prend la place restante (pas de case vide),
+   médaillon à gauche et texte à côté */
+@media(min-width:620px) and (max-width:999px){
+  .prac .pcell:last-child:nth-child(odd){grid-column:1/-1;flex-direction:row;align-items:center;gap:30px}
+  .prac .pcell:last-child:nth-child(odd) h3{margin-top:0}
+}
+@media(min-width:1000px){
+  .prac:not(:has(>.pcell:nth-child(4):last-child)) .pcell:last-child:nth-child(3n+1){grid-column:1/-1}
+  .prac .pcell:last-child:nth-child(3n+2){grid-column:span 2}
+  .prac:not(:has(>.pcell:nth-child(4):last-child)) .pcell:last-child:nth-child(3n+1),.prac .pcell:last-child:nth-child(3n+2){flex-direction:row;align-items:center;gap:30px}
+  .prac:not(:has(>.pcell:nth-child(4):last-child)) .pcell:last-child:nth-child(3n+1) h3,.prac .pcell:last-child:nth-child(3n+2) h3{margin-top:0}
+}
+/* téléphone : une liste, médaillon à gauche */
+@media(max-width:619px){
+  .prac .pcell{flex-direction:row;gap:18px;padding:26px 22px 26px 20px}
+  .prac .pi{width:46px;height:46px;flex-shrink:0;box-shadow:0 0 0 5px color-mix(in srgb,var(--vert) 9%,transparent)}
+  .prac .pi svg{width:21px;height:21px}
+  .prac h3{margin:2px 0 8px;padding-right:28px}
+  .prac .pcell::before{top:24px;right:20px}
+}
