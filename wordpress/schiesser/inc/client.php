@@ -5,7 +5,8 @@
  * - « Appeler pour commander » qui suit les horaires : ouvert, « Appeler maintenant » ;
  *   fermé, « Fermé · ouvre demain à 7 h 30 » et « Laisser un message » (formulaire prérempli).
  * - « Ma sélection » : le visiteur met des produits de côté (cœur), puis appelle ou envoie
- *   la liste par le formulaire. Gardée dans son navigateur, sans compte ni cookie.
+ *   la liste par le formulaire (par e-mail si le formulaire est masqué). Gardée dans son navigateur,
+ *   sans compte ni cookie.
  * - Partage : WhatsApp, e-mail, copier le lien (et le partage du téléphone quand il existe).
  * - Navigation plus fluide : transitions entre les pages et pages suivantes préparées à l'avance.
  *
@@ -15,17 +16,52 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Page du formulaire de contact (celle qui contient le bloc « Formulaire de contact »). */
-function schiesser_page_contact_url() {
-	static $url = null;
-	if ( null !== $url ) {
-		return $url;
+function schiesser_page_contact() {
+	static $page = false;
+	if ( false !== $page ) {
+		return $page;
 	}
 	$page = schiesser_page( 'contact' );
 	if ( ! $page || false === strpos( $page->post_content, 'wp:schiesser/formulaire' ) ) {
 		$trouve = get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'numberposts' => 1, 's' => 'wp:schiesser/formulaire', 'search_columns' => array( 'post_content' ) ) );
 		$page   = $trouve ? $trouve[0] : $page;
 	}
-	return $url = $page ? get_permalink( $page ) : home_url( '/' );
+	return $page;
+}
+
+function schiesser_page_contact_url() {
+	$page = schiesser_page_contact();
+	return $page ? get_permalink( $page ) : home_url( '/' );
+}
+
+/**
+ * Le formulaire de contact est-il affiché ? (bloc présent sur la page de contact et pas masqué,
+ * par exemple avec « Afficher à partir du »). Sinon, les messages partent par e-mail.
+ */
+function schiesser_formulaire_contact_visible() {
+	static $ok = null;
+	if ( null === $ok ) {
+		$ok   = false;
+		$page = schiesser_page_contact();
+		foreach ( $page ? schiesser_tous_les_blocs( 'schiesser/formulaire', parse_blocks( (string) $page->post_content ) ) : array() as $b ) {
+			if ( ! function_exists( 'schiesser_bloc_visible' ) || schiesser_bloc_visible( (array) ( $b['attrs'] ?? array() ) ) ) {
+				$ok = true;
+				break;
+			}
+		}
+	}
+	return $ok;
+}
+
+/**
+ * Lien « Nachricht senden » d'un produit : le formulaire de contact prérempli s'il est affiché,
+ * sinon un e-mail prêt à envoyer, sinon la page de contact.
+ */
+function schiesser_lien_message( $produit = '' ) {
+	if ( schiesser_formulaire_contact_visible() ) {
+		return ( '' !== $produit ? add_query_arg( 'produit', rawurlencode( $produit ), schiesser_page_contact_url() ) : schiesser_page_contact_url() ) . '#schreiben';
+	}
+	return schiesser_mailto_commande( $produit ) ?: schiesser_page_contact_url();
 }
 
 /**
@@ -37,7 +73,7 @@ function schiesser_page_contact_url() {
 function schiesser_boutons_commande( $p, $forme = 'fiche' ) {
 	$tel     = schiesser_reglage( 'telephone' );
 	$etat    = function_exists( 'schiesser_barre_mobile_etat' ) ? schiesser_barre_mobile_etat() : array( true, '' );
-	$message = add_query_arg( 'produit', rawurlencode( $p['nom'] ?? '' ), schiesser_page_contact_url() ) . '#schreiben';
+	$message = schiesser_lien_message( (string) ( $p['nom'] ?? '' ) );
 	$court   = 'barre' === $forme;
 	$html    = '<div class="cmd cmd--' . esc_attr( $forme ) . ' js-cmd' . ( $tel ? '' : ' cmd--sans-tel' ) . '" data-produit="' . esc_attr( $p['nom'] ?? '' ) . '">';
 	if ( $tel ) {
@@ -79,11 +115,13 @@ function schiesser_partage( $url, $titre, $classe = '' ) {
 		. '</div>';
 }
 
-/* Données du site pour les scripts : téléphone et page de contact (« Ma sélection », boutons de commande). */
+/* Données du site pour les scripts : téléphone, page de contact et e-mail (« Ma sélection », boutons de commande). */
 add_action( 'wp_enqueue_scripts', function () {
 	wp_add_inline_script( 'schiesser-site', 'window.SCHIESSER=window.SCHIESSER||{};SCHIESSER.tel=' . wp_json_encode( schiesser_reglage( 'telephone' ) ? schiesser_lien_tel() : '' )
 		. ';SCHIESSER.telAffiche=' . wp_json_encode( (string) schiesser_reglage( 'telephone' ) )
-		. ';SCHIESSER.contact=' . wp_json_encode( schiesser_page_contact_url() ) . ';', 'before' );
+		. ';SCHIESSER.contact=' . wp_json_encode( schiesser_page_contact_url() )
+		. ';SCHIESSER.formulaire=' . wp_json_encode( schiesser_formulaire_contact_visible() )
+		. ';SCHIESSER.email=' . wp_json_encode( (string) schiesser_reglage( 'email' ) ) . ';', 'before' );
 }, 20 );
 
 /* ------------------------------------------------------------------ */

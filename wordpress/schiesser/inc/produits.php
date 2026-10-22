@@ -141,12 +141,18 @@ function schiesser_donnees_produit( $post ) {
 		$d[ $cle ] = (string) get_post_meta( $post->ID, '_s_' . $cle, true );
 	}
 	$d['fiche'] = array_values( array_filter( (array) get_post_meta( $post->ID, '_s_fiche', true ) ) );
-	// Prix et formats sont enregistrés une fois (en allemand) pour les trois langues : affichés dans celle de la page.
+	// Prix et formats sont enregistrés une fois (en allemand) pour les trois langues : affichés dans celle de la page,
+	// traduits automatiquement ou tels que saisis pour cette langue (« Dans les autres langues », inc/produits-langues.php).
 	if ( ! is_admin() && function_exists( 'schiesser_t_libelle' ) ) {
+		$propres    = (array) get_post_meta( $post->ID, '_s_libelles', true );
+		$libelle    = function ( $de ) use ( $propres ) {
+			$propre = trim( (string) ( $propres[ $de ] ?? '' ) );
+			return '' !== $propre ? $propre : schiesser_t_libelle( $de );
+		};
 		$d['prix']  = schiesser_t_libelle( $d['prix'] );
-		$d['unite'] = schiesser_t_libelle( $d['unite'] );
-		$d['fiche'] = array_map( function ( $l ) {
-			return is_array( $l ) ? array( schiesser_t_libelle( $l[0] ?? '' ), $l[1] ?? '' ) + $l : $l;
+		$d['unite'] = $libelle( $d['unite'] );
+		$d['fiche'] = array_map( function ( $l ) use ( $libelle ) {
+			return is_array( $l ) ? array( $libelle( (string) ( $l[0] ?? '' ) ), $l[1] ?? '' ) + $l : $l;
 		}, $d['fiche'] );
 	}
 	$d['al']    = schiesser_allergenes_de( $post->ID, '_s_' ); // allergènes et régimes (inc/allergenes.php)
@@ -364,6 +370,9 @@ function schiesser_boite_produit( $post ) {
 add_action( 'save_post_' . SCHIESSER_PRODUIT, function ( $post_id ) {
 	if ( ! isset( $_POST['schiesser_produit_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['schiesser_produit_nonce'] ), 'schiesser_produit' ) ) {
 		return;
+	}
+	if ( (int) ( $_POST['post_ID'] ?? 0 ) !== (int) $post_id ) {
+		return; // une autre version du produit, enregistrée pendant la même requête (traductions) : pas ce formulaire
 	}
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;

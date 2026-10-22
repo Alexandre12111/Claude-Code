@@ -149,9 +149,9 @@ function schiesser_page_guide() {
 			'Installez l’extension gratuite <strong>Polylang</strong> (Extensions → Ajouter). Dans <strong>Langues</strong>, créez d’abord <strong>Deutsch</strong> (de_CH, langue par défaut), puis <strong>Français</strong> (fr_FR) et <strong>English</strong> (en_GB). Si Polylang propose d’attribuer la langue par défaut aux contenus existants, acceptez.',
 			'Langues → Réglages → « URL modifiées » : choisissez « La langue est définie par le nom de dossier » et cochez « Cacher le code de langue pour la langue par défaut » : l’allemand reste à l’adresse actuelle, le français sous /fr/, l’anglais sous /en/.',
 			'Puis ' . $lien( admin_url( 'edit.php?post_type=page' ), 'Pages' ) . ' : bouton « Mettre à jour le contenu des pages » en haut. Le thème crée les versions française et anglaise des 8 pages, des 70 produits et de la carte du Tea Room, reliées à l’allemand (sélecteur DE · FR · EN dans l’en-tête).',
-			'Prix, photos et allergènes sont communs aux trois langues : modifiés sur un produit, ils sont recopiés dans ses traductions. Les textes (nom, description, accroche) se modifient dans chaque langue.',
+			'Prix, photos et allergènes sont communs aux trois langues : modifiés sur un produit, ils sont recopiés dans ses traductions. Les textes (nom, description, accroche) se modifient dans chaque langue, directement sous les détails du produit : l’encadré <strong>« Dans les autres langues »</strong> montre le même produit en anglais et en français (nom, accroche, description, badge, libellé des formats) et s’enregistre avec lui. Une version qui manque est créée dès qu’on lui donne un nom.',
 			'Photo d’une page changée (ex. l’accueil en français) : après « Mettre à jour », l’éditeur propose de mettre la même photo sur les versions allemande et anglaise, en un clic.',
-			'Textes relus par le client (document Word) : Schiesser → <strong>Corrections de textes</strong> montre un aperçu puis applique les corrections aux trois langues, sans toucher aux photos ; un bouton remet l’état d’avant.',
+			'Textes relus par le client (document Word) et changements de mise en page livrés avec le thème : Réglages maison → <strong>Mises à jour des pages</strong> montre un aperçu puis les applique aux trois langues, sans toucher aux photos ; un bouton remet l’état d’avant.',
 			'Textes : dans l’éditeur d’une page, la fenêtre « Dans les autres langues » (en bas à droite) montre le texte sélectionné sur les versions allemande et anglaise ; corrigez le et cliquez sur « Enregistrer en Deutsch » ou « Enregistrer en English ».',
 			'Produits tous marqués « Français » (Polylang a pris le français comme langue par défaut) : un avis « Réparer les langues » apparaît dans Produits. Il remet chaque produit, plat et page dans sa vraie langue, relie les trois versions et crée celles qui manquent.',
 			'Les textes des Réglages maison (présentation, mention, notes) ont leur traduction dans Langues → <strong>Traductions</strong>. Le PDF de la carte existe en trois langues ; vous pouvez en déposer un autre par langue dans Réglages maison.',
@@ -285,7 +285,7 @@ function schiesser_page_guide() {
 	?>
 	<div class="wrap s-admin s-guide">
 		<div class="s-entete">
-			<div class="s-entete-logo" aria-hidden="true"><span>Confiserie ◆ Tea-Room</span><strong>Schiesser</strong></div>
+			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'incline' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 			<div class="s-entete-texte">
 				<h1>Guide du site</h1>
 				<p>Les gestes du quotidien, pas à pas. Aucun code n'est nécessaire.</p>
@@ -310,13 +310,12 @@ function schiesser_page_guide() {
 /* ------------------------------------------------------------------ */
 
 add_action( 'login_enqueue_scripts', function () {
-	$c = schiesser_charte()['couleurs'];
+	$c    = schiesser_charte()['couleurs'];
+	$logo = str_replace( 'currentColor', $c['vert'], schiesser_logo_svg( 'droit' ) ); // le logo droit, en vert sapin
 	?>
 	<style>
-		@font-face{font-family:'Bodoni Moda';font-weight:400 900;src:url(<?php echo esc_url( SCHIESSER_URI . '/assets/fonts/bodoni-moda.woff2' ); ?>) format('woff2')}
 		body.login{background:<?php echo esc_html( $c['paper'] ); ?>}
-		.login h1 a{background:none!important;width:auto!important;height:auto!important;text-indent:0!important;font:500 30px/1 'Bodoni Moda',Didot,serif;letter-spacing:.2em;text-transform:uppercase;color:<?php echo esc_html( $c['ink'] ); ?>!important}
-		.login h1 a::before{content:"Confiserie ◆ Tea-Room";display:block;font:600 9px/1 system-ui,sans-serif;letter-spacing:.32em;color:<?php echo esc_html( $c['ink-soft'] ); ?>;margin-bottom:10px}
+		.login h1 a{background:url("data:image/svg+xml;base64,<?php echo base64_encode( $logo ); // phpcs:ignore ?>") center/contain no-repeat!important;width:210px!important;height:131px!important;text-indent:-9999px!important;overflow:hidden;margin-bottom:22px}
 		.login form{border:1px solid rgba(58,40,24,.14);border-radius:6px;box-shadow:0 20px 40px -30px rgba(39,27,18,.5)}
 		.wp-core-ui .button-primary{background:<?php echo esc_html( $c['vert'] ); ?>;border-color:<?php echo esc_html( $c['vert'] ); ?>}
 		.wp-core-ui .button-primary:hover,.wp-core-ui .button-primary:focus{background:<?php echo esc_html( $c['dark'] ); ?>;border-color:<?php echo esc_html( $c['dark'] ); ?>}

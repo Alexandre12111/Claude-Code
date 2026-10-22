@@ -181,7 +181,7 @@
   /* Sections -------------------------------------------------------------- */
 
   function marque() {
-    return el('span', { className: 'x-mark', 'aria-hidden': true, dangerouslySetInnerHTML: { __html: '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1"/><text x="32" y="43" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="600" font-size="31" fill="currentColor">S</text></svg>' } });
+    return el('span', { className: 'x-mark', 'aria-hidden': true, dangerouslySetInnerHTML: { __html: ED.logo || '' } });
   }
 
   function entete(props) {
@@ -337,7 +337,7 @@
   enregistrer('plaque', function (props) {
     var bp = be.useBlockProps({ className: 'sec-plate' });
     return el('section', bp, el('div', { className: 'wrap' }, el('div', { className: 'x-plate' },
-      el('div', { className: 'rule' }, el('span', { className: 'x-seal', 'aria-hidden': true, dangerouslySetInnerHTML: { __html: '<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1 3"/><text x="32" y="42.5" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="600" font-size="30" fill="currentColor">S</text></svg>' } })),
+      el('div', { className: 'rule' }, el('span', { className: 'x-seal', 'aria-hidden': true, dangerouslySetInnerHTML: { __html: ED.logo || '' } })),
       P(props, 'nombre', 'div', 'n', '150'),
       T(props, 'libelle', 'div', 'l', 'ans de maison'),
       T(props, 'dates', 'div', 'd', '1870 · 2020'),
@@ -924,7 +924,15 @@
     var bp = be.useBlockProps({ className: 'sch-ed-carte' });
     return el(Fragment, null,
       el(be.InspectorControls, null, el(c.PanelBody, { title: 'Pictogramme', initialOpen: true },
-        el(c.SelectControl, { label: 'Pictogramme du départ', value: a.icone, options: optionsPictos(), onChange: maj(props.setAttributes, 'icone') }))),
+        el(c.SelectControl, { label: 'Pictogramme du départ', value: a.icone, options: optionsPictos(), onChange: maj(props.setAttributes, 'icone') })),
+        el(c.PanelBody, { title: 'Itinéraire dans Google Maps', initialOpen: true },
+          aide('Le bouton ouvre Google Maps avec l’itinéraire de ce point de départ jusqu’à la Confiserie.'),
+          el(c.TextControl, { label: 'Départ', value: a.origine, placeholder: 'Automatique', help: 'Vide : le nom du point de départ suivi de la ville (« EuroAirport, Basel »). En voiture : la position du visiteur.', onChange: maj(props.setAttributes, 'origine') }),
+          el(c.SelectControl, { label: 'Moyen de transport', value: a.mode, options: [
+            { label: 'Automatique (selon le pictogramme)', value: '' }, { label: 'Transports publics', value: 'transit' },
+            { label: 'À pied', value: 'walking' }, { label: 'En voiture', value: 'driving' }, { label: 'À vélo', value: 'bicycling' }
+          ], onChange: maj(props.setAttributes, 'mode') }),
+          el(c.TextControl, { label: 'Arrivée', value: a.arrivee, placeholder: 'La Confiserie', help: 'Vide : la Confiserie (adresse des Réglages maison). Exemple en voiture : « Parkhaus Storchen, Basel ».', onChange: maj(props.setAttributes, 'arrivee') }))),
       el('div', bp,
         el('div', { className: 'sch-ed-ligne' }, el('span', { className: 'sch-ed-picto' }, picto(a.icone)),
           el('div', null, T(props, 'depart', 'div', 'sch-ed-titre', 'Point de départ'), T(props, 'detail', 'div', 'sch-ed-petit', 'Précision'))),

@@ -31,13 +31,13 @@ function schiesser_devise() {
 /* Fiche établissement                                                 */
 /* ------------------------------------------------------------------ */
 
-/** Logo de la maison : logo du site (Apparence → Personnaliser → Identité du site), sinon icône du site. */
+/** Logo de la maison : logo du site (Apparence → Personnaliser → Identité du site), sinon celui du thème. */
 function schiesser_logo_maison() {
 	$logo = (int) get_theme_mod( 'custom_logo' );
 	if ( $logo && wp_get_attachment_image_url( $logo, 'full' ) ) {
 		return wp_get_attachment_image_url( $logo, 'full' );
 	}
-	return (string) get_site_icon_url( 512 );
+	return SCHIESSER_URI . '/assets/images/logo/schiesser-logo.png';
 }
 
 /** Image représentative de la maison : photo du Hero de l'accueil, sinon le logo. */

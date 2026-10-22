@@ -135,17 +135,16 @@ add_filter( 'render_block_core/button', function ( $html, $bloc ) {
 /* ------------------------------------------------------------------ */
 
 /**
- * Sceau tournant « Confiserie · Tea-Room · Marktplatz Basel · Seit 1870 ».
- * Les polices suivent la charte (classes seal-txt et seal-s dans la feuille de style).
+ * Sceau tournant « Confiserie · Tea-Room · Marktplatz Basel · Seit 1870 », le logo incliné au centre.
+ * La police de l'anneau suit la charte (classe seal-txt dans la feuille de style).
  */
 function schiesser_sceau_svg() {
 	return '<div class="hero-seal" aria-hidden="true"><svg viewBox="0 0 200 200">'
 		. '<defs><path id="sealRing" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>'
 		. '<g class="ring"><text class="seal-txt" font-size="11" font-weight="600" letter-spacing="3" fill="currentColor">'
 		. '<textPath href="#sealRing" textLength="496" lengthAdjust="spacing">' . esc_html( schiesser_t( 'CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·' ) ) . '</textPath></text></g>'
-		. '<circle cx="100" cy="100" r="64" fill="none" stroke="currentColor" stroke-opacity=".55"/>'
-		. '<circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-opacity=".4" stroke-dasharray="1 4"/>'
-		. '<text class="seal-s" x="100" y="121" text-anchor="middle" font-size="58" font-weight="500" fill="currentColor">S</text>'
+		. '<circle cx="100" cy="100" r="67" fill="none" stroke="currentColor" stroke-opacity=".5"/>'
+		. schiesser_logo_svg_dans( 'incline', 100, 100, 116 )
 		. '</svg></div>';
 }
 

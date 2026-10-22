@@ -432,11 +432,15 @@
     couche.addTo(map);
     // Le lien de secours reste visible tant que la carte n'est pas chargée.
     couche.once('load', function () { var f = un('.mapfallback', el); if (f) f.remove(); });
-    var icone = style === 'carto'
-      ? window.L.divIcon({ className: '', html: '<div class="shop-pin"><div class="pin-b"><span>S</span></div><div class="pin-l">' + esc(nom) + '</div></div>', iconSize: [38, 64], iconAnchor: [19, 38] })
-      : window.L.divIcon({ className: 'kir-pin', html: '<span></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
+    // Repère : le logo de la maison (modèle placé dans la carte par le thème), sinon l'ancien repère.
+    var modele = un('template.js-repere', el);
+    var icone = modele
+      ? window.L.divIcon({ className: '', html: '<div class="shop-pin shop-pin--logo">' + modele.innerHTML + '</div>', iconSize: [96, 74], iconAnchor: [48, 37] })
+      : style === 'carto'
+        ? window.L.divIcon({ className: '', html: '<div class="shop-pin"><div class="pin-b"><span>S</span></div><div class="pin-l">' + esc(nom) + '</div></div>', iconSize: [38, 64], iconAnchor: [19, 38] })
+        : window.L.divIcon({ className: 'kir-pin', html: '<span></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
     var repere = window.L.marker(pos, { icon: icone, alt: nom }).addTo(map);
-    if (style !== 'carto' && nom) repere.bindPopup(esc(nom)).openPopup();
+    if (!modele && style !== 'carto' && nom) repere.bindPopup(esc(nom)).openPopup();
     map.on('click', function () { map.scrollWheelZoom.enable(); });
     var boite = el.closest('.mapbox');
     if (boite) {

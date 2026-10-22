@@ -1,7 +1,19 @@
-# Thème Schiesser 0.14
+# Thème Schiesser 0.19
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.19 : logo, mise en page allégée, produits dans les trois langues
+
+* **Logo de la maison partout**, dessiné dans la page (fichiers `assets/images/logo/`) et adapté à chaque endroit : droit et vert sapin dans l'en-tête, incliné et clair sur le chocolat du pied de page, au centre du sceau tournant de l'accueil, sur la plaque et la page 404, en filigrane des sections sombres, en autocollant (avec son cartouche) sur la carte Google, sur les cartes OpenStreetMap (repère) et sur la photo de la carte du Tea Room. Aussi sur la page de connexion, dans l'en-tête des écrans maison de l'administration, sur la carte en PDF (couverture et en-tête des pages, trois langues régénérées) et dans les données Google (`schiesser-logo.png`, si aucun logo n'est choisi dans Personnaliser).
+* **Mises à jour des pages** (Réglages maison) : l'outil des corrections gère maintenant plusieurs lots, chacun avec aperçu, application et retour à l'état d'avant (le plus récent d'abord). Deux opérations nouvelles : masquer une section d'après son type de bloc, changer un réglage de bloc s'il a encore sa valeur d'avant (`{page:confiserie}` donne l'adresse de la page dans la bonne langue).
+* Lot `corrections/mise-a-jour-2026-10-22.json` : accueil sans « Unser Sortiment » ni « Heute in der Vitrine » (masqués, réversibles), Confiserie avec la galerie sur fond clair et des boutons de Hero qui mènent à des sections visibles, page Contact sans formulaire (e-mail, téléphone et adresse restent), première section sous chaque Hero sur le fond de la page, départs des itinéraires pour Google Maps.
+* Formulaire de contact masqué : les boutons « Nachricht senden » (produits, Ma sélection) ouvrent un e-mail prérempli. Les liens « Auf dieser Seite » du pied de page ignorent les sections masquées. Dans l'éditeur, une section masquée porte l'étiquette « Masquée pour le moment ».
+* **Itinéraires** (Besuch) : le bouton « Route öffnen » ouvre Google Maps depuis le point de départ choisi (gare, aéroport, Bankverein) jusqu'à la Confiserie, en transports publics, à pied ou en voiture selon le pictogramme. Départ, moyen de transport et arrivée se règlent par point de départ (panneau « Itinéraire dans Google Maps »).
+* **Sélecteur de langues** dans l'ordre DE · EN · FR.
+* **Produits dans les trois langues sur la même page** : l'encadré « Dans les autres langues » (produits de la boutique et plats du Tea Room) modifie nom, accroche, description, badge, mention et, depuis la version allemande, le libellé des formats et de l'unité dans chaque langue. Une version manquante est créée dès qu'on lui donne un nom.
+* Correction importante : enregistrer un produit ou un plat en allemand recopiait ses textes allemands dans les versions française et anglaise. C'est corrigé, et le lot du 22 octobre remet la traduction du thème là où un texte était redevenu allemand.
+* Écran « Aujourd'hui » : un avis signale que le bandeau de la vitrine est masqué sur l'accueil.
 
 ## Version 0.18 : textes relus par le client (document v3)
 

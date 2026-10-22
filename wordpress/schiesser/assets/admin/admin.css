@@ -17,9 +17,8 @@
 .s-admin{max-width:1180px}
 .s-entete{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin:14px 0 22px;padding:26px 30px;background:var(--s-choco);color:var(--s-papier);position:relative;overflow:hidden}
 .s-entete::after{content:"";position:absolute;inset:8px;border:1px solid color-mix(in srgb,var(--s-papier) 18%,transparent);pointer-events:none}
-.s-entete-logo{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding-right:24px;border-right:1px solid color-mix(in srgb,var(--s-papier) 20%,transparent)}
-.s-entete-logo span{font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--s-menthe)}
-.s-entete-logo strong{font-family:var(--s-serif);font-weight:500;font-size:26px;letter-spacing:.2em;text-transform:uppercase;line-height:1}
+.s-entete-logo{display:flex;align-items:center;padding-right:24px;border-right:1px solid color-mix(in srgb,var(--s-papier) 20%,transparent);color:var(--s-papier)}
+.s-entete-logo .logo{display:block;width:150px;height:auto;fill:currentColor}
 .s-entete-texte{flex:1;min-width:260px}
 .s-admin .s-entete h1{margin:0;padding:0;font-family:var(--s-serif);font-weight:500;font-size:30px;line-height:1.1;color:var(--s-papier)}
 .s-entete p{margin:8px 0 0;max-width:70ch;color:color-mix(in srgb,var(--s-papier) 78%,transparent);font-size:13.5px}
@@ -178,3 +177,21 @@
 .s-exceptions td{padding-right:8px}
 .s-sous-titre{font-size:14px;margin:28px 0 4px}
 @media(max-width:782px){.s-feries,.s-exceptions{display:block;overflow-x:auto}}
+
+/* ---------- produits : « Dans les autres langues » (inc/produits-langues.php) ---------- */
+.s-pl-intro{margin:2px 0 14px}
+.s-pl-grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.s-pl-langue{min-width:0;margin:0;padding:12px 16px 4px;border:1px solid var(--s-filet);border-radius:8px;background:color-mix(in srgb,var(--s-papier) 35%,#fff)}
+.s-pl-langue legend{display:flex;align-items:center;gap:8px;padding:0 6px;font-weight:600;font-size:13.5px;color:var(--s-encre)}
+.s-pl-code{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:20px;padding:0 7px;border-radius:10px;background:var(--s-vert);color:#fff;font-size:11px;letter-spacing:.06em}
+.s-pl-ouvrir{margin-left:4px;font-weight:400;font-size:12px}
+.s-pl-champ,.s-pl-format{margin:0 0 10px}
+.s-pl-champ label,.s-pl-format label{display:block;margin-bottom:4px;font-weight:600}
+.s-pl-alerte{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:9px;background:#fcf0e3;color:#7a4300;font-size:11px;font-weight:600}
+.s-pl-vide{margin:2px 0 12px;color:var(--s-doux);font-style:italic}
+.s-pl-formats{margin:4px 0 8px;padding-top:12px;border-top:1px dashed var(--s-filet)}
+.s-pl-sous-titre{margin:0 0 8px;font-weight:600}
+.s-pl-sous-titre span{font-weight:400;color:var(--s-doux)}
+.s-pl-format code{margin-left:4px;font-size:11px;font-weight:400;background:color-mix(in srgb,var(--s-sable) 50%,transparent)}
+.s-pl-prix{margin-left:6px;font-weight:400;color:var(--s-doux)}
+.s-pl-langue ::placeholder{color:#8c8f94;font-style:italic}

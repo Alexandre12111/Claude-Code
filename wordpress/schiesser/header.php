@@ -39,10 +39,14 @@ defined( 'ABSPATH' ) || exit;
 		</nav>
 		<div class="hact">
 			<?php
-			// Sélecteur de langue de la maquette (FR · DE · EN) : affiché dès que Polylang gère plusieurs langues.
+			// Sélecteur de langue (DE · EN · FR) : affiché dès que Polylang gère plusieurs langues.
 			if ( function_exists( 'pll_the_languages' ) ) {
 				$langues = pll_the_languages( array( 'raw' => 1, 'hide_if_empty' => 0 ) );
 				if ( is_array( $langues ) && count( $langues ) > 1 ) {
+					$ordre = array_flip( array( 'de', 'en', 'fr' ) ); // les autres langues éventuelles à la suite
+					uasort( $langues, function ( $x, $y ) use ( $ordre ) {
+						return ( $ordre[ $x['slug'] ] ?? 9 ) <=> ( $ordre[ $y['slug'] ] ?? 9 );
+					} );
 					echo '<nav class="lang" aria-label="' . esc_attr( schiesser_t( 'Sprache' ) ) . '">';
 					foreach ( $langues as $l ) {
 						echo '<a href="' . esc_url( $l['url'] ) . '" lang="' . esc_attr( $l['locale'] ? str_replace( '_', '-', $l['locale'] ) : $l['slug'] ) . '" hreflang="' . esc_attr( $l['slug'] ) . '"' . ( $l['current_lang'] ? ' class="on" aria-current="true"' : '' ) . '>' . esc_html( strtoupper( $l['slug'] ) ) . '</a>';

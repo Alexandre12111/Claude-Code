@@ -160,6 +160,7 @@ reglages = [{
 
 resultat = {
     'version': '2026-10-v3',
+    'date': '2026-10-20',  # ordre des lots dans « Mises à jour des pages »
     'titre': 'Corrections de textes du client (document v3, octobre 2026)',
     'textes': sortie,
     'supprimer': [element(r, x) for r, x in SUPPRIMER.items()],

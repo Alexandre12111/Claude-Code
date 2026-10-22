@@ -330,7 +330,7 @@ function schiesser_traductions_js() {
 		'Telefonisch bestellen', 'Per Nachricht senden', 'Liste kopieren', 'Liste kopieren:', 'Liste kopiert', 'Liste leeren', 'Merkliste leeren?',
 		'Auf der Merkliste', 'Merken', 'Auf meine Merkliste', 'Eins weniger:', 'Eins mehr:', 'Entfernen:', 'Ihre Merkliste ist leer.', 'Anrufen (%s)',
 		'Link kopieren', 'Link kopiert', 'Produkte', 'Produkt', 'Preis',
-		'Grüezi', 'Ich möchte gerne bestellen:', 'Gewünschtes Abholdatum:', 'Meine Telefonnummer:', 'Vielen Dank!',
+		'Grüezi', 'Ich möchte gerne bestellen:', 'Gewünschtes Abholdatum:', 'Meine Telefonnummer:', 'Vielen Dank!', 'Bestellung:',
 	);
 }
 

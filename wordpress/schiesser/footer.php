@@ -11,7 +11,6 @@ $ig      = schiesser_reglage( 'instagram' );
 $fb      = schiesser_reglage( 'facebook' );
 $rue     = schiesser_reglage( 'rue' );
 $ville   = schiesser_reglage( 'ville' );
-$annee   = schiesser_reglage( 'annee_fondation' );
 $mention = schiesser_page( 'mentions', false );
 // Liens vers les sections de la page (celles qui ont une ancre), comme dans la maquette.
 $ancres  = ( is_page() && function_exists( 'schiesser_ancres_page' ) ) ? array_slice( schiesser_ancres_page(), 0, 5, true ) : array();
@@ -24,7 +23,7 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 	<div class="wrap">
 		<div class="fgrid<?php echo $ancres ? ' fgrid--4' : ''; ?>">
 			<div class="fbrand">
-				<span class="brand"><?php schiesser_logo( implode( ' · ', array_filter( array( $rue, $ville, $annee ? schiesser_t( 'Seit' ) . ' ' . $annee : '' ) ) ) ); ?></span>
+				<span class="brand"><?php schiesser_logo( 'incline', schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?></span>
 				<p><?php echo esc_html( schiesser_reglage( 'presentation' ) ); ?></p>
 				<div class="x-social">
 					<?php if ( $ig ) : ?>

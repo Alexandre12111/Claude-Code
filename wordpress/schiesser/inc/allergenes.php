@@ -225,8 +225,8 @@ function schiesser_boite_allergenes( $post, $prefixe ) {
 
 foreach ( array( 'schiesser_produit' => '_s_', 'schiesser_tearoom' => '_t_' ) as $schiesser_type => $schiesser_prefixe ) {
 	add_action( 'save_post_' . $schiesser_type, function ( $post_id ) use ( $schiesser_prefixe ) {
-		if ( ! isset( $_POST['schiesser_allergenes_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['schiesser_allergenes_nonce'] ), 'schiesser_allergenes' ) ) {
-			return;
+		if ( ! isset( $_POST['schiesser_allergenes_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['schiesser_allergenes_nonce'] ), 'schiesser_allergenes' ) || (int) ( $_POST['post_ID'] ?? 0 ) !== (int) $post_id ) {
+			return; // (une autre version du produit enregistrée pendant la même requête : pas ce formulaire)
 		}
 		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_post', $post_id ) ) {
 			return;

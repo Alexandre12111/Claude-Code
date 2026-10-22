@@ -106,7 +106,7 @@ function schiesser_page_aujourdhui() {
 	?>
 	<div class="wrap s-admin s-auj">
 		<div class="s-entete">
-			<div class="s-entete-logo" aria-hidden="true"><span>Confiserie ◆ Tea-Room</span><strong>Schiesser</strong></div>
+			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'incline' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 			<div class="s-entete-texte">
 				<h1>Aujourd’hui, <?php echo esc_html( wp_date( 'l j F' ) ); ?></h1>
 				<p>Ce qui change d’un jour à l’autre, sur un seul écran. Tout s’enregistre d’un clic en bas de la page.</p>
@@ -169,6 +169,17 @@ function schiesser_page_aujourdhui() {
 			<?php wp_nonce_field( 'schiesser_aujourdhui' ); ?>
 
 			<?php schiesser_carte_debut( 'En vitrine aujourd’hui', 'Les produits du jour, dans la bande sous la grande photo de l’accueil. Laissez vide pour masquer une ligne.', 'store' ); ?>
+			<?php
+			// Bandeau « Heute in der Vitrine » masqué sur l'accueil : le dire, sinon on remplit ces cases pour rien.
+			$accueil = (int) get_option( 'page_on_front' );
+			$bandes  = $accueil && function_exists( 'schiesser_tous_les_blocs' ) ? schiesser_tous_les_blocs( 'schiesser/vitrine-jour', parse_blocks( (string) get_post_field( 'post_content', $accueil ) ) ) : array();
+			$visible = ! $bandes || array_filter( $bandes, function ( $b ) {
+				return ! function_exists( 'schiesser_bloc_visible' ) || schiesser_bloc_visible( (array) ( $b['attrs'] ?? array() ) );
+			} );
+			if ( ! $visible ) :
+				?>
+				<p class="schiesser-rappel">Le bandeau « Heute in der Vitrine » est masqué sur l’accueil pour le moment : ces produits ne s’affichent pas. Pour le remettre, ouvrez l’accueil dans l’éditeur, cliquez sur le bandeau puis sur « Toujours afficher » (panneau de droite).</p>
+			<?php endif; ?>
 			<div class="s-grille">
 				<?php for ( $i = 0; $i < 4; $i++ ) : ?>
 					<div class="s-champ"><label for="s-auj-vitrine-<?php echo (int) $i; ?>">Produit <?php echo (int) ( $i + 1 ); ?></label>
