@@ -1,11 +1,14 @@
 #!/bin/bash
-# Rendu complet des versions à la nouvelle charte YouCraft (minutage long, 58,25 s), une langue après l autre.
+# Rendu complet des versions à la nouvelle charte YouCraft (minutage long, 58,25 s), une langue après l'autre.
+# Reprise possible : un morceau déjà terminé (journal « done ») ou une langue déjà assemblée ne sont pas refaits.
 cd "$(dirname "$0")"
 export NODE_PATH=/opt/node22/lib/node_modules
 B=(0 14.6 29.1 43.65 58.25)
 for L in "$@"; do
+  if [ -s ../out/video_yb_${L}_silent.mp4 ] && grep -q "^${L}_OK" ../out/render_yb.log 2>/dev/null; then continue; fi
   mkdir -p ../out/parts_yb_$L
   for i in 0 1 2 3; do
+    if tail -1 ../out/parts_yb_$L/p$i.log 2>/dev/null | grep -q '^done'; then continue; fi
     node render.cjs --page src_yb_$L/index.html --video --from ${B[$i]} --to ${B[$((i+1))]} --fps 120 --crf 12 --preset veryfast --out ../out/parts_yb_$L/p$i.mp4 > ../out/parts_yb_$L/p$i.log 2>&1 &
   done
   wait
