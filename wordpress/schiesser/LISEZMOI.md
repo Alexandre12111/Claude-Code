@@ -1,7 +1,14 @@
-# Thème Schiesser 0.20
+# Thème Schiesser 0.21
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.21 : administration épurée
+
+* **Plus d'avis de mise en place** sur le tableau de bord, les listes de produits, de pages et de plats, ni sur les écrans Réglages et Aujourd'hui : « Réparer les langues », « Installer la langue allemande », « la langue Deutsch manque dans Polylang », le transfert de la carte du Tea Room et la mise à jour du contenu des pages ne s'affichent plus.
+* Ces outils sont réunis dans **Réglages maison → Entretien**, une carte par outil avec son état (vert : en ordre ; orange : quelque chose à faire, avec le bouton). Les résultats (langues remises en ordre, pack de langue installé, carte transférée) s'affichent sur cet écran.
+* **Mises à jour des pages** : au lieu d'un avis, une pastille sur le menu Réglages maison compte les mises à jour livrées avec le thème qui restent à appliquer.
+* Seul l'import du contenu, sur un site neuf, est encore proposé sur le tableau de bord. Le rappel « Liste en préparation » reste tant que la liste des produits n'est pas affichée sur le site.
 
 ## Version 0.20 : savoir-faire, « Gut zu wissen » et comparateurs de l'histoire
 

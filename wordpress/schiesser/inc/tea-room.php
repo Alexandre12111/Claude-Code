@@ -663,48 +663,14 @@ function schiesser_tearoom_creer( $d ) {
 	return (int) $id;
 }
 
-/* Écran « Produits Tea Room » et tableau de bord : proposer le transfert tant que la carte est dans la page. */
-add_action( 'admin_notices', function () {
-	$ecran = get_current_screen();
-	if ( ! $ecran || ! in_array( $ecran->id, array( 'edit-' . SCHIESSER_TEAROOM, 'dashboard' ), true ) || ! current_user_can( 'edit_pages' ) ) {
-		return;
-	}
-	if ( 'dashboard' === $ecran->id && get_option( 'schiesser_carte_garder' ) ) {
-		return; // la personne a choisi de garder la carte dans la page
-	}
-	if ( isset( $_GET['schiesser_carte'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		$etat = sanitize_key( wp_unslash( $_GET['schiesser_carte'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		if ( 'ok' === $etat ) {
-			printf( '<div class="notice notice-success is-dismissible"><p>Carte transférée : %d rubriques et %d produits. Le bloc « Carte du salon » de la page affiche maintenant ces produits.</p></div>', (int) ( $_GET['r'] ?? 0 ), (int) ( $_GET['p'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		} else {
-			echo '<div class="notice notice-error is-dismissible"><p>Aucune carte à transférer : elle est peut-être déjà dans « Produits Tea Room ».</p></div>';
-		}
-		return;
-	}
-	if ( schiesser_carte_tearoom()['nombre'] > 0 ) {
-		return;
-	}
-	$trouve = schiesser_carte_dans_une_page();
-	if ( ! $trouve ) {
-		return;
-	}
-	$url    = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_transferer_carte' ), 'schiesser_transferer_carte' );
-	$garder = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_carte_garder' ), 'schiesser_carte_garder' );
-	?>
-	<div class="notice notice-info">
-		<p><strong>Nouveau : le menu « Produits Tea Room ».</strong> La carte du salon est encore saisie dans la page « <?php echo esc_html( get_the_title( $trouve['page'] ) ); ?> » (<?php echo (int) $trouve['rubriques']; ?> rubriques, <?php echo (int) $trouve['plats']; ?> produits). Transférez-la pour la gérer comme les produits de la boutique : la page affichera automatiquement cette carte, avec les mêmes textes et photos.</p>
-		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>">Transférer la carte dans Produits Tea Room</a><?php if ( 'dashboard' === $ecran->id ) : ?> <a class="button-link" style="margin-left:12px" href="<?php echo esc_url( $garder ); ?>">Non merci, garder la carte dans la page</a><?php endif; ?></p>
-	</div>
-	<?php
-} );
-
+/* Le transfert de la carte est proposé dans Réglages maison → Entretien (inc/entretien.php). */
 add_action( 'admin_post_schiesser_carte_garder', function () {
 	if ( ! current_user_can( 'edit_pages' ) ) {
 		wp_die( 'Accès refusé.' );
 	}
 	check_admin_referer( 'schiesser_carte_garder' );
 	update_option( 'schiesser_carte_garder', 1, false );
-	wp_safe_redirect( admin_url() );
+	wp_safe_redirect( schiesser_url_entretien( array( 'fait' => 'carte-garder' ) ) );
 	exit;
 } );
 
@@ -714,8 +680,8 @@ add_action( 'admin_post_schiesser_transferer_carte', function () {
 	}
 	check_admin_referer( 'schiesser_transferer_carte' );
 	$r   = schiesser_transferer_carte();
-	$arg = is_wp_error( $r ) ? array( 'schiesser_carte' => 'erreur' ) : array( 'schiesser_carte' => 'ok', 'r' => $r['rubriques'], 'p' => $r['produits'] );
-	wp_safe_redirect( add_query_arg( $arg, admin_url( 'edit.php?post_type=' . SCHIESSER_TEAROOM ) ) );
+	$arg = is_wp_error( $r ) ? array( 'fait' => 'carte-erreur' ) : array( 'fait' => 'carte', 'r' => $r['rubriques'], 'p' => $r['produits'] );
+	wp_safe_redirect( schiesser_url_entretien( $arg ) );
 	exit;
 } );
 

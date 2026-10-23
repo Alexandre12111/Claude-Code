@@ -929,9 +929,21 @@ function schiesser_corr_annuler( $version ) {
 /* Administration                                                      */
 /* ------------------------------------------------------------------ */
 
+/* Pas d'avis sur les autres écrans : une pastille compte les mises à jour à appliquer (menu Réglages maison). */
 add_action( 'admin_menu', function () {
-	if ( schiesser_corr_lots() ) {
-		add_submenu_page( 'schiesser-reglages', 'Mises à jour des pages', 'Mises à jour des pages', 'manage_options', 'schiesser-corrections', 'schiesser_corr_page' );
+	global $menu;
+	if ( ! schiesser_corr_lots() ) {
+		return;
+	}
+	$n        = count( array_diff_key( schiesser_corr_lots(), schiesser_corr_appliques() ) );
+	$pastille = $n ? ' <span class="awaiting-mod"><span class="pending-count">' . $n . '</span></span>' : '';
+	add_submenu_page( 'schiesser-reglages', 'Mises à jour des pages', 'Mises à jour des pages' . $pastille, 'manage_options', 'schiesser-corrections', 'schiesser_corr_page' );
+	if ( $n && current_user_can( 'manage_options' ) ) {
+		foreach ( (array) $menu as $i => $entree ) {
+			if ( 'schiesser-reglages' === ( $entree[2] ?? '' ) ) {
+				$menu[ $i ][0] .= $pastille; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+			}
+		}
 	}
 }, 30 );
 
@@ -942,26 +954,6 @@ function schiesser_corr_resume( $d ) {
 	}
 	return count( (array) ( $d['textes'] ?? array() ) ) . ' textes à mettre à jour dans les pages (allemand, français et anglais réunis). Vos photos et votre mise en page ne bougent pas.';
 }
-
-/* Avis : mises à jour prêtes, pas encore appliquées. */
-add_action( 'admin_notices', function () {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		return;
-	}
-	$ecran = get_current_screen();
-	if ( ! $ecran || ! in_array( $ecran->id, array( 'dashboard', 'edit-page', 'toplevel_page_schiesser-reglages' ), true ) ) {
-		return;
-	}
-	$a_faire = array_diff_key( schiesser_corr_lots(), schiesser_corr_appliques() );
-	if ( ! $a_faire ) {
-		return;
-	}
-	echo '<div class="notice notice-info"><p><strong>Mises à jour des pages prêtes à appliquer :</strong></p><ul style="list-style:disc;margin-left:20px">';
-	foreach ( $a_faire as $d ) {
-		echo '<li><strong>' . esc_html( $d['titre'] ) . '.</strong> ' . esc_html( schiesser_corr_resume( $d ) ) . '</li>';
-	}
-	echo '</ul><p><a class="button button-primary" href="' . esc_url( admin_url( 'admin.php?page=schiesser-corrections&lot=' . rawurlencode( (string) array_key_first( $a_faire ) ) ) ) . '">Voir et appliquer</a></p></div>';
-} );
 
 add_action( 'admin_post_schiesser_corrections', function () {
 	if ( ! current_user_can( 'manage_options' ) ) {

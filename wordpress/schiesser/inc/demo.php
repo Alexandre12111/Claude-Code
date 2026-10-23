@@ -23,35 +23,20 @@ add_action( 'after_switch_theme', function () {
 /* Avis et actions dans l'administration                               */
 /* ------------------------------------------------------------------ */
 
+/* Premier démarrage seulement : proposer l'import. La mise à jour du contenu est dans Réglages maison → Entretien. */
 add_action( 'admin_notices', function () {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( 'manage_options' ) || get_option( 'schiesser_demo_importee' ) ) {
 		return;
 	}
 	$ecran = get_current_screen();
-	if ( ! $ecran || ! in_array( $ecran->id, array( 'dashboard', 'themes', 'toplevel_page_schiesser-reglages', 'edit-schiesser_produit', 'edit-page' ), true ) ) {
+	if ( ! $ecran || ! in_array( $ecran->id, array( 'dashboard', 'themes' ), true ) ) {
 		return;
 	}
-	$importee = get_option( 'schiesser_demo_importee' );
-	$version  = (string) get_option( 'schiesser_demo_version', $importee ? '0.1.0' : '' );
-	$langues_manquantes = array_diff( schiesser_langues_a_traduire(), (array) get_option( 'schiesser_langues_importees', array() ) );
-	if ( $importee && version_compare( $version, '0.11.1', '>=' ) && ! $langues_manquantes ) {
-		return;
-	}
-	if ( ! $importee ) {
-		$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_import_demo' ), 'schiesser_import_demo' );
-		?>
-		<div class="notice notice-info">
-			<p><strong>Thème Schiesser :</strong> importer le contenu du site en allemand (7 pages, liste de prix de la boutique, carte du Tea Room, menus, réglages SEO). Les photos d’illustration sont téléchargées depuis Unsplash, cela peut prendre une minute.</p>
-			<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>">Importer le contenu du site</a></p>
-		</div>
-		<?php
-		return;
-	}
-	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_import_demo&remplacer=1' ), 'schiesser_import_demo' );
+	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_import_demo' ), 'schiesser_import_demo' );
 	?>
 	<div class="notice notice-info">
-		<p><strong>Thème Schiesser 0.11 : site en trois langues.</strong> L’allemand reste la langue principale. <?php if ( schiesser_langues_a_traduire() ) : ?>Polylang est actif : la mise à jour crée aussi les versions <strong><?php echo esc_html( implode( ' et ', array_map( function ( $l ) { return 'fr' === $l ? 'française' : 'anglaise'; }, schiesser_langues_a_traduire() ) ) ); ?></strong> des 8 pages, des 70 produits et de la carte du Tea Room (78 plats), reliées à la version allemande pour le sélecteur de langue.<?php else : ?>Pour les versions <strong>française et anglaise</strong>, installez d’abord l’extension <strong>Polylang</strong> et créez les langues Deutsch (langue par défaut), Français et English (voir le Guide), puis revenez ici.<?php endif; ?> La mise à jour remplace le texte des pages par la version du thème ; les photos de la médiathèque, les prix et les produits ajoutés à la main sont conservés.</p>
-		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>" onclick="return confirm('Remplacer le contenu des pages par la version du thème (et créer les traductions si Polylang est actif) ?');">Mettre à jour le contenu des pages</a></p>
+		<p><strong>Thème Schiesser :</strong> importer le contenu du site en allemand (7 pages, liste de prix de la boutique, carte du Tea Room, menus, réglages SEO). Les photos d’illustration sont téléchargées depuis Unsplash, cela peut prendre une minute.</p>
+		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>">Importer le contenu du site</a></p>
 	</div>
 	<?php
 } );
