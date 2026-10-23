@@ -1,0 +1,54 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1920
+PlayResY: 1080
+WrapStyle: 2
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Sub,DM Sans Medium,48,&H00EAF2F5,&H00EAF2F5,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,2,0,0,62,1
+Style: Box,DM Sans Medium,48,&H00462402,&H00462402,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:03.40,0:00:07.85,Box,,0,0,0,,{\an7\pos(581,917)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 739 0 b 759 0 759 0 759 20 l 759 93 b 759 113 759 113 739 113 l 20 113 b 0 113 0 113 0 93 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:03.40,0:00:07.85,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}What we've done for almost thirty years?\NFind the value companies don't see.
+Dialogue: 0,0:00:08.85,0:00:12.95,Box,,0,0,0,,{\an7\pos(629,917)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 642 0 b 662 0 662 0 662 20 l 662 93 b 662 113 662 113 642 113 l 20 113 b 0 113 0 113 0 93 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:08.85,0:00:12.95,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}And today, the biggest opportunity\Nis hiding in your day-to-day work.
+Dialogue: 0,0:00:12.99,0:00:15.26,Box,,0,0,0,,{\an7\pos(623,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 655 0 b 675 0 675 0 675 20 l 675 45 b 675 65 675 65 655 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:12.99,0:00:15.26,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Your teams are full of ideas for tools
+Dialogue: 0,0:00:15.26,0:00:17.47,Box,,0,0,0,,{\an7\pos(586,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 727 0 b 747 0 747 0 747 20 l 747 45 b 747 65 747 65 727 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:15.26,0:00:17.47,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}that would make them more productive.
+Dialogue: 0,0:00:17.51,0:00:19.33,Box,,0,0,0,,{\an7\pos(655,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 590 0 b 610 0 610 0 610 20 l 610 45 b 610 65 610 65 590 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:17.51,0:00:19.33,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}What they're missing is a way to
+Dialogue: 0,0:00:19.33,0:00:21.09,Box,,0,0,0,,{\an7\pos(673,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 554 0 b 574 0 574 0 574 20 l 574 45 b 574 65 574 65 554 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:19.33,0:00:21.09,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}build them, quickly and easily.
+Dialogue: 0,0:00:21.13,0:00:23.28,Box,,0,0,0,,{\an7\pos(682,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 537 0 b 557 0 557 0 557 20 l 557 45 b 557 65 557 65 537 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:21.13,0:00:23.28,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}That tool exists: it's YouCraft.
+Dialogue: 0,0:00:23.32,0:00:24.15,Box,,0,0,0,,{\an7\pos(729,991)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 441 0 b 461 0 461 0 461 20 l 461 45 b 461 65 461 65 441 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:23.32,0:00:24.15,Sub,,0,0,0,,{\an2\pos(960,1044)\fad(140,140)}The idea is very simple.
+Dialogue: 0,0:00:25.28,0:00:27.96,Box,,0,0,0,,{\an7\pos(683,917)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 534 0 b 554 0 554 0 554 20 l 554 93 b 554 113 554 113 534 113 l 20 113 b 0 113 0 113 0 93 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:25.28,0:00:27.96,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}You describe what you need,\Nin your own words.
+Dialogue: 0,0:00:28.00,0:00:29.92,Box,,0,0,0,,{\an7\pos(643,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 615 0 b 635 0 635 0 635 20 l 635 45 b 635 65 635 65 615 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:28.00,0:00:29.92,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}And YouCraft builds the app right
+Dialogue: 0,0:00:29.92,0:00:32.25,Box,,0,0,0,,{\an7\pos(593,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 715 0 b 735 0 735 0 735 20 l 735 45 b 735 65 735 65 715 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:29.92,0:00:32.25,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}before your eyes: the screens, the data,
+Dialogue: 0,0:00:32.29,0:00:33.65,Box,,0,0,0,,{\an7\pos(703,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 495 0 b 515 0 515 0 515 20 l 515 45 b 515 65 515 65 495 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:32.29,0:00:33.65,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}the calculations, the code.
+Dialogue: 0,0:00:34.00,0:00:37.80,Box,,0,0,0,,{\an7\pos(432,943)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 556 0 b 576 0 576 0 576 20 l 576 93 b 576 113 576 113 556 113 l 20 113 b 0 113 0 113 0 93 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:34.00,0:00:37.80,Sub,,0,0,0,,{\an2\pos(720,1044)\fad(140,140)}One click, and your tool is live.\NOn desktop and on mobile.
+Dialogue: 0,0:00:37.84,0:00:40.93,Box,,0,0,0,,{\an7\pos(636,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 628 0 b 648 0 648 0 648 20 l 648 45 b 648 65 648 65 628 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:37.84,0:00:40.93,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}YouCraft has already proven itself:
+Dialogue: 0,0:00:40.93,0:00:44.73,Box,,0,0,0,,{\an7\pos(538,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 825 0 b 845 0 845 0 845 20 l 845 45 b 845 65 845 65 825 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:40.93,0:00:44.73,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}more than 750 users, and 350 apps deployed.
+Dialogue: 0,0:00:44.77,0:00:49.64,Box,,0,0,0,,{\an7\pos(564,917)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 771 0 b 791 0 791 0 791 20 l 791 93 b 791 113 791 113 771 113 l 20 113 b 0 113 0 113 0 93 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:44.77,0:00:49.64,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}When it comes to security, your data stays\Nin Canada, access is fully under control,
+Dialogue: 0,0:00:49.68,0:00:51.45,Box,,0,0,0,,{\an7\pos(676,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 547 0 b 567 0 567 0 567 20 l 567 45 b 567 65 567 65 547 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:49.68,0:00:51.45,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}and getting started is instant,
+Dialogue: 0,0:00:51.59,0:00:52.77,Box,,0,0,0,,{\an7\pos(1242,991)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 375 0 b 395 0 395 0 395 20 l 395 45 b 395 65 395 65 375 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:51.59,0:00:52.77,Sub,,0,0,0,,{\an2\pos(1440,1044)\fad(140,140)}no training needed.
+Dialogue: 0,0:00:52.81,0:00:54.28,Box,,0,0,0,,{\an7\pos(742,991)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 417 0 b 437 0 437 0 437 20 l 437 45 b 437 65 437 65 417 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:52.81,0:00:54.28,Sub,,0,0,0,,{\an2\pos(960,1044)\fad(140,140)}Because it's your tool.
+Dialogue: 0,0:00:54.32,0:00:55.59,Box,,0,0,0,,{\an7\pos(829,965)\1c&H0F0B0B&\1a&H24&\bord0\shad0\blur0.6\fad(140,140)\p1}m 20 0 l 241 0 b 261 0 261 0 261 20 l 261 45 b 261 65 261 65 241 65 l 20 65 b 0 65 0 65 0 45 l 0 20 b 0 0 0 0 20 0{\p0}
+Dialogue: 1,0:00:54.32,0:00:55.59,Sub,,0,0,0,,{\an2\pos(960,1018)\fad(140,140)}Truly yours.
