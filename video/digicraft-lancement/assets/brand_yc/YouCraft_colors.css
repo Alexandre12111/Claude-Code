@@ -1,0 +1,15 @@
+:root {
+  --yc-ink: #0B0B0F; /* Primary dark: backgrounds, text on light */
+  --yc-stone: #F5F2EA; /* Primary light: backgrounds, text on dark */
+  --yc-ultramarine: #1E3BFF; /* Accent: links, highlights, key words */
+  --yc-lime: #D7FF3F; /* Accent: primary buttons, emphasis (sparingly) */
+  --yc-paper: #FBFAF6; /* Secondary light background, cards */
+  --yc-ink-2: #16161C; /* Raised surfaces on dark */
+  --yc-muted: #8F8C86; /* Captions, secondary text */
+  --yc-ultramarine-on-dark: #4F6BFF; /* Ultramarine for text/links on Ink */
+  --yc-mark-blue: #1F3FE6; /* Symbol gradient start */
+  --yc-mark-blue-2: #2C4CF0; /* Symbol gradient 55% */
+  --yc-mark-mist: #DFE8F0; /* Symbol gradient 82% */
+  --yc-mark-lime: #E4F53C; /* Symbol block and gradient end */
+  --yc-symbol-gradient: linear-gradient(135deg, #1F3FE6 0%, #2C4CF0 55%, #DFE8F0 82%, #E4F53C 100%);
+}

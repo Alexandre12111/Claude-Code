@@ -110,3 +110,6 @@ out/video_yc_*_silent.mp4
 out/render_yc*.log
 out/stills_*_sheet.jpg
 out/stills_cmp_yc.jpg
+out/parts_yb_*/
+out/video_yb_*_silent.mp4
+out/render_yb*.log

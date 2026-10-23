@@ -11,17 +11,22 @@ from vo_markets import MARKETS
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, '..')
-SUBS = os.path.join(ROOT, 'out', 'subs')
-FONT = os.path.join(ROOT, 'assets', 'fonts', 'ttf', 'Montserrat-SemiBold.ttf')
 SR = 48000
-
-FS = 52                 # taille ASS (hauteur de ligne en px)
-EM = FS / 1.5435        # taille réelle des glyphes rendus par libass pour Montserrat (mesurée)
-SPACING = 0.3
+# Nouvelle charte YouCraft (YC_BRAND=1) : DM Sans Medium sur bandeau Ink, texte Stone, image rebrandée.
+BRAND = os.environ.get('YC_BRAND') == '1'
+if BRAND:
+    SUBS = os.path.join(ROOT, 'out', 'subs_yb')
+    FONT = os.path.join(ROOT, 'assets', 'fonts', 'ttf_yc', 'DMSans-Medium.ttf')
+    FONT_NAME, FS, EM_RATIO, CAP_TOP, DESC_BOT, SPACING = 'DM Sans Medium', 48, 1.343, 0.23, 0.08, 0
+    BOX, BOX_ALPHA, TEXT = '&H0F0B0B&', '&H24&', '&H00EAF2F5'     # Ink #0B0B0F à 86 %, texte Stone #F5F2EA
+else:
+    SUBS = os.path.join(ROOT, 'out', 'subs')
+    FONT = os.path.join(ROOT, 'assets', 'fonts', 'ttf', 'Montserrat-SemiBold.ttf')
+    FONT_NAME, FS, EM_RATIO, CAP_TOP, DESC_BOT, SPACING = 'Montserrat SemiBold', 52, 1.5435, 0.2, 0.14, 0.3
+    BOX, BOX_ALPHA, TEXT = '&H462402&', '&H2E&', '&H00FFFFFF'     # bleu marine CognitX #022446 à 82 %
+EM = FS / EM_RATIO      # taille réelle des glyphes rendus par libass (mesurée pour chaque police)
 PAD_X, PAD_Y, RADIUS = 34, 16, 20
 BOTTOM = 1080 - 62      # bas du bloc de texte
-BOX = '&H462402&'       # bleu marine CognitX #022446
-BOX_ALPHA = '&H2E&'     # environ 82 % d'opacité
 _font = ImageFont.truetype(FONT, round(EM))
 
 # Voix enregistrée du client (version FR) : (début, fin) dans la prise -> instant de pose, texte réellement lu.
@@ -86,7 +91,7 @@ def width(line):
 def rect(lines, cx=960, bottom=BOTTOM):
     n = len(lines)
     w = max(width(l) for l in lines) + 2 * PAD_X
-    return cx - w / 2, bottom - n * FS + 0.2 * FS - PAD_Y, cx + w / 2, bottom - 0.14 * FS + PAD_Y
+    return cx - w / 2, bottom - n * FS + CAP_TOP * FS - PAD_Y, cx + w / 2, bottom - DESC_BOT * FS + PAD_Y
 
 
 def box(lines, cx=960, bottom=BOTTOM):
@@ -159,7 +164,7 @@ def best_spot(E, lines, a, b, tol=2):
 def place(code, ev):
     """Renvoie (début, fin, texte, x, bas) ; un sous-titre de deux lignes sans place libre est scindé en deux lignes successives."""
     # Image muette renommée si elle existe déjà, sinon l'originale (même mise en page, seul le nom change).
-    v = os.path.join(ROOT, 'out', MARKETS[code][3]) if code in MARKETS else ''
+    v = os.path.join(ROOT, 'out', f'video_yb_{code}_silent.mp4' if BRAND else (MARKETS[code][3] if code in MARKETS else ''))
     if not os.path.exists(v):
         v = os.path.join(ROOT, 'out', ORIG[code])
     E = band_edges(v)
@@ -192,8 +197,8 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Sub,Montserrat SemiBold,{FS},&H00FFFFFF,&H00FFFFFF,&H00000000,&H00000000,0,0,0,0,100,100,{SPACING},0,1,0,0,2,0,0,{1080 - BOTTOM},1
-Style: Box,Montserrat SemiBold,{FS},&H00462402,&H00462402,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
+Style: Sub,{FONT_NAME},{FS},{TEXT},{TEXT},&H00000000,&H00000000,0,0,0,0,100,100,{SPACING},0,1,0,0,2,0,0,{1080 - BOTTOM},1
+Style: Box,{FONT_NAME},{FS},&H00462402,&H00462402,&H00000000,&H00000000,0,0,0,0,100,100,0,0,1,0,0,7,0,0,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
