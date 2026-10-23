@@ -225,20 +225,8 @@ add_action( 'template_redirect', function () {
 /*
  * Les textes du thème sont écrits en allemand ; le pack de langue traduit en plus les rares
  * textes de WordPress et des extensions visibles sur le site (Rank Math, WooCommerce…).
+ * Le bouton d'installation est dans Réglages maison → Entretien (inc/entretien.php).
  */
-add_action( 'admin_notices', function () {
-	if ( ! current_user_can( 'install_languages' ) || file_exists( WP_LANG_DIR . '/' . SCHIESSER_LANGUE_SITE . '.mo' ) ) {
-		return;
-	}
-	$e = get_current_screen();
-	if ( ! $e || ! in_array( $e->id, array( 'dashboard', 'toplevel_page_schiesser-reglages', 'toplevel_page_schiesser-aujourdhui' ), true ) ) {
-		return;
-	}
-	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_langue_de' ), 'schiesser_langue_de' );
-	echo '<div class="notice notice-info"><p><strong>Site en allemand :</strong> le thème affiche déjà tout le site en allemand. Pour que les quelques textes de WordPress et des extensions (Rank Math, WooCommerce) le soient aussi, installez le pack de langue allemand (Suisse). L’administration reste en français.</p>'
-		. '<p><a class="button button-primary" href="' . esc_url( $url ) . '">Installer la langue allemande</a></p></div>';
-} );
-
 add_action( 'admin_post_schiesser_langue_de', function () {
 	if ( ! current_user_can( 'install_languages' ) ) {
 		wp_die( 'Accès refusé.' );
@@ -247,15 +235,6 @@ add_action( 'admin_post_schiesser_langue_de', function () {
 	require_once ABSPATH . 'wp-admin/includes/translation-install.php';
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	$ok = wp_download_language_pack( SCHIESSER_LANGUE_SITE );
-	wp_safe_redirect( add_query_arg( 'schiesser_langue', $ok ? 'ok' : 'erreur', admin_url( 'admin.php?page=schiesser-reglages' ) ) );
+	wp_safe_redirect( schiesser_url_entretien( array( 'fait' => $ok ? 'langue-de' : 'langue-de-erreur' ) ) );
 	exit;
-} );
-
-add_action( 'admin_notices', function () {
-	$r = sanitize_key( $_GET['schiesser_langue'] ?? '' ); // phpcs:ignore WordPress.Security.NonceVerification
-	if ( 'ok' === $r ) {
-		echo '<div class="notice notice-success is-dismissible"><p>Langue allemande installée : le site public est entièrement en allemand, l’administration reste en français.</p></div>';
-	} elseif ( 'erreur' === $r ) {
-		echo '<div class="notice notice-error"><p>Le pack de langue n’a pas pu être téléchargé. Autre possibilité : Réglages → Général → Langue du site → « Deutsch (Schweiz) », enregistrer, puis remettre « Français » (le pack reste installé).</p></div>';
-	}
 } );

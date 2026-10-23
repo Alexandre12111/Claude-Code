@@ -377,45 +377,7 @@ function schiesser_rl_desordre( $compte ) {
 	return false;
 }
 
-/* Avis dans l'administration quand les langues ne sont pas en ordre. */
-add_action( 'admin_notices', function () {
-	if ( ! current_user_can( 'manage_options' ) || ! get_option( 'schiesser_demo_importee' ) ) {
-		return;
-	}
-	$ecran = get_current_screen();
-	if ( ! $ecran || ! in_array( $ecran->id, array( 'dashboard', 'toplevel_page_schiesser-reglages', 'edit-schiesser_produit', 'edit-schiesser_tearoom', 'edit-page' ), true ) ) {
-		return;
-	}
-	if ( isset( $_GET['schiesser_langues'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		$b = array_map( 'intval', explode( '-', sanitize_text_field( wp_unslash( $_GET['schiesser_langues'] ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
-		$pl = function ( $n, $un, $plusieurs ) {
-			return $n . ' ' . ( $n > 1 ? $plusieurs : $un );
-		};
-		echo '<div class="notice notice-success is-dismissible"><p><strong>Langues remises en ordre.</strong> ' . esc_html( $pl( $b[0] ?? 0, 'produit ou plat', 'produits ou plats' ) . ' et ' . $pl( $b[3] ?? 0, 'page', 'pages' ) . ' remis dans leur langue, ' . $pl( $b[1] ?? 0, 'catégorie corrigée', 'catégories corrigées' ) . ', ' . $pl( $b[2] ?? 0, 'doublon mis à la corbeille', 'doublons mis à la corbeille' ) . ' (récupérables). Les traductions manquantes ont été créées.' ) . '</p></div>';
-	}
-	$compte   = schiesser_rl_diagnostic();
-	$melanges = $compte ? schiesser_rl_rattacher( false ) : 0;
-	if ( ! $compte || ( ! schiesser_rl_desordre( $compte ) && ! $melanges ) ) {
-		return;
-	}
-	$noms  = array( 'de' => 'Deutsch', 'fr' => 'Français', 'en' => 'English' );
-	$ligne = function ( $par_langue ) use ( $noms ) {
-		$out = array();
-		foreach ( $par_langue as $l => $n ) {
-			$out[] = $noms[ $l ] . ' ' . $n;
-		}
-		return implode( ' · ', $out );
-	};
-	$url = wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_reparer_langues' ), 'schiesser_reparer_langues' );
-	?>
-	<div class="notice notice-warning">
-		<p><strong>Thème Schiesser : les langues des produits ne sont pas en ordre.</strong> Boutique : <?php echo esc_html( $ligne( $compte[ SCHIESSER_PRODUIT ] ) ); ?>. Carte du Tea Room : <?php echo esc_html( $ligne( $compte[ SCHIESSER_TEAROOM ] ) ); ?>.<?php if ( $melanges ) : ?> <?php echo esc_html( $melanges . ( $melanges > 1 ? ' produits ou plats sont rangés' : ' produit ou plat est rangé' ) . ' dans une rubrique d’une autre langue (ex. « Kaffee » sur la carte française).' ); ?><?php endif; ?></p>
-		<p>La réparation retrouve la vraie langue de chaque produit, plat et page d’après son nom, relie les versions allemande, française et anglaise, met les doublons à la corbeille (récupérables) et crée les traductions qui manquent. Vos prix, photos et textes retouchés sont conservés.</p>
-		<p><a class="button button-primary" href="<?php echo esc_url( $url ); ?>">Réparer les langues</a></p>
-	</div>
-	<?php
-} );
-
+/* L'état des langues et le bouton de réparation sont dans Réglages maison → Entretien (inc/entretien.php). */
 add_action( 'admin_post_schiesser_reparer_langues', function () {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( 'Accès refusé.' );
@@ -423,22 +385,7 @@ add_action( 'admin_post_schiesser_reparer_langues', function () {
 	check_admin_referer( 'schiesser_reparer_langues' );
 	@set_time_limit( 300 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
 	$b = schiesser_reparer_langues();
-	wp_safe_redirect( admin_url( 'edit.php?post_type=schiesser_produit&schiesser_langues=' . implode( '-', array( $b['contenus'], $b['termes'], $b['corbeille'], $b['pages'] ) ) ) );
+	wp_safe_redirect( schiesser_url_entretien( array( 'fait' => 'langues', 'b' => implode( '-', array( $b['contenus'], $b['termes'], $b['corbeille'], $b['pages'] ) ) ) ) );
 	exit;
 } );
 
-/* Polylang actif sans la langue allemande : rien ne peut être traduit ni réparé. */
-add_action( 'admin_notices', function () {
-	if ( ! current_user_can( 'manage_options' ) || ! schiesser_polylang() ) {
-		return;
-	}
-	$actives = schiesser_langues_actives();
-	if ( isset( $actives['de'] ) ) {
-		return;
-	}
-	$ecran = get_current_screen();
-	if ( ! $ecran || ! in_array( $ecran->id, array( 'dashboard', 'toplevel_page_schiesser-reglages', 'edit-schiesser_produit', 'edit-schiesser_tearoom', 'edit-page' ), true ) ) {
-		return;
-	}
-	echo '<div class="notice notice-warning"><p><strong>Thème Schiesser : la langue Deutsch manque dans Polylang.</strong> Le contenu du site est écrit en allemand : créez la langue <strong>Deutsch</strong> (de_CH) dans <a href="' . esc_url( admin_url( 'admin.php?page=mlang' ) ) . '">Langues</a>, de préférence comme langue par défaut (étoile), avec Français et English. Revenez ensuite ici : un bouton « Réparer les langues » remettra chaque produit et chaque page dans sa langue.</p></div>';
-} );

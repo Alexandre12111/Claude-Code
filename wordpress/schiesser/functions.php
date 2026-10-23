@@ -36,7 +36,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.20.0' );
+define( 'SCHIESSER_VERSION', '0.21.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
@@ -79,3 +79,4 @@ require SCHIESSER_DIR . '/inc/photos-langues.php';       // une photo changée p
 require SCHIESSER_DIR . '/inc/corrections-textes.php';    // corrections de textes du client (document Word relu)
 require SCHIESSER_DIR . '/inc/textes-langues.php';       // textes de l'élément sélectionné dans les autres langues
 require SCHIESSER_DIR . '/inc/produits-langues.php';     // un produit modifié dans les trois langues, sur la même page
+require SCHIESSER_DIR . '/inc/entretien.php';            // outils de mise en place et de dépannage, réunis sur un seul écran
