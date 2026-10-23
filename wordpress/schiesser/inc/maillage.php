@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 function schiesser_maillage_pages() {
 	return array(
 		'boutique'   => array( 'Erdgeschoss', 'Confiserie in Basel', 'Basler Läckerli, Pralinen, Torten und Gebäck aus der eigenen Backstube.' ),
-		'salon'      => array( 'Erster Stock', 'Tea Room am Marktplatz', 'Frühstück, Kaffee, Tee und hausgemachte Schokolade im ältesten Kaffeehaus der Schweiz.' ),
+		'salon'      => array( 'Erster Stock', 'Tea Room am Marktplatz', 'Frühstück, Kaffee, Tee und hausgemachte heisse Schokolade in einem der ältesten Kaffeehäuser der Schweiz.' ),
 		'histoire'   => array( 'Seit 1870', 'Geschichte des Hauses', 'Vom Glarner Konditor Rudolf Schiesser bis heute, mit Bildern aus dem Archiv.' ),
 		'visiter'    => array( 'Marktplatz 19', 'Öffnungszeiten & Anfahrt', 'Gegenüber dem Rathaus, wenige Schritte vom Tram: so finden Sie uns.' ),
 		'entreprise' => array( 'Für Firmen', 'Firmengeschenke aus Basel', 'Pralinen- und Läckerli-Boxen für Ihre Kundschaft und Ihr Team.' ),

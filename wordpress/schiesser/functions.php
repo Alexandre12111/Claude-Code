@@ -36,7 +36,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'SCHIESSER_VERSION', '0.17.3' );
+define( 'SCHIESSER_VERSION', '0.20.0' );
 define( 'SCHIESSER_DIR', get_template_directory() );
 define( 'SCHIESSER_URI', get_template_directory_uri() );
 
@@ -76,4 +76,6 @@ require SCHIESSER_DIR . '/inc/contenu-traductions.php'; // pages, produits et ca
 require SCHIESSER_DIR . '/inc/import-langues.php';       // import des traductions avec Polylang
 require SCHIESSER_DIR . '/inc/reparer-langues.php';      // langues remises en ordre (contenus marqués dans la mauvaise langue)
 require SCHIESSER_DIR . '/inc/photos-langues.php';       // une photo changée proposée aux autres langues
+require SCHIESSER_DIR . '/inc/corrections-textes.php';    // corrections de textes du client (document Word relu)
 require SCHIESSER_DIR . '/inc/textes-langues.php';       // textes de l'élément sélectionné dans les autres langues
+require SCHIESSER_DIR . '/inc/produits-langues.php';     // un produit modifié dans les trois langues, sur la même page

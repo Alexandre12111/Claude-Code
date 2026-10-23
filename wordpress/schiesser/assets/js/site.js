@@ -242,10 +242,20 @@
     app.hidden = !S.tel;
     app.href = S.tel || '#';
     app.querySelector('span').textContent = e.ouvert ? T('Telefonisch bestellen') : TF('Anrufen (%s)', e.texte.replace(T('Geschlossen') + ' · ', ''));
-    msg.href = (S.contact || '/') + ((S.contact || '').indexOf('?') < 0 ? '?' : '&') + 'selection=1#schreiben';
+    msg.href = lienMessage('');
+  }
+  // « Nachricht senden » : le formulaire de contact prérempli s'il est affiché, sinon un e-mail prêt à envoyer.
+  function lienMessage(produit) {
+    var liste = produit ? '1 × ' + produit : texteListe();
+    if (S.formulaire !== false || !S.email) {
+      return (S.contact || '/') + ((S.contact || '').indexOf('?') < 0 ? '?' : '&') + (produit ? 'produit=' + encodeURIComponent(produit) : 'selection=1') + (S.formulaire !== false ? '#schreiben' : '');
+    }
+    var corps = T('Grüezi') + '\n\n' + T('Ich möchte gerne bestellen:') + '\n' + liste + '\n\n' + T('Gewünschtes Abholdatum:') + ' \n' + T('Meine Telefonnummer:') + ' \n\n' + T('Vielen Dank!');
+    return 'mailto:' + S.email + '?subject=' + encodeURIComponent(T('Bestellung:') + ' ' + (produit || T('Meine Merkliste'))) + '&body=' + encodeURIComponent(corps);
   }
   S.majSelection = majSelection;
   S.texteSelection = texteListe;
+  S.lienMessage = lienMessage;
   document.addEventListener('click', function (e) {
     var b = e.target.closest('.js-sel'); if (!b) return;
     var l = lire(), k = String(b.getAttribute('data-id') || b.getAttribute('data-nom'));

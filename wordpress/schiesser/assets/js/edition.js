@@ -48,12 +48,16 @@
   function resume(a) {
     return (a.afficherDu ? 'du ' + lisible(a.afficherDu) : '') + (a.afficherDu && a.afficherAu ? ' ' : '') + (a.afficherAu ? 'jusqu’au ' + lisible(a.afficherAu) : '');
   }
+  // Section masquée pour une durée indéterminée (« Afficher à partir du » 2099, posé par les mises à jour des pages).
+  function enPause(a) {
+    return !!a.afficherDu && a.afficherDu.slice(0, 4) >= '2099' && !a.afficherAu;
+  }
 
   function PanneauProgramme(props) {
     var a = props.attributes, set = props.setAttributes;
     var etat = periode(a);
     var textes = {
-      avant: 'Pas encore visible sur le site : il apparaîtra ' + resume(a) + '.',
+      avant: enPause(a) ? 'Masquée sur le site pour le moment. « Toujours afficher » la remet en ligne.' : 'Pas encore visible sur le site : il apparaîtra ' + resume(a) + '.',
       pendant: 'Visible sur le site en ce moment (' + resume(a) + ').',
       apres: 'Plus visible sur le site : la période est terminée.'
     };
@@ -80,7 +84,7 @@
       var etat = periode(props.attributes || {});
       if (!etat) return el(BlockListBlock, props);
       var w = props.wrapperProps || {};
-      var etiquette = { avant: 'Programmé : ' + resume(props.attributes), pendant: 'Affiché ' + resume(props.attributes), apres: 'Période terminée : masqué sur le site' }[etat];
+      var etiquette = { avant: enPause(props.attributes) ? 'Masquée pour le moment : « Toujours afficher » dans le panneau de droite la remet en ligne' : 'Programmé : ' + resume(props.attributes), pendant: 'Affiché ' + resume(props.attributes), apres: 'Période terminée : masqué sur le site' }[etat];
       return el(BlockListBlock, Object.assign({}, props, {
         className: [props.className, 'sch-programme', 'sch-programme--' + etat].filter(Boolean).join(' '),
         wrapperProps: Object.assign({}, w, { 'data-sch-programme': etiquette })

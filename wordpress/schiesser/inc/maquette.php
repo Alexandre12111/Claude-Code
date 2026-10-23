@@ -186,7 +186,7 @@ function schiesser_mq_blocs() {
 		'comparaison'    => array( 'Comparaison', 'Onglet, photo d’hier et photo d’aujourd’hui.', 'image-flip-horizontal', array( 'schiesser/avant-apres' ),
 			$i( 'avant' ) + $i( 'apres' ) + array( 'onglet' => '', 'avantLibelle' => '', 'apresLibelle' => 'Heute', 'vieillir' => true ) ),
 		'trajet'         => array( 'Point de départ', 'Point de départ et son itinéraire.', 'location', array( 'schiesser/trajets' ),
-			array( 'icone' => 'train', 'depart' => '', 'detail' => '', 'titre' => '', 'sousTitre' => '', 'duree' => '', 'changements' => '', 'marche' => '', 'astuce' => '' ) ),
+			array( 'icone' => 'train', 'depart' => '', 'detail' => '', 'titre' => '', 'sousTitre' => '', 'duree' => '', 'changements' => '', 'marche' => '', 'astuce' => '', 'origine' => '', 'arrivee' => '', 'mode' => '' ) ),
 		'etape'          => array( 'Étape du trajet', 'Pictogramme, titre, texte et durée.', 'arrow-right-alt', array( 'schiesser/trajet' ),
 			array( 'icone' => 'tram', 'titre' => '', 'texte' => '', 'duree' => '' ) ),
 		'question'       => array( 'Question', 'Une question et sa réponse.', 'editor-help', array( 'schiesser/faq' ),
@@ -273,6 +273,8 @@ add_action( 'enqueue_block_editor_assets', function () {
 		'transfert'  => current_user_can( 'edit_pages' ) ? wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_transferer_carte' ), 'schiesser_transferer_carte' ) : '',
 	);
 	wp_localize_script( 'schiesser-blocs-maquette', 'SCHIESSER_ED', array(
+		'logo'         => schiesser_logo_svg( 'incline' ),             // filigrane et sceau des blocs
+		'logoSceau'    => schiesser_logo_svg_dans( 'incline', 100, 100, 116 ), // centre du sceau tournant du Hero
 		'gmap'         => schiesser_mq_google_src( 16 ),
 		'tearoom'      => $tearoom,
 		'produits'     => $produits,
@@ -305,6 +307,9 @@ function schiesser_ancres_page( $post = null ) {
 	}
 	$parcourir = function ( $blocs ) use ( &$parcourir, &$liens ) {
 		foreach ( $blocs as $b ) {
+			if ( ! empty( $b['attrs'] ) && function_exists( 'schiesser_bloc_visible' ) && ! schiesser_bloc_visible( $b['attrs'] ) ) {
+				continue; // section masquée en ce moment : pas de lien vers elle
+			}
 			$nom = (string) $b['blockName'];
 			if ( 0 === strpos( $nom, 'schiesser/' ) ) {
 				$ancre = sanitize_title( $b['attrs']['ancre'] ?? ( 'schiesser/produits' === $nom ? 'catalogue' : '' ) );
@@ -469,14 +474,14 @@ function schiesser_mq_fonds() {
 	);
 }
 
-/** Filigrane « S » des sections sombres. */
+/** Filigrane des sections sombres : le logo incliné, très pâle. */
 function schiesser_mq_marque() {
-	return '<span class="x-mark" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1"/><text x="32" y="43" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="600" font-size="31" fill="currentColor">S</text></svg></span>';
+	return '<span class="x-mark" aria-hidden="true">' . schiesser_logo_svg( 'incline' ) . '</span>';
 }
 
-/** Petit sceau « S » (plaque, page 404). */
+/** Sceau de la maison : le logo incliné (plaque, page 404). */
 function schiesser_mq_sceau() {
-	return '<span class="x-seal" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1 3"/><text x="32" y="42.5" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="600" font-size="30" fill="currentColor">S</text></svg></span>';
+	return '<span class="x-seal" aria-hidden="true">' . schiesser_logo_svg( 'incline' ) . '</span>';
 }
 
 /** En-tête de section : N° ——— / titre / note. */
@@ -537,15 +542,51 @@ function schiesser_mq_bouton( $texte, $lien, $classe = 'btn-line', $fleche = fal
 function schiesser_mq_liens_maison() {
 	$email = schiesser_reglage( 'email' );
 	$adr   = trim( implode( ' ', array_filter( array( schiesser_reglage( 'nom_etablissement' ), schiesser_reglage( 'rue' ), schiesser_reglage( 'code_postal' ), schiesser_reglage( 'ville' ) ) ) ) );
-	$lat   = schiesser_reglage( 'latitude' );
-	$lng   = schiesser_reglage( 'longitude' );
-	// Itinéraire vers la fiche Google (nom et adresse) ; la position n'est utilisée qu'à défaut d'adresse.
-	$cible = $adr ?: ( ( is_numeric( $lat ) && is_numeric( $lng ) ) ? $lat . ',' . $lng : '' );
 	return array(
 		'email'      => $email ? 'mailto:' . $email : '',
-		'itineraire' => 'https://www.google.com/maps/dir/?api=1&destination=' . rawurlencode( $cible ),
+		'itineraire' => schiesser_mq_itineraire(),
 		'carte'      => schiesser_reglage( 'lien_maps' ) ?: 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( $adr ),
 	);
+}
+
+/**
+ * Itinéraire Google Maps. Sans départ, Google part de la position du visiteur ; sans arrivée,
+ * on va à la fiche Google de la maison (nom et adresse, la position seulement à défaut d'adresse).
+ *
+ * @param string $depart  Lieu de départ (« Basel SBB »…).
+ * @param string $mode    transit, walking, driving ou bicycling ; vide : au choix de Google.
+ * @param string $arrivee Lieu d'arrivée (« Parkhaus Storchen, Basel »…).
+ */
+function schiesser_mq_itineraire( $depart = '', $mode = '', $arrivee = '' ) {
+	if ( '' === $arrivee ) {
+		$lat     = schiesser_reglage( 'latitude' );
+		$lng     = schiesser_reglage( 'longitude' );
+		$arrivee = trim( implode( ' ', array_filter( array( schiesser_reglage( 'nom_etablissement' ), schiesser_reglage( 'rue' ), schiesser_reglage( 'code_postal' ), schiesser_reglage( 'ville' ) ) ) ) )
+			?: ( ( is_numeric( $lat ) && is_numeric( $lng ) ) ? $lat . ',' . $lng : '' );
+	}
+	return 'https://www.google.com/maps/dir/?api=1'
+		. ( '' !== $depart ? '&origin=' . rawurlencode( $depart ) : '' )
+		. '&destination=' . rawurlencode( $arrivee )
+		. ( in_array( $mode, array( 'transit', 'walking', 'driving', 'bicycling' ), true ) ? '&travelmode=' . $mode : '' );
+}
+
+/**
+ * Itinéraire d'un point de départ du bloc « Composez votre trajet » : départ, moyen de transport et
+ * arrivée réglés dans le bloc, sinon déduits du pictogramme (voiture, marche, sinon transports publics)
+ * et du nom du départ suivi de la ville. En voiture, sans départ réglé, Google part de la position du visiteur.
+ */
+function schiesser_mq_itineraire_trajet( $e ) {
+	$modes = array( 'marche' => 'walking', 'voiture' => 'driving' );
+	$mode  = ( $e['mode'] ?? '' ) ?: ( $modes[ $e['icone'] ?? '' ] ?? 'transit' );
+	$depart = schiesser_texte_brut( (string) ( $e['origine'] ?? '' ) );
+	if ( '' === $depart && 'driving' !== $mode ) {
+		$depart = schiesser_mq_brut( $e['depart'] ?? '' );
+		$ville  = (string) schiesser_reglage( 'ville' );
+		if ( '' !== $depart && '' !== $ville && false === mb_stripos( $depart, $ville ) ) {
+			$depart .= ', ' . $ville;
+		}
+	}
+	return schiesser_mq_itineraire( $depart, $mode, schiesser_texte_brut( (string) ( $e['arrivee'] ?? '' ) ) );
 }
 
 /**
@@ -1030,6 +1071,16 @@ function schiesser_mq_carte_attrs( $zoom = 16, $style = 'osm' ) {
 		. ' data-nom="' . esc_attr( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ) . '" data-lien="' . esc_url( $liens['carte'] ) . '"';
 }
 
+/**
+ * Logo de la maison sur un plan : autocollant dans le coin d'une carte Google (on ne peut pas y placer
+ * de repère), ou modèle du repère des cartes OpenStreetMap et CARTO (lu par assets/js/maquette.js).
+ */
+function schiesser_mq_logo_carte( $repere = false ) {
+	return $repere
+		? '<template class="js-repere">' . schiesser_logo_svg( 'cartouche' ) . '</template>'
+		: '<span class="map-logo" aria-hidden="true">' . schiesser_logo_svg( 'cartouche' ) . '</span>';
+}
+
 function schiesser_mq_rendu_adresse( $a, $content, $block ) {
 	$liens  = schiesser_mq_liens_maison();
 	$lignes = '';
@@ -1044,9 +1095,9 @@ function schiesser_mq_rendu_adresse( $a, $content, $block ) {
 	if ( ! $a['carte'] ) {
 		$carte = '<div class="vmap">' . $secours . '</div>';
 	} elseif ( 'google' === $fond ) {
-		$carte = '<div class="vmap vmap--google">' . schiesser_mq_google_carte( 16, $liens ) . '</div>';
+		$carte = '<div class="vmap vmap--google">' . schiesser_mq_google_carte( 16, $liens ) . schiesser_mq_logo_carte() . '</div>';
 	} else {
-		$carte = '<div class="vmap js-carte"' . schiesser_mq_carte_attrs( 16, $fond ) . '>' . $secours . '</div>';
+		$carte = '<div class="vmap js-carte"' . schiesser_mq_carte_attrs( 16, $fond ) . '>' . $secours . schiesser_mq_logo_carte( true ) . '</div>';
 	}
 	$contenu = '<div class="visit rv">' . $carte . '<div class="vinfo"><h3>' . esc_html( $lieu ) . '</h3>' . $lignes
 		. ( $boutons ? '<div class="vcta">' . $boutons . '</div>' : '' ) . '</div></div>';
@@ -1266,7 +1317,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	$contenu = '<div class="carte rv js-carte-salon">'
 		. '<div class="mn-bar"><div class="mn-tabs" role="group" aria-label="' . esc_attr( schiesser_t( 'Rubriken der Karte' ) ) . '">' . $onglets . '</div></div>'
 		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">'
-		. '<div class="x-menupic">' . $photos . '<span class="x-mc"><span class="js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></span></div>'
+		. '<div class="x-menupic">' . $photos . '<span class="mn-logo" aria-hidden="true">' . schiesser_logo_svg( 'cartouche' ) . '</span><span class="x-mc"><span class="js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></span></div>'
 		. $pdf . $suggestion
 		. ( array_filter( $tous_al ) ? schiesser_allergenes_note() : '' )
 		. ( empty( $a['apercu'] ) && is_singular() ? schiesser_partage( get_permalink(), schiesser_t( 'Die Karte des Tea Room' ) . ' · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ), 'partage--carte' ) : '' )
@@ -1435,8 +1486,8 @@ function schiesser_mq_rendu_plan_horaires( $a ) {
 	// Avec Google Maps, la fiche de la maison passe sous la carte (Google affiche déjà la sienne en haut à gauche).
 	$carte = '<div class="mapbox' . ( $google ? ' mapbox--google' : '' ) . '">'
 		. ( $google
-			? '<div class="mapel">' . schiesser_mq_google_carte( 17, $liens ) . '</div>'
-			: '<div class="mapel' . ( $a['carte'] ? ' js-carte' : '' ) . '"' . ( $a['carte'] ? schiesser_mq_carte_attrs( 17, $fond ) . ' data-zoom-perso="1"' : '' ) . '><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">' . esc_html( schiesser_t( 'In Google Maps öffnen' ) ) . ' →</a></div>' )
+			? '<div class="mapel">' . schiesser_mq_google_carte( 17, $liens ) . schiesser_mq_logo_carte() . '</div>'
+			: '<div class="mapel' . ( $a['carte'] ? ' js-carte' : '' ) . '"' . ( $a['carte'] ? schiesser_mq_carte_attrs( 17, $fond ) . ' data-zoom-perso="1"' : '' ) . '><a class="mapfallback" href="' . esc_url( $liens['carte'] ) . '" target="_blank" rel="noopener">' . esc_html( schiesser_t( 'In Google Maps öffnen' ) ) . ' →</a>' . ( $a['carte'] ? schiesser_mq_logo_carte( true ) : '' ) . '</div>' )
 		. '<div class="mapcard"><div class="mt">' . esc_html( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ) . '</div>'
 		. '<div class="ma">' . esc_html( $adr[0] ) . '<br>' . esc_html( $adr[1] ) . '</div>'
 		. '<div class="ms js-etat-plage' . ( $etat['ouvert'] ? '' : ' shut' ) . '" data-nosnippet><i></i><span>' . esc_html( schiesser_mq_etat_plage() ) . '</span></div>'
@@ -1508,7 +1559,6 @@ function schiesser_mq_rendu_trajets( $a, $content, $block ) {
 	if ( ! $trajets ) {
 		return '';
 	}
-	$liens   = schiesser_mq_liens_maison();
 	$departs = '';
 	$details = '';
 	foreach ( $trajets as $i => $t ) {
@@ -1533,7 +1583,7 @@ function schiesser_mq_rendu_trajets( $a, $content, $block ) {
 			. '<div class="jp-kpis">' . $kpi( schiesser_t( 'Dauer' ), $e['duree'], schiesser_t( 'Min.' ) ) . $kpi( schiesser_t( 'Umsteigen' ), $e['changements'], '' ) . $kpi( schiesser_t( 'Fussweg' ), $e['marche'], schiesser_t( 'Min.' ) ) . '</div></div>'
 			. '<div class="route route-anim">' . $route . '</div>'
 			. '<div class="jp-foot">' . ( '' !== trim( $e['astuce'] ) ? '<div class="jp-tip"><span class="bulb" aria-hidden="true">i</span><span>' . schiesser_mq_texte( $e['astuce'] ) . '</span></div>' : '<div></div>' )
-			. schiesser_mq_bouton( $a['boutonTexte'], $liens['itineraire'], 'btn-solid', true ) . '</div></div>';
+			. schiesser_mq_bouton( $a['boutonTexte'], schiesser_mq_itineraire_trajet( $e ), 'btn-solid', true ) . '</div></div>';
 	}
 	$contenu = '<div class="jp rv js-trajets"><div class="jp-side"><div class="jl">' . esc_html( schiesser_mq_brut( $a['departLibelle'] ) ) . '</div><div class="orig">' . $departs . '</div></div>' . $details . '</div>';
 	return schiesser_mq_section( $a, $contenu );

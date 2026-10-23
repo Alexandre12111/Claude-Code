@@ -1,0 +1,171 @@
+{
+ "version": "2026-10-22-histoire",
+ "date": "2026-10-22 18:00",
+ "titre": "Histoire : comparateurs « Gestern und heute » (22 octobre 2026)",
+ "resume": "Page Geschichte, bloc N°4 : le premier comparateur montre l’ancienne vitrine (photo archiv-schaufenster-seit-1870.jpg de la médiathèque) face à la vitrine d’aujourd’hui, et un troisième comparateur « Die Backstube » (l’atelier) est ajouté.",
+ "attributs": [
+  {
+   "ref": "H-01",
+   "page": "geschichte",
+   "bloc": "schiesser/comparaison",
+   "si": {
+    "onglet": {
+     "de": [
+      "Die Fassade",
+      "Die Vitrine"
+     ],
+     "fr": [
+      "La façade",
+      "La vitrine"
+     ],
+     "en": [
+      "The façade",
+      "The shop window"
+     ]
+    }
+   },
+   "cle": "avantId",
+   "ancien": "*",
+   "nouveau": "{media:2026/10/archiv-schaufenster-seit-1870.jpg|theme:archiv-schaufenster-seit-1870.jpg}",
+   "raison": "Premier comparateur : l’ancienne vitrine (photo de la médiathèque)"
+  },
+  {
+   "ref": "H-02",
+   "page": "geschichte",
+   "bloc": "schiesser/comparaison",
+   "si": {
+    "onglet": {
+     "de": [
+      "Die Fassade",
+      "Die Vitrine"
+     ],
+     "fr": [
+      "La façade",
+      "La vitrine"
+     ],
+     "en": [
+      "The façade",
+      "The shop window"
+     ]
+    }
+   },
+   "cle": "avantUrl",
+   "ancien": "*",
+   "nouveau": "{media-url:2026/10/archiv-schaufenster-seit-1870.jpg|theme:archiv-schaufenster-seit-1870.jpg}",
+   "raison": "Premier comparateur : adresse de la photo de l’ancienne vitrine"
+  },
+  {
+   "ref": "H-03",
+   "page": "geschichte",
+   "bloc": "schiesser/comparaison",
+   "si": {
+    "onglet": {
+     "de": [
+      "Die Fassade",
+      "Die Vitrine"
+     ],
+     "fr": [
+      "La façade",
+      "La vitrine"
+     ],
+     "en": [
+      "The façade",
+      "The shop window"
+     ]
+    }
+   },
+   "cle": "avantAlt",
+   "ancien": "*",
+   "nouveau": {
+    "de": "Historisches Schaufenster der Confiserie Schiesser mit dem Schriftzug «Seit 1870 Schiesser»",
+    "fr": "Vitrine historique de la Confiserie Schiesser avec l’inscription «&nbsp;Seit 1870 Schiesser&nbsp;»",
+    "en": "Historic shop window of Confiserie Schiesser with the lettering “Seit 1870 Schiesser”"
+   },
+   "raison": "Premier comparateur : description de la photo pour Google"
+  },
+  {
+   "ref": "H-04",
+   "page": "geschichte",
+   "bloc": "schiesser/comparaison",
+   "si": {
+    "onglet": {
+     "de": [
+      "Die Fassade",
+      "Die Vitrine"
+     ],
+     "fr": [
+      "La façade",
+      "La vitrine"
+     ],
+     "en": [
+      "The façade",
+      "The shop window"
+     ]
+    }
+   },
+   "cle": "avantLibelle",
+   "ancien": "*",
+   "nouveau": {
+    "de": "Damals",
+    "fr": "Autrefois",
+    "en": "Then"
+   },
+   "raison": "Premier comparateur : étiquette de la photo ancienne"
+  },
+  {
+   "ref": "H-05",
+   "page": "geschichte",
+   "bloc": "schiesser/comparaison",
+   "cle": "onglet",
+   "ancien": {
+    "de": "Die Fassade",
+    "fr": "La façade",
+    "en": "The façade"
+   },
+   "nouveau": {
+    "de": "Die Vitrine",
+    "fr": "La vitrine",
+    "en": "The shop window"
+   },
+   "raison": "Premier comparateur : l’onglet s’appelle « Die Vitrine »"
+  }
+ ],
+ "ajouts": [
+  {
+   "ref": "H-06",
+   "page": "geschichte",
+   "parent": "schiesser/avant-apres",
+   "bloc": "schiesser/comparaison",
+   "unique": "onglet",
+   "attrs": {
+    "onglet": {
+     "de": "Die Backstube",
+     "fr": "L’atelier",
+     "en": "The bakery"
+    },
+    "avantLibelle": {
+     "de": "Damals",
+     "fr": "Autrefois",
+     "en": "Then"
+    },
+    "apresLibelle": {
+     "de": "Heute",
+     "fr": "Aujourd’hui",
+     "en": "Today"
+    },
+    "vieillir": false,
+    "avantId": "{media:theme:archiv-konditoren-torten.jpg}",
+    "avantUrl": "{media-url:theme:archiv-konditoren-torten.jpg}",
+    "avantAlt": {
+     "de": "Drei Konditoren der Confiserie Schiesser dekorieren Torten in der Backstube",
+     "fr": "Trois confiseurs de la Confiserie Schiesser décorent des gâteaux à l’atelier",
+     "en": "Three confectioners of Confiserie Schiesser decorating cakes in the bakery"
+    },
+    "apresId": "{bloc:startseite:schiesser/geste:2:imageId}",
+    "apresUrl": "{bloc:startseite:schiesser/geste:2:imageUrl}",
+    "apresAlt": "{bloc:startseite:schiesser/geste:2:imageAlt}"
+   },
+   "raison": "Troisième comparateur « Die Backstube » (l’atelier) : la photo d’archive des confiseurs face à la photo actuelle de l’étape « Veredeln » de l’accueil"
+  }
+ ]
+}

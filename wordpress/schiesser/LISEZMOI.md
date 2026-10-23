@@ -1,7 +1,34 @@
-# Thème Schiesser 0.14
+# Thème Schiesser 0.20
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.20 : savoir-faire, « Gut zu wissen » et comparateurs de l'histoire
+
+* **« Handwerk, das man sieht »** (accueil) : la photo reste centrée à gauche, à mi-hauteur de l'écran, pendant qu'on lit les étapes. L'étape active est celle qui passe au milieu de l'écran : en descendant comme en remontant, on passe d'une étape à la voisine, sans en sauter. La dernière étape a elle aussi le temps de s'afficher avec la photo centrée.
+* **« Gut zu wissen »** (Confiserie, Besuch, Firmengeschenke) redessiné : une seule feuille claire posée sur le fond sable, partagée par de fins filets, avec un médaillon vert sapin et un petit numéro en italique pour chaque information. Une dernière ligne incomplète est occupée par la dernière information (médaillon à gauche) ; sur téléphone, une liste.
+* **Mises à jour des pages** : deux possibilités de plus pour les lots, ajouter un élément dans une section (un onglet de comparateur) et choisir une photo de la médiathèque par son fichier (`{media:2026/10/fichier.jpg}`) ou celle d'un autre bloc (`{bloc:page:type:rang:réglage}`).
+* Lot `corrections/mise-a-jour-2026-10-22-histoire.json` (page Geschichte, bloc N°4) : le premier comparateur devient « Die Vitrine », avec l'ancienne vitrine (`2026/10/archiv-schaufenster-seit-1870.jpg`) face à la vitrine d'aujourd'hui ; un troisième comparateur « Die Backstube » (l'atelier) montre les confiseurs d'archive face à la photo actuelle de l'étape « Veredeln » de l'accueil.
+
+## Version 0.19 : logo, mise en page allégée, produits dans les trois langues
+
+* **Logo de la maison partout**, dessiné dans la page (fichiers `assets/images/logo/`) et adapté à chaque endroit : droit et vert sapin dans l'en-tête, incliné et clair sur le chocolat du pied de page, au centre du sceau tournant de l'accueil, sur la plaque et la page 404, en filigrane des sections sombres, en autocollant (avec son cartouche) sur la carte Google, sur les cartes OpenStreetMap (repère) et sur la photo de la carte du Tea Room. Aussi sur la page de connexion, dans l'en-tête des écrans maison de l'administration, sur la carte en PDF (couverture et en-tête des pages, trois langues régénérées) et dans les données Google (`schiesser-logo.png`, si aucun logo n'est choisi dans Personnaliser).
+* **Mises à jour des pages** (Réglages maison) : l'outil des corrections gère maintenant plusieurs lots, chacun avec aperçu, application et retour à l'état d'avant (le plus récent d'abord). Deux opérations nouvelles : masquer une section d'après son type de bloc, changer un réglage de bloc s'il a encore sa valeur d'avant (`{page:confiserie}` donne l'adresse de la page dans la bonne langue).
+* Lot `corrections/mise-a-jour-2026-10-22.json` : accueil sans « Unser Sortiment » ni « Heute in der Vitrine » (masqués, réversibles), Confiserie avec la galerie sur fond clair et des boutons de Hero qui mènent à des sections visibles, page Contact sans formulaire (e-mail, téléphone et adresse restent), première section sous chaque Hero sur le fond de la page, départs des itinéraires pour Google Maps.
+* Formulaire de contact masqué : les boutons « Nachricht senden » (produits, Ma sélection) ouvrent un e-mail prérempli. Les liens « Auf dieser Seite » du pied de page ignorent les sections masquées. Dans l'éditeur, une section masquée porte l'étiquette « Masquée pour le moment ».
+* **Itinéraires** (Besuch) : le bouton « Route öffnen » ouvre Google Maps depuis le point de départ choisi (gare, aéroport, Bankverein) jusqu'à la Confiserie, en transports publics, à pied ou en voiture selon le pictogramme. Départ, moyen de transport et arrivée se règlent par point de départ (panneau « Itinéraire dans Google Maps »).
+* **Sélecteur de langues** dans l'ordre DE · EN · FR.
+* **Produits dans les trois langues sur la même page** : l'encadré « Dans les autres langues » (produits de la boutique et plats du Tea Room) modifie nom, accroche, description, badge, mention et, depuis la version allemande, le libellé des formats et de l'unité dans chaque langue. Une version manquante est créée dès qu'on lui donne un nom.
+* Correction importante : enregistrer un produit ou un plat en allemand recopiait ses textes allemands dans les versions française et anglaise. C'est corrigé, et le lot du 22 octobre remet la traduction du thème là où un texte était redevenu allemand.
+* Écran « Aujourd'hui » : un avis signale que le bandeau de la vitrine est masqué sur l'accueil.
+
+## Version 0.18 : textes relus par le client (document v3)
+
+* **Schiesser → Corrections de textes** : les 215 textes corrigés par le client (432 entrées en allemand, français et anglais) s'appliquent au site réel en un clic, après un aperçu. Chaque texte est cherché dans la page de sa langue, à son emplacement puis d'après son ancien texte ; seul le texte change (photos, mise en page et réglages des blocs restent) et les liens internes sont remis sur les mêmes mots. Un texte déjà retouché sur le site est laissé tel quel et signalé « À vérifier ». Un bouton remet l'état d'avant (pages, titres Google, présentation).
+* Suivi des commentaires du client : grille des produits (Confiserie) et affluence (Besuch) masquées sans être supprimées, numéros des sections remis à la suite ; rubrique « Sprachen », ligne « Für » et question « Onlineshop » retirées ; renvois « * » en petits caractères ; horaires de l'accueil et du contact reliés aux Réglages maison ; photo de 1889 dans le comparateur.
+* « Le plus ancien café de Suisse » retiré aussi des titres et descriptions Google (pages Tea Room et Histoire, seulement s'ils n'ont pas été retouchés), de la présentation de la maison, de la carte de maillage et de la carte du Tea Room en PDF (régénérée dans les trois langues).
+* La balise `<small>` est autorisée dans les textes des blocs.
+* Fichier des corrections : `corrections/textes-2026-10-v3.json` (construit par `wordpress/textes/outils/construire-corrections.py`).
 
 ## Version 0.17.3 : photos changées par leur adresse
 

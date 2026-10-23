@@ -14,7 +14,7 @@ function schiesser_tl_cle_texte( $cle, $valeur ) {
 	if ( ! is_string( $valeur ) || preg_match( '/(Url|Lien|Id|Auto|Style)$/', $cle ) ) {
 		return false;
 	}
-	if ( in_array( $cle, array( 'hauteur', 'filtre', 'modele', 'fond', 'fondCarte', 'ancre', 'affichage', 'icone', 'auto', 'produits', 'niveau', 'align', 'className', 'accent', 'source', 'largeur', 'styleAccroche', 'numero', 'nombre', 'annee', 'afficherAu', 'afficherDu', 'schema', 'lien' ), true ) ) {
+	if ( in_array( $cle, array( 'hauteur', 'filtre', 'modele', 'fond', 'fondCarte', 'ancre', 'affichage', 'icone', 'auto', 'produits', 'niveau', 'align', 'className', 'accent', 'source', 'largeur', 'styleAccroche', 'numero', 'nombre', 'annee', 'afficherAu', 'afficherDu', 'schema', 'lien', 'mode' ), true ) ) {
 		return false;
 	}
 	return ! preg_match( '#^(https?://|/|\#[0-9a-f]{3,8}$|mailto:|tel:)#i', trim( $valeur ) );

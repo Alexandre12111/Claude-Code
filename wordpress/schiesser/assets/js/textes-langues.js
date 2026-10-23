@@ -12,12 +12,13 @@
     bouton1Texte: 'Bouton 1', bouton2Texte: 'Bouton 2', b1Texte: 'Bouton 1', b2Texte: 'Bouton 2', boutonTexte: 'Bouton', lienTexte: 'Lien',
     imageAlt: 'Description de la photo', question: 'Question', reponse: 'Réponse', libelle: 'Libellé', detail: 'Détail',
     encartTitre: 'Titre de l’encart', sousTitre: 'Sous-titre', mention: 'Mention', conseil: 'Conseil', indication: 'Indication',
-    description: 'Description', meta: 'Précision', valeur: 'Valeur', numero: 'Numéro', retenir: 'À retenir', retenirLibelle: 'Libellé « à retenir »'
+    description: 'Description', meta: 'Précision', valeur: 'Valeur', numero: 'Numéro', retenir: 'À retenir', retenirLibelle: 'Libellé « à retenir »',
+    depart: 'Point de départ', origine: 'Départ dans Google Maps', arrivee: 'Arrivée dans Google Maps', astuce: 'Astuce'
   };
   function nom(cle) { return NOMS[cle] || cle.replace(/([A-Z])/g, ' $1').replace(/^./, function (c) { return c.toUpperCase(); }); }
   function estTexte(cle, v) {
     if (typeof v !== 'string' || /(Url|Lien|Id|Auto|Style)$/.test(cle)) { return false; }
-    if (['hauteur', 'filtre', 'modele', 'fond', 'fondCarte', 'ancre', 'affichage', 'icone', 'auto', 'produits', 'niveau', 'align', 'className', 'accent', 'source', 'largeur', 'styleAccroche', 'numero', 'nombre', 'annee', 'afficherAu', 'afficherDu', 'schema', 'lien'].indexOf(cle) > -1) { return false; }
+    if (['hauteur', 'filtre', 'modele', 'fond', 'fondCarte', 'ancre', 'affichage', 'icone', 'auto', 'produits', 'niveau', 'align', 'className', 'accent', 'source', 'largeur', 'styleAccroche', 'numero', 'nombre', 'annee', 'afficherAu', 'afficherDu', 'schema', 'lien', 'mode'].indexOf(cle) > -1) { return false; }
     return !/^(https?:\/\/|\/|#[0-9a-f]{3,8}$|mailto:|tel:)/i.test(v.trim());
   }
   /* Texte lisible dans la fenêtre : *italique*, retours à la ligne, espaces normales (sans balises). */

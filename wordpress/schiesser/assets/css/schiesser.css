@@ -105,15 +105,12 @@ header.scrolled{background:color-mix(in srgb,var(--paper) 95%,transparent);box-s
 .hbar{display:flex;align-items:center;justify-content:space-between;gap:24px;height:var(--hh)}
 .hact{display:flex;align-items:center;gap:12px}
 
-/* logo */
-.brand{display:inline-block;text-decoration:none;color:var(--ink);line-height:1;flex-shrink:0;text-align:left}
-.x-lg-over{display:flex;align-items:center;gap:7px;font:600 9px/1 var(--sans);letter-spacing:.32em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
-.x-lg-dia{width:4px;height:4px;color:var(--vert);background:currentColor}
-.x-lg-name{display:block;font:500 22px/1 var(--serif);letter-spacing:.2em;text-transform:uppercase;color:var(--ink);margin-right:-.2em}
-.x-lg-under{display:block;font:600 9px/1 var(--sans);letter-spacing:.3em;text-transform:uppercase;color:var(--vert);margin-top:6px}
-.fbrand .x-lg-name{font-size:27.5px}
-.fbrand .x-lg-over,.fbrand .x-lg-under{font-size:10px}
-@media(max-width:520px){.x-lg-name{font-size:16.5px;letter-spacing:.16em}.x-lg-over,.x-lg-under{font-size:8px;letter-spacing:.24em}}
+/* logo : droit et vert sapin dans l'en-tête, incliné et clair sur le chocolat du pied de page */
+.logo{display:block;fill:currentColor;overflow:visible}
+.brand{display:inline-block;text-decoration:none;color:var(--vert);line-height:0;flex-shrink:0}
+.brand .logo{height:60px;width:auto;aspect-ratio:1000/622}
+.fbrand .brand .logo{height:auto;width:min(212px,62vw);aspect-ratio:1000/723}
+@media(max-width:520px){.brand .logo{height:46px}}
 
 /* navigation */
 nav.main{display:flex;align-items:center;gap:clamp(18px,2.2vw,34px)}
@@ -213,7 +210,7 @@ img[style*="--lum"]{filter:brightness(var(--lum))}
 
 /* sceau tournant (accueil) */
 .hero-seal{position:absolute;right:0;bottom:0;width:clamp(124px,11vw,164px);aspect-ratio:1;color:var(--on-dark);opacity:.92}
-.hero-seal svg{display:block;width:100%;height:100%;overflow:visible}
+.hero-seal>svg{display:block;width:100%;height:100%;overflow:visible}
 .hero-seal .ring{transform-origin:100px 100px;animation:sealSpin 48s linear infinite}
 @keyframes sealSpin{to{transform:rotate(360deg)}}
 @media(max-width:760px){.hero-seal{display:none}}
@@ -310,14 +307,14 @@ section.live .wrap{display:grid;grid-template-columns:1fr;gap:0;padding-top:clam
 /* ornements maison */
 .x-diamond{display:inline-block;width:6px;height:6px;border:1px solid currentColor;transform:rotate(45deg);flex-shrink:0}
 .x-seal{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.x-seal svg{width:100%;height:100%;display:block}
+.x-seal svg{width:100%;height:auto;display:block}
 .x-sep{display:flex;align-items:center;justify-content:center;gap:12px;margin:clamp(34px,4.4vw,60px) 0}
 .x-sep::before,.x-sep::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line))}
 .x-sep::after{background:linear-gradient(90deg,var(--line),transparent)}
 .x-sep .x-diamond{width:7px;height:7px;color:var(--vert);opacity:.55}
 .x-sep .x-diamond:nth-child(2){background:var(--vert);opacity:.85}
-.x-mark{position:absolute;right:clamp(16px,3vw,44px);top:clamp(16px,3vw,44px);width:clamp(72px,8vw,116px);aspect-ratio:1;color:var(--on-dark);opacity:.07;pointer-events:none;z-index:0}
-.x-mark svg{width:100%;height:100%;display:block}
+.x-mark{position:absolute;right:clamp(16px,3vw,44px);top:clamp(16px,3vw,44px);width:clamp(120px,13vw,196px);color:var(--on-dark);opacity:.07;pointer-events:none;z-index:0}
+.x-mark svg{width:100%;height:auto;display:block}
 .x-dia{position:relative}
 .x-dia::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;pointer-events:none;opacity:.25;
   background-image:repeating-linear-gradient(90deg,var(--vert) 0 5px,transparent 5px 10px)}
@@ -725,6 +722,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .x-menupic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.05);filter:sepia(.08) brightness(var(--lum,1));transition:opacity .8s var(--ease),transform 1.6s var(--ease-out)}
 .x-menupic img.on{opacity:1;transform:scale(1)}
 .x-menupic::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,color-mix(in srgb,var(--voile) 66%,transparent),transparent 60%)}
+.x-menupic .mn-logo{position:absolute;top:clamp(14px,1.6vw,22px);left:clamp(14px,1.6vw,22px);z-index:2;width:clamp(84px,7.6vw,112px);pointer-events:none}
 .x-menupic .x-mc{position:absolute;left:0;bottom:0;z-index:2;padding:clamp(26px,2.8vw,38px);color:var(--on-dark);font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(24px,2.46vw,31px)}
 .mn-tabs{display:flex;flex-wrap:wrap;gap:0 32px;margin-bottom:clamp(32px,3.4vw,48px);border-bottom:1px solid var(--line)}
 .mtab,.x-cmptab{margin-bottom:-1px;padding:14px 0;background:none;border:0;border-bottom:2px solid transparent;cursor:pointer;color:var(--ink-soft);
@@ -846,7 +844,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .x-plate .rule{display:flex;align-items:center;gap:18px;width:100%;max-width:420px;margin-bottom:26px}
 .x-plate .rule::before,.x-plate .rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line))}
 .x-plate .rule::after{background:linear-gradient(90deg,var(--line),transparent)}
-.x-plate .rule .x-seal{width:46px;height:46px;color:var(--vert)}
+.x-plate .rule .x-seal{width:104px;color:var(--vert)}
 .x-plate .n{font-family:var(--serif);font-weight:500;font-size:clamp(64px,6.6vw,90px);line-height:.84;letter-spacing:-.03em;color:var(--vert)}
 .x-plate .l{font-family:var(--serif);font-style:italic;font-size:clamp(18.5px,1.97vw,24.5px);color:var(--text);margin-top:12px}
 .x-plate .d{min-width:200px;margin-top:22px;padding-top:14px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.26em;text-transform:uppercase;font-weight:600;color:var(--vert)}
@@ -975,6 +973,13 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
 .shop-pin .pin-b{width:38px;height:38px;border-radius:50% 50% 50% 6px;background:var(--vert);border:3px solid #fff;transform:rotate(-45deg);box-shadow:0 4px 14px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
 .shop-pin .pin-b span{transform:rotate(45deg);color:#fff;font-size:15.5px;font-weight:500;font-family:var(--serif)}
 .shop-pin .pin-l{margin-top:7px;padding:4px 10px;background:var(--paper);border:1px solid var(--line);font-size:11px;font-weight:600;letter-spacing:.06em;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.16)}
+/* logo sur les plans : repère des cartes OpenStreetMap, autocollant dans le coin des cartes Google */
+.shop-pin--logo,.map-logo,.mn-logo{color:var(--vert);filter:drop-shadow(0 8px 14px color-mix(in srgb,var(--dark) 34%,transparent))}
+.shop-pin--logo svg,.map-logo svg,.mn-logo svg{display:block;width:100%;height:auto}
+:is(.shop-pin--logo,.map-logo,.mn-logo) .lf{fill:var(--paper)}
+.shop-pin--logo{width:96px}
+.map-logo{position:absolute;top:16px;right:16px;z-index:2;width:clamp(76px,7.4vw,104px);pointer-events:none}
+@media(max-width:379px){.map-logo{display:none}}
 .hourspanel{display:flex;flex-direction:column;padding:clamp(24px,2.8vw,38px);background:var(--paper-3);border:1px solid var(--line)}
 .hp-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-bottom:18px;border-bottom:1px solid var(--ink)}
 .hp-k{font-family:var(--serif);font-weight:500;font-size:clamp(22px,2.13vw,26px);line-height:1;color:var(--ink)}
@@ -1130,7 +1135,7 @@ footer::after{content:"Schiesser";position:absolute;left:50%;bottom:clamp(-14px,
   background-image:radial-gradient(70% 60% at 50% 30%,color-mix(in srgb,var(--mint) 8%,transparent),transparent 70%)}
 #page-404.on{display:flex;align-items:center;justify-content:center;text-align:center;padding:clamp(24px,6vw,80px)}
 .x-404{max-width:36rem}
-.x-404 .x-seal{width:80px;height:80px;margin:0 auto 28px;color:var(--mint)}
+.x-404 .x-seal{width:150px;margin:0 auto 26px;color:var(--mint)}
 .x-404 .n{font-family:var(--serif);font-weight:500;font-size:clamp(57.5px,9vw,96px);line-height:.85;letter-spacing:-.03em}
 .x-404 :is(h1,h2){font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(20px,2.46vw,26px);color:var(--mint);margin-top:14px}
 .x-404 p{color:var(--on-dark-2);margin-top:18px;font-size:15.5px}
@@ -1178,7 +1183,6 @@ body.admin-bar header.site-header{top:32px}
 
 /* sceau : polices de la charte */
 .hero-seal .seal-txt{font-family:var(--sans)}
-.hero-seal .seal-s{font-family:var(--serif)}
 /* couleur des mots en italique du grand titre (réglage du bloc Hero) */
 .hero--accent-menthe h1 em{color:var(--mint)}
 .hero--accent-blanc h1 em{color:#fff}
@@ -2119,9 +2123,7 @@ footer{margin:0 var(--frame) var(--frame);border-radius:var(--r-l);border-top:0;
   background-image:radial-gradient(80% 60% at 0% 0%,color-mix(in srgb,var(--mint) 7%,transparent),transparent 60%)}
 .site-footer::before{display:none}
 footer::after{background:linear-gradient(180deg,color-mix(in srgb,var(--paper) 14%,transparent),transparent 85%);-webkit-background-clip:text;background-clip:text;color:transparent}
-footer .brand,footer .x-lg-name{color:var(--on-dark)}
-footer .x-lg-over{color:var(--on-dark-3)}
-footer .x-lg-under,footer .x-lg-dia{color:var(--mint)}
+footer .brand{color:var(--on-dark)}
 .fbrand p{color:var(--on-dark-2)}
 .fcol :is(h5,.fcol-titre){color:var(--mint)}
 .fcol :is(h5,.fcol-titre)::before{border-radius:50%;transform:none}
@@ -2538,4 +2540,61 @@ p,.x-fd,.note{text-wrap:pretty}
 
 @media (prefers-reduced-motion:reduce){
   .x-floor,.x-floor img,.ml-carte,.x-floor .x-fb{transition:none!important;translate:none!important}
+}
+
+/* 0.18 · Renvois en petits caractères (astérisque sous une réponse ou un texte) */
+.ans small,.cta small,.x-fd small,.lead small{display:inline-block;margin-top:6px;font-size:.82em;line-height:1.5;opacity:.78}
+
+/* =====================================================================
+   VERSION 0.20
+   ===================================================================== */
+
+/* savoir-faire : la photo reste centrée à gauche, à mi-hauteur de l'écran, pendant qu'on lit les étapes */
+@media(min-width:900px){
+  .craft-media{--cm-h:min(calc(100vh - var(--hh) - 120px),640px);height:var(--cm-h);top:calc(var(--hh) + (100vh - var(--hh) - var(--cm-h)) / 2)}
+  /* la dernière étape passe elle aussi au milieu de l'écran pendant que la photo est encore centrée */
+  .craft-steps{padding-bottom:max(0px,calc((100vh - var(--hh)) / 2 - 18vh))}
+}
+
+/* « Bon à savoir » : un carnet pratique. Une seule feuille claire posée sur le fond, partagée par des
+   filets ; chaque information a son médaillon vert sapin et un petit numéro en italique. */
+.prac{--prac-cols:1;counter-reset:prac;display:grid;grid-template-columns:repeat(var(--prac-cols),minmax(0,1fr));gap:1px;padding:0;border:0;
+  border-radius:var(--r-l);overflow:hidden;background:color-mix(in srgb,var(--vert) 9%,var(--paper-deep));
+  box-shadow:0 30px 60px -38px color-mix(in srgb,var(--dark) 55%,transparent),0 0 0 1px color-mix(in srgb,var(--vert) 14%,transparent)}
+@media(min-width:620px){.prac{--prac-cols:2}}
+@media(min-width:1000px){.prac{--prac-cols:3}.prac:has(>.pcell:nth-child(4):last-child){--prac-cols:2}}
+.prac .pcell{position:relative;counter-increment:prac;display:flex;flex-direction:column;align-items:flex-start;gap:0;
+  padding:clamp(30px,3.2vw,48px) clamp(26px,3vw,44px) clamp(30px,3vw,42px);border-radius:0;background:var(--paper-3);box-shadow:none;transition:background-color .5s var(--ease)}
+.prac .pcell::before{content:counter(prac,decimal-leading-zero);position:absolute;top:clamp(26px,2.8vw,40px);right:clamp(24px,2.8vw,40px);
+  font-family:var(--serif);font-style:italic;font-size:15px;line-height:1;color:color-mix(in srgb,var(--ink-soft) 55%,transparent);transition:color .5s var(--ease)}
+.prac .pcell:hover{background:color-mix(in srgb,var(--paper-3) 55%,#fff);box-shadow:none}
+.prac .pcell:hover::before{color:var(--vert)}
+.prac .pi{width:58px;height:58px;margin:0;border:0;border-radius:50%;transform:none;background:var(--vert);
+  background-image:radial-gradient(120% 120% at 30% 20%,color-mix(in srgb,#fff 16%,transparent),transparent 60%);
+  box-shadow:0 0 0 7px color-mix(in srgb,var(--vert) 9%,transparent),0 12px 24px -14px color-mix(in srgb,var(--vert) 90%,transparent);
+  transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out)}
+.prac .pi svg{width:25px;height:25px;transform:none;stroke:var(--paper);stroke-width:1.5}
+.prac .pcell:hover .pi{transform:translateY(-3px);background-color:var(--vert);box-shadow:0 0 0 10px color-mix(in srgb,var(--vert) 12%,transparent),0 16px 28px -14px color-mix(in srgb,var(--vert) 90%,transparent)}
+.prac .pcell:hover .pi svg{stroke:var(--paper)}
+.prac h3{margin:28px 0 10px;font-family:var(--serif);font-weight:500;font-size:clamp(21px,1.75vw,24px);line-height:1.15;color:var(--ink)}
+.prac p{max-width:36ch;font-size:15.5px;line-height:1.65;color:color-mix(in srgb,var(--ink-soft) 80%,var(--text))}
+/* dernière ligne incomplète : la dernière information prend la place restante (pas de case vide),
+   médaillon à gauche et texte à côté */
+@media(min-width:620px) and (max-width:999px){
+  .prac .pcell:last-child:nth-child(odd){grid-column:1/-1;flex-direction:row;align-items:center;gap:30px}
+  .prac .pcell:last-child:nth-child(odd) h3{margin-top:0}
+}
+@media(min-width:1000px){
+  .prac:not(:has(>.pcell:nth-child(4):last-child)) .pcell:last-child:nth-child(3n+1){grid-column:1/-1}
+  .prac .pcell:last-child:nth-child(3n+2){grid-column:span 2}
+  .prac:not(:has(>.pcell:nth-child(4):last-child)) .pcell:last-child:nth-child(3n+1),.prac .pcell:last-child:nth-child(3n+2){flex-direction:row;align-items:center;gap:30px}
+  .prac:not(:has(>.pcell:nth-child(4):last-child)) .pcell:last-child:nth-child(3n+1) h3,.prac .pcell:last-child:nth-child(3n+2) h3{margin-top:0}
+}
+/* téléphone : une liste, médaillon à gauche */
+@media(max-width:619px){
+  .prac .pcell{flex-direction:row;gap:18px;padding:26px 22px 26px 20px}
+  .prac .pi{width:46px;height:46px;flex-shrink:0;box-shadow:0 0 0 5px color-mix(in srgb,var(--vert) 9%,transparent)}
+  .prac .pi svg{width:21px;height:21px}
+  .prac h3{margin:2px 0 8px;padding-right:28px}
+  .prac .pcell::before{top:24px;right:20px}
 }

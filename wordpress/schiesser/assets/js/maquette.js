@@ -114,22 +114,39 @@
     });
   });
 
-  /* ---------- savoir-faire : la photo suit l'étape lue ---------- */
-  if ('IntersectionObserver' in window) {
-    tous('.craft-grid').forEach(function (g) {
-      var etapes = tous('.cstep', g), media = tous('.cm-stack img', g), num = un('.js-cm-num', g);
-      var io = new IntersectionObserver(function (es) {
-        es.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          var s = e.target.getAttribute('data-s');
-          etapes.forEach(function (x) { x.classList.toggle('active', x === e.target); });
-          media.forEach(function (m) { m.classList.toggle('on', m.getAttribute('data-s') === s); });
-          if (num) num.textContent = dd(+s + 1);
-        });
-      }, { threshold: 0.55 });
-      etapes.forEach(function (x) { io.observe(x); });
-    });
-  }
+  /* ---------- savoir-faire : la photo (centrée à gauche) suit l'étape qui passe au milieu de l'écran ---------- */
+  // L'étape active est la dernière dont le haut a franchi le milieu de l'écran : en descendant comme en
+  // remontant, on passe d'une étape à la voisine, sans en sauter.
+  tous('.craft-grid').forEach(function (g) {
+    var etapes = tous('.cstep', g), media = tous('.cm-stack img', g), num = un('.js-cm-num', g), entete = un('header.site-header');
+    var cur = -1, prevu = false, ecoute = false;
+    if (!etapes.length) return;
+    function choisir() {
+      prevu = false;
+      var haut = entete ? Math.max(0, entete.getBoundingClientRect().bottom) : 0;
+      var ligne = haut + (window.innerHeight - haut) / 2, k = 0;
+      etapes.forEach(function (x, i) { if (x.getBoundingClientRect().top <= ligne) k = i; });
+      if (k === cur) return;
+      cur = k;
+      var s = etapes[k].getAttribute('data-s');
+      etapes.forEach(function (x, i) { x.classList.toggle('active', i === k); });
+      media.forEach(function (m) { m.classList.toggle('on', m.getAttribute('data-s') === s); });
+      if (num) num.textContent = dd(+s + 1);
+    }
+    function demander() { if (!prevu) { prevu = true; requestAnimationFrame(choisir); } }
+    function suivre(oui) {
+      if (oui === ecoute) return;
+      ecoute = oui;
+      window[oui ? 'addEventListener' : 'removeEventListener']('scroll', demander, { passive: true });
+      window[oui ? 'addEventListener' : 'removeEventListener']('resize', demander);
+      if (oui) demander();
+    }
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) { suivre(es[es.length - 1].isIntersecting); }, { rootMargin: '50% 0px' }).observe(g);
+    } else {
+      suivre(true);
+    }
+  });
 
   /* ---------- ligne du temps : cartes à faire glisser ---------- */
   tous('.js-tl-scroll').forEach(function (sc) {
@@ -432,11 +449,15 @@
     couche.addTo(map);
     // Le lien de secours reste visible tant que la carte n'est pas chargée.
     couche.once('load', function () { var f = un('.mapfallback', el); if (f) f.remove(); });
-    var icone = style === 'carto'
-      ? window.L.divIcon({ className: '', html: '<div class="shop-pin"><div class="pin-b"><span>S</span></div><div class="pin-l">' + esc(nom) + '</div></div>', iconSize: [38, 64], iconAnchor: [19, 38] })
-      : window.L.divIcon({ className: 'kir-pin', html: '<span></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
+    // Repère : le logo de la maison (modèle placé dans la carte par le thème), sinon l'ancien repère.
+    var modele = un('template.js-repere', el);
+    var icone = modele
+      ? window.L.divIcon({ className: '', html: '<div class="shop-pin shop-pin--logo">' + modele.innerHTML + '</div>', iconSize: [96, 74], iconAnchor: [48, 37] })
+      : style === 'carto'
+        ? window.L.divIcon({ className: '', html: '<div class="shop-pin"><div class="pin-b"><span>S</span></div><div class="pin-l">' + esc(nom) + '</div></div>', iconSize: [38, 64], iconAnchor: [19, 38] })
+        : window.L.divIcon({ className: 'kir-pin', html: '<span></span>', iconSize: [22, 22], iconAnchor: [11, 11] });
     var repere = window.L.marker(pos, { icon: icone, alt: nom }).addTo(map);
-    if (style !== 'carto' && nom) repere.bindPopup(esc(nom)).openPopup();
+    if (!modele && style !== 'carto' && nom) repere.bindPopup(esc(nom)).openPopup();
     map.on('click', function () { map.scrollWheelZoom.enable(); });
     var boite = el.closest('.mapbox');
     if (boite) {

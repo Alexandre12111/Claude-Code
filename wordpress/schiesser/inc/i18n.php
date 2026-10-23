@@ -88,13 +88,13 @@ function schiesser_tf( $de, ...$valeurs ) {
  * Libellés de prix et de formats (« ab CHF 8.90 », « 3 Formate », « 9er-Box »…) :
  * enregistrés une seule fois en allemand, affichés dans la langue de la page.
  */
-function schiesser_t_libelle( $texte ) {
+function schiesser_t_libelle( $texte, $langue = null ) {
 	$texte = (string) $texte;
-	$l     = schiesser_langue();
+	$l     = $langue ?: schiesser_langue();
 	if ( 'de' === $l || '' === $texte ) {
 		return $texte;
 	}
-	$direct = schiesser_t( $texte );
+	$direct = schiesser_t( $texte, $l );
 	if ( $direct !== $texte ) {
 		return $direct;
 	}

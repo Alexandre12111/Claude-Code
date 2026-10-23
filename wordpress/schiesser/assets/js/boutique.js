@@ -90,7 +90,7 @@
         cmd.hidden = !!f.panier;
         cmd.setAttribute('data-produit', f.nom);
         var msg = q('.js-cmd-message');
-        if (msg && window.SCHIESSER && SCHIESSER.contact) msg.href = SCHIESSER.contact + (SCHIESSER.contact.indexOf('?') < 0 ? '?' : '&') + 'produit=' + encodeURIComponent(f.nom) + '#schreiben';
+        if (msg && window.SCHIESSER && SCHIESSER.lienMessage) msg.href = SCHIESSER.lienMessage(f.nom);
         var sel = q('.js-sel');
         if (sel) {
           sel.setAttribute('data-id', f.id || ''); sel.setAttribute('data-nom', f.nom); sel.setAttribute('data-prix', f.prix || '');

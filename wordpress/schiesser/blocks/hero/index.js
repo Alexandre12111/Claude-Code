@@ -27,9 +27,8 @@
         el('g', { className: 'ring' },
           el('text', { className: 'seal-txt', fontSize: 11, fontWeight: 600, letterSpacing: 3, fill: 'currentColor' },
             el('textPath', { href: '#sealRingEd', textLength: 496, lengthAdjust: 'spacing' }, SCEAU_TEXTE))),
-        el('circle', { cx: 100, cy: 100, r: 64, fill: 'none', stroke: 'currentColor', strokeOpacity: 0.55 }),
-        el('circle', { cx: 100, cy: 100, r: 58, fill: 'none', stroke: 'currentColor', strokeOpacity: 0.4, strokeDasharray: '1 4' }),
-        el('text', { className: 'seal-s', x: 100, y: 121, textAnchor: 'middle', fontSize: 58, fontWeight: 500, fill: 'currentColor' }, 'S')
+        el('circle', { cx: 100, cy: 100, r: 67, fill: 'none', stroke: 'currentColor', strokeOpacity: 0.5 }),
+        el('g', { dangerouslySetInnerHTML: { __html: (window.SCHIESSER_ED && window.SCHIESSER_ED.logoSceau) || '' } })
       )
     );
   }

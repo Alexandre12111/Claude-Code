@@ -8,7 +8,7 @@ get_header();
 ?>
 <section class="x-404-wp">
 	<div class="x-404">
-		<span class="x-seal" aria-hidden="true"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="32" cy="32" r="25.5" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="1 3"/><text x="32" y="42.5" text-anchor="middle" font-family="Bodoni Moda, serif" font-weight="600" font-size="30" fill="currentColor">S</text></svg></span>
+		<?php echo schiesser_mq_sceau(); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 		<div class="n">404</div>
 		<h1><?php echo esc_html( schiesser_t( 'Diese Tür führt ins Leere' ) ); ?></h1>
 		<p><?php echo esc_html( schiesser_t( 'Diese Seite gibt es nicht oder nicht mehr. Das Haus selbst hat seine Adresse nie gewechselt: am Marktplatz in Basel.' ) ); ?></p>

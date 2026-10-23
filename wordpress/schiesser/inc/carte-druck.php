@@ -56,10 +56,6 @@ function schiesser_carte_druck_html() {
 	$tel   = schiesser_reglage( 'telephone' );
 	$web   = apply_filters( 'schiesser_carte_druck_web', preg_replace( '#^https?://(www\.)?#', '', untrailingslashit( home_url() ) ) );
 	$f     = SCHIESSER_URI . '/assets/fonts/';
-	$sceau = '<svg class="sceau" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="r" d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0"/></defs>'
-		. '<text font-size="10.5" font-weight="600" letter-spacing="3" fill="currentColor"><textPath href="#r" textLength="496" lengthAdjust="spacing">' . esc_html( schiesser_t( 'CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·' ) ) . '</textPath></text>'
-		. '<circle cx="100" cy="100" r="64" fill="none" stroke="currentColor" stroke-opacity=".6"/><circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-opacity=".45" stroke-dasharray="1 4"/>'
-		. '<text x="100" y="121" text-anchor="middle" font-size="58" font-weight="500" font-family="Bodoni Moda" fill="currentColor">S</text></svg>';
 	$orn   = '<span class="orn" aria-hidden="true"><i></i><b>◆</b><i></i></span>';
 
 	// Une page A4 par rubrique ; deux rubriques courtes partagent une page.
@@ -114,10 +110,9 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 /* couverture */
 .couv{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:var(--dark);background-image:radial-gradient(85% 70% at 0% 0%,rgba(23,70,51,.85),transparent 64%),radial-gradient(75% 60% at 100% 100%,rgba(23,70,51,.6),transparent 68%);color:var(--paper);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .couv::before{border-color:rgba(140,197,166,.6)}.couv::after{border-color:rgba(140,197,166,.3)}
-.couv .sceau{width:46mm;height:46mm;color:var(--mint);margin-bottom:14mm}
+.couv .logo{width:92mm;height:auto;color:var(--mint);margin-bottom:12mm}
 .couv .k{font-size:8pt;letter-spacing:.42em;text-transform:uppercase;color:var(--mint);font-weight:600}
-.couv h1{font-family:'Bodoni Moda',serif;font-weight:500;font-size:54pt;line-height:.95;letter-spacing:-.01em;margin:7mm 0 4mm}
-.couv h1 em{display:block;font-style:italic;font-weight:400;font-size:30pt;margin-top:3mm;color:#E9DFCC}
+.couv h1{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:400;font-size:34pt;line-height:1.05;letter-spacing:-.005em;margin:7mm 0 4mm;color:#E9DFCC}
 .couv .sous{font-family:'Bodoni Moda',serif;font-style:italic;font-size:14pt;color:#D9CDB6}
 .couv .orn{margin:10mm 0;color:var(--mint)}
 .couv .bas{position:absolute;left:0;right:0;bottom:22mm;font-size:7.5pt;letter-spacing:.3em;text-transform:uppercase;color:rgba(244,238,227,.7)}
@@ -140,7 +135,8 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 .plat .p{font-family:'Bodoni Moda',serif;font-size:11pt;color:var(--vert);white-space:nowrap;font-variant-numeric:tabular-nums}
 .plat p{font-family:'Bodoni Moda',serif;font-style:italic;font-size:8.6pt;line-height:1.4;color:var(--soft);margin-top:.8mm;max-width:128mm}
 .entete{display:flex;justify-content:space-between;align-items:baseline;font-size:6.8pt;letter-spacing:.3em;text-transform:uppercase;color:var(--soft);margin-bottom:6mm;padding-bottom:3mm;border-bottom:.4pt solid var(--line)}
-.entete b{font-family:'Bodoni Moda',serif;font-size:12pt;letter-spacing:.18em;font-weight:500;color:var(--ink)}
+.entete{align-items:center}
+.entete .logo{display:block;width:24mm;height:auto;color:var(--vert)}
 .pied{position:absolute;left:20mm;right:20mm;bottom:13mm;text-align:center;font-size:6.6pt;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
 .pied span{display:block;margin-top:1mm;text-transform:none;letter-spacing:.04em;font-style:italic;font-family:'Bodoni Moda',serif;font-size:8pt}
 </style>
@@ -148,17 +144,16 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 <body>
 <p class="aide">Carte imprimable : Imprimer → « Enregistrer au format PDF », format A4, marges « Aucune », graphiques d’arrière-plan activés. <button type="button" onclick="window.print()">Imprimer</button></p>
 <div class="page couv">
-	<?php echo $sceau; // phpcs:ignore WordPress.Security.EscapeOutput ?>
-	<p class="k"><?php echo esc_html( schiesser_t( 'Seit 1870 · Marktplatz Basel' ) ); ?></p>
-	<h1>Schiesser<em>Tea Room &amp; Rathstübli</em></h1>
-	<p class="sous"><?php echo esc_html( schiesser_t( 'Das älteste Kaffeehaus der Schweiz' ) ); ?></p>
+	<?php echo schiesser_logo_svg( 'incline', $nom ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+	<h1>Tea Room &amp; Rathstübli</h1>
+	<p class="sous"><?php echo esc_html( schiesser_t( 'Ein Kaffeehaus mit über 100 Jahren Geschichte' ) ); ?></p>
 	<?php echo $orn; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 	<p class="k"><?php echo esc_html( schiesser_t( 'Die Karte' ) ); ?></p>
 	<p class="bas"><?php echo esc_html( trim( $adr . ( $tel ? ' · ' . $tel : '' ) . ' · ' . $web, ' ·' ) ); ?></p>
 </div>
 <?php foreach ( $pages as $k => $contenu ) : ?>
 <div class="page">
-	<div class="entete"><span>Tea Room</span><b>Schiesser</b><span><?php echo esc_html( ( $k + 1 ) . ' / ' . count( $pages ) ); ?></span></div>
+	<div class="entete"><span>Tea Room</span><?php echo schiesser_logo_svg( 'droit', $nom ); // phpcs:ignore WordPress.Security.EscapeOutput ?><span><?php echo esc_html( ( $k + 1 ) . ' / ' . count( $pages ) ); ?></span></div>
 	<div class="contenu"><?php echo $contenu; // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 	<?php echo $pied; // phpcs:ignore WordPress.Security.EscapeOutput ?>
 </div>

@@ -160,6 +160,9 @@ add_action( 'save_post_' . SCHIESSER_TEAROOM, function ( $post_id ) {
 	if ( ! isset( $_POST['schiesser_tearoom_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['schiesser_tearoom_nonce'] ), 'schiesser_tearoom' ) ) {
 		return;
 	}
+	if ( (int) ( $_POST['post_ID'] ?? 0 ) !== (int) $post_id ) {
+		return; // une autre version du plat, enregistrée pendant la même requête (traductions) : pas ce formulaire
+	}
 	if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! current_user_can( 'edit_post', $post_id ) ) {
 		return;
 	}

@@ -209,14 +209,49 @@ function schiesser_liens_menu( $position = 'principal' ) {
 }
 
 /**
- * Logo de la maison (réutilisé dans l'en-tête et le pied de page).
+ * Logo de la maison dessiné dans la page (fichiers assets/images/logo/), de la couleur du texte qui
+ * l'entoure : la feuille de style règle couleur et taille selon l'endroit.
+ *
+ * @param string $variante droit (en-tête, cartes), incline (tel que dessiné : pied de page, sceaux),
+ *                         cartouche ou cartouche-droit (avec son fond découpé : sur une photo, sur le plan).
+ * @param string $titre    Nom lu par les lecteurs d'écran ; vide : logo décoratif.
  */
-function schiesser_logo( $sous_titre = 'Seit 1870' ) {
-	?>
-	<span class="x-lg-over">Confiserie <i class="x-diamond x-lg-dia"></i> Tea-Room</span>
-	<span class="x-lg-name">Schiesser</span>
-	<span class="x-lg-under" lang="de"><?php echo esc_html( $sous_titre ); ?></span>
-	<?php
+function schiesser_logo_svg( $variante = 'droit', $titre = '' ) {
+	static $svg = array();
+	$variante = sanitize_key( $variante );
+	if ( ! isset( $svg[ $variante ] ) ) {
+		$fichier            = SCHIESSER_DIR . '/assets/images/logo/schiesser-' . $variante . '.svg';
+		$svg[ $variante ] = is_readable( $fichier ) ? trim( (string) file_get_contents( $fichier ) ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions
+	}
+	if ( '' === $svg[ $variante ] ) {
+		return '';
+	}
+	$attrs = 'class="logo logo--' . $variante . '" focusable="false" ' . ( '' !== $titre ? 'role="img" aria-label="' . esc_attr( $titre ) . '"' : 'aria-hidden="true"' );
+	return preg_replace( '/^<svg /', '<svg ' . $attrs . ' ', $svg[ $variante ], 1 );
+}
+
+/**
+ * Logo placé dans un autre dessin SVG (sceau tournant, carte imprimable), centré sur x, y.
+ *
+ * @param string $variante Voir schiesser_logo_svg().
+ * @param float  $x        Centre, dans les unités du dessin.
+ * @param float  $y        Centre, dans les unités du dessin.
+ * @param float  $largeur  Largeur du logo, dans les unités du dessin.
+ */
+function schiesser_logo_svg_dans( $variante, $x, $y, $largeur ) {
+	$svg = schiesser_logo_svg( $variante );
+	if ( ! preg_match( '/viewBox="0 0 (\d+) (\d+)"/', $svg, $m ) ) {
+		return '';
+	}
+	$hauteur = round( $largeur * $m[2] / $m[1], 2 );
+	return preg_replace( '/^<svg /', '<svg x="' . round( $x - $largeur / 2, 2 ) . '" y="' . round( $y - $hauteur / 2, 2 ) . '" width="' . $largeur . '" height="' . $hauteur . '" ', $svg, 1 );
+}
+
+/**
+ * Logo de la maison (en-tête : droit ; pied de page : incliné).
+ */
+function schiesser_logo( $variante = 'droit', $titre = '' ) {
+	echo schiesser_logo_svg( $variante, $titre ); // phpcs:ignore WordPress.Security.EscapeOutput
 }
 
 /**

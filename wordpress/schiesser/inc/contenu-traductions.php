@@ -40,26 +40,26 @@ function schiesser_tr_pages() {
 		),
 		'tea-room'        => array(
 			'fr' => array( 'Salon de thé', 'salon-de-the', array(
-				'titre'       => 'Salon de thé à Bâle | Le plus ancien café de Suisse',
-				'description' => 'Salon de thé à Bâle, dans le plus ancien café de Suisse : café, thé, chocolat chaud maison, petit-déjeuner et coupes glacées, à l’étage sur le Marktplatz.',
-				'mots_cles'   => array( 'salon de thé Bâle', 'café Bâle', 'petit-déjeuner Bâle Marktplatz', 'plus ancien café de Suisse', 'tea room Bâle' ),
+				'titre'       => 'Tea Room à Bâle | Salon de thé sur le Marktplatz – Schiesser',
+				'description' => 'Tea Room à Bâle, dans l’un des plus anciens cafés de Suisse : café, thé, chocolat chaud maison, petit-déjeuner et coupes glacées, à l’étage du Marktplatz.',
+				'mots_cles'   => array( 'Tea Room Bâle', 'salon de thé Bâle', 'petit-déjeuner Bâle Marktplatz', 'café historique Bâle', 'café Bâle' ),
 			) ),
 			'en' => array( 'Tea Room', 'tearoom', array(
-				'titre'       => 'Tea Room in Basel | Switzerland’s Oldest Coffee House',
-				'description' => 'Tea Room in Basel in Switzerland’s oldest coffee house: coffee, tea, homemade hot chocolate, breakfast and sundaes, on the first floor above the Marktplatz.',
-				'mots_cles'   => array( 'tea room Basel', 'coffee house Basel', 'breakfast Basel Marktplatz', 'oldest coffee house in Switzerland', 'café Marktplatz Basel' ),
+				'titre'       => 'Tea Room in Basel | Historic Coffee House on the Marktplatz',
+				'description' => 'Tea Room in Basel, in one of Switzerland’s oldest coffee houses: coffee, tea, homemade hot chocolate, breakfast and sundaes on the first floor.',
+				'mots_cles'   => array( 'tea room Basel', 'coffee house Basel', 'breakfast Basel Marktplatz', 'historic coffee house Basel', 'café Marktplatz Basel' ),
 			) ),
 		),
 		'geschichte'      => array(
 			'fr' => array( 'Notre histoire', 'notre-histoire', array(
 				'titre'       => 'Histoire de la Confiserie Schiesser | Bâle depuis 1870',
-				'description' => 'L’histoire de la Confiserie Schiesser à Bâle : fondée en 1870 sur le Marktplatz par un confiseur glaronais, avec le plus ancien café de Suisse et ses archives.',
-				'mots_cles'   => array( 'histoire Confiserie Schiesser', 'confiserie Bâle 1870', 'plus ancien café de Suisse', 'histoire Marktplatz Bâle', 'Rudolf Schiesser' ),
+				'description' => 'L’histoire de la Confiserie Schiesser à Bâle : ses origines en 1870, la maison du Marktplatz, le Tea Room et le Rathstübli, en photos d’archives.',
+				'mots_cles'   => array( 'histoire Confiserie Schiesser', 'confiserie Bâle 1870', 'café historique Bâle', 'histoire Marktplatz Bâle', 'Rudolf Schiesser' ),
 			) ),
 			'en' => array( 'Our history', 'history', array(
 				'titre'       => 'History of Confiserie Schiesser | Basel since 1870',
-				'description' => 'The story of Confiserie Schiesser in Basel: founded on the Marktplatz in 1870 by a confectioner from Glarus, home to Switzerland’s oldest coffee house.',
-				'mots_cles'   => array( 'Confiserie Schiesser history', 'Basel confectionery 1870', 'oldest coffee house in Switzerland', 'Marktplatz Basel history', 'Rudolf Schiesser' ),
+				'description' => 'The story of Confiserie Schiesser in Basel: its roots in 1870, the house on the Marktplatz, the Tea Room and the Rathstübli, in photos from the archives.',
+				'mots_cles'   => array( 'Confiserie Schiesser history', 'Basel confectionery 1870', 'historic coffee house Basel', 'Marktplatz Basel history', 'Rudolf Schiesser' ),
 			) ),
 		),
 		'besuch'          => array(
