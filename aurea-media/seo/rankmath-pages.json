@@ -1,0 +1,398 @@
+[
+ {
+  "slug": "",
+  "type": "accueil",
+  "focus_keyword": "agence web sur mesure,création site internet,agence création site web,site vitrine sur mesure",
+  "title": "Agence web sur mesure : création de site internet | Aurea",
+  "description": "Agence web sur mesure : sites vitrines et e-commerce premium qui convertissent. En ligne en 4 semaines, dès 1 000 € HT. Devis gratuit sous 24h.",
+  "h1": "Des sites sur mesure qui vous apportent des clients.",
+  "schema": "ProfessionalService + WebSite",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "creation-site-ecommerce",
+   "realisations",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "creation-site-vitrine",
+  "type": "service",
+  "focus_keyword": "création site vitrine,site vitrine sur mesure,site vitrine professionnel,site vitrine WordPress",
+  "title": "Création site vitrine sur mesure | Dès 1 000 € HT, Aurea",
+  "description": "Création de site vitrine sur mesure pour indépendants, TPE et PME : design premium, SEO intégré, en ligne en 4 semaines. Devis gratuit sous 24h.",
+  "h1": "Création de site vitrine sur mesure, pensé pour convertir.",
+  "schema": "Service + Offer + BreadcrumbList",
+  "liens_internes": [
+   "tarifs",
+   "realisations",
+   "site-internet-avocat",
+   "site-internet-artisan-btp"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "creation-site-ecommerce",
+  "type": "service",
+  "focus_keyword": "création site e-commerce,boutique en ligne sur mesure,site WooCommerce,créer une boutique en ligne",
+  "title": "Création site e-commerce sur mesure | WooCommerce, Aurea",
+  "description": "Création de site e-commerce sur mesure sous WooCommerce : boutique rapide, paiement sécurisé, aucune commission sur vos ventes. Dès 1 650 € HT.",
+  "h1": "Création de site e-commerce sur mesure, sans commission.",
+  "schema": "Service + Offer + BreadcrumbList",
+  "liens_internes": [
+   "tarifs",
+   "realisations",
+   "conseils/shopify-vs-woocommerce"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "refonte-site-internet",
+  "type": "service",
+  "focus_keyword": "refonte site internet,refonte site web,moderniser son site,refonte site WordPress",
+  "title": "Refonte site internet sans perdre son SEO | Aurea Media",
+  "description": "Refonte de site internet : nouveau design, site plus rapide et redirections maîtrisées pour garder vos positions Google. Audit offert avant devis.",
+  "h1": "Refonte de site internet, sans perdre votre référencement.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "realisations",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "logo-identite-visuelle",
+  "type": "service",
+  "focus_keyword": "création identité visuelle,création logo entreprise,charte graphique,refonte logo",
+  "title": "Création identité visuelle et logo d'entreprise | Aurea",
+  "description": "Création d'identité visuelle : logo, charte graphique, typographies et couleurs déclinés sur tous vos supports. Fichiers sources livrés, devis 24h.",
+  "h1": "Création d'identité visuelle et de logo d'entreprise.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "conseils/logo-charte-graphique-identite-visuelle",
+   "motion-design",
+   "creation-site-vitrine"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "motion-design",
+  "type": "service",
+  "focus_keyword": "motion design entreprise,vidéo motion design,animation logo,vidéo explicative",
+  "title": "Motion design pour entreprise : vidéos animées | Aurea",
+  "description": "Motion design pour entreprise : vidéos explicatives, animation de logo et contenus pour vos réseaux sociaux et votre site. Devis gratuit sous 24h.",
+  "h1": "Motion design pour entreprise : des vidéos qui retiennent l'attention.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "logo-identite-visuelle",
+   "maquettes-presentation",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "maquettes-presentation",
+  "type": "service",
+  "focus_keyword": "création maquette présentation,pitch deck,présentation commerciale,présentation PowerPoint",
+  "title": "Création de présentation et pitch deck sur mesure | Aurea",
+  "description": "Création de maquettes de présentation : pitch decks, propositions commerciales et supports de vente sur mesure. Fichiers modifiables livrés.",
+  "h1": "Création de présentations et de pitch decks sur mesure.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "logo-identite-visuelle",
+   "motion-design",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "site-internet-avocat",
+  "type": "secteur",
+  "focus_keyword": "site internet avocat,création site cabinet avocat,site vitrine avocat",
+  "title": "Site internet avocat : création pour cabinet | Aurea",
+  "description": "Création de site internet pour avocat : pages domaines d'intervention, prise de rendez vous en ligne et respect des règles de la profession.",
+  "h1": "Création de site internet pour avocat et cabinet.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "tarifs",
+   "realisations"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "site-internet-professions-sante",
+  "type": "secteur",
+  "focus_keyword": "site internet professionnel de santé,site vitrine médecin,site kinésithérapeute,site internet cabinet médical",
+  "title": "Site internet professionnel de santé : médecin, kiné | Aurea",
+  "description": "Création de site internet pour professionnels de santé : médecins, kinés, praticiens. Prise de rendez vous, infos pratiques, conformité déontologique.",
+  "h1": "Site internet pour professionnels de santé.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "realisations",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "site-internet-architecte",
+  "type": "secteur",
+  "focus_keyword": "site internet architecte,site portfolio architecte,site vitrine architecte d'intérieur",
+  "title": "Site internet architecte : portfolio sur mesure | Aurea",
+  "description": "Création de site internet pour architecte : portfolio de projets mis en scène, pages services et demandes de contact qualifiées. Devis gratuit 24h.",
+  "h1": "Création de site internet pour architecte.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "realisations",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "site-internet-restaurant",
+  "type": "secteur",
+  "focus_keyword": "site internet restaurant,site vitrine restaurant,site restaurant avec réservation",
+  "title": "Création site internet restaurant avec réservation | Aurea",
+  "description": "Création de site internet pour restaurant : carte toujours à jour, réservation en ligne, avis Google et photos qui donnent faim. Devis sous 24h.",
+  "h1": "Création de site internet pour restaurant.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "realisations",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "site-internet-artisan-btp",
+  "type": "secteur",
+  "focus_keyword": "site internet artisan,site internet BTP,site vitrine artisan du bâtiment",
+  "title": "Site internet artisan et BTP : plus de devis | Aurea",
+  "description": "Création de site internet pour artisans et entreprises du BTP : chantiers en photos, zone d'intervention et demandes de devis qualifiées.",
+  "h1": "Création de site internet pour artisans et entreprises du BTP.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "realisations",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "site-internet-coach-consultant",
+  "type": "secteur",
+  "focus_keyword": "site internet coach,site vitrine consultant,site internet coach professionnel",
+  "title": "Création site internet coach et consultant | Aurea Media",
+  "description": "Création de site internet pour coach et consultant : votre expertise mise en valeur, prise de rendez vous et pages qui convertissent les visiteurs.",
+  "h1": "Création de site internet pour coach et consultant.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "realisations",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "agence-web-paris",
+  "type": "local",
+  "focus_keyword": "agence web Paris,création site internet Paris,site vitrine Paris",
+  "title": "Agence web Paris : création de site internet sur mesure",
+  "description": "Agence web à Paris : création de sites vitrines et e-commerce sur mesure, rendez vous sur place ou en visio. Devis gratuit et détaillé sous 24h.",
+  "h1": "Agence web à Paris, un studio indépendant.",
+  "schema": "ProfessionalService + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "agence-web-hauts-de-seine",
+   "realisations"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "agence-web-hauts-de-seine",
+  "type": "local",
+  "focus_keyword": "agence web Hauts de Seine,création site internet 92,agence web 92",
+  "title": "Agence web Hauts de Seine (92) : création de site | Aurea",
+  "description": "Agence web dans les Hauts de Seine : création de sites internet sur mesure pour les entreprises du 92, de Boulogne à Clamart. Devis sous 24h.",
+  "h1": "Agence web dans les Hauts de Seine (92).",
+  "schema": "ProfessionalService + BreadcrumbList",
+  "liens_internes": [
+   "agence-web-boulogne-billancourt",
+   "agence-web-clamart",
+   "agence-web-paris"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "agence-web-boulogne-billancourt",
+  "type": "local",
+  "focus_keyword": "agence web Boulogne-Billancourt,création site internet Boulogne,site e-commerce Boulogne",
+  "title": "Agence web Boulogne-Billancourt : création de site | Aurea",
+  "description": "Agence web à Boulogne-Billancourt : sites vitrines et e-commerce sur mesure pour commerces, entreprises et collectivités. Devis gratuit sous 24h.",
+  "h1": "Agence web à Boulogne-Billancourt.",
+  "schema": "ProfessionalService + BreadcrumbList",
+  "liens_internes": [
+   "agence-web-hauts-de-seine",
+   "creation-site-vitrine",
+   "realisations"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "agence-web-clamart",
+  "type": "local",
+  "focus_keyword": "agence web Clamart,création site internet Clamart,référencement Clamart",
+  "title": "Agence web Clamart : création de site internet | Aurea Media",
+  "description": "Agence web à Clamart : création de sites internet sur mesure et référencement local pour les entreprises clamartoises. Devis gratuit sous 24h.",
+  "h1": "Agence web à Clamart.",
+  "schema": "ProfessionalService + BreadcrumbList",
+  "liens_internes": [
+   "agence-web-hauts-de-seine",
+   "creation-site-vitrine",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "realisations",
+  "type": "archive",
+  "focus_keyword": "réalisations agence web,exemples de sites internet,portfolio agence web",
+  "title": "Réalisations : sites vitrines et e-commerce | Aurea Media",
+  "description": "Découvrez nos réalisations : sites vitrines, boutiques en ligne et identités créés pour des entreprises en France et en Europe. 45+ projets livrés.",
+  "h1": "Nos réalisations",
+  "schema": "CollectionPage + ItemList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "creation-site-ecommerce",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "tarifs",
+  "type": "page",
+  "focus_keyword": "prix site vitrine,tarif création site internet,prix site e-commerce,combien coûte un site internet",
+  "title": "Prix d'un site vitrine et e-commerce en 2026 | Aurea Media",
+  "description": "Prix d'un site vitrine dès 1 000 € HT, site e-commerce dès 1 650 € HT : ce qui est inclus, les options et le détail ligne par ligne. Devis 24h.",
+  "h1": "Tarifs : combien coûte votre site internet ?",
+  "schema": "WebPage + Offer + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "creation-site-ecommerce",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "agence",
+  "type": "page",
+  "focus_keyword": "agence web indépendante,Alexandre Coury,studio web Paris",
+  "title": "Aurea Media, agence web indépendante fondée par A. Coury",
+  "description": "Aurea Media est une agence web indépendante fondée en 2021 par Alexandre Coury, développeur et designer. Méthode, valeurs et engagements.",
+  "h1": "Un studio indépendant, une exigence de grande agence.",
+  "schema": "AboutPage + Person",
+  "liens_internes": [
+   "realisations",
+   "contact",
+   "creation-site-vitrine"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "contact",
+  "type": "page",
+  "focus_keyword": "contact agence web,devis site internet,demande de devis site web",
+  "title": "Contact et devis gratuit sous 24h | Aurea Media",
+  "description": "Parlez nous de votre projet de site internet : réponse personnelle et devis détaillé sous 24h ouvrées, sans engagement. Téléphone ou formulaire.",
+  "h1": "Parlons de votre projet.",
+  "schema": "ContactPage",
+  "liens_internes": [
+   "tarifs",
+   "realisations"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
+  "slug": "conseils",
+  "type": "blog",
+  "focus_keyword": "conseils site internet,blog création site web,conseils SEO TPE",
+  "title": "Conseils pour réussir son site internet | Blog Aurea Media",
+  "description": "Prix, référencement, refonte, choix des outils : nos conseils concrets pour réussir votre site internet, écrits par un développeur web.",
+  "h1": "Des conseils pour un site qui vous rapporte vraiment.",
+  "schema": "Blog + BreadcrumbList",
+  "liens_internes": [
+   "creation-site-vitrine",
+   "tarifs"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ }
+]

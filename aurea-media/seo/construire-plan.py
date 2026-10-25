@@ -1,0 +1,122 @@
+"""Plan Rank Math page par page : génère rankmath-pages.json (lu par le thème à l'import) et PLAN-RANKMATH.md."""
+import json
+
+M = "Aurea Media"
+pages = [
+ # slug, type, focus, secondaires, title, meta, h1, schema, liens
+ ("", "accueil", "agence web sur mesure", ["création site internet", "agence création site web", "site vitrine sur mesure"],
+  "Agence web sur mesure : création de site internet | Aurea",
+  "Agence web sur mesure : sites vitrines et e-commerce premium qui convertissent. En ligne en 4 semaines, dès 1 000 € HT. Devis gratuit sous 24h.",
+  "Des sites sur mesure qui vous apportent des clients.", "ProfessionalService + WebSite", ["creation-site-vitrine", "creation-site-ecommerce", "realisations", "tarifs"]),
+ ("creation-site-vitrine", "service", "création site vitrine", ["site vitrine sur mesure", "site vitrine professionnel", "site vitrine WordPress"],
+  "Création site vitrine sur mesure | Dès 1 000 € HT, Aurea",
+  "Création de site vitrine sur mesure pour indépendants, TPE et PME : design premium, SEO intégré, en ligne en 4 semaines. Devis gratuit sous 24h.",
+  "Création de site vitrine sur mesure, pensé pour convertir.", "Service + Offer + BreadcrumbList", ["tarifs", "realisations", "site-internet-avocat", "site-internet-artisan-btp"]),
+ ("creation-site-ecommerce", "service", "création site e-commerce", ["boutique en ligne sur mesure", "site WooCommerce", "créer une boutique en ligne"],
+  "Création site e-commerce sur mesure | WooCommerce, Aurea",
+  "Création de site e-commerce sur mesure sous WooCommerce : boutique rapide, paiement sécurisé, aucune commission sur vos ventes. Dès 1 650 € HT.",
+  "Création de site e-commerce sur mesure, sans commission.", "Service + Offer + BreadcrumbList", ["tarifs", "realisations", "conseils/shopify-vs-woocommerce"]),
+ ("refonte-site-internet", "service", "refonte site internet", ["refonte site web", "moderniser son site", "refonte site WordPress"],
+  "Refonte site internet sans perdre son SEO | Aurea Media",
+  "Refonte de site internet : nouveau design, site plus rapide et redirections maîtrisées pour garder vos positions Google. Audit offert avant devis.",
+  "Refonte de site internet, sans perdre votre référencement.", "Service + BreadcrumbList", ["creation-site-vitrine", "realisations", "contact"]),
+ ("logo-identite-visuelle", "service", "création identité visuelle", ["création logo entreprise", "charte graphique", "refonte logo"],
+  "Création identité visuelle et logo d'entreprise | Aurea",
+  "Création d'identité visuelle : logo, charte graphique, typographies et couleurs déclinés sur tous vos supports. Fichiers sources livrés, devis 24h.",
+  "Création d'identité visuelle et de logo d'entreprise.", "Service + BreadcrumbList", ["conseils/logo-charte-graphique-identite-visuelle", "motion-design", "creation-site-vitrine"]),
+ ("motion-design", "service", "motion design entreprise", ["vidéo motion design", "animation logo", "vidéo explicative"],
+  "Motion design pour entreprise : vidéos animées | Aurea",
+  "Motion design pour entreprise : vidéos explicatives, animation de logo et contenus pour vos réseaux sociaux et votre site. Devis gratuit sous 24h.",
+  "Motion design pour entreprise : des vidéos qui retiennent l'attention.", "Service + BreadcrumbList", ["logo-identite-visuelle", "maquettes-presentation", "contact"]),
+ ("maquettes-presentation", "service", "création maquette présentation", ["pitch deck", "présentation commerciale", "présentation PowerPoint"],
+  "Création de présentation et pitch deck sur mesure | Aurea",
+  "Création de maquettes de présentation : pitch decks, propositions commerciales et supports de vente sur mesure. Fichiers modifiables livrés.",
+  "Création de présentations et de pitch decks sur mesure.", "Service + BreadcrumbList", ["logo-identite-visuelle", "motion-design", "contact"]),
+ ("site-internet-avocat", "secteur", "site internet avocat", ["création site cabinet avocat", "site vitrine avocat"],
+  "Site internet avocat : création pour cabinet | Aurea",
+  "Création de site internet pour avocat : pages domaines d'intervention, prise de rendez vous en ligne et respect des règles de la profession.",
+  "Création de site internet pour avocat et cabinet.", "Service + BreadcrumbList", ["creation-site-vitrine", "tarifs", "realisations"]),
+ ("site-internet-professions-sante", "secteur", "site internet professionnel de santé", ["site vitrine médecin", "site kinésithérapeute", "site internet cabinet médical"],
+  "Site internet professionnel de santé : médecin, kiné | Aurea",
+  "Création de site internet pour professionnels de santé : médecins, kinés, praticiens. Prise de rendez vous, infos pratiques, conformité déontologique.",
+  "Site internet pour professionnels de santé.", "Service + BreadcrumbList", ["creation-site-vitrine", "realisations", "tarifs"]),
+ ("site-internet-architecte", "secteur", "site internet architecte", ["site portfolio architecte", "site vitrine architecte d'intérieur"],
+  "Site internet architecte : portfolio sur mesure | Aurea",
+  "Création de site internet pour architecte : portfolio de projets mis en scène, pages services et demandes de contact qualifiées. Devis gratuit 24h.",
+  "Création de site internet pour architecte.", "Service + BreadcrumbList", ["creation-site-vitrine", "realisations", "tarifs"]),
+ ("site-internet-restaurant", "secteur", "site internet restaurant", ["site vitrine restaurant", "site restaurant avec réservation"],
+  "Création site internet restaurant avec réservation | Aurea",
+  "Création de site internet pour restaurant : carte toujours à jour, réservation en ligne, avis Google et photos qui donnent faim. Devis sous 24h.",
+  "Création de site internet pour restaurant.", "Service + BreadcrumbList", ["creation-site-vitrine", "realisations", "tarifs"]),
+ ("site-internet-artisan-btp", "secteur", "site internet artisan", ["site internet BTP", "site vitrine artisan du bâtiment"],
+  "Site internet artisan et BTP : plus de devis | Aurea",
+  "Création de site internet pour artisans et entreprises du BTP : chantiers en photos, zone d'intervention et demandes de devis qualifiées.",
+  "Création de site internet pour artisans et entreprises du BTP.", "Service + BreadcrumbList", ["creation-site-vitrine", "realisations", "tarifs"]),
+ ("site-internet-coach-consultant", "secteur", "site internet coach", ["site vitrine consultant", "site internet coach professionnel"],
+  "Création site internet coach et consultant | Aurea Media",
+  "Création de site internet pour coach et consultant : votre expertise mise en valeur, prise de rendez vous et pages qui convertissent les visiteurs.",
+  "Création de site internet pour coach et consultant.", "Service + BreadcrumbList", ["creation-site-vitrine", "realisations", "tarifs"]),
+ ("agence-web-paris", "local", "agence web Paris", ["création site internet Paris", "site vitrine Paris"],
+  "Agence web Paris : création de site internet sur mesure",
+  "Agence web à Paris : création de sites vitrines et e-commerce sur mesure, rendez vous sur place ou en visio. Devis gratuit et détaillé sous 24h.",
+  "Agence web à Paris, un studio indépendant.", "ProfessionalService + BreadcrumbList", ["creation-site-vitrine", "agence-web-hauts-de-seine", "realisations"]),
+ ("agence-web-hauts-de-seine", "local", "agence web Hauts de Seine", ["création site internet 92", "agence web 92"],
+  "Agence web Hauts de Seine (92) : création de site | Aurea",
+  "Agence web dans les Hauts de Seine : création de sites internet sur mesure pour les entreprises du 92, de Boulogne à Clamart. Devis sous 24h.",
+  "Agence web dans les Hauts de Seine (92).", "ProfessionalService + BreadcrumbList", ["agence-web-boulogne-billancourt", "agence-web-clamart", "agence-web-paris"]),
+ ("agence-web-boulogne-billancourt", "local", "agence web Boulogne-Billancourt", ["création site internet Boulogne", "site e-commerce Boulogne"],
+  "Agence web Boulogne-Billancourt : création de site | Aurea",
+  "Agence web à Boulogne-Billancourt : sites vitrines et e-commerce sur mesure pour commerces, entreprises et collectivités. Devis gratuit sous 24h.",
+  "Agence web à Boulogne-Billancourt.", "ProfessionalService + BreadcrumbList", ["agence-web-hauts-de-seine", "creation-site-vitrine", "realisations"]),
+ ("agence-web-clamart", "local", "agence web Clamart", ["création site internet Clamart", "référencement Clamart"],
+  "Agence web Clamart : création de site internet | Aurea Media",
+  "Agence web à Clamart : création de sites internet sur mesure et référencement local pour les entreprises clamartoises. Devis gratuit sous 24h.",
+  "Agence web à Clamart.", "ProfessionalService + BreadcrumbList", ["agence-web-hauts-de-seine", "creation-site-vitrine", "contact"]),
+ ("realisations", "archive", "réalisations agence web", ["exemples de sites internet", "portfolio agence web"],
+  "Réalisations : sites vitrines et e-commerce | Aurea Media",
+  "Découvrez nos réalisations : sites vitrines, boutiques en ligne et identités créés pour des entreprises en France et en Europe. 45+ projets livrés.",
+  "Nos réalisations", "CollectionPage + ItemList", ["creation-site-vitrine", "creation-site-ecommerce", "contact"]),
+ ("tarifs", "page", "prix site vitrine", ["tarif création site internet", "prix site e-commerce", "combien coûte un site internet"],
+  "Prix d'un site vitrine et e-commerce en 2026 | Aurea Media",
+  "Prix d'un site vitrine dès 1 000 € HT, site e-commerce dès 1 650 € HT : ce qui est inclus, les options et le détail ligne par ligne. Devis 24h.",
+  "Tarifs : combien coûte votre site internet ?", "WebPage + Offer + BreadcrumbList", ["creation-site-vitrine", "creation-site-ecommerce", "contact"]),
+ ("agence", "page", "agence web indépendante", ["Alexandre Coury", "studio web Paris"],
+  "Aurea Media, agence web indépendante fondée par A. Coury",
+  "Aurea Media est une agence web indépendante fondée en 2021 par Alexandre Coury, développeur et designer. Méthode, valeurs et engagements.",
+  "Un studio indépendant, une exigence de grande agence.", "AboutPage + Person", ["realisations", "contact", "creation-site-vitrine"]),
+ ("contact", "page", "contact agence web", ["devis site internet", "demande de devis site web"],
+  "Contact et devis gratuit sous 24h | Aurea Media",
+  "Parlez nous de votre projet de site internet : réponse personnelle et devis détaillé sous 24h ouvrées, sans engagement. Téléphone ou formulaire.",
+  "Parlons de votre projet.", "ContactPage", ["tarifs", "realisations"]),
+ ("conseils", "blog", "conseils site internet", ["blog création site web", "conseils SEO TPE"],
+  "Conseils pour réussir son site internet | Blog Aurea Media",
+  "Prix, référencement, refonte, choix des outils : nos conseils concrets pour réussir votre site internet, écrits par un développeur web.",
+  "Des conseils pour un site qui vous rapporte vraiment.", "Blog + BreadcrumbList", ["creation-site-vitrine", "tarifs"]),
+]
+
+out, lignes = [], []
+for slug, typ, focus, sec, title, meta, h1, schema, liens in pages:
+    tl, ml = len(title), len(meta)
+    ok_t = 45 <= tl <= 60 and focus.lower().split()[0] in title.lower()
+    ok_m = 135 <= ml <= 160
+    out.append({"slug": slug, "type": typ, "focus_keyword": ",".join([focus] + sec), "title": title, "description": meta,
+                "h1": h1, "schema": schema, "liens_internes": liens, "robots": ["index", "follow"]})
+    lignes.append(f"| /{slug + '/' if slug else ''} | {focus} | {title.replace("|", "\\|")} ({tl}) | {ml} car. | {schema} |")
+    if not (ok_t and ok_m):
+        print("À REVOIR", slug, tl, ml)
+
+json.dump(out, open("rankmath-pages.json", "w"), ensure_ascii=False, indent=1)
+md = ["# Plan Rank Math page par page", "",
+      "Généré par `construire-plan.py`. Le thème applique ces réglages à l'import (champs Rank Math `rank_math_title`, `rank_math_description`, `rank_math_focus_keyword`, `rank_math_robots`). Toutes les pages sont en index, follow, avec un seul H1 contenant le mot clé principal.", "",
+      "| URL | Mot clé principal | SEO Title (caractères) | Meta | Schema |", "|---|---|---|---|---|"] + lignes
+md += ["", "## Règles appliquées sur chaque page", "",
+       "* Mot clé principal au début du title, dans l'URL, le H1, les 100 premiers mots, au moins un H2 et le texte alternatif de l'image principale.",
+       "* Title entre 45 et 60 caractères, meta description entre 135 et 160 caractères, avec un appel à l'action.",
+       "* Contenu de 700 à 1 500 mots sur les pages services, secteurs et locales, écrit pour l'intention de recherche (pas de remplissage).",
+       "* 3 à 5 liens internes contextuels (colonne `liens_internes` du JSON) et 1 ou 2 liens externes de référence quand ils apportent de la valeur.",
+       "* Images en WebP avec dimensions fixes, nom de fichier descriptif et ALT qui décrit l'image.",
+       "* Schema adapté au contenu ; pas de HowTo ; pas d'AggregateRating auto déclaré ; FAQ affichée en contenu, sans balisage FAQPage.",
+       "* Fil d'Ariane Rank Math activé, sitemap Rank Math actif, pages /tag/ et archives d'auteur en noindex.",
+       "* Fiches réalisations : title « Site [Client] : étude de cas [type] | Aurea Media », mot clé « site [type] [secteur] », schema CreativeWork."]
+open("PLAN-RANKMATH.md", "w").write("\n".join(md) + "\n")
+print(len(out), "pages")
