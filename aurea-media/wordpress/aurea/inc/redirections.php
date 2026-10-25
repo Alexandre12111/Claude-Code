@@ -310,12 +310,50 @@ add_action( 'template_redirect', function () {
  * brouillon, réglage d'une extension) porte le même nom et fait croire à WordPress qu'elle n'existe pas.
  */
 add_filter( 'request', function ( $requete ) {
-	if ( is_admin() || empty( $requete['pagename'] ) || isset( $requete['page_id'] ) ) {
+	if ( is_admin() || isset( $requete['page_id'] ) || ! function_exists( 'aurea_chemin' ) ) {
 		return $requete;
 	}
-	$page = get_page_by_path( $requete['pagename'], OBJECT, 'page' );
+	// D'après l'adresse demandée elle même : une ancienne règle de réécriture peut avoir capté la page
+	$chemin = aurea_chemin( (string) ( $_SERVER['REQUEST_URI'] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	if ( '' === $chemin || 0 === strpos( $chemin, 'wp-' ) || preg_match( '/\.[a-z0-9]{2,4}$/i', $chemin ) ) {
+		return $requete;
+	}
+	$page = get_page_by_path( $chemin, OBJECT, 'page' );
 	if ( $page && 'publish' === $page->post_status ) {
-		$requete = array( 'page_id' => $page->ID ) + array_diff_key( $requete, array( 'pagename' => 1, 'name' => 1, 'attachment' => 1 ) );
+		$requete = array( 'page_id' => $page->ID ) + array_intersect_key( $requete, array( 'preview' => 1, 'page' => 1, 'paged' => 1 ) );
 	}
 	return $requete;
 } );
+
+/*
+ * Ancienne redirection (Rank Math ou autre) qui renvoie vers l'accueil : on l'oriente au moment même
+ * vers la page du sujet (plan de redirection, puis mots de l'adresse). Rien ne dépend de la base.
+ */
+add_filter( 'wp_redirect', function ( $vers, $code ) {
+	if ( is_admin() || ! function_exists( 'aurea_chemin' ) || ( $code && $code >= 400 ) ) {
+		return $vers;
+	}
+	$accueil = untrailingslashit( set_url_scheme( home_url( '/' ), 'https' ) );
+	$cible   = untrailingslashit( set_url_scheme( strtok( (string) $vers, '?' ), 'https' ) );
+	if ( $cible !== $accueil ) {
+		return $vers;
+	}
+	$chemin = aurea_chemin( (string) ( $_SERVER['REQUEST_URI'] ?? '' ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+	if ( '' === $chemin ) {
+		return $vers;
+	}
+	$plan = apply_filters( 'aurea_plan_redirections', aurea_redirections() );
+	$cle  = $plan[ $chemin ] ?? ( function_exists( 'aurea_cible_pour' ) ? aurea_cible_pour( str_replace( '/', ' ', $chemin ), '' ) : '' );
+	if ( $cle && 'accueil' !== $cle && aurea_chemin( aurea_url( $cle ) ) !== $chemin ) {
+		return aurea_url( $cle );
+	}
+	return $vers;
+}, 20, 2 );
+
+/* Une fois par version : règles de réécriture régénérées (efface celles laissées par d'anciennes extensions). */
+add_action( 'init', function () {
+	if ( get_option( 'aurea_regles_version' ) !== AUREA_VERSION ) {
+		update_option( 'aurea_regles_version', AUREA_VERSION );
+		flush_rewrite_rules( false );
+	}
+}, 99 );
