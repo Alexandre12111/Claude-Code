@@ -217,7 +217,7 @@ function aurea_installer_pages( $remplacer = false ) {
 	}
 
 	kses_init_filters();
-	return sprintf( 'Pages créées : %d. Anciennes pages remplacées : %d. Pages déjà importées gardées telles quelles : %d. ', $crees, $maj, $gardees ) . aurea_installer_etudes();
+	return sprintf( 'Pages créées : %d. Anciennes pages remplacées : %d. Pages déjà importées gardées telles quelles : %d. ', $crees, $maj, $gardees ) . aurea_installer_etudes() . ' ' . aurea_installer_articles();
 }
 
 /** Étape 4 : réglages WordPress. */
@@ -449,7 +449,7 @@ function aurea_ecran_installation() {
 			if (!form || !window.fetch) return; // sans JavaScript : envoi classique du formulaire
 			var suivi = document.getElementById('aurea-tout-suivi');
 			var nonce = form.querySelector('[name=_wpnonce]').value;
-			var etapes = [['studio', 'Réalisations et logos (par lots)'], ['pages', 'Pages, article et études de cas'], ['reglages', 'Réglages WordPress'], ['rank_math', 'Rank Math SEO'], ['redirections', 'Redirections 301']];
+			var etapes = [['studio', 'Réalisations et logos (par lots)'], ['pages', 'Pages, articles et études de cas'], ['reglages', 'Réglages WordPress'], ['rank_math', 'Rank Math SEO'], ['redirections', 'Redirections 301']];
 			function appel(etape) {
 				var d = new FormData(); d.append('action', 'aurea_installer_etape'); d.append('etape', etape); d.append('_ajax_nonce', nonce);
 				return fetch(ajaxurl, { method: 'POST', body: d, credentials: 'same-origin' }).then(function (r) {

@@ -61,7 +61,9 @@ function aurea_redirections() {
 		'site-internet-coach-therapeute'                       => 'site-internet-coach-consultant',
 		'prix-site-vitrine-paris'                              => 'tarifs',
 		'creation-site-vitrine-tpe-paris'                      => 'tarifs',
-		'prix-site-vitrine-2025'                               => 'tarifs',
+		'prix-site-vitrine-2025'                               => 'article:prix-site-vitrine',
+		'shopify-vs-woocommerce'                               => 'article:woocommerce-ou-shopify',
+		'structure-homepage-site-web'                          => 'article:pages-indispensables-site-vitrine',
 		'realisations-agence-web'                              => 'realisations',
 		'contact-agence'                                       => 'contact',
 		'contact-agence-web'                                   => 'contact',
@@ -221,7 +223,20 @@ function aurea_reparer_redirections() {
 			unset( $lignes[ $i ] );
 			continue;
 		}
-		// 3. Vers l'accueil : réorientée vers la page la plus proche
+		// 3. Adresse prévue au plan (ex. ancien article → nouvel article du même sujet) : le plan fait foi
+		$prevue = '';
+		foreach ( $motifs as $m ) {
+			if ( isset( $plan[ $m ] ) && 'accueil' !== $plan[ $m ] ) {
+				$prevue = aurea_url( $plan[ $m ] );
+			}
+		}
+		if ( $prevue && untrailingslashit( $prevue ) !== untrailingslashit( (string) $r['url_to'] ) ) {
+			$maj( $r['id'], array( 'url_to' => $prevue ) );
+			$lignes[ $i ]['url_to'] = $prevue;
+			$compte['reorientees']++;
+			continue;
+		}
+		// 4. Vers l'accueil : réorientée vers la page la plus proche
 		$vers = untrailingslashit( set_url_scheme( (string) $r['url_to'], 'https' ) );
 		if ( in_array( $vers, array( $accueil, '', '/' ), true ) || untrailingslashit( (string) $r['url_to'] ) === '' ) {
 			$cle = '';
@@ -240,7 +255,7 @@ function aurea_reparer_redirections() {
 			}
 		}
 	}
-	// 4. Chaînes : la destination est elle même redirigée → on vise directement la fin
+	// 5. Chaînes : la destination est elle même redirigée → on vise directement la fin
 	foreach ( $lignes as $i => $r ) {
 		$vers  = $r['url_to'];
 		$tours = 0;
@@ -265,7 +280,7 @@ function aurea_reparer_redirections() {
 		return $n > 1 ? 's' : '';
 	};
 	return sprintf(
-		'Redirections réparées : %s%d redirection%s masquant une vraie page désactivée%s, %d redirection%s vers l’accueil réorientée%s, %d chaîne%s raccourcie%s.',
+		'Redirections réparées : %s%d redirection%s masquant une vraie page désactivée%s, %d redirection%s réorientée%s vers la bonne page, %d chaîne%s raccourcie%s.',
 		$fallback ? 'pages introuvables plus redirigées vers l’accueil, ' : '',
 		$compte['liberees'], $s( $compte['liberees'] ), $s( $compte['liberees'] ),
 		$compte['reorientees'], $s( $compte['reorientees'] ), $s( $compte['reorientees'] ),
