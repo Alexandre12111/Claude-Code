@@ -1,12 +1,13 @@
 # Mise en place du nouveau site aurea-media.fr
 
 Ce guide vous emmène de votre site actuel au nouveau site, sans perdre votre référencement.
-Comptez environ une heure, dont vingt minutes de vérifications.
+Comptez environ une heure, dont vingt minutes de vérifications. Le nouveau site repart sur une base propre : les anciens articles sont retirés, et chacune de leurs adresses est redirigée vers la bonne page.
 
-Deux fichiers à installer, tous deux dans ce dossier :
+Trois fichiers, tous dans ce dossier :
 
 | Fichier | Rôle |
 |---|---|
+| `aurea-installateur.zip` | Une petite extension (6 Ko) qui installe les deux fichiers suivants même si votre hébergeur limite la taille des envois (erreur « 413 Request Entity Too Large ») |
 | `aurea.zip` | Le thème Aurea Media : design de la maquette, pages, blog, réalisations, SEO, formulaire de devis |
 | `aurea-studio.zip` | L'extension Aurea Studio (menu à gauche) : réalisations, logos clients, avis Google |
 
@@ -20,19 +21,20 @@ Une extension gratuite à ajouter depuis WordPress : **Rank Math SEO**.
 2. Recommandé : faites la mise en place d'abord sur une **copie de préproduction** (la plupart des hébergeurs la proposent en un clic : « staging »). Une fois le résultat validé, vous pousserez la copie en production.
 3. Notez vos réglages Rank Math actuels si vous en avez (Rank Math → Tableau de bord → Exporter les réglages).
 
-## Étape 1 : installer les extensions (5 minutes)
+## Étape 1 : installer le thème et Aurea Studio (5 minutes)
 
-1. **Extensions → Ajouter → Téléverser une extension** : choisissez `aurea-studio.zip`, installez, activez.
-2. **Extensions → Ajouter** : recherchez « Rank Math SEO », installez, activez.
-   L'assistant de Rank Math s'ouvre : choisissez le mode **Avancé**, le type de site **Petite entreprise / Entreprise**, nom « Aurea Media », puis passez les étapes Google si vous préférez les faire plus tard. Le thème complète ensuite tous les réglages utiles.
-3. Si votre ancien site utilisait d'autres extensions de SEO (Yoast, All in One SEO…), désactivez les : une seule extension SEO à la fois.
+L'erreur « 413 Request Entity Too Large » vient du serveur de votre hébergeur (nginx) : il refuse les fichiers au delà d'une certaine taille, et le thème pèse 12 Mo à cause du film de marque en haute définition. L'extension Aurea Installateur contourne cette limite en envoyant le fichier par petits morceaux.
 
-## Étape 2 : installer le thème (2 minutes)
+1. **Extensions → Ajouter → Téléverser une extension** : choisissez `aurea-installateur.zip`, installez, activez.
+2. **Outils → Installer Aurea** : choisissez `aurea.zip` et `aurea-studio.zip` (ou déposez les deux fichiers dans le cadre). Les barres de progression avancent, puis WordPress installe chaque fichier.
+3. Cliquez sur **Activer** sous Aurea Studio, puis sous le thème Aurea Media.
+4. **Extensions → Ajouter** : recherchez « Rank Math SEO », installez, activez. Dans l'assistant de Rank Math, choisissez le mode **Avancé** et le type **Petite entreprise / Entreprise**, nom « Aurea Media ». Les étapes Google peuvent attendre : le thème complète ensuite tous les réglages utiles.
+5. Si votre ancien site utilisait une autre extension de SEO (Yoast, All in One SEO…), désactivez la : une seule extension SEO à la fois.
+6. Une fois tout installé, vous pouvez supprimer Aurea Installateur (gardez le zip pour les prochaines mises à jour du thème).
 
-1. **Apparence → Thèmes → Ajouter → Téléverser un thème** : choisissez `aurea.zip`, installez, activez.
-2. Si le téléversement est refusé (fichier de 12 Mo, à cause du film de marque) : demandez à votre hébergeur d'augmenter la taille maximale d'envoi, ou décompressez le zip et copiez le dossier `aurea` dans `wp-content/themes/` par FTP.
+Si l'installateur affiche une erreur d'identifiants FTP : ajoutez la ligne `define( 'FS_METHOD', 'direct' );` dans `wp-config.php`, ou demandez à votre hébergeur de le faire.
 
-## Étape 3 : installation en un clic (2 minutes)
+## Étape 2 : installation en un clic (2 minutes)
 
 **Apparence → Installation Aurea → bouton « Tout installer ».**
 
@@ -41,12 +43,25 @@ Ce bouton enchaîne six étapes, que vous pouvez aussi lancer une par une :
 1. **Extensions** : vérifie qu'Aurea Studio et Rank Math sont actifs.
 2. **Réalisations et logos** : importe les 23 réalisations et les 18 logos dans Aurea Studio.
 3. **Pages** : crée les 21 pages de la maquette, la page Conseils, l'article « Combien coûte un site vitrine en 2026 ? » et l'étude de cas Havel Trading. Chaque page reçoit son titre SEO, sa meta description et son mot clé principal dans Rank Math.
-   Une page qui existe déjà (par exemple votre page Contact actuelle) est **gardée telle quelle**. Pour la remplacer par la nouvelle version, cochez « Remplacer aussi les pages qui existent déjà » puis cliquez sur « Créer les pages » : l'ancienne version reste récupérable dans les révisions de la page.
+   Une ancienne page qui porte le même nom (par exemple votre page Contact actuelle) est **remplacée** par la nouvelle : son ancienne version reste récupérable dans les révisions de la page. Les pages créées par le thème ne sont plus jamais retouchées ensuite, pour garder vos modifications.
 4. **Réglages WordPress** : page d'accueil, page des articles « Conseils », adresses des articles en `/conseils/nom-de-l-article/`, rubriques en `/conseils/categorie/…`, fuseau horaire de Paris, commentaires fermés.
 5. **Rank Math** : organisation Aurea Media (logo, image de partage), séparateur « | », pas de schéma « Article » sur les pages, plan du site sans pages auteur ni images jointes, module Redirections activé.
 6. **Redirections 301** : 52 anciennes adresses redirigées vers les nouvelles pages (plan de l'audit), visibles et modifiables dans **Rank Math → Redirections**.
 
 Chaque étape peut être relancée sans risque : rien n'est supprimé.
+
+## Étape 3 : base propre (5 minutes)
+
+Toujours dans **Apparence → Installation Aurea**, section **Base propre** :
+
+1. Cliquez sur **Voir ce qui sera retiré**. Un tableau liste tous les anciens articles, les anciennes pages qui ne font pas partie du nouveau site, les rubriques et mots clés devenus vides, et pour chacun l'adresse vers laquelle il sera redirigé : un ancien article « site vitrine plombier » vers la page Artisans et BTP, « prix site vitrine 2025 » vers Tarifs, « Shopify ou WooCommerce » vers la page e-commerce, et ainsi de suite. Un contenu sans sujet reconnu mène au blog (article) ou à l'accueil (page).
+2. Si le tableau vous convient, cliquez sur **Mettre à la corbeille et rediriger**.
+
+Ce qui se passe :
+* les anciens articles et pages vont à la **corbeille**, où ils restent récupérables 30 jours ;
+* chaque ancienne adresse reçoit une **redirection 301** dans Rank Math (votre référencement est transmis aux nouvelles pages) ;
+* les anciennes redirections de Rank Math qui envoyaient vers l'accueil sont réorientées vers la page la plus proche ;
+* seuls restent l'article livré avec le thème (« Combien coûte un site vitrine en 2026 ? ») et les articles que vous écrirez ensuite, qui ne sont jamais touchés.
 
 ## Étape 4 : vos informations (10 minutes)
 
@@ -99,7 +114,8 @@ Chaque étape peut être relancée sans risque : rien n'est supprimé.
 
 ## Bon à savoir
 
-* **Mettre à jour le thème** : téléversez le nouveau zip (Apparence → Thèmes → Ajouter → Téléverser, puis « Remplacer »). Vos pages, articles, réalisations et réglages sont dans la base de données : ils ne bougent pas.
+* **Mettre à jour le thème** : Outils → Installer Aurea (réactivez l'installateur si vous l'aviez supprimé) puis choisissez le nouveau `aurea.zip` : la nouvelle version remplace l'ancienne. Vos pages, articles, réalisations et réglages sont dans la base de données : ils ne bougent pas.
 * **La maquette reste la référence du design.** Le script `wordpress/outils/exporter_theme.py` régénère le contenu du thème à partir de la maquette quand elle évolue.
+* **Corbeille** : après 30 jours, WordPress vide la corbeille tout seul. Les redirections, elles, restent en place.
 * **Pages locales** : l'audit prévoyait aussi Boulogne-Billancourt et Clamart. Pour éviter des pages quasi identiques, ces deux adresses sont redirigées vers la page Hauts de Seine, qui cite les deux villes. Une page dédiée pourra être créée le jour où vous aurez des projets et des contenus propres à ces villes.
-* **Anciens articles** : l'audit propose de fusionner certains articles en guides (par exemple fiche Google Business Profile, logo et charte graphique). Quand un guide est publié, ajoutez dans Rank Math → Redirections les anciennes adresses qui pointent vers lui.
+* **Nouveaux articles** : le blog repart de zéro. Visez deux articles bien faits par mois plutôt que dix. Quand un nouveau guide reprend le sujet d'un ancien article (par exemple la fiche Google Business Profile), modifiez dans Rank Math → Redirections la redirection de l'ancienne adresse pour qu'elle pointe vers ce guide.

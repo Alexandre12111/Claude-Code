@@ -94,8 +94,14 @@ function aurea_installer_redirections() {
 	}
 	$ajoutees = 0;
 	$existantes = 0;
-	foreach ( aurea_redirections() as $ancienne => $cle ) {
-		if ( class_exists( '\RankMath\Redirections\DB' ) && \RankMath\Redirections\DB::match_redirections( $ancienne ) ) {
+	$accueil = untrailingslashit( home_url( '/' ) );
+	foreach ( apply_filters( 'aurea_plan_redirections', aurea_redirections() ) as $ancienne => $cle ) {
+		$existe = class_exists( '\RankMath\Redirections\DB' ) ? \RankMath\Redirections\DB::match_redirections( $ancienne ) : false;
+		if ( $existe ) {
+			// Une ancienne redirection vers l'accueil est réorientée vers la bonne page.
+			if ( ! empty( $existe['id'] ) && in_array( untrailingslashit( (string) $existe['url_to'] ), array( $accueil, '' ), true ) && 'accueil' !== $cle ) {
+				\RankMath\Redirections\DB::update( array( 'id' => $existe['id'], 'sources' => $existe['sources'], 'url_to' => aurea_url( $cle ), 'header_code' => '301', 'status' => 'active' ) );
+			}
 			$existantes++;
 			continue;
 		}
@@ -125,7 +131,7 @@ add_action( 'template_redirect', function () {
 	if ( '' === $chemin ) {
 		return;
 	}
-	$plan = aurea_redirections();
+	$plan = apply_filters( 'aurea_plan_redirections', aurea_redirections() );
 	if ( isset( $plan[ $chemin ] ) && ! get_option( 'aurea_redirections_rank_math' ) ) {
 		wp_safe_redirect( aurea_url( $plan[ $chemin ] ), 301 );
 		exit;

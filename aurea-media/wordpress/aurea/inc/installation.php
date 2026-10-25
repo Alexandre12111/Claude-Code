@@ -7,8 +7,8 @@
  * 2. Contenus Aurea Studio : réalisations et logos livrés avec l'extension.
  * 3. Pages : les 21 pages de la maquette, la page Conseils, l'article « Prix d'un site vitrine »,
  *    l'étude de cas Havel Trading, avec leur titre SEO, leur description et leur mot clé Rank Math.
- *    Une page qui existe déjà n'est remplacée que si l'option est cochée (l'ancienne version reste
- *    dans les révisions).
+ *    Une ancienne page au même nom est remplacée (l'ancienne version reste dans les révisions) ;
+ *    une page déjà importée par le thème n'est retouchée que si l'option est cochée.
  * 4. Réglages WordPress : page d'accueil, page des articles, adresses /conseils/…, fuseau horaire.
  * 5. Rank Math : séparateur, organisation, schémas par défaut, plan du site, fil d'Ariane.
  * 6. Redirections 301 des anciennes adresses.
@@ -109,10 +109,17 @@ function aurea_seo_meta( $id, $info, $forcer ) {
 /**
  * Étape 3 : pages, page Conseils, article, étude de cas.
  *
- * @param bool $remplacer Remplacer le contenu des pages qui existent déjà (révision conservée).
+ * Une ancienne page du site qui porte le même nom (Contact, L'agence…) est remplacée par la nouvelle
+ * (son ancienne version reste dans les révisions). Une page déjà importée par le thème n'est pas
+ * retouchée, pour garder vos modifications, sauf si $remplacer est demandé.
+ *
+ * @param bool $remplacer Remettre aussi le texte de la maquette dans les pages déjà importées.
  */
 function aurea_installer_pages( $remplacer = false ) {
 	@set_time_limit( 300 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	if ( ! get_option( 'aurea_installe_le' ) ) {
+		update_option( 'aurea_installe_le', time() ); // les articles écrits après cette date ne sont jamais retirés par le nettoyage
+	}
 	kses_remove_filters(); // le HTML de la maquette (icônes SVG, formulaire) doit rester intact
 	$crees = 0;
 	$maj   = 0;
@@ -130,7 +137,7 @@ function aurea_installer_pages( $remplacer = false ) {
 			'post_excerpt' => $p['extrait'] ?? '',
 			'menu_order'   => $ordre++,
 		);
-		if ( $page && ! $remplacer ) {
+		if ( $page && ! $remplacer && get_post_meta( $page->ID, '_aurea_version', true ) ) {
 			$gardees++;
 			aurea_seo_meta( $page->ID, $p, false );
 			continue;
@@ -174,6 +181,7 @@ function aurea_installer_pages( $remplacer = false ) {
 		) ), true );
 		if ( ! is_wp_error( $id_a ) ) {
 			aurea_seo_meta( $id_a, $a, true );
+			update_post_meta( $id_a, '_aurea_version', AUREA_VERSION );
 			$img = aurea_image_theme( 'realisations/verisol.webp', 'Site vitrine sur mesure du Groupe Verisol' );
 			if ( $img ) {
 				set_post_thumbnail( $id_a, $img );
@@ -191,7 +199,7 @@ function aurea_installer_pages( $remplacer = false ) {
 		}
 	}
 	kses_init_filters();
-	return sprintf( 'Pages créées : %d. Pages mises à jour : %d. Pages existantes gardées telles quelles : %d.', $crees, $maj, $gardees );
+	return sprintf( 'Pages créées : %d. Anciennes pages remplacées : %d. Pages déjà importées gardées telles quelles : %d.', $crees, $maj, $gardees );
 }
 
 /** Étape 4 : réglages WordPress. */
@@ -336,9 +344,10 @@ add_action( 'admin_post_aurea_installer', function () {
 		'reglages'     => 'aurea_installer_reglages_wp',
 		'rank_math'    => 'aurea_installer_rank_math',
 		'redirections' => 'aurea_installer_redirections_etape',
+		'nettoyage'    => 'aurea_nettoyer',
 	);
 	foreach ( $etapes as $nom => $fonction ) {
-		if ( 'tout' === $etape || $nom === $etape ) {
+		if ( ( 'tout' === $etape && 'nettoyage' !== $nom ) || $nom === $etape ) {
 			$messages[] = call_user_func( $fonction );
 		}
 	}
@@ -390,7 +399,7 @@ function aurea_ecran_installation() {
 				'studio', 'Importer les réalisations et les logos' );
 			$ligne( $e['pages'] === $e['pages_total'], '3. Pages du site',
 				sprintf( '%d pages sur %d créées, avec leur titre SEO, leur description et leur mot clé Rank Math. Ajoute aussi la page Conseils, l’article « Combien coûte un site vitrine en 2026 ? » et l’étude de cas Havel Trading.', $e['pages'], $e['pages_total'] ),
-				'pages', 'Créer les pages', '<label class="aurea-install-option"><input type="checkbox" name="remplacer" value="1"> Remplacer aussi les pages qui existent déjà</label>' );
+				'pages', 'Créer les pages', '<label class="aurea-install-option"><input type="checkbox" name="remplacer" value="1"> Remettre le texte de la maquette dans les pages déjà importées</label>' );
 			$ligne( $e['reglages'], '4. Réglages WordPress',
 				'Page d’accueil, page des articles « Conseils », adresses des articles en <code>/conseils/nom-de-l-article/</code> (les anciennes adresses sont redirigées), fuseau horaire de Paris.',
 				'reglages', 'Appliquer les réglages' );
@@ -402,6 +411,8 @@ function aurea_ecran_installation() {
 				'redirections', 'Créer les redirections' );
 			?>
 		</div>
+
+		<?php aurea_ecran_nettoyage(); ?>
 
 		<h2>Ensuite</h2>
 		<ol class="aurea-install-suite">
@@ -425,9 +436,53 @@ function aurea_ecran_installation() {
 		.aurea-install-form{display:grid;gap:8px;justify-items:end}
 		.aurea-install-option{font-size:12px;color:#50575e}
 		.aurea-install-suite li{margin-bottom:8px}
+		.aurea-apercu{margin-top:14px;padding:18px 20px;background:#fff;border:1px solid #dcdcde;border-radius:10px}
+		.aurea-apercu h3{margin:18px 0 8px}.aurea-apercu table{margin-bottom:6px}.aurea-apercu code{font-size:11px}
 		@media (max-width:782px){.aurea-install-etape{grid-template-columns:34px 1fr}.aurea-install-form{grid-column:1/-1;justify-items:start}}
 	</style>
 	<?php
+}
+
+/** Étape 7 : base propre, avec aperçu détaillé avant toute action. */
+function aurea_ecran_nettoyage() {
+	$fait = get_option( 'aurea_nettoye_le' );
+	echo '<h2>Base propre</h2>';
+	echo '<div class="aurea-install-etape ' . ( $fait ? 'is-ok' : 'is-afaire' ) . '"><span class="aurea-install-pastille">' . ( $fait ? '✓' : '7' ) . '</span><div><h3>7. Retirer les anciens contenus</h3><p>Les anciens articles et les pages qui ne font pas partie du nouveau site vont à la corbeille (récupérables 30 jours). Chaque adresse retirée est redirigée vers la page la plus proche par son sujet, et les anciennes redirections vers l’accueil sont réorientées. Les articles écrits après l’installation ne sont jamais touchés.</p></div>';
+	echo '<a class="button" href="' . esc_url( admin_url( 'themes.php?page=' . AUREA_INSTALL . '&apercu=1#apercu' ) ) . '">Voir ce qui sera retiré</a></div>';
+	if ( empty( $_GET['apercu'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return;
+	}
+	$a     = aurea_nettoyage_apercu();
+	$total = count( $a['articles'] ) + count( $a['pages'] ) + count( $a['termes'] ) + count( $a['redirections_accueil'] );
+	echo '<div id="apercu" class="aurea-apercu">';
+	if ( ! $total ) {
+		echo '<p><strong>Rien à retirer : la base est propre.</strong></p></div>';
+		return;
+	}
+	$groupes = array(
+		'articles'             => 'Articles mis à la corbeille',
+		'pages'                => 'Pages mises à la corbeille',
+		'termes'               => 'Rubriques et mots clés supprimés',
+		'redirections_accueil' => 'Redirections vers l’accueil réorientées',
+	);
+	foreach ( $groupes as $cle => $titre ) {
+		if ( ! $a[ $cle ] ) {
+			continue;
+		}
+		echo '<h3>' . esc_html( $titre ) . ' (' . count( $a[ $cle ] ) . ')</h3><table class="widefat striped"><thead><tr><th>Contenu</th><th>Ancienne adresse</th><th>Redirigée vers</th></tr></thead><tbody>';
+		foreach ( $a[ $cle ] as $e ) {
+			$adresses = array_map( function ( $x ) {
+				return '<code>/' . esc_html( trim( $x, '/' ) ) . '/</code>';
+			}, array_unique( $e['adresses'] ) );
+			$vers     = aurea_chemin( aurea_url( $e['cible'] ) );
+			echo '<tr><td>' . esc_html( $e['titre'] ) . '</td><td>' . implode( ' ', $adresses ) . '</td><td><code>/' . esc_html( $vers ? $vers . '/' : '' ) . '</code></td></tr>'; // phpcs:ignore WordPress.Security.EscapeOutput
+		}
+		echo '</tbody></table>';
+	}
+	echo '<p>Pensez à faire une sauvegarde avant. Les contenus restent dans la corbeille 30 jours, et les redirections se modifient ensuite dans Rank Math → Redirections.</p>';
+	aurea_bouton_etape( 'nettoyage', 'Mettre à la corbeille et rediriger', true );
+	echo '<script>document.querySelector(".aurea-apercu form").addEventListener("submit",function(e){if(!confirm("Mettre ces contenus à la corbeille et créer les redirections ?"))e.preventDefault();});</script>';
+	echo '</div>';
 }
 
 /* Tant que l'installation n'est pas faite : un rappel sur le tableau de bord et l'écran des thèmes. */

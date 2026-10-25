@@ -11,6 +11,7 @@
  * - seo.php          : Rank Math (titres, descriptions, données structurées), relais sans Rank Math, llms.txt, robots.txt
  * - redirections.php : redirections 301 des anciennes adresses (dans Rank Math, sinon par le thème)
  * - installation.php : Apparence → Installation Aurea (pages, réglages, Rank Math, redirections en un clic)
+ * - nettoyage.php    : base propre (anciens articles et pages à la corbeille, chaque adresse redirigée)
  * - articles.php     : compositions d'articles SEO, sommaire automatique, temps de lecture
  */
 
@@ -29,3 +30,4 @@ require AUREA_DIR . '/inc/seo.php';
 require AUREA_DIR . '/inc/redirections.php';
 require AUREA_DIR . '/inc/articles.php';
 require AUREA_DIR . '/inc/installation.php';
+require AUREA_DIR . '/inc/nettoyage.php';

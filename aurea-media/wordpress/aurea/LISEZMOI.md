@@ -18,6 +18,7 @@ Mise en place pas à pas : voir `wordpress/MISE-EN-PLACE.md`.
 | `inc/redirections.php` | 52 redirections 301 (dans Rank Math, sinon par le thème), anciens articles vers `/conseils/` |
 | `inc/articles.php` | Compositions d'articles, sommaire, temps de lecture |
 | `inc/installation.php` | Apparence → Installation Aurea |
+| `inc/nettoyage.php` | Base propre : anciens articles et pages à la corbeille, chaque adresse redirigée vers la page la plus proche |
 | `contenu/` | Pages de la maquette en blocs Gutenberg, `pages.json` (SEO de chaque page) |
 | `parts/` | `entete.html`, `pied.html` (maquette), cartes et mise en page texte |
 
