@@ -292,6 +292,33 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 		}
 		$data[ 'aurea_' . $cle ] = $entite;
 	}
+	// Sans schéma de page choisi, Rank Math ne publie ni WebSite ni WebPage : le thème les ajoute,
+	// pour relier la page à son service, à son fil d'Ariane et au site.
+	if ( null === $page_cle && ( is_singular() || is_post_type_archive( 'aurea_realisation' ) || is_home() || is_category() ) ) {
+		$a_site = false;
+		foreach ( $data as $entite ) {
+			if ( is_array( $entite ) && '#website' === substr( (string) ( $entite['@id'] ?? '' ), -8 ) ) {
+				$a_site = true;
+			}
+		}
+		if ( ! $a_site ) {
+			$data['aurea_site'] = array( '@type' => 'WebSite', '@id' => aurea_id( 'website' ), 'url' => home_url( '/' ), 'name' => 'Aurea Media', 'inLanguage' => 'fr-FR', 'publisher' => array( '@id' => aurea_id( 'organization' ) ) );
+		}
+		$url  = aurea_url_courante();
+		$desc = aurea_description_seo();
+		$data['aurea_page'] = array_filter( array(
+			'@type'        => 'WebPage',
+			'@id'          => $url . '#webpage',
+			'url'          => $url,
+			'name'         => wp_get_document_title(),
+			'description'  => $desc,
+			'inLanguage'   => 'fr-FR',
+			'isPartOf'     => array( '@id' => aurea_id( 'website' ) ),
+			'about'        => array( '@id' => aurea_id( 'organization' ) ),
+			'dateModified' => is_singular() ? get_the_modified_date( 'c' ) : '',
+		) );
+		$page_cle = 'aurea_page';
+	}
 	if ( null !== $page_cle ) {
 		$data[ $page_cle ]['@type'] = aurea_type_page();
 		if ( ! $deja_ariane && isset( $propres['breadcrumb'] ) ) {
@@ -320,6 +347,14 @@ add_filter( 'rank_math/frontend/robots', function ( $robots ) {
 	}
 	return $robots;
 } );
+
+/* Plan du site Rank Math : sans les fiches de réalisation non indexées (signal cohérent pour Google). */
+add_filter( 'rank_math/sitemap/entry', function ( $url, $type, $objet ) {
+	if ( 'post' === $type && $objet instanceof WP_Post && 'aurea_realisation' === $objet->post_type && '' === trim( wp_strip_all_tags( (string) $objet->post_content ) ) ) {
+		return false;
+	}
+	return $url;
+}, 10, 3 );
 
 /* ------------------------------------------------------------------ */
 /* Sans Rank Math : le thème prend le relais                           */

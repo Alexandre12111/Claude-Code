@@ -310,6 +310,8 @@ function aurea_installer_rank_math() {
 		'pt_post_default_rich_snippet'             => 'article',
 		'pt_post_default_article_type'             => 'BlogPosting',
 		'pt_aurea_realisation_default_rich_snippet' => 'off',
+		'pt_aurea_realisation_title'               => 'Site %title% : étude de cas %sep% Aurea Media',
+		'pt_aurea_realisation_description'         => '%excerpt%',
 		'pt_aurea_realisation_archive_title'       => $pages['realisations']['seo_titre'] ?? '',
 		'pt_aurea_realisation_archive_description' => $pages['realisations']['seo_description'] ?? '',
 	), function ( $v ) {
@@ -317,6 +319,7 @@ function aurea_installer_rank_math() {
 	} ) );
 	aurea_rank_math_option( 'rank-math-options-general', array(
 		'breadcrumbs'              => 'off', // le fil d'Ariane est dessiné par le thème, et décrit dans les données structurées
+		'redirections_fallback'    => 'default', // jamais « toutes les erreurs 404 vers l'accueil » (soft 404)
 		'attachment_redirect_urls' => 'on',
 		'strip_category_base'      => 'off',
 	) );
@@ -343,7 +346,7 @@ function aurea_installer_redirections_etape() {
 	if ( is_wp_error( $r ) ) {
 		return $r->get_error_message();
 	}
-	return sprintf( 'Redirections ajoutées dans Rank Math : %d (déjà présentes : %d).', $r['ajoutees'], $r['existantes'] );
+	return sprintf( 'Redirections ajoutées dans Rank Math : %d (déjà présentes : %d). ', $r['ajoutees'], $r['existantes'] ) . aurea_reparer_redirections();
 }
 
 /* ------------------------------------------------------------------ */
