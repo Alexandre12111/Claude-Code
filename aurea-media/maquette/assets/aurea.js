@@ -35,6 +35,18 @@
       } else if (n.nodeType === 1 && n.tagName !== 'BR') walk(n);
     });
     walk(el);
+    // La ponctuation (« , . ? : ») reste collée au mot précédent, même après un mot en or
+    el.querySelectorAll('.w').forEach(w => {
+      if (!/^[,.;:!?»)]/.test(w.textContent)) return;
+      let prev = w.previousSibling;
+      const espace = prev && prev.nodeType === 3 && /^[ \t\n\r]+$/.test(prev.textContent) ? prev : null;
+      if (espace) prev = espace.previousSibling;
+      if (!prev || prev.nodeType !== 1) return;
+      const groupe = document.createElement('span'); groupe.className = 'nw';
+      prev.before(groupe); groupe.append(prev);
+      if (espace) groupe.append('\u00a0');
+      groupe.append(w);
+    });
   });
 
   // Apparitions au scroll
@@ -133,6 +145,41 @@
     } else v.pause();
   }), { rootMargin: '200px' });
   document.querySelectorAll('video[data-lazy-video]').forEach(v => vio.observe(v));
+
+  // Avant / après : curseur
+  document.querySelectorAll('[data-ba]').forEach(ba => {
+    const r = ba.querySelector('.ba-range');
+    const maj = () => ba.style.setProperty('--pos', r.value + '%');
+    r.addEventListener('input', maj); maj();
+  });
+
+  // Filtres des réalisations
+  const gal = document.querySelector('.gal--filtre');
+  if (gal) {
+    const n = document.querySelector('.filtres-n');
+    const compter = () => { const v = gal.querySelectorAll('.proj:not([hidden])').length; n && (n.textContent = v + ' projet' + (v > 1 ? 's' : '')); };
+    document.querySelectorAll('.filtre[data-filtre]').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('.filtre[data-filtre]').forEach(x => { x.classList.toggle('is-on', x === b); x.setAttribute('aria-pressed', x === b); });
+      gal.querySelectorAll('.proj').forEach(p => { p.hidden = !!b.dataset.filtre && p.dataset.type !== b.dataset.filtre; p.classList.add('is-in'); });
+      compter();
+    }));
+    compter();
+  }
+
+  // Formulaire de contact (maquette : rien n'est envoyé)
+  const form = document.getElementById('form-contact');
+  if (form) form.addEventListener('submit', e => {
+    e.preventDefault();
+    const mail = form.querySelector('#f-mail'), err = form.querySelector('#f-mail-err');
+    const okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail.value.trim());
+    mail.setAttribute('aria-invalid', !okMail); err.hidden = okMail;
+    const requis = [...form.querySelectorAll('[required]')];
+    const vide = requis.find(c => !c.value.trim());
+    if (!okMail) { mail.focus(); return; }
+    if (vide) { vide.setAttribute('aria-invalid', true); vide.focus(); return; }
+    form.querySelector('.f-ok').hidden = false;
+    form.querySelector('button[type=submit]').disabled = true;
+  });
 
   // FAQ : une seule question ouverte à la fois
   document.querySelectorAll('.faq details').forEach(d => d.addEventListener('toggle', () => {
