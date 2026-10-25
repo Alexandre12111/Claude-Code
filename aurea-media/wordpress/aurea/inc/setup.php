@@ -125,6 +125,13 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( aurea_page_elementor() ) {
 		return;
 	}
+	// Scripts d'Elementor et d'Essential Addons : inutiles ici, et ils imposaient jQuery en tête de page (bloquant)
+	foreach ( wp_scripts()->queue as $poignee ) {
+		$src = (string) ( wp_scripts()->registered[ $poignee ]->src ?? '' );
+		if ( 0 === strpos( $poignee, 'elementor' ) || 0 === strpos( $poignee, 'eael' ) || false !== strpos( $src, '/elementor/' ) || false !== strpos( $src, 'essential-addons-for-elementor' ) ) {
+			wp_dequeue_script( $poignee );
+		}
+	}
 	foreach ( wp_styles()->queue as $poignee ) {
 		$src = (string) ( wp_styles()->registered[ $poignee ]->src ?? '' );
 		if ( 0 === strpos( $poignee, 'elementor' ) || 0 === strpos( $poignee, 'eael' ) || false !== strpos( $src, '/elementor/' ) || false !== strpos( $src, 'essential-addons-for-elementor' ) ) {
@@ -155,3 +162,20 @@ add_action( 'admin_init', function () {
 		}
 	}
 } );
+
+/* En-têtes de sécurité de base (sans effet sur le design ni sur les extensions). */
+add_action( 'send_headers', function () {
+	if ( is_admin() || headers_sent() ) {
+		return;
+	}
+	header( 'X-Content-Type-Options: nosniff' );
+	header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+	header( 'X-Frame-Options: SAMEORIGIN' );
+	header( 'Permissions-Policy: camera=(), microphone=(), geolocation=()' );
+	if ( is_ssl() ) {
+		header( 'Strict-Transport-Security: max-age=31536000' );
+	}
+} );
+
+/* WordPress ne « devine » plus une page pour une adresse inconnue (ex. /en/ envoyé vers une fiche au hasard). */
+add_filter( 'do_redirect_guess_404_permalink', '__return_false' );
