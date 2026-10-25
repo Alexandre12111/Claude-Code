@@ -126,7 +126,7 @@
   }
 
   // Écrans d'ordinateur : diaporama des réalisations
-  document.querySelectorAll('.laptop-view').forEach(v => {
+  document.querySelectorAll('.laptop-view:not([data-sync])').forEach(v => {
     const imgs = v.querySelectorAll('img');
     if (imgs.length < 2) { imgs[0] && imgs[0].classList.add('is-on'); return; }
     let i = 0; imgs[0].classList.add('is-on');
@@ -201,7 +201,61 @@
   });
 
   // FAQ : une seule question ouverte à la fois
-  document.querySelectorAll('.faq details').forEach(d => d.addEventListener('toggle', () => {
-    if (d.open) document.querySelectorAll('.faq details[open]').forEach(o => o !== d && (o.open = false));
-  }));
+  /* FAQ : accordéon animé plus bas (une seule réponse ouverte à la fois) */
+})();
+
+/* Visuels synchronisés (hero) : ordinateur, téléphone et légende changent ensemble */
+(() => {
+  const groupes = {};
+  document.querySelectorAll('[data-sync]').forEach(v => { (groupes[v.dataset.sync] = groupes[v.dataset.sync] || []).push(v); });
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Object.entries(groupes).forEach(([nom, vues]) => {
+    const etiquettes = document.querySelectorAll(`[data-sync-label="${nom}"] span`);
+    const total = vues[0].querySelectorAll('img').length;
+    let i = 0;
+    const montrer = n => {
+      vues.forEach(v => v.querySelectorAll('img').forEach((img, k) => img.classList.toggle('is-on', k === n)));
+      etiquettes.forEach((e, k) => e.classList.toggle('is-on', k === n));
+    };
+    montrer(0);
+    if (reduce || total < 2) return;
+    setInterval(() => { if (document.hidden) return; i = (i + 1) % total; montrer(i); }, 3800);
+  });
+})();
+
+/* FAQ : ouverture et fermeture animées (pages et articles), une seule réponse ouverte par bloc */
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const items = document.querySelectorAll('.faq details, details.faq-bloc');
+  items.forEach(d => {
+    const summary = d.querySelector('summary');
+    if (!summary || d.dataset.anime) return;
+    d.dataset.anime = '1';
+    // le contenu (tout sauf le résumé) est regroupé pour pouvoir animer sa hauteur
+    const corps = document.createElement('div');
+    corps.className = 'faq-corps';
+    [...d.children].filter(c => c !== summary).forEach(c => corps.appendChild(c));
+    d.appendChild(corps);
+    let anim = null;
+    const fermer = (instant) => {
+      if (!d.open) return;
+      if (reduce || instant) { d.open = false; return; }
+      d.classList.add('is-fermeture');
+      anim && anim.cancel();
+      anim = corps.animate([{ height: corps.offsetHeight + 'px', opacity: 1 }, { height: '0px', opacity: 0 }], { duration: 320, easing: 'cubic-bezier(.4,0,.2,1)' });
+      anim.onfinish = () => { d.open = false; d.classList.remove('is-fermeture'); anim = null; };
+    };
+    const ouvrir = () => {
+      const groupe = d.closest('.faq, .entry-content, .prose, .cas-corps') || document;
+      groupe.querySelectorAll('details[open]').forEach(o => o !== d && o.matches('.faq details, details.faq-bloc') && o._fermer && o._fermer());
+      d.open = true;
+      if (reduce) return;
+      const h = corps.offsetHeight;
+      anim && anim.cancel();
+      anim = corps.animate([{ height: '0px', opacity: 0, transform: 'translateY(-6px)' }, { height: h + 'px', opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)' });
+      anim.onfinish = () => { anim = null; };
+    };
+    d._fermer = fermer;
+    summary.addEventListener('click', e => { e.preventDefault(); d.open && !d.classList.contains('is-fermeture') ? fermer() : ouvrir(); });
+  });
 })();

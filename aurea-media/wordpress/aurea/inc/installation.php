@@ -152,7 +152,7 @@ function aurea_installer_pages( $remplacer = false ) {
 	$gardees = 0;
 	$ordre = 0;
 	foreach ( aurea_pages_a_creer() as $slug => $p ) {
-		$contenu = aurea_contenu_livre( basename( $p['fichier'], '.html' ) );
+		$contenu = aurea_contenu_livre( basename( $p['fichier'], '.html' ), false );
 		$page    = aurea_page_par_slug( $slug );
 		$donnees = array(
 			'post_type'    => 'page',
@@ -179,6 +179,7 @@ function aurea_installer_pages( $remplacer = false ) {
 		if ( ! is_wp_error( $id ) ) {
 			aurea_seo_meta( $id, $p, true );
 			update_post_meta( $id, '_aurea_version', AUREA_VERSION );
+			update_post_meta( $id, '_aurea_contenu_md5', md5( (string) get_post_field( 'post_content', $id ) ) );
 		}
 	}
 
@@ -202,7 +203,7 @@ function aurea_installer_pages( $remplacer = false ) {
 			'post_title'    => $a['titre'],
 			'post_name'     => 'prix-site-vitrine',
 			'post_excerpt'  => $a['extrait'] ?? '',
-			'post_content'  => aurea_contenu_livre( 'article-prix-site-vitrine' ),
+			'post_content'  => aurea_contenu_livre( 'article-prix-site-vitrine', false ),
 			'post_category' => is_array( $cat ) ? array( (int) $cat['term_id'] ) : array(),
 		) ), true );
 		if ( ! is_wp_error( $id_a ) ) {
@@ -615,4 +616,58 @@ add_action( 'admin_notices', function () {
 		return;
 	}
 	echo '<div class="notice notice-info"><p><strong>Thème Aurea Media :</strong> terminez la mise en place du site (pages, réglages, Rank Math, redirections). <a class="button button-primary" href="' . esc_url( admin_url( 'themes.php?page=' . AUREA_INSTALL ) ) . '">Installation Aurea</a></p></div>';
+} );
+
+/**
+ * Après une mise à jour du thème : le nouveau contenu (design, visuels) remplace celui des pages du thème
+ * que personne n'a modifiées dans WordPress. Une page retouchée à la main est laissée intacte.
+ * Une page n'a pas été retouchée si son contenu est identique à celui posé par le thème (empreinte),
+ * ou, pour les pages installées avant l'empreinte, si elle n'a aucune révision.
+ */
+function aurea_maj_pages_auto() {
+	$maj = 0;
+	$gardees = array();
+	kses_remove_filters();
+	foreach ( aurea_pages_a_creer() as $slug => $p ) {
+		$page = aurea_page_par_slug( $slug );
+		if ( ! $page || ! get_post_meta( $page->ID, '_aurea_version', true ) ) {
+			continue;
+		}
+		$empreinte = (string) get_post_meta( $page->ID, '_aurea_contenu_md5', true );
+		$intacte   = $empreinte ? hash_equals( $empreinte, md5( $page->post_content ) ) : ! wp_get_post_revisions( $page->ID, array( 'fields' => 'ids', 'posts_per_page' => 1 ) );
+		if ( ! $intacte ) {
+			$gardees[] = $p['titre'];
+			continue;
+		}
+		$contenu = aurea_contenu_livre( basename( $p['fichier'], '.html' ), false );
+		if ( $contenu === $page->post_content ) {
+			continue;
+		}
+		global $wpdb;
+		$wpdb->update( $wpdb->posts, array( 'post_content' => $contenu, 'post_modified' => current_time( 'mysql' ), 'post_modified_gmt' => current_time( 'mysql', true ) ), array( 'ID' => $page->ID ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		clean_post_cache( $page->ID );
+		update_post_meta( $page->ID, '_aurea_version', AUREA_VERSION );
+		update_post_meta( $page->ID, '_aurea_contenu_md5', md5( $contenu ) );
+		$maj++;
+	}
+	kses_init_filters();
+	$msg = sprintf( 'Pages du thème mises à jour avec le nouveau design : %d.', $maj );
+	if ( $gardees ) {
+		$msg .= ' Pages modifiées à la main, laissées telles quelles : ' . implode( ', ', $gardees ) . ' (Apparence → Installation Aurea pour les remplacer).';
+	}
+	return $msg;
+}
+add_action( 'admin_init', function () {
+	if ( wp_doing_ajax() || ! current_user_can( 'edit_pages' ) || ! get_option( 'aurea_installe_le' ) || get_option( 'aurea_pages_auto_version' ) === AUREA_VERSION ) {
+		return;
+	}
+	update_option( 'aurea_pages_auto_version', AUREA_VERSION );
+	set_transient( 'aurea_pages_auto_message', aurea_maj_pages_auto(), 300 );
+} );
+add_action( 'admin_notices', function () {
+	$m = get_transient( 'aurea_pages_auto_message' );
+	if ( $m ) {
+		delete_transient( 'aurea_pages_auto_message' );
+		echo '<div class="notice notice-success is-dismissible"><p><strong>Aurea Media</strong> : ' . esc_html( $m ) . '</p></div>';
+	}
 } );

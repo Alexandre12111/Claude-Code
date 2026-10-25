@@ -217,13 +217,16 @@ add_shortcode( 'aurea_avis_cartes', function ( $atts ) {
 	$a    = shortcode_atts( array( 'nombre' => null ), $atts );
 	$avis = aurea_avis( null === $a['nombre'] ? null : (int) $a['nombre'] );
 	if ( ! $avis ) {
-		return '';
+		// En attendant les avis (API Google ou avis ajoutés dans Aurea Studio) : un renvoi propre vers la fiche Google
+		$fiche = function_exists( 'aurea_coordonnees' ) ? ( aurea_coordonnees()['google'] ?? '' ) : '';
+		$r     = function_exists( 'aurea_avis_resume' ) ? aurea_avis_resume() : array( 'note_txt' => '4,9', 'total' => 39 );
+		return $fiche ? '<div class="reviews-vide rv"><svg class="g" aria-hidden="true"><use href="#i-g"/></svg><div><b>' . esc_html( $r['note_txt'] ) . ' sur 5</b><span class="stars" aria-hidden="true">★★★★★</span><p>' . esc_html( sprintf( 'Note moyenne sur %d avis publiés sur notre fiche Google.', $r['total'] ) ) . '</p></div><a class="btn btn--ghost" href="' . esc_url( $fiche ) . '" target="_blank" rel="noopener">Lire les avis sur Google <svg><use href="#i-out"/></svg></a></div>' : '';
 	}
 	$html = '<div class="reviews">';
 	foreach ( $avis as $i => $v ) {
 		$note  = max( 1, min( 5, (int) $v['note'] ) );
 		$html .= sprintf(
-			'<blockquote class="review rv"%s><div class="top"><span class="stars" role="img" aria-label="%s">%s</span><svg class="g" aria-hidden="true"><use href="#i-g"/></svg></div><p>%s</p><footer><i>%s</i><div>%s<span>%s</span></div></footer></blockquote>',
+			'<blockquote class="review rv"%s><span class="review-guillemet" aria-hidden="true">“</span><div class="top"><span class="stars" role="img" aria-label="%s">%s</span><svg class="g" aria-hidden="true"><use href="#i-g"/></svg></div><p>%s</p><footer><i>%s</i><div>%s<span>%s</span></div></footer></blockquote>',
 			$i % 3 ? ' style="--d:.' . ( $i % 3 ) . 's"' : '',
 			esc_attr( $note . ' sur 5' ),
 			str_repeat( '★', $note ),

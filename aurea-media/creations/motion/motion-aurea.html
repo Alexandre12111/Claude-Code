@@ -5,7 +5,7 @@
 <title>Film de marque Aurea Media</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-/* Film de marque Aurea Media, 14 s, 1920 x 1080. Chaque image est calculée par rendre(t) ; exporter.js capture 30 images par seconde. */
+/* Film de marque Aurea Media, 16,5 s, 1920 x 1080. Chaque image est calculée par rendre(t) ; exporter.js capture 30 images par seconde. */
 :root{--gold:#C9A961;--cream:#F5F5F0;--grad:linear-gradient(100deg,#B8934E,#E6CB8C 45%,#C9A961)}
 *{box-sizing:border-box;margin:0}
 html,body{width:1920px;height:1080px;overflow:hidden;background:#0A0A0A}
@@ -31,12 +31,20 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#0A0A0A}
 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
 #l1{top:330px}#l2{top:500px}
 #trait{left:50%;top:690px;height:6px;width:520px;margin-left:-260px;border-radius:6px;background:var(--grad);transform-origin:left}
-/* 3. Mur de réalisations en 3D */
-#mur{left:50%;top:50%;width:2400px;height:1500px;margin:-750px 0 0 -1200px;perspective:2200px}
-#mur-plan{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);gap:34px;transform-style:preserve-3d}
-.ecran{border-radius:18px;overflow:hidden;border:1px solid rgba(245,245,240,.18);background:#1b1b19;box-shadow:0 50px 90px -30px #000}
-.ecran i{display:block;height:30px;background:#22221f;background-image:radial-gradient(circle at 20px 15px,#c9a961 5px,transparent 6px),radial-gradient(circle at 40px 15px,#444 5px,transparent 6px),radial-gradient(circle at 60px 15px,#444 5px,transparent 6px)}
-.ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+/* 3. Vitrine : vrais sites clients sur ordinateur et téléphone */
+#vitrine{inset:0}
+#portable{left:250px;top:250px;width:1140px}
+#portable .ecran-p{position:relative;border-radius:22px 22px 6px 6px;background:#0a0a0a;padding:20px 20px 26px;border:1px solid #3a3a35;box-shadow:0 80px 140px -40px #000,inset 0 0 0 1px rgba(255,255,255,.05)}
+#portable .vue{position:relative;aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:#fff}
+#portable .vue img,#mobile .vue img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;opacity:0}
+#portable .base{height:26px;margin:0 -75px;border-radius:3px 3px 26px 26px/3px 3px 60% 60%;background:linear-gradient(180deg,#5a5a55,#2f2f2c 35%,#1b1b19 70%,#0e0e0d);box-shadow:0 40px 60px -20px #000}
+#mobile{left:1330px;top:300px;width:330px;padding:9px;border-radius:17%/7.9%;background:linear-gradient(150deg,#4a4a46,#1d1d1b 18%,#0d0d0c 50%,#1a1a18 82%,#3d3d39);box-shadow:0 0 0 2px #55554f,0 70px 120px -40px #000}
+#mobile::before{content:"";position:absolute;top:3.1%;left:50%;width:29%;height:3.3%;transform:translateX(-50%);border-radius:999px;background:#000;z-index:2}
+#mobile .vue{position:relative;aspect-ratio:390/844;border-radius:14.6%/6.75%;overflow:hidden;background:#000}
+#etiquette{left:250px;top:900px;display:flex;align-items:center;gap:18px;padding:18px 30px 18px 22px;border-radius:999px;background:rgba(18,18,17,.92);border:1px solid rgba(245,245,240,.16)}
+#etiquette i{width:16px;height:16px;border-radius:50%;background:#5fd19f;box-shadow:0 0 0 8px rgba(95,209,159,.16)}
+#etiquette b{display:block;font:500 30px "Geist Mono";color:var(--cream)}
+#etiquette span{display:block;font-size:24px;color:#A9A9A2}
 .puce{display:flex;align-items:center;gap:20px;padding:24px 32px 24px 22px;border-radius:26px;background:rgba(24,24,22,.92);border:1px solid rgba(245,245,240,.18);font-size:30px;white-space:nowrap;box-shadow:0 30px 60px -20px #000}
 .puce b{display:block;font-weight:500}.puce span{font-size:22px;color:#A9A9A2}
 .puce em{width:66px;height:66px;border-radius:18px;background:rgba(201,169,97,.18);display:grid;place-items:center;font-style:normal;color:var(--gold)}
@@ -78,10 +86,12 @@ html,body{width:1920px;height:1080px;overflow:hidden;background:#0A0A0A}
   <div class="abs ligne" id="l2"><span>qui</span> <span>apportent</span> <span>des</span> <span class="g">clients.</span></div>
   <div class="abs" id="trait"></div>
 
-  <div class="abs" id="mur"><div id="mur-plan"></div></div>
+  <div class="abs" id="vitrine">
+    <div class="abs" id="portable"><div class="ecran-p"><div class="vue" id="vue-p"></div></div><div class="base"></div></div>
+    <div class="abs" id="mobile"><div class="vue" id="vue-m"></div></div>
+    <div class="abs" id="etiquette"><i></i><div><b id="et-dom"></b><span id="et-txt"></span></div></div>
+  </div>
   <div class="abs" id="titre3">45 sites livrés en France et en Europe</div>
-  <div class="abs puce" id="p1" style="left:180px;top:780px"><em><svg viewBox="0 0 256 256"><path fill="currentColor" d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg></em><div><b>Nouvelle demande de devis</b><span>via le formulaire du site</span></div></div>
-  <div class="abs puce" id="p2" style="left:1240px;top:720px"><em><svg viewBox="0 0 256 256"><path fill="currentColor" d="M234.5,114.38l-45.1,39.36,13.51,58.6a16,16,0,0,1-23.84,17.34l-51.11-31-51,31a16,16,0,0,1-23.84-17.34L66.61,153.8,21.5,114.38a16,16,0,0,1,9.11-28.06l59.46-5.15,23.21-55.36a15.95,15.95,0,0,1,29.44,0h0L166,81.17l59.44,5.15a16,16,0,0,1,9.11,28.06Z"/></svg></em><div><b>4,9 sur Google</b><span>39 avis clients</span></div></div>
 
   <div class="abs" id="chiffres">
     <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/><defs><linearGradient id="ann"><stop offset="0" stop-color="#B8934E"/><stop offset="1" stop-color="#E6CB8C"/></linearGradient></defs></svg><b id="c1">0</b><span>sites livrés</span></div>
@@ -107,10 +117,11 @@ const poussiere = Array.from({ length: 70 }, () => ({ x: alea() * 1920, y: alea(
 poussiere.forEach(() => { const d = document.createElement('i'); d.className = 'abs p'; $('poussiere').append(d); });
 const grains = [...$('poussiere').children];
 
-// Mur : les 12 réalisations
-const sites = ['havel-trading', 'portugal-expert', 'eddy-bilou', 'verisol', 'sunrock', 'perle-hair', 'novexia', 'laurence-paoli', 'xpert-medical', 'dual-tech', 'villa-moniris', 'maryes'];
-$('mur-plan').innerHTML = sites.map(s => `<div class="ecran"><i></i><img src="../../maquette/assets/realisations/${s}.webp" alt=""></div>`).join('');
-const ecrans = [...$('mur-plan').children];
+// Vitrine : 4 vrais sites clients (page complète sur l'ordinateur, version mobile sur le téléphone)
+const sites = [['villa-moniris', 'villamoniris.fr', 'Location de villa · Provence'], ['portugal-expert', 'portugalexpertproperties.com', 'Constructeur de luxe · Lisbonne'], ['xpert-medical', 'xpert-medical.fr', 'Centres médicaux · France'], ['havel-trading', 'haveltrading.com', 'Négoce d’énergie · Genève']];
+$('vue-p').innerHTML = sites.map(s => `<img src="../../wordpress/aurea/assets/realisations/${s[0]}-long.webp" alt="">`).join('');
+$('vue-m').innerHTML = sites.map(s => `<img src="../../wordpress/aurea/assets/realisations/${s[0]}-mobile.webp" alt="">`).join('');
+const imgsP = [...$('vue-p').children], imgsM = [...$('vue-m').children];
 
 const nom = 'AUREA MEDIA';
 $('nom').innerHTML = [...nom].map(c => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join('');
@@ -149,27 +160,39 @@ window.rendre = t => {
   const pt = sortie(prog(t, 4.4, 5.2)), st = entree(prog(t, 6, 6.4));
   set($('trait'), 1 - st, `scaleX(${pt})`);
 
-  // 3. Mur de réalisations : 6,3 à 10 s
-  const pm = sortie(prog(t, 6.3, 7.4)), sm = entree(prog(t, 9.6, 10.1));
-  const cam = t - 6.3;
-  $('mur-plan').style.transform = `rotateX(${24 - pm * 6}deg) rotateZ(${-8 + pm * 2}deg) translateY(${-cam * 60}px) translateZ(${-400 + pm * 300 + cam * 40}px)`;
-  set($('mur'), pm * (1 - sm), '', sm * 8);
-  ecrans.forEach((e, i) => { const p = sortie(prog(t, 6.3 + (i % 4) * .08 + Math.floor(i / 4) * .12, 7.3 + i * .05)); e.style.opacity = p; e.style.transform = `translateZ(${(1 - p) * -300}px)`; });
-  const p3 = sortie(prog(t, 6.8, 7.5));
-  set($('titre3'), p3 * (1 - sm), `translateY(${(1 - p3) * 40}px)`);
-  [['p1', 7.6], ['p2', 8.1]].forEach(([id, d]) => { const p = sortie(prog(t, d, d + .6)); set($(id), p * (1 - sm), `translateY(${(1 - p) * 50 + Math.sin(t * 1.6) * 8}px) scale(${.85 + p * .15})`); });
+  // 3. Vitrine : 6,3 à 12,4 s, un site toutes les 1,5 s
+  const pv = sortie(prog(t, 6.3, 7.1)), sv = entree(prog(t, 12, 12.4));
+  set($('portable'), pv * (1 - sv), `translateY(${(1 - pv) * 80}px) scale(${.96 + pv * .04})`, sv * 8);
+  const pmob = sortie(prog(t, 6.6, 7.4));
+  set($('mobile'), pmob * (1 - sv), `translateY(${(1 - pmob) * 120 + Math.sin(t * 1.2) * 6}px) rotate(${(1 - pmob) * 6}deg)`, sv * 8);
+  const pe = sortie(prog(t, 7, 7.6));
+  set($('etiquette'), pe * (1 - sv), `translateY(${(1 - pe) * 30}px)`);
+  const p3 = sortie(prog(t, 6.5, 7.2));
+  set($('titre3'), p3 * (1 - sv), `translateY(${(1 - p3) * 40}px)`);
+  const debut = i => 6.3 + i * 1.5;
+  const idx = Math.min(sites.length - 1, Math.max(0, Math.floor((t - 6.3) / 1.5)));
+  sites.forEach((s, i) => {
+    const entre = i === 0 ? 1 : sortie(prog(t, debut(i), debut(i) + .3));
+    const sort = i === sites.length - 1 ? 0 : sortie(prog(t, debut(i + 1), debut(i + 1) + .3));
+    const op = entre * (1 - sort);
+    imgsP[i].style.opacity = op; imgsM[i].style.opacity = op;
+    const defil = douce(prog(t, debut(i), debut(i) + 1.8));
+    imgsP[i].style.objectPosition = `50% ${defil * 38}%`;
+    imgsM[i].style.objectPosition = `50% ${defil * 4}%`;
+  });
+  $('et-dom').textContent = sites[idx][1]; $('et-txt').textContent = sites[idx][2];
 
-  // 4. Chiffres : 10 à 12,2 s
-  const pc = sortie(prog(t, 10, 10.6)), sc = entree(prog(t, 11.8, 12.2));
+  // 4. Chiffres : 12,3 à 14,5 s
+  const pc = sortie(prog(t, 12.3, 12.9)), sc = entree(prog(t, 14.1, 14.5));
   set($('chiffres'), pc * (1 - sc), `translateY(${(1 - pc) * 50}px) scale(${1 - sc * .05})`, sc * 8);
-  const k = douce(prog(t, 10.1, 11.3));
+  const k = douce(prog(t, 12.4, 13.6));
   $('c1').textContent = Math.round(45 * k) + '+';
   $('c2').textContent = Math.max(1, Math.round(4 * k));
   $('c3').textContent = (4.9 * k).toFixed(1).replace('.', ',');
-  document.querySelectorAll('.anneau').forEach((a, i) => { a.style.strokeDashoffset = 817 * (1 - douce(prog(t, 10.1 + i * .12, 11.4 + i * .12)) * [.92, .8, .98][i]); });
+  document.querySelectorAll('.anneau').forEach((a, i) => { a.style.strokeDashoffset = 817 * (1 - douce(prog(t, 12.4 + i * .12, 13.7 + i * .12)) * [.92, .8, .98][i]); });
 
-  // 5. Fin : 12,2 à 14 s
-  const pf = sortie(prog(t, 12.2, 12.9));
+  // 5. Fin : 14,5 à 16,5 s
+  const pf = sortie(prog(t, 14.5, 15.2));
   set($('fin'), pf, `scale(${.94 + pf * .06})`, (1 - pf) * 10);
 };
 window.rendre(0);

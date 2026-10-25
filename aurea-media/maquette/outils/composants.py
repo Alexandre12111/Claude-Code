@@ -130,14 +130,14 @@ def avantages(surtitre, h2, chapo, items, extra=""):
 
 def navigateur(cle, lazy=True, classe=""):
     t, dom = REAL[cle][0], REAL[cle][1]
-    return f'<div class="browser {classe}"><div class="browser-bar"><i></i><i></i><i></i><span>{dom}</span></div><img src="assets/realisations/{cle}.webp" alt="Site {t} réalisé par Aurea Media" width="1200" height="620"{" loading=\"lazy\"" if lazy else ""}></div>'
+    return f'<div class="browser {classe}"><div class="browser-bar"><i></i><i></i><i></i><span>{dom}</span></div><img src="assets/realisations/{cle}.webp" alt="Site {t} réalisé par Aurea Media" width="1600" height="1000"{" loading=\"lazy\"" if lazy else ""}></div>'
 
 
 def carte_projet(cle, meta=None, fiche=False):
     t, dom, typ, sect, lieu, acc = REAL[cle]
     lien = "realisation-havel-trading.html" if fiche else f"https://{dom}/"
     cible = "" if fiche else ' target="_blank" rel="noopener"'
-    return f"""<article class="proj rv" data-type="{typ}" data-secteur="{sect}"><a class="browser proj-img" href="{lien}"{cible}><span class="browser-bar"><i></i><i></i><i></i><span>{dom}</span></span><img src="assets/realisations/{cle}.webp" alt="Site {t} réalisé par Aurea Media" width="1200" height="620" loading="lazy"><span class="visit">{"Voir l'étude de cas" if fiche else "Voir le site"} <svg width="16" height="16"><use href="#i-out"/></svg></span></a><div class="proj-meta"><h3>{t}</h3><span>{meta or typ}</span></div><p>{acc}</p></article>"""
+    return f"""<article class="proj rv" data-type="{typ}" data-secteur="{sect}"><a class="browser proj-img" href="{lien}"{cible}><span class="browser-bar"><i></i><i></i><i></i><span>{dom}</span></span><img src="assets/realisations/{cle}.webp" alt="Site {t} réalisé par Aurea Media" width="1600" height="1000" loading="lazy"><span class="visit">{"Voir l'étude de cas" if fiche else "Voir le site"} <svg width="16" height="16"><use href="#i-out"/></svg></span></a><div class="proj-meta"><h3>{t}</h3><span>{meta or typ}</span></div><p>{acc}</p></article>"""
 
 
 def galerie(surtitre, h2, chapo, cles, papier=False):
@@ -153,8 +153,11 @@ def faq(h2, questions):
     return section(entete("Questions fréquentes", h2, centre=True) + f'\n<div class="faq rv">{d}</div>')
 
 
+SQUELETTE = '<div class="final-squelette"><span class="fs-nav"><i></i><i></i><i></i><b></b></span><span class="fs-titre">Votre site, <em>ici</em>.</span><span class="fs-ligne"></span><span class="fs-ligne court"></span><span class="fs-btn"></span><span class="fs-cartes"><i></i><i></i><i></i></span></div>'
+
+
 def appel(surtitre, h2, chapo, bouton="Demander mon devis", ecrans=("villa-moniris", "xpert-medical", "dual-tech")):
-    devs = "".join(navigateur(c) for c in ecrans)
+    devs = "".join(navigateur(c) for c in ecrans[:2]) + '<div class="browser"><div class="browser-bar"><i></i><i></i><i></i><span>votre-site.fr</span></div>' + SQUELETTE + '</div>'
     return f"""<section class="sec final" style="padding-top:0">
   <div class="wrap">
     <div class="final-box">
@@ -190,6 +193,6 @@ SECTEURS = [("site-internet-avocat.html", "Avocats", "Crédibilité et prise de 
 
 
 def autres_secteurs(courant):
-    cartes = "".join(f'<a class="sector rv" href="{f}"><div class="sector-img"><img src="assets/realisations/{img}.webp" alt="" width="1200" height="620" loading="lazy"></div><div class="sector-txt"><div><b>{n}</b><span>{d}</span></div><svg><use href="#i-out"/></svg></div></a>'
+    cartes = "".join(f'<a class="sector rv" href="{f}"><div class="sector-img"><img src="assets/realisations/{img}.webp" alt="" width="1600" height="1000" loading="lazy"></div><div class="sector-txt"><div><b>{n}</b><span>{d}</span></div><svg><use href="#i-out"/></svg></div></a>'
                      for f, n, d, img in SECTEURS if f != courant)
     return section(entete("Autres secteurs", 'Un site adapté à <span class="gold">votre métier</span>.', centre=True) + f'\n<div class="sectors">{cartes}</div>')

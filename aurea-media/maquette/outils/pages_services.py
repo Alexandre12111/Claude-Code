@@ -7,8 +7,8 @@ def ecommerce():
     visuel = f"""<div class="vis-shop">
       {navigateur("sunrock", lazy=False, classe="vs-desk")}
       {perle_mobile().replace('class="phone m-phone"', 'class="phone m-phone vs-phone"')}
-      {puce("cart", "Commande reçue", "89,00 € · Stripe", "top:-6px;right:0")}
-      {puce("lightning", "Paiement en 1 clic", "Apple Pay, carte, PayPal", "bottom:40px;left:-20px", ok=True)}
+      {puce("cart", "Nouvelle commande", "Paiement sécurisé", "top:-6px;right:0")}
+      {puce("lightning", "Stripe et PayPal", "Sans commission sur vos ventes", "bottom:40px;left:-20px", ok=True)}
       {carte_prix("1 650 €", "HT, à partir de", ["Boutique WooCommerce sur mesure", "Paiement Stripe et PayPal", "Aucune commission sur vos ventes"])}
     </div>"""
     corps = hero([("Services", "index.html#services"), ("Site e-commerce", "")], "Site e-commerce",
@@ -51,7 +51,7 @@ def refonte():
       <div class="ba-avant"><div class="browser"><div class="browser-bar"><i></i><i></i><i></i><span>ancien-site.fr</span></div>{ancien}</div></div>
       <input type="range" min="0" max="100" value="50" aria-label="Comparer l'ancien et le nouveau site" class="ba-range">
       <span class="ba-poignee" aria-hidden="true"><i></i></span>
-      <span class="ba-lbl l">Avant</span><span class="ba-lbl r">Après</span>
+      <span class="ba-lbl l">Avant · exemple</span><span class="ba-lbl r">Après</span>
     </div>
     {puce("chart", "Positions conservées", "Redirections 301 testées", "bottom:-10px;right:10px", ok=True)}"""
     corps = hero([("Services", "index.html#services"), ("Refonte de site", "")], "Refonte de site internet",
@@ -117,7 +117,7 @@ def motion():
       </video>
       <div class="player-strip" aria-hidden="true"><span>00:00</span><i></i><i></i><i></i><i></i><i></i><span>00:14</span></div>
     </div>
-    {puce("film", "Film de marque Aurea Media", "Réalisé en interne · 14 s · 1080p", "top:-18px;left:-14px")}"""
+    {puce("film", "Film de marque Aurea Media", "Réalisé en interne · 16 s · 1080p", "top:-18px;left:-14px")}"""
     corps = hero([("Services", "index.html#services"), ("Motion design", "")], "Motion design",
                  'Motion design pour entreprise : des vidéos qui <span class="gold">retiennent</span> l\'attention.',
                  "Animation de logo, vidéo explicative, contenus pour vos réseaux et votre site : le mouvement fait passer votre message en quelques secondes. Ci contre, notre propre film de marque.",

@@ -171,6 +171,9 @@ def reperes(html):
     html = html.replace("url(logos/", "url({{theme}}/assets/logos/")
     html = html.replace("tel:+33651287761", "tel:{{tel}}").replace("06 51 28 77 61", "{{tel_affiche}}").replace("+33 6 51 28 77 61", "{{tel_inter}}")
     html = html.replace("mailto:alexandre.coury@aurea-media.fr", "mailto:{{email}}").replace("alexandre.coury@aurea-media.fr", "{{email}}")
+    # Note et nombre d'avis : résolus à l'affichage (Aurea Studio ou API Google), jamais figés dans les pages
+    html = re.sub(r"\b39((?:\s|&nbsp;|\u202f|\u00a0)avis)", r"{{avis_total}}\1", html)
+    html = re.sub(r"4,9(?=(?:\s|&nbsp;|\u202f|\u00a0)?(?:/5|·|sur(?:\s|\u00a0)5|sur(?:\s|\u00a0)Google|</span><sup>|</b>(?:\s|\u00a0)?sur|(?:\s|\u00a0)\(|</dd>))", "{{avis_note}}", html)
     return html
 
 

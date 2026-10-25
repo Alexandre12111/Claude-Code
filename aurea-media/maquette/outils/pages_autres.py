@@ -115,7 +115,7 @@ def etude_de_cas():
 <section class="sec" style="padding-top:10px">
   <div class="wrap">
     <div class="cas-hero rv">
-      <div class="laptop"><div class="laptop-screen"><div class="laptop-view"><img class="is-on" src="assets/realisations/havel-trading.webp" alt="Page d'accueil du site Havel Trading" width="1200" height="620"></div></div><div class="laptop-base"></div></div>
+      <div class="laptop"><div class="laptop-screen"><div class="laptop-view"><img class="is-on" src="assets/realisations/havel-trading.webp" alt="Page d'accueil du site Havel Trading" width="1600" height="1000"></div></div><div class="laptop-base"></div></div>
     </div>
   </div>
 </section>
@@ -142,7 +142,7 @@ def etude_de_cas():
     {entete("Sur tous les écrans", 'Pensé pour le <span class="gold">mobile</span> d\'abord.')}
     <div class="cas-ecrans rv">
       {navigateur("havel-trading")}
-      <div class="phone"><div class="phone-view"><img src="assets/realisations/havel-trading.webp" alt="" width="1200" height="620" loading="lazy" style="object-position:8% top;transform:scale(1.02)"></div></div>
+      <div class="phone"><div class="phone-view"><img src="assets/realisations/havel-trading.webp" alt="" width="1600" height="1000" loading="lazy" style="object-position:8% top;transform:scale(1.02)"></div></div>
     </div>
   </div>
 </section>
@@ -293,7 +293,7 @@ ARTICLES = [
 def conseils():
     une = ARTICLES[0]
     cats = ["Tous", "Prix", "Site vitrine", "E-commerce", "Référencement local", "Identité"]
-    cartes = "".join(f'<a class="art rv" href="article-prix-site-vitrine.html"><div class="art-img"><img src="assets/realisations/{img}.webp" alt="" width="1200" height="620" loading="lazy"></div><div class="art-txt"><span class="art-cat">{cat} · {duree}</span><h3>{t}</h3><p>{d}</p><span class="link">Lire l\'article {ico("arrow")}</span></div></a>' for t, cat, d, img, duree in ARTICLES[1:])
+    cartes = "".join(f'<a class="art rv" href="article-prix-site-vitrine.html"><div class="art-img"><img src="assets/realisations/{img}.webp" alt="" width="1600" height="1000" loading="lazy"></div><div class="art-txt"><span class="art-cat">{cat} · {duree}</span><h3>{t}</h3><p>{d}</p><span class="link">Lire l\'article {ico("arrow")}</span></div></a>' for t, cat, d, img, duree in ARTICLES[1:])
     corps = f"""<section class="phero phero--court">
   <div class="gridbg" aria-hidden="true"></div><div class="orb orb--a" aria-hidden="true"></div>
   <div class="wrap">
@@ -306,7 +306,7 @@ def conseils():
 <section class="sec" style="padding-top:10px">
   <div class="wrap">
     <a class="art-une rv" href="article-prix-site-vitrine.html">
-      <div class="art-img"><img src="assets/realisations/{une[3]}.webp" alt="" width="1200" height="620"></div>
+      <div class="art-img"><img src="assets/realisations/{une[3]}.webp" alt="" width="1600" height="1000"></div>
       <div class="art-txt"><span class="art-cat">À la une · {une[1]} · {une[4]}</span><h2>{une[0]}</h2><p>{une[2]}</p><div class="auteur"><img src="assets/alexandre-coury.webp" alt="" width="1024" height="800"><span><b>Alexandre Coury</b>Mis à jour le 20 octobre 2026</span></div></div>
     </a>
     <div class="filtres rv" style="margin-top:56px">{"".join(f'<button type="button" class="filtre{" is-on" if i == 0 else ""}">{c}</button>' for i, c in enumerate(cats))}</div>
@@ -359,7 +359,7 @@ def article():
 <section class="sec">
   <div class="wrap">
     {entete("À lire aussi", 'Pour aller <span class="gold">plus loin</span>.')}
-    <div class="arts">{"".join(f'<a class="art rv" href="article-prix-site-vitrine.html"><div class="art-img"><img src="assets/realisations/{img}.webp" alt="" width="1200" height="620" loading="lazy"></div><div class="art-txt"><span class="art-cat">{cat} · {duree}</span><h3>{t}</h3><p>{d}</p></div></a>' for t, cat, d, img, duree in ARTICLES[1:4])}</div>
+    <div class="arts">{"".join(f'<a class="art rv" href="article-prix-site-vitrine.html"><div class="art-img"><img src="assets/realisations/{img}.webp" alt="" width="1600" height="1000" loading="lazy"></div><div class="art-txt"><span class="art-cat">{cat} · {duree}</span><h3>{t}</h3><p>{d}</p></div></a>' for t, cat, d, img, duree in ARTICLES[1:4])}</div>
   </div>
 </section>"""
     page("article-prix-site-vitrine.html", "Combien coûte un site vitrine en 2026 ? Prix détaillés",

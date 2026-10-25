@@ -66,13 +66,23 @@ while ( have_posts() ) {
 	<div class="wrap">
 		<div class="sec-hd"><div><span class="eyebrow rv">Sur tous les écrans</span><h2 class="split-words">Pensé pour le <span class="gold">mobile</span> d’abord.</h2></div></div>
 		<div class="cas-ecrans rv">
+			<?php
+			// Page complète du site client, qui défile au survol (capture longue livrée avec le thème)
+			$cle_cap = function_exists( 'aurea_cle_real' ) ? aurea_cle_real( $r ) : '';
+			$long    = $cle_cap ? AUREA_DIR . '/assets/realisations/' . $cle_cap . '-long.webp' : '';
+			$taille  = ( $long && file_exists( $long ) ) ? @getimagesize( $long ) : false; // phpcs:ignore WordPress.PHP.NoSilencedErrors
+			if ( $taille && $taille[1] > $taille[0] ) :
+				?>
+			<div class="browser browser--defile"><?php echo aurea_barre( $r['domaine'], 'div' ); // phpcs:ignore WordPress.Security.EscapeOutput ?><div class="defile"><img src="<?php echo esc_url( AUREA_URI . '/assets/realisations/' . $cle_cap . '-long.webp' ); ?>" alt="<?php echo esc_attr( 'Page d’accueil complète du site ' . $r['titre'] ); ?>" width="<?php echo (int) $taille[0]; ?>" height="<?php echo (int) $taille[1]; ?>" loading="lazy" decoding="async"></div><span class="defile-aide">Survolez pour parcourir la page</span></div>
+			<?php else : ?>
 			<div class="browser"><?php echo aurea_barre( $r['domaine'], 'div' ) . aurea_img_real( $r, 'Site ' . $r['titre'] . ' réalisé par Aurea Media' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<?php endif; ?>
 			<div class="phone"><div class="phone-view">
 				<?php
 				if ( $r['mobile'] ) {
 					echo wp_get_attachment_image( $r['mobile'], 'large', false, array( 'alt' => '', 'loading' => 'lazy' ) );
 				} else {
-					echo str_replace( '<img ', '<img style="object-position:8% top" ', aurea_img_real( $r ) ); // phpcs:ignore WordPress.Security.EscapeOutput
+					echo aurea_img_real( $r ); // phpcs:ignore WordPress.Security.EscapeOutput
 				}
 				?>
 			</div></div>

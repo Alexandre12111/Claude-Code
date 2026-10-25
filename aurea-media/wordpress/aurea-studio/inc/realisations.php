@@ -398,6 +398,7 @@ function aurea_real_importer( $limite = 0 ) {
 		if ( file_exists( $mobile_src ) ) {
 			update_post_meta( $id, '_real_mobile', aurea_studio_importer_image( $mobile_src, 'realisation-' . $fichier . '-mobile.webp', 'Site ' . $titre . ' sur mobile' ) );
 		}
+		update_post_meta( $id, '_aurea_captures', md5_file( AUREA_STUDIO_DIR . 'assets/realisations/' . $fichier . '.webp' ) . ( file_exists( $mobile_src ) ? md5_file( $mobile_src ) : '' ) );
 		$ajoutes++;
 	}
 	flush_rewrite_rules( false );
@@ -418,4 +419,84 @@ register_activation_hook( AUREA_STUDIO_DIR . 'aurea-studio.php', function () {
 	aurea_real_enregistrer();
 	aurea_real_creer_termes();
 	flush_rewrite_rules( false );
+} );
+
+/*
+ * Nouvelles captures livrées avec l'extension : elles remplacent celles des réalisations déjà importées.
+ * Chaque capture est importée sous un nouveau nom (les caches ne servent pas l'ancienne image) ; l'ancienne,
+ * si elle venait d'Aurea Studio, est retirée de la médiathèque. Traité par lots de 3 à chaque page de l'admin.
+ */
+function aurea_real_captures_a_jour( $limite = 3 ) {
+	$restantes = 0;
+	$faites    = 0;
+	foreach ( aurea_realisations( array( 'tout' => true ) ) as $r ) {
+		$cle = (string) get_post_meta( $r['id'], '_real_cle', true );
+		if ( ! $cle && $r['image'] ) {
+			$cle = (string) get_post_meta( $r['image'], '_aurea_real_source', true );
+		}
+		$pc = AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . '.webp';
+		if ( ! $cle || ! file_exists( $pc ) ) {
+			continue;
+		}
+		$empreinte = md5_file( $pc ) . ( file_exists( AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . '-mobile.webp' ) ? md5_file( AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . '-mobile.webp' ) : '' );
+		if ( get_post_meta( $r['id'], '_aurea_captures', true ) === $empreinte ) {
+			continue;
+		}
+		if ( $faites >= $limite ) {
+			$restantes++;
+			continue;
+		}
+		$suffixe = '-' . substr( $empreinte, 0, 6 );
+		foreach ( array( 'pc' => '', 'mobile' => '-mobile' ) as $sorte => $fin ) {
+			$source = AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . $fin . '.webp';
+			if ( ! file_exists( $source ) ) {
+				continue;
+			}
+			$ancienne = 'pc' === $sorte ? (int) get_post_thumbnail_id( $r['id'] ) : (int) get_post_meta( $r['id'], '_real_mobile', true );
+			$nouvelle = aurea_studio_importer_image( $source, 'realisation-' . $cle . $fin . $suffixe . '.webp', 'Site ' . $r['titre'] . ( 'pc' === $sorte ? ' réalisé par Aurea Media' : ' sur mobile' ) );
+			if ( ! $nouvelle ) {
+				continue;
+			}
+			update_post_meta( $nouvelle, '_aurea_real_source', $cle );
+			if ( 'pc' === $sorte ) {
+				set_post_thumbnail( $r['id'], $nouvelle );
+			} else {
+				update_post_meta( $r['id'], '_real_mobile', $nouvelle );
+			}
+			// L'ancienne image est retirée seulement si elle venait d'Aurea Studio et ne sert plus ailleurs
+			if ( $ancienne && $ancienne !== $nouvelle && get_post_meta( $ancienne, '_aurea_real_source', true ) ) {
+				global $wpdb;
+				$ailleurs = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->postmeta} WHERE meta_value = %s AND meta_key IN ('_thumbnail_id','_real_mobile') AND post_id <> %d", (string) $ancienne, $r['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				if ( ! $ailleurs ) {
+					wp_delete_attachment( $ancienne, true );
+				}
+			}
+		}
+		update_post_meta( $r['id'], '_aurea_captures', $empreinte );
+		$faites++;
+	}
+	return array( 'faites' => $faites, 'restantes' => $restantes );
+}
+add_action( 'admin_init', function () {
+	if ( wp_doing_ajax() || ! current_user_can( 'upload_files' ) || get_option( 'aurea_captures_version' ) === AUREA_STUDIO_VERSION ) {
+		return;
+	}
+	@set_time_limit( 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	$etat = aurea_real_captures_a_jour( 3 );
+	if ( ! $etat['restantes'] ) {
+		update_option( 'aurea_captures_version', AUREA_STUDIO_VERSION );
+	}
+	set_transient( 'aurea_captures_message', $etat, 120 );
+} );
+add_action( 'admin_notices', function () {
+	$etat = get_transient( 'aurea_captures_message' );
+	if ( ! $etat ) {
+		return;
+	}
+	delete_transient( 'aurea_captures_message' );
+	if ( $etat['restantes'] ) {
+		printf( '<div class="notice notice-info"><p><strong>Aurea Studio</strong> : nouvelles captures des réalisations en cours d’installation, encore %d à traiter. <a href="%s">Continuer</a> (ou ouvrez simplement une autre page de l’admin).</p></div>', (int) $etat['restantes'], esc_url( add_query_arg( array() ) ) );
+	} elseif ( $etat['faites'] ) {
+		echo '<div class="notice notice-success is-dismissible"><p><strong>Aurea Studio</strong> : toutes les captures des réalisations sont à jour.</p></div>';
+	}
 } );

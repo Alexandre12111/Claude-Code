@@ -74,14 +74,16 @@ function aurea_remplacer( $html ) {
 function aurea_partie( $nom ) {
 	$fichier = AUREA_DIR . '/parts/' . $nom . '.html';
 	if ( is_readable( $fichier ) ) {
-		echo aurea_remplacer( file_get_contents( $fichier ) ); // phpcs:ignore WordPress.Security.EscapeOutput, WordPress.WP.AlternativeFunctions
+		echo aurea_avis_reperes( aurea_remplacer( file_get_contents( $fichier ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput, WordPress.WP.AlternativeFunctions
 	}
 }
 
 /** Contenu livré avec le thème (contenu/<nom>.html), repères remplacés. */
-function aurea_contenu_livre( $nom ) {
+function aurea_contenu_livre( $nom, $afficher = true ) {
 	$fichier = AUREA_DIR . '/contenu/' . $nom . '.html';
-	return is_readable( $fichier ) ? aurea_remplacer( file_get_contents( $fichier ) ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions
+	$html    = is_readable( $fichier ) ? aurea_remplacer( file_get_contents( $fichier ) ) : ''; // phpcs:ignore WordPress.WP.AlternativeFunctions
+	// À l'affichage, la note et le nombre d'avis sont résolus ; à l'installation, les repères restent dans la page
+	return $afficher ? aurea_avis_reperes( $html ) : $html;
 }
 
 /** Le contenu de la page a-t-il son propre en-tête de page (hero de la maquette) ? */
@@ -100,3 +102,14 @@ function aurea_ariane( $etapes ) {
 	}
 	return '<nav class="crumbs rv" aria-label="Fil d’Ariane">' . implode( '', $liens ) . '</nav>';
 }
+
+/** Note et nombre d'avis Google, résolus à l'affichage (repères {{avis_note}} et {{avis_total}}). */
+function aurea_avis_reperes( $html ) {
+	if ( false === strpos( (string) $html, '{{avis_' ) ) {
+		return $html;
+	}
+	$r = function_exists( 'aurea_avis_resume' ) ? aurea_avis_resume() : array( 'note_txt' => '4,9', 'total' => 39 );
+	return strtr( $html, array( '{{avis_note}}' => esc_html( $r['note_txt'] ), '{{avis_total}}' => esc_html( (string) $r['total'] ) ) );
+}
+add_filter( 'the_content', 'aurea_avis_reperes', 99 );
+add_filter( 'render_block', 'aurea_avis_reperes', 99 );
