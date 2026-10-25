@@ -21,8 +21,10 @@ sys.path.insert(0, ICI)
 from etudes import e, liens, p, h, ul, bref  # noqa: E402
 from articles_lot1 import LOT1  # noqa: E402
 from articles_lot2 import LOT2  # noqa: E402
+from articles_pack1 import PACK1  # noqa: E402
 
-ARTICLES = LOT1 + LOT2
+ARTICLES = LOT1 + LOT2      # livrés avec le thème
+PACKS = PACK1               # livrés en packs programmés
 THEME = os.path.join(ICI, '..', 'aurea')
 
 
@@ -147,10 +149,29 @@ def main():
         print('ALERTE', x)
 
 
+def verifier(a, c):
+    alertes = []
+    for tiret in (' - ', ' – ', ' — '):
+        if tiret in c or tiret in a['titre_seo'] or tiret in a['description']:
+            alertes.append(f'{a["slug"]} : tiret au milieu d’une phrase')
+    lt, ld = len(a['titre_seo']), len(a['description'])
+    if not 50 <= lt <= 62:
+        alertes.append(f'{a["slug"]} : titre SEO de {lt} caractères')
+    if not 135 <= ld <= 162:
+        alertes.append(f'{a["slug"]} : description de {ld} caractères')
+    for zone in ('titre_seo', 'description', 'intro', 'titre'):
+        if a['mot_cle'].lower() not in a[zone].lower():
+            alertes.append(f'{a["slug"]} : mot clé absent de {zone}')
+    if mots(c) < 1200:
+        alertes.append(f'{a["slug"]} : {mots(c)} mots seulement')
+    return alertes
+
+
 def pack(nom, choix):
     """Pack d'articles autonome : articles.json, articles/<slug>.html, images/<fichier>."""
     import zipfile
-    par_slug = {a['slug']: a for a in ARTICLES}
+    par_slug = {a['slug']: a for a in ARTICLES + PACKS}
+    alertes = []
     sortie = os.path.join(ICI, '..', 'packs')
     os.makedirs(sortie, exist_ok=True)
     chemin = os.path.join(sortie, nom + '.zip')
@@ -166,7 +187,13 @@ def pack(nom, choix):
                         imgs['conseils/' + b[1]] = b[3]
             for f in imgs:
                 z.write(os.path.join(THEME, 'assets', f), 'images/' + os.path.basename(f))
-            z.writestr('articles/' + slug + '.html', rendre(a))
+            c = rendre(a)
+            alertes += verifier(a, c)
+            for f in imgs:
+                if not os.path.exists(os.path.join(THEME, 'assets', f)):
+                    alertes.append(f'{slug} : image manquante {f}')
+            print(f'  {slug:32} {mots(c):5} mots  titre {len(a["titre_seo"])}  meta {len(a["description"])}  {date or "publié à l’import"}')
+            z.writestr('articles/' + slug + '.html', c)
             reglages[slug] = {
                 'titre': a['titre'], 'categorie': a['categorie'], 'mot_cle': a['mot_cle'],
                 'titre_seo': a['titre_seo'], 'description': a['description'], 'extrait': a['extrait'],
@@ -174,6 +201,8 @@ def pack(nom, choix):
             }
         z.writestr('articles.json', json.dumps(reglages, ensure_ascii=False, indent=1))
     print(f'{chemin} : {len(reglages)} articles, {os.path.getsize(chemin) // 1024} Ko')
+    for x in alertes:
+        print('ALERTE', x)
 
 
 if __name__ == '__main__':

@@ -118,11 +118,13 @@ function aurea_pack_importer( $dossier ) {
 			$champs['post_status']   = 'future';
 			$champs['post_date']     = wp_date( 'Y-m-d H:i:s', $date );
 			$champs['post_date_gmt'] = gmdate( 'Y-m-d H:i:s', $date );
+			$champs['edit_date']     = true; // sans ce drapeau, WordPress ignore la date d'un brouillon et le publie aussitôt
 			$etat = 'programmé le ' . wp_date( 'j F Y à H\hi', $date );
 		} elseif ( 'publish' !== $actuel ) {
 			$champs['post_status']   = 'publish';
 			$champs['post_date']     = current_time( 'mysql' );
 			$champs['post_date_gmt'] = current_time( 'mysql', true );
+			$champs['edit_date']     = true;
 			$etat = 'publié';
 		} else {
 			$etat = 'mis à jour';
