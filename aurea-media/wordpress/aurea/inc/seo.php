@@ -350,11 +350,23 @@ add_filter( 'rank_math/frontend/robots', function ( $robots ) {
 
 /* Plan du site Rank Math : sans les fiches de réalisation non indexées (signal cohérent pour Google). */
 add_filter( 'rank_math/sitemap/entry', function ( $url, $type, $objet ) {
-	if ( 'post' === $type && $objet instanceof WP_Post && 'aurea_realisation' === $objet->post_type && '' === trim( wp_strip_all_tags( (string) $objet->post_content ) ) ) {
+	// Rank Math transmet une ligne brute de la base (pas toujours un WP_Post) : on relit l'article par son ID
+	$id   = is_object( $objet ) ? (int) ( $objet->ID ?? 0 ) : 0;
+	$post = $id ? get_post( $id ) : null;
+	if ( $post && 'aurea_realisation' === $post->post_type && '' === trim( wp_strip_all_tags( (string) $post->post_content ) ) ) {
 		return false;
 	}
 	return $url;
 }, 10, 3 );
+
+/* Une fois par version : cache du plan du site Rank Math vidé, pour appliquer le filtre ci dessus. */
+add_action( 'init', function () {
+	if ( get_option( 'aurea_sitemap_version' ) === AUREA_VERSION || ! is_callable( array( '\\RankMath\\Sitemap\\Cache', 'invalidate_storage' ) ) ) {
+		return;
+	}
+	update_option( 'aurea_sitemap_version', AUREA_VERSION );
+	\RankMath\Sitemap\Cache::invalidate_storage();
+}, 100 );
 
 /* ------------------------------------------------------------------ */
 /* Sans Rank Math : le thème prend le relais                           */
