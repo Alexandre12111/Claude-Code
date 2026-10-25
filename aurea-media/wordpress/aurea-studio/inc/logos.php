@@ -268,16 +268,18 @@ function aurea_logos_a_importer() {
  * Importe les logos livrés avec l'extension qui ne sont pas encore dans la médiathèque.
  * Utilisé par le bouton de l'écran Logos clients et par l'installation du thème Aurea.
  *
+ * @param int $limite Nombre maximum à importer en une fois (0 : tous).
  * @return int Nombre de logos ajoutés.
  */
-function aurea_logos_importer() {
+function aurea_logos_importer( $limite = 0 ) {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	require_once ABSPATH . 'wp-admin/includes/media.php';
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 
 	$rang    = count( aurea_logos() );
 	$ajoutes = 0;
-	foreach ( aurea_logos_a_importer() as $fichier => $nom ) {
+	$liste = aurea_logos_a_importer();
+	foreach ( $limite ? array_slice( $liste, 0, $limite, true ) : $liste as $fichier => $nom ) {
 		$source = AUREA_STUDIO_DIR . 'assets/logos/' . $fichier . '.png';
 		if ( ! file_exists( $source ) ) {
 			continue;

@@ -36,7 +36,9 @@ Si l'installateur affiche une erreur d'identifiants FTP : ajoutez la ligne `defi
 
 ## Étape 2 : installation en un clic (2 minutes)
 
-**Apparence → Installation Aurea → bouton « Tout installer ».**
+**Apparence → Installation Aurea → bouton « Tout installer ».** (Cet écran s'ouvre tout seul juste après l'activation du thème.)
+
+Les pages du site n'existent pas tant que ce bouton n'a pas été cliqué : c'est lui qui les crée. L'installation avance étape par étape, avec un compte rendu à l'écran ; les images sont importées par petits lots pour ne pas dépasser le temps autorisé par votre hébergeur. Si une étape affiche une erreur, cliquez sur « Relancer l'installation » : ce qui est déjà fait n'est pas refait.
 
 Ce bouton enchaîne six étapes, que vous pouvez aussi lancer une par une :
 

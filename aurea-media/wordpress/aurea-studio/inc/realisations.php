@@ -359,13 +359,16 @@ function aurea_studio_importer_image( $chemin, $nom_fichier, $titre ) {
  * Importe les réalisations livrées avec l'extension (captures, textes, types, secteurs).
  * Utilisé par le bouton de l'écran Réalisations et par l'installation du thème Aurea.
  *
+ * @param int $limite Nombre maximum à importer en une fois (0 : toutes). Par petits lots, l'import
+ *                    ne dépasse jamais le temps d'exécution autorisé par l'hébergeur.
  * @return int Nombre de réalisations ajoutées.
  */
-function aurea_real_importer() {
+function aurea_real_importer( $limite = 0 ) {
 	aurea_real_creer_termes();
 	$rang    = count( aurea_realisations( array( 'tout' => true ) ) );
 	$ajoutes = 0;
-	foreach ( aurea_real_a_importer() as $fichier => $r ) {
+	$liste = aurea_real_a_importer();
+	foreach ( $limite ? array_slice( $liste, 0, $limite, true ) : $liste as $fichier => $r ) {
 		list( $titre, $url, $type, $secteur, $lieu, $accroche, $une, $mur ) = $r;
 		$image = aurea_studio_importer_image( AUREA_STUDIO_DIR . 'assets/realisations/' . $fichier . '.webp', 'realisation-' . $fichier . '.webp', 'Site ' . $titre . ' réalisé par Aurea Media' );
 		if ( ! $image ) {

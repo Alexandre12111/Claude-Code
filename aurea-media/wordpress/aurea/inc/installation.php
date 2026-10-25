@@ -67,6 +67,32 @@ function aurea_installer_contenus_studio() {
 	return sprintf( 'Réalisations ajoutées : %d. Logos ajoutés : %d.', $r, $l );
 }
 
+/**
+ * Étape 2 par petits lots (utilisée par « Tout installer ») : quelques images par requête,
+ * pour ne jamais dépasser le temps d'exécution autorisé par l'hébergeur.
+ *
+ * @return array { message, restant }
+ */
+function aurea_installer_studio_lot() {
+	if ( ! function_exists( 'aurea_real_importer' ) || ! function_exists( 'aurea_real_a_importer' ) ) {
+		return array( 'message' => 'Aurea Studio n’est pas actif : les réalisations et les logos seront importés quand il le sera.', 'restant' => 0, 'avertissement' => true );
+	}
+	@set_time_limit( 120 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	$avant_r = count( aurea_real_a_importer() );
+	$avant_l = function_exists( 'aurea_logos_a_importer' ) ? count( aurea_logos_a_importer() ) : 0;
+	if ( $avant_r ) {
+		$ajout = aurea_real_importer( 3 );
+		$quoi  = 'réalisations';
+	} elseif ( $avant_l ) {
+		$ajout = aurea_logos_importer( 6 );
+		$quoi  = 'logos';
+	} else {
+		return array( 'message' => 'Réalisations et logos déjà importés.', 'restant' => 0 );
+	}
+	$restant = count( aurea_real_a_importer() ) + ( function_exists( 'aurea_logos_a_importer' ) ? count( aurea_logos_a_importer() ) : 0 );
+	return array( 'message' => sprintf( '%d %s importés, %d images restantes.', $ajout, $quoi, $restant ), 'restant' => $restant, 'progres' => $ajout > 0 );
+}
+
 /** Image livrée avec le thème copiée dans la médiathèque (une seule fois). */
 function aurea_image_theme( $fichier, $alt ) {
 	$deja = get_posts( array( 'post_type' => 'attachment', 'post_status' => 'inherit', 'numberposts' => 1, 'fields' => 'ids', 'meta_key' => '_aurea_source', 'meta_value' => $fichier ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
@@ -328,6 +354,37 @@ add_action( 'admin_menu', function () {
 	add_theme_page( 'Installation Aurea', 'Installation Aurea', 'manage_options', AUREA_INSTALL, 'aurea_ecran_installation' );
 } );
 
+/* « Tout installer » : une requête par étape (et par lot d'images), avec un compte rendu affiché au fur et à mesure. */
+add_action( 'wp_ajax_aurea_installer_etape', function () {
+	check_ajax_referer( 'aurea_installer' );
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_send_json_error( 'Accès refusé.', 403 );
+	}
+	$etape = sanitize_key( wp_unslash( $_POST['etape'] ?? '' ) );
+	try {
+		switch ( $etape ) {
+			case 'studio':
+				wp_send_json_success( aurea_installer_studio_lot() );
+				break;
+			case 'pages':
+				wp_send_json_success( array( 'message' => aurea_installer_pages( ! empty( $_POST['remplacer'] ) ) ) );
+				break;
+			case 'reglages':
+				wp_send_json_success( array( 'message' => aurea_installer_reglages_wp() ) );
+				break;
+			case 'rank_math':
+				wp_send_json_success( array( 'message' => aurea_installer_rank_math(), 'avertissement' => ! aurea_rank_math_actif() ) );
+				break;
+			case 'redirections':
+				wp_send_json_success( array( 'message' => aurea_installer_redirections_etape(), 'avertissement' => ! aurea_rank_math_actif() ) );
+				break;
+		}
+	} catch ( Throwable $e ) {
+		wp_send_json_error( 'Erreur pendant l’étape : ' . $e->getMessage() );
+	}
+	wp_send_json_error( 'Étape inconnue.' );
+} );
+
 add_action( 'admin_post_aurea_installer', function () {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		wp_die( 'Accès refusé.' );
@@ -387,7 +444,55 @@ function aurea_ecran_installation() {
 			<div class="notice notice-success"><?php foreach ( $messages as $m ) : ?><p><?php echo esc_html( $m ); ?></p><?php endforeach; ?></div>
 		<?php endif; ?>
 
-		<?php aurea_bouton_etape( 'tout', 'Tout installer', true ); ?>
+		<div class="aurea-tout">
+			<?php aurea_bouton_etape( 'tout', 'Tout installer', true ); ?>
+			<ol class="aurea-tout-suivi" id="aurea-tout-suivi" hidden></ol>
+		</div>
+		<script>
+		(function () {
+			var form = document.querySelector('.aurea-tout form');
+			if (!form || !window.fetch) return; // sans JavaScript : envoi classique du formulaire
+			var suivi = document.getElementById('aurea-tout-suivi');
+			var nonce = form.querySelector('[name=_wpnonce]').value;
+			var etapes = [['studio', 'Réalisations et logos (par lots)'], ['pages', 'Pages, article et étude de cas'], ['reglages', 'Réglages WordPress'], ['rank_math', 'Rank Math SEO'], ['redirections', 'Redirections 301']];
+			function appel(etape) {
+				var d = new FormData(); d.append('action', 'aurea_installer_etape'); d.append('etape', etape); d.append('_ajax_nonce', nonce);
+				return fetch(ajaxurl, { method: 'POST', body: d, credentials: 'same-origin' }).then(function (r) {
+					return r.text().then(function (t) {
+						try { return JSON.parse(t); } catch (e) { throw new Error(r.status >= 500 || !t ? 'le serveur a interrompu l’étape (délai dépassé ou erreur ' + r.status + ')' : 'réponse inattendue du serveur'); }
+					});
+				});
+			}
+			form.addEventListener('submit', async function (e) {
+				e.preventDefault();
+				var bouton = form.querySelector('button'); bouton.disabled = true; bouton.textContent = 'Installation en cours…';
+				suivi.hidden = false; suivi.innerHTML = '';
+				var erreurs = 0;
+				for (var i = 0; i < etapes.length; i++) {
+					var li = document.createElement('li'); li.className = 'en-cours'; li.innerHTML = '<b></b> <span>…</span>';
+					li.querySelector('b').textContent = etapes[i][1]; suivi.appendChild(li);
+					var texte = li.querySelector('span');
+					try {
+						var tours = 0, r;
+						do {
+							r = await appel(etapes[i][0]);
+							if (!r.success) throw new Error(r.data || 'échec');
+							texte.textContent = r.data.message;
+							tours++;
+						} while (etapes[i][0] === 'studio' && r.data.restant > 0 && r.data.progres && tours < 40);
+						if (etapes[i][0] === 'studio' && r.data.restant > 0) throw new Error('certaines images n’ont pas pu être importées (' + r.data.restant + ' restantes) : relancez « Importer les réalisations et les logos »');
+						li.className = r.data.avertissement ? 'attention' : 'ok';
+					} catch (err) {
+						li.className = 'erreur'; texte.textContent = 'Erreur : ' + err.message; erreurs++;
+						if (etapes[i][0] === 'pages') break; // sans les pages, la suite n'a pas de sens
+					}
+				}
+				bouton.textContent = erreurs ? 'Relancer l’installation' : 'Installation terminée';
+				bouton.disabled = false;
+				if (!erreurs) { var a = document.createElement('p'); a.innerHTML = '<a class="button button-primary" href="' + <?php echo wp_json_encode( home_url( '/' ) ); ?> + '" target="_blank">Voir le site</a> <a class="button" href="' + <?php echo wp_json_encode( admin_url( 'themes.php?page=' . AUREA_INSTALL ) ); ?> + '">Actualiser cet écran</a>'; suivi.after(a); }
+			});
+		})();
+		</script>
 
 		<div class="aurea-install-liste">
 			<?php
@@ -436,6 +541,10 @@ function aurea_ecran_installation() {
 		.aurea-install-form{display:grid;gap:8px;justify-items:end}
 		.aurea-install-option{font-size:12px;color:#50575e}
 		.aurea-install-suite li{margin-bottom:8px}
+		.aurea-tout-suivi{margin:0 0 22px;padding:14px 18px 14px 36px;background:#fff;border:1px solid #dcdcde;border-radius:10px}
+		.aurea-tout-suivi li{margin:6px 0}.aurea-tout-suivi li.ok b::after{content:" ✓";color:#00a32a}
+		.aurea-tout-suivi li.attention b::after{content:" !";color:#dba617}.aurea-tout-suivi li.erreur{color:#d63638}
+		.aurea-tout-suivi li.en-cours span{color:#646970}
 		.aurea-apercu{margin-top:14px;padding:18px 20px;background:#fff;border:1px solid #dcdcde;border-radius:10px}
 		.aurea-apercu h3{margin:18px 0 8px}.aurea-apercu table{margin-bottom:6px}.aurea-apercu code{font-size:11px}
 		@media (max-width:782px){.aurea-install-etape{grid-template-columns:34px 1fr}.aurea-install-form{grid-column:1/-1;justify-items:start}}
@@ -484,6 +593,21 @@ function aurea_ecran_nettoyage() {
 	echo '<script>document.querySelector(".aurea-apercu form").addEventListener("submit",function(e){if(!confirm("Mettre ces contenus à la corbeille et créer les redirections ?"))e.preventDefault();});</script>';
 	echo '</div>';
 }
+
+/* Juste après l'activation du thème : direction l'écran d'installation. */
+add_action( 'after_switch_theme', function () {
+	update_option( 'aurea_ouvrir_installation', 1 );
+} );
+add_action( 'admin_init', function () {
+	if ( ! get_option( 'aurea_ouvrir_installation' ) || wp_doing_ajax() || ! current_user_can( 'manage_options' ) || isset( $_GET['activate-multi'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		return;
+	}
+	delete_option( 'aurea_ouvrir_installation' );
+	if ( ( $_GET['page'] ?? '' ) !== AUREA_INSTALL ) { // phpcs:ignore WordPress.Security.NonceVerification
+		wp_safe_redirect( admin_url( 'themes.php?page=' . AUREA_INSTALL ) );
+		exit;
+	}
+} );
 
 /* Tant que l'installation n'est pas faite : un rappel sur le tableau de bord et l'écran des thèmes. */
 add_action( 'admin_notices', function () {
