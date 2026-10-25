@@ -1,0 +1,443 @@
+{
+ "accueil": {
+  "titre": "Accueil",
+  "h1": "Des sites sur mesure qui vous apportent des clients.",
+  "fichier": "accueil.html",
+  "texte": false,
+  "seo_titre": "Agence web sur mesure : création de site internet | Aurea",
+  "seo_description": "Agence web sur mesure : sites vitrines et e-commerce premium qui convertissent. En ligne en 4 semaines, dès 1 000 € HT. Devis gratuit sous 24h.",
+  "mot_cle": "agence web sur mesure,création site internet,agence création site web,site vitrine sur mesure",
+  "type": "accueil",
+  "service": null,
+  "prix": null,
+  "fil": []
+ },
+ "creation-site-vitrine": {
+  "titre": "Création de site vitrine",
+  "h1": "Création de site vitrine sur mesure, pensé pour convertir.",
+  "fichier": "creation-site-vitrine.html",
+  "texte": false,
+  "seo_titre": "Création site vitrine sur mesure | Dès 1 000 € HT, Aurea",
+  "seo_description": "Création de site vitrine sur mesure pour indépendants, TPE et PME : design premium, SEO intégré, en ligne en 4 semaines. Devis gratuit sous 24h.",
+  "mot_cle": "création site vitrine,site vitrine sur mesure,site vitrine professionnel,site vitrine WordPress",
+  "type": "service",
+  "service": "Création de site vitrine sur mesure",
+  "prix": "1000",
+  "fil": [
+   [
+    "Services",
+    "/#services"
+   ],
+   [
+    "Site vitrine",
+    null
+   ]
+  ]
+ },
+ "creation-site-ecommerce": {
+  "titre": "Création de site e-commerce",
+  "h1": "Création de site e-commerce sur mesure, sans commission.",
+  "fichier": "creation-site-ecommerce.html",
+  "texte": false,
+  "seo_titre": "Création site e-commerce sur mesure | WooCommerce, Aurea",
+  "seo_description": "Création de site e-commerce sur mesure sous WooCommerce : boutique rapide, paiement sécurisé, aucune commission sur vos ventes. Dès 1 650 € HT.",
+  "mot_cle": "création site e-commerce,boutique en ligne sur mesure,site WooCommerce,créer une boutique en ligne",
+  "type": "service",
+  "service": "Création de site e-commerce WooCommerce",
+  "prix": "1650",
+  "fil": [
+   [
+    "Services",
+    "/#services"
+   ],
+   [
+    "Site e-commerce",
+    null
+   ]
+  ]
+ },
+ "refonte-site-internet": {
+  "titre": "Refonte de site internet",
+  "h1": "Refonte de site internet, sans perdre votre référencement.",
+  "fichier": "refonte-site-internet.html",
+  "texte": false,
+  "seo_titre": "Refonte site internet sans perdre son SEO | Aurea Media",
+  "seo_description": "Refonte de site internet : nouveau design, site plus rapide et redirections maîtrisées pour garder vos positions Google. Audit offert avant devis.",
+  "mot_cle": "refonte site internet,refonte site web,moderniser son site,refonte site WordPress",
+  "type": "service",
+  "service": "Refonte de site internet",
+  "prix": null,
+  "fil": [
+   [
+    "Services",
+    "/#services"
+   ],
+   [
+    "Refonte",
+    null
+   ]
+  ]
+ },
+ "logo-identite-visuelle": {
+  "titre": "Logo et identité visuelle",
+  "h1": "Création d'identité visuelle et de logo d'entreprise.",
+  "fichier": "logo-identite-visuelle.html",
+  "texte": false,
+  "seo_titre": "Création identité visuelle et logo d'entreprise | Aurea",
+  "seo_description": "Création d'identité visuelle : logo, charte graphique, typographies et couleurs déclinés sur tous vos supports. Fichiers sources livrés, devis 24h.",
+  "mot_cle": "création identité visuelle,création logo entreprise,charte graphique,refonte logo",
+  "type": "service",
+  "service": "Création d'identité visuelle et de logo",
+  "prix": null,
+  "fil": [
+   [
+    "Services",
+    "/#services"
+   ],
+   [
+    "Identité visuelle",
+    null
+   ]
+  ]
+ },
+ "motion-design": {
+  "titre": "Motion design",
+  "h1": "Motion design pour entreprise : des vidéos qui retiennent l'attention.",
+  "fichier": "motion-design.html",
+  "texte": false,
+  "seo_titre": "Motion design pour entreprise : vidéos animées | Aurea",
+  "seo_description": "Motion design pour entreprise : vidéos explicatives, animation de logo et contenus pour vos réseaux sociaux et votre site. Devis gratuit sous 24h.",
+  "mot_cle": "motion design entreprise,vidéo motion design,animation logo,vidéo explicative",
+  "type": "service",
+  "service": "Motion design pour entreprise",
+  "prix": null,
+  "fil": [
+   [
+    "Services",
+    "/#services"
+   ],
+   [
+    "Motion design",
+    null
+   ]
+  ]
+ },
+ "maquettes-presentation": {
+  "titre": "Maquettes de présentation",
+  "h1": "Des présentations qui décrochent le rendez vous.",
+  "fichier": "maquettes-presentation.html",
+  "texte": false,
+  "seo_titre": "Création de présentation et pitch deck sur mesure | Aurea",
+  "seo_description": "Création de maquettes de présentation : pitch decks, propositions commerciales et supports de vente sur mesure. Fichiers modifiables livrés.",
+  "mot_cle": "création maquette présentation,pitch deck,présentation commerciale,présentation PowerPoint",
+  "type": "service",
+  "service": "Création de présentations et pitch decks",
+  "prix": null,
+  "fil": [
+   [
+    "Services",
+    "/#services"
+   ],
+   [
+    "Maquettes de présentation",
+    null
+   ]
+  ]
+ },
+ "site-internet-avocat": {
+  "titre": "Site internet avocat",
+  "h1": "Création de site internet pour avocat et cabinet.",
+  "fichier": "site-internet-avocat.html",
+  "texte": false,
+  "seo_titre": "Site internet avocat : création pour cabinet | Aurea",
+  "seo_description": "Création de site internet pour avocat : pages domaines d'intervention, prise de rendez vous en ligne et respect des règles de la profession.",
+  "mot_cle": "site internet avocat,création site cabinet avocat,site vitrine avocat",
+  "type": "service",
+  "service": "Création de site internet pour avocat",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Avocats",
+    null
+   ]
+  ]
+ },
+ "site-internet-professions-sante": {
+  "titre": "Site internet professions de santé",
+  "h1": "Un site internet pour les professionnels de santé.",
+  "fichier": "site-internet-professions-sante.html",
+  "texte": false,
+  "seo_titre": "Site internet professionnel de santé : médecin, kiné | Aurea",
+  "seo_description": "Création de site internet pour professionnels de santé : médecins, kinés, praticiens. Prise de rendez vous, infos pratiques, conformité déontologique.",
+  "mot_cle": "site internet professionnel de santé,site vitrine médecin,site kinésithérapeute,site internet cabinet médical",
+  "type": "service",
+  "service": "Création de site internet pour professionnel de santé",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Santé",
+    null
+   ]
+  ]
+ },
+ "site-internet-architecte": {
+  "titre": "Site internet architecte",
+  "h1": "Un site d'architecte qui met vos projets en scène.",
+  "fichier": "site-internet-architecte.html",
+  "texte": false,
+  "seo_titre": "Site internet architecte : portfolio sur mesure | Aurea",
+  "seo_description": "Création de site internet pour architecte : portfolio de projets mis en scène, pages services et demandes de contact qualifiées. Devis gratuit 24h.",
+  "mot_cle": "site internet architecte,site portfolio architecte,site vitrine architecte d'intérieur",
+  "type": "service",
+  "service": "Création de site internet pour architecte",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Architectes",
+    null
+   ]
+  ]
+ },
+ "site-internet-restaurant": {
+  "titre": "Site internet restaurant",
+  "h1": "Un site de restaurant qui remplit vos tables.",
+  "fichier": "site-internet-restaurant.html",
+  "texte": false,
+  "seo_titre": "Création site internet restaurant avec réservation | Aurea",
+  "seo_description": "Création de site internet pour restaurant : carte toujours à jour, réservation en ligne, avis Google et photos qui donnent faim. Devis sous 24h.",
+  "mot_cle": "site internet restaurant,site vitrine restaurant,site restaurant avec réservation",
+  "type": "service",
+  "service": "Création de site internet pour restaurant",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Restaurants",
+    null
+   ]
+  ]
+ },
+ "site-internet-artisan-btp": {
+  "titre": "Site internet artisan et BTP",
+  "h1": "Un site d'artisan qui vous apporte des chantiers.",
+  "fichier": "site-internet-artisan-btp.html",
+  "texte": false,
+  "seo_titre": "Site internet artisan et BTP : plus de devis | Aurea",
+  "seo_description": "Création de site internet pour artisans et entreprises du BTP : chantiers en photos, zone d'intervention et demandes de devis qualifiées.",
+  "mot_cle": "site internet artisan,site internet BTP,site vitrine artisan du bâtiment",
+  "type": "service",
+  "service": "Création de site internet pour artisan et BTP",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Artisans et BTP",
+    null
+   ]
+  ]
+ },
+ "site-internet-coach-consultant": {
+  "titre": "Site internet coach et consultant",
+  "h1": "Un site de consultant qui fait autorité.",
+  "fichier": "site-internet-coach-consultant.html",
+  "texte": false,
+  "seo_titre": "Création site internet coach et consultant | Aurea Media",
+  "seo_description": "Création de site internet pour coach et consultant : votre expertise mise en valeur, prise de rendez vous et pages qui convertissent les visiteurs.",
+  "mot_cle": "site internet coach,site vitrine consultant,site internet coach professionnel",
+  "type": "service",
+  "service": "Création de site internet pour coach et consultant",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Coachs et consultants",
+    null
+   ]
+  ]
+ },
+ "agence-web-paris": {
+  "titre": "Agence web Paris",
+  "h1": "Agence web à Paris, un studio indépendant.",
+  "fichier": "agence-web-paris.html",
+  "texte": false,
+  "seo_titre": "Agence web Paris : création de site internet sur mesure",
+  "seo_description": "Agence web à Paris : création de sites vitrines et e-commerce sur mesure, rendez vous sur place ou en visio. Devis gratuit et détaillé sous 24h.",
+  "mot_cle": "agence web Paris,création site internet Paris,site vitrine Paris",
+  "type": "local",
+  "service": "Agence web à Paris",
+  "prix": "1000",
+  "fil": [
+   [
+    "Agence web Paris",
+    null
+   ]
+  ]
+ },
+ "agence-web-hauts-de-seine": {
+  "titre": "Agence web Hauts de Seine",
+  "h1": "Agence web pour les entreprises des Hauts de Seine.",
+  "fichier": "agence-web-hauts-de-seine.html",
+  "texte": false,
+  "seo_titre": "Agence web Hauts de Seine (92) : création de site | Aurea",
+  "seo_description": "Agence web dans les Hauts de Seine : création de sites internet sur mesure pour les entreprises du 92, de Boulogne à Clamart. Devis sous 24h.",
+  "mot_cle": "agence web Hauts de Seine,création site internet 92,agence web 92",
+  "type": "local",
+  "service": "Agence web dans les Hauts de Seine",
+  "prix": "1000",
+  "fil": [
+   [
+    "Agence web Hauts de Seine",
+    null
+   ]
+  ]
+ },
+ "tarifs": {
+  "titre": "Tarifs",
+  "h1": "Combien coûte votre site internet ?",
+  "fichier": "tarifs.html",
+  "texte": false,
+  "seo_titre": "Prix d'un site vitrine et e-commerce en 2026 | Aurea Media",
+  "seo_description": "Prix d'un site vitrine dès 1 000 € HT, site e-commerce dès 1 650 € HT : ce qui est inclus, les options et le détail ligne par ligne. Devis 24h.",
+  "mot_cle": "prix site vitrine,tarif création site internet,prix site e-commerce,combien coûte un site internet",
+  "type": "tarifs",
+  "service": "Tarifs",
+  "prix": null,
+  "fil": [
+   [
+    "Tarifs",
+    null
+   ]
+  ]
+ },
+ "agence": {
+  "titre": "L'agence",
+  "h1": "Un studio indépendant, fondé en 2021.",
+  "fichier": "agence.html",
+  "texte": false,
+  "seo_titre": "Aurea Media, agence web indépendante fondée par A. Coury",
+  "seo_description": "Aurea Media est une agence web indépendante fondée en 2021 par Alexandre Coury, développeur et designer. Méthode, valeurs et engagements.",
+  "mot_cle": "agence web indépendante,Alexandre Coury,studio web Paris",
+  "type": "apropos",
+  "service": "L'agence",
+  "prix": null,
+  "fil": [
+   [
+    "L'agence",
+    null
+   ]
+  ]
+ },
+ "contact": {
+  "titre": "Contact",
+  "h1": "Parlons de votre projet.",
+  "fichier": "contact.html",
+  "texte": false,
+  "seo_titre": "Contact et devis gratuit sous 24h | Aurea Media",
+  "seo_description": "Parlez nous de votre projet de site internet : réponse personnelle et devis détaillé sous 24h ouvrées, sans engagement. Téléphone ou formulaire.",
+  "mot_cle": "contact agence web,devis site internet,demande de devis site web",
+  "type": "contact",
+  "service": "Contact",
+  "prix": null,
+  "fil": [
+   [
+    "Contact",
+    null
+   ]
+  ]
+ },
+ "mentions-legales": {
+  "titre": "Mentions légales",
+  "h1": "Mentions légales",
+  "fichier": "mentions-legales.html",
+  "texte": true,
+  "seo_titre": "Mentions légales | Aurea Media",
+  "seo_description": "Mentions légales du site aurea-media.fr : éditeur, directeur de la publication, hébergement, propriété intellectuelle et crédits des icônes et typographies.",
+  "mot_cle": "",
+  "type": "texte",
+  "service": "Mentions légales",
+  "prix": null,
+  "fil": [
+   [
+    "Mentions légales",
+    null
+   ]
+  ],
+  "extrait": "Informations légales sur l'éditeur et l'hébergeur du site aurea-media.fr."
+ },
+ "politique-confidentialite": {
+  "titre": "Politique de confidentialité",
+  "h1": "Politique de confidentialité",
+  "fichier": "politique-confidentialite.html",
+  "texte": true,
+  "seo_titre": "Politique de confidentialité | Aurea Media",
+  "seo_description": "Politique de confidentialité d'Aurea Media : données du formulaire de contact, finalité, durée de conservation, destinataires et exercice de vos droits RGPD.",
+  "mot_cle": "",
+  "type": "texte",
+  "service": "Politique de confidentialité",
+  "prix": null,
+  "fil": [
+   [
+    "Confidentialité",
+    null
+   ]
+  ],
+  "extrait": "Quelles données nous recueillons, pourquoi, combien de temps, et comment exercer vos droits."
+ },
+ "plan-du-site": {
+  "titre": "Plan du site",
+  "h1": "Plan du site",
+  "fichier": "plan-du-site.html",
+  "texte": true,
+  "seo_titre": "Plan du site | Aurea Media, agence web sur mesure",
+  "seo_description": "Plan du site Aurea Media : pages services, secteurs, agence web Paris et Hauts de Seine, réalisations, tarifs, conseils, contact et informations légales.",
+  "mot_cle": "",
+  "type": "texte",
+  "service": "Plan du site",
+  "prix": null,
+  "fil": [
+   [
+    "Plan du site",
+    null
+   ]
+  ],
+  "extrait": "Toutes les pages du site Aurea Media, classées par rubrique."
+ },
+ "realisations": {
+  "seo_titre": "Réalisations : sites vitrines et e-commerce | Aurea Media",
+  "seo_description": "Découvrez nos réalisations : sites vitrines, boutiques en ligne et identités créés pour des entreprises en France et en Europe. 45+ projets livrés.",
+  "mot_cle": "réalisations agence web,exemples de sites internet,portfolio agence web"
+ },
+ "conseils": {
+  "seo_titre": "Conseils pour réussir son site internet | Blog Aurea Media",
+  "seo_description": "Prix, référencement, refonte, choix des outils : nos conseils concrets pour réussir votre site internet, écrits par un développeur web.",
+  "mot_cle": "conseils site internet,blog création site web,conseils SEO TPE"
+ },
+ "article:prix-site-vitrine": {
+  "titre": "Combien coûte un site vitrine en 2026 ?",
+  "seo_titre": "Combien coûte un site vitrine en 2026 ? Prix détaillés",
+  "seo_description": "Prix d'un site vitrine en 2026 : budgets selon la solution, ce que contient un devis poste par poste et les pièges à éviter. Par un développeur web.",
+  "mot_cle": "prix site vitrine,combien coûte un site vitrine,tarif site vitrine",
+  "extrait": "Entre 500 € et 10 000 €, les écarts de prix sont énormes. Voici ce qui explique vraiment le prix d'un site vitrine, et comment lire un devis."
+ }
+}

@@ -383,7 +383,7 @@ body.menu-open .burger span:last-child{transform:translateY(-3.25px) rotate(-45d
 
 /* Footer */
 .ft{border-top:1px solid var(--line);padding:80px 0 36px;font-size:.94rem;position:relative;overflow:hidden}
-.ft-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px}
+.ft-grid{display:grid;grid-template-columns:1.3fr repeat(4,1fr);gap:36px}
 .ft-grid h4{font:500 .72rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:6px 0 20px}
 .ft-grid ul{list-style:none;padding:0;margin:0;display:grid;gap:10px}
 .ft-grid a{color:var(--mute);transition:color .25s}

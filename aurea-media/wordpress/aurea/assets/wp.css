@@ -1,0 +1,92 @@
+/* Aurea Media : compléments propres à WordPress (la feuille de la maquette est aurea.css). */
+
+/* Liens : pas de soulignement ajouté par WordPress (styles globaux) */
+a:where(:not(.wp-element-button)){text-decoration:none}
+.prose a:where(:not(.wp-element-button)){text-decoration:underline}
+
+/* Barre d'administration : l'en-tête fixe passe en dessous */
+.admin-bar .hd{top:48px}
+@media (max-width:782px){.admin-bar .hd{top:62px}}
+.screen-reader-text{border:0;clip:rect(1px,1px,1px,1px);clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-wrap:normal!important}
+
+/* Bandeau des logos : la deuxième série prolonge la boucle sans saut */
+.logos-copie{display:contents}
+a.logo-it{display:block}
+.logo-it.is-couleur{-webkit-mask:none;mask:none;background:var(--src) center/contain no-repeat;opacity:.85}
+.logo-it.is-couleur:hover{background:var(--src) center/contain no-repeat;opacity:1}
+
+/* Formulaire de devis */
+.f-piege{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.f-ok.is-erreur{border-color:rgba(229,72,61,.45);background:rgba(229,72,61,.08)}
+.f-ok.is-erreur .ci{background:rgba(229,72,61,.16);color:#e5483d}
+
+/* Rubriques du blog (liens) et pagination */
+a.filtre{display:inline-flex;align-items:center;text-decoration:none}
+a.filtre:hover{color:var(--cream);border-color:var(--gold)}
+.filtres{display:flex;flex-wrap:wrap;gap:10px}
+.pagination{margin-top:48px}
+.pagination ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0}
+.pagination a,.pagination span{display:inline-flex;align-items:center;min-height:42px;padding:0 16px;border-radius:999px;border:1px solid var(--line-2);color:var(--mute)}
+.pagination .current{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+/* Contenu de l'éditeur (articles, pages de texte, études de cas) */
+.prose h3{font-size:1.32rem;margin:34px 0 10px;color:var(--ink)}
+.prose a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:3px}
+.prose a.btn,.prose .wp-block-button__link{text-decoration:none}
+.prose strong{color:var(--ink);font-weight:600}
+.prose ul:not(.liste-or),.prose ol{padding-left:0;margin:0 0 20px;display:grid;gap:8px}
+.prose ul:not(.liste-or){list-style:none}
+.prose ul:not(.liste-or)>li{position:relative;padding-left:26px}
+.prose ul:not(.liste-or)>li::before{content:"";position:absolute;left:4px;top:.72em;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.prose ol{padding-left:1.4em}
+.prose ol>li::marker{color:var(--gold-deep);font-weight:600}
+.prose blockquote{margin:28px 0;padding:6px 0 6px 22px;border-left:3px solid var(--gold);font:500 1.3rem/1.5 var(--display);color:var(--ink)}
+.prose blockquote cite{display:block;margin-top:8px;font:400 .9rem var(--sans);color:var(--paper-mute)}
+.prose figure{margin:28px 0}
+.prose img{max-width:100%;height:auto;border-radius:16px}
+.prose figcaption{margin-top:10px;font-size:.88rem;color:var(--paper-mute);text-align:center}
+.prose hr{border:0;height:1px;background:rgba(10,10,10,.1);margin:40px 0}
+.prose .wp-block-table.tableau{padding:0}
+.prose .wp-block-table.tableau table{margin:0}
+.prose .alignwide{max-width:none}
+
+/* Compositions : En bref, encart, appel à l'action, questions */
+.prose .en-bref{margin:30px 0;padding:26px 28px;border-radius:20px;background:#fff;border:1px solid rgba(201,169,97,.4);box-shadow:0 20px 40px -30px rgba(10,10,10,.4)}
+.prose .en-bref .en-bref-titre{margin:0 0 10px;font-size:1.25rem}
+.prose .en-bref .en-bref-titre::before{content:"En bref";display:block;margin-bottom:8px;font:500 .72rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep)}
+.prose .en-bref p:last-child{margin:0}
+.prose .encart-bloc{margin:26px 0;padding:20px 22px 20px 70px;border-radius:16px;background:var(--ink);color:var(--mute);position:relative}
+.prose .encart-bloc::before{content:"";position:absolute;left:20px;top:20px;width:34px;height:34px;border-radius:10px;background:rgba(201,169,97,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%23C9A961'%3E%3Cpath d='M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17Z'/%3E%3C/svg%3E") center/18px no-repeat}
+.prose .encart-bloc p{margin:0 0 6px}.prose .encart-bloc p:last-child{margin:0}
+.prose .encart-bloc strong{color:var(--cream)}
+.prose .appel-bloc{margin-top:40px;padding:24px 26px;border-radius:20px;background:linear-gradient(135deg,#141412,#0b0b0a);color:var(--mute);gap:16px;align-items:center}
+.prose .appel-bloc p{margin:0}.prose .appel-bloc strong{color:var(--cream);font:600 1.15rem var(--display)}
+.prose .wp-block-button__link{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;background:var(--gold);color:var(--ink);font-weight:500}
+.prose .wp-block-button__link:hover{background:var(--gold-hi)}
+.prose details.faq-bloc{margin:0 0 10px;padding:16px 20px;border-radius:14px;background:#fff;border:1px solid rgba(10,10,10,.08)}
+.prose details.faq-bloc summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;display:flex;justify-content:space-between;gap:12px}
+.prose details.faq-bloc summary::-webkit-details-marker{display:none}
+.prose details.faq-bloc summary::after{content:"+";color:var(--gold-deep);font-size:1.3rem;line-height:1}
+.prose details.faq-bloc[open] summary::after{content:"−"}
+.prose details.faq-bloc p{margin:10px 0 0}
+
+/* Encadré auteur en fin d'article */
+.auteur-bloc{display:flex;gap:18px;align-items:flex-start;margin-top:56px;padding:24px;border-radius:20px;background:#fff;border:1px solid rgba(10,10,10,.08)}
+.auteur-bloc img{flex:none;width:72px;height:72px;border-radius:50%;object-fit:cover;object-position:50% 25%}
+.auteur-bloc b{display:block;font:600 1.1rem var(--display);color:var(--ink)}
+.auteur-bloc p{margin:6px 0 10px;font-size:.98rem;line-height:1.6}
+.auteur-bloc a{margin-right:16px;font-size:.92rem}
+
+/* Études de cas rédigées dans l'éditeur */
+.cas-corps.prose{max-width:none}
+.cas-corps.prose h2{margin-top:40px}
+.cas-corps.prose h2:first-child{margin-top:0}
+
+.page-404{min-height:70vh;display:flex;align-items:center}
+@media (max-width:680px){.auteur-bloc{flex-direction:column}.prose .encart-bloc{padding-left:22px;padding-top:66px}}
+
+/* Boutons et tableaux dans le contenu */
+.prose a.btn{color:var(--ink)}
+.prose .wp-block-table thead{border-bottom:0}
+.prose .wp-block-table td,.prose .wp-block-table th{border:0;border-bottom:1px solid rgba(10,10,10,.08)}
+.prose .wp-block-table tr:last-child td{border-bottom:0}

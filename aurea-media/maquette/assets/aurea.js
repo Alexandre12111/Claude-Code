@@ -168,15 +168,17 @@
 
   // Formulaire de contact (maquette : rien n'est envoyé)
   const form = document.getElementById('form-contact');
+  // Sur le site WordPress (data-envoi="serveur"), la demande part au serveur une fois les champs vérifiés.
   if (form) form.addEventListener('submit', e => {
-    e.preventDefault();
     const mail = form.querySelector('#f-mail'), err = form.querySelector('#f-mail-err');
     const okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail.value.trim());
     mail.setAttribute('aria-invalid', !okMail); err.hidden = okMail;
     const requis = [...form.querySelectorAll('[required]')];
     const vide = requis.find(c => !c.value.trim());
-    if (!okMail) { mail.focus(); return; }
-    if (vide) { vide.setAttribute('aria-invalid', true); vide.focus(); return; }
+    if (!okMail) { e.preventDefault(); mail.focus(); return; }
+    if (vide) { e.preventDefault(); vide.setAttribute('aria-invalid', true); vide.focus(); return; }
+    if (form.dataset.envoi === 'serveur') { form.querySelector('button[type=submit]').disabled = true; return; }
+    e.preventDefault();
     form.querySelector('.f-ok').hidden = false;
     form.querySelector('button[type=submit]').disabled = true;
   });

@@ -264,11 +264,13 @@ function aurea_logos_a_importer() {
 	return array_diff_key( aurea_logos_fournis(), array_flip( $sources ) );
 }
 
-add_action( 'wp_ajax_aurea_logos_importer', function () {
-	check_ajax_referer( 'aurea_logos' );
-	if ( ! current_user_can( 'upload_files' ) || ! current_user_can( 'edit_pages' ) ) {
-		wp_send_json_error( 'Vous n’avez pas le droit d’ajouter des fichiers.', 403 );
-	}
+/**
+ * Importe les logos livrés avec l'extension qui ne sont pas encore dans la médiathèque.
+ * Utilisé par le bouton de l'écran Logos clients et par l'installation du thème Aurea.
+ *
+ * @return int Nombre de logos ajoutés.
+ */
+function aurea_logos_importer() {
 	require_once ABSPATH . 'wp-admin/includes/file.php';
 	require_once ABSPATH . 'wp-admin/includes/media.php';
 	require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -301,5 +303,14 @@ add_action( 'wp_ajax_aurea_logos_importer', function () {
 		$ajoutes++;
 	}
 
+	return $ajoutes;
+}
+
+add_action( 'wp_ajax_aurea_logos_importer', function () {
+	check_ajax_referer( 'aurea_logos' );
+	if ( ! current_user_can( 'upload_files' ) || ! current_user_can( 'edit_pages' ) ) {
+		wp_send_json_error( 'Vous n’avez pas le droit d’ajouter des fichiers.', 403 );
+	}
+	$ajoutes = aurea_logos_importer();
 	wp_send_json_success( array( 'logos' => aurea_logos(), 'ajoutes' => $ajoutes ) );
 } );

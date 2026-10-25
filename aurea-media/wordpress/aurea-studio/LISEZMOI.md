@@ -1,4 +1,11 @@
-# Aurea Studio 0.2
+# Aurea Studio 0.3
+
+## Nouveautés de la version 0.3
+
+* Les imports des réalisations et des logos sont des fonctions réutilisables (`aurea_real_importer()`, `aurea_logos_importer()`) : le bouton « Tout installer » du thème Aurea les lance directement.
+* Chaque réalisation importée garde sa clé (`_real_cle`, par exemple `havel-trading`) : les galeries des pages du thème retrouvent les bons projets même si leur titre change.
+* Le thème Aurea affiche les réalisations, logos et avis avec le HTML de la maquette (codes courts `[aurea_mur]`, `[aurea_portfolio]`, `[aurea_projets]`, `[aurea_logos_bandeau]`, `[aurea_avis_cartes]`, `[aurea_avis_note]`).
+
 
 Plugin d'administration du site Aurea Media. Il ajoute un menu **Aurea Studio** dans la colonne de gauche de WordPress. Le contenu géré ici (logos, et bientôt réalisations et articles) est enregistré dans la base de données : il reste en place quand le thème est mis à jour ou changé.
 

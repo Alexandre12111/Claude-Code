@@ -1,0 +1,42 @@
+<!-- wp:html -->
+<section class="phero phero--court phero--contact">
+  <div class="gridbg" aria-hidden="true"></div><div class="orb orb--a" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="crumbs rv" aria-label="Fil d'Ariane"><a href="{{accueil}}">Accueil</a><span>/</span><span aria-current="page">Contact</span></nav>
+    <div class="contact-grid">
+      <div>
+        <span class="eyebrow rv">Contact</span>
+        <h1 class="split-words">Parlons de votre <span class="gold">projet</span>.</h1>
+        <p class="lead rv" style="margin:22px 0 34px">Décrivez votre projet en quelques lignes : vous recevez une première analyse, une estimation de budget et un délai sous 24h ouvrées.</p>
+        <div class="contact-infos rv">
+          <div class="ci-carte"><span class="ci"><svg><use href="#i-phone"/></svg></span><div><small>Téléphone</small><b>{{tel_affiche}}</b><span>Du lundi au vendredi, 9h à 19h</span></div></div>
+          <div class="ci-carte"><span class="ci"><svg><use href="#i-mail"/></svg></span><div><small>E-mail</small><b>{{email}}</b><span>Réponse personnelle sous 24h</span></div></div>
+          <div class="ci-carte"><span class="ci"><svg><use href="#i-pin"/></svg></span><div><small>Adresse</small><b>60 rue François Ier, 75008 Paris</b><span>Sur rendez vous, ou en visio</span></div></div>
+        </div>
+        <div class="contact-moi rv"><img src="{{theme}}/assets/alexandre-coury.webp" alt="" width="1024" height="800" loading="lazy"><p>« Je lis chaque demande moi même et vous réponds personnellement, jamais avec un message automatique. »<b>Alexandre Coury, fondateur</b></p></div>
+      </div>
+      <form class="formulaire rv" id="form-contact" method="post" action="{{admin_post}}" data-envoi="serveur" novalidate>[aurea_contact_jeton]
+        <div class="f-duo">
+          <div class="f-champ"><label for="f-nom">Nom et prénom <em>*</em></label><input id="f-nom" name="nom" autocomplete="name" required></div>
+          <div class="f-champ"><label for="f-tel">Téléphone <span>facultatif</span></label><input id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
+        </div>
+        <div class="f-champ"><label for="f-mail">Adresse e-mail <em>*</em></label><input id="f-mail" name="mail" type="email" autocomplete="email" required><small class="f-err" id="f-mail-err" hidden>Saisissez une adresse e-mail valide, par exemple nom@entreprise.fr.</small></div>
+        <fieldset class="f-champ"><legend>Votre besoin</legend><div class="choix-liste"><label class="choix"><input type="checkbox" name="besoin[]" value="Site vitrine"><span>Site vitrine</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Site e-commerce"><span>Site e-commerce</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Refonte"><span>Refonte</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Identité visuelle"><span>Identité visuelle</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Motion design"><span>Motion design</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Présentation"><span>Présentation</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Autre"><span>Autre</span></label></div></fieldset>
+        <div class="f-champ"><label for="f-msg">Décrivez votre projet <em>*</em></label><textarea id="f-msg" name="message" rows="5" required placeholder="Votre activité, vos objectifs, votre site actuel s'il existe…"></textarea></div>
+        <button class="btn" type="submit">Recevoir mon devis gratuit <svg><use href="#i-arrow"/></svg></button>
+        <p class="f-note"><svg><use href="#i-shield"/></svg>Vos données servent uniquement à répondre à votre demande. Aucun démarchage, aucun partage.</p>
+        <div class="f-ok" hidden role="status"><span class="ci ok"><svg><use href="#i-check"/></svg></span><div><b>Merci, votre demande est bien envoyée.</b><span>Réponse personnelle sous 24h ouvrées. Exemple de maquette : rien n'a été transmis.</span></div></div>
+      </form>
+    </div>
+  </div>
+</section>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<section class="sec">
+  <div class="wrap">
+<div class="sec-hd sec-hd--c"><span class="eyebrow rv">Questions fréquentes</span><h2 class="split-words">Avant de nous <span class="gold">écrire</span>.</h2></div>
+<div class="faq rv"><details open><summary>Le devis est il vraiment gratuit ?<i></i></summary><p class="ans">Oui, gratuit et sans engagement. Vous recevez un devis détaillé ligne par ligne sous 24h ouvrées.</p></details><details><summary>Que se passe t il après ma demande ?<i></i></summary><p class="ans">Un appel ou une visio de 20 minutes pour préciser votre besoin, puis le devis et le planning par écrit.</p></details><details><summary>Je n'ai pas encore de contenus, est ce un problème ?<i></i></summary><p class="ans">Non. Nous pouvons rédiger les textes et choisir les visuels avec vous.</p></details></div>
+  </div>
+</section>
+<!-- /wp:html -->

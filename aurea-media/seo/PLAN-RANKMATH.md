@@ -37,3 +37,9 @@ Généré par `construire-plan.py`. Le thème applique ces réglages à l'import
 * Schema adapté au contenu ; pas de HowTo ; pas d'AggregateRating auto déclaré ; FAQ affichée en contenu, sans balisage FAQPage.
 * Fil d'Ariane Rank Math activé, sitemap Rank Math actif, pages /tag/ et archives d'auteur en noindex.
 * Fiches réalisations : title « Site [Client] : étude de cas [type] | Aurea Media », mot clé « site [type] [secteur] », schema CreativeWork.
+
+## Mise à jour du 25 octobre 2026 : thème WordPress
+
+* Les 22 pages du plan sont créées par le thème (Apparence → Installation Aurea) avec leur titre, leur description et leur mot clé Rank Math, sauf Boulogne-Billancourt et Clamart : ces deux adresses sont redirigées (301) vers la page Hauts de Seine, qui cite les deux villes, pour éviter des pages locales quasi identiques.
+* Les pages secteur santé, architecte, restaurant, artisan BTP et coach consultant existent désormais dans la maquette, avec de vraies références clients.
+* `llms.txt` est généré par le thème à partir des pages et des articles publiés (toujours à jour) : le fichier `seo/llms.txt` sert de modèle.

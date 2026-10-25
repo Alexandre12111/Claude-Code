@@ -355,11 +355,13 @@ function aurea_studio_importer_image( $chemin, $nom_fichier, $titre ) {
 	return $id;
 }
 
-add_action( 'wp_ajax_aurea_realisations_importer', function () {
-	check_ajax_referer( 'aurea_realisations' );
-	if ( ! current_user_can( 'upload_files' ) || ! current_user_can( 'edit_pages' ) ) {
-		wp_send_json_error( 'Vous n’avez pas le droit d’ajouter des fichiers.', 403 );
-	}
+/**
+ * Importe les réalisations livrées avec l'extension (captures, textes, types, secteurs).
+ * Utilisé par le bouton de l'écran Réalisations et par l'installation du thème Aurea.
+ *
+ * @return int Nombre de réalisations ajoutées.
+ */
+function aurea_real_importer() {
 	aurea_real_creer_termes();
 	$rang    = count( aurea_realisations( array( 'tout' => true ) ) );
 	$ajoutes = 0;
@@ -381,6 +383,7 @@ add_action( 'wp_ajax_aurea_realisations_importer', function () {
 			continue;
 		}
 		set_post_thumbnail( $id, $image );
+		update_post_meta( $id, '_real_cle', $fichier );
 		update_post_meta( $id, '_real_url', $url );
 		update_post_meta( $id, '_real_lieu', $lieu );
 		update_post_meta( $id, '_real_accroche', $accroche );
@@ -395,6 +398,15 @@ add_action( 'wp_ajax_aurea_realisations_importer', function () {
 		$ajoutes++;
 	}
 	flush_rewrite_rules( false );
+	return $ajoutes;
+}
+
+add_action( 'wp_ajax_aurea_realisations_importer', function () {
+	check_ajax_referer( 'aurea_realisations' );
+	if ( ! current_user_can( 'upload_files' ) || ! current_user_can( 'edit_pages' ) ) {
+		wp_send_json_error( 'Vous n’avez pas le droit d’ajouter des fichiers.', 403 );
+	}
+	$ajoutes = aurea_real_importer();
 	wp_send_json_success( array( 'items' => aurea_realisations( array( 'tout' => true ) ), 'ajoutes' => $ajoutes ) );
 } );
 

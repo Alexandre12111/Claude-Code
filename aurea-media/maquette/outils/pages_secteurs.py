@@ -36,7 +36,7 @@ PAGES = {
     "site-internet-architecte.html": dict(
         nom="Architectes", ariane="Architectes", ref="portugal-expert",
         titre="Site internet architecte : portfolio sur mesure | Aurea",
-        desc="Création de site internet pour architecte et architecte d'intérieur : portfolio de projets mis en scène, pages rapides malgré les grandes images, demandes qualifiées.",
+        desc="Site internet pour architecte et architecte d'intérieur : portfolio de projets mis en scène, pages rapides malgré les grandes photos et demandes qualifiées.",
         surtitre="Site internet pour architecte",
         h1='Un site d\'architecte qui met vos <span class="gold">projets</span> en scène.',
         chapo="Architectes, architectes d'intérieur et promoteurs : un portfolio aussi soigné que vos réalisations, qui se charge vite malgré les grandes photos et donne envie de vous confier un projet. Ci contre, le site de Portugal Expert Properties.",
@@ -88,7 +88,7 @@ PAGES = {
     "site-internet-artisan-btp.html": dict(
         nom="Artisans et BTP", ariane="Artisans et BTP", ref="novexia",
         titre="Site internet artisan et BTP : plus de devis | Aurea",
-        desc="Création de site internet pour artisan, entreprise du bâtiment et industrie : chantiers photographiés, zone d'intervention claire et demandes de devis qualifiées.",
+        desc="Création de site internet pour artisan, entreprise du bâtiment et industrie : chantiers en photos, zone d'intervention claire et demandes de devis qualifiées.",
         surtitre="Site internet pour artisan et BTP",
         h1='Un site d\'artisan qui vous apporte des <span class="gold">chantiers</span>.',
         chapo="Plombiers, électriciens, couvreurs, entreprises de rénovation ou de travaux industriels : un site qui montre vos chantiers, rassure sur votre sérieux et transforme les visites en demandes de devis. Ci contre, le site de Novexia Construction.",
@@ -114,7 +114,7 @@ PAGES = {
     "site-internet-coach-consultant.html": dict(
         nom="Coachs et consultants", ariane="Coachs et consultants", ref="sultan",
         titre="Création site internet coach et consultant | Aurea Media",
-        desc="Création de site internet pour coach, consultant et formateur : expertise mise en valeur, offres claires, prise de rendez vous et articles qui attirent vos clients.",
+        desc="Site internet pour coach, consultant et formateur : expertise mise en valeur, offres claires, prise de rendez vous et articles qui attirent vos clients.",
         surtitre="Site internet pour coach et consultant",
         h1='Un site de consultant qui fait <span class="gold">autorité</span>.',
         chapo="Coachs, consultants, formateurs et cabinets de conseil : un site qui pose votre expertise, rend vos offres lisibles et transforme la lecture d'un article en prise de rendez vous. Ci contre, le site de Sultan Conseil & Leviers.",
