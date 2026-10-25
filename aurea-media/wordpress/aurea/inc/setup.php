@@ -112,3 +112,46 @@ if ( ! function_exists( 'aurea_proteger_theme' ) ) {
 		return ( is_object( $element ) && 'aurea' === ( $element->theme ?? '' ) ) ? false : $maj;
 	}, 10, 2 );
 }
+
+/*
+ * Elementor reste installé sur le site, mais les pages du thème ne l'utilisent pas : ses styles globaux
+ * (liens et boutons dorés, police Roboto) écrasaient le design dès qu'une page avait été ouverte dans Elementor.
+ */
+function aurea_page_elementor() {
+	$id = is_singular() ? get_queried_object_id() : 0;
+	return $id && 'builder' === get_post_meta( $id, '_elementor_edit_mode', true ) && ! get_post_meta( $id, '_aurea_version', true );
+}
+add_action( 'wp_enqueue_scripts', function () {
+	if ( aurea_page_elementor() ) {
+		return;
+	}
+	foreach ( wp_styles()->queue as $poignee ) {
+		$src = (string) ( wp_styles()->registered[ $poignee ]->src ?? '' );
+		if ( 0 === strpos( $poignee, 'elementor' ) || 0 === strpos( $poignee, 'eael' ) || false !== strpos( $src, '/elementor/' ) || false !== strpos( $src, 'essential-addons-for-elementor' ) ) {
+			wp_dequeue_style( $poignee );
+		}
+	}
+}, 9999 );
+add_filter( 'elementor/frontend/print_google_fonts', function ( $oui ) {
+	return aurea_page_elementor() ? $oui : false;
+} );
+add_filter( 'body_class', function ( $classes ) {
+	return aurea_page_elementor() ? $classes : array_values( array_filter( $classes, function ( $c ) {
+		return 0 !== strpos( $c, 'elementor-' );
+	} ) );
+}, 99 );
+
+/* Une fois par version : les pages du thème ouvertes par erreur dans Elementor redeviennent des pages normales. */
+add_action( 'admin_init', function () {
+	if ( get_option( 'aurea_elementor_version' ) === AUREA_VERSION ) {
+		return;
+	}
+	update_option( 'aurea_elementor_version', AUREA_VERSION );
+	foreach ( get_posts( array( 'post_type' => 'page', 'post_status' => 'any', 'numberposts' => -1, 'fields' => 'ids', 'meta_key' => '_aurea_version' ) ) as $id ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+		if ( get_post_meta( $id, '_elementor_edit_mode', true ) ) {
+			delete_post_meta( $id, '_elementor_edit_mode' );
+			delete_post_meta( $id, '_elementor_data' );
+			delete_post_meta( $id, '_elementor_css' );
+		}
+	}
+} );
