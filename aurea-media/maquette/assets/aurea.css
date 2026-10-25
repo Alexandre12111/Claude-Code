@@ -1414,3 +1414,31 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 .pa-motif{position:absolute;inset:0;background:radial-gradient(90% 60% at 80% 10%,rgba(201,169,97,.28),transparent 65%),repeating-linear-gradient(135deg,rgba(201,169,97,.06) 0 1px,transparent 1px 9px),#16130e}
 .pa-motif::after{content:"§";position:absolute;right:10px;top:4px;font:400 3.2rem/1 Georgia,serif;color:rgba(201,169,97,.2)}
 .m-paoli .pa-btn{white-space:nowrap}
+/* v6 : passe responsive */
+@media (max-width:680px){
+  .proj-meta{flex-direction:column-reverse;align-items:flex-start;gap:6px}
+  .proj-meta h3{font-size:1.4rem}
+  .vis-avocat{padding:22px 70px 40px 0}
+  .vis-avocat .m-phone{width:168px;right:-6px;bottom:-10px;transform:scale(.78);transform-origin:100% 100%}
+  .vis-avocat .chip{left:0!important}
+  .b-main .browser.nx{width:100%}
+  .b-main .phone.ms-phone{width:100px;right:-10px}
+  .phero-vis .chip{left:0!important}
+}
+@media (max-width:680px){
+  .gal{grid-template-columns:minmax(0,1fr)}
+  .proj{min-width:0}
+  .proj-meta span{white-space:normal}
+  .vis-shop{padding-bottom:30px}
+  .vis-shop .vs-phone{width:128px;top:auto;bottom:-10px;right:-4px}
+  .vis-shop .phero-card{margin-top:60px}
+  .vis-shop .chip:nth-of-type(2){display:none}
+}
+@media (max-width:680px){.vis-shop .vs-phone{width:112px;top:70px;bottom:auto;right:-4px}.vis-shop .phero-card{margin-top:70px}}
+@media (max-width:680px){.vis-shop .chip:nth-of-type(1){width:auto;max-width:230px;top:-14px;left:auto!important;right:0}}
+@media (min-width:681px) and (max-width:1080px){
+  .prices{grid-template-columns:1fr 1fr}
+  .prices>:last-child{grid-column:1/-1}
+  .price-card .pill{position:static;align-self:flex-start;margin-bottom:12px;order:-1}
+}
+@media (max-width:1080px){.price-card .btn{white-space:nowrap}}
