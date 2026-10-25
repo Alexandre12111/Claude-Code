@@ -304,3 +304,18 @@ add_action( 'template_redirect', function () {
 		exit;
 	}
 }, 5 );
+
+/*
+ * Une page publiée doit toujours s'afficher à son adresse, même si un ancien élément (fichier média,
+ * brouillon, réglage d'une extension) porte le même nom et fait croire à WordPress qu'elle n'existe pas.
+ */
+add_filter( 'request', function ( $requete ) {
+	if ( is_admin() || empty( $requete['pagename'] ) || isset( $requete['page_id'] ) ) {
+		return $requete;
+	}
+	$page = get_page_by_path( $requete['pagename'], OBJECT, 'page' );
+	if ( $page && 'publish' === $page->post_status ) {
+		$requete = array( 'page_id' => $page->ID ) + array_diff_key( $requete, array( 'pagename' => 1, 'name' => 1, 'attachment' => 1 ) );
+	}
+	return $requete;
+} );

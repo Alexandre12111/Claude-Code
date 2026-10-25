@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aurea Studio
  * Description:       Administration du site Aurea Media : réalisations, logos clients et avis Google, partagés par tout le site. Le contenu reste en place quand le thème change.
- * Version:           0.3.1
+ * Version:           0.3.2
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -12,10 +12,27 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUREA_STUDIO_VERSION', '0.3.1' );
+define( 'AUREA_STUDIO_VERSION', '0.3.2' );
 define( 'AUREA_STUDIO_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AUREA_STUDIO_URL', plugin_dir_url( __FILE__ ) );
 define( 'AUREA_STUDIO_MENU', 'aurea-studio' );
+
+/*
+ * Le dossier du thème s'appelle « aurea », comme un thème Elementor publié sur wordpress.org.
+ * Sans ce garde-fou, WordPress propose sa « mise à jour » et remplace le thème Aurea Media par l'autre.
+ */
+if ( ! function_exists( 'aurea_proteger_theme' ) ) {
+	function aurea_proteger_theme( $maj ) {
+		if ( is_object( $maj ) && isset( $maj->response['aurea'] ) && 'Aurea Media' === wp_get_theme( 'aurea' )->get( 'Name' ) ) {
+			unset( $maj->response['aurea'] );
+		}
+		return $maj;
+	}
+	add_filter( 'site_transient_update_themes', 'aurea_proteger_theme' );
+	add_filter( 'auto_update_theme', function ( $maj, $element ) {
+		return ( is_object( $element ) && 'aurea' === ( $element->theme ?? '' ) ) ? false : $maj;
+	}, 10, 2 );
+}
 
 require AUREA_STUDIO_DIR . 'inc/realisations.php';
 require AUREA_STUDIO_DIR . 'inc/logos.php';

@@ -441,7 +441,7 @@ function aurea_ecran_installation() {
 	};
 	?>
 	<div class="wrap aurea-install">
-		<h1>Installation du thème Aurea Media</h1>
+		<h1>Installation du thème Aurea Media <span style="font-size:13px;font-weight:400;color:#646970">version <?php echo esc_html( AUREA_VERSION ); ?></span></h1>
 		<p class="aurea-install-intro">Chaque étape peut être relancée sans risque : rien n’est supprimé, et une page déjà modifiée n’est remplacée que si vous le demandez (l’ancienne version reste dans ses révisions).</p>
 		<?php if ( $messages ) : ?>
 			<div class="notice notice-success"><?php foreach ( $messages as $m ) : ?><p><?php echo esc_html( $m ); ?></p><?php endforeach; ?></div>

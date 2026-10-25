@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aurea Installateur
  * Description:       Installe le thème Aurea Media et l'extension Aurea Studio même quand l'hébergeur limite la taille des fichiers envoyés (erreur « 413 Request Entity Too Large ») : le fichier est envoyé par petits morceaux, puis installé par WordPress.
- * Version:           1.0.1
+ * Version:           1.1.0
  * Requires at least: 5.5
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -18,6 +18,23 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'AUREA_INST_PAGE', 'aurea-installateur' );
+
+/*
+ * Le dossier du thème s'appelle « aurea », comme un thème Elementor publié sur wordpress.org.
+ * Sans ce garde-fou, WordPress propose sa « mise à jour » et remplace le thème Aurea Media par l'autre.
+ */
+if ( ! function_exists( 'aurea_proteger_theme' ) ) {
+	function aurea_proteger_theme( $maj ) {
+		if ( is_object( $maj ) && isset( $maj->response['aurea'] ) && 'Aurea Media' === wp_get_theme( 'aurea' )->get( 'Name' ) ) {
+			unset( $maj->response['aurea'] );
+		}
+		return $maj;
+	}
+	add_filter( 'site_transient_update_themes', 'aurea_proteger_theme' );
+	add_filter( 'auto_update_theme', function ( $maj, $element ) {
+		return ( is_object( $element ) && 'aurea' === ( $element->theme ?? '' ) ) ? false : $maj;
+	}, 10, 2 );
+}
 
 /** Dossier temporaire des fichiers reçus (protégé, vidé après chaque installation). */
 function aurea_inst_dossier() {
@@ -226,11 +243,38 @@ add_action( 'admin_init', function () {
 /* Écran                                                               */
 /* ------------------------------------------------------------------ */
 
+/** Ce qui est installé en ce moment : permet de vérifier qu'une mise à jour a bien pris. */
+function aurea_inst_etat() {
+	$theme   = wp_get_theme( 'aurea' );
+	$actif   = 'aurea' === get_stylesheet();
+	$ligne   = function ( $nom, $valeur, $ok ) {
+		printf( '<tr><th>%s</th><td><span class="aurea-inst-pastille %s"></span>%s</td></tr>', esc_html( $nom ), $ok ? 'is-ok' : 'is-ko', wp_kses_post( $valeur ) );
+	};
+	echo '<h2>Installé en ce moment</h2><table class="widefat striped aurea-inst-etat"><tbody>';
+	if ( ! $theme->exists() ) {
+		$ligne( 'Thème', 'Aucun thème dans le dossier « aurea » : envoyez aurea.zip ci-dessous.', false );
+	} elseif ( 'Aurea Media' !== $theme->get( 'Name' ) ) {
+		$ligne( 'Thème', sprintf( '<strong>Attention :</strong> le dossier « aurea » contient un autre thème (« %s » %s, par %s), probablement installé par une mise à jour automatique de WordPress. Envoyez aurea.zip ci-dessous pour remettre le thème Aurea Media.', esc_html( $theme->get( 'Name' ) ), esc_html( $theme->get( 'Version' ) ), esc_html( wp_strip_all_tags( $theme->get( 'Author' ) ) ) ), false );
+	} else {
+		$ligne( 'Thème', sprintf( 'Aurea Media <strong>%s</strong>%s', esc_html( $theme->get( 'Version' ) ), $actif ? ', actif' : ', <strong>pas encore activé</strong>' ), $actif );
+	}
+	$studio = WP_PLUGIN_DIR . '/aurea-studio/aurea-studio.php';
+	if ( file_exists( $studio ) ) {
+		$infos = get_plugin_data( $studio, false, false );
+		$ligne( 'Aurea Studio', sprintf( 'version <strong>%s</strong>%s', esc_html( $infos['Version'] ), is_plugin_active( 'aurea-studio/aurea-studio.php' ) ? ', active' : ', <strong>pas encore activée</strong>' ), is_plugin_active( 'aurea-studio/aurea-studio.php' ) );
+	} else {
+		$ligne( 'Aurea Studio', 'non installée', false );
+	}
+	$ligne( 'Rank Math SEO', defined( 'RANK_MATH_VERSION' ) ? 'version ' . esc_html( RANK_MATH_VERSION ) . ', active' : 'non active', defined( 'RANK_MATH_VERSION' ) );
+	echo '</tbody></table>';
+}
+
 function aurea_inst_ecran() {
 	?>
 	<div class="wrap aurea-inst">
 		<h1>Installer Aurea</h1>
 		<p class="aurea-inst-intro">Choisissez <code>aurea.zip</code> (le thème) et, si besoin, <code>aurea-studio.zip</code> (l’extension). Les fichiers sont envoyés par petits morceaux, ce qui contourne la limite de taille de votre hébergeur, puis installés par WordPress. Une version déjà installée est remplacée par la nouvelle.</p>
+		<?php aurea_inst_etat(); ?>
 		<label class="aurea-inst-zone" id="aurea-inst-zone">
 			<input type="file" id="aurea-inst-fichiers" accept=".zip,application/zip" multiple>
 			<strong>Choisir les fichiers .zip</strong>
@@ -242,6 +286,7 @@ function aurea_inst_ecran() {
 	<style>
 		.aurea-inst{max-width:820px}
 		.aurea-inst-intro{font-size:14px;color:#50575e}
+		.aurea-inst-etat{max-width:760px;margin-top:8px}.aurea-inst-etat th{width:140px;font-weight:600}.aurea-inst-pastille{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;background:#d63638}.aurea-inst-pastille.is-ok{background:#00a32a}
 		.aurea-inst-zone{display:grid;place-items:center;gap:6px;margin:18px 0;padding:36px;border:2px dashed #C9A961;border-radius:12px;background:#fffdf8;cursor:pointer;text-align:center}
 		.aurea-inst-zone.is-survol{background:#fbf3df}
 		.aurea-inst-zone input{position:absolute;opacity:0;width:1px;height:1px}

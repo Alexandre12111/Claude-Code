@@ -121,3 +121,9 @@ Ce qui se passe :
 * **Corbeille** : après 30 jours, WordPress vide la corbeille tout seul. Les redirections, elles, restent en place.
 * **Pages locales** : l'audit prévoyait aussi Boulogne-Billancourt et Clamart. Pour éviter des pages quasi identiques, ces deux adresses sont redirigées vers la page Hauts de Seine, qui cite les deux villes. Une page dédiée pourra être créée le jour où vous aurez des projets et des contenus propres à ces villes.
 * **Nouveaux articles** : le blog repart de zéro. Visez deux articles bien faits par mois plutôt que dix. Quand un nouveau guide reprend le sujet d'un ancien article (par exemple la fiche Google Business Profile), modifiez dans Rank Math → Redirections la redirection de l'ancienne adresse pour qu'elle pointe vers ce guide.
+
+## Mettre à jour le thème ou Aurea Studio
+
+1. Ouvre **Outils → Installer Aurea**. Le tableau « Installé en ce moment » indique la version du thème, d'Aurea Studio et de Rank Math.
+2. Dépose le nouveau `aurea.zip` (et `aurea-studio.zip` si fourni). Le tableau affiche la nouvelle version une fois la page rechargée.
+3. Ne clique jamais sur « Mettre à jour » proposé par WordPress pour un thème nommé « Aurea » dans Apparence → Thèmes ou Tableau de bord → Mises à jour : un autre thème, publié sur wordpress.org sous le même nom de dossier, remplacerait le tien. Depuis la version 2.0.0, le thème, Aurea Studio et l'installateur bloquent cette fausse mise à jour.

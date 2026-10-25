@@ -95,3 +95,20 @@ add_filter( 'body_class', function ( $classes ) {
 	}
 	return $classes;
 } );
+
+/*
+ * Le dossier du thème s'appelle « aurea », comme un thème Elementor publié sur wordpress.org.
+ * Sans ce garde-fou, WordPress propose sa « mise à jour » et remplace le thème Aurea Media par l'autre.
+ */
+if ( ! function_exists( 'aurea_proteger_theme' ) ) {
+	function aurea_proteger_theme( $maj ) {
+		if ( is_object( $maj ) && isset( $maj->response['aurea'] ) && 'Aurea Media' === wp_get_theme( 'aurea' )->get( 'Name' ) ) {
+			unset( $maj->response['aurea'] );
+		}
+		return $maj;
+	}
+	add_filter( 'site_transient_update_themes', 'aurea_proteger_theme' );
+	add_filter( 'auto_update_theme', function ( $maj, $element ) {
+		return ( is_object( $element ) && 'aurea' === ( $element->theme ?? '' ) ) ? false : $maj;
+	}, 10, 2 );
+}
