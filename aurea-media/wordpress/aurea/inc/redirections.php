@@ -373,3 +373,22 @@ add_action( 'init', function () {
 		flush_rewrite_rules( false );
 	}
 }, 99 );
+
+/*
+ * Une fois par version : les boutons « Demander un devis », « Décrire mon projet »… des pages déjà installées
+ * mènent à la page Contact, et non plus au bloc de contact en bas de page (#contact).
+ */
+add_action( 'admin_init', function () {
+	if ( get_option( 'aurea_liens_contact_version' ) === AUREA_VERSION ) {
+		return;
+	}
+	update_option( 'aurea_liens_contact_version', AUREA_VERSION );
+	global $wpdb;
+	$contact = esc_url( aurea_url( 'contact' ) );
+	$ids     = $wpdb->get_col( "SELECT ID FROM {$wpdb->posts} WHERE post_status IN ('publish','future','draft','private') AND post_type IN ('page','post','aurea_realisation') AND post_content LIKE '%href=\"#contact\"%'" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	foreach ( $ids as $id ) {
+		$contenu = (string) get_post_field( 'post_content', $id );
+		$wpdb->update( $wpdb->posts, array( 'post_content' => str_replace( 'href="#contact"', 'href="' . $contact . '"', $contenu ) ), array( 'ID' => $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		clean_post_cache( $id );
+	}
+} );
