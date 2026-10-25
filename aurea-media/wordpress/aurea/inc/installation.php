@@ -216,16 +216,8 @@ function aurea_installer_pages( $remplacer = false ) {
 		}
 	}
 
-	// Étude de cas Havel Trading (si sa fiche existe et n'a pas encore de texte)
-	if ( function_exists( 'aurea_realisations' ) ) {
-		foreach ( aurea_realisations( array( 'tout' => true ) ) as $r ) {
-			if ( 'havel-trading' === aurea_cle_real( $r ) && ! aurea_a_etude( $r ) ) {
-				wp_update_post( wp_slash( array( 'ID' => $r['id'], 'post_content' => aurea_contenu_livre( 'etude-havel-trading' ) ) ) );
-			}
-		}
-	}
 	kses_init_filters();
-	return sprintf( 'Pages créées : %d. Anciennes pages remplacées : %d. Pages déjà importées gardées telles quelles : %d.', $crees, $maj, $gardees );
+	return sprintf( 'Pages créées : %d. Anciennes pages remplacées : %d. Pages déjà importées gardées telles quelles : %d. ', $crees, $maj, $gardees ) . aurea_installer_etudes();
 }
 
 /** Étape 4 : réglages WordPress. */
@@ -457,7 +449,7 @@ function aurea_ecran_installation() {
 			if (!form || !window.fetch) return; // sans JavaScript : envoi classique du formulaire
 			var suivi = document.getElementById('aurea-tout-suivi');
 			var nonce = form.querySelector('[name=_wpnonce]').value;
-			var etapes = [['studio', 'Réalisations et logos (par lots)'], ['pages', 'Pages, article et étude de cas'], ['reglages', 'Réglages WordPress'], ['rank_math', 'Rank Math SEO'], ['redirections', 'Redirections 301']];
+			var etapes = [['studio', 'Réalisations et logos (par lots)'], ['pages', 'Pages, article et études de cas'], ['reglages', 'Réglages WordPress'], ['rank_math', 'Rank Math SEO'], ['redirections', 'Redirections 301']];
 			function appel(etape) {
 				var d = new FormData(); d.append('action', 'aurea_installer_etape'); d.append('etape', etape); d.append('_ajax_nonce', nonce);
 				return fetch(ajaxurl, { method: 'POST', body: d, credentials: 'same-origin' }).then(function (r) {

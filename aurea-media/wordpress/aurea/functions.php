@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUREA_VERSION', '2.0.4' );
+define( 'AUREA_VERSION', '2.1.0' );
 define( 'AUREA_DIR', get_template_directory() );
 define( 'AUREA_URI', get_template_directory_uri() );
 
@@ -29,5 +29,6 @@ require AUREA_DIR . '/inc/contact.php';
 require AUREA_DIR . '/inc/seo.php';
 require AUREA_DIR . '/inc/redirections.php';
 require AUREA_DIR . '/inc/articles.php';
+require AUREA_DIR . '/inc/etudes.php';
 require AUREA_DIR . '/inc/installation.php';
 require AUREA_DIR . '/inc/nettoyage.php';

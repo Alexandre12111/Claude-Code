@@ -1,0 +1,186 @@
+{
+ "barber-korner": {
+  "mot_cle": "site internet de barbier",
+  "titre": "Site internet de barbier à Montpellier : Barber Korner",
+  "description": "Étude de cas Barber Korner : un site internet de barbier à Montpellier, pensé pour la prise de rendez vous en ligne et une ambiance de salon traditionnel.",
+  "extrait": "Étude de cas Barber Korner : un site internet de barbier à Montpellier, pensé pour la prise de rendez vous en ligne et une ambiance de salon traditionnel.",
+  "lieu": "Montpellier",
+  "accroche": "Salon de barbier traditionnel à Montpellier, avec prise de rendez vous en ligne."
+ },
+ "cercle-la-raison": {
+  "mot_cle": "site de cercle privé",
+  "titre": "Site de cercle privé avec espace membres : Cercle La Raison",
+  "description": "Étude de cas Cercle La Raison : un site de cercle privé à Bordeaux, avec espace membres sécurisé et réservation d’événements dans un cadre confidentiel.",
+  "extrait": "Étude de cas Cercle La Raison : un site de cercle privé à Bordeaux, avec espace membres sécurisé et réservation d’événements dans un cadre confidentiel.",
+  "lieu": "Bordeaux",
+  "accroche": "Cercle privé de réservation d’événements d’exception, dans un cadre confidentiel."
+ },
+ "dual-tech": {
+  "mot_cle": "site internet de salon professionnel",
+  "titre": "Site internet de salon professionnel : Dual Tech 2026",
+  "description": "Étude de cas Dual Tech : un site internet de salon professionnel pour l’industrie duale européenne, avec accréditations, programme et espace partenaires.",
+  "extrait": "Étude de cas Dual Tech : un site internet de salon professionnel pour l’industrie duale européenne, avec accréditations, programme et espace partenaires.",
+  "lieu": "Paris La Défense",
+  "accroche": "Salon européen de l’innovation duale et de la souveraineté technologique."
+ },
+ "duchentyls": {
+  "mot_cle": "site internet de location de vacances",
+  "titre": "Site internet de location de vacances : Duchentyls",
+  "description": "Étude de cas Domaine Duchentyls : un site internet de location de vacances à Belle-Île-en-Mer, pensé pour donner envie de séjourner et réserver en direct.",
+  "extrait": "Étude de cas Domaine Duchentyls : un site internet de location de vacances à Belle-Île-en-Mer, pensé pour donner envie de séjourner et réserver en direct.",
+  "lieu": "Belle-Île-en-Mer",
+  "accroche": "Domaine de caractère à Belle-Île-en-Mer, pour séjours et réceptions."
+ },
+ "eddy-bilou": {
+  "mot_cle": "site de photographe de mariage",
+  "titre": "Site de photographe de mariage à Paris : Eddy Bilou",
+  "description": "Étude de cas Eddy Bilou : un site de photographe de mariage à Paris, conçu comme une galerie cinématographique qui laisse toute la place aux images.",
+  "extrait": "Étude de cas Eddy Bilou : un site de photographe de mariage à Paris, conçu comme une galerie cinématographique qui laisse toute la place aux images.",
+  "lieu": "Paris",
+  "accroche": "Une galerie cinématographique pour un photographe de mariage issu de la mode."
+ },
+ "enzym": {
+  "mot_cle": "site internet de coach",
+  "titre": "Site internet de coach et formateur : étude de cas Enzym",
+  "description": "Étude de cas Enzym : un site internet de coach et de formateur, pour présenter clairement les accompagnements et transformer les visites en prises de contact.",
+  "extrait": "Étude de cas Enzym : un site internet de coach et de formateur, pour présenter clairement les accompagnements et transformer les visites en prises de contact.",
+  "lieu": "France",
+  "accroche": "Coaching et formation pour dirigeants, managers et particuliers."
+ },
+ "havel-trading": {
+  "mot_cle": "site internet de négoce d’énergie",
+  "titre": "Site internet de négoce d’énergie, Genève : Havel Trading",
+  "description": "Étude de cas Havel Trading : un site internet de négoce d’énergie à Genève, en anglais, conçu pour inspirer confiance aux producteurs, énergéticiens et banques.",
+  "extrait": "Étude de cas Havel Trading : un site internet de négoce d’énergie à Genève, en anglais, conçu pour inspirer confiance aux producteurs, énergéticiens et banques.",
+  "lieu": "Genève",
+  "accroche": "Négoce d’énergie indépendant : une présence institutionnelle sobre, à la hauteur des marchés européens."
+ },
+ "iff-paris": {
+  "mot_cle": "site internet d’association",
+  "titre": "Site internet d’association : Centre Franco Iranien",
+  "description": "Étude de cas Centre Franco Iranien : un site internet d’association bilingue, avec cours de langue, adhésion en ligne, événements et contenus réservés.",
+  "extrait": "Étude de cas Centre Franco Iranien : un site internet d’association bilingue, avec cours de langue, adhésion en ligne, événements et contenus réservés.",
+  "lieu": "Paris",
+  "accroche": "Association qui crée des ponts culturels, économiques et scientifiques entre la France et l’Iran."
+ },
+ "inas": {
+  "mot_cle": "site internet de think tank",
+  "titre": "Site internet de think tank : INAS, recherche stratégique",
+  "description": "Étude de cas INAS : un site internet de think tank dédié à la recherche stratégique, avec publications, moteur de recherche, événements et adhésion en ligne.",
+  "extrait": "Étude de cas INAS : un site internet de think tank dédié à la recherche stratégique, avec publications, moteur de recherche, événements et adhésion en ligne.",
+  "lieu": "Paris",
+  "accroche": "Think tank indépendant dédié à la souveraineté nationale et européenne."
+ },
+ "laurence-paoli": {
+  "mot_cle": "site internet d’avocat",
+  "titre": "Site internet d’avocat en droit de la famille : Me Paoli",
+  "description": "Étude de cas Maître Laurence Paoli : un site internet d’avocat en droit de la famille en Essonne, avec une page par domaine, les honoraires et des articles.",
+  "extrait": "Étude de cas Maître Laurence Paoli : un site internet d’avocat en droit de la famille en Essonne, avec une page par domaine, les honoraires et des articles.",
+  "lieu": "Essonne",
+  "accroche": "Avocate spécialisée en droit de la famille, des personnes et de leur patrimoine."
+ },
+ "maryes": {
+  "mot_cle": "site de vidéaste mariage",
+  "titre": "Site de vidéaste mariage à Paris : étude de cas Maryes",
+  "description": "Étude de cas Maryes Vidéo : un site de vidéaste mariage à Paris, avec portfolio en vidéo, offres mariage et entreprise et vérification des disponibilités.",
+  "extrait": "Étude de cas Maryes Vidéo : un site de vidéaste mariage à Paris, avec portfolio en vidéo, offres mariage et entreprise et vérification des disponibilités.",
+  "lieu": "Paris",
+  "accroche": "Vidéaste de mariage à l’approche naturelle, discrète et émotionnelle."
+ },
+ "massy": {
+  "mot_cle": "site internet de campagne municipale",
+  "titre": "Site internet de campagne municipale : Changer d’Air Massy",
+  "description": "Étude de cas Changer d’Air à Massy : un site internet de campagne municipale, avec programme, projets par quartier, événements et inscription des soutiens.",
+  "extrait": "Étude de cas Changer d’Air à Massy : un site internet de campagne municipale, avec programme, projets par quartier, événements et inscription des soutiens.",
+  "lieu": "Massy",
+  "accroche": "Plateforme de campagne municipale pour les élections de Massy 2026."
+ },
+ "normande-isolation": {
+  "mot_cle": "site internet d’entreprise industrielle",
+  "titre": "Site internet d’entreprise industrielle : Normande d’Isolation",
+  "description": "Étude de cas Normande d’Isolation : un site internet d’entreprise industrielle spécialisée en isolation thermique, acoustique et coupe-feu, orienté devis.",
+  "extrait": "Étude de cas Normande d’Isolation : un site internet d’entreprise industrielle spécialisée en isolation thermique, acoustique et coupe-feu, orienté devis.",
+  "lieu": "Normandie",
+  "accroche": "Isolation industrielle : calorifugeage, acoustique, protection incendie et échafaudages."
+ },
+ "novexia": {
+  "mot_cle": "site internet d’entreprise du bâtiment",
+  "titre": "Site internet d’entreprise du bâtiment en Occitanie : Novexia",
+  "description": "Étude de cas Novexia Construction : un site internet d’entreprise du bâtiment en Occitanie, avec pages métiers, pages par ville, réalisations et guides de prix.",
+  "extrait": "Étude de cas Novexia Construction : un site internet d’entreprise du bâtiment en Occitanie, avec pages métiers, pages par ville, réalisations et guides de prix.",
+  "lieu": "Occitanie",
+  "accroche": "Entreprise du bâtiment en Occitanie : construction, rénovation, isolation et extensions."
+ },
+ "perle-hair": {
+  "mot_cle": "boutique en ligne d’extensions cheveux",
+  "titre": "Boutique en ligne d’extensions cheveux : Perle Hair",
+  "description": "Étude de cas Perle Hair : une boutique en ligne d’extensions cheveux et de soins capillaires, pensée pour l’achat sur mobile, avec collections et panier.",
+  "extrait": "Étude de cas Perle Hair : une boutique en ligne d’extensions cheveux et de soins capillaires, pensée pour l’achat sur mobile, avec collections et panier.",
+  "lieu": "France",
+  "accroche": "Boutique d’extensions et de soins capillaires, pensée pour l’achat sur mobile."
+ },
+ "portugal-expert": {
+  "mot_cle": "site internet de constructeur de luxe",
+  "titre": "Site internet de constructeur de luxe : Portugal Expert",
+  "description": "Étude de cas Portugal Expert Properties : un site internet de constructeur de luxe au sud de Lisbonne, mis en scène comme un magazine d’architecture.",
+  "extrait": "Étude de cas Portugal Expert Properties : un site internet de constructeur de luxe au sud de Lisbonne, mis en scène comme un magazine d’architecture.",
+  "lieu": "Lisbonne",
+  "accroche": "Résidences de luxe sur mesure au sud de Lisbonne, mises en scène comme un magazine."
+ },
+ "sultan": {
+  "mot_cle": "site internet de cabinet de conseil",
+  "titre": "Site internet de cabinet de conseil : Sultan Conseil",
+  "description": "Étude de cas Sultan Conseil & Leviers : un site internet de cabinet de conseil en diplomatie d’affaires, sobre et affirmé, pensé pour les dirigeants.",
+  "extrait": "Étude de cas Sultan Conseil & Leviers : un site internet de cabinet de conseil en diplomatie d’affaires, sobre et affirmé, pensé pour les dirigeants.",
+  "lieu": "International",
+  "accroche": "Cabinet indépendant pour les transformations à fort enjeu, entre politique, économie et géopolitique."
+ },
+ "sunrock": {
+  "mot_cle": "catalogue en ligne",
+  "titre": "Catalogue en ligne défense et sécurité : étude de cas Sunrock",
+  "description": "Étude de cas Sunrock : un catalogue en ligne d’équipements balistiques et tactiques pour les acteurs de la défense et du maintien de l’ordre, clair et structuré.",
+  "extrait": "Étude de cas Sunrock : un catalogue en ligne d’équipements balistiques et tactiques pour les acteurs de la défense et du maintien de l’ordre, clair et structuré.",
+  "lieu": "France",
+  "accroche": "Catalogue balistique et tactique pour les acteurs de la Défense et du maintien de l’ordre."
+ },
+ "tayeb": {
+  "mot_cle": "site internet biographique",
+  "titre": "Site internet biographique : Affaire Tayeb Benabderrahmane",
+  "description": "Étude de cas : un site internet biographique et d’information consacré à l’affaire Tayeb Benabderrahmane, avec chronologie, documents et revue de presse.",
+  "extrait": "Étude de cas : un site internet biographique et d’information consacré à l’affaire Tayeb Benabderrahmane, avec chronologie, documents et revue de presse.",
+  "lieu": "International",
+  "accroche": "Site biographique consacré à l’affaire Tayeb Benabderrahmane."
+ },
+ "tcm-grand-est": {
+  "mot_cle": "site internet de tuyauterie industrielle",
+  "titre": "Site internet de tuyauterie industrielle : TCM Grand Est",
+  "description": "Étude de cas TCM Grand Est : un site internet de tuyauterie industrielle, soudure et maintenance mécanique, conçu pour générer des demandes de devis.",
+  "extrait": "Étude de cas TCM Grand Est : un site internet de tuyauterie industrielle, soudure et maintenance mécanique, conçu pour générer des demandes de devis.",
+  "lieu": "Grand Est",
+  "accroche": "Travaux industriels sur mesure en soudure, tuyauterie et mécanique."
+ },
+ "verisol": {
+  "mot_cle": "site internet de groupe industriel",
+  "titre": "Site internet de groupe industriel : Groupe Verisol",
+  "description": "Étude de cas Groupe Verisol : un site internet de groupe industriel qui présente ses filiales, ses savoir-faire et un espace dédié aux investisseurs.",
+  "extrait": "Étude de cas Groupe Verisol : un site internet de groupe industriel qui présente ses filiales, ses savoir-faire et un espace dédié aux investisseurs.",
+  "lieu": "France",
+  "accroche": "Architecture claire pour présenter les filiales d’un groupe de la transition énergétique."
+ },
+ "villa-moniris": {
+  "mot_cle": "site internet de location de villa",
+  "titre": "Site internet de location de villa en Provence : Moniris",
+  "description": "Étude de cas Villa Moniris : un site internet de location de villa en Provence, avec réservation par espace, galerie immersive et activités de la Côte d’Azur.",
+  "extrait": "Étude de cas Villa Moniris : un site internet de location de villa en Provence, avec réservation par espace, galerie immersive et activités de la Côte d’Azur.",
+  "lieu": "La Crau",
+  "accroche": "Propriété de charme pour 14 personnes, avec réservation par espace et galerie immersive."
+ },
+ "xpert-medical": {
+  "mot_cle": "site internet de centre médical",
+  "titre": "Site internet de centre médical : étude de cas Xpert Medical",
+  "description": "Étude de cas Xpert Medical : un site internet de centre médical en réseau, avec recherche de centre, prise de rendez vous en ligne et conseils santé.",
+  "extrait": "Étude de cas Xpert Medical : un site internet de centre médical en réseau, avec recherche de centre, prise de rendez vous en ligne et conseils santé.",
+  "lieu": "France",
+  "accroche": "Réseau de centres médicaux pluridisciplinaires, pour un accès rapide et simplifié aux soins."
+ }
+}
