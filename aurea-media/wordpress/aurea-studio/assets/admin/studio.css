@@ -71,3 +71,50 @@
 .aurea-aide{margin-top:22px;padding:14px 18px;border:1px solid var(--a-ligne);border-radius:14px;background:#fff}
 .aurea-aide summary{cursor:pointer;font-weight:600}
 .aurea-aide p{color:var(--a-gris);max-width:75ch}
+
+/* Réalisations : cartes plus grandes, capture dans un cadre de navigateur */
+.aurea-grille.is-real{grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+.aurea-carte-visuel.is-capture{height:auto;display:block;background:#1b1b1a;padding-top:24px}
+.aurea-carte-visuel.is-capture img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.aurea-nav{position:absolute;top:0;left:0;right:0;height:24px;display:flex;align-items:center;gap:4px;padding:0 10px 0 30px;background:#242422}
+.aurea-nav i{width:7px;height:7px;border-radius:50%;background:#45453f}
+.aurea-nav i:first-child{background:var(--a-or)}
+.aurea-nav b{margin-left:8px;font:400 11px ui-monospace,monospace;color:#8f8f88;overflow:hidden;white-space:nowrap}
+.aurea-carte-visuel.is-capture .aurea-poignee{top:8px;left:10px;z-index:2}
+.aurea-sans{display:grid;place-items:center;aspect-ratio:16/10;color:#8f8f88;font-size:13px}
+.aurea-pastilles{position:absolute;right:10px;bottom:10px;display:flex;gap:6px}
+.aurea-pastilles .aurea-pastille{position:static}
+.aurea-pastille.is-or{background:var(--a-or);color:var(--a-noir)}
+.aurea-carte.is-masque .aurea-carte-visuel.is-capture img{opacity:.35;filter:grayscale(1)}
+.aurea-duo{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.aurea-duo>label,.aurea-carte-champs>label{display:grid;gap:4px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--a-gris)}
+.aurea-carte-champs select,.aurea-carte-champs textarea{width:100%;max-width:none;min-height:36px;border:1px solid var(--a-ligne);border-radius:9px;padding:6px 10px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--a-noir);font-weight:400}
+.aurea-carte-champs textarea{resize:vertical}
+.aurea-carte-actions.is-col{flex-direction:column;gap:2px}
+.aurea-carte-actions.is-col>div{display:flex;justify-content:space-between;gap:8px}
+.aurea-filtre{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--a-gris)}
+.aurea-filtre select{min-height:36px;border-radius:9px}
+
+/* Avis Google : statut, panneaux et formulaire */
+.aurea-statut{display:flex;align-items:center;gap:12px;padding:14px 18px;margin-bottom:18px;border-radius:14px;border:1px solid var(--a-ligne);background:#fff}
+.aurea-statut span{flex:none;width:10px;height:10px;border-radius:50%;background:#c9c6bd}
+.aurea-statut p{margin:0}
+.aurea-statut.is-ok span{background:#1e9e62;box-shadow:0 0 0 4px rgba(30,158,98,.15)}
+.aurea-statut.is-attente span{background:var(--a-or);box-shadow:0 0 0 4px rgba(201,169,97,.2)}
+.aurea-statut.is-erreur{border-color:#e8b4b4}.aurea-statut.is-erreur span{background:#b32d2e}
+.aurea-panneau{padding:22px;margin-bottom:16px;border:1px solid var(--a-ligne);border-radius:16px;background:#fff}
+.aurea-panneau h2{margin:0 0 16px;font-size:16px}
+.aurea-panneau.is-sombre{background:var(--a-noir);border-color:var(--a-noir)}
+.aurea-panneau.is-sombre h2{color:#f5f5f0}
+.aurea-champs-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.aurea-champs-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.aurea-champ,.aurea-champs-4>label,.aurea-manuel>label{display:grid;gap:6px;align-content:start;font-weight:600}
+.aurea-form input[type=text],.aurea-form input[type=password],.aurea-form input[type=number],.aurea-form input[type=month],.aurea-form select,.aurea-form textarea{width:100%;max-width:none;min-height:38px;border:1px solid var(--a-ligne);border-radius:9px;padding:6px 10px;font-weight:400}
+.aurea-form small{color:var(--a-gris);font-weight:400}
+.aurea-case{display:inline-flex;gap:6px;align-items:center;font-weight:400}
+.aurea-manuel{display:grid;grid-template-columns:1.2fr .5fr .8fr 3fr auto;gap:10px;align-items:end;padding:12px 0;border-bottom:1px solid var(--a-ligne)}
+.aurea-manuel textarea{min-height:38px}
+#aurea-manuel-ajouter{margin-top:14px}
+.aurea-barre.is-bas{position:sticky;bottom:12px;top:auto;justify-content:flex-end}
+.aurea-barre.is-bas .is-noir{margin-left:0}
+@media (max-width:960px){.aurea-champs-2,.aurea-champs-4{grid-template-columns:1fr}.aurea-manuel{grid-template-columns:1fr 1fr}.aurea-manuel .is-large{grid-column:span 2}}

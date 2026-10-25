@@ -1,4 +1,4 @@
-# Aurea Studio 0.1
+# Aurea Studio 0.2
 
 Plugin d'administration du site Aurea Media. Il ajoute un menu **Aurea Studio** dans la colonne de gauche de WordPress. Le contenu géré ici (logos, et bientôt réalisations et articles) est enregistré dans la base de données : il reste en place quand le thème est mis à jour ou changé.
 

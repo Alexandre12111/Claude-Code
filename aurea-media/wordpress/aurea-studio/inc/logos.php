@@ -116,8 +116,8 @@ function aurea_logo_item( $l ) {
 /* Écran d'administration                                              */
 /* ------------------------------------------------------------------ */
 
-add_action( 'admin_enqueue_scripts', function ( $hook ) {
-	if ( 'toplevel_page_' . AUREA_STUDIO_MENU !== $hook ) {
+add_action( 'admin_enqueue_scripts', function () {
+	if ( 'aurea-logos' !== ( $_GET['page'] ?? '' ) ) {
 		return;
 	}
 	wp_enqueue_media();

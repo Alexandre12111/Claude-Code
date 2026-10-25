@@ -74,7 +74,7 @@
     document.querySelectorAll('.btn').forEach(b => {
       b.addEventListener('pointermove', e => {
         const r = b.getBoundingClientRect();
-        b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px,${(e.clientY - r.top - r.height / 2) * .3}px)`;
+        b.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .06}px,${(e.clientY - r.top - r.height / 2) * .1}px)`;
       });
       b.addEventListener('pointerleave', () => { b.style.transform = ''; });
     });
