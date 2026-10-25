@@ -178,3 +178,18 @@ def carte_prix(montant, mention, points, bouton="Devis gratuit"):
 
 def puce(icone, titre, texte, style, ok=False):
     return f'<div class="chip" style="{style}"><span class="ci{" ok" if ok else ""}">{ico(icone)}</span><div><b>{titre}</b><span>{texte}</span></div></div>'
+
+
+# Pages secteur : (fichier, nom, accroche, capture)
+SECTEURS = [("site-internet-avocat.html", "Avocats", "Crédibilité et prise de rendez vous", "laurence-paoli"),
+            ("site-internet-professions-sante.html", "Professions de santé", "Médecins, kinés, centres de soins", "xpert-medical"),
+            ("site-internet-architecte.html", "Architectes", "Portfolio et projets", "portugal-expert"),
+            ("site-internet-restaurant.html", "Restaurants et lieux", "Carte, réservation, événements", "villa-moniris"),
+            ("site-internet-artisan-btp.html", "Artisans et BTP", "Devis et chantiers", "novexia"),
+            ("site-internet-coach-consultant.html", "Coachs et consultants", "Expertise et rendez vous", "sultan")]
+
+
+def autres_secteurs(courant):
+    cartes = "".join(f'<a class="sector rv" href="{f}"><div class="sector-img"><img src="assets/realisations/{img}.webp" alt="" width="1200" height="620" loading="lazy"></div><div class="sector-txt"><div><b>{n}</b><span>{d}</span></div><svg><use href="#i-out"/></svg></div></a>'
+                     for f, n, d, img in SECTEURS if f != courant)
+    return section(entete("Autres secteurs", 'Un site adapté à <span class="gold">votre métier</span>.', centre=True) + f'\n<div class="sectors">{cartes}</div>')

@@ -27,10 +27,7 @@ def secteur():
                         ("search", "Référencement local", "Fiche Google, pages par ville et par expertise pour être trouvé près de chez vos clients."),
                         ("user", "Présentation des associés", "Parcours, publications et spécialités, pour que le client choisisse son interlocuteur.")])
     corps += galerie("Références", 'Des sites qui <span class="gold">inspirent confiance</span>.', "Professions réglementées, institutions et cabinets de conseil nous confient leur image.", ["laurence-paoli", "sultan", "inas"])
-    corps += section(entete("Autres secteurs", 'Un site adapté à <span class="gold">votre métier</span>.', centre=True) + """
-<div class="sectors">""" + "".join(f'<a class="sector rv" href="#"><div class="sector-img"><img src="assets/realisations/{img}.webp" alt="" width="1200" height="620" loading="lazy"></div><div class="sector-txt"><div><b>{n}</b><span>{d}</span></div><svg><use href="#i-out"/></svg></div></a>' for n, d, img in [
-        ("Professions de santé", "Médecins, kinés, praticiens", "xpert-medical"), ("Architectes", "Portfolio et projets", "portugal-expert"), ("Restaurants", "Carte, réservation, avis", "villa-moniris"),
-        ("Artisans et BTP", "Devis et chantiers", "novexia"), ("Coachs et consultants", "Expertise et rendez vous", "eddy-bilou"), ("Commerces", "Boutique et prise de rendez vous", "barber-korner")]) + "</div>")
+    corps += autres_secteurs("site-internet-avocat.html")
     corps += faq('Les questions des <span class="gold">avocats</span>.', [
         ("Un avocat peut il faire de la publicité sur son site ?", "Oui, la publicité personnelle est autorisée depuis 2014, dans le respect des principes essentiels de la profession : dignité, loyauté, confidentialité. Le site est rédigé en conséquence."),
         ("Peut on afficher ses honoraires ?", "Oui, et c'est recommandé : une page honoraires claire (forfaits, taux horaire, convention) rassure et qualifie les demandes."),
