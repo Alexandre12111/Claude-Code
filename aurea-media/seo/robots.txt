@@ -1,0 +1,23 @@
+# robots.txt du nouveau site aurea-media.fr
+
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+Disallow: /?s=
+Disallow: /recherche/
+
+# Moteurs de réponse IA : citations dans ChatGPT Search, Claude et Perplexity (autorisés)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Entraînement des modèles (GPTBot, ClaudeBot, Google-Extended, CCBot, Applebot-Extended) :
+# autorisé par défaut via « User-agent: * ». Pour refuser l'entraînement sans perdre les citations,
+# ajouter un bloc « Disallow: / » pour ces seuls robots.
+
+Sitemap: https://aurea-media.fr/sitemap_index.xml

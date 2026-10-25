@@ -9,6 +9,9 @@ def corriger(html):
             continue
         m = re.sub(r' ([?!:;»])', ' \\1', m)
         m = m.replace('« ', '« ')
+        m = re.sub(r'(\d) (\d{3})', '\\1 \\2', m)  # 1 000
+        m = re.sub(r'(\d) (€|%|h\b|min\b|semaines?\b|ans\b|mots\b)', '\\1 \\2', m)
+        m = m.replace('€ HT', '€ HT')
         morceaux[i] = m
     return ''.join(morceaux)
 
