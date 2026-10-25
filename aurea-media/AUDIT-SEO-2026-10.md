@@ -18,6 +18,28 @@ Limites : pas d'accès à la Search Console, à GA4 ni à un outil de volumes de
 
 Les bases techniques sont propres (index, canonicals, titres, metas, un seul H1 partout). Le problème est **stratégique** : architecture, ciblage et modèle de contenu.
 
+## 0. Ce que dit la Search Console (16 mois, export du 25 octobre 2026)
+
+| Mois | Clics | Impressions | Position moyenne |
+|---|---|---|---|
+| 2025-07 | 30 | 1 283 | 34,8 |
+| 2025-09 | 37 | 790 | 22,4 |
+| 2026-01 | 23 | 478 | 26,3 |
+| 2026-04 | 4 | 235 | 17,9 |
+| 2026-06 | 36 | 1 111 | 24,9 |
+| 2026-08 | 56 | 2 128 | 51,3 |
+| 2026-09 | 15 | 921 | 48,6 |
+| 2026-10 (25 j) | 5 | 527 | 60,0 |
+
+1. **Le site n'a jamais eu de trafic SEO hors marque.** Sur les 188 clics attribués à une requête, 183 viennent de « aurea media » ou « alexandre coury ». Les requêtes métier totalisent 7 700 impressions et 5 clics : elles se positionnent entre la 30e et la 90e place.
+2. **La chute d'août à octobre 2026** suit la vague d'articles de l'été : les impressions montent à 2 128 puis retombent à 527, et la position moyenne passe de 25 à 60.
+3. **57 URL connues de Google redirigent, dont 50 vers la page d'accueil.** Google traite une redirection vers une page sans rapport comme une page supprimée (soft 404) : tout ce que ces pages avaient gagné est perdu. Exemples : /structure-homepage-site-web/ (1 048 impressions), /ghostwriting-linkedin-paris/ (488), /refonte-identite-visuelle/ (544), /sites-vitrines-sur-mesure/ (399), /prix-site-vitrine-2025/ (316), ainsi qu'une vingtaine de pages métiers (photographe, expert comptable, plombier, coiffeur, notaire…).
+4. **Les URL cibles sont occupées par des catégories du blog.** /creation-site-vitrine/ et /creation-site-ecommerce/ sont aujourd'hui des archives de catégorie (« Site vitrine — Conseils Web ») indexées, qui concurrencent les vraies pages services. /creation-site-ecommerce/ a pourtant 654 impressions.
+5. **Le site a changé d'URL à plusieurs reprises** (agence-web-site-vitrine, agence-web-creation-site-vitrine, creation-site-vitrine-professionnel, sites-vitrines-sur-mesure, puis creation-de-site-vitrine-paris) : chaque changement remet le compteur à zéro.
+6. Ordinateur : 79 % des clics. France : 90 % des impressions, ce qui confirme le ciblage France d'abord.
+
+**Conclusion** : le problème n'est pas une « perte » de trafic SEO mais l'absence de positionnement métier, aggravée par l'instabilité des URL et les redirections vers la home. La refonte doit être la **dernière** migration d'URL : on fixe l'architecture et on n'y touche plus.
+
 ## 1. Pourquoi le trafic s'est effondré (hypothèses par ordre de probabilité)
 
 ### 1.1 Contenu produit en série sur un domaine jeune (critique)
@@ -82,7 +104,7 @@ Principe : **le national pour le volume, l'Île de France pour gagner vite, les 
 │
 ├── Services (national, sans ville dans l'URL)
 │   ├── /creation-site-vitrine/           ★ service principal
-│   ├── /creation-site-e-commerce/
+│   ├── /creation-site-ecommerce/
 │   ├── /refonte-site-internet/           (article actuel transformé en page service)
 │   ├── /logo-identite-visuelle/
 │   ├── /motion-design/                   (nouveau)
@@ -115,7 +137,7 @@ Principe : **le national pour le volume, l'Île de France pour gagner vite, les 
 |---|---|---|
 | Home | agence web sur mesure | création site internet, agence création site web |
 | /creation-site-vitrine/ | création site vitrine | site vitrine sur mesure, site vitrine WordPress, site vitrine professionnel |
-| /creation-site-e-commerce/ | création site e-commerce | boutique en ligne sur mesure, site WooCommerce |
+| /creation-site-ecommerce/ | création site e-commerce | boutique en ligne sur mesure, site WooCommerce |
 | /refonte-site-internet/ | refonte site internet | refonte site web, moderniser son site |
 | /logo-identite-visuelle/ | création identité visuelle | création logo entreprise, charte graphique |
 | /motion-design/ | motion design entreprise | vidéo motion design, animation logo |
@@ -132,7 +154,7 @@ Les volumes et la difficulté réels sont à valider avec un outil (DataForSEO, 
 | Ancienne URL | Nouvelle URL |
 |---|---|
 | /creation-de-site-vitrine-paris/ | /creation-site-vitrine/ |
-| /creation-de-site-e-commerce-paris/ | /creation-site-e-commerce/ |
+| /creation-de-site-e-commerce-paris/ | /creation-site-ecommerce/ |
 | /branding-identite/ | /logo-identite-visuelle/ |
 | /maquettes-de-presentation/ | /maquettes-presentation/ |
 | /agence-web-a-paris/, /choisir-agence-web-paris/ | /agence-web-paris/ |
@@ -144,11 +166,26 @@ Les volumes et la difficulté réels sont à valider avec un outil (DataForSEO, 
 | /site-vitrine-restaurant/ | /site-internet-restaurant/ |
 | /site-vitrine-pour-artisan/, /site-vitrine-artisan-renovateur-en-batiment/ | /site-internet-artisan-btp/ |
 | /site-vitrine-coach-consultant/ | /site-internet-coach-consultant/ |
-| /prix-site-vitrine-paris/, /creation-site-vitrine-tpe-paris/ | /tarifs/ |
+| /prix-site-vitrine-paris/, /creation-site-vitrine-tpe-paris/, /prix-site-vitrine-2025/ | /tarifs/ |
+| /agence-web-site-vitrine/, /agence-web-creation-site-vitrine/, /creation-site-vitrine-professionnel/, /sites-vitrines-sur-mesure/ (redirigent vers la home aujourd'hui) | /creation-site-vitrine/ |
+| /refonte-identite-visuelle/ | /conseils/refonte-identite-visuelle-entreprise/ |
+| /refonte-site-vitrine/ | /refonte-site-internet/ |
+| /structure-homepage-site-web/, /pages-indispensables-site-internet/, /erreurs-design-site-web/ | /conseils/anatomie-site-vitrine-qui-convertit/ |
+| /site-vitrine-expert-comptable/, /site-vitrine-notaire/, /site-internet-avocat-2025/ | /site-internet-avocat/ (ou une future page professions du chiffre et du droit) |
+| /site-vitrine-osteopathe-kine/, /site-vitrine-psychologue/, /site-vitrine-medecin-esthetique/ | /site-internet-professions-sante/ |
+| /site-vitrine-plombier/, /site-vitrine-electricien/, /site-vitrine-chauffagiste-pac/, /site-vitrine-serrurier/, /site-vitrine-artisan/, /site-internet-artisan/, /pourquoi-site-internet-artisan/ | /site-internet-artisan-btp/ |
+| /pourquoi-site-internet-restaurant/ | /site-internet-restaurant/ |
+| /site-internet-coach-therapeute/ | /site-internet-coach-consultant/ |
+| /site-vitrine-architecte-interieur/ | /site-internet-architecte/ |
+| /creation-google-my-business/, /seo-local-petite-entreprise/ | /conseils/optimiser-fiche-google-business-profile/ |
+| Autres anciennes URL sans équivalent (ghostwriting LinkedIn, photographe, coiffeur…) | la page la plus proche, sinon code 410 plutôt qu'une redirection vers la home |
 | /logo-et-charte-graphique/, /logo-charte-graphique-identite-visuelle/ | /conseils/logo-charte-graphique-identite-visuelle/ (un seul guide) |
 | /google-my-business-artisans-tpe/, /optimiser-fiche-google-my-business-coach/ | /conseils/optimiser-fiche-google-business-profile/ |
 | /realisations-agence-web/ | /realisations/ |
-| /contact-agence/ | /contact/ |
+| /contact-agence/, /contact-agence-web/, /contact-projet-web/ | /contact/ |
+| /chosir-agence-web-paris/ | /agence-web-paris/ |
+
+Les catégories du blog passent sous /conseils/categorie/… pour libérer /creation-site-vitrine/ et /creation-site-ecommerce/, qui deviennent les pages services. Pour l'e-commerce, on garde donc **/creation-site-ecommerce/** (sans tiret) car Google connaît déjà cette URL. Les pages /tag/ passent en noindex.
 | /nos-services/ | / (ou une page /services/ légère) |
 
 Articles conservés dans /conseils/ (après réécriture pour casser le gabarit) : anatomie d'un site qui convertit, site vitrine sans clients, soi même ou agence, combien coûte un e-commerce, Shopify vs WooCommerce, WordPress vs Webflow, avis Google, Google Business Profile, refonte identité visuelle.
