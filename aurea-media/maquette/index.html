@@ -143,23 +143,31 @@
     </div>
     <div class="bento">
       <article class="card b-main rv">
-        <div>
+        <div class="b-main-txt">
           <span class="tag">Service principal</span>
-          <div>
           <h3>Création de site vitrine</h3>
           <p>Un site sur mesure qui présente votre activité, rassure vos prospects et les transforme en demandes de devis.</p>
           <ul>
             <li><svg><use href="#i-check"/></svg>Design unique, pensé pour votre métier</li>
             <li><svg><use href="#i-check"/></svg>Référencement Google intégré</li>
-            <li><svg><use href="#i-check"/></svg>Rapide sur mobile, Core Web Vitals au vert</li>
+            <li><svg><use href="#i-check"/></svg>Rapide sur mobile</li>
           </ul>
-          </div>
-          <div><p class="price" style="margin:0 0 14px">À partir de <b>1 000 €</b> HT</p>
-          <a class="btn" href="creation-site-vitrine.html">Découvrir l'offre <svg><use href="#i-arrow"/></svg></a></div>
+          <div class="b-main-pied"><p class="price">À partir de <b>1 000 €</b> HT</p><a class="btn" href="creation-site-vitrine.html">Découvrir l'offre <svg><use href="#i-arrow"/></svg></a></div>
         </div>
         <div class="devs" aria-hidden="true">
-          <div class="browser"><div class="browser-bar"><i></i><i></i><i></i><span>novexia-construction.fr</span></div><img src="assets/realisations/novexia.webp" alt="" width="1200" height="620" loading="lazy"></div>
-          <div class="phone"><div class="phone-view"><img src="assets/realisations/novexia-mobile.webp" alt="" width="520" height="885" loading="lazy"></div></div>
+          <div class="browser ms">
+            <div class="browser-bar"><i></i><i></i><i></i><span>novexia-construction.fr</span></div>
+            <div class="ms-nav"><b>NOVEXIA<small>CONSTRUCTION</small></b><span>Accueil</span><span>Services</span><span>Réalisations</span><i>Devis gratuit</i></div>
+            <div class="ms-hero"><img src="assets/realisations/novexia.webp" alt="" width="1200" height="620" loading="lazy">
+              <div><small>Construction &amp; rénovation</small><strong>Construisons<br><em>votre avenir</em></strong><p><i>Nous appeler</i><i class="o">Devis gratuit</i></p></div>
+            </div>
+            <div class="ms-stats"><span><b>+500</b>projets</span><span><b>+15</b>ans</span><span><b>98 %</b>satisfaits</span><span><b>24h</b>réponse</span></div>
+          </div>
+          <div class="phone ms-phone"><div class="phone-view">
+            <div class="ms-m-nav"><b>NOVEXIA</b><span></span></div>
+            <div class="ms-m-hero"><img src="assets/realisations/novexia.webp" alt="" width="1200" height="620" loading="lazy"><div><strong>Construisons <em>votre avenir</em></strong><i class="o">Devis gratuit</i><i>Nous appeler</i></div></div>
+            <div class="ms-m-cards"><span><b>+500</b>projets</span><span><b>98 %</b>satisfaits</span></div>
+          </div></div>
           <div class="chip d1"><span class="ci"><svg><use href="#i-calendar"/></svg></span><div><b>Demande de devis</b><span>Rénovation, 92</span></div></div>
           <div class="chip d2"><span class="ci ok"><svg><use href="#i-lightning"/></svg></span><div><b>Chargement 0,9 s</b><span>sur mobile</span></div></div>
         </div>
@@ -199,23 +207,32 @@
         <a class="link" href="#">En savoir plus <svg><use href="#i-arrow"/></svg></a>
       </article>
       <article class="card b-3 rv" style="--d:.1s">
-        <div class="viz viz-motion" aria-hidden="true">
-          <span class="ring"></span><span class="ring r2"></span>
-          <span class="play"><svg><use href="#i-play"/></svg></span>
-          <span class="tl"></span>
+        <div class="viz viz-video">
+          <video muted loop playsinline preload="none" poster="assets/creations/motion-affiche.webp" data-lazy-video aria-label="Film de marque Aurea Media en motion design">
+            <source data-src="assets/creations/motion-aurea-media.webm" type="video/webm">
+            <source data-src="assets/creations/motion-aurea-media.mp4" type="video/mp4">
+          </video>
+          <span class="viz-badge"><svg><use href="#i-play"/></svg>Film de marque · 10 s</span>
         </div>
         <h3>Motion design</h3>
         <p>Vidéos et animations qui donnent vie à votre marque.</p>
         <a class="link" href="#">En savoir plus <svg><use href="#i-arrow"/></svg></a>
       </article>
-      <article class="card b-3 rv" style="--d:.2s">
-        <div class="viz viz-slides" aria-hidden="true">
-          <div class="sl"></div><div class="sl"></div>
-          <div class="sl"><b>Présentation commerciale 2026</b><i></i><em></em></div>
+      <article class="card b-4 rv">
+        <div class="viz viz-deck" aria-hidden="true">
+          <img src="assets/creations/presentation-3.webp" alt="" width="960" height="540" loading="lazy">
+          <img src="assets/creations/presentation-5.webp" alt="" width="960" height="540" loading="lazy">
+          <img src="assets/creations/presentation-1.webp" alt="" width="960" height="540" loading="lazy">
         </div>
         <h3>Maquettes de présentation</h3>
         <p>Pitch decks et présentations commerciales qui décrochent le rendez vous.</p>
         <a class="link" href="#">En savoir plus <svg><use href="#i-arrow"/></svg></a>
+      </article>
+      <article class="card b-4 b-cta rv" style="--d:.1s">
+        <span class="tag">Projet sur mesure</span>
+        <h3>Un besoin qui ne rentre dans aucune case ?</h3>
+        <p>Plateforme, site multilingue, espace client, intégration à vos outils : parlons en, on trouve la bonne solution.</p>
+        <div class="b-cta-pied"><a class="btn" href="#contact">Décrire mon projet <svg><use href="#i-arrow"/></svg></a><span class="b-cta-tel"><svg><use href="#i-phone"/></svg>06 51 28 77 61</span></div>
       </article>
     </div>
   </div>

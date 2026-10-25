@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Motion Aurea Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Film de marque Aurea Media, 10 s, 1280 x 720. Chaque image est calculée par rendre(t) : exporter.js capture 30 images par seconde. */
+:root{--gold:#C9A961;--cream:#F5F5F0;--grad:linear-gradient(100deg,#B8934E,#E6CB8C 45%,#C9A961)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1280px;height:720px;overflow:hidden;background:#0A0A0A}
+#scene{position:relative;width:1280px;height:720px;overflow:hidden;font-family:"Geist",sans-serif;color:var(--cream);background:#0A0A0A}
+.halo{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(closest-side,rgba(201,169,97,.32),transparent 70%);left:190px;top:-90px}
+.grille{position:absolute;inset:0;background-image:linear-gradient(rgba(245,245,240,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(245,245,240,.05) 1px,transparent 1px);background-size:64px 64px}
+.abs{position:absolute;will-change:transform,opacity}
+#marque{left:50%;top:50%;width:150px;margin:-95px 0 0 -75px}
+#marque svg{width:150px;height:158px}
+#trace{stroke-dasharray:640;stroke-dashoffset:640}
+#point{transform-origin:62px 132px}
+#nom{left:0;right:0;top:470px;text-align:center;font:700 54px "Bricolage Grotesque";letter-spacing:.18em}
+#nom span{display:inline-block}
+#sous{left:0;right:0;top:540px;text-align:center;font:500 16px "Geist Mono";letter-spacing:.5em;color:var(--gold)}
+.ligne{left:0;right:0;text-align:center;font:700 92px/1 "Bricolage Grotesque";letter-spacing:-.04em}
+.g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+#l1{top:250px}#l2{top:356px}
+.ecran{width:520px;border-radius:14px;overflow:hidden;border:1px solid rgba(245,245,240,.16);background:#1b1b19;box-shadow:0 40px 80px -30px #000}
+.ecran i{display:block;height:24px;background:#22221f;background-image:radial-gradient(circle at 16px 12px,#c9a961 4px,transparent 5px),radial-gradient(circle at 32px 12px,#444 4px,transparent 5px),radial-gradient(circle at 48px 12px,#444 4px,transparent 5px)}
+.ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.puce{display:flex;align-items:center;gap:14px;padding:16px 22px 16px 16px;border-radius:18px;background:rgba(26,26,24,.9);border:1px solid rgba(245,245,240,.16);font-size:20px;white-space:nowrap}
+.puce b{display:block;font-weight:500}.puce span{font-size:15px;color:#A9A9A2}
+.puce em{width:44px;height:44px;border-radius:12px;background:rgba(201,169,97,.16);display:grid;place-items:center;font-style:normal;color:var(--gold);font-size:22px}
+#chiffres{left:0;right:0;top:250px;display:flex;justify-content:center;gap:110px;text-align:center}
+#chiffres b{display:block;font:700 130px/1 "Bricolage Grotesque";letter-spacing:-.06em}
+#chiffres span{display:block;margin-top:12px;font-size:22px;color:#A9A9A2}
+#fin{left:0;right:0;top:270px;text-align:center}
+#fin img{height:96px;margin:0 auto}
+#fin p{margin-top:26px;font:500 22px "Geist Mono";letter-spacing:.24em;color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="scene">
+  <div class="grille"></div>
+  <div class="halo abs" id="halo"></div>
+
+  <!-- 1. Le logo se dessine -->
+  <div class="abs" id="marque"><svg viewBox="0 0 150 158"><path id="trace" d="M75 6 L8 150 L45 150 L75 82 L105 150 L142 150 Z" fill="none" stroke="#F5F5F0" stroke-width="4" stroke-linejoin="round"/><path id="plein" d="M75 6 L8 150 L45 150 L75 82 L105 150 L142 150 Z" fill="#F5F5F0" opacity="0"/><circle id="point" cx="62" cy="132" r="13" fill="#C9A961"/></svg></div>
+  <div class="abs" id="nom"></div>
+  <div class="abs" id="sous">WEB AGENCY</div>
+
+  <!-- 2. Le message -->
+  <div class="abs ligne" id="l1">Des sites sur mesure</div>
+  <div class="abs ligne" id="l2">qui apportent des <span class="g">clients.</span></div>
+
+  <!-- 3. Les réalisations -->
+  <div class="abs ecran" id="e1" style="left:80px;top:150px"><i></i><img src="../../maquette/assets/realisations/portugal-expert.webp" alt=""></div>
+  <div class="abs ecran" id="e2" style="left:380px;top:210px"><i></i><img src="../../maquette/assets/realisations/havel-trading.webp" alt=""></div>
+  <div class="abs ecran" id="e3" style="left:690px;top:120px"><i></i><img src="../../maquette/assets/realisations/eddy-bilou.webp" alt=""></div>
+  <div class="abs puce" id="p1" style="left:120px;top:560px"><em>✉</em><div><b>Nouvelle demande de devis</b><span>via le formulaire du site</span></div></div>
+  <div class="abs puce" id="p2" style="left:840px;top:520px"><em>★</em><div><b>4,9 sur Google</b><span>39 avis clients</span></div></div>
+
+  <!-- 4. Les chiffres -->
+  <div class="abs" id="chiffres"><div><b id="c1">0</b><span>sites livrés</span></div><div><b id="c2">0</b><span>semaines</span></div><div><b class="g">4,9</b><span>note Google</span></div></div>
+
+  <!-- 5. Fin -->
+  <div class="abs" id="fin"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><p>AUREA-MEDIA.FR</p></div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const nom = 'AUREA MEDIA';
+$('nom').innerHTML = [...nom].map(c => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+const lettres = [...$('nom').children];
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const sortie = p => 1 - Math.pow(1 - p, 3);          // easeOutCubic
+const entree = p => p * p * p;                        // easeInCubic
+const douce = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const set = (el, o, tr) => { el.style.opacity = o; el.style.transform = tr || ''; };
+
+window.rendre = t => {
+  // Halo qui respire
+  $('halo').style.transform = `translate(${Math.sin(t * .6) * 60}px,${Math.cos(t * .5) * 30}px) scale(${1 + Math.sin(t * .8) * .05})`;
+
+  // 1. Logo : 0 à 2,6 s
+  const dessin = sortie(prog(t, .1, 1.1));
+  $('trace').style.strokeDashoffset = 640 * (1 - dessin);
+  $('plein').setAttribute('opacity', sortie(prog(t, .9, 1.4)));
+  const pt = sortie(prog(t, 1.1, 1.6));
+  $('point').style.transform = `scale(${pt})`;
+  const sortLogo = entree(prog(t, 2.3, 2.8));
+  set($('marque'), 1 - sortLogo, `translateY(${-60 * sortLogo}px) scale(${1 - .3 * sortLogo})`);
+  lettres.forEach((l, i) => { const p = sortie(prog(t, 1.2 + i * .05, 1.7 + i * .05)); l.style.opacity = p * (1 - sortLogo); l.style.transform = `translateY(${(1 - p) * 30}px)`; });
+  set($('sous'), sortie(prog(t, 1.7, 2.1)) * (1 - sortLogo), `translateY(${(1 - sortie(prog(t, 1.7, 2.1))) * 12}px)`);
+
+  // 2. Message : 2,7 à 5 s
+  [['l1', 2.7], ['l2', 2.95]].forEach(([id, d]) => {
+    const p = sortie(prog(t, d, d + .6)), s = entree(prog(t, 4.6, 5));
+    set($(id), p * (1 - s), `translateY(${(1 - p) * 70 - s * 50}px) scale(${1 + s * .06})`);
+  });
+
+  // 3. Réalisations : 5 à 7,8 s
+  [['e1', 5, -6], ['e2', 5.2, 3], ['e3', 5.4, 7]].forEach(([id, d, r]) => {
+    const p = sortie(prog(t, d, d + .8)), s = entree(prog(t, 7.4, 7.9));
+    const flot = Math.sin((t - d) * 1.4) * 6;
+    set($(id), p * (1 - s), `translateY(${(1 - p) * 160 + flot - s * 40}px) rotate(${r * (1 - p * .5)}deg) scale(${.92 + p * .08})`);
+  });
+  [['p1', 6.1], ['p2', 6.4]].forEach(([id, d]) => {
+    const p = sortie(prog(t, d, d + .5)), s = entree(prog(t, 7.4, 7.9));
+    set($(id), p * (1 - s), `translateY(${(1 - p) * 30}px) scale(${.9 + p * .1})`);
+  });
+
+  // 4. Chiffres : 7,9 à 9 s
+  const pc = sortie(prog(t, 7.9, 8.4)), sc = entree(prog(t, 8.8, 9.1));
+  set($('chiffres'), pc * (1 - sc), `translateY(${(1 - pc) * 40}px)`);
+  $('c1').textContent = Math.round(45 * douce(prog(t, 7.9, 8.7))) + '+';
+  $('c2').textContent = Math.max(1, Math.round(4 * douce(prog(t, 7.9, 8.7))));
+
+  // 5. Fin : 9,1 à 10 s
+  const pf = sortie(prog(t, 9.1, 9.6));
+  set($('fin'), pf, `scale(${.94 + pf * .06})`);
+};
+window.rendre(0);
+</script>
+</body>
+</html>

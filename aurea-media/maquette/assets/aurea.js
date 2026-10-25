@@ -124,6 +124,16 @@
     }, 3600);
   });
 
+  // Vidéos : chargées et lancées seulement quand elles sont à l'écran
+  const vio = new IntersectionObserver(es => es.forEach(e => {
+    const v = e.target;
+    if (e.isIntersecting) {
+      if (!v.dataset.charge) { v.querySelectorAll('source[data-src]').forEach(s => { s.src = s.dataset.src; }); v.load(); v.dataset.charge = '1'; }
+      if (!reduce) v.play().catch(() => {});
+    } else v.pause();
+  }), { rootMargin: '200px' });
+  document.querySelectorAll('video[data-lazy-video]').forEach(v => vio.observe(v));
+
   // FAQ : une seule question ouverte à la fois
   document.querySelectorAll('.faq details').forEach(d => d.addEventListener('toggle', () => {
     if (d.open) document.querySelectorAll('.faq details[open]').forEach(o => o !== d && (o.open = false));

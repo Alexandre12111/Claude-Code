@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Présentation Aurea Media 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Présentation commerciale Aurea Media : 5 diapositives 1600 x 900, exportées en images par exporter.js */
+:root{--ink:#0A0A0A;--ink2:#141412;--cream:#F5F5F0;--mute:#A9A9A2;--gold:#C9A961;--gold2:#E6CB8C;--line:rgba(245,245,240,.12);--grad:linear-gradient(100deg,#B8934E,#E6CB8C 45%,#C9A961)}
+*{box-sizing:border-box;margin:0}
+body{background:#333;font-family:"Geist",sans-serif;color:var(--cream)}
+.slide{position:relative;width:1600px;height:900px;overflow:hidden;background:var(--ink);margin:0 auto 40px;padding:90px 110px}
+.slide::before{content:"";position:absolute;inset:0;background:radial-gradient(900px 500px at 100% 0%,rgba(201,169,97,.16),transparent 65%),radial-gradient(700px 500px at 0% 100%,rgba(120,90,40,.14),transparent 60%);pointer-events:none}
+.slide>*{position:relative}
+.top{position:absolute;top:56px;left:110px;right:110px;display:flex;justify-content:space-between;align-items:center;font:500 15px "Geist Mono";letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.top img{height:42px}
+.num{color:var(--gold)}
+h1,h2,h3{font-family:"Bricolage Grotesque";letter-spacing:-.035em;line-height:1;font-weight:650}
+.g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{font:500 16px "Geist Mono";letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:14px}
+.eyebrow::before{content:"";width:9px;height:9px;background:var(--gold);transform:rotate(45deg)}
+.foot{position:absolute;left:110px;right:110px;bottom:50px;display:flex;justify-content:space-between;font-size:15px;color:var(--mute)}
+
+/* 1. Couverture */
+.s1{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:40px}
+.s1 h1{font-size:118px;margin:26px 0 30px}
+.s1 p{font-size:26px;color:var(--mute);max-width:560px;line-height:1.4}
+.s1 .client{margin-top:46px;display:inline-flex;gap:14px;align-items:center;padding:16px 24px;border:1px solid var(--line);border-radius:999px;font-size:18px}
+.s1 .client b{color:var(--gold);font-weight:500}
+.stack{position:relative;height:640px}
+.stack figure{position:absolute;width:560px;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 40px 80px -30px #000;background:#1b1b19}
+.stack figure::before{content:"";display:block;height:30px;background:#22221f;background-image:radial-gradient(circle at 18px 15px,#c9a961 5px,transparent 6px),radial-gradient(circle at 38px 15px,#444 5px,transparent 6px),radial-gradient(circle at 58px 15px,#444 5px,transparent 6px)}
+.stack img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.stack figure:nth-child(1){top:0;left:120px;transform:rotate(6deg);opacity:.7}
+.stack figure:nth-child(2){top:150px;left:20px;transform:rotate(-4deg)}
+.stack figure:nth-child(3){top:300px;left:160px;transform:rotate(2deg)}
+
+/* 2. Méthode */
+.s2 h2{font-size:82px;margin:24px 0 70px;max-width:1100px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.step{padding:34px 30px;border-radius:24px;background:var(--ink2);border:1px solid var(--line);height:380px;display:flex;flex-direction:column}
+.step .n{font:700 60px "Bricolage Grotesque";letter-spacing:-.04em}
+.step small{display:block;margin-top:auto;font:500 14px "Geist Mono";letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.step h3{font-size:32px;margin:12px 0 12px}
+.step p{font-size:19px;line-height:1.45;color:var(--mute)}
+.step:last-child{background:linear-gradient(160deg,#2a2213,var(--ink2));border-color:rgba(201,169,97,.45)}
+
+/* 3. Chiffres */
+.s3{display:grid;grid-template-columns:.9fr 1.1fr;gap:80px;align-items:center}
+.s3 h2{font-size:92px;margin:24px 0 30px}
+.s3 p{font-size:24px;line-height:1.45;color:var(--mute)}
+.kpi{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.kpi div{padding:40px;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg,var(--ink2),transparent)}
+.kpi b{display:block;font:700 108px/1 "Bricolage Grotesque";letter-spacing:-.06em}
+.kpi b sup{font-size:.4em;vertical-align:super}
+.kpi span{display:block;margin-top:14px;font-size:20px;color:var(--mute)}
+
+/* 4. Réalisations */
+.s4 h2{font-size:76px;margin:24px 0 60px}
+.s4 .grid figure:nth-child(2){transform:translateY(30px)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.grid figure{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#1b1b19}
+.grid img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.grid figcaption{display:flex;justify-content:space-between;padding:14px 18px;font-size:18px}
+.grid figcaption span{font:500 13px "Geist Mono";letter-spacing:.1em;text-transform:uppercase;color:var(--gold);align-self:center}
+
+/* 5. Investissement */
+.s5 h2{font-size:84px;margin:24px 0 56px}
+.offres{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:22px}
+.offre{padding:40px 36px;border-radius:26px;border:1px solid var(--line);background:var(--ink2);height:470px;display:flex;flex-direction:column}
+.offre h3{font-size:36px}
+.offre .px{margin:22px 0 4px;font:700 76px/1 "Bricolage Grotesque";letter-spacing:-.05em}
+.offre .px small{font:400 22px "Geist";letter-spacing:0;color:var(--mute)}
+.offre ul{list-style:none;padding:0;margin-top:26px;display:grid;gap:14px;font-size:20px;color:#dcdcd5}
+.offre li::before{content:"✓";color:var(--gold);margin-right:12px}
+.offre.hl{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.offre.hl ul{color:#2a2a27}.offre.hl .px small{color:#66665f}.offre.hl li::before{color:#9b7838}
+.offre .tag{align-self:flex-start;margin-bottom:22px;font:500 13px "Geist Mono";letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:999px;background:var(--grad);color:var(--ink)}
+.s5 .cta{position:absolute;right:110px;top:150px;text-align:right;font-size:20px;color:var(--mute)}
+.s5 .cta b{display:block;font:600 30px "Bricolage Grotesque";color:var(--cream);letter-spacing:-.02em}
+</style>
+</head>
+<body>
+
+<section class="slide s1" id="s1">
+  <div class="top"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt="Aurea Media"><span>Proposition 2026 · <span class="num">01</span></span></div>
+  <div>
+    <span class="eyebrow">Présentation commerciale</span>
+    <h1>Un site qui <span class="g">travaille</span> pour vous.</h1>
+    <p>Conception, design et référencement d’un site vitrine sur mesure, en ligne en 4 semaines.</p>
+    <span class="client">Préparé pour <b>votre entreprise</b></span>
+  </div>
+  <div class="stack">
+    <figure><img src="../../maquette/assets/realisations/sunrock.webp" alt=""></figure>
+    <figure><img src="../../maquette/assets/realisations/portugal-expert.webp" alt=""></figure>
+    <figure><img src="../../maquette/assets/realisations/havel-trading.webp" alt=""></figure>
+  </div>
+  <div class="foot"><span>aurea-media.fr</span><span>Alexandre Coury · 06 51 28 77 61</span></div>
+</section>
+
+<section class="slide s2" id="s2">
+  <div class="top"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><span>Méthode · <span class="num">02</span></span></div>
+  <div style="margin-top:70px">
+    <span class="eyebrow">Comment nous travaillons</span>
+    <h2>Quatre semaines, <span class="g">quatre étapes</span> validées avec vous.</h2>
+    <div class="steps">
+      <div class="step"><span class="n g">01</span><h3>Audit</h3><p>Marché, concurrents et mots clés de vos futurs clients.</p><small>Semaine 1</small></div>
+      <div class="step"><span class="n g">02</span><h3>Maquettes</h3><p>Le design de chaque page, validé avant le code.</p><small>Semaine 2</small></div>
+      <div class="step"><span class="n g">03</span><h3>Développement</h3><p>WordPress sur mesure, rapide et testé sur tous les écrans.</p><small>Semaine 3</small></div>
+      <div class="step"><span class="n g">04</span><h3>Mise en ligne</h3><p>SEO technique, Search Console et formation.</p><small>Semaine 4</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide s3" id="s3">
+  <div class="top"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><span>Preuves · <span class="num">03</span></span></div>
+  <div>
+    <span class="eyebrow">Depuis 2021</span>
+    <h2>Des clients <span class="g">qui reviennent</span>.</h2>
+    <p>Indépendants, artisans, PME et institutions, en France, en Suisse et au Portugal.</p>
+  </div>
+  <div class="kpi">
+    <div><b>45<sup class="g">+</sup></b><span>sites livrés</span></div>
+    <div><b>4,9<sup class="g">★</sup></b><span>sur 39 avis Google</span></div>
+    <div><b>4<sup class="g">sem.</sup></b><span>délai moyen</span></div>
+    <div><b>12<sup class="g">+</sup></b><span>secteurs d’activité</span></div>
+  </div>
+</section>
+
+<section class="slide s4" id="s4">
+  <div class="top"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><span>Réalisations · <span class="num">04</span></span></div>
+  <div style="margin-top:60px">
+    <span class="eyebrow">Sélection</span>
+    <h2>Chaque site part d’une <span class="g">page blanche</span>.</h2>
+    <div class="grid">
+      <figure><img src="../../maquette/assets/realisations/havel-trading.webp" alt=""><figcaption>Havel Trading<span>Genève</span></figcaption></figure>
+      <figure><img src="../../maquette/assets/realisations/eddy-bilou.webp" alt=""><figcaption>Eddy Bilou<span>Photographe</span></figcaption></figure>
+      <figure><img src="../../maquette/assets/realisations/novexia.webp" alt=""><figcaption>Novexia<span>BTP</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="slide s5" id="s5">
+  <div class="top"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><span>Investissement · <span class="num">05</span></span></div>
+  <div class="cta"><b>Devis détaillé sous 24h</b>Sans engagement</div>
+  <div style="margin-top:70px">
+    <span class="eyebrow">Tarifs</span>
+    <h2>Des prix <span class="g">clairs</span>.</h2>
+    <div class="offres">
+      <div class="offre hl"><span class="tag">Recommandé</span><h3>Site vitrine</h3><p class="px">1 000 € <small>HT, dès</small></p><ul><li>Design 100 % sur mesure</li><li>Référencement inclus</li><li>Formation incluse</li></ul></div>
+      <div class="offre"><h3>Site e-commerce</h3><p class="px">1 650 € <small>HT, dès</small></p><ul><li>Boutique WooCommerce</li><li>Paiement sécurisé</li><li>Sans commission</li></ul></div>
+      <div class="offre"><h3>Identité</h3><p class="px">Sur devis</p><ul><li>Logo et charte</li><li>Motion design</li><li>Fichiers sources</li></ul></div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
