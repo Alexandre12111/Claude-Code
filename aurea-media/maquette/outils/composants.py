@@ -33,16 +33,28 @@ REAL = {
     "maryes": ("Maryes Vidéo", "maryesvideaste.com", "Site vitrine", "Photographes et créatifs", "Paris", "Vidéaste de mariage à l'approche naturelle, discrète et émotionnelle."),
 }
 
+
+def element(html, debut):
+    """Extrait l'élément complet qui commence par `debut` (balises imbriquées comptées)."""
+    s = html.index(debut)
+    tag = re.match(r"<(\w+)", debut).group(1)
+    profondeur, i = 0, s
+    for m in re.finditer(rf"<(/?){tag}\b[^>]*>", html[s:]):
+        profondeur += -1 if m.group(1) else 1
+        if profondeur == 0:
+            return html[s:s + m.end()]
+    raise ValueError(debut)
+
 def _bloc(debut, fin):
     s = INDEX.index(debut)
     return INDEX[s:INDEX.index(fin, s) + len(fin)]
 
 TETE = INDEX[:INDEX.index('<main id="contenu">')]
 PIED = INDEX[INDEX.index("</main>"):]
-STEPS = INDEX[INDEX.index('<div class="steps">'):INDEX.index('</div>\n  </div>\n</section>\n\n<!-- FONDATEUR')]
+STEPS = element(INDEX, '<div class="steps">')
 LOGOS = _bloc('<section class="logos"', "</section>")
-PRIX = INDEX[INDEX.index('<div class="prices">'):INDEX.index("</div>\n  </div>\n</section>\n\n<!-- FAQ")]
-AVIS = INDEX[INDEX.index('<div class="reviews">'):INDEX.index("</div>\n  </div>\n</section>\n\n<!-- TARIFS")]
+PRIX = element(INDEX, '<div class="prices">')
+AVIS = element(INDEX, '<div class="reviews">')
 
 
 def page(fichier, titre, description, corps, precharge=""):

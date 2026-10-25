@@ -201,8 +201,8 @@ def tarifs():
 
 
 def agence():
-    fondateur = INDEX[INDEX.index('<div class="founder">'):INDEX.index('<div class="nums">')]
-    nums = INDEX[INDEX.index('<div class="nums">'):INDEX.index("</div>\n  </div>\n</section>\n\n<!-- AVIS")]
+    fondateur = element(INDEX, '<div class="founder">')
+    nums = element(INDEX, '<div class="nums">')
     outils = ["WordPress", "WooCommerce", "Figma", "Rank Math", "Google Search Console", "After Effects"]
     corps = f"""<section class="phero phero--court">
   <div class="gridbg" aria-hidden="true"></div><div class="orb orb--a" aria-hidden="true"></div>
@@ -213,7 +213,7 @@ def agence():
     <p class="lead rv" style="margin-top:24px">Aurea Media conçoit des sites sur mesure pour les indépendants, TPE et PME qui veulent une présence en ligne à la hauteur de leur savoir faire.</p>
   </div>
 </section>
-<section class="sec" style="padding-top:20px"><div class="wrap">{fondateur.replace('Un studio <span class="nw"><span class="gold">indépendant</span>,</span> une exigence de grande agence.', 'Alexandre Coury, <span class="gold">développeur</span> et designer.').replace("L'agence</span>", "Le fondateur</span>")}{nums}</div></div></section>
+<section class="sec" style="padding-top:20px"><div class="wrap">{fondateur.replace('Un studio <span class="nw"><span class="gold">indépendant</span>,</span> une exigence de grande agence.', 'Alexandre Coury, <span class="gold">développeur</span> et designer.').replace("L'agence</span>", "Le fondateur</span>")}{nums}</div></section>
 <section class="sec paper">
   <div class="gridbg" aria-hidden="true"></div>
   <div class="wrap">

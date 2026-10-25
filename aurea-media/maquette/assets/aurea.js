@@ -188,6 +188,16 @@
     b.parentElement.hidden = true;
   }));
 
+  // Carte Refonte : le curseur suit la souris (ou le doigt)
+  document.querySelectorAll('[data-ba-survol]').forEach(v => {
+    const echelle = v.querySelector('.ba2-echelle');
+    const ajuster = () => echelle && echelle.style.setProperty('--k', v.offsetWidth / 540);
+    ajuster(); addEventListener('resize', ajuster);
+    const suivre = x => { const r = v.getBoundingClientRect(); v.style.setProperty('--pos', Math.min(96, Math.max(4, (x - r.left) / r.width * 100)) + '%'); v.classList.add('is-actif'); };
+    v.addEventListener('pointermove', e => suivre(e.clientX));
+    v.addEventListener('pointerleave', () => { v.style.setProperty('--pos', '50%'); });
+  });
+
   // FAQ : une seule question ouverte à la fois
   document.querySelectorAll('.faq details').forEach(d => d.addEventListener('toggle', () => {
     if (d.open) document.querySelectorAll('.faq details[open]').forEach(o => o !== d && (o.open = false));
