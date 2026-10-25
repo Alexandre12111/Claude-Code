@@ -1,15 +1,12 @@
 """Pages services : e-commerce, refonte, identité visuelle, motion design, maquettes de présentation."""
 from composants import *
+from visuels import *
 
 
 def ecommerce():
     visuel = f"""<div class="vis-shop">
       {navigateur("sunrock", lazy=False, classe="vs-desk")}
-      <div class="phone vs-phone"><div class="phone-view shop">
-        <div class="shop-top"><b>PERLE</b>{ico("bag")}</div>
-        <div class="shop-img"><img src="assets/realisations/perle-hair.webp" alt="" width="1200" height="620"></div>
-        <div class="shop-info"><span>Extensions · Kératine</span><b>Mèches naturelles 55 cm</b><em>89,00 €</em><i>Ajouter au panier</i></div>
-      </div></div>
+      {perle_mobile().replace('class="phone m-phone"', 'class="phone m-phone vs-phone"')}
       {puce("cart", "Commande reçue", "89,00 € · Stripe", "top:-6px;right:0")}
       {puce("lightning", "Paiement en 1 clic", "Apple Pay, carte, PayPal", "bottom:40px;left:-20px", ok=True)}
       {carte_prix("1 650 €", "HT, à partir de", ["Boutique WooCommerce sur mesure", "Paiement Stripe et PayPal", "Aucune commission sur vos ventes"])}
@@ -25,7 +22,7 @@ def ecommerce():
                         ("shield", "Paiement sécurisé", "Stripe et PayPal, conformes 3D Secure. L'argent arrive directement sur votre compte."),
                         ("chart", "Référencement Google Shopping", "Données produits structurées, flux Merchant Center et pages catégories optimisées."),
                         ("user", "Autonomie complète", "Ajoutez un produit, gérez le stock et les commandes depuis votre téléphone. Formation incluse.")])
-    corps += galerie("Exemples", 'Des boutiques <span class="gold">en ligne</span> qui tournent.', "Défense, beauté : deux univers, deux parcours d'achat pensés pour leurs clients.", ["sunrock", "perle-hair", "barber-korner"])
+    corps += galerie("Exemples", 'Des boutiques <span class="gold">en ligne</span> qui tournent.', "Défense, beauté : deux univers, deux parcours d'achat pensés pour leurs clients.", ["sunrock", "perle-hair"]).replace('<div class="gal">', '<div class="gal gal--2">')
     corps += section(entete("Comparatif", 'WooCommerce ou <span class="gold">Shopify</span> ?', "Pourquoi nous construisons vos boutiques sous WooCommerce.", centre=True) + """
 <div class="rv" style="overflow-x:auto"><table class="compare">
 <thead><tr><th scope="col">Critère</th><th scope="col">Shopify</th><th scope="col" class="hl">WooCommerce par Aurea</th></tr></thead>
@@ -42,13 +39,13 @@ def ecommerce():
         ("Pouvez vous reprendre ma boutique existante ?", "Oui. Nous migrons produits, clients et commandes depuis Shopify, Wix ou PrestaShop, avec des redirections pour garder votre référencement."),
         ("Quels moyens de livraison ?", "Colissimo, Mondial Relay, Chronopost, retrait en boutique ou livraison locale, avec calcul automatique des frais."),
         ("Le site sera t il rapide ?", "Oui : thème sur mesure, images optimisées et cache. Une boutique rapide vend plus, surtout sur mobile.")])
-    corps += appel("Votre boutique", 'Prêt à <span class="gold">vendre</span> en ligne ?', "Parlez nous de vos produits : vous recevez une estimation et un planning sous 24h.", ecrans=("perle-hair", "sunrock", "barber-korner"))
+    corps += appel("Votre boutique", 'Prêt à <span class="gold">vendre</span> en ligne ?', "Parlez nous de vos produits : vous recevez une estimation et un planning sous 24h.", ecrans=("perle-hair", "sunrock", "perle-hair"))
     page("creation-site-ecommerce.html", "Création site e-commerce sur mesure | WooCommerce, Aurea",
          "Création de site e-commerce sur mesure sous WooCommerce : boutique rapide, paiement sécurisé, aucune commission sur vos ventes. Dès 1 650 € HT.", corps, "assets/realisations/sunrock.webp")
 
 
 def refonte():
-    ancien = """<div class="old-site"><div class="os-bar">Bienvenue sur notre site Internet !</div><div class="os-body"><div class="os-menu"><span>Accueil</span><span>Qui sommes nous</span><span>Nos produits</span><span>Contact</span></div><div class="os-main"><h4>MARYES VIDEO</h4><p>Vidéaste mariage. Cliquez ici pour découvrir nos prestations.</p><div class="os-img"></div><p class="os-maj">Dernière mise à jour : 12/03/2017</p></div></div></div>"""
+    ancien = maryes_ancien()
     visuel = f"""<div class="ba" data-ba>
       <div class="ba-apres">{navigateur("maryes", lazy=False)}</div>
       <div class="ba-avant"><div class="browser"><div class="browser-bar"><i></i><i></i><i></i><span>ancien-site.fr</span></div>{ancien}</div></div>
@@ -116,11 +113,11 @@ def identite():
 def motion():
     visuel = f"""<div class="player">
       <video controls muted loop playsinline preload="metadata" poster="assets/creations/motion-affiche.webp" aria-label="Film de marque Aurea Media">
-        <source src="assets/creations/motion-aurea-media.webm" type="video/webm"><source src="assets/creations/motion-aurea-media.mp4" type="video/mp4">
+        <source src="assets/creations/motion-aurea-media-1080.webm" type="video/webm"><source src="assets/creations/motion-aurea-media-1080.mp4" type="video/mp4">
       </video>
-      <div class="player-strip" aria-hidden="true"><span>00:00</span><i></i><i></i><i></i><i></i><i></i><span>00:10</span></div>
+      <div class="player-strip" aria-hidden="true"><span>00:00</span><i></i><i></i><i></i><i></i><i></i><span>00:14</span></div>
     </div>
-    {puce("film", "Film de marque Aurea Media", "Réalisé en interne · 10 s", "top:-18px;left:-14px")}"""
+    {puce("film", "Film de marque Aurea Media", "Réalisé en interne · 14 s · 1080p", "top:-18px;left:-14px")}"""
     corps = hero([("Services", "index.html#services"), ("Motion design", "")], "Motion design",
                  'Motion design pour entreprise : des vidéos qui <span class="gold">retiennent</span> l\'attention.',
                  "Animation de logo, vidéo explicative, contenus pour vos réseaux et votre site : le mouvement fait passer votre message en quelques secondes. Ci contre, notre propre film de marque.",

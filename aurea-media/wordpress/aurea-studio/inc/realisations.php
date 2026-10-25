@@ -312,6 +312,17 @@ function aurea_real_fournies() {
 		'dual-tech'       => array( 'Dual Tech', 'https://dualtech-event.eu/', 'site-vitrine', 'evenementiel', 'Europe', 'Salon européen de l’innovation duale et de la souveraineté technologique.', false, true ),
 		'villa-moniris'   => array( 'Villa Moniris', 'https://villamoniris.fr/', 'site-vitrine', 'restaurant', 'La Crau', 'Propriété de charme pour 14 personnes, avec réservation par espace et galerie immersive.', false, true ),
 		'barber-korner'   => array( 'Barber Korner', 'https://barber-korner.fr/', 'site-vitrine', 'commerce', 'Paris', 'Salon de barbier traditionnel avec prise de rendez vous en ligne.', false, true ),
+		'laurence-paoli'  => array( 'Maître Laurence Paoli', 'https://avocat-paoli.fr/', 'site-vitrine', 'avocat', 'Essonne', 'Avocate spécialisée en droit de la famille, des personnes et de leur patrimoine.', false, false ),
+		'normande-isolation' => array( 'Normande d’Isolation', 'https://normande-disolation.com/', 'site-vitrine', 'industrie', 'Normandie', 'Isolation industrielle : calorifugeage, acoustique, protection incendie et échafaudages.', false, false ),
+		'tcm-grand-est'   => array( 'TCM Grand Est', 'https://tcm-grandest.fr/', 'site-vitrine', 'industrie', 'Grand Est', 'Travaux industriels sur mesure en soudure, tuyauterie et mécanique.', false, false ),
+		'sultan'          => array( 'Sultan Conseil & Leviers', 'https://sultan.cl/', 'site-vitrine', 'coach', 'International', 'Cabinet indépendant pour les transformations à fort enjeu, entre politique, économie et géopolitique.', false, false ),
+		'enzym'           => array( 'Enzym', 'https://enzymco.fr/', 'site-vitrine', 'coach', 'France', 'Coaching et formation pour dirigeants, managers et particuliers.', false, false ),
+		'inas'            => array( 'INAS', 'https://inas-france.fr/', 'site-vitrine', 'evenementiel', 'Paris', 'Think tank indépendant dédié à la souveraineté nationale et européenne.', false, false ),
+		'iff-paris'       => array( 'Centre Franco Iranien', 'https://iff-paris.com/', 'site-vitrine', 'evenementiel', 'Paris', 'Association qui crée des ponts culturels, économiques et scientifiques entre la France et l’Iran.', false, false ),
+		'cercle-la-raison' => array( 'Cercle La Raison', 'https://raison-cercle.fr/', 'site-vitrine', 'restaurant', 'Bordeaux', 'Cercle privé de réservation d’événements d’exception, dans un cadre confidentiel.', false, false ),
+		'duchentyls'      => array( 'Domaine Duchentyls', 'https://domaine-duchentyls.fr/', 'site-vitrine', 'restaurant', 'France', 'Lieu de charme pour séjours, réceptions privées et événements en pleine nature.', false, false ),
+		'massy'           => array( 'Changer d’Air à Massy', 'https://massy-changer-dair.fr/', 'site-vitrine', 'evenementiel', 'Massy', 'Plateforme de campagne municipale pour les élections de Massy 2026.', false, false ),
+		'tayeb'           => array( 'Affaire Tayeb Benabderrahmane', 'https://affaire-benabderrahmane.com/', 'site-vitrine', 'evenementiel', 'International', 'Site biographique consacré à l’affaire Tayeb Benabderrahmane.', false, false ),
 		'maryes'          => array( 'Maryes Vidéo', 'https://maryesvideaste.com/', 'site-vitrine', 'creatifs', 'Paris', 'Vidéaste de mariage à l’approche naturelle, discrète et émotionnelle.', false, true ),
 	);
 }

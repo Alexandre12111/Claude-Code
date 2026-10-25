@@ -1,5 +1,6 @@
 """Pages secteur, locale, réalisations, étude de cas, tarifs, agence, contact, conseils et article."""
 from composants import *
+from visuels import *
 
 # Exemple de design pour un cabinet d'avocats (maquette d'illustration, pas un client)
 AVOCAT = """<div class="browser law"><div class="browser-bar"><i></i><i></i><i></i><span>exemple · cabinet-avocats.fr</span></div>
@@ -10,17 +11,14 @@ AVOCAT = """<div class="browser law"><div class="browser-bar"><i></i><i></i><i><
 
 
 def secteur():
-    visuel = f"""{AVOCAT}
-    <div class="phone law-phone"><div class="phone-view"><div class="inbox">
-      <h4>Rendez vous</h4>
-      <div class="msg"><i>J</i><div><b>Consultation droit social</b><span>Jeudi 10h · cabinet</span></div></div>
-      <div class="msg"><i>S</i><div><b>Création de société</b><span>Lundi 14h · visio</span></div></div>
-      <div class="msg"><i>P</i><div><b>Rupture conventionnelle</b><span>Mardi 9h30</span></div></div>
-    </div></div></div>
-    <span class="vis-note">Exemple de design</span>"""
+    visuel = f"""<div class="vis-avocat">
+      {navigateur("laurence-paoli", lazy=False)}
+      {paoli_mobile()}
+      {puce("calendar", "Nouveau rendez vous", "Consultation divorce · jeudi 10:00", "top:-14px;left:-10px")}
+    </div>"""
     corps = hero([("Secteurs", "creation-site-vitrine.html"), ("Avocats", "")], "Site internet pour avocat",
                  'Création de site internet pour <span class="gold">avocat</span> et cabinet.',
-                 "Un site qui inspire confiance, présente clairement vos domaines d'intervention et facilite la prise de rendez vous, dans le respect des règles de communication de la profession.",
+                 "Un site qui inspire confiance, présente clairement vos domaines d'intervention et facilite la prise de rendez vous, dans le respect des règles de la profession. Ci contre, le site que nous avons créé pour Maître Laurence Paoli, avocate en droit de la famille.",
                  visuel, [("Obtenir mon devis", "contact.html", True), ("Voir les tarifs", "tarifs.html", False)])
     corps += avantages("Pensé pour les cabinets", 'Ce qu\'un client attend du site de son <span class="gold">avocat</span>.', "Avant d'appeler, un client veut comprendre si vous traitez son problème, combien cela peut coûter et comment vous joindre.",
                        [("seal", "Domaines d'intervention clairs", "Une page par expertise, rédigée pour les questions réelles de vos clients et pour Google."),
@@ -28,7 +26,7 @@ def secteur():
                         ("shield", "Conformité déontologique", "Mentions obligatoires, informations sur les honoraires et ton conforme au règlement intérieur national."),
                         ("search", "Référencement local", "Fiche Google, pages par ville et par expertise pour être trouvé près de chez vos clients."),
                         ("user", "Présentation des associés", "Parcours, publications et spécialités, pour que le client choisisse son interlocuteur.")])
-    corps += galerie("Références", 'Des sites qui <span class="gold">inspirent confiance</span>.', "Professions réglementées, institutions et cabinets de conseil nous confient leur image.", ["havel-trading", "verisol", "xpert-medical"])
+    corps += galerie("Références", 'Des sites qui <span class="gold">inspirent confiance</span>.', "Professions réglementées, institutions et cabinets de conseil nous confient leur image.", ["laurence-paoli", "sultan", "inas"])
     corps += section(entete("Autres secteurs", 'Un site adapté à <span class="gold">votre métier</span>.', centre=True) + """
 <div class="sectors">""" + "".join(f'<a class="sector rv" href="#"><div class="sector-img"><img src="assets/realisations/{img}.webp" alt="" width="1200" height="620" loading="lazy"></div><div class="sector-txt"><div><b>{n}</b><span>{d}</span></div><svg><use href="#i-out"/></svg></div></a>' for n, d, img in [
         ("Professions de santé", "Médecins, kinés, praticiens", "xpert-medical"), ("Architectes", "Portfolio et projets", "portugal-expert"), ("Restaurants", "Carte, réservation, avis", "villa-moniris"),
@@ -182,7 +180,7 @@ def tarifs():
 <section class="sec">
   <div class="wrap">
     {entete("Inclus dans chaque site", 'Ce que comprend le <span class="gold">prix</span>.', "Pas de mauvaise surprise : voici ce qui est compris dans tous nos forfaits.")}
-    <div class="inclus rv">{"".join(f"<span>{ico('check')}{t}</span>" for t in ["Design 100 % sur mesure", "Version mobile et tablette", "Référencement technique", "Données structurées Schema.org", "Formulaire de contact", "Search Console configurée", "Formation à l'administration", "Hébergement conseillé à votre nom", "Site et contenus qui vous appartiennent"])}</div>
+    <div class="inclus">{"".join(f'<article class="incl rv" style="--d:{i%4*.06}s"><span class="incl-ico">{ico(ic)}</span><b>{t}</b><span>{d}</span></article>' for i, (ic, t, d) in enumerate([("pen", "Design 100 % sur mesure", "Aucun template : une maquette dessinée pour votre activité."), ("devices", "Mobile et tablette", "Chaque page testée sur tous les écrans."), ("search", "Référencement technique", "Balises, vitesse, maillage interne, sitemap."), ("code", "Données structurées", "Schema.org pour aider Google à comprendre votre site."), ("mail", "Formulaire de contact", "Les demandes arrivent directement dans votre boîte."), ("chart", "Search Console", "Configurée et reliée dès la mise en ligne."), ("user", "Formation incluse", "Vous modifiez vos textes et photos en autonomie."), ("shield", "Propriété totale", "Site, contenus et accès à votre nom.")]))}</div>
   </div>
 </section>
 <section class="sec paper">
@@ -244,7 +242,6 @@ def agence():
 
 def contact():
     besoins = ["Site vitrine", "Site e-commerce", "Refonte", "Identité visuelle", "Motion design", "Présentation", "Autre"]
-    budgets = ["Moins de 1 000 €", "1 000 à 1 800 €", "1 800 à 2 750 €", "Plus de 2 750 €", "Je ne sais pas"]
     puces = lambda nom, liste, typ: "".join(f'<label class="choix"><input type="{typ}" name="{nom}" value="{v}"><span>{v}</span></label>' for v in liste)
     corps = f"""<section class="phero phero--court phero--contact">
   <div class="gridbg" aria-hidden="true"></div><div class="orb orb--a" aria-hidden="true"></div>
@@ -269,7 +266,6 @@ def contact():
         </div>
         <div class="f-champ"><label for="f-mail">Adresse e-mail <em>*</em></label><input id="f-mail" name="mail" type="email" autocomplete="email" required><small class="f-err" id="f-mail-err" hidden>Saisissez une adresse e-mail valide, par exemple nom@entreprise.fr.</small></div>
         <fieldset class="f-champ"><legend>Votre besoin</legend><div class="choix-liste">{puces("besoin", besoins, "checkbox")}</div></fieldset>
-        <fieldset class="f-champ"><legend>Budget envisagé <span>facultatif</span></legend><div class="choix-liste">{puces("budget", budgets, "radio")}</div></fieldset>
         <div class="f-champ"><label for="f-msg">Décrivez votre projet <em>*</em></label><textarea id="f-msg" name="message" rows="5" required placeholder="Votre activité, vos objectifs, votre site actuel s'il existe…"></textarea></div>
         <button class="btn" type="submit">Recevoir mon devis gratuit {ico("arrow")}</button>
         <p class="f-note">{ico("shield")}Vos données servent uniquement à répondre à votre demande. Aucun démarchage, aucun partage.</p>

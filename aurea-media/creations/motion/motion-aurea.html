@@ -2,121 +2,175 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<title>Motion Aurea Media</title>
+<title>Film de marque Aurea Media</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-/* Film de marque Aurea Media, 10 s, 1280 x 720. Chaque image est calculée par rendre(t) : exporter.js capture 30 images par seconde. */
+/* Film de marque Aurea Media, 14 s, 1920 x 1080. Chaque image est calculée par rendre(t) ; exporter.js capture 30 images par seconde. */
 :root{--gold:#C9A961;--cream:#F5F5F0;--grad:linear-gradient(100deg,#B8934E,#E6CB8C 45%,#C9A961)}
 *{box-sizing:border-box;margin:0}
-html,body{width:1280px;height:720px;overflow:hidden;background:#0A0A0A}
-#scene{position:relative;width:1280px;height:720px;overflow:hidden;font-family:"Geist",sans-serif;color:var(--cream);background:#0A0A0A}
-.halo{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(closest-side,rgba(201,169,97,.32),transparent 70%);left:190px;top:-90px}
-.grille{position:absolute;inset:0;background-image:linear-gradient(rgba(245,245,240,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(245,245,240,.05) 1px,transparent 1px);background-size:64px 64px}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0A0A0A}
+#scene{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Geist",sans-serif;color:var(--cream);background:#080807}
 .abs{position:absolute;will-change:transform,opacity}
-#marque{left:50%;top:50%;width:150px;margin:-95px 0 0 -75px}
-#marque svg{width:150px;height:158px}
-#trace{stroke-dasharray:640;stroke-dashoffset:640}
-#point{transform-origin:62px 132px}
-#nom{left:0;right:0;top:470px;text-align:center;font:700 54px "Bricolage Grotesque";letter-spacing:.18em}
+#fond{inset:0;background:radial-gradient(1200px 700px at 50% 40%,#1c170d,transparent 70%)}
+.halo{width:1400px;height:1400px;border-radius:50%;background:radial-gradient(closest-side,rgba(201,169,97,.30),transparent 70%);left:260px;top:-200px}
+.grille{inset:0;background-image:linear-gradient(rgba(245,245,240,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(245,245,240,.045) 1px,transparent 1px);background-size:96px 96px;-webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000,transparent);mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000,transparent)}
+.p{width:6px;height:6px;border-radius:50%;background:#E6CB8C;box-shadow:0 0 12px #C9A961}
+#vignette{inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.65));pointer-events:none}
+/* 1. Logo */
+#marque{left:50%;top:50%;width:240px;height:252px;margin:-170px 0 0 -120px}
+#marque svg{width:240px;height:252px;overflow:visible}
+#trace{stroke-dasharray:1000;stroke-dashoffset:1000}
+#point{transform-origin:99px 211px}
+#reflet{position:absolute;inset:-20px;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%);mix-blend-mode:overlay;-webkit-mask:url('#m');pointer-events:none}
+#nom{left:0;right:0;top:640px;text-align:center;font:700 84px "Bricolage Grotesque";letter-spacing:.2em}
 #nom span{display:inline-block}
-#sous{left:0;right:0;top:540px;text-align:center;font:500 16px "Geist Mono";letter-spacing:.5em;color:var(--gold)}
-.ligne{left:0;right:0;text-align:center;font:700 92px/1 "Bricolage Grotesque";letter-spacing:-.04em}
+#sous{left:0;right:0;top:752px;text-align:center;font:500 24px "Geist Mono";letter-spacing:.6em;color:var(--gold)}
+/* 2. Message */
+.ligne{left:0;right:0;text-align:center;font:700 148px/1 "Bricolage Grotesque";letter-spacing:-.045em}
+.ligne span{display:inline-block}
 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-#l1{top:250px}#l2{top:356px}
-.ecran{width:520px;border-radius:14px;overflow:hidden;border:1px solid rgba(245,245,240,.16);background:#1b1b19;box-shadow:0 40px 80px -30px #000}
-.ecran i{display:block;height:24px;background:#22221f;background-image:radial-gradient(circle at 16px 12px,#c9a961 4px,transparent 5px),radial-gradient(circle at 32px 12px,#444 4px,transparent 5px),radial-gradient(circle at 48px 12px,#444 4px,transparent 5px)}
+#l1{top:330px}#l2{top:500px}
+#trait{left:50%;top:690px;height:6px;width:520px;margin-left:-260px;border-radius:6px;background:var(--grad);transform-origin:left}
+/* 3. Mur de réalisations en 3D */
+#mur{left:50%;top:50%;width:2400px;height:1500px;margin:-750px 0 0 -1200px;perspective:2200px}
+#mur-plan{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);gap:34px;transform-style:preserve-3d}
+.ecran{border-radius:18px;overflow:hidden;border:1px solid rgba(245,245,240,.18);background:#1b1b19;box-shadow:0 50px 90px -30px #000}
+.ecran i{display:block;height:30px;background:#22221f;background-image:radial-gradient(circle at 20px 15px,#c9a961 5px,transparent 6px),radial-gradient(circle at 40px 15px,#444 5px,transparent 6px),radial-gradient(circle at 60px 15px,#444 5px,transparent 6px)}
 .ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
-.puce{display:flex;align-items:center;gap:14px;padding:16px 22px 16px 16px;border-radius:18px;background:rgba(26,26,24,.9);border:1px solid rgba(245,245,240,.16);font-size:20px;white-space:nowrap}
-.puce b{display:block;font-weight:500}.puce span{font-size:15px;color:#A9A9A2}
-.puce em{width:44px;height:44px;border-radius:12px;background:rgba(201,169,97,.16);display:grid;place-items:center;font-style:normal;color:var(--gold);font-size:22px}
-#chiffres{left:0;right:0;top:250px;display:flex;justify-content:center;gap:110px;text-align:center}
-#chiffres b{display:block;font:700 130px/1 "Bricolage Grotesque";letter-spacing:-.06em}
-#chiffres span{display:block;margin-top:12px;font-size:22px;color:#A9A9A2}
-#fin{left:0;right:0;top:270px;text-align:center}
-#fin img{height:96px;margin:0 auto}
-#fin p{margin-top:26px;font:500 22px "Geist Mono";letter-spacing:.24em;color:var(--gold)}
+.puce{display:flex;align-items:center;gap:20px;padding:24px 32px 24px 22px;border-radius:26px;background:rgba(24,24,22,.92);border:1px solid rgba(245,245,240,.18);font-size:30px;white-space:nowrap;box-shadow:0 30px 60px -20px #000}
+.puce b{display:block;font-weight:500}.puce span{font-size:22px;color:#A9A9A2}
+.puce em{width:66px;height:66px;border-radius:18px;background:rgba(201,169,97,.18);display:grid;place-items:center;font-style:normal;color:var(--gold)}
+.puce em svg{width:34px;height:34px}
+#titre3{left:0;right:0;top:110px;text-align:center;font:700 92px "Bricolage Grotesque";letter-spacing:-.04em;text-shadow:0 10px 40px #000}
+/* 4. Chiffres */
+#chiffres{left:0;right:0;top:330px;display:flex;justify-content:center;gap:120px;text-align:center}
+#chiffres>div{position:relative;width:360px}
+#chiffres svg{width:300px;height:300px;display:block;margin:0 auto}
+#chiffres b{position:absolute;left:0;right:0;top:92px;font:700 104px/1 "Bricolage Grotesque";letter-spacing:-.06em}
+#chiffres span{display:block;margin-top:26px;font-size:30px;color:#A9A9A2}
+/* 5. Fin */
+#fin{left:0;right:0;top:330px;text-align:center}
+#fin img{height:150px;margin:0 auto}
+#fin h2{margin-top:56px;font:700 64px "Bricolage Grotesque";letter-spacing:-.03em}
+#fin p{margin-top:28px;font:500 30px "Geist Mono";letter-spacing:.3em;color:var(--gold)}
 </style>
 </head>
 <body>
 <div id="scene">
-  <div class="grille"></div>
-  <div class="halo abs" id="halo"></div>
+  <div class="abs" id="fond"></div>
+  <div class="abs grille" id="grille"></div>
+  <div class="abs halo" id="halo"></div>
+  <div id="poussiere"></div>
 
-  <!-- 1. Le logo se dessine -->
-  <div class="abs" id="marque"><svg viewBox="0 0 150 158"><path id="trace" d="M75 6 L8 150 L45 150 L75 82 L105 150 L142 150 Z" fill="none" stroke="#F5F5F0" stroke-width="4" stroke-linejoin="round"/><path id="plein" d="M75 6 L8 150 L45 150 L75 82 L105 150 L142 150 Z" fill="#F5F5F0" opacity="0"/><circle id="point" cx="62" cy="132" r="13" fill="#C9A961"/></svg></div>
+  <div class="abs" id="marque"><svg viewBox="0 0 240 252">
+    <defs><linearGradient id="or" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5F5F0"/><stop offset="1" stop-color="#E9E3D2"/></linearGradient>
+    <linearGradient id="balayage" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <clipPath id="forme"><path d="M120 10 L12 240 L72 240 L120 132 L168 240 L228 240 Z"/></clipPath></defs>
+    <path id="trace" d="M120 10 L12 240 L72 240 L120 132 L168 240 L228 240 Z" fill="none" stroke="#F5F5F0" stroke-width="5" stroke-linejoin="round"/>
+    <path id="plein" d="M120 10 L12 240 L72 240 L120 132 L168 240 L228 240 Z" fill="url(#or)" opacity="0"/>
+    <g clip-path="url(#forme)"><rect id="eclat" x="-160" y="0" width="120" height="252" fill="url(#balayage)" transform="skewX(-18)"/></g>
+    <circle id="point" cx="99" cy="211" r="20" fill="#C9A961"/>
+  </svg></div>
   <div class="abs" id="nom"></div>
   <div class="abs" id="sous">WEB AGENCY</div>
 
-  <!-- 2. Le message -->
-  <div class="abs ligne" id="l1">Des sites sur mesure</div>
-  <div class="abs ligne" id="l2">qui apportent des <span class="g">clients.</span></div>
+  <div class="abs ligne" id="l1"><span>Des</span> <span>sites</span> <span>sur</span> <span>mesure</span></div>
+  <div class="abs ligne" id="l2"><span>qui</span> <span>apportent</span> <span>des</span> <span class="g">clients.</span></div>
+  <div class="abs" id="trait"></div>
 
-  <!-- 3. Les réalisations -->
-  <div class="abs ecran" id="e1" style="left:80px;top:150px"><i></i><img src="../../maquette/assets/realisations/portugal-expert.webp" alt=""></div>
-  <div class="abs ecran" id="e2" style="left:380px;top:210px"><i></i><img src="../../maquette/assets/realisations/havel-trading.webp" alt=""></div>
-  <div class="abs ecran" id="e3" style="left:690px;top:120px"><i></i><img src="../../maquette/assets/realisations/eddy-bilou.webp" alt=""></div>
-  <div class="abs puce" id="p1" style="left:120px;top:560px"><em>✉</em><div><b>Nouvelle demande de devis</b><span>via le formulaire du site</span></div></div>
-  <div class="abs puce" id="p2" style="left:840px;top:520px"><em>★</em><div><b>4,9 sur Google</b><span>39 avis clients</span></div></div>
+  <div class="abs" id="mur"><div id="mur-plan"></div></div>
+  <div class="abs" id="titre3">45 sites livrés en France et en Europe</div>
+  <div class="abs puce" id="p1" style="left:180px;top:780px"><em><svg viewBox="0 0 256 256"><path fill="currentColor" d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48ZM203.43,64,128,133.15,52.57,64ZM216,192H40V74.19l82.59,75.71a8,8,0,0,0,10.82,0L216,74.19V192Z"/></svg></em><div><b>Nouvelle demande de devis</b><span>via le formulaire du site</span></div></div>
+  <div class="abs puce" id="p2" style="left:1240px;top:720px"><em><svg viewBox="0 0 256 256"><path fill="currentColor" d="M234.5,114.38l-45.1,39.36,13.51,58.6a16,16,0,0,1-23.84,17.34l-51.11-31-51,31a16,16,0,0,1-23.84-17.34L66.61,153.8,21.5,114.38a16,16,0,0,1,9.11-28.06l59.46-5.15,23.21-55.36a15.95,15.95,0,0,1,29.44,0h0L166,81.17l59.44,5.15a16,16,0,0,1,9.11,28.06Z"/></svg></em><div><b>4,9 sur Google</b><span>39 avis clients</span></div></div>
 
-  <!-- 4. Les chiffres -->
-  <div class="abs" id="chiffres"><div><b id="c1">0</b><span>sites livrés</span></div><div><b id="c2">0</b><span>semaines</span></div><div><b class="g">4,9</b><span>note Google</span></div></div>
+  <div class="abs" id="chiffres">
+    <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/><defs><linearGradient id="ann"><stop offset="0" stop-color="#B8934E"/><stop offset="1" stop-color="#E6CB8C"/></linearGradient></defs></svg><b id="c1">0</b><span>sites livrés</span></div>
+    <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/></svg><b id="c2">0</b><span>semaines en moyenne</span></div>
+    <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/></svg><b id="c3" class="g">0</b><span>note Google</span></div>
+  </div>
 
-  <!-- 5. Fin -->
-  <div class="abs" id="fin"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><p>AUREA-MEDIA.FR</p></div>
+  <div class="abs" id="fin"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><h2>Votre site, <span class="g">sur mesure</span>.</h2><p>AUREA-MEDIA.FR</p></div>
+  <div class="abs" id="vignette"></div>
 </div>
 <script>
 const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const sortie = p => 1 - Math.pow(1 - p, 4);
+const entree = p => p * p * p;
+const douce = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const set = (el, o, tr, flou) => { el.style.opacity = o; el.style.transform = tr || ''; el.style.filter = flou ? `blur(${flou}px)` : ''; };
+
+// Poussière dorée : positions fixes (pseudo aléatoire reproductible)
+let graine = 7; const alea = () => (graine = (graine * 16807) % 2147483647) / 2147483647;
+const poussiere = Array.from({ length: 70 }, () => ({ x: alea() * 1920, y: alea() * 1080, v: 10 + alea() * 30, a: alea() * 6.28, s: .4 + alea() * 1.2, o: .2 + alea() * .6 }));
+poussiere.forEach(() => { const d = document.createElement('i'); d.className = 'abs p'; $('poussiere').append(d); });
+const grains = [...$('poussiere').children];
+
+// Mur : les 12 réalisations
+const sites = ['havel-trading', 'portugal-expert', 'eddy-bilou', 'verisol', 'sunrock', 'perle-hair', 'novexia', 'laurence-paoli', 'xpert-medical', 'dual-tech', 'villa-moniris', 'maryes'];
+$('mur-plan').innerHTML = sites.map(s => `<div class="ecran"><i></i><img src="../../maquette/assets/realisations/${s}.webp" alt=""></div>`).join('');
+const ecrans = [...$('mur-plan').children];
+
 const nom = 'AUREA MEDIA';
 $('nom').innerHTML = [...nom].map(c => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join('');
 const lettres = [...$('nom').children];
-const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const prog = (t, a, b) => clamp((t - a) / (b - a));
-const sortie = p => 1 - Math.pow(1 - p, 3);          // easeOutCubic
-const entree = p => p * p * p;                        // easeInCubic
-const douce = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-const set = (el, o, tr) => { el.style.opacity = o; el.style.transform = tr || ''; };
+const mots = [...document.querySelectorAll('#l1 span, #l2 span')];
 
 window.rendre = t => {
-  // Halo qui respire
-  $('halo').style.transform = `translate(${Math.sin(t * .6) * 60}px,${Math.cos(t * .5) * 30}px) scale(${1 + Math.sin(t * .8) * .05})`;
-
-  // 1. Logo : 0 à 2,6 s
-  const dessin = sortie(prog(t, .1, 1.1));
-  $('trace').style.strokeDashoffset = 640 * (1 - dessin);
-  $('plein').setAttribute('opacity', sortie(prog(t, .9, 1.4)));
-  const pt = sortie(prog(t, 1.1, 1.6));
-  $('point').style.transform = `scale(${pt})`;
-  const sortLogo = entree(prog(t, 2.3, 2.8));
-  set($('marque'), 1 - sortLogo, `translateY(${-60 * sortLogo}px) scale(${1 - .3 * sortLogo})`);
-  lettres.forEach((l, i) => { const p = sortie(prog(t, 1.2 + i * .05, 1.7 + i * .05)); l.style.opacity = p * (1 - sortLogo); l.style.transform = `translateY(${(1 - p) * 30}px)`; });
-  set($('sous'), sortie(prog(t, 1.7, 2.1)) * (1 - sortLogo), `translateY(${(1 - sortie(prog(t, 1.7, 2.1))) * 12}px)`);
-
-  // 2. Message : 2,7 à 5 s
-  [['l1', 2.7], ['l2', 2.95]].forEach(([id, d]) => {
-    const p = sortie(prog(t, d, d + .6)), s = entree(prog(t, 4.6, 5));
-    set($(id), p * (1 - s), `translateY(${(1 - p) * 70 - s * 50}px) scale(${1 + s * .06})`);
+  $('halo').style.transform = `translate(${Math.sin(t * .5) * 90}px,${Math.cos(t * .4) * 50}px) scale(${1 + Math.sin(t * .7) * .06})`;
+  $('grille').style.transform = `translateY(${-t * 8}px)`;
+  grains.forEach((g, i) => {
+    const p = poussiere[i];
+    const y = (p.y - t * p.v + 1080) % 1080, x = p.x + Math.sin(t * .6 + p.a) * 30;
+    g.style.transform = `translate(${x}px,${y}px) scale(${p.s})`;
+    g.style.opacity = p.o * (.5 + .5 * Math.sin(t * 1.5 + p.a));
   });
 
-  // 3. Réalisations : 5 à 7,8 s
-  [['e1', 5, -6], ['e2', 5.2, 3], ['e3', 5.4, 7]].forEach(([id, d, r]) => {
-    const p = sortie(prog(t, d, d + .8)), s = entree(prog(t, 7.4, 7.9));
-    const flot = Math.sin((t - d) * 1.4) * 6;
-    set($(id), p * (1 - s), `translateY(${(1 - p) * 160 + flot - s * 40}px) rotate(${r * (1 - p * .5)}deg) scale(${.92 + p * .08})`);
-  });
-  [['p1', 6.1], ['p2', 6.4]].forEach(([id, d]) => {
-    const p = sortie(prog(t, d, d + .5)), s = entree(prog(t, 7.4, 7.9));
-    set($(id), p * (1 - s), `translateY(${(1 - p) * 30}px) scale(${.9 + p * .1})`);
-  });
+  // 1. Logo : 0 à 3,4 s
+  $('trace').style.strokeDashoffset = 1000 * (1 - sortie(prog(t, .2, 1.4)));
+  const plein = sortie(prog(t, 1.1, 1.7));
+  $('plein').setAttribute('opacity', plein);
+  $('trace').style.opacity = 1 - plein * .9;
+  $('point').style.transform = `scale(${sortie(prog(t, 1.4, 1.9)) * (1 + .15 * Math.sin(prog(t, 1.9, 2.4) * Math.PI))})`;
+  $('eclat').setAttribute('x', -160 + 520 * douce(prog(t, 1.9, 2.6)));
+  const sortLogo = entree(prog(t, 3, 3.5));
+  set($('marque'), 1 - sortLogo, `translateY(${-80 * sortLogo}px) scale(${(.85 + .15 * sortie(prog(t, 0, 1.6))) * (1 - .25 * sortLogo)})`);
+  lettres.forEach((l, i) => { const p = sortie(prog(t, 1.6 + i * .05, 2.3 + i * .05)); set(l, p * (1 - sortLogo), `translateY(${(1 - p) * 40}px)`, (1 - p) * 12); });
+  const ps = sortie(prog(t, 2.3, 2.8));
+  set($('sous'), ps * (1 - sortLogo), `translateY(${(1 - ps) * 16}px)`, 0);
 
-  // 4. Chiffres : 7,9 à 9 s
-  const pc = sortie(prog(t, 7.9, 8.4)), sc = entree(prog(t, 8.8, 9.1));
-  set($('chiffres'), pc * (1 - sc), `translateY(${(1 - pc) * 40}px)`);
-  $('c1').textContent = Math.round(45 * douce(prog(t, 7.9, 8.7))) + '+';
-  $('c2').textContent = Math.max(1, Math.round(4 * douce(prog(t, 7.9, 8.7))));
+  // 2. Message : 3,4 à 6,4 s
+  mots.forEach((m, i) => {
+    const d = 3.5 + i * .09, p = sortie(prog(t, d, d + .7)), s = entree(prog(t, 6, 6.4));
+    m.style.clipPath = `inset(0 0 ${(1 - p) * 100}% 0)`;
+    set(m, 1 - s, `translateY(${(1 - p) * 90 - s * 60}px)`, s * 10);
+  });
+  const pt = sortie(prog(t, 4.4, 5.2)), st = entree(prog(t, 6, 6.4));
+  set($('trait'), 1 - st, `scaleX(${pt})`);
 
-  // 5. Fin : 9,1 à 10 s
-  const pf = sortie(prog(t, 9.1, 9.6));
-  set($('fin'), pf, `scale(${.94 + pf * .06})`);
+  // 3. Mur de réalisations : 6,3 à 10 s
+  const pm = sortie(prog(t, 6.3, 7.4)), sm = entree(prog(t, 9.6, 10.1));
+  const cam = t - 6.3;
+  $('mur-plan').style.transform = `rotateX(${24 - pm * 6}deg) rotateZ(${-8 + pm * 2}deg) translateY(${-cam * 60}px) translateZ(${-400 + pm * 300 + cam * 40}px)`;
+  set($('mur'), pm * (1 - sm), '', sm * 8);
+  ecrans.forEach((e, i) => { const p = sortie(prog(t, 6.3 + (i % 4) * .08 + Math.floor(i / 4) * .12, 7.3 + i * .05)); e.style.opacity = p; e.style.transform = `translateZ(${(1 - p) * -300}px)`; });
+  const p3 = sortie(prog(t, 6.8, 7.5));
+  set($('titre3'), p3 * (1 - sm), `translateY(${(1 - p3) * 40}px)`);
+  [['p1', 7.6], ['p2', 8.1]].forEach(([id, d]) => { const p = sortie(prog(t, d, d + .6)); set($(id), p * (1 - sm), `translateY(${(1 - p) * 50 + Math.sin(t * 1.6) * 8}px) scale(${.85 + p * .15})`); });
+
+  // 4. Chiffres : 10 à 12,2 s
+  const pc = sortie(prog(t, 10, 10.6)), sc = entree(prog(t, 11.8, 12.2));
+  set($('chiffres'), pc * (1 - sc), `translateY(${(1 - pc) * 50}px) scale(${1 - sc * .05})`, sc * 8);
+  const k = douce(prog(t, 10.1, 11.3));
+  $('c1').textContent = Math.round(45 * k) + '+';
+  $('c2').textContent = Math.max(1, Math.round(4 * k));
+  $('c3').textContent = (4.9 * k).toFixed(1).replace('.', ',');
+  document.querySelectorAll('.anneau').forEach((a, i) => { a.style.strokeDashoffset = 817 * (1 - douce(prog(t, 10.1 + i * .12, 11.4 + i * .12)) * [.92, .8, .98][i]); });
+
+  // 5. Fin : 12,2 à 14 s
+  const pf = sortie(prog(t, 12.2, 12.9));
+  set($('fin'), pf, `scale(${.94 + pf * .06})`, (1 - pf) * 10);
 };
 window.rendre(0);
 </script>

@@ -94,7 +94,7 @@
 
   // Réalisations : défilement horizontal piloté par le scroll
   const work = document.querySelector('.work'), track = document.querySelector('.work-track'), bar = document.querySelector('.work-progress i');
-  const desk = matchMedia('(min-width: 681px)');
+  const desk = matchMedia('(min-width: 1081px)');
   const sizeWork = () => {
     if (!work || !track) return;
     if (!desk.matches || reduce) { work.style.height = ''; track.style.transform = ''; return; }
@@ -180,6 +180,13 @@
     form.querySelector('.f-ok').hidden = false;
     form.querySelector('button[type=submit]').disabled = true;
   });
+
+  // Galeries : afficher tous les projets
+  document.querySelectorAll('[data-plus]').forEach(b => b.addEventListener('click', () => {
+    const g = b.closest('.wrap').querySelector('.gal--plus');
+    g.classList.add('is-ouvert'); g.querySelectorAll('.is-plus').forEach(p => p.classList.add('is-in'));
+    b.parentElement.hidden = true;
+  }));
 
   // FAQ : une seule question ouverte à la fois
   document.querySelectorAll('.faq details').forEach(d => d.addEventListener('toggle', () => {

@@ -19,6 +19,17 @@ REAL = {
     "dual-tech": ("Dual Tech", "dualtech-event.eu", "Site vitrine", "Événementiel et institutions", "Europe", "Salon européen de l'innovation duale et de la souveraineté technologique."),
     "villa-moniris": ("Villa Moniris", "villamoniris.fr", "Site vitrine", "Restauration et hôtellerie", "La Crau", "Propriété de charme pour 14 personnes, avec réservation par espace."),
     "barber-korner": ("Barber Korner", "barber-korner.fr", "Site vitrine", "Commerce et beauté", "Paris", "Salon de barbier traditionnel avec prise de rendez vous en ligne."),
+    "laurence-paoli": ("Maître Laurence Paoli", "avocat-paoli.fr", "Site vitrine", "Avocats et droit", "Essonne", "Avocate spécialisée en droit de la famille, des personnes et de leur patrimoine."),
+    "normande-isolation": ("Normande d'Isolation", "normande-disolation.com", "Site vitrine", "Industrie et énergie", "Normandie", "Isolation industrielle : calorifugeage, acoustique, protection incendie et échafaudages."),
+    "tcm-grand-est": ("TCM Grand Est", "tcm-grandest.fr", "Site vitrine", "Industrie et énergie", "Grand Est", "Travaux industriels sur mesure en soudure, tuyauterie et mécanique."),
+    "sultan": ("Sultan Conseil & Leviers", "sultan.cl", "Site vitrine", "Coachs et consultants", "International", "Cabinet indépendant pour les transformations à fort enjeu, entre politique, économie et géopolitique."),
+    "enzym": ("Enzym", "enzymco.fr", "Site vitrine", "Coachs et consultants", "France", "Coaching et formation pour dirigeants, managers et particuliers."),
+    "inas": ("INAS", "inas-france.fr", "Site vitrine", "Événementiel et institutions", "Paris", "Think tank indépendant dédié à la souveraineté nationale et européenne."),
+    "iff-paris": ("Centre Franco Iranien", "iff-paris.com", "Site vitrine", "Événementiel et institutions", "Paris", "Association qui crée des ponts culturels, économiques et scientifiques entre la France et l'Iran."),
+    "cercle-la-raison": ("Cercle La Raison", "raison-cercle.fr", "Site vitrine", "Restauration et hôtellerie", "Bordeaux", "Cercle privé de réservation d'événements d'exception, dans un cadre confidentiel."),
+    "duchentyls": ("Domaine Duchentyls", "domaine-duchentyls.fr", "Site vitrine", "Restauration et hôtellerie", "France", "Lieu de charme pour séjours, réceptions privées et événements en pleine nature."),
+    "massy": ("Changer d'Air à Massy", "massy-changer-dair.fr", "Site vitrine", "Événementiel et institutions", "Massy", "Plateforme de campagne municipale pour les élections de Massy 2026."),
+    "tayeb": ("Affaire Tayeb Benabderrahmane", "affaire-benabderrahmane.com", "Site vitrine", "Événementiel et institutions", "International", "Site biographique consacré à l'affaire Tayeb Benabderrahmane."),
     "maryes": ("Maryes Vidéo", "maryesvideaste.com", "Site vitrine", "Photographes et créatifs", "Paris", "Vidéaste de mariage à l'approche naturelle, discrète et émotionnelle."),
 }
 
