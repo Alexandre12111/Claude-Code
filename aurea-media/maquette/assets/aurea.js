@@ -24,9 +24,9 @@
     const walk = node => [...node.childNodes].forEach(n => {
       if (n.nodeType === 3) {
         const frag = document.createDocumentFragment();
-        n.textContent.split(/(\s+)/).forEach(part => {
+        n.textContent.split(/([ \t\n\r]+)/).forEach(part => {
           if (!part) return;
-          if (/^\s+$/.test(part)) { frag.append(part); return; }
+          if (/^[ \t\n\r]+$/.test(part)) { frag.append(part); return; }
           const w = document.createElement('span'); w.className = 'w';
           const s = document.createElement('span'); s.style.setProperty('--i', i++); s.textContent = part;
           w.append(s); frag.append(w);
@@ -112,6 +112,17 @@
     };
     addEventListener('scroll', fill, { passive: true }); fill();
   }
+
+  // Écrans d'ordinateur : diaporama des réalisations
+  document.querySelectorAll('.laptop-view').forEach(v => {
+    const imgs = v.querySelectorAll('img');
+    if (imgs.length < 2) { imgs[0] && imgs[0].classList.add('is-on'); return; }
+    let i = 0; imgs[0].classList.add('is-on');
+    if (reduce) return;
+    setInterval(() => {
+      imgs[i].classList.remove('is-on'); i = (i + 1) % imgs.length; imgs[i].classList.add('is-on');
+    }, 3600);
+  });
 
   // FAQ : une seule question ouverte à la fois
   document.querySelectorAll('.faq details').forEach(d => d.addEventListener('toggle', () => {

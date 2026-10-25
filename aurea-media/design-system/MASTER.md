@@ -27,8 +27,8 @@ Règle : l'or ne sert jamais de fond à du texte long. Texte sur bouton or : `--
 
 ## Typographie
 
-* **Titres** : Instrument Serif (400 et italique). L'italique or met en valeur un ou deux mots par titre, jamais plus.
-* **Texte et interface** : Geist (300 à 600).
+* **Titres** : Bricolage Grotesque (600 à 650, interlettrage serré). Un ou deux mots par titre en dégradé or, jamais plus.
+* **Texte et interface** : Geist (300 à 600). **Libellés et chiffres techniques** : Geist Mono.
 * Échelle : H1 `clamp(2.75rem, 7vw, 6.5rem)`, H2 `clamp(2.25rem, 4.6vw, 4.25rem)`, H3 `1.5rem`, texte 1.0625rem, interligne 1.6, surtitres en capitales 0.75rem espacées de 0.18em.
 * Polices auto hébergées dans le thème (woff2, `font-display: swap`).
 

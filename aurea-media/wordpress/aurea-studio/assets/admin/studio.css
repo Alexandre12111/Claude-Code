@@ -1,0 +1,73 @@
+/* Aurea Studio : écrans d'administration */
+.aurea-studio{--a-or:#C9A961;--a-or-fonce:#9b7838;--a-noir:#0A0A0A;--a-creme:#F5F5F0;--a-gris:#6b6b66;--a-ligne:#e3e1da;max-width:1180px;font-size:14px}
+.aurea-studio *{box-sizing:border-box}
+.aurea-studio [hidden]{display:none!important}
+
+.aurea-entete{margin:18px 0 22px}
+.aurea-marque{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--a-or-fonce)}
+.aurea-marque svg{width:16px;height:16px;color:var(--a-noir)}
+.aurea-entete h1{font-size:30px;line-height:1.1;font-weight:650;letter-spacing:-.02em;margin:8px 0 6px;padding:0}
+.aurea-entete p{margin:0;color:var(--a-gris);font-size:14px;max-width:70ch}
+
+/* Aperçu */
+.aurea-apercu{position:relative;border-radius:16px;background:var(--a-noir);padding:36px 0 22px;overflow:hidden;margin-bottom:18px}
+.aurea-apercu-label{position:absolute;top:12px;left:16px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#7a7a74}
+.aurea-apercu .aurea-logos{padding:8px 0}
+.aurea-apercu-vide{color:#7a7a74;text-align:center;margin:10px 0}
+
+/* Barre d'actions */
+.aurea-barre{position:sticky;top:32px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px;margin-bottom:18px;border:1px solid var(--a-ligne);border-radius:14px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px)}
+.aurea-btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--a-ligne);background:#fff;color:var(--a-noir);font-weight:500;cursor:pointer;transition:background .2s,border-color .2s,opacity .2s}
+.aurea-btn:hover{border-color:var(--a-noir)}
+.aurea-btn svg{width:16px;height:16px}
+.aurea-btn.is-or{background:var(--a-or);border-color:var(--a-or)}
+.aurea-btn.is-or:hover{background:#d8bb78}
+.aurea-btn.is-noir{background:var(--a-noir);border-color:var(--a-noir);color:#fff;margin-left:auto}
+.aurea-btn:disabled{opacity:.45;cursor:default}
+.aurea-btn:focus-visible,.aurea-lien:focus-visible{outline:2px solid var(--a-or);outline-offset:2px}
+.aurea-compteur{color:var(--a-gris);font-size:13px}
+.aurea-etat{font-size:13px}
+.aurea-etat[data-type="ok"]{color:#1e7a52}
+.aurea-etat[data-type="ok"]::before{content:"✓ "}
+.aurea-etat[data-type="attente"]{color:var(--a-or-fonce)}
+.aurea-etat[data-type="erreur"]{color:#b32d2e}
+
+/* Grille de cartes (float sur les cartes : sans effet dans la grille, mais jQuery UI trie alors en lignes) */
+.aurea-grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin:0;padding:0;list-style:none}
+.aurea-carte{display:flex;flex-direction:column;float:left;margin:0;border:1px solid var(--a-ligne);border-radius:16px;background:#fff;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+.aurea-carte:hover{border-color:#cfccc2;box-shadow:0 10px 30px -18px rgba(0,0,0,.35)}
+.aurea-carte.is-masque .aurea-carte-visuel .aurea-logo{opacity:.35}
+.aurea-carte.is-place{border:2px dashed var(--a-or);background:#fbf7ee;min-height:260px;visibility:visible!important}
+.aurea-carte.ui-sortable-helper{box-shadow:0 20px 50px -15px rgba(0,0,0,.45);transform:rotate(1.5deg)}
+.aurea-carte-visuel{position:relative;height:110px;display:grid;place-items:center;background:var(--a-noir);cursor:grab}
+.aurea-carte-visuel:active{cursor:grabbing}
+.aurea-carte-visuel .aurea-logo{margin:0;width:170px;height:44px;--logo-teinte:rgba(245,245,240,.75)}
+.aurea-carte-visuel .aurea-logo.is-couleur{max-height:60px;width:auto;max-width:170px;height:auto}
+.aurea-poignee{position:absolute;top:10px;left:10px;display:grid;grid-template-columns:repeat(2,4px);gap:3px;opacity:.5}
+.aurea-poignee i{width:4px;height:4px;border-radius:50%;background:#fff}
+.aurea-pastille{position:absolute;top:10px;right:10px;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:#3a3a36;color:#d8d6cf}
+.aurea-carte-champs{padding:14px 14px 4px;display:grid;gap:10px}
+.aurea-carte-champs>label{display:grid;gap:4px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--a-gris)}
+.aurea-carte-champs input[type=text],.aurea-carte-champs input[type=url]{width:100%;min-height:36px;border:1px solid var(--a-ligne);border-radius:9px;padding:0 10px;font-size:14px;text-transform:none;letter-spacing:0;color:var(--a-noir)}
+.aurea-carte-champs input:focus{border-color:var(--a-or);box-shadow:0 0 0 1px var(--a-or);outline:none}
+.aurea-options{display:flex;flex-wrap:wrap;gap:14px;padding-top:2px}
+.aurea-interrupteur{display:inline-flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;min-height:28px}
+.aurea-interrupteur input{position:absolute;opacity:0;width:1px;height:1px}
+.aurea-interrupteur span{position:relative;width:32px;height:18px;border-radius:999px;background:#d6d3ca;transition:background .2s}
+.aurea-interrupteur span::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 2px rgba(0,0,0,.3)}
+.aurea-interrupteur input:checked+span{background:var(--a-or)}
+.aurea-interrupteur input:checked+span::after{transform:translateX(14px)}
+.aurea-interrupteur input:focus-visible+span{outline:2px solid var(--a-or);outline-offset:2px}
+.aurea-interrupteur input:disabled+span{opacity:.5}
+.aurea-note{margin:0;font-size:12px;color:var(--a-gris)}
+.aurea-carte-actions{display:flex;justify-content:space-between;gap:8px;padding:8px 14px 14px;margin-top:auto}
+.aurea-lien{background:none;border:0;padding:6px 0;min-height:32px;color:var(--a-or-fonce);font-weight:500;cursor:pointer}
+.aurea-lien:hover{text-decoration:underline}
+.aurea-lien.is-danger{color:#b32d2e}
+.aurea-carte.is-confirmer{border-color:#b32d2e}
+.aurea-carte.is-confirmer .is-danger{font-weight:600}
+.aurea-vide{padding:40px;text-align:center;border:2px dashed var(--a-ligne);border-radius:16px;color:var(--a-gris)}
+
+.aurea-aide{margin-top:22px;padding:14px 18px;border:1px solid var(--a-ligne);border-radius:14px;background:#fff}
+.aurea-aide summary{cursor:pointer;font-weight:600}
+.aurea-aide p{color:var(--a-gris);max-width:75ch}
