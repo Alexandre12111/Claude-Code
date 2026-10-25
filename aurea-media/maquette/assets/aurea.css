@@ -1,5 +1,5 @@
 /* Aurea Media : maquette refonte 2026 */
-:root{
+:root{color-scheme:dark;
   --ink:#0A0A0A;--ink-2:#121211;--ink-3:#191917;--cream:#F5F5F0;--mute:#AEAEA8;
   --gold:#C9A961;--gold-deep:#B8934E;--paper:#F5F5F0;--paper-mute:#44443F;
   --line:rgba(245,245,240,.10);--line-2:rgba(245,245,240,.18);--ok:#2F9E6E;
