@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aurea Installateur
  * Description:       Installe le thème Aurea Media et l'extension Aurea Studio même quand l'hébergeur limite la taille des fichiers envoyés (erreur « 413 Request Entity Too Large ») : le fichier est envoyé par petits morceaux, puis installé par WordPress.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 5.5
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -79,6 +79,15 @@ add_action( 'wp_ajax_aurea_inst_morceau', function () {
 /* Installation                                                        */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Lien d'activation signé, utilisable tel quel par le navigateur.
+ * (wp_nonce_url() encode « & » en « &amp; » pour le HTML : dans un lien créé en JavaScript,
+ * la clé de sécurité était alors perdue et WordPress répondait « Le lien suivi est expiré ».)
+ */
+function aurea_inst_lien( $url, $action ) {
+	return add_query_arg( '_wpnonce', wp_create_nonce( $action ), $url );
+}
+
 /** Thème ou extension ? D'après le contenu de l'archive. */
 function aurea_inst_type( $fichier ) {
 	if ( class_exists( 'ZipArchive' ) ) {
@@ -150,14 +159,18 @@ add_action( 'wp_ajax_aurea_inst_terminer', function () {
 				wp_send_json_success( array(
 					'message'    => sprintf( 'Thème « %s » installé.', $theme ? $theme->get( 'Name' ) : $css ),
 					'actif'      => get_stylesheet() === $css,
-					'activation' => $css ? wp_nonce_url( admin_url( 'themes.php?action=activate&stylesheet=' . rawurlencode( $css ) ), 'switch-theme_' . $css ) : '',
+					'type'       => 'theme',
+					'cible'      => $css,
+					'activation' => $css ? aurea_inst_lien( admin_url( 'themes.php?action=activate&stylesheet=' . rawurlencode( $css ) ), 'switch-theme_' . $css ) : '',
 				) );
 			}
 			$plugin = $upgrader->plugin_info();
 			wp_send_json_success( array(
 				'message'    => sprintf( 'Extension « %s » installée.', $plugin ? get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin, false, false )['Name'] : '' ),
 				'actif'      => $plugin && is_plugin_active( $plugin ),
-				'activation' => $plugin ? wp_nonce_url( admin_url( 'plugins.php?action=activate&plugin=' . rawurlencode( $plugin ) ), 'activate-plugin_' . $plugin ) : '',
+				'type'       => 'extension',
+				'cible'      => $plugin,
+				'activation' => $plugin ? aurea_inst_lien( admin_url( 'plugins.php?action=activate&plugin=' . rawurlencode( $plugin ) ), 'activate-plugin_' . $plugin ) : '',
 			) );
 		}
 		@unlink( $copie ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
@@ -168,6 +181,33 @@ add_action( 'wp_ajax_aurea_inst_terminer', function () {
 	}
 	@unlink( $fichier ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
 	wp_send_json_error( $message );
+} );
+
+/* Activation sur place (sans quitter l'écran), pour enchaîner extension puis thème. */
+add_action( 'wp_ajax_aurea_inst_activer', function () {
+	check_ajax_referer( 'aurea_inst' );
+	$type  = sanitize_key( wp_unslash( $_POST['type'] ?? '' ) );
+	$cible = sanitize_text_field( wp_unslash( $_POST['cible'] ?? '' ) );
+	if ( 'theme' === $type ) {
+		$theme = wp_get_theme( $cible );
+		if ( ! current_user_can( 'switch_themes' ) || ! $theme->exists() || ! $theme->is_allowed() ) {
+			wp_send_json_error( 'Impossible d’activer ce thème.' );
+		}
+		switch_theme( $theme->get_stylesheet() );
+		wp_send_json_success( array( 'message' => 'Thème activé.', 'suite' => admin_url( 'themes.php?page=aurea-installation' ) ) );
+	}
+	if ( 'extension' === $type ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		if ( ! current_user_can( 'activate_plugins' ) || ! file_exists( WP_PLUGIN_DIR . '/' . $cible ) || validate_file( $cible ) ) {
+			wp_send_json_error( 'Impossible d’activer cette extension.' );
+		}
+		$r = activate_plugin( $cible );
+		if ( is_wp_error( $r ) ) {
+			wp_send_json_error( wp_strip_all_tags( $r->get_error_message() ) );
+		}
+		wp_send_json_success( array( 'message' => 'Extension activée.' ) );
+	}
+	wp_send_json_error( 'Demande inconnue.' );
 } );
 
 /* Fichiers temporaires de plus d'un jour : supprimés (envoi abandonné). */
@@ -197,7 +237,7 @@ function aurea_inst_ecran() {
 			<span>ou les déposer ici</span>
 		</label>
 		<div id="aurea-inst-liste" class="aurea-inst-liste" aria-live="polite"></div>
-		<p class="aurea-inst-suite">Ensuite : activez le thème, puis ouvrez <strong>Apparence → Installation Aurea</strong>. Vous pourrez supprimer cette extension une fois l’installation terminée.</p>
+		<p class="aurea-inst-suite">Ensuite : cliquez sur « Activer » sous Aurea Studio, puis sous le thème, et continuez vers <strong>Apparence → Installation Aurea</strong>. Vous pourrez supprimer cette extension une fois l’installation terminée.</p>
 	</div>
 	<style>
 		.aurea-inst{max-width:820px}
@@ -268,6 +308,18 @@ function aurea_inst_ecran() {
 				etat.textContent = res.data.message + ' ';
 				if (res.data.activation && !res.data.actif) {
 					var a = document.createElement('a'); a.className = 'button button-primary'; a.href = res.data.activation; a.textContent = 'Activer';
+					a.addEventListener('click', function (ev) {
+						ev.preventDefault(); a.textContent = 'Activation…'; a.setAttribute('aria-disabled', 'true');
+						var d = new FormData(); d.append('action', 'aurea_inst_activer'); d.append('type', res.data.type); d.append('cible', res.data.cible);
+						envoyer(d).then(function (r) {
+							if (!r.success) throw new Error(r.data || 'Activation impossible.');
+							a.replaceWith(document.createTextNode(r.data.message + ' '));
+							if (r.data.suite) {
+								var s = document.createElement('a'); s.className = 'button button-primary'; s.href = r.data.suite; s.textContent = 'Continuer : Installation Aurea';
+								etat.appendChild(s);
+							}
+						}).catch(function () { window.location.href = res.data.activation; }); // secours : le lien signé classique
+					});
 					etat.appendChild(a);
 				} else if (res.data.actif) {
 					etat.appendChild(document.createTextNode('(déjà actif : la nouvelle version est en place)'));

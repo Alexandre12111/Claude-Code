@@ -1,4 +1,6 @@
-# Aurea Installateur 1.0
+# Aurea Installateur 1.0.1
+
+* 1.0.1 : les boutons « Activer » activent l’extension et le thème sur place, sans quitter l’écran (la version 1.0 envoyait vers un lien mal signé : « Le lien suivi est expiré »).
 
 Petite extension qui installe le thème Aurea Media et l'extension Aurea Studio quand l'hébergeur refuse les gros fichiers (erreur « 413 Request Entity Too Large » de nginx).
 
