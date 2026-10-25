@@ -1,7 +1,11 @@
 """Articles du blog « Conseils » : génère le contenu (blocs Gutenberg) et les réglages SEO.
 
     python3 wordpress/outils/articles.py
-écrit aurea/contenu/articles/<slug>.html et aurea/contenu/articles.json
+écrit aurea/contenu/articles/<slug>.html et aurea/contenu/articles.json (articles livrés avec le thème)
+
+    python3 wordpress/outils/articles.py --pack pack-2026-11 slug:2026-11-03T09:00 autre-slug:2026-11-10T09:00
+fabrique wordpress/packs/pack-2026-11.zip, à importer dans Aurea Studio → Importer des articles.
+Une date future programme l'article ; sans date, il est publié à l'import.
 
 Images : photos Unsplash (licence Unsplash, usage commercial libre) copiées dans aurea/assets/conseils/.
 Dans le contenu, {{img_id:…}} et {{img_url:…}} sont remplacés à l'installation par l'image importée
@@ -143,5 +147,37 @@ def main():
         print('ALERTE', x)
 
 
+def pack(nom, choix):
+    """Pack d'articles autonome : articles.json, articles/<slug>.html, images/<fichier>."""
+    import zipfile
+    par_slug = {a['slug']: a for a in ARTICLES}
+    sortie = os.path.join(ICI, '..', 'packs')
+    os.makedirs(sortie, exist_ok=True)
+    chemin = os.path.join(sortie, nom + '.zip')
+    reglages = {}
+    with zipfile.ZipFile(chemin, 'w', zipfile.ZIP_DEFLATED) as z:
+        for i, item in enumerate(choix, 1):
+            slug, _, date = item.partition(':')
+            a = par_slug[slug]
+            imgs = {'conseils/' + a['image'][0]: a['image'][1]}
+            for s_ in a['sections']:
+                for b in s_[1]:
+                    if b[0] == 'img':
+                        imgs['conseils/' + b[1]] = b[3]
+            for f in imgs:
+                z.write(os.path.join(THEME, 'assets', f), 'images/' + os.path.basename(f))
+            z.writestr('articles/' + slug + '.html', rendre(a))
+            reglages[slug] = {
+                'titre': a['titre'], 'categorie': a['categorie'], 'mot_cle': a['mot_cle'],
+                'titre_seo': a['titre_seo'], 'description': a['description'], 'extrait': a['extrait'],
+                'image': 'conseils/' + a['image'][0], 'images': imgs, 'ordre': i, 'date': date.replace('T', ' '),
+            }
+        z.writestr('articles.json', json.dumps(reglages, ensure_ascii=False, indent=1))
+    print(f'{chemin} : {len(reglages)} articles, {os.path.getsize(chemin) // 1024} Ko')
+
+
 if __name__ == '__main__':
-    main()
+    if len(sys.argv) > 2 and sys.argv[1] == '--pack':
+        pack(sys.argv[2], sys.argv[3:])
+    else:
+        main()

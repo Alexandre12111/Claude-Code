@@ -313,7 +313,8 @@ add_action( 'template_redirect', function () {
 	if ( '' === $chemin || substr_count( $chemin, '/' ) > 3 || preg_match( '/\.(php|xml|txt|js|css|png|jpe?g|webp|svg|ico|gif|pdf|zip)$/i', $chemin ) || 0 === strpos( $chemin, 'wp-' ) ) {
 		return;
 	}
-	$cle = aurea_cible_pour( str_replace( '/', ' ', $chemin ), '' );
+	$plan = apply_filters( 'aurea_plan_redirections', aurea_redirections() );
+	$cle  = $plan[ $chemin ] ?? aurea_cible_pour( str_replace( '/', ' ', $chemin ), '' );
 	if ( $cle && aurea_chemin( aurea_url( $cle ) ) !== $chemin ) {
 		wp_safe_redirect( aurea_url( $cle ), 301 );
 		exit;
