@@ -1,9 +1,8 @@
 #!/bin/bash
-# Version Irlande (IE_EN) à la charte YouCraft : image src_yb_ie (euros, région « Munster »), même voix off et mêmes
-# sous-titres que la version EN (texte identique, données hébergées en Europe). La piste son est reprise telle quelle
-# du master EN validé, sans réencodage. Prérequis : bash render_yb_queue.sh ie
+# Version Irlande (IE_EN) à la charte YouCraft : image src_yb_ie (euros, région « Munster », « Hosted in Ireland »).
+# Voix off : les répliques de la version EN validée, sauf la phrase sécurité régénérée avec « Ireland »
+# (sherpa-onnx 1.13.8, qui reproduit la voix EN ; la 2.0 saute des mots absents du lexique).
+# Prérequis : bash render/render_yb_queue.sh ie, puis stems music_en / sfx_en (DC_VARIANT=en) et python3 audio/mix_markets.py ie
 cd "$(dirname "$0")/.."
-ffmpeg -y -v error -i out/video_yb_ie_silent.mp4 -i out/YouCraft_NewBrand_EN_58s_voiceover_subtitles.mp4 \
-  -map 0:v -map 1:a -vf "subtitles=out/subs_yb/ie.ass:fontsdir=assets/fonts/ttf_yc" \
-  -c:v libx264 -preset slow -crf 21 -pix_fmt yuv420p -c:a copy -shortest -movflags +faststart \
-  out/YouCraft_NewBrand_IE_EN_58s_voiceover_subtitles.mp4 && echo "ie ok"
+export YC_BRAND=1
+(cd audio && python3 subs_markets.py ie) && python3 render/burn_markets.py ie

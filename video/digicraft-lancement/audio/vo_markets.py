@@ -166,6 +166,7 @@ MARKETS = {
     'uk': ('kokoro', 'en', en('the UK'), 'video_yc_uk_silent.mp4'),
     'us': ('kokoro', 'en', en('the United States', us=True), 'video_yc_us_silent.mp4'),
     'caen': ('kokoro', 'en', en('Canada'), 'video_yc_caen_silent.mp4'),
+    'ie': ('kokoro', 'en', en('Ireland'), 'video_yb_ie_silent.mp4'),
     'cafr': ('kokoro_fr', 'fr', FR_CA, 'video_yc_cafr_silent.mp4'),
     'de': ('supertonic', 'de', DE, 'video_yc_de_silent.mp4'),
     'es': ('supertonic', 'es', ES, 'video_yc_es_silent.mp4'),

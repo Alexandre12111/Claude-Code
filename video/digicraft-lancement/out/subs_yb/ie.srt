@@ -51,14 +51,14 @@ YouCraft has already proven itself:
 more than 750 users, and 350 apps deployed.
 
 12
-00:00:44,622 --> 00:00:49,530
-When it comes to security, your data stays
-in Europe, access is fully under control,
+00:00:44,622 --> 00:00:47,615
+When it comes to security,
+your data stays in Ireland,
 
 13
-00:00:49,570 --> 00:00:52,674
-and getting started is instant,
-no training needed.
+00:00:47,655 --> 00:00:52,674
+access is fully under control, and getting
+started is instant, no training needed.
 
 14
 00:00:52,714 --> 00:00:54,185

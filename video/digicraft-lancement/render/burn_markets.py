@@ -4,7 +4,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'
 from vo_markets import MARKETS  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-NAME = {'fr': 'FR', 'en': 'EN', 'uk': 'UK_EN', 'us': 'US_EN', 'caen': 'Canada_EN', 'cafr': 'Canada_FR', 'de': 'DE', 'es': 'ES', 'it': 'IT', 'nl': 'NL', 'pl': 'PL', 'sv': 'SE'}
+NAME = {'fr': 'FR', 'en': 'EN', 'uk': 'UK_EN', 'us': 'US_EN', 'caen': 'Canada_EN', 'ie': 'IE_EN', 'cafr': 'Canada_FR', 'de': 'DE', 'es': 'ES', 'it': 'IT', 'nl': 'NL', 'pl': 'PL', 'sv': 'SE'}
 
 for code in sys.argv[1:]:
     # YouCraft : les 12 versions, FR comprise, sont lues par la voix de synthèse sur l'image renommée.

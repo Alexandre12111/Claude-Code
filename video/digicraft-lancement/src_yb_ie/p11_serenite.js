@@ -13,7 +13,7 @@
     return `<svg width="62" height="62" viewBox="0 0 48 48">${s}</svg>`;
   };
   const ROWS = [
-    [41.1, 'eu', 'Hosted in Europe', 'Your data stays in the European Union.'],
+    [41.1, 'map-pin-check', 'Hosted in Ireland', 'Your data stays in Ireland.'],
     [42.2, 'shield-check', 'Built-in governance', 'Access, permissions and audit trails under control.'],
     [43.05, 'mouse-pointer-click', 'Intuitive from minute one', 'No training and no code needed.'],
   ];
