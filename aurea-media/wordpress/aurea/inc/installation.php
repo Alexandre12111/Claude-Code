@@ -624,7 +624,7 @@ add_action( 'admin_notices', function () {
  * Une page n'a pas été retouchée si son contenu est identique à celui posé par le thème (empreinte),
  * ou, pour les pages installées avant l'empreinte, si elle n'a aucune révision.
  */
-function aurea_maj_pages_auto() {
+function aurea_maj_pages_auto( $forcer = array() ) {
 	$maj = 0;
 	$gardees = array();
 	kses_remove_filters();
@@ -635,13 +635,16 @@ function aurea_maj_pages_auto() {
 		}
 		$empreinte = (string) get_post_meta( $page->ID, '_aurea_contenu_md5', true );
 		$intacte   = $empreinte ? hash_equals( $empreinte, md5( $page->post_content ) ) : ! wp_get_post_revisions( $page->ID, array( 'fields' => 'ids', 'posts_per_page' => 1 ) );
-		if ( ! $intacte ) {
-			$gardees[] = $p['titre'];
+		if ( ! $intacte && ! in_array( $slug, (array) $forcer, true ) ) {
+			$gardees[ $slug ] = $p['titre'];
 			continue;
 		}
 		$contenu = aurea_contenu_livre( basename( $p['fichier'], '.html' ), false );
 		if ( $contenu === $page->post_content ) {
 			continue;
+		}
+		if ( ! $intacte ) {
+			wp_save_post_revision( $page->ID ); // l'ancienne version reste dans les révisions de la page
 		}
 		global $wpdb;
 		$wpdb->update( $wpdb->posts, array( 'post_content' => $contenu, 'post_modified' => current_time( 'mysql' ), 'post_modified_gmt' => current_time( 'mysql', true ) ), array( 'ID' => $page->ID ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
@@ -653,21 +656,44 @@ function aurea_maj_pages_auto() {
 	kses_init_filters();
 	$msg = sprintf( 'Pages du thème mises à jour avec le nouveau design : %d.', $maj );
 	if ( $gardees ) {
-		$msg .= ' Pages modifiées à la main, laissées telles quelles : ' . implode( ', ', $gardees ) . ' (Apparence → Installation Aurea pour les remplacer).';
+		$msg .= ' Pages modifiées à la main, laissées telles quelles : ' . implode( ', ', $gardees ) . '.';
+		update_option( 'aurea_pages_gardees', $gardees, false );
+	} else {
+		delete_option( 'aurea_pages_gardees' );
 	}
 	return $msg;
 }
+
+/* Remettre le design du thème sur une page gardée (l'ancienne version reste dans les révisions). */
+add_action( 'admin_post_aurea_remettre_page', function () {
+	$slug = sanitize_title( wp_unslash( $_GET['page_aurea'] ?? '' ) );
+	if ( ! current_user_can( 'edit_pages' ) || ! wp_verify_nonce( sanitize_key( $_GET['_wpnonce'] ?? '' ), 'aurea_remettre_' . $slug ) ) {
+		wp_die( 'Lien expiré.' );
+	}
+	$msg = aurea_maj_pages_auto( array( $slug ) );
+	set_transient( 'aurea_pages_auto_message', $msg, 300 );
+	wp_safe_redirect( wp_get_referer() ?: admin_url() );
+	exit;
+} );
 add_action( 'admin_init', function () {
 	if ( wp_doing_ajax() || ! current_user_can( 'edit_pages' ) || ! get_option( 'aurea_installe_le' ) || get_option( 'aurea_pages_auto_version' ) === AUREA_VERSION ) {
 		return;
 	}
+	$avant = (string) get_option( 'aurea_pages_auto_version', '0' );
 	update_option( 'aurea_pages_auto_version', AUREA_VERSION );
-	set_transient( 'aurea_pages_auto_message', aurea_maj_pages_auto(), 300 );
+	// 3.0.2 : l'accueil reprend le design du thème même s'il a été réenregistré dans l'éditeur
+	$forcer = version_compare( $avant, '3.0.2', '<' ) ? array( 'accueil' ) : array();
+	set_transient( 'aurea_pages_auto_message', aurea_maj_pages_auto( $forcer ), 300 );
 } );
 add_action( 'admin_notices', function () {
 	$m = get_transient( 'aurea_pages_auto_message' );
 	if ( $m ) {
 		delete_transient( 'aurea_pages_auto_message' );
-		echo '<div class="notice notice-success is-dismissible"><p><strong>Aurea Media</strong> : ' . esc_html( $m ) . '</p></div>';
+		$boutons = '';
+		foreach ( (array) get_option( 'aurea_pages_gardees', array() ) as $slug => $titre ) {
+			$url      = wp_nonce_url( admin_url( 'admin-post.php?action=aurea_remettre_page&page_aurea=' . rawurlencode( $slug ) ), 'aurea_remettre_' . $slug );
+			$boutons .= ' <a class="button button-small" href="' . esc_url( $url ) . '">Remettre le design du thème sur « ' . esc_html( $titre ) . ' »</a>';
+		}
+		echo '<div class="notice notice-success is-dismissible"><p><strong>Aurea Media</strong> : ' . esc_html( $m ) . $boutons . '</p></div>';
 	}
 } );
