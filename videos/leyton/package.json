@@ -1,0 +1,15 @@
+{
+  "name": "leyton-video-presentation",
+  "private": true,
+  "description": "Vidéo de présentation du site leyton.com/fr, animée avec GSAP et rendue image par image avec Playwright",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "preview": "npx http-server composition -c-1 -o \"/?play\""
+  },
+  "dependencies": {
+    "@fontsource/montserrat": "^5.3.0",
+    "gsap": "^3.15.0",
+    "playwright": "1.56.1",
+    "world-atlas": "^2.0.2"
+  }
+}

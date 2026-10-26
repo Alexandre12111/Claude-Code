@@ -1,0 +1,29 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "schiesser/section",
+	"title": "Section",
+	"category": "schiesser",
+	"icon": "align-wide",
+	"description": "Section du site avec son en-tête (N°, titre, note) et un contenu libre : textes, images, colonnes, boutons, questions fréquentes, HTML…",
+	"keywords": [ "section", "bloc", "contenu", "texte", "colonnes" ],
+	"textdomain": "schiesser",
+	"supports": {
+		"html": false,
+		"align": [ "full" ]
+	},
+	"attributes": {
+		"align": { "type": "string", "default": "full" },
+		"numero": { "type": "string", "default": "" },
+		"titre": { "type": "string", "default": "" },
+		"note": { "type": "string", "default": "" },
+		"entete": { "type": "boolean", "default": true },
+		"fond": { "type": "string", "default": "papier" },
+		"largeur": { "type": "string", "default": "large" },
+		"centre": { "type": "boolean", "default": false },
+		"ancre": { "type": "string", "default": "" }
+	},
+	"editorScript": "file:./index.js",
+	"style": "schiesser-site",
+	"render": "file:./render.php"
+}

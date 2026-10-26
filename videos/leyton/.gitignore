@@ -1,0 +1,4 @@
+# Généré par scripts/build.sh (captures, médias et polices téléchargés depuis leyton.com)
+node_modules/
+work/
+composition/assets/

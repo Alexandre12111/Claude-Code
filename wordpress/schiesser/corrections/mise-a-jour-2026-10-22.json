@@ -1,0 +1,172 @@
+{
+ "version": "2026-10-22-mise-en-page",
+ "date": "2026-10-22",
+ "titre": "Mise en page du 22 octobre 2026",
+ "resume": "Accueil : « Unser Sortiment » et « Heute in der Vitrine » masqués pour le moment, fonds réajustés. Confiserie : la galerie passe sur fond clair, boutons du Hero réorientés. Contact : formulaire retiré (e-mail, téléphone et adresse restent). Itinéraires : départs pour Google Maps. Produits : textes français et anglais redevenus allemands remis en ordre.",
+ "produits_langues": {
+  "raison": "Textes des produits et des plats en français et en anglais vérifiés"
+ },
+ "sections": [
+  {
+   "ref": "A-01",
+   "page": "startseite",
+   "bloc": "schiesser/vitrine-jour",
+   "action": "masquer",
+   "raison": "Bandeau « Heute in der Vitrine » masqué pour le moment"
+  },
+  {
+   "ref": "A-02",
+   "page": "startseite",
+   "bloc": "schiesser/catalogue",
+   "action": "masquer",
+   "raison": "Section « Unser Sortiment » masquée pour le moment (numéros des sections suivantes remis à la suite)"
+  },
+  {
+   "ref": "K-01",
+   "page": "kontakt",
+   "bloc": "schiesser/formulaire",
+   "action": "masquer",
+   "raison": "Formulaire de contact retiré : la fiche avec e-mail, téléphone et adresse reste"
+  }
+ ],
+ "attributs": [
+  {
+   "ref": "A-03",
+   "page": "startseite",
+   "bloc": "schiesser/etages",
+   "cle": "fond",
+   "ancien": "alterne",
+   "nouveau": "papier",
+   "raison": "« Zwei Etagen, ein Haus » devient la première section sous le Hero : fond de la page"
+  },
+  {
+   "ref": "A-04",
+   "page": "startseite",
+   "bloc": "schiesser/hero",
+   "cle": "bouton1Lien",
+   "ancien": "#kreationen",
+   "nouveau": "{page:confiserie}",
+   "raison": "Bouton « Unser Sortiment » : la page Confiserie (la section de l’accueil est masquée)"
+  },
+  {
+   "ref": "C-01",
+   "page": "confiserie",
+   "bloc": "schiesser/galerie",
+   "cle": "fond",
+   "ancien": "sombre",
+   "nouveau": "papier",
+   "raison": "« Der Laden in Bildern » devient la première section sous le Hero : fond clair au lieu du vert"
+  },
+  {
+   "ref": "C-02",
+   "page": "confiserie",
+   "bloc": "schiesser/hero",
+   "cle": "bouton1Texte",
+   "ancien": {
+    "de": "Zum Sortiment",
+    "fr": "Voir l’assortiment",
+    "en": "See the range"
+   },
+   "nouveau": {
+    "de": "Der Laden in Bildern",
+    "fr": "La boutique en images",
+    "en": "The shop in pictures"
+   },
+   "raison": "Premier bouton du Hero : la galerie (la grille des produits est masquée)"
+  },
+  {
+   "ref": "C-03",
+   "page": "confiserie",
+   "bloc": "schiesser/hero",
+   "si": {
+    "bouton1Texte": {
+     "de": "Der Laden in Bildern",
+     "fr": "La boutique en images",
+     "en": "The shop in pictures"
+    }
+   },
+   "cle": "bouton1Lien",
+   "ancien": "#sortiment",
+   "nouveau": "#bilder",
+   "raison": "Premier bouton du Hero : lien vers la galerie (si son texte a bien changé)"
+  },
+  {
+   "ref": "C-04",
+   "page": "confiserie",
+   "bloc": "schiesser/hero",
+   "cle": "bouton2Texte",
+   "ancien": {
+    "de": "Der Laden in Bildern",
+    "fr": "La boutique en images",
+    "en": "The shop in pictures"
+   },
+   "nouveau": {
+    "de": "So bestellen Sie",
+    "fr": "Comment commander",
+    "en": "How to order"
+   },
+   "raison": "Second bouton du Hero : « So bestellen Sie »"
+  },
+  {
+   "ref": "C-05",
+   "page": "confiserie",
+   "bloc": "schiesser/hero",
+   "si": {
+    "bouton2Texte": {
+     "de": "So bestellen Sie",
+     "fr": "Comment commander",
+     "en": "How to order"
+    }
+   },
+   "cle": "bouton2Lien",
+   "ancien": "#bilder",
+   "nouveau": "#bestellen",
+   "raison": "Second bouton du Hero : lien vers « So bestellen Sie » (si son texte a bien changé)"
+  },
+  {
+   "ref": "K-02",
+   "page": "kontakt",
+   "bloc": "schiesser/fiche-contact",
+   "cle": "fond",
+   "ancien": "sable",
+   "nouveau": "papier",
+   "raison": "La fiche (e-mail, téléphone, adresse) devient la première section sous le Hero : fond de la page"
+  },
+  {
+   "ref": "V-01",
+   "page": "besuch",
+   "bloc": "schiesser/trajet",
+   "si": {
+    "icone": "train"
+   },
+   "cle": "origine",
+   "ancien": "",
+   "nouveau": "Basel SBB",
+   "raison": "Itinéraire depuis la gare : départ de Basel SBB dans Google Maps"
+  },
+  {
+   "ref": "V-02",
+   "page": "besuch",
+   "bloc": "schiesser/trajet",
+   "si": {
+    "icone": "avion"
+   },
+   "cle": "origine",
+   "ancien": "",
+   "nouveau": "EuroAirport Basel-Mulhouse-Freiburg",
+   "raison": "Itinéraire depuis l’aéroport : départ de l’EuroAirport dans Google Maps"
+  },
+  {
+   "ref": "V-03",
+   "page": "besuch",
+   "bloc": "schiesser/trajet",
+   "si": {
+    "icone": "voiture"
+   },
+   "cle": "arrivee",
+   "ancien": "",
+   "nouveau": "Parkhaus Storchen, Basel",
+   "raison": "Itinéraire en voiture : de la position du visiteur jusqu’au Parkhaus Storchen conseillé"
+  }
+ ]
+}

@@ -1,0 +1,231 @@
+{
+  "colors": [
+    {
+      "name": "Ink",
+      "hex": "#0B0B0F",
+      "rgb": [
+        11,
+        11,
+        15
+      ],
+      "cmyk_approx": [
+        27,
+        27,
+        0,
+        94
+      ],
+      "group": "core",
+      "use": "Primary dark: backgrounds, text on light"
+    },
+    {
+      "name": "Stone",
+      "hex": "#F5F2EA",
+      "rgb": [
+        245,
+        242,
+        234
+      ],
+      "cmyk_approx": [
+        0,
+        1,
+        4,
+        4
+      ],
+      "group": "core",
+      "use": "Primary light: backgrounds, text on dark"
+    },
+    {
+      "name": "Ultramarine",
+      "hex": "#1E3BFF",
+      "rgb": [
+        30,
+        59,
+        255
+      ],
+      "cmyk_approx": [
+        88,
+        77,
+        0,
+        0
+      ],
+      "group": "core",
+      "use": "Accent: links, highlights, key words"
+    },
+    {
+      "name": "Lime",
+      "hex": "#D7FF3F",
+      "rgb": [
+        215,
+        255,
+        63
+      ],
+      "cmyk_approx": [
+        16,
+        0,
+        75,
+        0
+      ],
+      "group": "core",
+      "use": "Accent: primary buttons, emphasis (sparingly)"
+    },
+    {
+      "name": "Paper",
+      "hex": "#FBFAF6",
+      "rgb": [
+        251,
+        250,
+        246
+      ],
+      "cmyk_approx": [
+        0,
+        0,
+        2,
+        2
+      ],
+      "group": "support",
+      "use": "Secondary light background, cards"
+    },
+    {
+      "name": "Ink 2",
+      "hex": "#16161C",
+      "rgb": [
+        22,
+        22,
+        28
+      ],
+      "cmyk_approx": [
+        21,
+        21,
+        0,
+        89
+      ],
+      "group": "support",
+      "use": "Raised surfaces on dark"
+    },
+    {
+      "name": "Muted",
+      "hex": "#8F8C86",
+      "rgb": [
+        143,
+        140,
+        134
+      ],
+      "cmyk_approx": [
+        0,
+        2,
+        6,
+        44
+      ],
+      "group": "support",
+      "use": "Captions, secondary text"
+    },
+    {
+      "name": "Ultramarine on dark",
+      "hex": "#4F6BFF",
+      "rgb": [
+        79,
+        107,
+        255
+      ],
+      "cmyk_approx": [
+        69,
+        58,
+        0,
+        0
+      ],
+      "group": "support",
+      "use": "Ultramarine for text/links on Ink"
+    },
+    {
+      "name": "Mark blue",
+      "hex": "#1F3FE6",
+      "rgb": [
+        31,
+        63,
+        230
+      ],
+      "cmyk_approx": [
+        87,
+        73,
+        0,
+        10
+      ],
+      "group": "symbol",
+      "use": "Symbol gradient start"
+    },
+    {
+      "name": "Mark blue 2",
+      "hex": "#2C4CF0",
+      "rgb": [
+        44,
+        76,
+        240
+      ],
+      "cmyk_approx": [
+        82,
+        68,
+        0,
+        6
+      ],
+      "group": "symbol",
+      "use": "Symbol gradient 55%"
+    },
+    {
+      "name": "Mark mist",
+      "hex": "#DFE8F0",
+      "rgb": [
+        223,
+        232,
+        240
+      ],
+      "cmyk_approx": [
+        7,
+        3,
+        0,
+        6
+      ],
+      "group": "symbol",
+      "use": "Symbol gradient 82%"
+    },
+    {
+      "name": "Mark lime",
+      "hex": "#E4F53C",
+      "rgb": [
+        228,
+        245,
+        60
+      ],
+      "cmyk_approx": [
+        7,
+        0,
+        76,
+        4
+      ],
+      "group": "symbol",
+      "use": "Symbol block and gradient end"
+    }
+  ],
+  "gradients": {
+    "symbol": {
+      "angle": 135,
+      "stops": [
+        [
+          "#1F3FE6",
+          0
+        ],
+        [
+          "#2C4CF0",
+          0.55
+        ],
+        [
+          "#DFE8F0",
+          0.82
+        ],
+        [
+          "#E4F53C",
+          1
+        ]
+      ]
+    }
+  }
+}

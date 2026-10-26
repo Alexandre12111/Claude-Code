@@ -1,0 +1,97 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.4/theme.json",
+	"version": 2,
+	"settings": {
+		"appearanceTools": false,
+		"layout": {
+			"contentSize": "780px",
+			"wideSize": "1320px"
+		},
+		"color": {
+			"custom": true,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "encre",
+					"name": "Encre",
+					"color": "#2A1C12"
+				},
+				{
+					"slug": "vert",
+					"name": "Vert maison",
+					"color": "#174633"
+				},
+				{
+					"slug": "menthe",
+					"name": "Accent clair",
+					"color": "#E4D3B4"
+				},
+				{
+					"slug": "papier",
+					"name": "Papier",
+					"color": "#F1EADE"
+				}
+			]
+		},
+		"typography": {
+			"customFontSize": true,
+			"dropCap": false,
+			"fontSizes": [
+				{
+					"slug": "petit",
+					"name": "Petit",
+					"size": "14px"
+				},
+				{
+					"slug": "normal",
+					"name": "Normal",
+					"size": "16.5px"
+				},
+				{
+					"slug": "grand",
+					"name": "Grand",
+					"size": "clamp(19px, 1.8vw, 22px)"
+				},
+				{
+					"slug": "tres-grand",
+					"name": "Très grand",
+					"size": "clamp(24px, 2.6vw, 32px)"
+				},
+				{
+					"slug": "titre",
+					"name": "Titre",
+					"size": "clamp(32px, 4vw, 48px)"
+				},
+				{
+					"slug": "geant",
+					"name": "Géant",
+					"size": "clamp(42px, 6vw, 72px)"
+				}
+			],
+			"defaultFontSizes": false,
+			"fontFamilies": [
+				{
+					"slug": "titres",
+					"name": "Police des titres",
+					"fontFamily": "var(--serif)"
+				},
+				{
+					"slug": "texte",
+					"name": "Police du texte",
+					"fontFamily": "var(--sans)"
+				}
+			],
+			"fontStyle": true,
+			"fontWeight": true,
+			"textTransform": true,
+			"letterSpacing": true,
+			"lineHeight": true
+		},
+		"spacing": {
+			"padding": false,
+			"margin": false
+		}
+	}
+}

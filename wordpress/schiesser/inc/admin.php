@@ -1,0 +1,417 @@
+<?php
+/**
+ * Administration pensée pour une personne qui ne code pas :
+ * - habillage aux couleurs de la maison (schéma de couleurs « Schiesser »)
+ * - tableau de bord avec raccourcis et statut du jour
+ * - page « Guide du site »
+ * - page de connexion à la marque
+ * - rôle « Gérant(e) du site »
+ * - commentaires désactivés (réglable)
+ * - code personnalisé en en-tête / pied de page (réglable)
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/* ------------------------------------------------------------------ */
+/* Habillage                                                           */
+/* ------------------------------------------------------------------ */
+
+add_action( 'admin_init', function () {
+	wp_admin_css_color(
+		'schiesser',
+		'Schiesser',
+		SCHIESSER_URI . '/assets/admin/colors-schiesser.css',
+		array( '#271B12', '#1C130C', '#174633', '#8CC5A6' ),
+		array( 'base' => '#D9CEBD', 'focus' => '#8CC5A6', 'current' => '#fff' )
+	);
+} );
+
+/* Habillage imposé à tous les comptes, sauf si l'option est désactivée dans Réglages → Avancé. */
+add_filter( 'get_user_option_admin_color', function ( $couleur ) {
+	return schiesser_charte()['habillage_admin'] ? 'schiesser' : $couleur;
+} );
+
+add_action( 'admin_enqueue_scripts', function () {
+	wp_enqueue_style( 'schiesser-admin', SCHIESSER_URI . '/assets/admin/admin.css', array(), SCHIESSER_VERSION );
+	$c = schiesser_charte()['couleurs'];
+	wp_add_inline_style( 'schiesser-admin', sprintf(
+		':root{--s-vert:%s;--s-menthe:%s;--s-choco:%s;--s-papier:%s;--s-sable:%s;--s-encre:%s;--s-texte:%s;--s-doux:%s}',
+		$c['vert'], $c['mint'], $c['dark'], $c['paper'], $c['paper-deep'], $c['ink'], $c['text'], $c['ink-soft']
+	) );
+} );
+
+/* Pied de page de l'administration */
+add_filter( 'admin_footer_text', function () {
+	return 'Site de la <strong>Confiserie Schiesser</strong> · <a href="' . esc_url( admin_url( 'admin.php?page=schiesser-guide' ) ) . '">Guide du site</a>';
+} );
+
+/* ------------------------------------------------------------------ */
+/* Tableau de bord                                                     */
+/* ------------------------------------------------------------------ */
+
+/* Le grand panneau « Bienvenue dans WordPress » laisse la place au widget de la maison. */
+add_action( 'admin_init', function () {
+	remove_action( 'welcome_panel', 'wp_welcome_panel' );
+} );
+
+add_action( 'wp_dashboard_setup', function () {
+	wp_add_dashboard_widget( 'schiesser_accueil', 'Votre site Schiesser', 'schiesser_widget_accueil' );
+
+	// Le widget d'accueil en premier.
+	global $wp_meta_boxes;
+	$normal = $wp_meta_boxes['dashboard']['normal']['core'] ?? array();
+	if ( isset( $normal['schiesser_accueil'] ) ) {
+		$widget = array( 'schiesser_accueil' => $normal['schiesser_accueil'] );
+		unset( $normal['schiesser_accueil'] );
+		$wp_meta_boxes['dashboard']['normal']['core'] = array_merge( $widget, $normal ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+	}
+
+	// Moins de bruit : actualités WordPress, brouillon rapide, et pour les non-administrateurs l'activité.
+	remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+	remove_meta_box( 'dashboard_quick_press', 'dashboard', 'side' );
+	if ( ! current_user_can( 'manage_options' ) ) {
+		remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
+		remove_meta_box( 'dashboard_site_health', 'dashboard', 'normal' );
+		remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
+	}
+}, 5 );
+
+function schiesser_widget_accueil() {
+	$accueil  = (int) get_option( 'page_on_front' );
+	$produits = wp_count_posts( SCHIESSER_PRODUIT );
+	$nb       = (int) ( $produits->publish ?? 0 );
+	$h        = schiesser_reglage( 'horaires' )[ (int) wp_date( 'w' ) ] ?? null;
+	$statut   = ( ! $h || ! empty( $h['ferme'] ) ) ? 'Fermé aujourd\'hui' : 'Aujourd\'hui : ' . $h['ouverture'] . ' – ' . $h['fermeture'];
+
+	$tuiles = array(
+		array( 'clock', 'Modifier les horaires', 'Horaires, fermetures, téléphone', admin_url( 'admin.php?page=schiesser-reglages#coordonnees' ), 'edit_pages' ),
+		array( 'plus-alt', 'Ajouter un produit', 'Boutique : ' . $nb . ' produit' . ( $nb > 1 ? 's' : '' ) . ' en ligne', admin_url( 'post-new.php?post_type=' . SCHIESSER_PRODUIT ), 'edit_posts' ),
+		array( 'coffee', 'Carte du Tea Room', 'Prix, rubriques, suggestion du jour', admin_url( 'edit.php?post_type=' . SCHIESSER_TEAROOM ), 'edit_posts' ),
+		array( 'admin-home', 'Modifier la page d\'accueil', 'Textes, photos, sections', $accueil ? get_edit_post_link( $accueil, 'raw' ) : admin_url( 'edit.php?post_type=page' ), 'edit_pages' ),
+		array( 'admin-page', 'Toutes les pages', 'Boutique, Tea Room, Histoire…', admin_url( 'edit.php?post_type=page' ), 'edit_pages' ),
+		array( 'menu', 'Modifier le menu', 'Ordre et noms des liens', admin_url( 'nav-menus.php' ), 'edit_theme_options' ),
+		array( 'format-image', 'Photos', 'Médiathèque', admin_url( 'upload.php' ), 'upload_files' ),
+		array( 'star-filled', 'Vitrine du jour', 'Produits mis en avant sur l\'accueil', admin_url( 'admin.php?page=schiesser-reglages#accueil' ), 'edit_pages' ),
+		array( 'sos', 'Guide du site', 'Pas à pas, sans code', admin_url( 'admin.php?page=schiesser-guide' ), 'edit_pages' ),
+	);
+	?>
+	<div class="s-accueil">
+		<div class="s-accueil-statut">
+			<span class="s-accueil-point" aria-hidden="true"></span>
+			<span><?php echo esc_html( $statut ); ?></span>
+			<a class="s-accueil-site" href="<?php echo esc_url( home_url( '/' ) ); ?>" target="_blank" rel="noopener">Voir le site ↗</a>
+		</div>
+		<div class="s-tuiles">
+			<?php foreach ( $tuiles as $t ) : if ( ! current_user_can( $t[4] ) ) { continue; } ?>
+				<a class="s-tuile" href="<?php echo esc_url( $t[3] ); ?>">
+					<span class="dashicons dashicons-<?php echo esc_attr( $t[0] ); ?>" aria-hidden="true"></span>
+					<strong><?php echo esc_html( $t[1] ); ?></strong>
+					<span><?php echo esc_html( $t[2] ); ?></span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+	<?php
+}
+
+/* ------------------------------------------------------------------ */
+/* Guide du site                                                       */
+/* ------------------------------------------------------------------ */
+
+add_action( 'admin_menu', function () {
+	add_submenu_page( 'schiesser-reglages', 'Guide du site', 'Guide du site', 'edit_pages', 'schiesser-guide', 'schiesser_page_guide' );
+}, 20 );
+
+function schiesser_page_guide() {
+	$lien = function ( $url, $texte ) {
+		return '<a href="' . esc_url( $url ) . '">' . esc_html( $texte ) . '</a>';
+	};
+	$fiches = array(
+		array( 'clock', 'Changer les horaires ou le téléphone', array(
+			'Menu ' . $lien( admin_url( 'admin.php?page=schiesser-reglages' ), 'Réglages maison' ) . ', onglet « Coordonnées et horaires ».',
+			'Modifiez les heures, cochez « Fermé » pour un jour de fermeture, puis <strong>Enregistrer les réglages</strong>.',
+			'Tout le site se met à jour : bandeau « Ouvert / Fermé », pied de page, pages Visiter et Contact, fiche Google.',
+		) ),
+		array( 'cart', 'Ajouter ou modifier un produit de la boutique', array(
+			'Menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT ), 'Produits boutique' ) . ', puis « Ajouter un produit » (ou cliquez sur un produit existant).',
+			'Nom, prix, unité, catégorie (à droite), photo (« Photo du produit », à droite), description courte et fiche détaillée.',
+			'Le texte long (zone d\'édition du haut) apparaît sur la page du produit : quelques paragraphes avec des intertitres (liste « Paragraphe » → « Titre 3 ») pour la préparation, la conservation, les formats et prix, les allergènes.',
+			'Ordre d\'affichage : champ « Ordre » (1 = premier). Cliquez sur <strong>Publier</strong> ou <strong>Mettre à jour</strong>.',
+		) ),
+		array( 'coffee', 'Modifier la carte du Tea Room', array(
+			'Menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_TEAROOM ), 'Produits Tea Room' ) . ' : cliquez sur un produit pour changer son prix, sa description ou sa mention (Signature, En saison…), ou « Ajouter un produit ».',
+			'Rubrique (onglet de la carte) : cases à droite. Ordre dans la rubrique : champ « Ordre » (1 = premier).',
+			'Les onglets eux-mêmes : Produits Tea Room → ' . $lien( admin_url( 'edit-tags.php?taxonomy=' . SCHIESSER_RUBRIQUE . '&post_type=' . SCHIESSER_TEAROOM ), 'Rubriques' ) . ' (nom, grande photo, ordre).',
+			'Suggestion du jour : cochez la case sur le produit à mettre en avant ; l’ancienne suggestion est décochée toute seule.',
+			'La page Salon de thé se met à jour automatiquement : rien à modifier dans la page.',
+		) ),
+		array( 'translation', 'Site en trois langues (Polylang)', array(
+			'Installez l’extension gratuite <strong>Polylang</strong> (Extensions → Ajouter). Dans <strong>Langues</strong>, créez d’abord <strong>Deutsch</strong> (de_CH, langue par défaut), puis <strong>Français</strong> (fr_FR) et <strong>English</strong> (en_GB). Si Polylang propose d’attribuer la langue par défaut aux contenus existants, acceptez.',
+			'Langues → Réglages → « URL modifiées » : choisissez « La langue est définie par le nom de dossier » et cochez « Cacher le code de langue pour la langue par défaut » : l’allemand reste à l’adresse actuelle, le français sous /fr/, l’anglais sous /en/.',
+			'Puis ' . $lien( admin_url( 'admin.php?page=schiesser-entretien' ), 'Réglages maison → Entretien' ) . ' : bouton « Mettre à jour le contenu des pages ». Le thème crée les versions française et anglaise des 8 pages, des 70 produits et de la carte du Tea Room, reliées à l’allemand (sélecteur DE · FR · EN dans l’en-tête).',
+			'Prix, photos et allergènes sont communs aux trois langues : modifiés sur un produit, ils sont recopiés dans ses traductions. Les textes (nom, description, accroche) se modifient dans chaque langue, directement sous les détails du produit : l’encadré <strong>« Dans les autres langues »</strong> montre le même produit en anglais et en français (nom, accroche, description, badge, libellé des formats) et s’enregistre avec lui. Une version qui manque est créée dès qu’on lui donne un nom.',
+			'Photo d’une page changée (ex. l’accueil en français) : après « Mettre à jour », l’éditeur propose de mettre la même photo sur les versions allemande et anglaise, en un clic.',
+			'Textes relus par le client (document Word) et changements de mise en page livrés avec le thème : Réglages maison → <strong>Mises à jour des pages</strong> (une pastille dans le menu indique combien sont à appliquer) montre un aperçu puis les applique aux trois langues, sans toucher aux photos ; un bouton remet l’état d’avant.',
+			'Textes : dans l’éditeur d’une page, la fenêtre « Dans les autres langues » (en bas à droite) montre le texte sélectionné sur les versions allemande et anglaise ; corrigez le et cliquez sur « Enregistrer en Deutsch » ou « Enregistrer en English ».',
+			'Produits tous marqués « Français » (Polylang a pris le français comme langue par défaut) : ' . $lien( admin_url( 'admin.php?page=schiesser-entretien' ), 'Réglages maison → Entretien' ) . ' indique l’état des langues et propose « Réparer les langues ». Ce bouton remet chaque produit, plat et page dans sa vraie langue, relie les trois versions et crée celles qui manquent.',
+			'Les textes des Réglages maison (présentation, mention, notes) ont leur traduction dans Langues → <strong>Traductions</strong>. Le PDF de la carte existe en trois langues ; vous pouvez en déposer un autre par langue dans Réglages maison.',
+		) ),
+		array( 'edit-page', 'Modifier le texte ou la photo d\'une page', array(
+			'Menu ' . $lien( admin_url( 'edit.php?post_type=page' ), 'Pages' ) . ', survolez la page puis « Modifier ».',
+			'Cliquez directement sur un texte pour l\'écrire. Pour une photo, cliquez sur le bloc puis sur « Photo » dans la petite barre d\'outils.',
+			'Les réglages d\'un bloc (hauteur, style des boutons, fond de section…) sont dans le panneau de droite. S\'il est caché : icône en haut à droite.',
+			'Cliquez sur <strong>Mettre à jour</strong> en haut à droite.',
+		) ),
+		array( 'screenoptions', 'Les blocs de la maquette', array(
+			'Chaque partie des pages (catalogue, étages, carte du salon, archives, itinéraires…) est un bloc de la catégorie <strong>Schiesser</strong> : il s\'affiche dans l\'éditeur comme sur le site.',
+			'Pour ajouter un élément (une date, un plat, une question, un palier…), cliquez dans le bloc puis sur le <strong>+</strong> qui suit les éléments. Pour en retirer un : sélectionnez-le, menu ⋮ → « Supprimer ».',
+			'Les parties animées (montée à l\'étage, savoir-faire, moments de la journée, ligne du temps) s\'affichent en fiches dans l\'éditeur : tout s\'y modifie, l\'animation se voit sur le site.',
+			'Panneau de droite : fond de la section, numéro, ancre (elle crée aussi le lien « Sur cette page » du pied de page), photo et texte alternatif, liens des boutons, fond de carte.',
+			'Accueil : les produits du catalogue se choisissent dans le panneau de droite du bloc « Catalogue des créations » ; leur photo et leur accroche viennent du menu ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT ), 'Produits' ) . '.',
+		) ),
+		array( 'plus-alt', 'Ajouter une section', array(
+			'Dans une page, cliquez sur le <strong>+</strong> entre deux sections et choisissez un bloc de la catégorie Schiesser (Questions fréquentes, Galerie, Cartes numérotées…) ou « Section » pour une section libre.',
+			'Choisissez le fond (clair, sable, sombre…) à droite, écrivez le titre, puis ajoutez du contenu avec le <strong>+</strong> : paragraphes, images, colonnes, boutons, questions fréquentes…',
+			'Plus rapide : onglet « Compositions » de l\'outil d\'ajout, catégorie Schiesser, pour insérer une section toute prête.',
+		) ),
+		array( 'translation', 'Site en allemand, administration en français', array(
+			'Tout ce que voient les visiteurs est en allemand : écrivez les textes des pages, des produits et des Réglages maison (présentation, vitrine, annonces…) <strong>en allemand</strong>.',
+			'L\'administration (menus, écrans, ce guide) reste en français. Les horaires, les jours fériés et les boutons du site sont traduits automatiquement.',
+		) ),
+		array( 'media-document', 'Carte du Tea Room en PDF', array(
+			'Le bouton « Karte ansehen (PDF) » de la page Tea Room ouvre la carte mise en page. Pour en mettre une nouvelle : Médias → Ajouter, puis collez l’adresse du fichier dans ' . $lien( admin_url( 'admin.php?page=schiesser-reglages' ), 'Réglages maison' ) . ' → « Carte du Tea Room en PDF ».',
+			'Après avoir modifié les Produits Tea Room, ouvrez <a href="' . esc_url( add_query_arg( 'schiesser_karte', 'druck', home_url( '/' ) ) ) . '" target="_blank" rel="noopener">la carte imprimable</a> puis Imprimer → Enregistrer au format PDF : vous obtenez un PDF à jour, à téléverser.',
+			'Dans n’importe quel bouton, le lien <code>#karte-pdf</code> ouvre la carte en PDF.',
+		) ),
+		array( 'products', 'Mettre en ligne la liste des produits', array(
+			'Tant que les photos ne sont pas prêtes, la boutique affiche « Produktliste folgt in Kürze » avec un aperçu des rubriques ; les fiches produits ne sont pas visibles.',
+			'Ajoutez une photo à chaque produit, relisez noms, formats et prix, puis ' . $lien( admin_url( 'edit.php?post_type=' . SCHIESSER_PRODUIT . '&page=schiesser-lancement' ), 'Produits boutique → Mise en ligne' ) . ' → « Tout est prêt : afficher la liste des produits ».',
+			'Le même écran permet de remettre la liste en préparation.',
+		) ),
+		array( 'shortcode', 'Écrire les horaires ou l\'adresse dans un texte', array(
+			'Tapez un code court entre crochets dans un paragraphe, par exemple <code>[schiesser_horaires_phrase]</code> : il affiche «&nbsp;Montag bis Freitag von 7.30 bis 18.30&nbsp;Uhr, …&nbsp;».',
+			'Autres codes : <code>[schiesser_horaires]</code> (tableau), <code>[schiesser_adresse]</code>, <code>[schiesser_telephone]</code>, <code>[schiesser_email]</code>, <code>[schiesser_statut]</code> (ouvert ou fermé).',
+			'Ils se mettent à jour tout seuls quand les Réglages maison changent : rien à retoucher dans les pages.',
+		) ),
+		array( 'editor-textcolor', 'Changer la police, la taille ou la couleur d\'un texte', array(
+			'Cliquez dans le texte, puis bouton <strong>Aa</strong> de la petite barre d\'outils : un panneau s\'ouvre avec la police, la taille (curseur, boutons − et +, ou tailles rapides S à XXL), la graisse, italique, majuscules, souligné, l\'espacement des lettres et la couleur. Le texte change en direct.',
+			'Sans sélection, le réglage s\'applique à tout le texte du champ ; pour ne changer que quelques mots, sélectionnez les d\'abord. « Copier le style » puis « Coller le style » reproduit une mise en forme ailleurs.',
+			'Pour annuler : <strong>Aa</strong> → « Tout remettre par défaut ».',
+			'<strong>Taille sur téléphone</strong> : dans « Taille », cliquez sur l\'icône du téléphone. L\'aperçu passe en mode téléphone et la taille réglée ne vaut que sur les petits écrans.',
+			'<strong>Styles enregistrés</strong> : réglez un texte, puis « + Enregistrer ces réglages comme nouveau style » et donnez lui un nom (ex. « Accroche verte »). Il s\'applique ensuite en un clic partout. « Mettre à jour » change tous les textes qui l\'utilisent, sur tout le site.',
+			'Un paragraphe entier (bloc Paragraphe ou Titre) : panneau de droite, rubriques « Typographie » (police, taille, graisse) et « Couleur ».',
+			'Les polices elles-mêmes (pour tout le site) : Réglages maison → Charte graphique (administrateur).',
+		) ),
+		array( 'coffee', 'L\'écran « Aujourd\'hui »', array(
+			'Premier menu de l\'administration : l\'état de la boutique, les nouveaux messages, la vitrine du jour, la suggestion du Tea Room, les produits épuisés et le bandeau d\'annonce, sur un seul écran. Un seul bouton « Enregistrer » en bas.',
+			'« Épuisé aujourd\'hui » : cochez le produit le matin, il affiche « Épuisé aujourd\'hui » sur le site. Le lendemain, il redevient disponible tout seul.',
+		) ),
+		array( 'clock', 'Préparer une section à l\'avance', array(
+			'Cliquez sur le bloc, puis panneau de droite → « Affichage programmé » : « Afficher à partir du » et « Jusqu\'au ». Laissez vide pour toujours afficher.',
+			'Dans l\'éditeur, les sections programmées ont un cadre pointillé et une étiquette (« Programmé », « Affiché », « Période terminée »).',
+		) ),
+		array( 'edit', 'Modifier depuis le site', array(
+			'Connecté, passez la souris sur une section du site : le bouton « Modifier cette section » ouvre l\'éditeur directement sur ce bloc.',
+		) ),
+		array( 'format-image', 'Point d\'intérêt d\'une photo', array(
+			'Médiathèque → cliquez sur la photo → champ « Point d\'intérêt » : cliquez sur l\'endroit important (visage, vitrine). Aussi dans le panneau « Photo » des blocs.',
+			'Quand la photo est recadrée (téléphone, cartes, grande photo), cet endroit reste visible. Le réglage suit la photo partout sur le site.',
+		) ),
+		array( 'calendar-alt', 'Jours fériés, fermetures et annonces', array(
+			'Les jours fériés de Bâle et la Fasnacht sont calculés tout seuls. Réglages maison → Coordonnées et horaires → « Jours fériés et fermetures exceptionnelles » : pour chacun, horaires habituels, fermé ou horaires spéciaux.',
+			'Vacances ou inventaire : même carte, « Dates exceptionnelles », une ligne par période avec son motif. Le statut « Ouvert / Fermé », les tableaux d\'horaires et Google suivent.',
+			'Un message en haut du site (« Commandes de Pâques ouvertes ») : Réglages maison → Accueil et pied de page → « Bandeau d\'annonce », avec ses dates. Il disparaît tout seul après la date de fin.',
+		) ),
+		array( 'carrot', 'Allergènes et régimes', array(
+			'Dans chaque produit (boutique ou Tea Room), boîte « Allergènes et régimes » : cochez ce que contient le produit, ou « Ne contient aucun de ces allergènes ».',
+			'Les pictogrammes et les filtres « Sans gluten », « Végane »… apparaissent sur le site dès qu\'un produit est renseigné. Un produit non renseigné est masqué quand un filtre est actif.',
+			'La remarque générale (traces possibles dans l\'atelier) se modifie dans Réglages maison → Accueil et pied de page → « Allergènes ».',
+		) ),
+		array( 'email-alt', 'Messages reçus', array(
+			'Chaque message du formulaire de contact arrive par e-mail et reste dans le menu « Messages reçus » : le chiffre à côté du menu indique les nouveaux.',
+			'Ouvrir un message le marque comme lu ; « Répondre par e-mail » prépare la réponse. Passez le en « Traité » une fois la demande réglée.',
+			'Les envois suspects sont rangés dans « Spam probable » (lien au-dessus de la liste) : à regarder de temps en temps. Les messages sont effacés automatiquement après 12 mois.',
+		) ),
+		array( 'image-flip-vertical', 'Espacements et boutons d\'une section', array(
+			'Cliquez sur la section, puis panneau de droite → « Espacements » : deux curseurs pour l\'espace au-dessus et en dessous. « Automatique » garde l\'espace prévu par le thème ; sur téléphone, l\'espace est réduit automatiquement.',
+			'Même panneau → « Boutons » (sections qui en ont) : couleur du bouton, couleur du texte, taille (petit, normal, grand) et arrondi des coins.',
+		) ),
+		array( 'admin-page', 'Copier une section vers une autre page', array(
+			'Cliquez sur la section, puis sur les trois points <strong>⋮</strong> de sa barre d\'outils → « Copier vers une autre page… ».',
+			'Choisissez la page et l\'emplacement (au début ou à la fin) : la copie est ajoutée avec ses textes, photos et réglages, sans quitter la page en cours. Un lien « Ouvrir la page » permet d\'aller la placer au bon endroit.',
+			'Dans la même page, « Dupliquer » (même menu) suffit.',
+		) ),
+		array( 'star-filled', 'Afficher les avis Google', array(
+			'Ajoutez le bloc « Avis clients (Google) » (bouton <strong>+</strong>, catégorie Schiesser) : note moyenne, étoiles et quelques avis, avec les boutons « Voir tous les avis » et « Laisser un avis ».',
+			'Automatique : Réglages maison → Fiche Google et SEO → carte « Avis Google », clé Google et identifiant du lieu. Les avis se mettent à jour tout seuls (toutes les 12 heures).',
+			'À la main : menu « Avis clients » → « Ajouter un avis » (nom, note, texte, date), et la note moyenne dans la carte « Avis Google ».',
+			'Dans le bloc, à droite : nombre d\'avis, note minimale affichée (par exemple 4 étoiles et plus), longueur des textes.',
+		) ),
+		array( 'format-image', 'Assombrir une photo', array(
+			'Pour que le texte posé sur une photo ressorte mieux : cliquez sur le bloc (ou sur l\'élément : un étage, une date…), puis panneau de droite → « Photo » → curseur « Assombrir la photo ».',
+			'Grande photo en haut de page (Hero) : même curseur, dans le panneau « Photo » du bloc.',
+			'0 = la photo d\'origine. Le réglage est enregistré avec la page, la photo de la médiathèque n\'est pas modifiée.',
+		) ),
+		array( 'location', 'La carte Google Maps', array(
+			'Les cartes de l\'accueil et de la page Nous visiter montrent la fiche Google de la confiserie, trouvée d\'après son nom et son adresse (Réglages maison → Coordonnées).',
+			'Pour une vue précise : sur Google Maps, fiche de la confiserie → « Partager » → « Intégrer une carte » → « Copier le contenu HTML », puis collez dans Réglages maison → Coordonnées → « Carte Google Maps du site ».',
+			'Option « Afficher la carte Google seulement après un clic » : rien n\'est envoyé à Google tant que le visiteur n\'a pas cliqué (protection des données).',
+			'Dans chaque bloc de carte, « Fond de carte » permet aussi de choisir OpenStreetMap ou CARTO.',
+		) ),
+		array( 'art', 'Changer la couleur d\'un bouton', array(
+			'Un bouton : cliquez dessus, panneau de droite → « Styles » : Vert maison, Contour, Crème (sur fond sombre) ou Lien fléché.',
+			'Un paragraphe, une liste, des colonnes, une image : même rubrique « Styles » (chapeau, surtitre, grille à filets, cartes, cadre vitrine…).',
+			'La grande photo (bloc Hero) : panneau de droite → « Boutons » pour leur style, « Mise en page » pour la couleur des mots en italique du titre.',
+			'Les couleurs de tout le site : Réglages maison → Charte graphique (administrateur).',
+		) ),
+		array( 'editor-code', 'Ajouter du code (widget, carte, vidéo)', array(
+			'Dans une page : bouton <strong>+</strong> → « HTML personnalisé » pour coller un code fourni par un service (réservation, carte, avis…).',
+			'Pour une vidéo YouTube ou un lien Instagram : bloc « Intégrer », collez simplement l\'adresse.',
+			'Pour un code à placer sur toutes les pages (statistiques) : Réglages maison → Avancé (administrateur).',
+			'Une retouche de style (CSS) : Réglages maison → Avancé → « CSS personnalisé ». Une petite fonctionnalité en PHP fournie par l\'agence : extension <strong>Code Snippets</strong> → « Ajouter », collez le code, « Enregistrer et activer ». Ces ajouts sont conservés quand le thème est mis à jour.',
+			'Astuce : pour qu\'un texte reste modifiable sans code, écrivez-le dans des blocs Paragraphe, pas dans le HTML.',
+		) ),
+		array( 'search', 'Référencement (Rank Math)', array(
+			'Dans chaque page ou produit, ouvrez le panneau Rank Math (icône en haut à droite de l\'éditeur).',
+			'Renseignez le <strong>mot-clé principal</strong>, le <strong>titre SEO</strong> (50 à 60 caractères) et la <strong>méta description</strong> (140 à 160 caractères).',
+			'Visez un score de 80 ou plus, sans chercher 100 à tout prix. Les photos doivent avoir un texte alternatif (médiathèque).',
+		) ),
+		array( 'warning', 'À éviter', array(
+			'Supprimer le bloc Hero d\'une page : il porte le titre principal lu par Google (il est protégé contre la suppression).',
+			'Envoyer des photos très lourdes : visez 2500 pixels de large au maximum (WordPress crée les autres tailles).',
+			'Modifier les réglages de Rank Math ou des extensions sans en parler à l\'agence.',
+		) ),
+	);
+	?>
+	<div class="wrap s-admin s-guide">
+		<div class="s-entete">
+			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'incline' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<div class="s-entete-texte">
+				<h1>Guide du site</h1>
+				<p>Les gestes du quotidien, pas à pas. Aucun code n'est nécessaire.</p>
+			</div>
+		</div>
+		<div class="s-guide-grille">
+			<?php foreach ( $fiches as $f ) : ?>
+				<div class="s-carte">
+					<div class="s-carte-tete"><span class="dashicons dashicons-<?php echo esc_attr( $f[0] ); ?>" aria-hidden="true"></span><div><h2><?php echo esc_html( $f[1] ); ?></h2></div></div>
+					<div class="s-carte-corps"><ol>
+						<?php foreach ( $f[2] as $etape ) { echo '<li>' . wp_kses_post( $etape ) . '</li>'; } ?>
+					</ol></div>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	</div>
+	<?php
+}
+
+/* ------------------------------------------------------------------ */
+/* Page de connexion                                                   */
+/* ------------------------------------------------------------------ */
+
+add_action( 'login_enqueue_scripts', function () {
+	$c    = schiesser_charte()['couleurs'];
+	$logo = str_replace( 'currentColor', $c['vert'], schiesser_logo_svg( 'droit' ) ); // le logo droit, en vert sapin
+	?>
+	<style>
+		body.login{background:<?php echo esc_html( $c['paper'] ); ?>}
+		.login h1 a{background:url("data:image/svg+xml;base64,<?php echo base64_encode( $logo ); // phpcs:ignore ?>") center/contain no-repeat!important;width:210px!important;height:131px!important;text-indent:-9999px!important;overflow:hidden;margin-bottom:22px}
+		.login form{border:1px solid rgba(58,40,24,.14);border-radius:6px;box-shadow:0 20px 40px -30px rgba(39,27,18,.5)}
+		.wp-core-ui .button-primary{background:<?php echo esc_html( $c['vert'] ); ?>;border-color:<?php echo esc_html( $c['vert'] ); ?>}
+		.wp-core-ui .button-primary:hover,.wp-core-ui .button-primary:focus{background:<?php echo esc_html( $c['dark'] ); ?>;border-color:<?php echo esc_html( $c['dark'] ); ?>}
+		.login #backtoblog a,.login #nav a{color:<?php echo esc_html( $c['text'] ); ?>}
+		input[type=text]:focus,input[type=password]:focus{border-color:<?php echo esc_html( $c['vert'] ); ?>!important;box-shadow:0 0 0 1px <?php echo esc_html( $c['vert'] ); ?>!important}
+	</style>
+	<?php
+} );
+add_filter( 'login_headerurl', function () {
+	return home_url( '/' );
+} );
+add_filter( 'login_headertext', function () {
+	return 'Schiesser';
+} );
+
+/* ------------------------------------------------------------------ */
+/* Rôle « Gérant(e) du site »                                           */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Éditeur + gestion du menu. Pas d'accès aux extensions, aux thèmes ni aux réglages techniques.
+ * Créé (ou mis à jour) automatiquement à chaque nouvelle version du thème.
+ */
+add_action( 'admin_init', function () {
+	if ( get_option( 'schiesser_version_roles' ) === SCHIESSER_VERSION ) {
+		return;
+	}
+	$editeur = get_role( 'editor' );
+	if ( $editeur ) {
+		remove_role( 'schiesser_gerant' );
+		add_role( 'schiesser_gerant', 'Gérant(e) du site', array_merge( $editeur->capabilities, array( 'edit_theme_options' => true ) ) );
+	}
+	update_option( 'schiesser_version_roles', SCHIESSER_VERSION );
+} );
+
+/* Le gérant voit le menu, mais pas les écrans techniques de l'apparence (thèmes, personnaliser, widgets). */
+add_action( 'admin_menu', function () {
+	if ( current_user_can( 'manage_options' ) || ! current_user_can( 'edit_theme_options' ) ) {
+		return;
+	}
+	remove_submenu_page( 'themes.php', 'themes.php' );
+	remove_submenu_page( 'themes.php', 'widgets.php' );
+	remove_submenu_page( 'themes.php', 'site-editor.php' );
+	remove_menu_page( 'tools.php' );
+}, 999 );
+
+/* Accès direct par l'adresse : les écrans techniques renvoient au tableau de bord. */
+add_action( 'load-themes.php', function () {
+	if ( ! current_user_can( 'switch_themes' ) ) {
+		wp_safe_redirect( admin_url() );
+		exit;
+	}
+} );
+
+/* ------------------------------------------------------------------ */
+/* Commentaires désactivés                                             */
+/* ------------------------------------------------------------------ */
+
+add_action( 'init', function () {
+	if ( ! schiesser_charte()['commentaires_off'] ) {
+		return;
+	}
+	foreach ( get_post_types() as $type ) {
+		if ( post_type_supports( $type, 'comments' ) ) {
+			remove_post_type_support( $type, 'comments' );
+			remove_post_type_support( $type, 'trackbacks' );
+		}
+	}
+	add_filter( 'comments_open', '__return_false', 20 );
+	add_filter( 'pings_open', '__return_false', 20 );
+	add_filter( 'comments_array', '__return_empty_array', 10 );
+	add_action( 'admin_menu', function () {
+		remove_menu_page( 'edit-comments.php' );
+	} );
+	add_action( 'admin_bar_menu', function ( $barre ) {
+		$barre->remove_node( 'comments' );
+	}, 999 );
+	add_action( 'wp_dashboard_setup', function () {
+		remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+	} );
+}, 100 );
+
+/* ------------------------------------------------------------------ */
+/* Code personnalisé (Réglages → Avancé)                               */
+/* ------------------------------------------------------------------ */
+
+add_action( 'wp_head', function () {
+	$code = schiesser_charte()['code_head'];
+	if ( $code ) {
+		echo "\n<!-- Code personnalisé (Réglages maison) -->\n" . $code . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput -- saisi par un administrateur autorisé (unfiltered_html)
+	}
+}, 99 );
+
+add_action( 'wp_footer', function () {
+	$code = schiesser_charte()['code_footer'];
+	if ( $code ) {
+		echo "\n<!-- Code personnalisé (Réglages maison) -->\n" . $code . "\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+	}
+}, 99 );

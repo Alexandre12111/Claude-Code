@@ -1,0 +1,36 @@
+[A-023 · col2] À vérifier par Schiesser : reformulation proposée (« Vieles … manches nach Rezepten aus den frühen Jahren »). Valider le fond avant mise en ligne.
+[A-025 · col2] À vérifier par Schiesser : nouvelle formulation des étapes/ingrédients (Läckerli, Buttergipfeli). Adapter si le procédé réel diffère.
+[A-042 · col2] Question dev : A-042 et A-045 ont la même description de photo alors qu’il s’agit de deux entrées distinctes de la chronologie. S’agit-il de la même image ? Sinon, merci d’attribuer une description propre à A-042 (ou une autre photo).
+[A-045 · col2] Voir la remarque sur A-042 (description identique).
+[A-068 · col2] Placeholder [schiesser_horaires_phrase] remplacé par une phrase fixe (« fünfte Generation », ouvert tous les jours). Génération à confirmer par Schiesser (5e selon le livre du jubilé).
+[A-074 · col2] Horaires fixés dans le texte : Lu–Sa 08:00–18:00, Di 11:30–18:00 (profil Google, oct. 2026). Si le site dispose d’un bloc horaires dynamique, le synchroniser avec ces valeurs.
+[A-072 · col2] Le texte entre balises <small> (astérisque) doit s’afficher en caractères plus petits sous la réponse.
+[A-078 · col2] Idem : l’astérisque (<small>) en petits caractères. Lien « Firmengeschenke » retiré pour l’instant.
+[C-009 · col2] Mention « Onlineshop folgt » supprimée : ne rien afficher dans ce champ tant que la boutique en ligne n’existe pas.
+[C-012 · col2] Section 3 (grille des produits) : les photos produits ne sont pas encore disponibles. Ne pas afficher la section pour l’instant ; le titre et la note restent en réserve.
+[C-013 · col2] Voir C-012 : section masquée jusqu’à réception des photos et des prix validés.
+[C-061 · col2] Formats confirmés par la liste de prix : pralinés 4/9/16, Läckerli 100–500 g, tablettes 37–83 %.
+[C-067 · col2] Les réponses C-068 / K-044 / F-054 (retrait en boutique) à revalider avec la direction si une livraison est mise en place.
+[H-013 · col2] Question dev : si l’image de la plaque montre déjà le chiffre « 150 », conserver seulement « Jahre Schiesser / ans Schiesser / years of Schiesser ». Sinon utiliser le texte « 150 Jahre Schiesser ».
+[H-014 · col2] Les dates « 1870 · 2020 » correspondent à la plaque du jubilé 2020 ; conserver uniquement si l’image montre cette plaque.
+[H-091 · col2] Le comparateur garde la photo de 1889 (décision Schiesser).
+[V-013 · col2] Section « Affluence » : à afficher uniquement si elle est alimentée par les « heures d’affluence » Google (profil Google Business). Sinon, retirer la section.
+[V-019 · col2] Section « Ihr Weg zu uns » : à vérifier intégralement avant publication (durées, correspondances, marche). Un seul point de départ ferroviaire : « Bahnhof Basel SBB » (ne pas écrire « Hauptbahnhof »). Valeurs de référence : SBB → Marktplatz ≈ 8 min en tram ; possibilité d’ajouter « Messeplatz → Marktplatz ≈ 6 min en tram ».
+[V-023 · col2] Durée totale à recalculer après vérification (tram ≈ 8 min + marche).
+[V-025 · col2] Temps de marche à harmoniser avec V-034 (≈ 1 min).
+[V-030 · col2] Pas de numéro de ligne précis (déviations fréquentes) : le texte reste générique.
+[V-093 · col2] Rubrique « Sprachen » volontairement vide : ne rien afficher (laisser le pictogramme masqué).
+[V-094 · col2] Voir V-093 : champ vide, à masquer.
+[V-107 · col2] Inscription « Café – Tea Room – Confiserie zum Rathaus » : à vérifier sur la façade actuelle avant publication.
+[K-016 · col2] Question dev : les données du formulaire servent-elles uniquement au traitement des demandes, ou peut-on déjà collecter les adresses e-mail (avec consentement) pour les migrer plus tard dans un CRM ? Si oui : prévoir une case à cocher opt-in séparée et adapter cette mention. Dans tous les cas : lien vers la déclaration de protection des données (nLPD) sous le formulaire + page « Datenschutz » à créer.
+[T-089 · col2] Question dev : les photos des moments de la journée (T-088 à T-095 : trio de chocolats chauds, café et gâteau, coupe glacée / Eiscafé) existent-elles ? Sinon, lister les visuels manquants pour la séance photo.
+[C-058 · col2] Adresse e-mail à utiliser pour ce bouton et partout où une adresse est nécessaire : info@confiserie-schiesser.ch
+[K-030 · col2] Valeur : info@confiserie-schiesser.ch
+[F-004 · col2] Bouton « Offerte anfragen » : lier au formulaire de contact ou à info@confiserie-schiesser.ch
+[F-022 · col2] Voir F-004 : info@confiserie-schiesser.ch
+[F-058 · col2] Voir F-004 : info@confiserie-schiesser.ch
+[F-023 · col2] Cadeaux d’entreprise : page publiable. Pas d’emballage personnalisé ni de logo (textes adaptés en conséquence).
+[K-033 · col2] Ligne « Für / Pour / For » retirée (champ vide) : masquer cette ligne d’information.
+[K-034 · col2] Voir K-033 : ne rien afficher.
+[K-047 · col2] Question « Onlineshop » retirée (champ vide) : masquer cette entrée FAQ.
+[K-048 · col2] Voir K-047.
