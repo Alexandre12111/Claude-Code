@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>CIR Leyton</title>
+<style>
+@font-face{font-family:Nohemi;font-weight:700;src:url(fonts/Nohemi-Bold.ttf)}
+@font-face{font-family:Nohemi;font-weight:600;src:url(fonts/Nohemi-SemiBold.ttf)}
+@font-face{font-family:Montserrat;font-weight:400;src:url(fonts/montserrat-latin-400-normal.woff2)}
+@font-face{font-family:Montserrat;font-weight:500;src:url(fonts/montserrat-latin-500-normal.woff2)}
+@font-face{font-family:Montserrat;font-weight:600;src:url(fonts/montserrat-latin-600-normal.woff2)}
+@font-face{font-family:Montserrat;font-weight:700;src:url(fonts/montserrat-latin-700-normal.woff2)}
+@font-face{font-family:Montserrat;font-weight:800;src:url(fonts/montserrat-latin-800-normal.woff2)}
+:root{--navy:#002C49;--navy2:#142C47;--orange:#F0682F;--orangeT:#EC6F45;--bg:#F4F6FA;--mist:#E5EBED}
+html,body{margin:0;padding:0;background:#002C49}
+#stage{position:relative;width:1920px;height:1080px;overflow:hidden;background:#002C49}
+#board{position:absolute;left:0;top:0;width:5760px;height:2160px;transform-origin:0 0}
+#art{position:absolute;left:0;top:0;width:5760px;height:2160px;overflow:visible}
+.ln{stroke:var(--navy);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.lo{stroke:var(--orange);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.t-n{font-family:Nohemi;font-weight:700;fill:var(--navy)}
+.t-o{font-family:Nohemi;font-weight:700;fill:var(--orange)}
+.t-m{font-family:Montserrat;font-weight:700;fill:var(--navy)}
+.t-ms{font-family:Montserrat;font-weight:500;fill:#3B5266}
+#hand{position:absolute;left:0;top:0;width:0;height:0;will-change:transform;filter:drop-shadow(10px 18px 14px rgba(0,20,40,.28))}
+#hand svg{position:absolute;left:0;top:0;overflow:visible}
+#bug{position:absolute;right:62px;top:54px;width:170px;opacity:.95}
+#subs{position:absolute;left:0;right:0;bottom:46px;display:flex;justify-content:center;pointer-events:none}
+#subs span{max-width:1640px;text-align:center;font-family:Montserrat;font-weight:600;font-size:37px;line-height:1.3;color:#fff;
+  background:rgba(0,44,73,.92);padding:14px 30px 16px;border-radius:14px;box-shadow:0 8px 24px rgba(0,20,40,.25)}
+#subs b{color:#FF9A6B;font-weight:700}
+#end{position:absolute;inset:0;opacity:0;background:radial-gradient(1200px 700px at 50% 42%,#0B3E63 0%,#002C49 55%,#001E33 100%);display:flex;flex-direction:column;align-items:center;justify-content:center}
+#end .logo{width:760px}
+#end .tag{margin-top:46px;font-family:Nohemi;font-weight:700;font-size:62px;color:#fff;letter-spacing:.5px}
+#end .tag em{font-style:normal;color:var(--orange)}
+#end .rule{width:0;height:4px;background:var(--orange);margin:34px 0 30px;border-radius:2px}
+#end .url{font-family:Montserrat;font-weight:600;font-size:34px;color:#C9D6E2;letter-spacing:2px}
+#vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(1400px 900px at 50% 45%,rgba(0,0,0,0) 60%,rgba(0,20,40,.22) 100%)}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="board"><svg id="art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5760 2160" width="5760" height="2160"><defs id="defs"></defs></svg></div>
+  <div id="vignette"></div>
+  <img id="bug" alt="">
+  <div id="hand"></div>
+  <div id="end">
+    <div class="logo" id="endlogo"></div>
+    <div class="rule" id="endrule"></div>
+    <div class="tag">Crédit d’Impôt <em>Recherche</em></div>
+    <div class="url">leyton.com</div>
+  </div>
+  <div id="subs"><span id="subtxt"></span></div>
+</div>
+<script>
+const TL = __TIMELINE__;
+const LOGO = `__LOGO__`;
+const NS = 'http://www.w3.org/2000/svg';
+const NAVY='#002C49', OR='#F0682F', LOR='#FDE4D8', MIST='#E5EBED', LBL='#D6E1EA', WHITE='#FFFFFF';
+const W1=1920, H1=1080;
+const CELLS=[[0,0],[1,0],[2,0],[2,1],[1,1],[0,1]];
+const art=document.getElementById('art'), defs=document.getElementById('defs');
+
+/* ---------- helpers ---------- */
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const lerp=(a,b,t)=>a+(b-a)*t;
+const eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const esine=t=>-(Math.cos(Math.PI*t)-1)/2;
+const eout=t=>1-Math.pow(1-t,3);
+const eback=t=>{const c1=1.70158,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)};
+function el(tag,attrs={},parent=null,text=null){const e=document.createElementNS(NS,tag);if((attrs.class==='ln'||attrs.class==='lo')&&!('fill' in attrs))attrs=Object.assign({fill:'none'},attrs);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!==null)e.textContent=text;if(parent)parent.appendChild(e);return e}
+const norm=w=>w.toLowerCase().replace(/[^\p{L}\p{N}']/gu,'');
+function W(si,word,occ=1){let c=0;for(const w of TL.scenes[si].words){if(norm(w.w)===norm(word)){c++;if(c===occ)return w.t}}throw new Error('cue '+si+' '+word)}
+const A=i=>TL.scenes[i].start;
+
+/* ---------- action system ---------- */
+const actions=[]; const anims=[];
+function geomLen(e){try{return e.getTotalLength()}catch(_){return 0}}
+function boardPt(e,x,y){const m=e.getCTM();return {x:m.a*x+m.c*y+m.e,y:m.b*x+m.d*y+m.f}}
+function prepFill(e){
+  const f=e.getAttribute('fill');
+  if(f&&f!=='none'){e.dataset.fill='1';e.style.fillOpacity=0}
+}
+function draw(e,t0,dur,scene,ease=esine){
+  const L=geomLen(e); e.style.strokeDasharray=`${L+2} ${L+2}`; e.style.strokeDashoffset=L+2; prepFill(e);
+  const a={kind:'path',e,t0,t1:t0+dur,L,scene,ease,
+    pt(p){const q=e.getPointAtLength(L*p);return boardPt(e,q.x,q.y)},
+    update(t){const p=this.ease(clamp((t-t0)/dur));e.style.strokeDashoffset=(L+2)*(1-p);
+      if(e.dataset.fill)e.style.fillOpacity=clamp((t-this.t1)/.3)}};
+  actions.push(a);return a;
+}
+function drawSeq(list,t0,dur,scene){ // draw several elements sequentially, time split by length
+  const lens=list.map(e=>Math.max(geomLen(e),60)); const tot=lens.reduce((a,b)=>a+b,0); let t=t0;
+  list.forEach((e,i)=>{const d=dur*lens[i]/tot;draw(e,t,d*.94,scene);t+=d});
+}
+function write(e,t0,dur,scene){
+  const bb=e.getBBox(); const id='c'+Math.random().toString(36).slice(2);
+  const cp=el('clipPath',{id,clipPathUnits:'userSpaceOnUse'},defs); const r=el('rect',{x:bb.x-12,y:bb.y-30,height:bb.height+60,width:0},cp);
+  // clip path must live in same coordinate system as the text -> attach transform of parent is inherited, so use text local coords
+  e.setAttribute('clip-path',`url(#${id})`);
+  const a={kind:'text',e,t0,t1:t0+dur,scene,
+    pt(p,t=0){const x=bb.x+bb.width*p, y=bb.y+bb.height*(.62+.18*Math.sin(t*38));return boardPt(e,x,y)},
+    update(t){const p=clamp((t-t0)/dur);r.setAttribute('width',(bb.width+24)*p+(p>0?6:0))}};
+  actions.push(a);return a;
+}
+function fade(e,t0,dur){e.style.opacity=0;anims.push(t=>{e.style.opacity=clamp((t-t0)/dur)})}
+function pop(e,t0,dur=.35){const bb=e.getBBox();const cx=bb.x+bb.width/2,cy=bb.y+bb.height/2;e.style.opacity=0;
+  anims.push(t=>{const p=clamp((t-t0)/dur);const s=p<=0?0:eback(p);e.style.opacity=p>0?1:0;
+    e.setAttribute('transform',`translate(${cx} ${cy}) scale(${Math.max(s,0.0001)}) translate(${-cx} ${-cy})`)})}
+function move(e,t0,dur,dx,dy,rot=0,ox=0,oy=0){const base=e.getAttribute('transform')||'';
+  anims.push(t=>{const p=eio(clamp((t-t0)/dur));e.setAttribute('transform',`${base} translate(${dx*p} ${dy*p}) rotate(${rot*p} ${ox} ${oy})`)})}
+
+/* ---------- scene builders ---------- */
+function panel(i){
+  const [cx,cy]=CELLS[i]; const g=el('g',{transform:`translate(${cx*W1} ${cy*H1})`},art);
+  const id='pg'+i; const lg=el('linearGradient',{id,x1:0,y1:0,x2:0,y2:1},defs);
+  el('stop',{offset:0,'stop-color':'#E6ECF2'},lg); el('stop',{offset:1,'stop-color':'#FBFCFD'},lg);
+  const cid='pc'+i; const cp=el('clipPath',{id:cid},defs); el('rect',{x:22,y:22,width:W1-44,height:H1-44,rx:34},cp);
+  el('rect',{x:22,y:22,width:W1-44,height:H1-44,rx:34,fill:`url(#${id})`},g);
+  el('text',{x:-30,y:560,class:'t-n','font-size':640,fill:'#DCE4EC','clip-path':`url(#${cid})`,style:'fill:#DDE5ED'},g,String(i+1).padStart(2,'0'));
+  return g;
+}
+const P=(g,d,cls='ln',extra={})=>el('path',Object.assign({d,class:cls},extra),g);
+const T=(g,x,y,txt,cls,size,extra={})=>el('text',Object.assign({x,y,class:cls,'font-size':size,'text-anchor':'middle'},extra),g,txt);
+function gearPath(cx,cy,R,r,n){let d='';for(let k=0;k<n;k++){const a0=k/n*2*Math.PI;const w=Math.PI/n;
+  const pts=[[r,a0-w*.55],[R,a0-w*.32],[R,a0+w*.32],[r,a0+w*.55]];
+  pts.forEach(([rr,a],j)=>{d+=(k===0&&j===0?'M':'L')+(cx+rr*Math.cos(a)).toFixed(1)+' '+(cy+rr*Math.sin(a)).toFixed(1)});
+  const a1=a0+w*.55,a2=a0+2*w-w*.55; d+=`A ${r} ${r} 0 0 1 ${(cx+r*Math.cos(a2)).toFixed(1)} ${(cy+r*Math.sin(a2)).toFixed(1)}`}
+  return d+'Z'}
+function starPath(cx,cy,R){let d='';for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5;const rr=k%2?R*.45:R;d+=(k?'L':'M')+(cx+rr*Math.cos(a)).toFixed(1)+' '+(cy+rr*Math.sin(a)).toFixed(1)}return d+'Z'}
+function arrowHead(x,y,dx,dy,L=44){const n=Math.hypot(dx,dy),ux=-dx/n,uy=-dy/n,c=Math.cos(.5),s=Math.sin(.5);return `M ${x+L*(ux*c-uy*s)} ${y+L*(uy*c+ux*s)} L ${x} ${y} L ${x+L*(ux*c+uy*s)} ${y+L*(uy*c-ux*s)}`}
+function coin(g,cx,cy,r=34){const c=el('g',{},g);el('circle',{cx,cy,r,fill:OR,stroke:NAVY,'stroke-width':5},c);T(c,cx,cy+r*.42,'€','t-n',r*1.25,{style:'fill:#fff'});return c}
+
+function scene0(){const i=0,g=panel(i);
+  // bulb
+  const bulb=P(g,'M 222 505 C 222 455 172 432 172 360 A 98 98 0 1 1 368 360 C 368 432 318 455 318 505 Z','ln',{fill:LOR});
+  const b1=P(g,'M 230 540 L 310 540'),b2=P(g,'M 240 572 L 300 572'),b3=P(g,'M 255 604 L 285 604');
+  const fil=P(g,'M 238 430 L 254 385 L 270 430 L 286 385 L 302 430','lo',{'stroke-width':6});
+  const rays=[-160,-125,-90,-55,-20].map(a=>{const r=a*Math.PI/180;return P(g,`M ${270+128*Math.cos(r)} ${355+128*Math.sin(r)} L ${270+165*Math.cos(r)} ${355+165*Math.sin(r)}`,'lo')});
+  // flask
+  const fl=P(g,'M 545 255 L 545 375 L 465 555 Q 452 592 492 592 L 668 592 Q 708 592 695 555 L 615 375 L 615 255','ln');
+  const rim=P(g,'M 528 255 L 632 255');
+  const liq=P(g,'M 500 505 L 660 505 L 683 555 Q 694 584 664 584 L 496 584 Q 466 584 477 555 Z','',{fill:OR,stroke:'none'});
+  const bub=[[560,470,11],[600,440,8],[578,405,6]].map(([x,y,r])=>el('circle',{cx:x,cy:y,r,class:'lo','stroke-width':5},g));
+  // gear + arrow
+  const gear=P(g,gearPath(900,420,112,88,9),'ln',{fill:MIST});
+  const hole=el('circle',{cx:900,cy:420,r:34,class:'ln',fill:'#fff'},g);
+  const up1=P(g,'M 1050 330 L 1050 200','lo',{'stroke-width':9}), up2=P(g,'M 1018 232 L 1050 198 L 1082 232','lo',{'stroke-width':9});
+  const l1=T(g,270,700,'Inventer','t-m',44),l2=T(g,580,700,'Tester','t-m',44),l3=T(g,900,700,'Améliorer','t-m',44);
+  // State building
+  const ped=P(g,'M 1390 330 L 1580 232 L 1770 330 Z','ln',{fill:LBL});
+  const ent=P(g,'M 1400 330 L 1760 330 L 1760 362 L 1400 362 Z','ln');
+  const cols=[1440,1527,1633,1720].map(x=>P(g,`M ${x-16} 372 L ${x-16} 556 M ${x+16} 556 L ${x+16} 372`,'ln',{'stroke-width':6}));
+  const base=P(g,'M 1392 562 L 1768 562 L 1768 592 L 1392 592 Z','ln',{fill:LBL});
+  const step=P(g,'M 1370 598 L 1790 598 L 1790 624 L 1370 624 Z','ln');
+  const pole=P(g,'M 1580 232 L 1580 160'), flag=P(g,'M 1580 162 L 1640 176 L 1580 192','lo',{fill:OR});
+  const l4=T(g,1580,700,'L’État','t-m',44);
+  // arrow + coins
+  const arc=P(g,'M 1360 470 Q 1235 330 1100 480','lo',{'stroke-width':9});
+  const ah=P(g,arrowHead(1100,480,-135,110),'lo',{'stroke-width':9});
+  const coins=[[1300,360],[1232,335],[1164,362]].map(([x,y])=>coin(g,x,y-8,30));
+  const br=P(g,'M 150 750 Q 150 780 190 780 L 540 780 Q 580 780 580 810 Q 580 780 620 780 L 980 780 Q 1020 780 1020 750','lo',{'stroke-width':7});
+  const vr=T(g,585,880,'Votre recherche','t-o',60);
+  return ()=>{const a=A(0);
+    drawSeq([bulb,b1,b2,b3,fil],a+.35,.8,i); drawSeq(rays,a+1.15,.25,i); write(l1,a+1.4,.35,i);
+    drawSeq([fl,rim],a+1.45,.55,i); fade(liq,a+2.0,.25); bub.forEach((b,k)=>pop(b,a+2.05+k*.08)); write(l2,a+2.05,.3,i);
+    draw(gear,a+2.25,.55,i); draw(hole,a+2.8,.15,i); drawSeq([up1,up2],a+2.95,.25,i); write(l3,a+3.2,.35,i);
+    drawSeq([ped,ent,...cols,base,step,pole,flag],a+3.55,1.0,i); write(l4,a+4.6,.3,i);
+    drawSeq([arc,ah],a+4.85,.45,i); coins.forEach((c,k)=>pop(c,W(0,'partie')+k*.14,.4));
+    draw(br,W(0,'votre',2)-.15,.4,i); write(vr,W(0,'recherche')+.05,.65,i);
+  }}
+
+function scene1(){const i=1,g=panel(i);
+  const t1=T(g,960,250,'Crédit d’Impôt Recherche','t-n',100);
+  const ul=P(g,'M 470 290 Q 960 270 1450 288','lo',{'stroke-width':8});
+  const cir=T(g,960,500,'CIR','t-o',190);
+  const ell=P(g,'M 1130 390 C 1100 330 820 330 770 395 C 720 470 780 545 960 548 C 1130 550 1200 470 1150 400 C 1130 375 1080 360 1050 355','ln',{'stroke-width':6});
+  // calendar
+  const cal=P(g,'M 250 620 L 470 620 Q 490 620 490 640 L 490 820 Q 490 840 470 840 L 250 840 Q 230 840 230 820 L 230 640 Q 230 620 250 620 Z','ln',{fill:'#fff'});
+  const calh=P(g,'M 232 622 L 488 622 L 488 680 L 232 680 Z','',{fill:OR,stroke:'none'});
+  const rg1=P(g,'M 290 600 L 290 642'),rg2=P(g,'M 430 600 L 430 642');
+  const dots=[];for(let r=0;r<2;r++)for(let c=0;c<4;c++)dots.push(el('circle',{cx:280+c*54,cy:725+r*55,r:9,fill:r===1&&c===2?OR:LBL},g));
+  const cc=T(g,530,700,'Créé en','t-m',44,{'text-anchor':'start'}), y83=T(g,528,815,'1983','t-o',118,{'text-anchor':'start'});
+  // trophy + stars
+  const cup=P(g,'M 1120 600 L 1280 600 L 1270 680 Q 1260 745 1200 750 Q 1140 745 1130 680 Z','ln',{fill:LOR});
+  const hl=P(g,'M 1124 625 Q 1078 625 1082 662 Q 1086 700 1134 700'),hr=P(g,'M 1276 625 Q 1322 625 1318 662 Q 1314 700 1266 700');
+  const stem=P(g,'M 1200 752 L 1200 795'),base=P(g,'M 1150 795 L 1250 795 L 1250 822 L 1150 822 Z','ln',{fill:NAVY});
+  const cstar=P(g,starPath(1200,668,30),'',{fill:OR,stroke:'none'});
+  const stars=[];for(let k=0;k<12;k++){const a=-Math.PI/2+k*Math.PI/6;stars.push(el('path',{d:starPath(1200+170*Math.cos(a),705+150*Math.sin(a),17),fill:OR},g))}
+  const gen=T(g,1420,700,'Le plus généreux','t-m',44,{'text-anchor':'start'}), eu=T(g,1418,800,'d’Europe','t-o',96,{'text-anchor':'start'});
+  return ()=>{const a=A(1);
+    write(t1,a+.12,1.55,i); draw(ul,a+1.7,.3,i); write(cir,W(1,'cir')-.05,.5,i); draw(ell,W(1,'cir')+.5,.6,i);
+    draw(cal,W(1,'créé')-.15,.45,i); fade(calh,W(1,'créé')+.3,.2); drawSeq([rg1,rg2],W(1,'créé')+.32,.18,i); dots.forEach((d,k)=>pop(d,W(1,'créé')+.5+k*.03,.25));
+    write(cc,W(1,'créé')+.55,.35,i); write(y83,W(1,'1983')+.1,.6,i);
+    drawSeq([cup,hl,hr,stem,base],W(1,'dispositif')-.25,.75,i); pop(cstar,W(1,'dispositif')+.5,.35);
+    stars.forEach((s,k)=>pop(s,W(1,'soutien')+.1+k*.06,.3));
+    write(gen,W(1,'plus')-.1,.5,i); write(eu,W(1,"d'europe")-.05,.55,i);
+  }}
+
+function scene2(){const i=2,g=panel(i);
+  const title=T(g,960,215,'Verrou scientifique ou technique','t-n',74);
+  const lock=el('g',{},g);
+  const sh=P(lock,'M 878 470 L 878 385 A 82 82 0 0 1 1042 385 L 1042 470','ln',{'stroke-width':26});
+  const body=P(g,'M 848 460 L 1072 460 Q 1100 460 1100 488 L 1100 682 Q 1100 710 1072 710 L 848 710 Q 820 710 820 682 L 820 488 Q 820 460 848 460 Z','ln',{fill:NAVY});
+  const kh=el('g',{},g); el('circle',{cx:960,cy:560,r:28,fill:OR},kh); el('path',{d:'M 946 572 L 974 572 L 982 640 L 938 640 Z',fill:OR},kh);
+  // books
+  const bks=[[230,700,300,58],[250,640,270,56],[220,582,290,56]].map(([x,y,w,h],k)=>P(g,`M ${x} ${y} L ${x+w} ${y} L ${x+w} ${y+h} L ${x} ${y+h} Z M ${x+26} ${y} L ${x+26} ${y+h}`,'ln',{fill:[LBL,'#fff',LOR][k]}));
+  const q=T(g,375,535,'?','t-o',150);
+  const lbl=T(g,375,840,'État de l’art','t-m',44);
+  const sub=T(g,375,888,'ne suffit pas','t-ms',34);
+  // key (bow on the right, shaft pointing left)
+  const key=el('g',{},g);
+  const bow=el('circle',{cx:1690,cy:600,r:52,class:'ln',fill:OR},key);
+  const bowh=el('circle',{cx:1690,cy:600,r:16,class:'ln',fill:'#fff','stroke-width':5},key);
+  const shaft=P(key,'M 1638 600 L 1400 600','ln',{'stroke-width':12}), teeth=P(key,'M 1440 600 L 1440 642 M 1478 600 L 1478 632','ln',{'stroke-width':12});
+  const kl=T(g,1560,740,'Vos travaux de R&D','t-m',42);
+  return ()=>{const a=A(2);
+    draw(sh,a+.55,.5,i); draw(body,a+1.05,.6,i); fade(kh,a+1.75,.2);
+    write(title,W(2,'verrou')-.05,1.3,i);
+    drawSeq(bks,W(2,'problème')-.3,.75,i); write(q,W(2,'problème')+.5,.35,i); write(lbl,W(2,"l'état")+.05,.5,i); write(sub,W(2,"l'art")+.35,.4,i);
+    drawSeq([bow,shaft,teeth],W(2,'sait')-.05,.6,i); draw(bowh,W(2,'sait')+.55,.12,i); write(kl,W(2,'résoudre'),.55,i);
+    move(key,a+5.95,.45,-415,-28); // into keyhole
+    move(lock,a+6.35,.3,0,-46);
+  }}
+
+function scene3(){const i=3,g=panel(i);
+  const title=T(g,820,205,'Vos dépenses de R&D','t-n',80);
+  // researcher
+  const head=el('circle',{cx:330,cy:372,r:56,class:'ln',fill:'#fff'},g);
+  const gl=P(g,'M 296 372 m -16 0 a 16 16 0 1 0 32 0 a 16 16 0 1 0 -32 0 M 364 372 m -16 0 a 16 16 0 1 0 32 0 a 16 16 0 1 0 -32 0 M 312 372 L 348 372','ln',{'stroke-width':5});
+  const bodyp=P(g,'M 222 540 Q 222 446 330 446 Q 438 446 438 540 Z','ln',{fill:'#fff'});
+  const coat=P(g,'M 302 448 L 330 505 L 358 448 M 330 505 L 330 540','lo',{'stroke-width':6});
+  const s1=T(g,330,640,'Salaires','t-m',44), s1b=T(g,330,685,'des chercheurs','t-ms',34);
+  const p1=P(g,'M 548 430 L 602 430 M 575 403 L 575 457','lo',{'stroke-width':10});
+  // microscope
+  const mb=P(g,'M 735 525 L 905 525 L 905 550 L 735 550 Z','ln',{fill:LBL});
+  const arm=P(g,'M 868 525 L 868 470 Q 868 410 820 372','ln',{'stroke-width':12});
+  const tube=P(g,'M 768 300 L 808 280 L 852 362 L 812 382 Z','ln',{fill:LOR});
+  const eye=P(g,'M 770 300 L 756 268 M 744 266 L 774 254');
+  const stage=P(g,'M 780 452 L 880 452'), obj=P(g,'M 832 380 L 842 418','ln',{'stroke-width':10});
+  const s2=T(g,820,640,'Amortissements','t-m',44), s2b=T(g,820,685,'du matériel','t-ms',34);
+  const p2=P(g,'M 1038 430 L 1092 430 M 1065 403 L 1065 457','lo',{'stroke-width':10});
+  // certified subcontracting
+  const doc=P(g,'M 1238 320 L 1352 320 L 1388 356 L 1388 528 L 1238 528 Z','ln',{fill:'#fff'});
+  const dl=P(g,'M 1268 380 L 1350 380 M 1268 420 L 1356 420 M 1268 460 L 1320 460','ln',{'stroke-width':5});
+  const badge=el('g',{},g); el('circle',{cx:1392,cy:508,r:44,fill:OR,stroke:NAVY,'stroke-width':5},badge); el('path',{d:'M 1372 508 L 1387 524 L 1414 492',fill:'none',stroke:'#fff','stroke-width':8,'stroke-linecap':'round','stroke-linejoin':'round'},badge);
+  const s3=T(g,1310,640,'Sous-traitance','t-m',44), s3b=T(g,1310,685,'agréée','t-ms',34);
+  const brace=P(g,'M 200 735 Q 200 765 240 765 L 780 765 Q 820 765 820 795 Q 820 765 860 765 L 1400 765 Q 1440 765 1440 735','lo');
+  const arr=P(g,'M 1466 440 L 1528 440 M 1502 412 L 1532 440 L 1502 468','lo',{'stroke-width':10});
+  const cirl=T(g,1690,268,'Le CIR','t-o',64);
+  const circ=el('circle',{cx:1690,cy:440,r:128,class:'lo','stroke-width':9,fill:LOR},g);
+  const pct=T(g,1690,476,'30 %','t-n',96);
+  const pl=T(g,1690,640,'de vos dépenses','t-m',38);
+  return ()=>{const a=A(3);
+    write(title,a+.15,1.45,i);
+    drawSeq([head,gl,bodyp,coat],W(3,'salaires')-.35,.75,i); write(s1,W(3,'chercheurs')-.25,.4,i); write(s1b,W(3,'chercheurs')+.15,.4,i);
+    draw(p1,W(3,'amortissements')-.4,.2,i);
+    drawSeq([mb,arm,tube,eye,stage,obj],W(3,'amortissements')-.15,.75,i); write(s2,W(3,'matériel')-.1,.45,i); write(s2b,W(3,'matériel')+.35,.35,i);
+    draw(p2,W(3,'sous-traitance')-.35,.2,i);
+    drawSeq([doc,dl],W(3,'sous-traitance')-.1,.5,i); pop(badge,W(3,'agréée'),.4); write(s3,W(3,'agréée')+.15,.45,i); write(s3b,W(3,'agréée')+.6,.3,i);
+    draw(brace,W(3,'le')-.4,.4,i); draw(arr,W(3,'cir')-.15,.25,i); write(cirl,W(3,'cir')+.15,.4,i);
+    draw(circ,W(3,"c'est")-.6,.55,i); write(pct,W(3,'trente'),.6,i); write(pl,W(3,'de',2)+0,.6,i);
+  }}
+
+function scene4(){const i=4,g=panel(i);
+  const doc=P(g,'M 318 250 L 602 250 Q 622 250 622 270 L 622 680 Q 622 700 602 700 L 318 700 Q 298 700 298 680 L 298 270 Q 298 250 318 250 Z','ln',{fill:'#fff'});
+  const dh=T(g,460,328,'IMPÔT','t-m',44,{style:'font-weight:800'});
+  const dls=P(g,'M 345 380 L 575 380 M 345 420 L 575 420 M 345 460 L 520 460','ln',{'stroke-width':5,stroke:'#9FB2C3'});
+  const stamp=el('g',{transform:'rotate(-10 460 590)'},g);
+  const sr=el('rect',{x:330,y:520,width:260,height:120,rx:16,class:'lo','stroke-width':8,fill:'rgba(240,104,47,.08)'},stamp);
+  const st=T(stamp,460,612,'– CIR','t-o',84);
+  const down=P(g,'M 700 290 L 700 640 M 664 600 L 700 642 L 736 600','lo',{'stroke-width':12});
+  const l1=T(g,500,800,'Déduit de votre impôt','t-m',44);
+  const sep=P(g,'M 960 260 L 960 760','ln',{'stroke-width':4,stroke:'#B9C7D4'});
+  // SME building
+  const bld=P(g,'M 1120 640 L 1120 400 L 1240 340 L 1360 400 L 1360 640 Z','ln',{fill:'#fff'});
+  const win=[];for(let r=0;r<3;r++)for(let c=0;c<3;c++)win.push(el('rect',{x:1150+c*62,y:420+r*55,width:36,height:32,rx:4,fill:r===0&&c===1?OR:LBL},g));
+  const door=P(g,'M 1218 640 L 1218 590 L 1262 590 L 1262 640','ln',{'stroke-width':6});
+  const pme=T(g,1240,300,'PME','t-o',72);
+  const ref=P(g,'M 1700 400 A 130 130 0 1 0 1735 530','lo',{'stroke-width':11});
+  const refh=P(g,'M 1688 352 L 1705 404 L 1652 412','lo',{'stroke-width':11});
+  const c1=coin(g,1608,500,64);
+  const l2=T(g,1610,780,'Remboursé','t-o',72);
+  return ()=>{const a=A(4);
+    drawSeq([doc,dls],a+.05,.55,i); write(dh,a+.6,.3,i);
+    draw(sr,W(4,'déduction')-.05,.35,i); write(st,W(4,'déduction')+.3,.4,i); draw(down,W(4,'impôt')-.4,.35,i); write(l1,W(4,'impôt')-.05,.75,i);
+    draw(sep,W(4,'et')-.2,.25,i);
+    draw(bld,W(4,'et')+.1,.45,i); win.forEach((w,k)=>pop(w,W(4,'et')+.5+k*.025,.22)); draw(door,W(4,'une')+.0,.15,i); write(pme,W(4,'pme')-.05,.4,i);
+    drawSeq([ref,refh],W(4,'il',2)-.3,.6,i); pop(c1,W(4,'peut')+.15,.45); write(l2,W(4,'remboursé')-.05,.6,i);
+  }}
+
+function scene5(){const i=5,g=panel(i);
+  const t1=T(g,960,215,'','t-n',80); el('tspan',{class:'t-o'},t1,'Leyton'); el('tspan',{},t1,' vous accompagne');
+  const C=[440,960,1480], cy=470; const circles=C.map(x=>el('circle',{cx:x,cy,r:118,class:'lo','stroke-width':8,fill:'#fff'},g));
+  const x0=C[0],x1=C[1],x2=C[2];
+  const mag=[el('circle',{cx:x0-14,cy:cy-14,r:44,class:'ln','stroke-width':9,fill:LBL},g),P(g,`M ${x0+18} ${cy+18} L ${x0+58} ${cy+58}`,'ln',{'stroke-width':16})];
+  const calc=[P(g,`M ${x1-46} ${cy-62} L ${x1+46} ${cy-62} L ${x1+46} ${cy+62} L ${x1-46} ${cy+62} Z`,'ln',{fill:'#fff'})];
+  const scr=el('rect',{x:x1-30,y:cy-46,width:60,height:26,rx:4,fill:OR},g); const keys=[];
+  for(let r=0;r<3;r++)for(let c=0;c<3;c++)keys.push(el('circle',{cx:x1-24+c*24,cy:cy+2+r*22,r:7,fill:NAVY},g));
+  const shield=[P(g,`M ${x2} ${cy-72} L ${x2+60} ${cy-46} L ${x2+60} ${cy+4} Q ${x2+60} ${cy+54} ${x2} ${cy+76} Q ${x2-60} ${cy+54} ${x2-60} ${cy+4} L ${x2-60} ${cy-46} Z`,'ln',{fill:LBL}),
+    P(g,`M ${x2-28} ${cy+2} L ${x2-6} ${cy+25} L ${x2+32} ${cy-22}`,'lo',{'stroke-width':11})];
+  const cn1=P(g,`M ${x0+128} ${cy} L ${x1-128} ${cy}`,'lo',{'stroke-width':5}), cn2=P(g,`M ${x1+128} ${cy} L ${x2-128} ${cy}`,'lo',{'stroke-width':5});
+  const L=['Identifier','Chiffrer','Sécuriser'].map((s,k)=>T(g,C[k],680,s,'t-m',46));
+  return ()=>{const a=A(5);
+    write(t1,a+.08,1.0,i);
+    draw(circles[0],W(5,'identifier')-.3,.3,i); drawSeq(mag,W(5,'identifier'),.4,i); write(L[0],W(5,'identifier')+.45,.4,i);
+    draw(cn1,W(5,'chiffrer')-.42,.15,i); draw(circles[1],W(5,'chiffrer')-.27,.25,i); draw(calc[0],W(5,'chiffrer')-.02,.22,i); fade(scr,W(5,'chiffrer')+.2,.15); keys.forEach((k,j)=>pop(k,W(5,'chiffrer')+.22+j*.02,.2)); write(L[1],W(5,'chiffrer')+.3,.3,i);
+    draw(cn2,W(5,'sécuriser')-.32,.12,i); draw(circles[2],W(5,'sécuriser')-.2,.22,i); drawSeq(shield,W(5,'sécuriser')+.02,.32,i); write(L[2],W(5,'sécuriser')+.36,.32,i);
+  }}
+
+/* ---------- hand ---------- */
+function buildHand(){
+  const h=document.getElementById('hand');
+  const SK='#F2C4A2', SKD='#E0A27E', OL='#1B2F44';
+  const cap=(x1,y1,x2,y2,w,fill)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${OL}" stroke-width="${w+7}" stroke-linecap="round"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${fill}" stroke-width="${w}" stroke-linecap="round"/>`;
+  h.innerHTML=`<svg width="10" height="10"><g id="handg" transform="rotate(-36)">
+    ${cap(150,560,330,1250,250,NAVY)}
+    <line x1="128" y1="500" x2="150" y2="560" stroke="#fff" stroke-width="258" />
+    ${cap(70,330,140,520,170,SK)}
+    <path d="M -22 175 C 10 128 128 132 162 196 C 190 250 188 340 150 400 L 30 420 C -8 350 -32 250 -22 175 Z" fill="${SK}" stroke="${OL}" stroke-width="3.5"/>
+    <path d="M 120 190 C 150 230 160 300 140 380" fill="none" stroke="${SKD}" stroke-width="10" stroke-linecap="round" opacity=".7"/>
+    ${cap(-18,215,52,275,44,SK)}
+    ${cap(-8,262,58,318,42,SK)}
+    <path d="M 0 0 L -11 34 L 11 34 Z" fill="${NAVY}"/>
+    <rect x="-15" y="32" width="30" height="26" rx="3" fill="${OR}"/>
+    <rect x="-18" y="56" width="36" height="330" rx="7" fill="#fff" stroke="${OL}" stroke-width="3.5"/>
+    <rect x="-18" y="300" width="36" height="34" fill="${NAVY}"/>
+    ${cap(-36,150,-14,236,42,SK)}
+    ${cap(8,118,92,208,44,SK)}
+    <path d="M 18 128 L 34 142" stroke="${SKD}" stroke-width="6" stroke-linecap="round"/>
+  </g></svg>`;
+  return h;
+}
+
+/* ---------- camera ---------- */
+const CAM_ZOOM_OUT_T0=()=>W(5,'votre')-.05, CAM_ZOOM_OUT_D=.75;
+function cellCenter(i){const [x,y]=CELLS[i];return {x:x*W1+W1/2,y:y*H1+H1/2}}
+function camera(t){
+  // which scene
+  let s=0;for(let k=0;k<6;k++)if(t>=A(k)-.45)s=k;
+  const c=cellCenter(s);
+  const sStart=s===0?0:A(s)+.3; const nextStart=s<5?A(s+1)-.45:TL.total;
+  let cam={x:c.x,y:c.y,s:1+.035*clamp((t-sStart)/(nextStart-sStart))};
+  if(s>0&&t<A(s)+.3){ // transition from s-1
+    const p=eio(clamp((t-(A(s)-.45))/.75)); const pc=cellCenter(s-1);
+    cam.x=lerp(pc.x,c.x,p);cam.y=lerp(pc.y,c.y,p);
+    const s0=1.035; cam.s=lerp(s0,1,p)-.16*Math.sin(Math.PI*p);
+  }
+  const z0=CAM_ZOOM_OUT_T0(); if(t>z0){const p=eio(clamp((t-z0)/CAM_ZOOM_OUT_D));const s0=1+.035*clamp((z0-sStart)/(nextStart-sStart));
+    cam.x=lerp(c.x,2880,p);cam.y=lerp(c.y,1080,p);cam.s=Math.exp(lerp(Math.log(s0),Math.log(.322),p))}
+  return cam;
+}
+function toScreen(p,cam){return {x:(p.x-cam.x)*cam.s+960,y:(p.y-cam.y)*cam.s+540}}
+
+/* ---------- init ---------- */
+let HAND;
+const OFF={x:2250,y:1400};
+async function init(){
+  await Promise.all(['700 80px Nohemi','600 80px Nohemi','400 40px Montserrat','500 40px Montserrat','600 40px Montserrat','700 40px Montserrat','800 40px Montserrat'].map(f=>document.fonts.load(f,'AÉé€’')));
+  await document.fonts.ready;
+  const builders=[scene0(),scene1(),scene2(),scene3(),scene4(),scene5()];
+  builders.forEach(b=>b());
+  actions.sort((a,b)=>a.t0-b.t0);
+  HAND=buildHand();
+  document.getElementById('bug').src='data:image/svg+xml;utf8,'+encodeURIComponent(LOGO.replaceAll('class="navy"','fill="#002C49"').replaceAll('class="orange"','fill="#F0682F"'));
+  document.getElementById('endlogo').innerHTML=LOGO.replaceAll('class="navy"','fill="#FFFFFF"').replace('class="orange"','id="ring" fill="#F0682F"');
+  window.READY=true;
+}
+let lastHand=null;
+function handTarget(t,cam){
+  let cur=null,prev=null,next=null;
+  for(const a of actions){ if(t>=a.t0&&t<=a.t1){ if(!cur||a.t0>cur.t0)cur=a } else if(a.t1<t){ if(!prev||a.t1>prev.t1)prev=a } else if(a.t0>t){ if(!next||a.t0<next.t0)next=a } }
+  if(cur){const p=cur.kind==='text'?cur.pt(clamp((t-cur.t0)/(cur.t1-cur.t0)),t):cur.pt(cur.ease(clamp((t-cur.t0)/(cur.t1-cur.t0))));return {...toScreen(p,cam),draw:true}}
+  const endP=prev?toScreen(prev.kind==='text'?prev.pt(1,prev.t1):prev.pt(1),cam):null;
+  const startP=next?toScreen(next.kind==='text'?next.pt(0,next.t0):next.pt(0),cam):null;
+  if(prev&&next&&prev.scene===next.scene&&next.t0-prev.t1<1.3){const p=eio(clamp((t-prev.t1)/(next.t0-prev.t1)));
+    return {x:lerp(endP.x,startP.x,p),y:lerp(endP.y,startP.y,p)-26*Math.sin(Math.PI*p),draw:false}}
+  if(prev&&t-prev.t1<.5){const p=eio(clamp((t-prev.t1)/.5));return {x:lerp(endP.x,OFF.x,p),y:lerp(endP.y,OFF.y,p),draw:false}}
+  if(next&&next.t0-t<.5){const p=eio(clamp(1-(next.t0-t)/.5));return {x:lerp(OFF.x,startP.x,p),y:lerp(OFF.y,startP.y,p),draw:false}}
+  return {...OFF,draw:false};
+}
+function render(t){
+  const cam=camera(t);
+  document.getElementById('board').style.transform=`translate(${960-cam.x*cam.s}px,${540-cam.y*cam.s}px) scale(${cam.s})`;
+  for(const a of actions)a.update(t); for(const f of anims)f(t);
+  const h=handTarget(t,cam);
+  const rot=(h.x-960)/960*5+(h.draw?0:-2), sc=h.draw?1:1.03;
+  HAND.style.transform=`translate(${h.x}px,${h.y}px) rotate(${rot}deg) scale(${sc})`;
+  let speed=0; if(lastHand&&h.draw&&lastHand.draw)speed=Math.hypot(h.x-lastHand.x,h.y-lastHand.y); lastHand=h;
+  // subtitles
+  let txt='';for(const s of TL.scenes)for(const l of s.subs)if(t>=l.start-.05&&t<l.end)txt=l.text;
+  const st=document.getElementById('subtxt'); if(st.dataset.v!==txt){st.dataset.v=txt;st.innerHTML=txt.replace(/(CIR|R&amp;D|30 %|PME|1983)/g,'<b>$1</b>').replace('R&D','<b>R&amp;D</b>')} st.parentElement.style.opacity=txt?1:0;
+  // logo bug + end card
+  const z0=CAM_ZOOM_OUT_T0(); document.getElementById('bug').style.opacity=1-clamp((t-z0)/.3);
+  const e0=z0+CAM_ZOOM_OUT_D+.05; const ep=clamp((t-e0)/.45);
+  const end=document.getElementById('end'); end.style.opacity=eout(ep);
+  const ring=document.getElementById('ring'); if(ring){ring.style.transformBox='fill-box';ring.style.transformOrigin='50% 50%';ring.style.transform=`rotate(${-200*(1-eout(clamp((t-e0)/1.1)))}deg)`}
+  document.getElementById('endlogo').style.transform=`scale(${.9+.1*eout(clamp((t-e0)/1.0))})`;
+  document.getElementById('endrule').style.width=`${260*eout(clamp((t-e0-.35)/.6))}px`;
+  return {draw:h.draw,speed};
+}
+window.render=render; init();
+</script>
+</body>
+</html>
