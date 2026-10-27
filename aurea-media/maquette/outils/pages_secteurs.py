@@ -199,9 +199,8 @@ def page_texte(fichier, ariane, titre_page, chapo, contenu, titre, desc):
     page(fichier, titre, desc, corps)
 
 
-# Champs à vérifier par Alexandre avant la mise en ligne : entre crochets
 MENTIONS = """<h2>Éditeur du site</h2>
-<p>Le site aurea-media.fr est édité par Aurea Media, société par actions simplifiée unipersonnelle (SASU), immatriculée sous le numéro SIREN 992 693 473, dont le siège est situé 60 rue François Ier, 75008 Paris.</p>
+<p>Le site aurea-media.fr est édité par Aurea Media, société par actions simplifiée unipersonnelle (SASU) au capital de 1 €, immatriculée au RCS de Paris sous le numéro 992 693 473, dont le siège est situé 60 rue François Ier, 75008 Paris. Numéro de TVA intracommunautaire : FR11992693473.</p>
 <p>Téléphone : <a href="tel:+33651287761">06 51 28 77 61</a><br>E-mail : <a href="mailto:alexandre.coury@aurea-media.fr">alexandre.coury@aurea-media.fr</a></p>
 <h2>Directeur de la publication</h2>
 <p>Alexandre Coury, fondateur d'Aurea Media.</p>
@@ -227,7 +226,7 @@ CONFIDENTIALITE = """<h2>Responsable du traitement</h2>
 <h2>Vos droits</h2>
 <p>Vous pouvez accéder à vos données, les rectifier, les effacer, limiter leur traitement ou vous y opposer en écrivant à <a href="mailto:alexandre.coury@aurea-media.fr">alexandre.coury@aurea-media.fr</a>. Vous pouvez aussi adresser une réclamation à la CNIL (cnil.fr).</p>
 <h2>Cookies et mesure d'audience</h2>
-<p>Le site ne dépose aucun cookie publicitaire. [Si un outil de mesure d'audience est installé, le nommer ici et préciser s'il est exempté de consentement ou soumis au bandeau.]</p>"""
+<p>Le site ne dépose aucun cookie publicitaire ni traceur soumis à consentement. La fréquentation est mesurée avec l'extension Independent Analytics, installée sur notre propre serveur : elle n'utilise pas de cookie, ne transmet aucune donnée à un tiers et produit uniquement des statistiques anonymes (pages vues, provenance des visites). Google Search Console, utilisé pour suivre la visibilité du site dans Google, ne dépose aucun cookie sur votre appareil.</p>"""
 
 
 def pages_legales():
