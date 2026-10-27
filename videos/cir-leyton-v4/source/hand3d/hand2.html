@@ -1,0 +1,253 @@
+<!doctype html><html><body style="margin:0;background:transparent">
+<canvas id="c" width="1600" height="1600"></canvas>
+<script type="importmap">{"imports":{"three":"./three/package/build/three.module.js","three/addons/":"./three/package/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {mergeVertices} from 'three/addons/utils/BufferGeometryUtils.js';
+const P = window.P || {};
+const R = THREE.MathUtils.degToRad, V = a => new THREE.Vector3(...a);
+const SIZE = P.size ?? 1600;
+const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('c'), antialias: true, alpha: true, preserveDrawingBuffer: true});
+renderer.setPixelRatio(1); renderer.setSize(SIZE, SIZE, false);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = P.exposure ?? 1.0;
+const scene = new THREE.Scene();
+const pmrem = new THREE.PMREMGenerator(renderer); scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+
+/* ================= HAND ================= */
+const g = await new GLTFLoader().loadAsync('right.glb');
+const root = g.scene; scene.add(root);
+let skinned; root.traverse(o => { if (o.isSkinnedMesh) skinned = o; });
+const bone = n => root.getObjectByName(n);
+root.updateMatrixWorld(true);
+const wp = n => { const v = new THREE.Vector3(); bone(n).getWorldPosition(v); return v; };
+const CHAINS = {thumb: ['thumb-metacarpal', 'thumb-phalanx-proximal', 'thumb-phalanx-distal', 'thumb-tip']};
+for (const f of ['index', 'middle', 'ring', 'pinky']) CHAINS[f] = ['metacarpal', 'phalanx-proximal', 'phalanx-intermediate', 'phalanx-distal', 'tip'].map(s => `${f}-finger-${s}`);
+const ALL = Object.values(CHAINS).flat();
+const downstream = n => { for (const k in CHAINS) { const i = CHAINS[k].indexOf(n); if (i >= 0) return CHAINS[k].slice(i); } return [n]; };
+// rest orientation of every bone, used to carry the "dorsal" direction through the pose
+const REST = {}; for (const n of ALL) { const q = new THREE.Quaternion(); bone(n).getWorldQuaternion(q); REST[n] = q; }
+function rotWorld(name, axis, deg) {
+  root.updateMatrixWorld(true);
+  const pivot = wp(name); const q = new THREE.Quaternion().setFromAxisAngle(axis.clone().normalize(), R(deg));
+  for (const n of downstream(name)) {
+    const b = bone(n); const pw = wp(n); const wq = new THREE.Quaternion(); b.getWorldQuaternion(wq);
+    b.position.copy(pw.sub(pivot).applyQuaternion(q).add(pivot).applyMatrix4(new THREE.Matrix4().copy(b.parent.matrixWorld).invert()));
+    const pq = new THREE.Quaternion(); b.parent.getWorldQuaternion(pq);
+    b.quaternion.copy(pq.invert().multiply(q.clone().multiply(wq))); b.updateMatrixWorld(true);
+  }
+}
+const PALM = new THREE.Vector3(-1, 0, 0);
+function flex(f, angles) {
+  const ch = CHAINS[f]; const names = f === 'thumb' ? ch.slice(0, 3) : ch.slice(1, 4);
+  names.forEach((n, i) => { const nx = ch[ch.indexOf(n) + 1]; const dir = wp(nx).sub(wp(n)).normalize(); rotWorld(n, new THREE.Vector3().crossVectors(dir, PALM).normalize(), angles[i] || 0); });
+}
+const pose = P.pose || {};
+
+flex('ring', pose.ring || [40, 65, 35]); flex('pinky', pose.pinky || [45, 75, 35]); flex('thumb', pose.thumb || [0, 0, 0]);
+// pen line (hand space) + CCD IK of the tripod grip
+let penT = V(P.penT || [0.004, -0.138, -0.03]), penB = V(P.penB || [0.036, -0.008, -0.036]);
+let penAx = penB.clone().sub(penT).normalize();
+const PR = P.penR ?? .0078;
+const perpOf = v => v.clone().sub(penAx.clone().multiplyScalar(v.dot(penAx))).normalize();
+const onPen = (d, n, extra) => penT.clone().add(penAx.clone().multiplyScalar(d)).add(perpOf(V(n)).multiplyScalar(PR + extra));
+let tgt = {index: onPen(P.dIndex ?? .046, P.nIndex || [1, 0, .2], .006), thumb: onPen(P.dThumb ?? .04, P.nThumb || [-.2, 0, -1], .007), middle: onPen(P.dMiddle ?? .03, P.nMiddle || [-.7, 0, .7], .007)};
+function ccd(f, target) {
+  const ch = CHAINS[f], tipN = ch[ch.length - 1], joints = ch.slice(f === 'thumb' ? 0 : 1, -1);
+  for (let it = 0; it < 30; it++) for (let j = joints.length - 1; j >= 0; j--) {
+    const jp = wp(joints[j]); const a = wp(tipN).sub(jp).normalize(), b = target.clone().sub(jp).normalize();
+    const ang = Math.min(12, THREE.MathUtils.radToDeg(Math.acos(THREE.MathUtils.clamp(a.dot(b), -1, 1)))); if (ang < .05) continue;
+    const ax = new THREE.Vector3().crossVectors(a, b); if (ax.length() > 1e-6) rotWorld(joints[j], ax, ang);
+  }
+}
+// anatomical fit for long fingers: flexion only, in each joint's own plane, DIP coupled to PIP (no twist)
+const saveF = f => CHAINS[f].map(n => [bone(n).position.clone(), bone(n).quaternion.clone()]);
+const loadF = (f, s) => { CHAINS[f].forEach((n, i) => { bone(n).position.copy(s[i][0]); bone(n).quaternion.copy(s[i][1]); }); root.updateMatrixWorld(true); };
+const palmarOf = n => { const q = new THREE.Quaternion(); bone(n).getWorldQuaternion(q); return new THREE.Vector3(-1, 0, 0).applyQuaternion(q.multiply(REST[n].clone().invert())).normalize(); };
+function bendFinger(f, mcp, pip, dip, abd) {
+  const ch = CHAINS[f];
+  if (abd) rotWorld(ch[1], palmarOf(ch[1]), abd);
+  [[ch[1], mcp], [ch[2], pip], [ch[3], dip]].forEach(([n, ang]) => { const nx = ch[ch.indexOf(n) + 1]; const dir = wp(nx).sub(wp(n)).normalize();
+    rotWorld(n, new THREE.Vector3().crossVectors(dir, palmarOf(n)).normalize(), ang); });
+}
+function fitFinger(f, target, padBack) {
+  const s0 = saveF(f); let best = null; const ch = CHAINS[f];
+  for (let mcp = (P.mcpMin ?? -25); mcp <= 70; mcp += 2.5) for (let pip = (P.pipMin ?? -10); pip <= 80; pip += 2.5) for (let abd = -16; abd <= 16; abd += 4) {
+    const dip = pip * (P.dipRatio ?? .55);
+    bendFinger(f, mcp, pip, dip, abd);
+    const tp = wp(ch[4]), dp = wp(ch[3]); const pad = tp.clone().lerp(dp, padBack);
+    const err = pad.distanceTo(target) + .00004 * (Math.abs(abd) + Math.max(0, pip - 60));
+    if (!best || err < best.err) best = {err, mcp, pip, dip, abd};
+    loadF(f, s0);
+  }
+  bendFinger(f, best.mcp, best.pip, best.dip, best.abd); console.warn('fit', f, JSON.stringify(best));
+}
+if (P.penFromHand) {
+  // 1. natural, gently curved index finger
+  bendFinger('index', ...(P.indexBend || [18, 32, 18, -4]));
+  // 2. pen runs under the index pad and over the web between thumb and index
+  const ch = CHAINS.index; const dp = wp(ch[3]), tp = wp(ch[4]);
+  const pad = dp.clone().lerp(tp, .55).addScaledVector(palmarOf(ch[3]), .0068 + PR);
+  const webP = wp('index-finger-phalanx-proximal').lerp(wp('thumb-phalanx-proximal'), .45).addScaledVector(palmarOf(ch[1]).negate(), P.webLift ?? .006);
+  penAx = webP.clone().sub(pad).normalize(); penT = pad.clone().addScaledVector(penAx, -(P.tipAhead ?? .03)); penB = webP;
+  tgt = {thumb: onPen(P.dThumb ?? .028, P.nThumb || [-.2, 0, -1], .007), middle: onPen(P.dMiddle ?? .02, P.nMiddle || [-.7, 0, .7], .007)};
+  ccd('thumb', tgt.thumb);
+  fitFinger('middle', tgt.middle, P.middlePad ?? .3);
+} else {
+  ccd('thumb', tgt.thumb);
+  fitFinger('index', tgt.index, P.indexPad ?? .3);
+  fitFinger('middle', tgt.middle, P.middlePad ?? .3);
+}
+root.updateMatrixWorld(true); skinned.skeleton.update();
+const dorsalOf = n => { const q = new THREE.Quaternion(); bone(n).getWorldQuaternion(q); return new THREE.Vector3(1, 0, 0).applyQuaternion(q.multiply(REST[n].clone().invert())).normalize(); };
+
+// bake pose -> static mesh, subdivide (midpoints) + Taubin smoothing
+const src = skinned.geometry, pos = src.attributes.position, v = new THREE.Vector3();
+let geo = new THREE.BufferGeometry(); const arr = new Float32Array(pos.count * 3);
+for (let i = 0; i < pos.count; i++) { v.fromBufferAttribute(pos, i); skinned.applyBoneTransform(i, v); v.applyMatrix4(skinned.matrixWorld); arr.set([v.x, v.y, v.z], i * 3); }
+geo.setAttribute('position', new THREE.BufferAttribute(arr, 3)); geo.setIndex(src.index); geo = mergeVertices(geo, 1e-4);
+for (let s = 0; s < (P.subdiv ?? 3); s++) {
+  const p = geo.attributes.position.array, I = geo.index.array, np = Array.from(p), em = new Map(), ni = [];
+  const mid = (a, b) => { const k = a < b ? a * 1e6 + b : b * 1e6 + a; let id = em.get(k); if (id !== undefined) return id; id = np.length / 3;
+    np.push((p[a * 3] + p[b * 3]) / 2, (p[a * 3 + 1] + p[b * 3 + 1]) / 2, (p[a * 3 + 2] + p[b * 3 + 2]) / 2); em.set(k, id); return id; };
+  for (let i = 0; i < I.length; i += 3) { const a = I[i], b = I[i + 1], c = I[i + 2], ab = mid(a, b), bc = mid(b, c), ca = mid(c, a); ni.push(a, ab, ca, ab, b, bc, ca, bc, c, ab, bc, ca); }
+  geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(np, 3)); geo.setIndex(ni);
+}
+const NB = (() => { const p = geo.attributes.position, idx = geo.index.array, nb = Array.from({length: p.count}, () => []);
+  for (let i = 0; i < idx.length; i += 3) { const [a, b, c] = [idx[i], idx[i + 1], idx[i + 2]]; nb[a].push(b, c); nb[b].push(a, c); nb[c].push(a, b); }
+  return nb.map(x => [...new Set(x)]); })();
+function taubin(iters) { const p = geo.attributes.position, A = p.array, tmp = new Float32Array(A.length);
+  const pass = k => { for (let i = 0; i < p.count; i++) { let x = 0, y = 0, z = 0; const n = NB[i]; for (const j of n) { x += A[j * 3]; y += A[j * 3 + 1]; z += A[j * 3 + 2]; } const m = n.length || 1;
+    tmp[i * 3] = A[i * 3] + k * (x / m - A[i * 3]); tmp[i * 3 + 1] = A[i * 3 + 1] + k * (y / m - A[i * 3 + 1]); tmp[i * 3 + 2] = A[i * 3 + 2] + k * (z / m - A[i * 3 + 2]); } A.set(tmp); };
+  for (let it = 0; it < iters; it++) { pass(.5); pass(-.53); } p.needsUpdate = true; }
+taubin(P.smooth ?? 16);
+// extra local smoothing on the fingertips (the source mesh is coarse there)
+{ const tipsP = ['thumb-tip', 'index-finger-tip', 'middle-finger-tip', 'ring-finger-tip', 'pinky-finger-tip'].map(wp);
+  const p = geo.attributes.position, A = p.array, W = new Float32Array(p.count), tmp = new Float32Array(A.length), q = new THREE.Vector3();
+  for (let i = 0; i < p.count; i++) { q.fromBufferAttribute(p, i); let w = 0; for (const t of tipsP) w = Math.max(w, 1 - q.distanceTo(t) / (P.tipR ?? .026)); W[i] = Math.max(0, w); }
+  const pass = k => { tmp.set(A); for (let i = 0; i < p.count; i++) { if (!W[i]) continue; let x = 0, y = 0, z = 0; const n = NB[i]; for (const j of n) { x += A[j * 3]; y += A[j * 3 + 1]; z += A[j * 3 + 2]; } const m = n.length, kk = k * W[i];
+    tmp[i * 3] = A[i * 3] + kk * (x / m - A[i * 3]); tmp[i * 3 + 1] = A[i * 3 + 1] + kk * (y / m - A[i * 3 + 1]); tmp[i * 3 + 2] = A[i * 3 + 2] + kk * (z / m - A[i * 3 + 2]); } A.set(tmp); };
+  for (let it = 0; it < (P.tipSmooth ?? 60); it++) { pass(.6); pass(-.63); } p.needsUpdate = true; }
+geo.computeVertexNormals();
+
+// knuckle wrinkles (dorsal creases) displaced into the surface + tone map
+const KN = [];
+for (const f of ['index', 'middle', 'ring', 'pinky']) { const ch = CHAINS[f]; for (const [j, A_, n] of [[ch[1], .00028, 3], [ch[2], .00036, 4], [ch[3], .00022, 3]]) KN.push({j, a: A_, n, axis: wp(ch[ch.indexOf(j) + 1]).sub(wp(j)).normalize(), d: dorsalOf(j), c: wp(j)}); }
+for (const j of ['thumb-phalanx-proximal', 'thumb-phalanx-distal']) KN.push({j, a: .0003, n: 3, axis: wp(CHAINS.thumb[CHAINS.thumb.indexOf(j) + 1]).sub(wp(j)).normalize(), d: dorsalOf(j), c: wp(j)});
+const gp = geo.attributes.position, gn = geo.attributes.normal, crease = new Float32Array(gp.count), n3 = new THREE.Vector3();
+for (let i = 0; i < gp.count; i++) {
+  v.fromBufferAttribute(gp, i); n3.fromBufferAttribute(gn, i); let disp = 0, cr = 0;
+  for (const k of KN) { const rel = v.clone().sub(k.c); const s = rel.dot(k.axis); if (Math.abs(s) > .007) continue; const radial = rel.clone().sub(k.axis.clone().multiplyScalar(s)).length(); if (radial > .016) continue;
+    const dors = n3.dot(k.d); if (dors < .15) continue; const w = Math.exp(-((s / .0032) ** 2)) * Math.min(1, (dors - .15) * 2);
+    const wave = .5 + .5 * Math.cos(2 * Math.PI * s / .0021 * (k.n / 3)); disp -= k.a * wave * w * (P.wrinkle ?? 1); cr = Math.max(cr, wave * w); }
+  if (disp) { v.addScaledVector(n3, disp); gp.setXYZ(i, v.x, v.y, v.z); } crease[i] = cr;
+}
+// nails modelled in the skin: raised plate, groove around it, pink bed, white free edge, lunula
+const NAILS = [['thumb-phalanx-distal', 'thumb-tip', .0074], ['index-finger-phalanx-distal', 'index-finger-tip', .0061], ['middle-finger-phalanx-distal', 'middle-finger-tip', .0063], ['ring-finger-phalanx-distal', 'ring-finger-tip', .0059], ['pinky-finger-phalanx-distal', 'pinky-finger-tip', .005]]
+  .map(([a, b, w]) => { const pa = wp(a), pb = wp(b); const ax = pb.clone().sub(pa); const L = ax.length(); ax.normalize(); const d = dorsalOf(a); d.sub(ax.clone().multiplyScalar(d.dot(ax))).normalize(); return {pa, ax, L, d, side: new THREE.Vector3().crossVectors(ax, d), w}; });
+const nailW = new Float32Array(gp.count), nailTip = new Float32Array(gp.count), lun = new Float32Array(gp.count);
+for (let i = 0; i < gp.count; i++) {
+  v.fromBufferAttribute(gp, i); n3.fromBufferAttribute(gn, i);
+  for (const N of NAILS) { const rel = v.clone().sub(N.pa); const s = rel.dot(N.ax) / N.L; if (s < .25 || s > 1.25) continue;
+    if (n3.dot(N.d) < .35 || rel.dot(N.d) < 0) continue; const t = rel.dot(N.side) / N.w;
+    // rounded rectangle footprint in (t, s)
+    const u = Math.abs(t) / .8, sv = (s - .62) / .42; const r = Math.pow(Math.pow(Math.max(0, u), P.nailPow ?? 3) + Math.pow(Math.abs(sv), P.nailPow ?? 3), 1 / (P.nailPow ?? 3));
+    if (r > 1.25) continue; const inside = THREE.MathUtils.smoothstep(1.0, .86, r); const groove = Math.exp(-(((r - 1.02) / .07) ** 2));
+    v.addScaledVector(n3, (P.nailUp ?? .00012) * inside - (P.nailGroove ?? .00006) * groove); gp.setXYZ(i, v.x, v.y, v.z);
+    nailW[i] = Math.max(nailW[i], inside); nailTip[i] = Math.max(nailTip[i], inside * THREE.MathUtils.smoothstep(.72, .9, sv)); lun[i] = Math.max(lun[i], inside * THREE.MathUtils.smoothstep(-.55, -.85, sv)); }
+}
+geo.computeVertexNormals();
+const tips = ['thumb-tip', 'index-finger-tip', 'middle-finger-tip', 'ring-finger-tip', 'pinky-finger-tip'].map(wp);
+const joints = KN.map(k => k.c);
+const base = new THREE.Color(P.skin || '#E3AA8B'), red = new THREE.Color('#CF7C68'), light = new THREE.Color('#F4CDB6'), deep = new THREE.Color('#B9735A');
+const cols = new Float32Array(gp.count * 3), c = new THREE.Color(), nailPink = new THREE.Color('#EBB3A2'), nailWhite = new THREE.Color('#FBEDE6');
+for (let i = 0; i < gp.count; i++) {
+  v.fromBufferAttribute(gp, i); n3.fromBufferAttribute(gn, i); c.copy(base);
+  let kt = 0; for (const t of tips) kt = Math.max(kt, 1 - v.distanceTo(t) / .02);
+  let kj = 0; for (const j of joints) kj = Math.max(kj, 1 - v.distanceTo(j) / .012);
+  c.lerp(red, Math.max(0, kt) * .5 + Math.max(0, kj) * .3); c.lerp(light, Math.max(0, n3.dot(PALM)) * .3); c.lerp(deep, crease[i] * .45); c.lerp(nailPink, nailW[i] * .85); c.lerp(nailWhite, nailTip[i] * .9 + lun[i] * .35);
+  const nz = Math.sin(v.x * 1300 + v.z * 700) * Math.sin(v.y * 1500) * Math.sin(v.z * 1700 - v.x * 400); c.offsetHSL(0, 0, nz * .012);
+  cols.set([c.r, c.g, c.b], i * 3);
+}
+geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+// micro pores
+const pc = document.createElement('canvas'); pc.width = pc.height = 512; const px = pc.getContext('2d'); px.fillStyle = '#808080'; px.fillRect(0, 0, 512, 512);
+for (let k = 0; k < 9000; k++) { px.fillStyle = `rgba(${Math.random() < .5 ? '0,0,0' : '255,255,255'},${Math.random() * .25})`; px.beginPath(); px.arc(Math.random() * 512, Math.random() * 512, Math.random() * 1.6 + .4, 0, 7); px.fill(); }
+const pores = new THREE.CanvasTexture(pc); pores.wrapS = pores.wrapT = THREE.RepeatWrapping; pores.repeat.set(8, 8);
+// triplanar-free trick: generate uv from position for the pore map
+const uv = new Float32Array(gp.count * 2); for (let i = 0; i < gp.count; i++) { uv[i * 2] = gp.getX(i) * 18 + gp.getZ(i) * 11; uv[i * 2 + 1] = gp.getY(i) * 18 + gp.getZ(i) * 7; }
+geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+const skinMat = new THREE.MeshPhysicalMaterial({vertexColors: true, roughness: .5, roughnessMap: null, metalness: 0, sheen: .7, sheenRoughness: .45, sheenColor: new THREE.Color('#FFC4A8'),
+  clearcoat: .12, clearcoatRoughness: .55, bumpMap: pores, bumpScale: P.pore ?? .35, specularIntensity: .6});
+skinMat.onBeforeCompile = sh => { sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>', `#include <dithering_fragment>
+  float sss = pow(1.0 - clamp(dot(normalize(normal), normalize(vViewPosition)), 0.0, 1.0), 2.2);
+  gl_FragColor.rgb = mix(gl_FragColor.rgb, gl_FragColor.rgb * vec3(1.10, 0.90, 0.82) + vec3(0.09, 0.015, 0.0), sss * 0.6);`); };
+const handMesh = new THREE.Mesh(geo, skinMat); scene.add(handMesh); skinned.visible = false;
+
+/* ================= MARKER (lathe model + printed Leyton logo) ================= */
+const logoImg = await new Promise(r => { const im = new Image(); im.onload = () => r(im); im.src = 'logo_color.svg'; });
+const TW = 1024, TH = 2048; const tc = document.createElement('canvas'); tc.width = TW; tc.height = TH; const tx = tc.getContext('2d');
+const grd = tx.createLinearGradient(0, 0, 0, TH); grd.addColorStop(0, '#FFFFFF'); grd.addColorStop(1, '#F3F5F8'); tx.fillStyle = grd; tx.fillRect(0, 0, TW, TH);
+// v (canvas y) runs from the tip side (bottom of canvas = v 0) to the cap; u (x) runs around
+const LU = P.logoU ?? .5; tx.save(); tx.translate(TW * LU, TH * (P.logoV ?? .64)); tx.rotate(-Math.PI / 2);
+const lw = TH * (P.logoL ?? .46), lh = lw * logoImg.height / logoImg.width; tx.drawImage(logoImg, -lw / 2, -lh / 2, lw, lh); tx.restore();
+tx.fillStyle = '#F0682F'; tx.fillRect(0, TH * .955, TW, TH * .018);   // thin orange ring near the cap
+tx.fillStyle = '#002C49'; tx.font = `700 ${TH * .028}px sans-serif`; tx.save(); tx.translate(TW * LU, TH * (P.wbV ?? .30)); tx.rotate(-Math.PI / 2); tx.textAlign = 'center'; tx.globalAlpha = .55; tx.fillText('WHITEBOARD', 0, TH * .01); tx.restore();
+const bodyTex = new THREE.CanvasTexture(tc); bodyTex.colorSpace = THREE.SRGBColorSpace; bodyTex.anisotropy = 8;
+const pen = new THREE.Group();
+const lathe = (pts, mat, seg = 96) => { const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(r, y)), seg), mat); pen.add(m); return m; };
+const felt = new THREE.MeshStandardMaterial({color: '#0B2A44', roughness: .95});
+const navy = new THREE.MeshPhysicalMaterial({color: '#012842', roughness: .22, clearcoat: 1, clearcoatRoughness: .1});
+const orange = new THREE.MeshPhysicalMaterial({color: '#F0682F', roughness: .3, clearcoat: .8, clearcoatRoughness: .2});
+const whiteP = new THREE.MeshPhysicalMaterial({color: '#FFFFFF', roughness: .25, clearcoat: .7, clearcoatRoughness: .15});
+const bodyM = new THREE.MeshPhysicalMaterial({map: bodyTex, roughness: .22, clearcoat: .9, clearcoatRoughness: .12});
+const r = PR;
+lathe([[0, 0], [.0011, .0002], [.0019, .0009], [.0024, .0021], [.0026, .0045], [.0026, .0075]], felt);                       // felt bullet tip
+lathe([[.0026, .0072], [.0032, .0078], [.0046, .0105], [.006, .0145], [.0071, .0185], [.0076, .021]], navy);                 // nose cone
+lathe([[.0076, .0208], [.0079, .0212], [.0079, .0262], [.0076, .0266]], orange);                                          // collar
+const bodyPts = []; for (let k = 0; k <= 24; k++) { const t = k / 24; bodyPts.push([r * (1 + .025 * Math.sin(Math.PI * t)), .0264 + t * .092]); }
+lathe(bodyPts, bodyM);
+lathe([[.0080, .1182], [.0083, .1186], [.0084, .1205], [.0084, .1395], [.0080, .1425], [.0068, .1448], [.0045, .1462], [0, .1466]], navy);  // cap
+lathe([[.00845, .1215], [.0086, .1218], [.0086, .1232], [.00845, .1235]], orange);                                     // cap ring
+// pocket clip on the cap
+const clipS = new THREE.Shape(); clipS.moveTo(-.0018, 0); clipS.lineTo(.0018, 0); clipS.lineTo(.0016, .021); clipS.quadraticCurveTo(0, .0235, -.0016, .021); clipS.lineTo(-.0018, 0);
+const clip = new THREE.Mesh(new THREE.ExtrudeGeometry(clipS, {depth: .0009, bevelEnabled: true, bevelThickness: .0003, bevelSize: .0003, bevelSegments: 3}), navy);
+clip.position.set(0, .1205, .0088); pen.add(clip);
+const clipFoot = new THREE.Mesh(new THREE.SphereGeometry(.0012, 16, 8), navy); clipFoot.position.set(0, .1225, .0098); pen.add(clipFoot);
+pen.position.copy(penT); pen.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), penAx);
+pen.rotateY(R(P.penSpin ?? 200)); scene.add(pen);
+
+/* ================= cuff + sleeve fitted on the wrist ================= */
+const wr = wp('wrist'), mc = wp('middle-finger-metacarpal'); const armDir = wr.clone().sub(mc).normalize();
+let maxT = -1e9; for (let i = 0; i < gp.count; i++) { v.fromBufferAttribute(gp, i); maxT = Math.max(maxT, v.clone().sub(wr).dot(armDir)); }
+const ring0 = []; for (let i = 0; i < gp.count; i++) { v.fromBufferAttribute(gp, i); if (v.clone().sub(wr).dot(armDir) > maxT - .012) ring0.push(v.clone()); }
+const cen = ring0.reduce((a, b) => a.add(b), new THREE.Vector3()).multiplyScalar(1 / ring0.length);
+const ax1 = new THREE.Vector3(1, 0, 0).sub(armDir.clone().multiplyScalar(armDir.x)).normalize(), ax2 = new THREE.Vector3().crossVectors(armDir, ax1);
+let r1 = 0, r2 = 0; for (const p of ring0) { const d = p.clone().sub(cen); r1 = Math.max(r1, Math.abs(d.dot(ax1))); r2 = Math.max(r2, Math.abs(d.dot(ax2))); }
+const arm = new THREE.Group(); scene.add(arm); arm.position.copy(cen.clone().addScaledVector(armDir, -.012)); arm.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(ax1, armDir, ax2));
+const fab = document.createElement('canvas'); fab.width = fab.height = 256; const fx = fab.getContext('2d'); fx.fillStyle = '#808080'; fx.fillRect(0, 0, 256, 256);
+for (let y = 0; y < 256; y += 2) { fx.fillStyle = `rgba(0,0,0,${.08 + Math.random() * .08})`; fx.fillRect(0, y, 256, 1); } for (let x = 0; x < 256; x += 3) { fx.fillStyle = `rgba(255,255,255,${Math.random() * .08})`; fx.fillRect(x, 0, 1, 256); }
+const fabT = new THREE.CanvasTexture(fab); fabT.wrapS = fabT.wrapT = THREE.RepeatWrapping; fabT.repeat.set(24, 6);
+const shirt = new THREE.MeshPhysicalMaterial({color: '#F7F9FB', roughness: .8, sheen: .8, sheenColor: new THREE.Color('#ffffff'), bumpMap: fabT, bumpScale: .4});
+const cuffG = new THREE.CylinderGeometry(1, 1, .03, 96, 1, false); cuffG.translate(0, .015, 0);
+const cuff = new THREE.Mesh(cuffG, shirt); cuff.scale.set(r1 + .006, 1, r2 + .006); arm.add(cuff);
+for (const yy of [.002, .028]) { const e = new THREE.Mesh(new THREE.TorusGeometry(1, .045, 10, 96), shirt); e.rotation.x = Math.PI / 2; e.position.y = yy; e.scale.set(r1 + .006, r2 + .006, r1 + .006); arm.add(e); }
+const btn = new THREE.Mesh(new THREE.CylinderGeometry(.0034, .0034, .0022, 32), orange); btn.position.set(r1 + .0068, .016, 0); btn.rotation.z = Math.PI / 2; arm.add(btn);
+const suitT = fabT.clone(); suitT.repeat.set(40, 10);
+const suit = new THREE.MeshPhysicalMaterial({color: '#0B2F4D', roughness: .9, sheen: 1, sheenColor: new THREE.Color('#2F5F8A'), sheenRoughness: .8, bumpMap: suitT, bumpScale: .6});
+const SL = P.sleeveLen ?? .9; const slG = new THREE.CylinderGeometry(1, P.sleeveFlare ?? 1.12, SL, 96, 16, false); slG.translate(0, SL / 2 + .022, 0);
+const sleeve = new THREE.Mesh(slG, suit); sleeve.scale.set(r1 + (P.sleeveR ?? .009), 1, r2 + (P.sleeveR ?? .009)); arm.add(sleeve);
+
+/* ================= lights + camera ================= */
+scene.add(new THREE.HemisphereLight('#FFF4EC', '#8FA8C0', .5));
+const key = new THREE.DirectionalLight('#FFF1E4', P.key ?? 2.2); key.position.set(...(P.keyPos || [.7, .6, -.5])); scene.add(key);
+const rim = new THREE.DirectionalLight('#D5E6FF', P.rim ?? 1.4); rim.position.set(...(P.rimPos || [-.5, -.5, .8])); scene.add(rim);
+const fill = new THREE.DirectionalLight('#FFE0CC', .45); fill.position.set(.3, -.3, .9); scene.add(fill);
+const cam = new THREE.PerspectiveCamera(P.fov ?? 22, 1, .001, 10);
+const look = V(P.look || [0.03, -0.045, -0.02]);
+cam.position.copy(V(P.camDir || [1, .35, -.45]).normalize().multiplyScalar(P.dist ?? .6).add(look)); cam.up.set(...(P.up || [0, -1, 0])); cam.lookAt(look);
+renderer.render(scene, cam);
+const tp = penT.clone().project(cam), bp = penT.clone().addScaledVector(penAx, .1).project(cam); window.TIP = {x: (tp.x + 1) / 2 * SIZE, y: (1 - tp.y) / 2 * SIZE, bx: (bp.x + 1) / 2 * SIZE, by: (1 - bp.y) / 2 * SIZE};
+window.READY = true;
+</script></body></html>
