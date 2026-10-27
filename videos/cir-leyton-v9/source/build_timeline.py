@@ -8,7 +8,7 @@ EXTRA[3] = EXTRA.get(3, 0) + 0.9
 S = json.load(open('script.json')); A = json.load(open(f'audio/{VOICE}.json'))
 def norm(w):
     w = re.sub(r"[^\w']", '', w.lower())
-    return 'cire' if w == 'cir' else w
+    return 'cire' if w == 'cir' else ('rd' if w == 'erédé' else w)
 INTRO_AT, INTRO_HOLD = 0.7, 1.15
 IA = json.load(open('audio/intro.json'))
 intro = {'start': INTRO_AT, 'dur': IA['dur'], 'words': [{'w': w['w'], 't': round(INTRO_AT + w['t'], 3), 'e': round(INTRO_AT + w['t'] + w['d'], 3)} for w in IA['words']]}

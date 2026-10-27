@@ -19,82 +19,82 @@ une partie de votre recherche.
 C'est le Crédit d'Impôt Recherche, qu'on appelle le CIR.
 
 6
-00:00:15,590 --> 00:00:19,529
+00:00:15,590 --> 00:00:19,517
 Créé en 1983, c'est le dispositif de soutien à la R&D
 
 7
-00:00:19,529 --> 00:00:20,940
+00:00:19,517 --> 00:00:20,952
 le plus généreux d'Europe.
 
 8
-00:00:21,447 --> 00:00:24,631
+00:00:21,471 --> 00:00:24,654
 Chaque année, plus de 19 000 entreprises le déclarent,
 
 9
-00:00:24,631 --> 00:00:26,411
+00:00:24,654 --> 00:00:26,435
 pour plus de 7 milliards d'euros.
 
 10
-00:00:26,411 --> 00:00:28,636
+00:00:26,435 --> 00:00:28,660
 Et tous les secteurs peuvent y prétendre.
 
 11
-00:00:29,156 --> 00:00:31,043
+00:00:29,180 --> 00:00:31,067
 La condition : vos travaux doivent lever
 
 12
-00:00:31,043 --> 00:00:32,788
+00:00:31,067 --> 00:00:32,812
 un verrou scientifique ou technique,
 
 13
-00:00:32,788 --> 00:00:35,462
+00:00:32,812 --> 00:00:35,486
 un problème que l'état de l'art ne sait pas encore résoudre.
 
 14
-00:00:36,845 --> 00:00:39,027
+00:00:36,869 --> 00:00:38,909
 On additionne vos dépenses de R&D :
 
 15
-00:00:39,027 --> 00:00:41,798
+00:00:38,909 --> 00:00:41,728
 salaires des chercheurs et techniciens, amortissements,
 
 16
-00:00:41,798 --> 00:00:45,100
+00:00:41,728 --> 00:00:45,053
 frais de fonctionnement, sous-traitance agréée et normalisation.
 
 17
-00:00:45,100 --> 00:00:48,246
+00:00:45,053 --> 00:00:48,200
 On retire les subventions et les honoraires de conseil.
 
 18
-00:00:48,246 --> 00:00:51,014
+00:00:48,200 --> 00:00:50,967
 Le CIR, c'est 30 % de ce montant.
 
 19
-00:00:51,524 --> 00:00:53,682
+00:00:51,500 --> 00:00:53,658
 Il vient en déduction de votre impôt.
 
 20
-00:00:53,682 --> 00:00:55,699
+00:00:53,658 --> 00:00:55,675
 L'excédent est reporté sur trois ans,
 
 21
-00:00:55,699 --> 00:00:58,337
+00:00:55,675 --> 00:00:58,313
 et une PME peut même être remboursée immédiatement.
 
 22
-00:00:58,862 --> 00:01:00,643
+00:00:58,838 --> 00:01:00,619
 Mais le CIR est déclaratif :
 
 23
-00:01:00,643 --> 00:01:03,823
+00:01:00,619 --> 00:01:03,799
 un dossier technique solide est indispensable en cas de contrôle.
 
 24
-00:01:04,902 --> 00:01:07,261
+00:01:04,878 --> 00:01:07,237
 Leyton vous accompagne pour identifier,
 
 25
-00:01:07,261 --> 00:01:09,486
+00:01:07,237 --> 00:01:09,462
 chiffrer et sécuriser votre CIR.
 
