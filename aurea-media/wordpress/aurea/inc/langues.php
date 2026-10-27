@@ -349,6 +349,14 @@ function aurea_installer_pages_en() {
 		}
 	}
 	kses_init_filters();
+	// Page vide « Accueil - English » créée par l'assistant de Polylang : doublon mince de l'accueil anglais
+	$vides = 0;
+	foreach ( get_posts( array( 'post_type' => 'page', 'post_status' => 'publish', 'numberposts' => 50, 'lang' => 'en', 'meta_query' => array( array( 'key' => '_aurea_langue', 'compare' => 'NOT EXISTS' ) ) ) ) as $vide ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+		if ( false !== stripos( $vide->post_title, 'English' ) && strlen( trim( wp_strip_all_tags( $vide->post_content ) ) ) < 40 && ! get_post_meta( $vide->ID, '_elementor_data', true ) ) {
+			wp_trash_post( $vide->ID ); // reste récupérable dans la corbeille
+			$vides++;
+		}
+	}
 	// Accueil anglais à l'adresse /en/ (et non /en/home-en/) : réglage Polylang « l'URL de la page
 	// d'accueil contient le code de langue au lieu du nom de la page »
 	$reglages = get_option( 'polylang' );
@@ -368,6 +376,9 @@ function aurea_installer_pages_en() {
 	}
 	aurea_vider_cache_polylang();
 	$msg = sprintf( 'Version anglaise : %d pages créées, %d pages au total.', $crees, count( aurea_pages( 'en' ) ) );
+	if ( $vides ) {
+		$msg .= sprintf( ' %d page anglaise vide (créée par Polylang) mise à la corbeille.', $vides );
+	}
 	if ( $occupes ) {
 		$msg .= ' Adresses déjà prises par d’anciennes pages (à renommer ou supprimer, puis relancer) : ' . implode( ', ', $occupes ) . '.';
 	}

@@ -348,7 +348,7 @@ function aurea_fiche_mince() {
 	return is_singular( 'aurea_realisation' ) && '' === trim( wp_strip_all_tags( (string) get_post_field( 'post_content', get_queried_object_id() ) ) );
 }
 add_filter( 'rank_math/frontend/robots', function ( $robots ) {
-	if ( aurea_fiche_mince() ) {
+	if ( aurea_fiche_mince() || is_category() || is_tag() ) { // rubriques du blog : simples listes, pas de contenu propre
 		$robots['index']  = 'noindex';
 		$robots['follow'] = 'follow';
 	}
@@ -488,7 +488,7 @@ add_filter( 'wp_robots', function ( $robots ) {
 	if ( aurea_rank_math_actif() ) {
 		return $robots;
 	}
-	if ( is_search() || is_404() || aurea_fiche_mince() ) {
+	if ( is_search() || is_404() || aurea_fiche_mince() || is_category() || is_tag() ) {
 		$robots['noindex'] = true;
 		$robots['follow']  = true;
 	} else {

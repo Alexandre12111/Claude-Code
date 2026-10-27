@@ -313,6 +313,15 @@ add_action( 'template_redirect', function () {
 	if ( '' === $chemin || substr_count( $chemin, '/' ) > 3 || preg_match( '/\.(php|xml|txt|js|css|png|jpe?g|webp|svg|ico|gif|pdf|zip)$/i', $chemin ) || 0 === strpos( $chemin, 'wp-' ) || preg_match( '#^en(/|$)#', $chemin ) ) {
 		return;
 	}
+	// Même contenu à une autre adresse (structure des permaliens changée, /conseils/ ajouté ou retiré) : on le retrouve par son slug
+	$slug = basename( $chemin );
+	foreach ( array( 'post', 'page', 'aurea_realisation' ) as $type ) {
+		$post = get_page_by_path( $slug, OBJECT, $type );
+		if ( $post && 'publish' === $post->post_status && aurea_chemin( get_permalink( $post ) ) !== $chemin ) {
+			wp_safe_redirect( get_permalink( $post ), 301 );
+			exit;
+		}
+	}
 	$plan = apply_filters( 'aurea_plan_redirections', aurea_redirections() );
 	$cle  = $plan[ $chemin ] ?? aurea_cible_pour( str_replace( '/', ' ', $chemin ), '' );
 	if ( $cle && aurea_chemin( aurea_url( $cle ) ) !== $chemin ) {

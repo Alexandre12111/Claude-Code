@@ -1591,3 +1591,5 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 .mnav .langues+.btn{margin-top:14px}
 @media (max-width:1080px){.hd-bar .langues{display:none}}
 .mnav .btn{padding:0 24px}
+/* Premier écran visible tout de suite (LCP) : le texte du haut de page glisse sans attendre d'apparaître */
+.hero .rv,.phero .rv{opacity:1}

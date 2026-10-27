@@ -1,0 +1,199 @@
+{
+ "summary": {
+  "health_score": 83,
+  "business_type": "Agence web (services B2B, France et Europe, ancrage local Paris)",
+  "top_findings": [
+   "Permaliens des articles changés (/conseils/titre/ devenu /titre/)",
+   "Anciennes adresses d'articles redirigées vers des pages services",
+   "Page anglaise vide /en/accueil-english/ indexable",
+   "LCP mobile 3,1 à 4,2 s en laboratoire",
+   "Rubriques du blog indexables sans contenu propre"
+  ],
+  "quick_wins": [
+   "Remettre /conseils/%postname%/",
+   "Installer le thème 3.1.2",
+   "Compléter les mentions légales",
+   "Renvoyer le sitemap à la Search Console",
+   "Désactiver GTranslate"
+  ]
+ },
+ "categories": [
+  {
+   "name": "Technical SEO",
+   "score": 78,
+   "what_works": [
+    "78 URLs en 200",
+    "HTTPS + HSTS et en-têtes de sécurité",
+    "Sitemap propre",
+    "hreflang réciproques"
+   ],
+   "findings": [
+    {
+     "title": "Structure des permaliens modifiée",
+     "severity": "Critical",
+     "description": "Les articles sont servis sous /titre/ au lieu de /conseils/titre/.",
+     "recommendation": "Remettre /conseils/%postname%/."
+    },
+    {
+     "title": "Anciennes adresses d'articles mal redirigées",
+     "severity": "Critical",
+     "description": "/conseils/prix-site-vitrine/ redirige en 301 vers /tarifs/ (6 articles concernés).",
+     "recommendation": "Thème 3.1.2 : recherche par slug avant la redirection thématique."
+    },
+    {
+     "title": "Page anglaise vide indexable",
+     "severity": "High",
+     "description": "/en/accueil-english/ : 5 mots, sans description, dans le sitemap.",
+     "recommendation": "Thème 3.1.2 : mise à la corbeille automatique."
+    },
+    {
+     "title": "Rubriques du blog indexables",
+     "severity": "Medium",
+     "description": "Pages de rubrique sans description (97 à 136 mots).",
+     "recommendation": "Thème 3.1.2 : noindex, follow."
+    },
+    {
+     "title": "robots.txt à deux groupes User-agent *",
+     "severity": "Low",
+     "description": "Bloc ajouté par WP-Optimize.",
+     "recommendation": "Sans effet bloquant."
+    }
+   ]
+  },
+  {
+   "name": "Content Quality",
+   "score": 82,
+   "what_works": [
+    "Pages services de 700 à 1 600 mots",
+    "Blocs En bref signés et datés",
+    "23 études de cas détaillées"
+   ],
+   "findings": [
+    {
+     "title": "Blog jeune",
+     "severity": "Medium",
+     "description": "6 articles publiés.",
+     "recommendation": "Un article par semaine."
+    },
+    {
+     "title": "Mentions légales incomplètes",
+     "severity": "Medium",
+     "description": "Capital social, RCS et outil d'audience absents.",
+     "recommendation": "Compléter."
+    }
+   ]
+  },
+  {
+   "name": "On-Page SEO",
+   "score": 90,
+   "what_works": [
+    "Titres et descriptions dans les longueurs, sans doublon",
+    "Un H1 par page",
+    "Canonical justes"
+   ],
+   "findings": []
+  },
+  {
+   "name": "Schema / Structured Data",
+   "score": 88,
+   "what_works": [
+    "Graphe agence, fondateur, services avec prix, études de cas, articles, fil d'Ariane",
+    "JSON-LD valide"
+   ],
+   "findings": []
+  },
+  {
+   "name": "Performance (CWV)",
+   "score": 72,
+   "what_works": [
+    "CLS 0",
+    "Ordinateur : LCP 1,4 à 1,8 s"
+   ],
+   "findings": [
+    {
+     "title": "LCP mobile lent",
+     "severity": "Medium",
+     "description": "3,1 à 4,2 s (laboratoire, 4G, CPU x4, sans cache). Texte du haut de page masqué jusqu'à l'animation.",
+     "recommendation": "Thème 3.1.2 : texte affiché tout de suite."
+    },
+    {
+     "title": "TTFB sans cache",
+     "severity": "Low",
+     "description": "Jusqu'à 1,7 s hors cache.",
+     "recommendation": "Cache objet ou hébergement plus rapide."
+    }
+   ]
+  },
+  {
+   "name": "AI Search Readiness",
+   "score": 88,
+   "what_works": [
+    "llms.txt bilingue",
+    "Robots IA autorisés",
+    "Blocs En bref"
+   ],
+   "findings": [
+    {
+     "title": "Mentions externes de la marque",
+     "severity": "Medium",
+     "description": "Peu de signaux tiers.",
+     "recommendation": "Annuaires, presse, LinkedIn."
+    }
+   ]
+  },
+  {
+   "name": "Images",
+   "score": 92,
+   "what_works": [
+    "Alt et dimensions partout",
+    "WebP et srcset",
+    "og:image partout"
+   ],
+   "findings": []
+  }
+ ],
+ "action_plan": {
+  "phases": [
+   {
+    "name": "Phase 1: Critical Fixes",
+    "timeframe": "Week 1",
+    "items": [
+     "Installer le thème 3.1.2",
+     "Remettre /conseils/%postname%/",
+     "Renvoyer le sitemap"
+    ]
+   },
+   {
+    "name": "Phase 2: High-Impact Improvements",
+    "timeframe": "Weeks 2-3",
+    "items": [
+     "Vérifier la disparition de /en/accueil-english/",
+     "Compléter les mentions légales",
+     "Mesurer PageSpeed mobile"
+    ]
+   },
+   {
+    "name": "Phase 3: Content & Authority",
+    "timeframe": "Month 2",
+    "items": [
+     "Un article par semaine",
+     "Mentions de marque",
+     "Avis Google"
+    ]
+   },
+   {
+    "name": "Phase 4: Monitoring & Iteration",
+    "timeframe": "Ongoing",
+    "items": [
+     "Search Console",
+     "CrUX",
+     "Audit trimestriel"
+    ]
+   }
+  ]
+ },
+ "artifacts": {
+  "findings_dir": "findings/",
+  "screenshots_dir": "screenshots/"
+ }
+}
