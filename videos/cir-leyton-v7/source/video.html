@@ -129,7 +129,7 @@ function write(e,t0,dur,scene){
   const cp=el('clipPath',{id,clipPathUnits:'userSpaceOnUse'},defs); const r=el('rect',{x:bb.x-14,y:bb.y-40,height:bb.height+80,width:0},cp);
   e.setAttribute('clip-path',`url(#${id})`);
   const a={kind:'text',e,t0,t1:t0+dur,scene,
-    pt(p,t=0){const n=Math.max(3,(e.textContent||'').length);const ph=p*n*Math.PI*2;return boardPt(e,bb.x+bb.width*clamp(p+.006*Math.sin(ph)),bb.y+bb.height*(.58+.09*Math.sin(ph*.5+.6)+.03*Math.sin(ph*1.7)))},
+    pt(p,t=0){const n=Math.max(3,(e.textContent||'').length);const rate=Math.min(3.2,n/Math.max(.2,(this.t1-this.t0)));const ph=Math.PI*2*rate*(t-this.t0);return boardPt(e,bb.x+bb.width*p,bb.y+bb.height*(.6+.06*Math.sin(ph+.6)+.02*Math.sin(ph*1.6)))},
     update(t){const p=clamp((t-this.t0)/(this.t1-this.t0));r.setAttribute('width',(bb.width+28)*p+(p>0?8:0))}};
   a.shift=0;a.auto=false;LASTH=a;LAST=a;actions.push(a);return a;
 }
@@ -553,10 +553,10 @@ function sequence(){
   HACT=actions.filter(a=>!a.auto);
   for(let s=0;s<NS_;s++){const L=HACT.filter(a=>a.scene===s).sort((a,b)=>a.t0-b.t0);
     for(let i=0;i<L.length-1;i++){const a=L[i],n=L[i+1];
-      const pe=endPt(a),ns=startPt(n);const d=Math.hypot(pe.x-ns.x,pe.y-ns.y);const tr=clamp(.04+d/3200,.08,.32);
-      const dur=a.t1-a.t0;
-      if(a.t1+tr>n.t0){ // behind the voice: draw this stroke faster
-        const t1=n.t0-tr;if(t1-a.t0>=Math.max(.07,dur*.25)){a.t1=t1}else{a.t1=a.t0+Math.max(.07,dur*.25);const dt=a.t1+tr-n.t0;n.t0+=dt;n.t1+=dt;n.shift+=dt}
+      const pe=endPt(a),ns=startPt(n);const d=Math.hypot(pe.x-ns.x,pe.y-ns.y);const tr=clamp(.06+d/4200,.08,.4);
+      const dur=a.t1-a.t0;const minD=a.kind==='text'?Math.max(.16,a.e.getBBox().width/3000):Math.max(.08,a.L/4500);
+      if(a.t1+tr>n.t0){ // behind the voice: draw faster, but never faster than a real hand
+        const t1=n.t0-tr;if(t1-a.t0>=Math.min(dur,minD)){a.t1=t1}else{a.t1=a.t0+Math.min(dur,minD);const dt=a.t1+tr-n.t0;n.t0+=dt;n.t1+=dt;n.shift+=dt}
       }else{ // ahead of the voice: draw this stroke slower instead of waiting
         const spare=n.t0-tr-a.t1;a.t1+=Math.min(spare*.85,dur*1.2)}
     }
@@ -622,11 +622,12 @@ async function init(){
   // precompute the hand path for every frame, then low-pass it so it never jerks
   {const N=Math.ceil(TL.total*30)+2;const raw=[];for(let f=0;f<N;f++){const t=f/30;raw.push(handTarget(t,camera(t)))}
    const g=(sig)=>{const k=[];const R_=Math.ceil(sig*3);for(let i=-R_;i<=R_;i++)k.push([i,Math.exp(-i*i/(2*sig*sig))]);return k};
-   const KX=g(window.HSIG??2),KL=g(4);
+   const KX=g(window.HSIG??2.6),KL=g(4),KS=g(window.DSIG??1.1);
    const D=raw.map(q=>q.draw?1:0);
    HPATH=raw.map((_,f)=>{let x=0,y=0,w=0,l=0,wl=0,dd=0;for(const [i,kw] of KX){const q=raw[Math.min(N-1,Math.max(0,f+i))];x+=q.x*kw;y+=q.y*kw;w+=kw;dd+=D[Math.min(N-1,Math.max(0,f+i))]*kw}
      for(const [i,kw] of KL){const q=raw[Math.min(N-1,Math.max(0,f+i))];l+=(q.lift??0)*kw;wl+=kw}
-     const r=raw[f];const k=r.draw?0:clamp(1-dd/w*1.6);return {x:lerp(r.x,x/w,k),y:lerp(r.y,y/w,k),lift:l/wl,draw:r.draw}})}
+     const r=raw[f];let sx=0,sy=0,sw=0;for(const [i,kw] of KS){const q=raw[Math.min(N-1,Math.max(0,f+i))];sx+=q.x*kw;sy+=q.y*kw;sw+=kw}
+     const k=clamp(1-dd/w);const fx=lerp(sx/sw,x/w,k),fy=lerp(sy/sw,y/w,k);return {x:fx,y:fy,lift:l/wl,draw:r.draw}})}
   window.SFX=SFX.map(({an,...e})=>e).sort((a,b)=>a.t-b.t); window.READY=true;
 }
 let lastHand=null,lastCam=null;

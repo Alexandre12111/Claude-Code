@@ -87,10 +87,10 @@ Mais le CIR est déclaratif :
 un dossier technique solide est indispensable en cas de contrôle.
 
 23
-00:00:59,770 --> 00:01:02,129
+00:01:00,320 --> 00:01:02,679
 Leyton vous accompagne pour identifier,
 
 24
-00:01:02,129 --> 00:01:04,354
+00:01:02,679 --> 00:01:04,904
 chiffrer et sécuriser votre CIR.
 
