@@ -1612,3 +1612,11 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 .defile-points button[aria-current]{width:26px;background:var(--gold)}
 @media (max-width:900px){.reviews--defile>.review{flex-basis:calc((100% - 16px)/2)}}
 @media (max-width:640px){.reviews--defile{margin:0 calc(-1 * var(--g));padding:4px var(--g) 6px;scroll-padding:0 var(--g)}.reviews--defile>.review{flex-basis:86%}}
+/* Points du carrousel : zone tactile de 24 px, pastille visible de 8 px */
+.defile-points{gap:2px}
+.defile-points button{position:relative;width:24px;height:24px;background:none;display:grid;place-items:center}
+.defile-points button::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--line-2);transition:width .35s var(--ease),background .35s}
+.defile-points button[aria-current]{width:34px;background:none}
+.defile-points button[aria-current]::before{width:26px;background:var(--gold)}
+/* Lien de l'encart auteur des articles : contraste suffisant sur fond clair */
+.auteur-bloc a{color:#7d5f27}

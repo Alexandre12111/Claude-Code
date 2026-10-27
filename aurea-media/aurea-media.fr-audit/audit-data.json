@@ -1,13 +1,13 @@
 {
  "summary": {
-  "health_score": 89,
+  "health_score": 91,
   "business_type": "Agence web (services B2B, France et Europe, ancrage local Paris)",
   "top_findings": [
-   "Liens non explorables dans une illustration (corrigé en 3.1.4)",
-   "Liens « Learn more » peu descriptifs en anglais (corrigé en 3.1.4)",
-   "Contraste et ordre des titres (corrigé en 3.1.4)",
-   "Blog encore jeune (6 articles)",
-   "Peu de mentions externes de la marque"
+   "Temps de blocage variable des articles sur mobile (à surveiller)",
+   "4 avis seulement dans le carrousel",
+   "Blog jeune (pack programmé)",
+   "Peu de mentions externes de la marque",
+   "Points du carrousel et contraste du lien auteur (corrigés en 3.1.6)"
   ],
   "quick_wins": [
    "Installer le thème 3.1.4",
@@ -20,7 +20,7 @@
  "categories": [
   {
    "name": "Technical SEO",
-   "score": 92,
+   "score": 94,
    "what_works": [
     "78 URLs en 200",
     "HTTPS + HSTS et en-têtes de sécurité",
@@ -44,7 +44,7 @@
   },
   {
    "name": "Content Quality",
-   "score": 84,
+   "score": 85,
    "what_works": [
     "Pages services de 700 à 1 600 mots",
     "Blocs En bref signés et datés",
@@ -67,7 +67,7 @@
   },
   {
    "name": "On-Page SEO",
-   "score": 92,
+   "score": 94,
    "what_works": [
     "Titres et descriptions dans les longueurs, sans doublon",
     "Un H1 par page",
@@ -86,7 +86,7 @@
   },
   {
    "name": "Performance (CWV)",
-   "score": 96,
+   "score": 94,
    "what_works": [
     "CLS 0",
     "Ordinateur : LCP 1,4 à 1,8 s"

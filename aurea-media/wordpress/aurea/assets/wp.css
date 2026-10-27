@@ -118,3 +118,4 @@ a.filtre:hover{color:var(--cream);border-color:var(--gold)}
 .prose .etude-parcours li:not(:last-child)::after{content:"";position:absolute;right:-9px;top:50%;width:6px;height:6px;border-top:2px solid var(--gold-deep);border-right:2px solid var(--gold-deep);transform:translateY(-50%) rotate(45deg);z-index:1}
 @media (max-width:760px){.prose .etude-parcours ol{grid-template-columns:1fr 1fr}.prose .etude-parcours li::after{display:none}.prose .etude-graph{padding:20px}}
 .prose .etude-graph li::before{display:none!important}.prose .etude-graph li{padding-left:0!important;margin:0!important}.prose .etude-arbo .arbo-niveau>li ul li{padding:4px 10px!important}.prose .etude-parcours li{padding:16px!important}
+.prose .auteur-bloc a{color:#7d5f27}
