@@ -49,7 +49,6 @@
 "Mentions légales": "Legal notice",
 "Confidentialité": "Privacy",
 "Plan du site": "Site map",
-
 "Réponse sous 24h · Devis gratuit": "Reply within 24h · Free quote",
 "Des sites": "Websites",
 "sur mesure": "built to measure",
@@ -276,5 +275,8 @@
 "xpert-medical.fr": "xpert-medical.fr",
 "votre-site.fr": "your-site.com",
 "Votre site,": "Your website,",
-"ici": "here"
+"ici": "here",
+"accueil::Des sites": "Websites",
+"accueil::sur mesure": "designed to win",
+"accueil::qui vous apportent des clients.": "you new clients."
 }

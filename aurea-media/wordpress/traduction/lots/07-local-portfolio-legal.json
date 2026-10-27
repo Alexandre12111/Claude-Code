@@ -39,7 +39,6 @@
 "rencontre": "meet",
 "Proposez un créneau : rendez vous à Paris ou en visio, devis sous 24h.": "Suggest a time slot: meeting in Paris or by video call, quote within 24h.",
 "Prendre rendez vous": "Book a meeting",
-
 "Agence web dans les Hauts de Seine": "Web agency in Hauts-de-Seine",
 "Agence web pour les entreprises des": "Web agency for businesses in",
 "Hauts de Seine": "Hauts-de-Seine",
@@ -86,7 +85,6 @@
 "Oui : optimisation de la fiche Google Business Profile, pages par ville quand elles ont un vrai contenu, et suivi dans la Search Console.": "Yes: Google Business Profile optimisation, pages per town when they have real content, and monitoring in Search Console.",
 "Votre projet dans le 92": "Your project in the 92",
 "Proposez un créneau : rendez vous dans vos locaux, à Paris ou en visio, devis sous 24h.": "Suggest a time slot: meeting at your premises, in Paris or by video call, quote within 24h.",
-
 "Sites vitrines, boutiques en ligne et identités créés pour des entreprises en France et en Europe. Chaque projet part d'une page blanche.": "Business websites, online stores and brand identities created for companies in France and across Europe. Every project starts from a blank page.",
 "projets livrés": "projects delivered",
 "secteurs": "industries",
@@ -94,15 +92,12 @@
 "Le prochain, c'est": "Is the next one",
 "le vôtre": "yours",
 "Parlez nous de votre activité : proposition et planning sous 24h.": "Tell us about your business: proposal and schedule within 24h.",
-
 "Éditeur du site": "Website publisher",
-"Le site aurea-media.fr est édité par Aurea Media, [forme juridique à compléter], immatriculée sous le numéro SIREN 992 693 473, dont le siège est situé 60 rue François Ier, 75008 Paris.": "The aurea-media.fr website is published by Aurea Media, [legal form to be completed], registered under SIREN number 992 693 473, with its registered office at 60 rue François Ier, 75008 Paris, France.",
 "Téléphone :": "Phone:",
 "E-mail :": "Email:",
 "Directeur de la publication": "Publication director",
 "Alexandre Coury, fondateur d'Aurea Media.": "Alexandre Coury, founder of Aurea Media.",
 "Hébergement": "Hosting",
-"[Nom de l'hébergeur], [adresse postale], [téléphone].": "[Host name], [postal address], [phone].",
 "Propriété intellectuelle": "Intellectual property",
 "Les textes, visuels, vidéos et le code du site sont la propriété d'Aurea Media, sauf mention contraire. Les captures des sites réalisés sont présentées avec l'accord des clients concernés et restent la propriété de leurs titulaires. Toute reproduction sans autorisation écrite est interdite.": "The text, visuals, videos and code of this website are the property of Aurea Media, unless stated otherwise. Screenshots of the websites we built are shown with the consent of the clients concerned and remain the property of their owners. Any reproduction without written permission is prohibited.",
 "Icônes et typographies": "Icons and typefaces",
@@ -110,7 +105,6 @@
 "Données personnelles": "Personal data",
 "Le traitement des données transmises par le formulaire de contact est décrit dans la": "The processing of data sent through the contact form is described in the",
 "politique de confidentialité": "privacy policy",
-
 "Responsable du traitement": "Data controller",
 "Aurea Media, 60 rue François Ier, 75008 Paris, représentée par Alexandre Coury. Contact :": "Aurea Media, 60 rue François Ier, 75008 Paris, France, represented by Alexandre Coury. Contact:",
 "Données collectées": "Data collected",
@@ -120,15 +114,16 @@
 "Durée de conservation": "Retention period",
 "Les demandes sans suite sont conservées trois ans à compter du dernier échange, puis supprimées. Les données des clients sont conservées pendant la durée de la relation commerciale, puis selon les obligations légales de conservation des pièces comptables.": "Requests that do not lead to a project are kept for three years from the last exchange, then deleted. Client data is kept for the duration of the business relationship, then in line with the legal obligations for keeping accounting records.",
 "Destinataires": "Recipients",
-"Vos données sont lues par Alexandre Coury uniquement. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la prospection par des tiers. Elles sont stockées chez l'hébergeur du site, [nom de l'hébergeur], dans l'Union européenne.": "Your data is read by Alexandre Coury only. It is never sold, transferred or used for marketing by third parties. It is stored with the website host, [host name], in the European Union.",
 "Vos droits": "Your rights",
 "Vous pouvez accéder à vos données, les rectifier, les effacer, limiter leur traitement ou vous y opposer en écrivant à": "You can access, correct or erase your data, restrict its processing or object to it by writing to",
 ". Vous pouvez aussi adresser une réclamation à la CNIL (cnil.fr).": ". You can also lodge a complaint with the CNIL, the French data protection authority (cnil.fr).",
 "Cookies et mesure d'audience": "Cookies and analytics",
 "Le site ne dépose aucun cookie publicitaire. [Si un outil de mesure d'audience est installé, le nommer ici et préciser s'il est exempté de consentement ou soumis au bandeau.]": "This website sets no advertising cookies. [If an analytics tool is installed, name it here and state whether it is exempt from consent or subject to the cookie banner.]",
-
 "Logo et identité visuelle": "Logo and brand identity",
 "Conseils": "Blog (in French)",
 "Informations": "Information",
-"Politique de confidentialité": "Privacy policy"
+"Politique de confidentialité": "Privacy policy",
+"Le site aurea-media.fr est édité par Aurea Media, société par actions simplifiée unipersonnelle (SASU), immatriculée sous le numéro SIREN 992 693 473, dont le siège est situé 60 rue François Ier, 75008 Paris.": "The aurea-media.fr website is published by Aurea Media, a French single-shareholder simplified joint-stock company (SASU), registered under SIREN number 992 693 473, with its registered office at 60 rue François Ier, 75008 Paris, France.",
+"IONOS SARL, 7 place de la Gare, BP 70109, 57201 Sarreguemines Cedex, France. Site : www.ionos.fr.": "IONOS SARL, 7 place de la Gare, BP 70109, 57201 Sarreguemines Cedex, France. Website: www.ionos.fr.",
+"Vos données sont lues par Alexandre Coury uniquement. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la prospection par des tiers. Elles sont stockées chez l'hébergeur du site, IONOS, dans l'Union européenne.": "Your data is read by Alexandre Coury only. It is never sold, transferred or used for marketing by third parties. It is stored with the website host, IONOS, in the European Union."
 }

@@ -17,7 +17,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUREA_VERSION', '3.1.0' );
+define( 'AUREA_VERSION', '3.1.1' );
 define( 'AUREA_DIR', get_template_directory() );
 define( 'AUREA_URI', get_template_directory_uri() );
 

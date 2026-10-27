@@ -201,12 +201,12 @@ def page_texte(fichier, ariane, titre_page, chapo, contenu, titre, desc):
 
 # Champs à vérifier par Alexandre avant la mise en ligne : entre crochets
 MENTIONS = """<h2>Éditeur du site</h2>
-<p>Le site aurea-media.fr est édité par Aurea Media, [forme juridique à compléter], immatriculée sous le numéro SIREN 992 693 473, dont le siège est situé 60 rue François Ier, 75008 Paris.</p>
+<p>Le site aurea-media.fr est édité par Aurea Media, société par actions simplifiée unipersonnelle (SASU), immatriculée sous le numéro SIREN 992 693 473, dont le siège est situé 60 rue François Ier, 75008 Paris.</p>
 <p>Téléphone : <a href="tel:+33651287761">06 51 28 77 61</a><br>E-mail : <a href="mailto:alexandre.coury@aurea-media.fr">alexandre.coury@aurea-media.fr</a></p>
 <h2>Directeur de la publication</h2>
 <p>Alexandre Coury, fondateur d'Aurea Media.</p>
 <h2>Hébergement</h2>
-<p>[Nom de l'hébergeur], [adresse postale], [téléphone].</p>
+<p>IONOS SARL, 7 place de la Gare, BP 70109, 57201 Sarreguemines Cedex, France. Site : www.ionos.fr.</p>
 <h2>Propriété intellectuelle</h2>
 <p>Les textes, visuels, vidéos et le code du site sont la propriété d'Aurea Media, sauf mention contraire. Les captures des sites réalisés sont présentées avec l'accord des clients concernés et restent la propriété de leurs titulaires. Toute reproduction sans autorisation écrite est interdite.</p>
 <h2>Icônes et typographies</h2>
@@ -223,7 +223,7 @@ CONFIDENTIALITE = """<h2>Responsable du traitement</h2>
 <h2>Durée de conservation</h2>
 <p>Les demandes sans suite sont conservées trois ans à compter du dernier échange, puis supprimées. Les données des clients sont conservées pendant la durée de la relation commerciale, puis selon les obligations légales de conservation des pièces comptables.</p>
 <h2>Destinataires</h2>
-<p>Vos données sont lues par Alexandre Coury uniquement. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la prospection par des tiers. Elles sont stockées chez l'hébergeur du site, [nom de l'hébergeur], dans l'Union européenne.</p>
+<p>Vos données sont lues par Alexandre Coury uniquement. Elles ne sont ni vendues, ni cédées, ni utilisées pour de la prospection par des tiers. Elles sont stockées chez l'hébergeur du site, IONOS, dans l'Union européenne.</p>
 <h2>Vos droits</h2>
 <p>Vous pouvez accéder à vos données, les rectifier, les effacer, limiter leur traitement ou vous y opposer en écrivant à <a href="mailto:alexandre.coury@aurea-media.fr">alexandre.coury@aurea-media.fr</a>. Vous pouvez aussi adresser une réclamation à la CNIL (cnil.fr).</p>
 <h2>Cookies et mesure d'audience</h2>
