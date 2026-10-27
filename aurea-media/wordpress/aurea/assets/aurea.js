@@ -285,5 +285,15 @@ document.querySelectorAll('[data-defile]').forEach(bloc => {
   suiv.addEventListener('click', () => aller(Math.min(pages() - 1, page() + 1)));
   let t; piste.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(dessiner, 60); }, { passive: true });
   window.addEventListener('resize', dessiner);
+  const aimanter = () => piste.classList.add('is-snap');
+  if (document.readyState === 'complete') setTimeout(aimanter, 1500); else window.addEventListener('load', () => setTimeout(aimanter, 1500), { once: true });
+  piste.addEventListener('pointerdown', aimanter, { once: true, passive: true });
   dessiner();
 });
+
+/* Magnétisme des zones défilantes activé après le chargement (sinon Chrome ne mesure pas le LCP) */
+(function () {
+  const ok = () => document.documentElement.classList.add('snap-ok');
+  if (document.readyState === 'complete') setTimeout(ok, 1500); else window.addEventListener('load', () => setTimeout(ok, 1500), { once: true });
+  window.addEventListener('pointerdown', ok, { once: true, passive: true });
+})();

@@ -1625,3 +1625,9 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 .defile-points button[aria-current]::before{width:26px;background:var(--gold)}
 /* Lien de l'encart auteur des articles : contraste suffisant sur fond clair */
 .auteur-bloc a{color:#7d5f27}
+/* Le magnétisme du carrousel n'est activé qu'après le chargement : actif dès le départ, Chrome le prend
+   pour un défilement et cesse de mesurer le LCP de la page (erreur NO_LCP dans PageSpeed) */
+.reviews--defile{scroll-snap-type:none}
+.reviews--defile.is-snap{scroll-snap-type:x mandatory}
+/* Même précaution pour toutes les zones qui défilent à l'horizontale (mobile) : magnétisme activé après le chargement */
+html:not(.snap-ok) *{scroll-snap-type:none!important}
