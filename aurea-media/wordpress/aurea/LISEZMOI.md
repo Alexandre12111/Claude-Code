@@ -33,3 +33,15 @@ Le script réécrit `contenu/`, `parts/entete.html`, `parts/pied.html` et les re
 ## Licences
 
 Polices Bricolage Grotesque, Geist et Geist Mono : SIL Open Font License. Icônes Phosphor : MIT (`assets/LICENCE-phosphor-MIT.txt`).
+
+## Version anglaise (Polylang)
+
+1. Installez et activez l'extension gratuite **Polylang**.
+2. Dans **Langues → Langues**, ajoutez **Français** (langue par défaut) puis **English** (en_GB conseillé).
+3. Ouvrez n'importe quelle page de l'administration : le thème crée les 22 pages anglaises sous `/en/`,
+   les relie à leurs pages françaises (balises hreflang) et règle l'accueil anglais sur `/en/`.
+
+Le blog et les études de cas restent en français. Le sélecteur FR / EN apparaît dans l'en-tête dès que
+l'anglais est actif. Les textes anglais se modifient comme les pages françaises ; pour les régénérer depuis
+la maquette : `python3 wordpress/outils/exporter_theme.py` (la table de traduction est dans
+`wordpress/traduction/`).

@@ -17,10 +17,11 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUREA_VERSION', '3.0.2' );
+define( 'AUREA_VERSION', '3.1.0' );
 define( 'AUREA_DIR', get_template_directory() );
 define( 'AUREA_URI', get_template_directory_uri() );
 
+require AUREA_DIR . '/inc/langues.php';
 require AUREA_DIR . '/inc/gabarit.php';
 require AUREA_DIR . '/inc/setup.php';
 require AUREA_DIR . '/inc/reglages.php';

@@ -107,6 +107,9 @@ function aurea_installer_articles( $forcer = false ) {
 			update_post_meta( $id, 'rank_math_primary_category', $cat_id );
 		}
 		update_post_meta( $id, '_aurea_article', AUREA_VERSION );
+		if ( function_exists( 'pll_set_post_language' ) ) {
+			pll_set_post_language( $id, 'fr' ); // le blog est en français
+		}
 	}
 	kses_init_filters();
 	return sprintf( 'Articles : %d créés, %d mis à jour, %d déjà à jour, %d articles personnels gardés.', $compte['crees'], $compte['maj'], $compte['a_jour'], $compte['gardes'] );

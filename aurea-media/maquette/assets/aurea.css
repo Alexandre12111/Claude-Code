@@ -1574,3 +1574,15 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 /* bordure fine proportionnelle au téléphone : la marge en % se calcule sur la largeur du téléphone */
 .phone{padding:0}
 .phone .phone-view{margin:3.4%;border-radius:12.5%/5.8%}
+
+/* Sélecteur de langue FR / EN (version anglaise avec Polylang) */
+.langues{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:999px;border:1px solid var(--line-2);flex:none}
+.langues a{display:grid;place-items:center;min-width:34px;height:30px;padding:0 9px;border-radius:999px;font:500 .72rem var(--mono);letter-spacing:.08em;color:var(--mute);transition:color .25s,background .25s}
+.langues a:hover{color:var(--cream)}
+.langues a[aria-current]{color:var(--ink);background:var(--gold)}
+.hd-bar .langues{margin-left:4px}
+.mnav .langues{align-self:flex-start;margin-top:22px}
+.mnav .langues a{font:500 .8rem var(--mono);letter-spacing:.08em;padding:0 12px;border-bottom:0;height:34px}
+.mnav .langues+.btn{margin-top:14px}
+@media (max-width:1080px){.hd-bar .langues{display:none}}
+.mnav .btn{padding:0 24px}

@@ -1,0 +1,463 @@
+{
+ "home-en": {
+  "source": "accueil",
+  "titre": "Home",
+  "seo_titre": "Web Design Agency in France: Custom Websites | Aurea",
+  "seo_description": "Aurea Media is an independent web design agency in France creating custom business and e-commerce websites with built-in SEO. Live in 4 weeks, free quote.",
+  "mot_cle": "web design agency France,custom websites,web design agency,bespoke website design",
+  "service": null,
+  "fil": [],
+  "h1": "Websites built to measure that bring you clients.",
+  "fichier": "en/home-en.html",
+  "texte": false,
+  "type": "accueil",
+  "prix": null
+ },
+ "website-design": {
+  "source": "creation-site-vitrine",
+  "titre": "Custom website design",
+  "seo_titre": "Custom Website Design for Small Businesses | Aurea",
+  "seo_description": "Custom website design for freelancers and small businesses: a unique, fast, SEO-ready WordPress site from €1,000 excl. VAT, live in 4 weeks. Free quote.",
+  "mot_cle": "custom website design,small business website design,business website,WordPress website design",
+  "service": "Custom business website design",
+  "fil": [
+   [
+    "Services",
+    "url:accueil#services"
+   ],
+   [
+    "Business website",
+    null
+   ]
+  ],
+  "h1": "Custom website design for businesses, built to convert.",
+  "fichier": "en/website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "ecommerce-website-design": {
+  "source": "creation-site-ecommerce",
+  "titre": "E-commerce website design",
+  "seo_titre": "E-commerce Website Design with WooCommerce | Aurea",
+  "seo_description": "E-commerce website design on WooCommerce: a fast, mobile-first online store with no commission on your sales, from €1,650 excl. VAT. Free quote in 24h.",
+  "mot_cle": "e-commerce website design,WooCommerce website design,online store design,custom online store",
+  "service": "WooCommerce e-commerce website design",
+  "fil": [
+   [
+    "Services",
+    "url:accueil#services"
+   ],
+   [
+    "E-commerce website",
+    null
+   ]
+  ],
+  "h1": "Custom e-commerce website design, with no commission.",
+  "fichier": "en/ecommerce-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1650"
+ },
+ "website-redesign": {
+  "source": "refonte-site-internet",
+  "titre": "Website redesign",
+  "seo_titre": "Website Redesign Without Losing Your SEO | Aurea Media",
+  "seo_description": "Website redesign that protects your Google rankings: SEO audit, page-by-page 301 redirects and 30 days of monitoring. From €1,000 excl. VAT, free audit.",
+  "mot_cle": "website redesign,website redesign SEO,redesign WordPress website,modernise website",
+  "service": "Website redesign",
+  "fil": [
+   [
+    "Services",
+    "url:accueil#services"
+   ],
+   [
+    "Redesign",
+    null
+   ]
+  ],
+  "h1": "Website redesign, without losing your Google rankings.",
+  "fichier": "en/website-redesign.html",
+  "texte": false,
+  "type": "service",
+  "prix": null
+ },
+ "brand-identity-design": {
+  "source": "logo-identite-visuelle",
+  "titre": "Brand identity and logo design",
+  "seo_titre": "Brand Identity Design and Logo Creation | Aurea Media",
+  "seo_description": "Brand identity design for businesses: logo, colour palette, typefaces and PDF brand guidelines, with three creative directions and all source files included.",
+  "mot_cle": "brand identity design,logo design for business,brand guidelines,logo redesign",
+  "service": "Brand identity and logo design",
+  "fil": [
+   [
+    "Services",
+    "url:accueil#services"
+   ],
+   [
+    "Brand identity",
+    null
+   ]
+  ],
+  "h1": "Brand identity design and logo creation for businesses.",
+  "fichier": "en/brand-identity-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": null
+ },
+ "motion-design-videos": {
+  "source": "motion-design",
+  "titre": "Motion design",
+  "seo_titre": "Motion Design for Businesses: Animated Videos | Aurea",
+  "seo_description": "Motion design for businesses: logo animations, explainer videos and social media formats, from script to final cut, delivered in every web format you need.",
+  "mot_cle": "motion design for businesses,motion design video,logo animation,explainer video",
+  "service": "Motion design for businesses",
+  "fil": [
+   [
+    "Services",
+    "url:accueil#services"
+   ],
+   [
+    "Motion design",
+    null
+   ]
+  ],
+  "h1": "Motion design for businesses: videos that hold attention.",
+  "fichier": "en/motion-design-videos.html",
+  "texte": false,
+  "type": "service",
+  "prix": null
+ },
+ "presentation-design": {
+  "source": "maquettes-presentation",
+  "titre": "Presentation design",
+  "seo_titre": "Pitch Deck and Sales Presentation Design | Aurea Media",
+  "seo_description": "Pitch deck design and sales presentations in PowerPoint, Keynote or Google Slides: clear storytelling, on-brand slides and reusable templates included.",
+  "mot_cle": "pitch deck design,sales presentation design,PowerPoint presentation design,presentation designer",
+  "service": "Pitch deck and presentation design",
+  "fil": [
+   [
+    "Services",
+    "url:accueil#services"
+   ],
+   [
+    "Presentation design",
+    null
+   ]
+  ],
+  "h1": "Presentations that win the meeting.",
+  "fichier": "en/presentation-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": null
+ },
+ "law-firm-website-design": {
+  "source": "site-internet-avocat",
+  "titre": "Law firm website design",
+  "seo_titre": "Law Firm Website Design for Lawyers and Attorneys | Aurea",
+  "seo_description": "Law firm website design that inspires trust: clear practice area pages, online booking, fee information and ethics-compliant copy. From €1,000 excl. VAT.",
+  "mot_cle": "law firm website design,lawyer website design,attorney website,legal website design",
+  "service": "Law firm website design",
+  "fil": [
+   [
+    "Industries",
+    "url:creation-site-vitrine"
+   ],
+   [
+    "Lawyers",
+    null
+   ]
+  ],
+  "h1": "Law firm website design, built for lawyers and their clients.",
+  "fichier": "en/law-firm-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "healthcare-website-design": {
+  "source": "site-internet-professions-sante",
+  "titre": "Healthcare website design",
+  "seo_titre": "Healthcare Website Design for Doctors and Clinics | Aurea",
+  "seo_description": "Healthcare website design for doctors, physiotherapists and clinics: clear practical information, Doctolib booking on every page and compliant copy.",
+  "mot_cle": "healthcare website design,medical website design,doctor website,clinic website design",
+  "service": "Healthcare website design",
+  "fil": [
+   [
+    "Industries",
+    "url:creation-site-vitrine"
+   ],
+   [
+    "Healthcare",
+    null
+   ]
+  ],
+  "h1": "A website for healthcare professionals.",
+  "fichier": "en/healthcare-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "architect-website-design": {
+  "source": "site-internet-architecte",
+  "titre": "Architect website design",
+  "seo_titre": "Architect Website Design: Portfolio Websites | Aurea",
+  "seo_description": "Architect website design that showcases your projects: a curated portfolio, fast WebP images, project filters and qualified enquiries. From €1,000 excl. VAT.",
+  "mot_cle": "architect website design,architecture portfolio website,interior designer website",
+  "service": "Architect website design",
+  "fil": [
+   [
+    "Industries",
+    "url:creation-site-vitrine"
+   ],
+   [
+    "Architects",
+    null
+   ]
+  ],
+  "h1": "An architect website that puts your projects centre stage.",
+  "fichier": "en/architect-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "restaurant-website-design": {
+  "source": "site-internet-restaurant",
+  "titre": "Restaurant website design",
+  "seo_titre": "Restaurant Website Design with Online Booking | Aurea",
+  "seo_description": "Restaurant website design that fills your tables: editable menu, TheFork or Zenchef booking, Google reviews and practical info, from €1,000 excl. VAT.",
+  "mot_cle": "restaurant website design,hotel website design,restaurant website with booking",
+  "service": "Restaurant website design",
+  "fil": [
+   [
+    "Industries",
+    "url:creation-site-vitrine"
+   ],
+   [
+    "Restaurants",
+    null
+   ]
+  ],
+  "h1": "A restaurant website that fills your tables.",
+  "fichier": "en/restaurant-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "construction-website-design": {
+  "source": "site-internet-artisan-btp",
+  "titre": "Construction and trades website design",
+  "seo_titre": "Construction and Trades Website Design | Aurea Media",
+  "seo_description": "Construction website design for tradespeople and builders: job galleries, quote forms, one-tap calling and local SEO to win more jobs. From €1,000 excl. VAT.",
+  "mot_cle": "construction website design,website for tradespeople,builder website,contractor website design",
+  "service": "Construction and trades website design",
+  "fil": [
+   [
+    "Industries",
+    "url:creation-site-vitrine"
+   ],
+   [
+    "Trades and construction",
+    null
+   ]
+  ],
+  "h1": "A tradesperson's website that brings you jobs.",
+  "fichier": "en/construction-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "consultant-website-design": {
+  "source": "site-internet-coach-consultant",
+  "titre": "Coach and consultant website design",
+  "seo_titre": "Consultant Website Design for Coaches and Firms | Aurea",
+  "seo_description": "Consultant website design for coaches and consulting firms: clear positioning, readable offers, online booking and a blog that builds authority on Google.",
+  "mot_cle": "consultant website design,coach website design,consulting firm website",
+  "service": "Coach and consultant website design",
+  "fil": [
+   [
+    "Industries",
+    "url:creation-site-vitrine"
+   ],
+   [
+    "Coaches and consultants",
+    null
+   ]
+  ],
+  "h1": "A consultant website that commands authority.",
+  "fichier": "en/consultant-website-design.html",
+  "texte": false,
+  "type": "service",
+  "prix": "1000"
+ },
+ "web-design-agency-paris": {
+  "source": "agence-web-paris",
+  "titre": "Web design agency Paris",
+  "seo_titre": "Web Design Agency in Paris: Custom Websites | Aurea",
+  "seo_description": "Independent web design agency in Paris creating custom business and e-commerce websites. A single point of contact, meetings in Paris and a quote in 24h.",
+  "mot_cle": "web design agency Paris,website design Paris,web agency Paris",
+  "service": "Web design agency in Paris",
+  "fil": [
+   [
+    "Web design agency Paris",
+    null
+   ]
+  ],
+  "h1": "Web design agency in Paris, an independent studio.",
+  "fichier": "en/web-design-agency-paris.html",
+  "texte": false,
+  "type": "local",
+  "prix": "1000"
+ },
+ "web-agency-hauts-de-seine": {
+  "source": "agence-web-hauts-de-seine",
+  "titre": "Web agency Hauts-de-Seine",
+  "seo_titre": "Web Agency in Hauts-de-Seine (92): Custom Websites | Aurea",
+  "seo_description": "Web agency for businesses in Hauts-de-Seine: custom websites for Boulogne, Issy, Neuilly and the whole 92, with meetings at your premises. Quote in 24h.",
+  "mot_cle": "web agency Hauts-de-Seine,website design Boulogne-Billancourt,web agency 92",
+  "service": "Web agency in Hauts-de-Seine",
+  "fil": [
+   [
+    "Web agency Hauts-de-Seine",
+    null
+   ]
+  ],
+  "h1": "Web agency for businesses in Hauts-de-Seine.",
+  "fichier": "en/web-agency-hauts-de-seine.html",
+  "texte": false,
+  "type": "local",
+  "prix": "1000"
+ },
+ "pricing": {
+  "source": "tarifs",
+  "titre": "Pricing",
+  "seo_titre": "Website Design Pricing: Business and E-commerce | Aurea",
+  "seo_description": "Website design pricing with no hidden costs: business websites from €1,000 and e-commerce from €1,650 excl. VAT, technical SEO included. Quote in 24h.",
+  "mot_cle": "website design pricing,how much does a website cost,website cost,e-commerce website price",
+  "service": "Pricing",
+  "fil": [
+   [
+    "Pricing",
+    null
+   ]
+  ],
+  "h1": "How much does your website cost?",
+  "fichier": "en/pricing.html",
+  "texte": false,
+  "type": "tarifs",
+  "prix": null
+ },
+ "about": {
+  "source": "agence",
+  "titre": "About",
+  "seo_titre": "About Aurea Media: Independent Web Design Studio in Paris",
+  "seo_description": "Aurea Media is an independent web design studio founded in Paris in 2021 by Alexandre Coury. No salespeople, no outsourcing: you work with the designer.",
+  "mot_cle": "independent web design studio,Alexandre Coury,web designer Paris",
+  "service": "About",
+  "fil": [
+   [
+    "About",
+    null
+   ]
+  ],
+  "h1": "An independent studio, founded in 2021.",
+  "fichier": "en/about.html",
+  "texte": false,
+  "type": "apropos",
+  "prix": null
+ },
+ "contact-us": {
+  "source": "contact",
+  "titre": "Contact",
+  "seo_titre": "Contact Us: Free Website Quote Within 24h | Aurea Media",
+  "seo_description": "Contact Aurea Media for a free website quote: describe your project and get an initial analysis, a budget estimate and a timeline within 24 working hours.",
+  "mot_cle": "website quote,contact web design agency,free website quote",
+  "service": "Contact",
+  "fil": [
+   [
+    "Contact",
+    null
+   ]
+  ],
+  "h1": "Let's talk about your project.",
+  "fichier": "en/contact-us.html",
+  "texte": false,
+  "type": "contact",
+  "prix": null
+ },
+ "legal-notice": {
+  "source": "mentions-legales",
+  "titre": "Legal notice",
+  "seo_titre": "Legal Notice | Aurea Media, Custom Web Design Agency",
+  "seo_description": "Legal notice for the aurea-media.fr website: publisher details, publication director, hosting provider, intellectual property and personal data information.",
+  "mot_cle": "",
+  "service": "Legal notice",
+  "fil": [
+   [
+    "Legal notice",
+    null
+   ]
+  ],
+  "extrait": "Publisher, publication director, hosting, intellectual property and personal data.",
+  "fichier": "en/legal-notice.html",
+  "texte": true,
+  "type": "texte",
+  "prix": null
+ },
+ "privacy": {
+  "source": "politique-confidentialite",
+  "titre": "Privacy policy",
+  "seo_titre": "Privacy Policy | Aurea Media, Custom Web Design Agency",
+  "seo_description": "How Aurea Media handles the personal data sent through its contact form: data collected, purpose, legal basis, retention period, recipients and your rights.",
+  "mot_cle": "",
+  "service": "Privacy policy",
+  "fil": [
+   [
+    "Privacy",
+    null
+   ]
+  ],
+  "extrait": "How the personal data sent through the contact form is handled.",
+  "fichier": "en/privacy.html",
+  "texte": true,
+  "type": "texte",
+  "prix": null
+ },
+ "site-map": {
+  "source": "plan-du-site",
+  "titre": "Site map",
+  "seo_titre": "Site Map | Aurea Media, Custom Web Design Agency",
+  "seo_description": "Site map of Aurea Media: all our web design services, industry pages, local pages, portfolio, pricing and contact information, gathered on a single page.",
+  "mot_cle": "",
+  "service": "Site map",
+  "fil": [
+   [
+    "Site map",
+    null
+   ]
+  ],
+  "extrait": "All the pages of the Aurea Media website.",
+  "fichier": "en/site-map.html",
+  "texte": true,
+  "type": "texte",
+  "prix": null
+ },
+ "web-design-portfolio": {
+  "source": "realisations",
+  "titre": "Portfolio",
+  "seo_titre": "Web Design Portfolio: Business and E-commerce Websites",
+  "seo_description": "Web design portfolio of Aurea Media: business websites, online stores and brand identities created for companies in France and across Europe. See our work.",
+  "mot_cle": "web design portfolio,website examples,web design agency portfolio",
+  "service": null,
+  "fil": [
+   [
+    "Portfolio",
+    null
+   ]
+  ],
+  "h1": "Websites that work hard for our clients.",
+  "fichier": "en/web-design-portfolio.html",
+  "texte": false,
+  "type": null,
+  "prix": null
+ }
+}

@@ -30,7 +30,10 @@ function aurea_info_page( $post = null ) {
 		return null;
 	}
 	$pages = aurea_pages();
-	$slug  = (int) get_option( 'page_on_front' ) === $post->ID ? 'accueil' : $post->post_name;
+	$slug  = $post->post_name;
+	if ( (int) get_option( 'page_on_front' ) === $post->ID ) {
+		$slug = 'en' === aurea_langue() ? aurea_slug_en( 'accueil' ) : 'accueil';
+	}
 	return $pages[ $slug ] ?? null;
 }
 
@@ -52,7 +55,7 @@ function aurea_schema_agence() {
 		'url'          => home_url( '/' ),
 		'logo'         => $logo ? wp_get_attachment_image_url( $logo, 'full' ) : AUREA_URI . '/assets/logo-aurea-media.png',
 		'image'        => AUREA_URI . '/assets/og-aurea-media.jpg',
-		'description'  => 'Agence web indépendante : création de sites vitrines et e-commerce sur mesure, identité visuelle, motion design et présentations, pour les indépendants, TPE et PME en France et en Europe.',
+		'description'  => aurea_t( 'Agence web indépendante : création de sites vitrines et e-commerce sur mesure, identité visuelle, motion design et présentations, pour les indépendants, TPE et PME en France et en Europe.' ),
 		'telephone'    => $c['tel'],
 		'email'        => $c['email'],
 		'priceRange'   => '€€',
@@ -71,7 +74,7 @@ function aurea_schema_agence() {
 			array( '@type' => 'Place', 'name' => 'Europe' ),
 		),
 		'founder'      => array( '@id' => aurea_id( 'fondateur' ) ),
-		'knowsAbout'   => array( 'Création de site vitrine', 'Création de site e-commerce', 'WordPress', 'WooCommerce', 'Référencement naturel', 'Identité visuelle', 'Motion design' ),
+		'knowsAbout'   => array_map( 'aurea_t', array( 'Création de site vitrine', 'Création de site e-commerce', 'WordPress', 'WooCommerce', 'Référencement naturel', 'Identité visuelle', 'Motion design' ) ),
 		'sameAs'       => array_values( array_filter( array( $c['linkedin'], $c['google'] ) ) ),
 	);
 	if ( $c['siren'] ) {
@@ -86,7 +89,7 @@ function aurea_schema_fondateur() {
 		'@type'    => 'Person',
 		'@id'      => aurea_id( 'fondateur' ),
 		'name'     => $c['fondateur'],
-		'jobTitle' => 'Fondateur, développeur et designer web',
+		'jobTitle' => aurea_t( 'Fondateur, développeur et designer web' ),
 		'image'    => AUREA_URI . '/assets/alexandre-coury.webp',
 		'worksFor' => array( '@id' => aurea_id( 'organization' ) ),
 		'sameAs'   => array_values( array_filter( array( $c['linkedin_moi'] ) ) ),
@@ -102,6 +105,10 @@ function aurea_etapes_ariane() {
 		$info = aurea_info_page();
 		if ( $info && ! empty( $info['fil'] ) ) {
 			return array_map( function ( $e ) {
+				if ( $e[1] && 0 === strpos( $e[1], 'url:' ) ) { // pages anglaises : « url:clé#ancre »
+					$parties = explode( '#', substr( $e[1], 4 ), 2 );
+					return array( $e[0], aurea_url( $parties[0] ) . ( isset( $parties[1] ) ? '#' . $parties[1] : '' ) );
+				}
 				return array( $e[0], $e[1] ? home_url( $e[1] ) : get_permalink() );
 			}, $info['fil'] );
 		}
@@ -148,7 +155,7 @@ function aurea_schemas_page() {
 
 	$etapes = aurea_etapes_ariane();
 	if ( $etapes ) {
-		$elements = array( array( '@type' => 'ListItem', 'position' => 1, 'name' => 'Accueil', 'item' => home_url( '/' ) ) );
+		$elements = array( array( '@type' => 'ListItem', 'position' => 1, 'name' => aurea_t( 'Accueil' ), 'item' => aurea_url( 'accueil' ) ) );
 		foreach ( $etapes as $i => $e ) {
 			$elements[] = array( '@type' => 'ListItem', 'position' => $i + 2, 'name' => wp_strip_all_tags( $e[0] ), 'item' => $e[1] );
 		}
@@ -302,7 +309,7 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 			}
 		}
 		if ( ! $a_site ) {
-			$data['aurea_site'] = array( '@type' => 'WebSite', '@id' => aurea_id( 'website' ), 'url' => home_url( '/' ), 'name' => 'Aurea Media', 'inLanguage' => 'fr-FR', 'publisher' => array( '@id' => aurea_id( 'organization' ) ) );
+			$data['aurea_site'] = array( '@type' => 'WebSite', '@id' => aurea_id( 'website' ), 'url' => home_url( '/' ), 'name' => 'Aurea Media', 'inLanguage' => aurea_code_langue(), 'publisher' => array( '@id' => aurea_id( 'organization' ) ) );
 		}
 		$url  = aurea_url_courante();
 		$desc = aurea_description_seo();
@@ -312,7 +319,7 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 			'url'          => $url,
 			'name'         => wp_get_document_title(),
 			'description'  => $desc,
-			'inLanguage'   => 'fr-FR',
+			'inLanguage'   => aurea_code_langue(),
 			'isPartOf'     => array( '@id' => aurea_id( 'website' ) ),
 			'about'        => array( '@id' => aurea_id( 'organization' ) ),
 			'dateModified' => is_singular() ? get_the_modified_date( 'c' ) : '',
@@ -427,7 +434,7 @@ add_action( 'wp_head', function () {
 		echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n"; // WordPress l'ajoute déjà sur les pages et articles
 	}
 	$og = array(
-		'og:locale'      => 'fr_FR',
+		'og:locale'      => aurea_code_langue( 'og' ),
 		'og:type'        => is_singular( 'post' ) ? 'article' : 'website',
 		'og:site_name'   => 'Aurea Media',
 		'og:title'       => $titre,
@@ -441,9 +448,9 @@ add_action( 'wp_head', function () {
 	echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
 
 	$graphe   = array( aurea_schema_agence(), aurea_schema_fondateur() );
-	$graphe[] = array( '@type' => 'WebSite', '@id' => aurea_id( 'website' ), 'url' => home_url( '/' ), 'name' => 'Aurea Media', 'inLanguage' => 'fr-FR', 'publisher' => array( '@id' => aurea_id( 'organization' ) ) );
+	$graphe[] = array( '@type' => 'WebSite', '@id' => aurea_id( 'website' ), 'url' => home_url( '/' ), 'name' => 'Aurea Media', 'inLanguage' => aurea_code_langue(), 'publisher' => array( '@id' => aurea_id( 'organization' ) ) );
 	$propres  = aurea_schemas_page();
-	$page     = array( '@type' => aurea_type_page(), '@id' => $url . '#webpage', 'url' => $url, 'name' => $titre, 'inLanguage' => 'fr-FR', 'isPartOf' => array( '@id' => aurea_id( 'website' ) ) );
+	$page     = array( '@type' => aurea_type_page(), '@id' => $url . '#webpage', 'url' => $url, 'name' => $titre, 'inLanguage' => aurea_code_langue(), 'isPartOf' => array( '@id' => aurea_id( 'website' ) ) );
 	if ( $desc ) {
 		$page['description'] = $desc;
 	}
@@ -467,7 +474,7 @@ add_action( 'wp_head', function () {
 			'publisher'        => array( '@id' => aurea_id( 'organization' ) ),
 			'mainEntityOfPage' => array( '@id' => $url . '#webpage' ),
 			'image'            => $image,
-			'inLanguage'       => 'fr-FR',
+			'inLanguage'       => aurea_code_langue(),
 		);
 	}
 	$graphe[] = $page;
@@ -548,6 +555,18 @@ function aurea_llms_txt() {
 		$t .= "\n## Guides\n";
 		foreach ( $articles as $a ) {
 			$t .= '- [' . get_the_title( $a ) . '](' . get_permalink( $a ) . ")\n";
+		}
+	}
+	if ( function_exists( 'aurea_en_dispo' ) && aurea_en_dispo() ) {
+		$t .= "\n## English version\n";
+		foreach ( aurea_pages( 'en' ) as $p ) {
+			if ( empty( $p['mot_cle'] ) ) {
+				continue;
+			}
+			$url = aurea_dans_langue( 'en', function () use ( $p ) {
+				return aurea_url( $p['source'] );
+			} );
+			$t  .= '- [' . $p['titre'] . '](' . $url . ') : ' . $p['seo_description'] . "\n";
 		}
 	}
 	$t .= "\n## Contact\n- Téléphone : " . $c['tel_inter'] . "\n- E-mail : " . $c['email'] . "\n- Adresse : " . $c['rue'] . ', ' . $c['cp'] . ' ' . $c['ville'] . "\n- [Demander un devis](" . aurea_url( 'contact' ) . ") : réponse personnelle sous 24 heures.\n";

@@ -177,6 +177,9 @@ function aurea_installer_pages( $remplacer = false ) {
 			$crees++;
 		}
 		if ( ! is_wp_error( $id ) ) {
+			if ( function_exists( 'pll_set_post_language' ) ) {
+				pll_set_post_language( $id, 'fr' ); // pages françaises, même si l'administration filtre une autre langue
+			}
 			aurea_seo_meta( $id, $p, true );
 			update_post_meta( $id, '_aurea_version', AUREA_VERSION );
 			update_post_meta( $id, '_aurea_contenu_md5', md5( (string) get_post_field( 'post_content', $id ) ) );
@@ -628,9 +631,18 @@ function aurea_maj_pages_auto( $forcer = array() ) {
 	$maj = 0;
 	$gardees = array();
 	kses_remove_filters();
+	$liste = array();
 	foreach ( aurea_pages_a_creer() as $slug => $p ) {
+		$liste[ $slug ] = $p + array( 'langue' => 'fr' );
+	}
+	if ( function_exists( 'aurea_en_dispo' ) && aurea_en_dispo() ) {
+		foreach ( aurea_pages( 'en' ) as $slug => $p ) {
+			$liste[ $slug ] = $p + array( 'langue' => 'en' );
+		}
+	}
+	foreach ( $liste as $slug => $p ) {
 		$page = aurea_page_par_slug( $slug );
-		if ( ! $page || ! get_post_meta( $page->ID, '_aurea_version', true ) ) {
+		if ( ! $page || ! get_post_meta( $page->ID, '_aurea_version', true ) || ( 'en' === $p['langue'] ) !== ( 'en' === get_post_meta( $page->ID, '_aurea_langue', true ) ) ) {
 			continue;
 		}
 		$empreinte = (string) get_post_meta( $page->ID, '_aurea_contenu_md5', true );
@@ -639,7 +651,9 @@ function aurea_maj_pages_auto( $forcer = array() ) {
 			$gardees[ $slug ] = $p['titre'];
 			continue;
 		}
-		$contenu = aurea_contenu_livre( basename( $p['fichier'], '.html' ), false );
+		$contenu = aurea_dans_langue( $p['langue'], function () use ( $p ) {
+			return aurea_contenu_livre( preg_replace( '/\.html$/', '', $p['fichier'] ), false );
+		} );
 		if ( $contenu === $page->post_content ) {
 			continue;
 		}

@@ -151,7 +151,7 @@ def dynamiser(html, fichier):
     if 'id="form-contact"' in html:
         html = html.replace('<form class="formulaire rv" id="form-contact" novalidate>',
                             '<form class="formulaire rv" id="form-contact" method="post" action="{{admin_post}}" data-envoi="serveur" novalidate>[aurea_contact_jeton]')
-        html = html.replace("Exemple de maquette : rien n'a été transmis.", "").replace('name="besoin"', 'name="besoin[]"')
+        html = re.sub(r"\s*Exemple de maquette\s*:\s*rien n'a été transmis\.", "", html).replace('name="besoin"', 'name="besoin[]"')
     return html
 
 
@@ -218,6 +218,8 @@ def main():
 
     # En-tête et pied de page
     corps = index[index.index("<body>") + len("<body>"):index.index('<main id="contenu">')]
+    # Sélecteur FR / EN : rempli par le thème avec les adresses de Polylang (vide sans version anglaise)
+    corps = re.sub(r'<div class="langues".*?</div>', "{{langues}}", corps, flags=re.S)
     (THEME / "parts" / "entete.html").write_text(reperes(corps).strip() + "\n")
     pied = index[index.index("</main>") + len("</main>"):index.index('<script src="assets/aurea.js"')]
     pied = pied.replace("© 2026 Aurea Media", "© {{annee}} Aurea Media")
@@ -330,3 +332,5 @@ def copier_assets():
 
 if __name__ == "__main__":
     main()
+    import traduire  # version anglaise, à partir du contenu français tout juste exporté
+    traduire.main()

@@ -66,11 +66,14 @@ function aurea_a_etude( $r ) {
 
 /** Carte d'un projet, identique à la maquette. */
 function aurea_carte_projet( $r, $meta = 'type', $classes = 'proj rv', $delai = 0 ) {
-	$etude  = aurea_a_etude( $r );
+	// Les études de cas sont en français : sur les pages anglaises, la carte mène au site du client
+	$etude  = aurea_a_etude( $r ) && ( 'en' !== aurea_langue() || ! $r['url'] );
 	$lien   = $etude || ! $r['url'] ? $r['fiche'] : $r['url'];
 	$cible  = $etude || ! $r['url'] ? '' : ' target="_blank" rel="noopener"';
-	$action = $etude ? 'Voir l’étude de cas' : 'Voir le site';
-	$texte  = 'secteur' === $meta ? $r['secteur']['nom'] : trim( $r['type']['nom'] . ( $r['lieu'] ? ' · ' . $r['lieu'] : '' ) );
+	$action = aurea_t( $etude ? 'Voir l’étude de cas' : 'Voir le site' );
+	$type   = $r['type_court'] ?? aurea_nom_terme( $r['type'] );
+	$lieu   = aurea_real_en( $r['lieu'] );
+	$texte  = 'secteur' === $meta ? aurea_nom_terme( $r['secteur'] ) : trim( $type . ( $lieu ? ' · ' . $lieu : '' ) );
 	$style  = $delai ? ' style="--d:' . esc_attr( $delai ) . 's"' : '';
 	return sprintf(
 		'<article class="%s" data-type="%s" data-secteur="%s"%s><a class="browser proj-img" href="%s"%s>%s%s<span class="visit">%s <svg width="16" height="16"><use href="#i-out"/></svg></span></a><div class="proj-meta"><h3>%s</h3><span>%s</span></div><p>%s</p></article>',
@@ -81,11 +84,11 @@ function aurea_carte_projet( $r, $meta = 'type', $classes = 'proj rv', $delai = 
 		esc_url( $lien ),
 		$cible,
 		aurea_barre( $r['domaine'] ),
-		aurea_img_real( $r, 'Site ' . $r['titre'] . ' réalisé par Aurea Media' ),
+		aurea_img_real( $r, sprintf( aurea_t( 'Site %s réalisé par Aurea Media' ), $r['titre'] ) ),
 		esc_html( $action ),
 		esc_html( $r['titre'] ),
 		esc_html( $texte ),
-		esc_html( $r['accroche'] )
+		esc_html( aurea_real_en( $r['accroche'] ) )
 	);
 }
 
@@ -130,11 +133,14 @@ add_shortcode( 'aurea_portfolio', function () {
 	}
 	$html = '';
 	foreach ( aurea_realisations( array( 'une' => true ) ) as $r ) {
-		$r['type']['nom'] = 'Site e-commerce' === $r['type']['nom'] ? 'E-commerce' : $r['type']['nom'];
+		if ( 'site-ecommerce' === $r['type']['slug'] || 'Site e-commerce' === $r['type']['nom'] ) {
+			$r['type_court'] = 'E-commerce';
+		}
 		$html            .= aurea_carte_projet( $r, 'type', 'proj' );
 	}
 	$total = count( aurea_realisations() );
-	$html .= '<div class="work-end"><h3>' . esc_html( $total > 10 ? 'Et ' . ( $total - count( aurea_realisations( array( 'une' => true ) ) ) ) . ' autres projets à découvrir.' : 'Découvrez tous nos projets.' ) . '</h3><a class="btn" href="' . esc_url( aurea_url( 'realisations' ) ) . '">Toutes les réalisations <svg><use href="#i-arrow"/></svg></a></div>';
+	$fin   = $total > 10 ? sprintf( aurea_t( 'Et %d autres projets à découvrir.' ), $total - count( aurea_realisations( array( 'une' => true ) ) ) ) : aurea_t( 'Découvrez tous nos projets.' );
+	$html .= '<div class="work-end"><h3>' . esc_html( $fin ) . '</h3><a class="btn" href="' . esc_url( aurea_url( 'realisations' ) ) . '">' . esc_html( aurea_t( 'Toutes les réalisations' ) ) . ' <svg><use href="#i-arrow"/></svg></a></div>';
 	return $html;
 } );
 
@@ -173,7 +179,7 @@ add_shortcode( 'aurea_projets', function ( $atts ) {
 	$html .= '</div>';
 	if ( $plus && count( $reals ) > $plus ) {
 		$quoi  = 'site-vitrine' === $a['type'] ? 'sites vitrines' : ( 'site-ecommerce' === $a['type'] ? 'boutiques en ligne' : 'projets' );
-		$html .= '<div class="plus-wrap"><button type="button" class="btn btn--ghost" data-plus>Afficher les ' . count( $reals ) . ' ' . esc_html( $quoi ) . ' <svg><use href="#i-arrow"/></svg></button></div>';
+		$html .= '<div class="plus-wrap"><button type="button" class="btn btn--ghost" data-plus>' . esc_html( sprintf( aurea_t( 'Afficher les %d %s' ), count( $reals ), aurea_t( $quoi ) ) ) . ' <svg><use href="#i-arrow"/></svg></button></div>';
 	}
 	return $html;
 } );
@@ -203,7 +209,7 @@ add_shortcode( 'aurea_logos_bandeau', function () {
 	}
 	// Le bandeau défile en boucle : la deuxième série est masquée aux lecteurs d'écran.
 	$copie = preg_replace( array( '/ role="img" aria-label="[^"]*"/', '/ aria-label="[^"]*"/', '/<a /' ), array( '', '', '<a tabindex="-1" ' ), $rang );
-	return '<section class="logos" aria-label="Ils nous font confiance"><p>Ils nous ont confié leur image en ligne</p><div class="logos-row">' . $rang . '<span class="logos-copie" aria-hidden="true">' . $copie . '</span></div></section>';
+	return '<section class="logos" aria-label="' . esc_attr( aurea_t( 'Ils nous font confiance' ) ) . '"><p>' . esc_html( aurea_t( 'Ils nous ont confié leur image en ligne' ) ) . '</p><div class="logos-row">' . $rang . '<span class="logos-copie" aria-hidden="true">' . $copie . '</span></div></section>';
 } );
 
 /* ------------------------------------------------------------------ */
@@ -220,7 +226,7 @@ add_shortcode( 'aurea_avis_cartes', function ( $atts ) {
 		// En attendant les avis (API Google ou avis ajoutés dans Aurea Studio) : un renvoi propre vers la fiche Google
 		$fiche = function_exists( 'aurea_coordonnees' ) ? ( aurea_coordonnees()['google'] ?? '' ) : '';
 		$r     = function_exists( 'aurea_avis_resume' ) ? aurea_avis_resume() : array( 'note_txt' => '4,9', 'total' => 39 );
-		return $fiche ? '<div class="reviews-vide rv"><svg class="g" aria-hidden="true"><use href="#i-g"/></svg><div><b>' . esc_html( $r['note_txt'] ) . ' sur 5</b><span class="stars" aria-hidden="true">★★★★★</span><p>' . esc_html( sprintf( 'Note moyenne sur %d avis publiés sur notre fiche Google.', $r['total'] ) ) . '</p></div><a class="btn btn--ghost" href="' . esc_url( $fiche ) . '" target="_blank" rel="noopener">Lire les avis sur Google <svg><use href="#i-out"/></svg></a></div>' : '';
+		return $fiche ? '<div class="reviews-vide rv"><svg class="g" aria-hidden="true"><use href="#i-g"/></svg><div><b>' . esc_html( sprintf( aurea_t( '%s sur 5' ), $r['note_txt'] ) ) . '</b><span class="stars" aria-hidden="true">★★★★★</span><p>' . esc_html( sprintf( aurea_t( 'Note moyenne sur %d avis publiés sur notre fiche Google.' ), $r['total'] ) ) . '</p></div><a class="btn btn--ghost" href="' . esc_url( $fiche ) . '" target="_blank" rel="noopener">' . esc_html( aurea_t( 'Lire les avis sur Google' ) ) . ' <svg><use href="#i-out"/></svg></a></div>' : '';
 	}
 	$html = '<div class="reviews">';
 	foreach ( $avis as $i => $v ) {
@@ -228,7 +234,7 @@ add_shortcode( 'aurea_avis_cartes', function ( $atts ) {
 		$html .= sprintf(
 			'<blockquote class="review rv"%s><span class="review-guillemet" aria-hidden="true">“</span><div class="top"><span class="stars" role="img" aria-label="%s">%s</span><svg class="g" aria-hidden="true"><use href="#i-g"/></svg></div><p>%s</p><footer><i>%s</i><div>%s<span>%s</span></div></footer></blockquote>',
 			$i % 3 ? ' style="--d:.' . ( $i % 3 ) . 's"' : '',
-			esc_attr( $note . ' sur 5' ),
+			esc_attr( sprintf( aurea_t( '%s sur 5' ), $note ) ),
 			str_repeat( '★', $note ),
 			esc_html( $v['texte'] ),
 			esc_html( mb_strtoupper( mb_substr( $v['nom'], 0, 1 ) ) ),
@@ -244,7 +250,7 @@ add_shortcode( 'aurea_avis_note', function () {
 		return '';
 	}
 	$r     = aurea_avis_resume();
-	$total = sprintf( '%d avis vérifiés', $r['total'] );
+	$total = sprintf( aurea_t( '%d avis vérifiés' ), $r['total'] );
 	$total = $r['lien'] ? '<a href="' . esc_url( $r['lien'] ) . '" target="_blank" rel="noopener">' . esc_html( $total ) . '</a>' : esc_html( $total );
 	return '<div class="g-score rv"><svg width="34" height="34" aria-hidden="true"><use href="#i-g"/></svg><b>' . esc_html( $r['note_txt'] ) . '</b><div><span class="stars" aria-hidden="true">★★★★★</span><p class="lead" style="font-size:.9rem">' . $total . '</p></div></div>';
 } );

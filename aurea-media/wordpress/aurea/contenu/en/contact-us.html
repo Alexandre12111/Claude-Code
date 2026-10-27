@@ -1,0 +1,42 @@
+<!-- wp:html -->
+<section class="phero phero--court phero--contact">
+  <div class="gridbg" aria-hidden="true"></div><div class="orb orb--a" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav class="crumbs rv" aria-label="Breadcrumb"><a href="{{accueil}}">Home</a><span>/</span><span aria-current="page">Contact</span></nav>
+    <div class="contact-grid">
+      <div>
+        <span class="eyebrow rv">Contact</span>
+        <h1 class="split-words">Let's talk about your <span class="gold">project</span>.</h1>
+        <p class="lead rv" style="margin:22px 0 34px">Describe your project in a few lines: within 24 working hours, you receive an initial analysis, a budget estimate and a timeline.</p>
+        <div class="contact-infos rv">
+          <div class="ci-carte"><span class="ci"><svg><use href="#i-phone"/></svg></span><div><small>Phone</small><b>{{tel_affiche}}</b><span>Monday to Friday, 9am to 7pm (Paris time)</span></div></div>
+          <div class="ci-carte"><span class="ci"><svg><use href="#i-mail"/></svg></span><div><small>Email</small><b>{{email}}</b><span>Personal reply within 24h</span></div></div>
+          <div class="ci-carte"><span class="ci"><svg><use href="#i-pin"/></svg></span><div><small>Address</small><b>60 rue François Ier, 75008 Paris, France</b><span>By appointment, or by video call</span></div></div>
+        </div>
+        <div class="contact-moi rv"><img src="{{theme}}/assets/alexandre-coury.webp" alt="" width="1024" height="800" loading="lazy"><p>“I read every request myself and reply to you personally, never with an automated message.”<b>Alexandre Coury, founder</b></p></div>
+      </div>
+      <form class="formulaire rv" id="form-contact" method="post" action="{{admin_post}}" data-envoi="serveur" novalidate>[aurea_contact_jeton]
+        <div class="f-duo">
+          <div class="f-champ"><label for="f-nom">Full name <em>*</em></label><input id="f-nom" name="nom" autocomplete="name" required></div>
+          <div class="f-champ"><label for="f-tel">Phone <span>optional</span></label><input id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
+        </div>
+        <div class="f-champ"><label for="f-mail">Email address <em>*</em></label><input id="f-mail" name="mail" type="email" autocomplete="email" required><small class="f-err" id="f-mail-err" hidden>Enter a valid email address, for example name@company.com.</small></div>
+        <fieldset class="f-champ"><legend>What you need</legend><div class="choix-liste"><label class="choix"><input type="checkbox" name="besoin[]" value="Site vitrine"><span>Business website</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Site e-commerce"><span>E-commerce website</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Refonte"><span>Redesign</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Identité visuelle"><span>Brand identity</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Motion design"><span>Motion design</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Présentation"><span>Presentation</span></label><label class="choix"><input type="checkbox" name="besoin[]" value="Autre"><span>Other</span></label></div></fieldset>
+        <div class="f-champ"><label for="f-msg">Describe your project <em>*</em></label><textarea id="f-msg" name="message" rows="5" required placeholder="Your business, your goals, your current website if you have one…"></textarea></div>
+        <button class="btn" type="submit">Get my free quote <svg><use href="#i-arrow"/></svg></button>
+        <p class="f-note"><svg><use href="#i-shield"/></svg>Your data is only used to reply to your request. No cold calling, no sharing.</p>
+        <div class="f-ok" hidden role="status"><span class="ci ok"><svg><use href="#i-check"/></svg></span><div><b>Thank you, your request has been sent.</b><span>Personal reply within 24 working hours.</span></div></div>
+      </form>
+    </div>
+  </div>
+</section>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<section class="sec">
+  <div class="wrap">
+<div class="sec-hd sec-hd--c"><span class="eyebrow rv">Frequently asked questions</span><h2 class="split-words">Before you <span class="gold">write to us</span>.</h2></div>
+<div class="faq rv"><details open><summary>Is the quote really free?<i></i></summary><p class="ans">Yes, free and with no obligation. You receive a line-by-line detailed quote within 24 working hours.</p></details><details><summary>What happens after my request?<i></i></summary><p class="ans">A 20-minute call or video call to clarify your needs, then the quote and schedule in writing.</p></details><details><summary>I don't have any content yet, is that a problem?<i></i></summary><p class="ans">No. We can write the copy and choose the visuals with you.</p></details></div>
+  </div>
+</section>
+<!-- /wp:html -->

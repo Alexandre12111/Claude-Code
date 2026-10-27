@@ -144,6 +144,9 @@ function aurea_pack_importer( $dossier ) {
 			update_post_meta( $id, 'rank_math_primary_category', $cat_id );
 		}
 		update_post_meta( $id, '_aurea_article', $version );
+		if ( function_exists( 'pll_set_post_language' ) ) {
+			pll_set_post_language( $id, 'fr' ); // avec Polylang : les articles du blog sont en français
+		}
 		$rapport[] = '« ' . $a['titre'] . ' » : ' . $etat . '.';
 	}
 	kses_init_filters();

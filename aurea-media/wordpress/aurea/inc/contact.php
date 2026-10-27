@@ -126,6 +126,8 @@ add_action( 'wp_footer', function () {
 		return;
 	}
 	list( $ok, $titre, $texte ) = $messages[ $etat ];
+	$titre = aurea_t( $titre );
+	$texte = aurea_t( $texte );
 	?>
 	<script>
 	(function () {

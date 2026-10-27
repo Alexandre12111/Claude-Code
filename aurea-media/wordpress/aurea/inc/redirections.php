@@ -310,7 +310,7 @@ add_action( 'template_redirect', function () {
 		return;
 	}
 	$chemin = function_exists( 'aurea_chemin' ) ? aurea_chemin( (string) ( $_SERVER['REQUEST_URI'] ?? '' ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-	if ( '' === $chemin || substr_count( $chemin, '/' ) > 3 || preg_match( '/\.(php|xml|txt|js|css|png|jpe?g|webp|svg|ico|gif|pdf|zip)$/i', $chemin ) || 0 === strpos( $chemin, 'wp-' ) ) {
+	if ( '' === $chemin || substr_count( $chemin, '/' ) > 3 || preg_match( '/\.(php|xml|txt|js|css|png|jpe?g|webp|svg|ico|gif|pdf|zip)$/i', $chemin ) || 0 === strpos( $chemin, 'wp-' ) || preg_match( '#^en(/|$)#', $chemin ) ) {
 		return;
 	}
 	$plan = apply_filters( 'aurea_plan_redirections', aurea_redirections() );

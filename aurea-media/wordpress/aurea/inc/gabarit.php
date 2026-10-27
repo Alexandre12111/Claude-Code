@@ -11,14 +11,28 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/** Informations des pages livrées avec le thème (contenu/pages.json). */
-function aurea_pages() {
-	static $pages = null;
-	if ( null === $pages ) {
-		$json  = file_get_contents( AUREA_DIR . '/contenu/pages.json' ); // phpcs:ignore WordPress.WP.AlternativeFunctions
-		$pages = json_decode( (string) $json, true ) ?: array();
+/**
+ * Informations des pages livrées avec le thème : contenu/pages.json (français) ou
+ * contenu/en/pages.json (anglais, clé = slug anglais, « source » = slug de la page française).
+ */
+function aurea_pages( $langue = null ) {
+	static $pages = array();
+	$langue = $langue ?: aurea_langue();
+	if ( ! isset( $pages[ $langue ] ) ) {
+		$json             = @file_get_contents( AUREA_DIR . ( 'en' === $langue ? '/contenu/en/pages.json' : '/contenu/pages.json' ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions, WordPress.PHP.NoSilencedErrors
+		$pages[ $langue ] = json_decode( (string) $json, true ) ?: array();
 	}
-	return $pages;
+	return $pages[ $langue ];
+}
+
+/** Slug de la page anglaise qui traduit une page française (clé de pages.json), ou ''. */
+function aurea_slug_en( $cle ) {
+	foreach ( aurea_pages( 'en' ) as $slug => $p ) {
+		if ( ( $p['source'] ?? '' ) === $cle ) {
+			return $slug;
+		}
+	}
+	return '';
 }
 
 /**
@@ -29,11 +43,25 @@ function aurea_pages() {
  */
 function aurea_url( $cle ) {
 	static $cache = array();
-	if ( isset( $cache[ $cle ] ) ) {
-		return $cache[ $cle ];
+	$langue = aurea_langue();
+	if ( isset( $cache[ $langue . $cle ] ) ) {
+		return $cache[ $langue . $cle ];
+	}
+	// Version anglaise : la page anglaise correspondante (le blog et les études de cas restent en français)
+	if ( 'en' === $langue && 0 !== strpos( $cle, 'realisation:' ) && 0 !== strpos( $cle, 'article:' ) && 'conseils' !== $cle ) {
+		if ( 'accueil' === $cle ) {
+			$url = function_exists( 'pll_home_url' ) ? pll_home_url( 'en' ) : home_url( '/en/' );
+		} else {
+			$slug = aurea_slug_en( $cle );
+			$page = $slug ? get_page_by_path( $slug ) : null;
+			$url  = $page ? get_permalink( $page ) : ( $slug ? home_url( '/en/' . $slug . '/' ) : '' );
+		}
+		if ( $url ) {
+			return $cache[ $langue . $cle ] = $url;
+		}
 	}
 	if ( 'accueil' === $cle ) {
-		$url = home_url( '/' );
+		$url = function_exists( 'pll_home_url' ) ? pll_home_url( 'fr' ) : home_url( '/' );
 	} elseif ( 'conseils' === $cle ) {
 		$blog = (int) get_option( 'page_for_posts' );
 		$url  = $blog ? get_permalink( $blog ) : home_url( '/conseils/' );
@@ -49,14 +77,14 @@ function aurea_url( $cle ) {
 		$page = get_page_by_path( $cle );
 		$url  = $page ? get_permalink( $page ) : home_url( '/' . $cle . '/' );
 	}
-	return $cache[ $cle ] = $url;
+	return $cache[ $langue . $cle ] = $url;
 }
 
 /** Remplace les repères par les adresses et coordonnées du site. */
 function aurea_remplacer( $html ) {
 	$c    = aurea_coordonnees();
 	$html = strtr( $html, array(
-		'{{accueil}}'     => esc_url( home_url( '/' ) ),
+		'{{accueil}}'     => esc_url( aurea_url( 'accueil' ) ),
 		'{{theme}}'       => esc_url( AUREA_URI ),
 		'{{tel}}'         => esc_attr( $c['tel'] ),
 		'{{tel_affiche}}' => esc_html( $c['tel_affiche'] ),
@@ -70,11 +98,15 @@ function aurea_remplacer( $html ) {
 	}, $html );
 }
 
-/** Affiche une partie de la maquette (parts/entete.html, parts/pied.html). */
+/** Affiche une partie de la maquette (parts/entete.html, parts/pied.html, ou parts/en/… en anglais). */
 function aurea_partie( $nom ) {
 	$fichier = AUREA_DIR . '/parts/' . $nom . '.html';
+	if ( 'en' === aurea_langue() && is_readable( AUREA_DIR . '/parts/en/' . $nom . '.html' ) ) {
+		$fichier = AUREA_DIR . '/parts/en/' . $nom . '.html';
+	}
 	if ( is_readable( $fichier ) ) {
-		echo aurea_avis_reperes( aurea_remplacer( file_get_contents( $fichier ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput, WordPress.WP.AlternativeFunctions
+		$html = str_replace( '{{langues}}', aurea_langues_html(), file_get_contents( $fichier ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+		echo aurea_avis_reperes( aurea_remplacer( $html ) ); // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 }
 
@@ -94,13 +126,13 @@ function aurea_a_son_hero( $post = null ) {
 
 /** Fil d'Ariane d'une page simple (pages de texte, articles, archives). */
 function aurea_ariane( $etapes ) {
-	$liens = array( '<a href="' . esc_url( home_url( '/' ) ) . '">Accueil</a>' );
+	$liens = array( '<a href="' . esc_url( aurea_url( 'accueil' ) ) . '">' . esc_html( aurea_t( 'Accueil' ) ) . '</a>' );
 	$n     = count( $etapes );
 	foreach ( array_values( $etapes ) as $i => $e ) {
 		$liens[] = '<span>/</span>';
 		$liens[] = ( $i === $n - 1 || empty( $e[1] ) ) ? '<span aria-current="page">' . esc_html( $e[0] ) . '</span>' : '<a href="' . esc_url( $e[1] ) . '">' . esc_html( $e[0] ) . '</a>';
 	}
-	return '<nav class="crumbs rv" aria-label="Fil d’Ariane">' . implode( '', $liens ) . '</nav>';
+	return '<nav class="crumbs rv" aria-label="' . esc_attr( aurea_t( 'Fil d’Ariane' ) ) . '">' . implode( '', $liens ) . '</nav>';
 }
 
 /** Note et nombre d'avis Google, résolus à l'affichage (repères {{avis_note}} et {{avis_total}}). */
