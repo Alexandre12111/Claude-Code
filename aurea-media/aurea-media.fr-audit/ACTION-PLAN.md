@@ -1,6 +1,6 @@
 # Plan d'action : aurea-media.fr
 
-## Phase 1 : correctifs critiques (cette semaine)
+## Phase 1 : correctifs critiques (fait le 27 octobre, sauf le thème 3.1.4)
 - [ ] Installer le thème Aurea 3.1.2.
 - [ ] Remettre la structure /conseils/%postname%/ : Apparence → Installation Aurea → étape « Réglages WordPress » (ou Réglages → Permaliens → Structure personnalisée).
 - [ ] Vérifier : https://aurea-media.fr/conseils/prix-site-vitrine/ doit afficher l'article, et https://aurea-media.fr/prix-site-vitrine/ doit rediriger vers lui.

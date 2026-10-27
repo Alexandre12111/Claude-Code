@@ -10,7 +10,6 @@
   "https://aurea-media.fr/creation-site-vitrine/",
   "https://aurea-media.fr/en/",
   "https://aurea-media.fr/en/about/",
-  "https://aurea-media.fr/en/accueil-english/",
   "https://aurea-media.fr/en/architect-website-design/",
   "https://aurea-media.fr/en/brand-identity-design/",
   "https://aurea-media.fr/en/construction-website-design/",
@@ -80,9 +79,9 @@
   "https://aurea-media.fr/conseils/": {
    "url": "https://aurea-media.fr/conseils/",
    "status": 200,
-   "ms": 1717,
+   "ms": 958,
    "location": "",
-   "bytes": 73729,
+   "bytes": 73728,
    "lang": "fr-FR",
    "title": "Conseils pour réussir son site internet | Blog Aurea Media",
    "desc": "Prix, référencement, refonte, choix des outils : nos conseils concrets pour réussir votre site internet, écrits par un développeur web.",
@@ -143,74 +142,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
   },
-  "https://aurea-media.fr/referencement-local-google/": {
-   "url": "https://aurea-media.fr/referencement-local-google/",
-   "status": 200,
-   "ms": 4376,
-   "location": "",
-   "bytes": 103800,
-   "lang": "fr-FR",
-   "title": "Référencement local : 10 actions pour être visible sur Google",
-   "desc": "Référencement local : fiche Google, avis clients, pages locales, données structurées et annuaires. 10 actions pour être trouvé dans votre ville.",
-   "canonical": "https://aurea-media.fr/referencement-local-google/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Référencement local : 10 actions pour être visible sur Google dans votre ville"
-   ],
-   "h2n": 17,
-   "hreflang": [],
-   "schema": [
-    "Place",
-    "ProfessionalService",
-    "WebSite",
-    "ImageObject",
-    "WebPage",
-    "Person",
-    "BlogPosting",
-    "Person",
-    "BreadcrumbList"
-   ],
-   "words": 1575,
-   "imgs": 9,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/pages-indispensables-site-vitrine/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/referencement-local-google/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/refonte-site-referencement/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/site-vitrine-ou-site-e-commerce/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/referencement-local-commerce.webp"
-  },
   "https://aurea-media.fr/woocommerce-ou-shopify/": {
    "url": "https://aurea-media.fr/woocommerce-ou-shopify/",
    "status": 200,
-   "ms": 4739,
+   "ms": 619,
    "location": "",
    "bytes": 107053,
    "lang": "fr-FR",
@@ -272,12 +207,76 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/woocommerce-ou-shopify-boutique.webp"
   },
+  "https://aurea-media.fr/referencement-local-google/": {
+   "url": "https://aurea-media.fr/referencement-local-google/",
+   "status": 200,
+   "ms": 1385,
+   "location": "",
+   "bytes": 103800,
+   "lang": "fr-FR",
+   "title": "Référencement local : 10 actions pour être visible sur Google",
+   "desc": "Référencement local : fiche Google, avis clients, pages locales, données structurées et annuaires. 10 actions pour être trouvé dans votre ville.",
+   "canonical": "https://aurea-media.fr/referencement-local-google/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Référencement local : 10 actions pour être visible sur Google dans votre ville"
+   ],
+   "h2n": 17,
+   "hreflang": [],
+   "schema": [
+    "Place",
+    "ProfessionalService",
+    "WebSite",
+    "ImageObject",
+    "WebPage",
+    "Person",
+    "BlogPosting",
+    "Person",
+    "BreadcrumbList"
+   ],
+   "words": 1575,
+   "imgs": 9,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/pages-indispensables-site-vitrine/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/referencement-local-google/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/refonte-site-referencement/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/site-vitrine-ou-site-e-commerce/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/referencement-local-commerce.webp"
+  },
   "https://aurea-media.fr/pages-indispensables-site-vitrine/": {
    "url": "https://aurea-media.fr/pages-indispensables-site-vitrine/",
    "status": 200,
-   "ms": 6045,
+   "ms": 1267,
    "location": "",
-   "bytes": 102389,
+   "bytes": 102388,
    "lang": "fr-FR",
    "title": "Les 10 pages indispensables d’un site vitrine, et leur rôle",
    "desc": "Les 10 pages indispensables d’un site vitrine : accueil, services, réalisations, à propos, avis, contact et pages légales. Le rôle de chacune.",
@@ -339,9 +338,9 @@
   "https://aurea-media.fr/refonte-site-referencement/": {
    "url": "https://aurea-media.fr/refonte-site-referencement/",
    "status": 200,
-   "ms": 1447,
+   "ms": 1258,
    "location": "",
-   "bytes": 107318,
+   "bytes": 107317,
    "lang": "fr-FR",
    "title": "Refonte de site sans perdre son référencement : 8 étapes",
    "desc": "Refonte de site sans perdre son référencement : inventaire des pages, plan de redirections 301, préproduction, mise en ligne et suivi, étape par étape.",
@@ -400,74 +399,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/refonte-site-internet-referencement.webp"
   },
-  "https://aurea-media.fr/prix-site-vitrine/": {
-   "url": "https://aurea-media.fr/prix-site-vitrine/",
-   "status": 200,
-   "ms": 254,
-   "location": "",
-   "bytes": 107653,
-   "lang": "fr-FR",
-   "title": "Prix d’un site vitrine en 2026 : budget, devis et pièges",
-   "desc": "Prix d’un site vitrine en 2026 : budgets selon la solution, devis détaillé poste par poste, coûts annuels à prévoir et pièges à éviter avant de signer.",
-   "canonical": "https://aurea-media.fr/prix-site-vitrine/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Prix d’un site vitrine en 2026 : combien prévoir ?"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "Place",
-    "ProfessionalService",
-    "WebSite",
-    "ImageObject",
-    "WebPage",
-    "Person",
-    "BlogPosting",
-    "Person",
-    "BreadcrumbList"
-   ],
-   "words": 1750,
-   "imgs": 9,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/pages-indispensables-site-vitrine/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/prix-site-vitrine/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/refonte-site-referencement/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/site-vitrine-ou-site-e-commerce/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/prix-site-vitrine-devis.webp"
-  },
   "https://aurea-media.fr/site-vitrine-ou-site-e-commerce/": {
    "url": "https://aurea-media.fr/site-vitrine-ou-site-e-commerce/",
    "status": 200,
-   "ms": 254,
+   "ms": 661,
    "location": "",
    "bytes": 107121,
    "lang": "fr-FR",
@@ -533,10 +468,74 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/site-vitrine-ou-site-e-commerce.webp"
   },
+  "https://aurea-media.fr/prix-site-vitrine/": {
+   "url": "https://aurea-media.fr/prix-site-vitrine/",
+   "status": 200,
+   "ms": 265,
+   "location": "",
+   "bytes": 107653,
+   "lang": "fr-FR",
+   "title": "Prix d’un site vitrine en 2026 : budget, devis et pièges",
+   "desc": "Prix d’un site vitrine en 2026 : budgets selon la solution, devis détaillé poste par poste, coûts annuels à prévoir et pièges à éviter avant de signer.",
+   "canonical": "https://aurea-media.fr/prix-site-vitrine/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Prix d’un site vitrine en 2026 : combien prévoir ?"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "Place",
+    "ProfessionalService",
+    "WebSite",
+    "ImageObject",
+    "WebPage",
+    "Person",
+    "BlogPosting",
+    "Person",
+    "BreadcrumbList"
+   ],
+   "words": 1750,
+   "imgs": 9,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/pages-indispensables-site-vitrine/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/prix-site-vitrine/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/refonte-site-referencement/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/site-vitrine-ou-site-e-commerce/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/prix-site-vitrine-devis.webp"
+  },
   "https://aurea-media.fr/": {
    "url": "https://aurea-media.fr/",
    "status": 200,
-   "ms": 261,
+   "ms": 254,
    "location": "",
    "bytes": 127896,
    "lang": "fr-FR",
@@ -609,628 +608,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
   },
-  "https://aurea-media.fr/en/architect-website-design/": {
-   "url": "https://aurea-media.fr/en/architect-website-design/",
-   "status": 200,
-   "ms": 241,
-   "location": "",
-   "bytes": 81102,
-   "lang": "en-GB",
-   "title": "Architect Website Design: Portfolio Websites | Aurea",
-   "desc": "Architect website design that showcases your projects: a curated portfolio, fast WebP images, project filters and qualified enquiries. From €1,000 excl. VAT.",
-   "canonical": "https://aurea-media.fr/en/architect-website-design/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "An architect website that puts your projects centre stage."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/site-internet-architecte/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/architect-website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/site-internet-architecte/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 626,
-   "imgs": 14,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/",
-    "https://aurea-media.fr/site-internet-architecte/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/portugal-expert.webp"
-  },
-  "https://aurea-media.fr/en/restaurant-website-design/": {
-   "url": "https://aurea-media.fr/en/restaurant-website-design/",
-   "status": 200,
-   "ms": 238,
-   "location": "",
-   "bytes": 81034,
-   "lang": "en-GB",
-   "title": "Restaurant Website Design with Online Booking | Aurea",
-   "desc": "Restaurant website design that fills your tables: editable menu, TheFork or Zenchef booking, Google reviews and practical info, from €1,000 excl. VAT.",
-   "canonical": "https://aurea-media.fr/en/restaurant-website-design/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "A restaurant website that fills your tables."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/site-internet-restaurant/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/restaurant-website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/site-internet-restaurant/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 643,
-   "imgs": 14,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/",
-    "https://aurea-media.fr/site-internet-restaurant/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
-  },
-  "https://aurea-media.fr/en/construction-website-design/": {
-   "url": "https://aurea-media.fr/en/construction-website-design/",
-   "status": 200,
-   "ms": 249,
-   "location": "",
-   "bytes": 81237,
-   "lang": "en-GB",
-   "title": "Construction and Trades Website Design | Aurea Media",
-   "desc": "Construction website design for tradespeople and builders: job galleries, quote forms, one-tap calling and local SEO to win more jobs. From €1,000 excl. VAT.",
-   "canonical": "https://aurea-media.fr/en/construction-website-design/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "A tradesperson's website that brings you jobs."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/site-internet-artisan-btp/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/construction-website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/site-internet-artisan-btp/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 645,
-   "imgs": 14,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/",
-    "https://aurea-media.fr/site-internet-artisan-btp/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/novexia.webp"
-  },
-  "https://aurea-media.fr/en/consultant-website-design/": {
-   "url": "https://aurea-media.fr/en/consultant-website-design/",
-   "status": 200,
-   "ms": 235,
-   "location": "",
-   "bytes": 81039,
-   "lang": "en-GB",
-   "title": "Consultant Website Design for Coaches and Firms | Aurea",
-   "desc": "Consultant website design for coaches and consulting firms: clear positioning, readable offers, online booking and a blog that builds authority on Google.",
-   "canonical": "https://aurea-media.fr/en/consultant-website-design/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "A consultant website that commands authority."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/site-internet-coach-consultant/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/consultant-website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/site-internet-coach-consultant/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 615,
-   "imgs": 14,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/",
-    "https://aurea-media.fr/site-internet-coach-consultant/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/sultan.webp"
-  },
-  "https://aurea-media.fr/en/web-design-agency-paris/": {
-   "url": "https://aurea-media.fr/en/web-design-agency-paris/",
-   "status": 200,
-   "ms": 238,
-   "location": "",
-   "bytes": 84658,
-   "lang": "en-GB",
-   "title": "Web Design Agency in Paris: Custom Websites | Aurea",
-   "desc": "Independent web design agency in Paris creating custom business and e-commerce websites. A single point of contact, meetings in Paris and a quote in 24h.",
-   "canonical": "https://aurea-media.fr/en/web-design-agency-paris/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Web design agency in Paris, an independent studio."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/agence-web-paris/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/web-design-agency-paris/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/agence-web-paris/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 601,
-   "imgs": 8,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
-  },
-  "https://aurea-media.fr/en/web-agency-hauts-de-seine/": {
-   "url": "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-   "status": 200,
-   "ms": 249,
-   "location": "",
-   "bytes": 84210,
-   "lang": "en-GB",
-   "title": "Web Agency in Hauts-de-Seine (92): Custom Websites | Aurea",
-   "desc": "Web agency for businesses in Hauts-de-Seine: custom websites for Boulogne, Issy, Neuilly and the whole 92, with meetings at your premises. Quote in 24h.",
-   "canonical": "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Web agency for businesses in Hauts-de-Seine."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/agence-web-hauts-de-seine/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/agence-web-hauts-de-seine/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 689,
-   "imgs": 8,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
-  },
-  "https://aurea-media.fr/en/pricing/": {
-   "url": "https://aurea-media.fr/en/pricing/",
-   "status": 200,
-   "ms": 246,
-   "location": "",
-   "bytes": 74645,
-   "lang": "en-GB",
-   "title": "Website Design Pricing: Business and E-commerce | Aurea",
-   "desc": "Website design pricing with no hidden costs: business websites from €1,000 and e-commerce from €1,650 excl. VAT, technical SEO included. Quote in 24h.",
-   "canonical": "https://aurea-media.fr/en/pricing/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "How much does your website cost?"
-   ],
-   "h2n": 5,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/tarifs/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/pricing/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/tarifs/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 599,
-   "imgs": 5,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
-  },
-  "https://aurea-media.fr/en/about/": {
-   "url": "https://aurea-media.fr/en/about/",
-   "status": 200,
-   "ms": 238,
-   "location": "",
-   "bytes": 76600,
-   "lang": "en-GB",
-   "title": "About Aurea Media: Independent Web Design Studio in Paris",
-   "desc": "Aurea Media is an independent web design studio founded in Paris in 2021 by Alexandre Coury. No salespeople, no outsourcing: you work with the designer.",
-   "canonical": "https://aurea-media.fr/en/about/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "An independent studio, founded in 2021."
-   ],
-   "h2n": 4,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/agence/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/about/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/agence/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "AboutPage"
-   ],
-   "words": 322,
-   "imgs": 6,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
-  },
-  "https://aurea-media.fr/en/contact-us/": {
-   "url": "https://aurea-media.fr/en/contact-us/",
-   "status": 200,
-   "ms": 235,
-   "location": "",
-   "bytes": 69731,
-   "lang": "en-GB",
-   "title": "Contact Us: Free Website Quote Within 24h | Aurea Media",
-   "desc": "Contact Aurea Media for a free website quote: describe your project and get an initial analysis, a budget estimate and a timeline within 24 working hours.",
-   "canonical": "https://aurea-media.fr/en/contact-us/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Let's talk about your project."
-   ],
-   "h2n": 1,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/contact/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/contact-us/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/contact/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "ContactPage"
-   ],
-   "words": 232,
-   "imgs": 4,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
-  },
   "https://aurea-media.fr/en/legal-notice/": {
    "url": "https://aurea-media.fr/en/legal-notice/",
    "status": 200,
-   "ms": 260,
+   "ms": 604,
    "location": "",
    "bytes": 68844,
    "lang": "en-GB",
@@ -1298,7 +679,7 @@
   "https://aurea-media.fr/en/privacy/": {
    "url": "https://aurea-media.fr/en/privacy/",
    "status": 200,
-   "ms": 243,
+   "ms": 601,
    "location": "",
    "bytes": 69187,
    "lang": "en-GB",
@@ -1366,7 +747,7 @@
   "https://aurea-media.fr/en/web-design-portfolio/": {
    "url": "https://aurea-media.fr/en/web-design-portfolio/",
    "status": 200,
-   "ms": 251,
+   "ms": 659,
    "location": "",
    "bytes": 104298,
    "lang": "en-GB",
@@ -1434,7 +815,7 @@
   "https://aurea-media.fr/en/law-firm-website-design/": {
    "url": "https://aurea-media.fr/en/law-firm-website-design/",
    "status": 200,
-   "ms": 245,
+   "ms": 619,
    "location": "",
    "bytes": 81277,
    "lang": "en-GB",
@@ -1503,7 +884,7 @@
   "https://aurea-media.fr/en/healthcare-website-design/": {
    "url": "https://aurea-media.fr/en/healthcare-website-design/",
    "status": 200,
-   "ms": 247,
+   "ms": 627,
    "location": "",
    "bytes": 81153,
    "lang": "en-GB",
@@ -1569,239 +950,32 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/xpert-medical.webp"
   },
-  "https://aurea-media.fr/mentions-legales/": {
-   "url": "https://aurea-media.fr/mentions-legales/",
+  "https://aurea-media.fr/en/architect-website-design/": {
+   "url": "https://aurea-media.fr/en/architect-website-design/",
    "status": 200,
-   "ms": 258,
+   "ms": 646,
    "location": "",
-   "bytes": 69120,
-   "lang": "fr-FR",
-   "title": "Mentions légales | Aurea Media",
-   "desc": "Mentions légales du site aurea-media.fr : éditeur, directeur de la publication, hébergement, propriété intellectuelle et crédits des icônes et typographies.",
-   "canonical": "https://aurea-media.fr/mentions-legales/",
+   "bytes": 81102,
+   "lang": "en-GB",
+   "title": "Architect Website Design: Portfolio Websites | Aurea",
+   "desc": "Architect website design that showcases your projects: a curated portfolio, fast WebP images, project filters and qualified enquiries. From €1,000 excl. VAT.",
+   "canonical": "https://aurea-media.fr/en/architect-website-design/",
    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
    "h1": [
-    "Mentions légales"
+    "An architect website that puts your projects centre stage."
    ],
    "h2n": 6,
    "hreflang": [
     [
-     "https://aurea-media.fr/mentions-legales/",
+     "https://aurea-media.fr/site-internet-architecte/",
      "fr"
     ],
     [
-     "https://aurea-media.fr/en/legal-notice/",
+     "https://aurea-media.fr/en/architect-website-design/",
      "en"
     ],
     [
-     "https://aurea-media.fr/mentions-legales/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 182,
-   "imgs": 3,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
-  },
-  "https://aurea-media.fr/politique-confidentialite/": {
-   "url": "https://aurea-media.fr/politique-confidentialite/",
-   "status": 200,
-   "ms": 234,
-   "location": "",
-   "bytes": 69724,
-   "lang": "fr-FR",
-   "title": "Politique de confidentialité | Aurea Media",
-   "desc": "Politique de confidentialité d'Aurea Media : données du formulaire de contact, finalité, durée de conservation, destinataires et exercice de vos droits RGPD.",
-   "canonical": "https://aurea-media.fr/politique-confidentialite/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Politique de confidentialité"
-   ],
-   "h2n": 7,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/politique-confidentialite/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/privacy/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/politique-confidentialite/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 262,
-   "imgs": 3,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
-  },
-  "https://aurea-media.fr/en/": {
-   "url": "https://aurea-media.fr/en/",
-   "status": 200,
-   "ms": 255,
-   "location": "",
-   "bytes": 126878,
-   "lang": "en-GB",
-   "title": "Web Design Agency in France: Custom Websites | Aurea",
-   "desc": "Aurea Media is an independent web design agency in France creating custom business and e-commerce websites with built-in SEO. Live in 4 weeks, free quote.",
-   "canonical": "https://aurea-media.fr/en/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Websites designed to win you new clients."
-   ],
-   "h2n": 9,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "Place",
-    "ProfessionalService",
-    "WebSite",
-    "ImageObject",
-    "WebPage",
-    "Person"
-   ],
-   "words": 1490,
-   "imgs": 45,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
-  },
-  "https://aurea-media.fr/en/website-design/": {
-   "url": "https://aurea-media.fr/en/website-design/",
-   "status": 200,
-   "ms": 239,
-   "location": "",
-   "bytes": 115775,
-   "lang": "en-GB",
-   "title": "Custom Website Design for Small Businesses | Aurea",
-   "desc": "Custom website design for freelancers and small businesses: a unique, fast, SEO-ready WordPress site from €1,000 excl. VAT, live in 4 weeks. Free quote.",
-   "canonical": "https://aurea-media.fr/en/website-design/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Custom website design for businesses, built to convert."
-   ],
-   "h2n": 8,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/creation-site-vitrine/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/creation-site-vitrine/",
+     "https://aurea-media.fr/site-internet-architecte/",
      "x-default"
     ]
    ],
@@ -1813,12 +987,288 @@
     "WebSite",
     "WebPage"
    ],
-   "words": 1458,
-   "imgs": 38,
+   "words": 626,
+   "imgs": 14,
    "img_no_alt": 0,
    "img_no_dims": 0,
    "links": [
-    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/",
+    "https://aurea-media.fr/site-internet-architecte/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/portugal-expert.webp"
+  },
+  "https://aurea-media.fr/en/restaurant-website-design/": {
+   "url": "https://aurea-media.fr/en/restaurant-website-design/",
+   "status": 200,
+   "ms": 637,
+   "location": "",
+   "bytes": 81034,
+   "lang": "en-GB",
+   "title": "Restaurant Website Design with Online Booking | Aurea",
+   "desc": "Restaurant website design that fills your tables: editable menu, TheFork or Zenchef booking, Google reviews and practical info, from €1,000 excl. VAT.",
+   "canonical": "https://aurea-media.fr/en/restaurant-website-design/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "A restaurant website that fills your tables."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/site-internet-restaurant/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/restaurant-website-design/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/site-internet-restaurant/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 643,
+   "imgs": 14,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/",
+    "https://aurea-media.fr/site-internet-restaurant/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
+  },
+  "https://aurea-media.fr/en/construction-website-design/": {
+   "url": "https://aurea-media.fr/en/construction-website-design/",
+   "status": 200,
+   "ms": 639,
+   "location": "",
+   "bytes": 81237,
+   "lang": "en-GB",
+   "title": "Construction and Trades Website Design | Aurea Media",
+   "desc": "Construction website design for tradespeople and builders: job galleries, quote forms, one-tap calling and local SEO to win more jobs. From €1,000 excl. VAT.",
+   "canonical": "https://aurea-media.fr/en/construction-website-design/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "A tradesperson's website that brings you jobs."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/site-internet-artisan-btp/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/construction-website-design/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/site-internet-artisan-btp/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 645,
+   "imgs": 14,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/",
+    "https://aurea-media.fr/site-internet-artisan-btp/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/novexia.webp"
+  },
+  "https://aurea-media.fr/en/consultant-website-design/": {
+   "url": "https://aurea-media.fr/en/consultant-website-design/",
+   "status": 200,
+   "ms": 612,
+   "location": "",
+   "bytes": 81039,
+   "lang": "en-GB",
+   "title": "Consultant Website Design for Coaches and Firms | Aurea",
+   "desc": "Consultant website design for coaches and consulting firms: clear positioning, readable offers, online booking and a blog that builds authority on Google.",
+   "canonical": "https://aurea-media.fr/en/consultant-website-design/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "A consultant website that commands authority."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/site-internet-coach-consultant/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/consultant-website-design/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/site-internet-coach-consultant/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 615,
+   "imgs": 14,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/",
+    "https://aurea-media.fr/site-internet-coach-consultant/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/sultan.webp"
+  },
+  "https://aurea-media.fr/en/web-design-agency-paris/": {
+   "url": "https://aurea-media.fr/en/web-design-agency-paris/",
+   "status": 200,
+   "ms": 647,
+   "location": "",
+   "bytes": 84658,
+   "lang": "en-GB",
+   "title": "Web Design Agency in Paris: Custom Websites | Aurea",
+   "desc": "Independent web design agency in Paris creating custom business and e-commerce websites. A single point of contact, meetings in Paris and a quote in 24h.",
+   "canonical": "https://aurea-media.fr/en/web-design-agency-paris/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Web design agency in Paris, an independent studio."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/agence-web-paris/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/web-design-agency-paris/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/agence-web-paris/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 601,
+   "imgs": 8,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/agence-web-paris/",
     "https://aurea-media.fr/en/",
     "https://aurea-media.fr/en/about/",
     "https://aurea-media.fr/en/architect-website-design/",
@@ -1843,12 +1293,285 @@
     "https://aurea-media.fr/en/website-redesign/"
    ],
    "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/novexia.webp"
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
+  },
+  "https://aurea-media.fr/en/web-agency-hauts-de-seine/": {
+   "url": "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+   "status": 200,
+   "ms": 641,
+   "location": "",
+   "bytes": 84210,
+   "lang": "en-GB",
+   "title": "Web Agency in Hauts-de-Seine (92): Custom Websites | Aurea",
+   "desc": "Web agency for businesses in Hauts-de-Seine: custom websites for Boulogne, Issy, Neuilly and the whole 92, with meetings at your premises. Quote in 24h.",
+   "canonical": "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Web agency for businesses in Hauts-de-Seine."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/agence-web-hauts-de-seine/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/agence-web-hauts-de-seine/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 689,
+   "imgs": 8,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
+  },
+  "https://aurea-media.fr/en/pricing/": {
+   "url": "https://aurea-media.fr/en/pricing/",
+   "status": 200,
+   "ms": 609,
+   "location": "",
+   "bytes": 74645,
+   "lang": "en-GB",
+   "title": "Website Design Pricing: Business and E-commerce | Aurea",
+   "desc": "Website design pricing with no hidden costs: business websites from €1,000 and e-commerce from €1,650 excl. VAT, technical SEO included. Quote in 24h.",
+   "canonical": "https://aurea-media.fr/en/pricing/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "How much does your website cost?"
+   ],
+   "h2n": 5,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/tarifs/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/pricing/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/tarifs/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 599,
+   "imgs": 5,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
+  },
+  "https://aurea-media.fr/en/about/": {
+   "url": "https://aurea-media.fr/en/about/",
+   "status": 200,
+   "ms": 621,
+   "location": "",
+   "bytes": 76600,
+   "lang": "en-GB",
+   "title": "About Aurea Media: Independent Web Design Studio in Paris",
+   "desc": "Aurea Media is an independent web design studio founded in Paris in 2021 by Alexandre Coury. No salespeople, no outsourcing: you work with the designer.",
+   "canonical": "https://aurea-media.fr/en/about/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "An independent studio, founded in 2021."
+   ],
+   "h2n": 4,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/agence/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/about/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/agence/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "AboutPage"
+   ],
+   "words": 322,
+   "imgs": 6,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
+  },
+  "https://aurea-media.fr/en/contact-us/": {
+   "url": "https://aurea-media.fr/en/contact-us/",
+   "status": 200,
+   "ms": 613,
+   "location": "",
+   "bytes": 69731,
+   "lang": "en-GB",
+   "title": "Contact Us: Free Website Quote Within 24h | Aurea Media",
+   "desc": "Contact Aurea Media for a free website quote: describe your project and get an initial analysis, a budget estimate and a timeline within 24 working hours.",
+   "canonical": "https://aurea-media.fr/en/contact-us/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Let's talk about your project."
+   ],
+   "h2n": 1,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/contact/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/contact-us/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/contact/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "ContactPage"
+   ],
+   "words": 232,
+   "imgs": 4,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
   },
   "https://aurea-media.fr/en/ecommerce-website-design/": {
    "url": "https://aurea-media.fr/en/ecommerce-website-design/",
    "status": 200,
-   "ms": 272,
+   "ms": 624,
    "location": "",
    "bytes": 83483,
    "lang": "en-GB",
@@ -1917,7 +1640,7 @@
   "https://aurea-media.fr/en/website-redesign/": {
    "url": "https://aurea-media.fr/en/website-redesign/",
    "status": 200,
-   "ms": 244,
+   "ms": 624,
    "location": "",
    "bytes": 83615,
    "lang": "en-GB",
@@ -1986,7 +1709,7 @@
   "https://aurea-media.fr/en/brand-identity-design/": {
    "url": "https://aurea-media.fr/en/brand-identity-design/",
    "status": 200,
-   "ms": 235,
+   "ms": 608,
    "location": "",
    "bytes": 79937,
    "lang": "en-GB",
@@ -2055,7 +1778,7 @@
   "https://aurea-media.fr/en/motion-design-videos/": {
    "url": "https://aurea-media.fr/en/motion-design-videos/",
    "status": 200,
-   "ms": 240,
+   "ms": 637,
    "location": "",
    "bytes": 74278,
    "lang": "en-GB",
@@ -2124,7 +1847,7 @@
   "https://aurea-media.fr/en/presentation-design/": {
    "url": "https://aurea-media.fr/en/presentation-design/",
    "status": 200,
-   "ms": 227,
+   "ms": 596,
    "location": "",
    "bytes": 75409,
    "lang": "en-GB",
@@ -2190,10 +1913,286 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/creations/presentation-1.webp"
   },
+  "https://aurea-media.fr/mentions-legales/": {
+   "url": "https://aurea-media.fr/mentions-legales/",
+   "status": 200,
+   "ms": 624,
+   "location": "",
+   "bytes": 69120,
+   "lang": "fr-FR",
+   "title": "Mentions légales | Aurea Media",
+   "desc": "Mentions légales du site aurea-media.fr : éditeur, directeur de la publication, hébergement, propriété intellectuelle et crédits des icônes et typographies.",
+   "canonical": "https://aurea-media.fr/mentions-legales/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Mentions légales"
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/mentions-legales/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/legal-notice/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/mentions-legales/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 182,
+   "imgs": 3,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
+  },
+  "https://aurea-media.fr/politique-confidentialite/": {
+   "url": "https://aurea-media.fr/politique-confidentialite/",
+   "status": 200,
+   "ms": 601,
+   "location": "",
+   "bytes": 69724,
+   "lang": "fr-FR",
+   "title": "Politique de confidentialité | Aurea Media",
+   "desc": "Politique de confidentialité d'Aurea Media : données du formulaire de contact, finalité, durée de conservation, destinataires et exercice de vos droits RGPD.",
+   "canonical": "https://aurea-media.fr/politique-confidentialite/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Politique de confidentialité"
+   ],
+   "h2n": 7,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/politique-confidentialite/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/privacy/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/politique-confidentialite/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 262,
+   "imgs": 3,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
+  },
+  "https://aurea-media.fr/en/": {
+   "url": "https://aurea-media.fr/en/",
+   "status": 200,
+   "ms": 246,
+   "location": "",
+   "bytes": 126878,
+   "lang": "en-GB",
+   "title": "Web Design Agency in France: Custom Websites | Aurea",
+   "desc": "Aurea Media is an independent web design agency in France creating custom business and e-commerce websites with built-in SEO. Live in 4 weeks, free quote.",
+   "canonical": "https://aurea-media.fr/en/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Websites designed to win you new clients."
+   ],
+   "h2n": 9,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "Place",
+    "ProfessionalService",
+    "WebSite",
+    "ImageObject",
+    "WebPage",
+    "Person"
+   ],
+   "words": 1490,
+   "imgs": 45,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
+  },
+  "https://aurea-media.fr/en/website-design/": {
+   "url": "https://aurea-media.fr/en/website-design/",
+   "status": 200,
+   "ms": 629,
+   "location": "",
+   "bytes": 115775,
+   "lang": "en-GB",
+   "title": "Custom Website Design for Small Businesses | Aurea",
+   "desc": "Custom website design for freelancers and small businesses: a unique, fast, SEO-ready WordPress site from €1,000 excl. VAT, live in 4 weeks. Free quote.",
+   "canonical": "https://aurea-media.fr/en/website-design/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Custom website design for businesses, built to convert."
+   ],
+   "h2n": 8,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/creation-site-vitrine/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/website-design/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/creation-site-vitrine/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 1458,
+   "imgs": 38,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/en/architect-website-design/",
+    "https://aurea-media.fr/en/brand-identity-design/",
+    "https://aurea-media.fr/en/construction-website-design/",
+    "https://aurea-media.fr/en/consultant-website-design/",
+    "https://aurea-media.fr/en/contact-us/",
+    "https://aurea-media.fr/en/ecommerce-website-design/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/en/legal-notice/",
+    "https://aurea-media.fr/en/motion-design-videos/",
+    "https://aurea-media.fr/en/presentation-design/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/en/privacy/",
+    "https://aurea-media.fr/en/restaurant-website-design/",
+    "https://aurea-media.fr/en/site-map/",
+    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
+    "https://aurea-media.fr/en/web-design-agency-paris/",
+    "https://aurea-media.fr/en/web-design-portfolio/",
+    "https://aurea-media.fr/en/website-design/",
+    "https://aurea-media.fr/en/website-redesign/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/novexia.webp"
+  },
   "https://aurea-media.fr/en/site-map/": {
    "url": "https://aurea-media.fr/en/site-map/",
    "status": 200,
-   "ms": 224,
+   "ms": 613,
    "location": "",
    "bytes": 68655,
    "lang": "en-GB",
@@ -2262,7 +2261,7 @@
   "https://aurea-media.fr/contact/": {
    "url": "https://aurea-media.fr/contact/",
    "status": 200,
-   "ms": 237,
+   "ms": 600,
    "location": "",
    "bytes": 69947,
    "lang": "fr-FR",
@@ -2328,217 +2327,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
   },
-  "https://aurea-media.fr/en/accueil-english/": {
-   "url": "https://aurea-media.fr/en/accueil-english/",
-   "status": 200,
-   "ms": 596,
-   "location": "",
-   "bytes": 63993,
-   "lang": "en-GB",
-   "title": "Accueil - English — Aurea Media",
-   "desc": "",
-   "canonical": "https://aurea-media.fr/en/accueil-english/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Accueil - English"
-   ],
-   "h2n": 0,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/accueil-english/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 5,
-   "imgs": 3,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/en/accueil-english/",
-    "https://aurea-media.fr/en/architect-website-design/",
-    "https://aurea-media.fr/en/brand-identity-design/",
-    "https://aurea-media.fr/en/construction-website-design/",
-    "https://aurea-media.fr/en/consultant-website-design/",
-    "https://aurea-media.fr/en/contact-us/",
-    "https://aurea-media.fr/en/ecommerce-website-design/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/en/legal-notice/",
-    "https://aurea-media.fr/en/motion-design-videos/",
-    "https://aurea-media.fr/en/presentation-design/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/en/privacy/",
-    "https://aurea-media.fr/en/restaurant-website-design/",
-    "https://aurea-media.fr/en/site-map/",
-    "https://aurea-media.fr/en/web-agency-hauts-de-seine/",
-    "https://aurea-media.fr/en/web-design-agency-paris/",
-    "https://aurea-media.fr/en/web-design-portfolio/",
-    "https://aurea-media.fr/en/website-design/",
-    "https://aurea-media.fr/en/website-redesign/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
-  },
-  "https://aurea-media.fr/tarifs/": {
-   "url": "https://aurea-media.fr/tarifs/",
-   "status": 200,
-   "ms": 589,
-   "location": "",
-   "bytes": 75279,
-   "lang": "fr-FR",
-   "title": "Prix d'un site vitrine et e-commerce en 2026 | Aurea Media",
-   "desc": "Prix d'un site vitrine dès 1 000 € HT, site e-commerce dès 1 650 € HT : ce qui est inclus, les options et le détail ligne par ligne. Devis 24h.",
-   "canonical": "https://aurea-media.fr/tarifs/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Combien coûte votre site internet ?"
-   ],
-   "h2n": 5,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/tarifs/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/pricing/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/tarifs/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 649,
-   "imgs": 5,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/pricing/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
-  },
-  "https://aurea-media.fr/agence/": {
-   "url": "https://aurea-media.fr/agence/",
-   "status": 200,
-   "ms": 230,
-   "location": "",
-   "bytes": 76958,
-   "lang": "fr-FR",
-   "title": "Aurea Media, agence web indépendante fondée par A. Coury",
-   "desc": "Aurea Media est une agence web indépendante fondée en 2021 par Alexandre Coury, développeur et designer. Méthode, valeurs et engagements.",
-   "canonical": "https://aurea-media.fr/agence/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Un studio indépendant, fondé en 2021."
-   ],
-   "h2n": 4,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/agence/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/about/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/agence/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "WebSite",
-    "AboutPage"
-   ],
-   "words": 342,
-   "imgs": 6,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/about/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
-  },
   "https://aurea-media.fr/site-internet-architecte/": {
    "url": "https://aurea-media.fr/site-internet-architecte/",
    "status": 200,
-   "ms": 237,
+   "ms": 642,
    "location": "",
    "bytes": 81727,
    "lang": "fr-FR",
@@ -2611,9 +2403,9 @@
   "https://aurea-media.fr/site-internet-restaurant/": {
    "url": "https://aurea-media.fr/site-internet-restaurant/",
    "status": 200,
-   "ms": 236,
+   "ms": 241,
    "location": "",
-   "bytes": 81591,
+   "bytes": 81590,
    "lang": "fr-FR",
    "title": "Création site internet restaurant avec réservation | Aurea",
    "desc": "Création de site internet pour restaurant : carte toujours à jour, réservation en ligne, avis Google et photos qui donnent faim. Devis sous 24h.",
@@ -2684,7 +2476,7 @@
   "https://aurea-media.fr/site-internet-artisan-btp/": {
    "url": "https://aurea-media.fr/site-internet-artisan-btp/",
    "status": 200,
-   "ms": 225,
+   "ms": 622,
    "location": "",
    "bytes": 81630,
    "lang": "fr-FR",
@@ -2757,7 +2549,7 @@
   "https://aurea-media.fr/site-internet-coach-consultant/": {
    "url": "https://aurea-media.fr/site-internet-coach-consultant/",
    "status": 200,
-   "ms": 613,
+   "ms": 615,
    "location": "",
    "bytes": 81543,
    "lang": "fr-FR",
@@ -2830,9 +2622,9 @@
   "https://aurea-media.fr/agence-web-paris/": {
    "url": "https://aurea-media.fr/agence-web-paris/",
    "status": 200,
-   "ms": 230,
+   "ms": 667,
    "location": "",
-   "bytes": 84888,
+   "bytes": 84887,
    "lang": "fr-FR",
    "title": "Agence web Paris : création de site internet sur mesure",
    "desc": "Agence web à Paris : création de sites vitrines et e-commerce sur mesure, rendez vous sur place ou en visio. Devis gratuit et détaillé sous 24h.",
@@ -2903,7 +2695,7 @@
   "https://aurea-media.fr/agence-web-hauts-de-seine/": {
    "url": "https://aurea-media.fr/agence-web-hauts-de-seine/",
    "status": 200,
-   "ms": 232,
+   "ms": 643,
    "location": "",
    "bytes": 84626,
    "lang": "fr-FR",
@@ -2973,10 +2765,294 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
   },
+  "https://aurea-media.fr/tarifs/": {
+   "url": "https://aurea-media.fr/tarifs/",
+   "status": 200,
+   "ms": 585,
+   "location": "",
+   "bytes": 75279,
+   "lang": "fr-FR",
+   "title": "Prix d'un site vitrine et e-commerce en 2026 | Aurea Media",
+   "desc": "Prix d'un site vitrine dès 1 000 € HT, site e-commerce dès 1 650 € HT : ce qui est inclus, les options et le détail ligne par ligne. Devis 24h.",
+   "canonical": "https://aurea-media.fr/tarifs/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Combien coûte votre site internet ?"
+   ],
+   "h2n": 5,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/tarifs/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/pricing/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/tarifs/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 649,
+   "imgs": 5,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/pricing/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/villa-moniris.webp"
+  },
+  "https://aurea-media.fr/agence/": {
+   "url": "https://aurea-media.fr/agence/",
+   "status": 200,
+   "ms": 625,
+   "location": "",
+   "bytes": 76957,
+   "lang": "fr-FR",
+   "title": "Aurea Media, agence web indépendante fondée par A. Coury",
+   "desc": "Aurea Media est une agence web indépendante fondée en 2021 par Alexandre Coury, développeur et designer. Méthode, valeurs et engagements.",
+   "canonical": "https://aurea-media.fr/agence/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Un studio indépendant, fondé en 2021."
+   ],
+   "h2n": 4,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/agence/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/about/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/agence/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "WebSite",
+    "AboutPage"
+   ],
+   "words": 342,
+   "imgs": 6,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/about/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/alexandre-coury.webp"
+  },
+  "https://aurea-media.fr/site-internet-avocat/": {
+   "url": "https://aurea-media.fr/site-internet-avocat/",
+   "status": 200,
+   "ms": 648,
+   "location": "",
+   "bytes": 81636,
+   "lang": "fr-FR",
+   "title": "Site internet avocat : création pour cabinet | Aurea",
+   "desc": "Création de site internet pour avocat : pages domaines d'intervention, prise de rendez vous en ligne et respect des règles de la profession.",
+   "canonical": "https://aurea-media.fr/site-internet-avocat/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Création de site internet pour avocat et cabinet."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/site-internet-avocat/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/law-firm-website-design/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/site-internet-avocat/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 686,
+   "imgs": 15,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/law-firm-website-design/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/inas/",
+    "https://aurea-media.fr/realisations/maitre-laurence-paoli/",
+    "https://aurea-media.fr/realisations/sultan-conseil-leviers/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/laurence-paoli.webp"
+  },
+  "https://aurea-media.fr/site-internet-professions-sante/": {
+   "url": "https://aurea-media.fr/site-internet-professions-sante/",
+   "status": 200,
+   "ms": 638,
+   "location": "",
+   "bytes": 81949,
+   "lang": "fr-FR",
+   "title": "Site internet professionnel de santé : médecin, kiné | Aurea",
+   "desc": "Création de site internet pour professionnels de santé : médecins, kinés, praticiens. Prise de rendez vous, infos pratiques, conformité déontologique.",
+   "canonical": "https://aurea-media.fr/site-internet-professions-sante/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Un site internet pour les professionnels de santé."
+   ],
+   "h2n": 6,
+   "hreflang": [
+    [
+     "https://aurea-media.fr/site-internet-professions-sante/",
+     "fr"
+    ],
+    [
+     "https://aurea-media.fr/en/healthcare-website-design/",
+     "en"
+    ],
+    [
+     "https://aurea-media.fr/site-internet-professions-sante/",
+     "x-default"
+    ]
+   ],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "Service",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 705,
+   "imgs": 14,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/healthcare-website-design/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/barber-korner/",
+    "https://aurea-media.fr/realisations/maitre-laurence-paoli/",
+    "https://aurea-media.fr/realisations/xpert-medical/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/xpert-medical.webp"
+  },
   "https://aurea-media.fr/creation-site-vitrine/": {
    "url": "https://aurea-media.fr/creation-site-vitrine/",
    "status": 200,
-   "ms": 272,
+   "ms": 680,
    "location": "",
    "bytes": 117139,
    "lang": "fr-FR",
@@ -3067,7 +3143,7 @@
   "https://aurea-media.fr/creation-site-ecommerce/": {
    "url": "https://aurea-media.fr/creation-site-ecommerce/",
    "status": 200,
-   "ms": 633,
+   "ms": 630,
    "location": "",
    "bytes": 84146,
    "lang": "fr-FR",
@@ -3139,7 +3215,7 @@
   "https://aurea-media.fr/refonte-site-internet/": {
    "url": "https://aurea-media.fr/refonte-site-internet/",
    "status": 200,
-   "ms": 235,
+   "ms": 667,
    "location": "",
    "bytes": 84403,
    "lang": "fr-FR",
@@ -3212,7 +3288,7 @@
   "https://aurea-media.fr/logo-identite-visuelle/": {
    "url": "https://aurea-media.fr/logo-identite-visuelle/",
    "status": 200,
-   "ms": 236,
+   "ms": 621,
    "location": "",
    "bytes": 80456,
    "lang": "fr-FR",
@@ -3282,7 +3358,7 @@
   "https://aurea-media.fr/motion-design/": {
    "url": "https://aurea-media.fr/motion-design/",
    "status": 200,
-   "ms": 239,
+   "ms": 623,
    "location": "",
    "bytes": 74694,
    "lang": "fr-FR",
@@ -3352,7 +3428,7 @@
   "https://aurea-media.fr/maquettes-presentation/": {
    "url": "https://aurea-media.fr/maquettes-presentation/",
    "status": 200,
-   "ms": 233,
+   "ms": 615,
    "location": "",
    "bytes": 76143,
    "lang": "fr-FR",
@@ -3419,156 +3495,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/creations/presentation-1.webp"
   },
-  "https://aurea-media.fr/site-internet-avocat/": {
-   "url": "https://aurea-media.fr/site-internet-avocat/",
-   "status": 200,
-   "ms": 243,
-   "location": "",
-   "bytes": 81637,
-   "lang": "fr-FR",
-   "title": "Site internet avocat : création pour cabinet | Aurea",
-   "desc": "Création de site internet pour avocat : pages domaines d'intervention, prise de rendez vous en ligne et respect des règles de la profession.",
-   "canonical": "https://aurea-media.fr/site-internet-avocat/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Création de site internet pour avocat et cabinet."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/site-internet-avocat/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/law-firm-website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/site-internet-avocat/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 686,
-   "imgs": 15,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/law-firm-website-design/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/inas/",
-    "https://aurea-media.fr/realisations/maitre-laurence-paoli/",
-    "https://aurea-media.fr/realisations/sultan-conseil-leviers/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/laurence-paoli.webp"
-  },
-  "https://aurea-media.fr/site-internet-professions-sante/": {
-   "url": "https://aurea-media.fr/site-internet-professions-sante/",
-   "status": 200,
-   "ms": 265,
-   "location": "",
-   "bytes": 81950,
-   "lang": "fr-FR",
-   "title": "Site internet professionnel de santé : médecin, kiné | Aurea",
-   "desc": "Création de site internet pour professionnels de santé : médecins, kinés, praticiens. Prise de rendez vous, infos pratiques, conformité déontologique.",
-   "canonical": "https://aurea-media.fr/site-internet-professions-sante/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Un site internet pour les professionnels de santé."
-   ],
-   "h2n": 6,
-   "hreflang": [
-    [
-     "https://aurea-media.fr/site-internet-professions-sante/",
-     "fr"
-    ],
-    [
-     "https://aurea-media.fr/en/healthcare-website-design/",
-     "en"
-    ],
-    [
-     "https://aurea-media.fr/site-internet-professions-sante/",
-     "x-default"
-    ]
-   ],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "Service",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 705,
-   "imgs": 14,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/healthcare-website-design/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/barber-korner/",
-    "https://aurea-media.fr/realisations/maitre-laurence-paoli/",
-    "https://aurea-media.fr/realisations/xpert-medical/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/themes/aurea/assets/realisations/xpert-medical.webp"
-  },
   "https://aurea-media.fr/plan-du-site/": {
    "url": "https://aurea-media.fr/plan-du-site/",
    "status": 200,
-   "ms": 228,
+   "ms": 598,
    "location": "",
    "bytes": 68872,
    "lang": "fr-FR",
@@ -3637,9 +3567,9 @@
   "https://aurea-media.fr/realisations/": {
    "url": "https://aurea-media.fr/realisations/",
    "status": 200,
-   "ms": 238,
+   "ms": 236,
    "location": "",
-   "bytes": 107296,
+   "bytes": 107295,
    "lang": "fr-FR",
    "title": "Réalisations : sites vitrines et e-commerce | Aurea Media",
    "desc": "Découvrez nos réalisations : sites vitrines, boutiques en ligne et identités créés pour des entreprises en France et en Europe. 45+ projets livrés.",
@@ -3728,19 +3658,19 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/og-aurea-media.jpg"
   },
-  "https://aurea-media.fr/realisations/changer-dair-a-massy/": {
-   "url": "https://aurea-media.fr/realisations/changer-dair-a-massy/",
+  "https://aurea-media.fr/realisations/xpert-medical/": {
+   "url": "https://aurea-media.fr/realisations/xpert-medical/",
    "status": 200,
-   "ms": 242,
+   "ms": 641,
    "location": "",
-   "bytes": 96467,
+   "bytes": 96272,
    "lang": "fr-FR",
-   "title": "Site internet de campagne municipale : Changer d’Air Massy",
-   "desc": "Étude de cas Changer d’Air à Massy : un site internet de campagne municipale, avec programme, projets par quartier, événements et inscription des soutiens.",
-   "canonical": "https://aurea-media.fr/realisations/changer-dair-a-massy/",
+   "title": "Site internet de centre médical : étude de cas Xpert Medical",
+   "desc": "Étude de cas Xpert Medical : un site internet de centre médical en réseau, avec recherche de centre, prise de rendez vous en ligne et conseils santé.",
+   "canonical": "https://aurea-media.fr/realisations/xpert-medical/",
    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
    "h1": [
-    "Changer d’Air à Massy"
+    "Xpert Medical"
    ],
    "h2n": 10,
    "hreflang": [],
@@ -3752,7 +3682,7 @@
     "WebSite",
     "WebPage"
    ],
-   "words": 1079,
+   "words": 1040,
    "imgs": 11,
    "img_no_alt": 0,
    "img_no_dims": 0,
@@ -3773,10 +3703,10 @@
     "https://aurea-media.fr/plan-du-site/",
     "https://aurea-media.fr/politique-confidentialite/",
     "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/changer-dair-a-massy/",
     "https://aurea-media.fr/realisations/eddy-bilou/",
     "https://aurea-media.fr/realisations/havel-trading/",
     "https://aurea-media.fr/realisations/portugal-expert-properties/",
+    "https://aurea-media.fr/realisations/xpert-medical/",
     "https://aurea-media.fr/refonte-site-internet/",
     "https://aurea-media.fr/site-internet-architecte/",
     "https://aurea-media.fr/site-internet-artisan-btp/",
@@ -3787,21 +3717,21 @@
     "https://aurea-media.fr/tarifs/"
    ],
    "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-massy-8d949e.webp"
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-xpert-medical-585845.webp"
   },
-  "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/": {
-   "url": "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/",
+  "https://aurea-media.fr/realisations/dual-tech/": {
+   "url": "https://aurea-media.fr/realisations/dual-tech/",
    "status": 200,
-   "ms": 250,
+   "ms": 645,
    "location": "",
-   "bytes": 96389,
+   "bytes": 97217,
    "lang": "fr-FR",
-   "title": "Site internet biographique : Affaire Tayeb Benabderrahmane",
-   "desc": "Étude de cas : un site internet biographique et d’information consacré à l’affaire Tayeb Benabderrahmane, avec chronologie, documents et revue de presse.",
-   "canonical": "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/",
+   "title": "Site internet de salon professionnel : Dual Tech 2026",
+   "desc": "Étude de cas Dual Tech : un site internet de salon professionnel pour l’industrie duale européenne, avec accréditations, programme et espace partenaires.",
+   "canonical": "https://aurea-media.fr/realisations/dual-tech/",
    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
    "h1": [
-    "Affaire Tayeb Benabderrahmane"
+    "Dual Tech"
    ],
    "h2n": 10,
    "hreflang": [],
@@ -3813,7 +3743,7 @@
     "WebSite",
     "WebPage"
    ],
-   "words": 1030,
+   "words": 1173,
    "imgs": 11,
    "img_no_alt": 0,
    "img_no_dims": 0,
@@ -3834,9 +3764,10 @@
     "https://aurea-media.fr/plan-du-site/",
     "https://aurea-media.fr/politique-confidentialite/",
     "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/",
+    "https://aurea-media.fr/realisations/dual-tech/",
     "https://aurea-media.fr/realisations/eddy-bilou/",
     "https://aurea-media.fr/realisations/havel-trading/",
+    "https://aurea-media.fr/realisations/inas/",
     "https://aurea-media.fr/realisations/portugal-expert-properties/",
     "https://aurea-media.fr/refonte-site-internet/",
     "https://aurea-media.fr/site-internet-architecte/",
@@ -3848,21 +3779,21 @@
     "https://aurea-media.fr/tarifs/"
    ],
    "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-tayeb-bb2b5f.webp"
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-dual-tech-1d7186.webp"
   },
-  "https://aurea-media.fr/realisations/maryes-video/": {
-   "url": "https://aurea-media.fr/realisations/maryes-video/",
+  "https://aurea-media.fr/realisations/villa-moniris/": {
+   "url": "https://aurea-media.fr/realisations/villa-moniris/",
    "status": 200,
-   "ms": 236,
+   "ms": 639,
    "location": "",
-   "bytes": 96066,
+   "bytes": 96187,
    "lang": "fr-FR",
-   "title": "Site de vidéaste mariage à Paris : étude de cas Maryes",
-   "desc": "Étude de cas Maryes Vidéo : un site de vidéaste mariage à Paris, avec portfolio en vidéo, offres mariage et entreprise et vérification des disponibilités.",
-   "canonical": "https://aurea-media.fr/realisations/maryes-video/",
+   "title": "Site internet de location de villa en Provence : Moniris",
+   "desc": "Étude de cas Villa Moniris : un site internet de location de villa en Provence, avec réservation par espace, galerie immersive et activités de la Côte d’Azur.",
+   "canonical": "https://aurea-media.fr/realisations/villa-moniris/",
    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
    "h1": [
-    "Maryes Vidéo"
+    "Villa Moniris"
    ],
    "h2n": 10,
    "hreflang": [],
@@ -3874,7 +3805,7 @@
     "WebSite",
     "WebPage"
    ],
-   "words": 993,
+   "words": 1054,
    "imgs": 11,
    "img_no_alt": 0,
    "img_no_dims": 0,
@@ -3895,9 +3826,71 @@
     "https://aurea-media.fr/plan-du-site/",
     "https://aurea-media.fr/politique-confidentialite/",
     "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/domaine-duchentyls/",
     "https://aurea-media.fr/realisations/eddy-bilou/",
     "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/maryes-video/",
+    "https://aurea-media.fr/realisations/portugal-expert-properties/",
+    "https://aurea-media.fr/realisations/villa-moniris/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-villa-moniris-67e8d4.webp"
+  },
+  "https://aurea-media.fr/realisations/barber-korner/": {
+   "url": "https://aurea-media.fr/realisations/barber-korner/",
+   "status": 200,
+   "ms": 669,
+   "location": "",
+   "bytes": 97208,
+   "lang": "fr-FR",
+   "title": "Site internet de barbier à Montpellier : Barber Korner",
+   "desc": "Étude de cas Barber Korner : un site internet de barbier à Montpellier, pensé pour la prise de rendez vous en ligne et une ambiance de salon traditionnel.",
+   "canonical": "https://aurea-media.fr/realisations/barber-korner/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Barber Korner"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "CreativeWork",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 1201,
+   "imgs": 11,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/barber-korner/",
+    "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/havel-trading/",
     "https://aurea-media.fr/realisations/portugal-expert-properties/",
     "https://aurea-media.fr/refonte-site-internet/",
     "https://aurea-media.fr/site-internet-architecte/",
@@ -3909,12 +3902,12 @@
     "https://aurea-media.fr/tarifs/"
    ],
    "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-maryes-42b9b4.webp"
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-barber-korner-01c7dd.webp"
   },
   "https://aurea-media.fr/realisations/maitre-laurence-paoli/": {
    "url": "https://aurea-media.fr/realisations/maitre-laurence-paoli/",
    "status": 200,
-   "ms": 234,
+   "ms": 644,
    "location": "",
    "bytes": 96740,
    "lang": "fr-FR",
@@ -3975,7 +3968,7 @@
   "https://aurea-media.fr/realisations/normande-disolation/": {
    "url": "https://aurea-media.fr/realisations/normande-disolation/",
    "status": 200,
-   "ms": 232,
+   "ms": 613,
    "location": "",
    "bytes": 97243,
    "lang": "fr-FR",
@@ -4038,7 +4031,7 @@
   "https://aurea-media.fr/realisations/tcm-grand-est/": {
    "url": "https://aurea-media.fr/realisations/tcm-grand-est/",
    "status": 200,
-   "ms": 261,
+   "ms": 628,
    "location": "",
    "bytes": 96296,
    "lang": "fr-FR",
@@ -4101,7 +4094,7 @@
   "https://aurea-media.fr/realisations/sultan-conseil-leviers/": {
    "url": "https://aurea-media.fr/realisations/sultan-conseil-leviers/",
    "status": 200,
-   "ms": 282,
+   "ms": 637,
    "location": "",
    "bytes": 96417,
    "lang": "fr-FR",
@@ -4163,7 +4156,7 @@
   "https://aurea-media.fr/realisations/enzym/": {
    "url": "https://aurea-media.fr/realisations/enzym/",
    "status": 200,
-   "ms": 238,
+   "ms": 613,
    "location": "",
    "bytes": 95682,
    "lang": "fr-FR",
@@ -4222,73 +4215,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-enzym-f75aa2.webp"
   },
-  "https://aurea-media.fr/realisations/havel-trading/": {
-   "url": "https://aurea-media.fr/realisations/havel-trading/",
-   "status": 200,
-   "ms": 642,
-   "location": "",
-   "bytes": 96925,
-   "lang": "fr-FR",
-   "title": "Site internet de négoce d’énergie, Genève : Havel Trading",
-   "desc": "Étude de cas Havel Trading : un site internet de négoce d’énergie à Genève, en anglais, conçu pour inspirer confiance aux producteurs, énergéticiens et banques.",
-   "canonical": "https://aurea-media.fr/realisations/havel-trading/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Havel Trading"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "CreativeWork",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 1097,
-   "imgs": 11,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/eddy-bilou/",
-    "https://aurea-media.fr/realisations/groupe-verisol/",
-    "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/inas/",
-    "https://aurea-media.fr/realisations/portugal-expert-properties/",
-    "https://aurea-media.fr/realisations/sultan-conseil-leviers/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-havel-trading-4c43e4.webp"
-  },
   "https://aurea-media.fr/realisations/inas/": {
    "url": "https://aurea-media.fr/realisations/inas/",
    "status": 200,
-   "ms": 238,
+   "ms": 684,
    "location": "",
    "bytes": 96699,
    "lang": "fr-FR",
@@ -4348,69 +4278,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-inas-8277ae.webp"
   },
-  "https://aurea-media.fr/realisations/sunrock/": {
-   "url": "https://aurea-media.fr/realisations/sunrock/",
-   "status": 200,
-   "ms": 241,
-   "location": "",
-   "bytes": 93272,
-   "lang": "fr-FR",
-   "title": "Catalogue en ligne défense et sécurité : étude de cas Sunrock",
-   "desc": "Étude de cas Sunrock : un catalogue en ligne d’équipements balistiques et tactiques pour les acteurs de la défense et du maintien de l’ordre, clair et structuré.",
-   "canonical": "https://aurea-media.fr/realisations/sunrock/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Sunrock"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "CreativeWork",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 942,
-   "imgs": 9,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/perle-hair/",
-    "https://aurea-media.fr/realisations/sunrock/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-sunrock-3b3a1f.webp"
-  },
   "https://aurea-media.fr/realisations/centre-franco-iranien/": {
    "url": "https://aurea-media.fr/realisations/centre-franco-iranien/",
    "status": 200,
-   "ms": 237,
+   "ms": 688,
    "location": "",
    "bytes": 96702,
    "lang": "fr-FR",
@@ -4469,71 +4340,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-iff-paris-29347f.webp"
   },
-  "https://aurea-media.fr/realisations/portugal-expert-properties/": {
-   "url": "https://aurea-media.fr/realisations/portugal-expert-properties/",
-   "status": 200,
-   "ms": 248,
-   "location": "",
-   "bytes": 96554,
-   "lang": "fr-FR",
-   "title": "Site internet de constructeur de luxe : Portugal Expert",
-   "desc": "Étude de cas Portugal Expert Properties : un site internet de constructeur de luxe au sud de Lisbonne, mis en scène comme un magazine d’architecture.",
-   "canonical": "https://aurea-media.fr/realisations/portugal-expert-properties/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Portugal Expert Properties"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "CreativeWork",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 1040,
-   "imgs": 11,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/eddy-bilou/",
-    "https://aurea-media.fr/realisations/groupe-verisol/",
-    "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/portugal-expert-properties/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-portugal-expert-2c7c8e.webp"
-  },
   "https://aurea-media.fr/realisations/cercle-la-raison/": {
    "url": "https://aurea-media.fr/realisations/cercle-la-raison/",
    "status": 200,
-   "ms": 232,
+   "ms": 684,
    "location": "",
    "bytes": 97547,
    "lang": "fr-FR",
@@ -4593,72 +4403,10 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-cercle-la-raison-881f13.webp"
   },
-  "https://aurea-media.fr/realisations/eddy-bilou/": {
-   "url": "https://aurea-media.fr/realisations/eddy-bilou/",
-   "status": 200,
-   "ms": 656,
-   "location": "",
-   "bytes": 96097,
-   "lang": "fr-FR",
-   "title": "Site de photographe de mariage à Paris : Eddy Bilou",
-   "desc": "Étude de cas Eddy Bilou : un site de photographe de mariage à Paris, conçu comme une galerie cinématographique qui laisse toute la place aux images.",
-   "canonical": "https://aurea-media.fr/realisations/eddy-bilou/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Eddy Bilou"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "CreativeWork",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 1047,
-   "imgs": 11,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/eddy-bilou/",
-    "https://aurea-media.fr/realisations/groupe-verisol/",
-    "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/maryes-video/",
-    "https://aurea-media.fr/realisations/portugal-expert-properties/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-eddy-bilou-70358e.webp"
-  },
   "https://aurea-media.fr/realisations/domaine-duchentyls/": {
    "url": "https://aurea-media.fr/realisations/domaine-duchentyls/",
    "status": 200,
-   "ms": 233,
+   "ms": 675,
    "location": "",
    "bytes": 96917,
    "lang": "fr-FR",
@@ -4720,7 +4468,7 @@
   "https://aurea-media.fr/realisations/groupe-verisol/": {
    "url": "https://aurea-media.fr/realisations/groupe-verisol/",
    "status": 200,
-   "ms": 657,
+   "ms": 694,
    "location": "",
    "bytes": 96280,
    "lang": "fr-FR",
@@ -4779,6 +4527,67 @@
    ],
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-verisol-db95a1.webp"
+  },
+  "https://aurea-media.fr/realisations/changer-dair-a-massy/": {
+   "url": "https://aurea-media.fr/realisations/changer-dair-a-massy/",
+   "status": 200,
+   "ms": 634,
+   "location": "",
+   "bytes": 96467,
+   "lang": "fr-FR",
+   "title": "Site internet de campagne municipale : Changer d’Air Massy",
+   "desc": "Étude de cas Changer d’Air à Massy : un site internet de campagne municipale, avec programme, projets par quartier, événements et inscription des soutiens.",
+   "canonical": "https://aurea-media.fr/realisations/changer-dair-a-massy/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Changer d’Air à Massy"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "CreativeWork",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 1079,
+   "imgs": 11,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/changer-dair-a-massy/",
+    "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/havel-trading/",
+    "https://aurea-media.fr/realisations/portugal-expert-properties/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-massy-8d949e.webp"
   },
   "https://aurea-media.fr/realisations/perle-hair/": {
    "url": "https://aurea-media.fr/realisations/perle-hair/",
@@ -4839,10 +4648,71 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-perle-hair-3b2cc7.webp"
   },
+  "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/": {
+   "url": "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/",
+   "status": 200,
+   "ms": 633,
+   "location": "",
+   "bytes": 96389,
+   "lang": "fr-FR",
+   "title": "Site internet biographique : Affaire Tayeb Benabderrahmane",
+   "desc": "Étude de cas : un site internet biographique et d’information consacré à l’affaire Tayeb Benabderrahmane, avec chronologie, documents et revue de presse.",
+   "canonical": "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Affaire Tayeb Benabderrahmane"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "CreativeWork",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 1030,
+   "imgs": 11,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/",
+    "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/havel-trading/",
+    "https://aurea-media.fr/realisations/portugal-expert-properties/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-tayeb-bb2b5f.webp"
+  },
   "https://aurea-media.fr/realisations/novexia-construction/": {
    "url": "https://aurea-media.fr/realisations/novexia-construction/",
    "status": 200,
-   "ms": 632,
+   "ms": 663,
    "location": "",
    "bytes": 97453,
    "lang": "fr-FR",
@@ -4900,19 +4770,202 @@
    "ext_scripts": [],
    "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-novexia-4d85a4.webp"
   },
-  "https://aurea-media.fr/realisations/xpert-medical/": {
-   "url": "https://aurea-media.fr/realisations/xpert-medical/",
+  "https://aurea-media.fr/realisations/maryes-video/": {
+   "url": "https://aurea-media.fr/realisations/maryes-video/",
    "status": 200,
-   "ms": 685,
+   "ms": 670,
    "location": "",
-   "bytes": 96272,
+   "bytes": 96066,
    "lang": "fr-FR",
-   "title": "Site internet de centre médical : étude de cas Xpert Medical",
-   "desc": "Étude de cas Xpert Medical : un site internet de centre médical en réseau, avec recherche de centre, prise de rendez vous en ligne et conseils santé.",
-   "canonical": "https://aurea-media.fr/realisations/xpert-medical/",
+   "title": "Site de vidéaste mariage à Paris : étude de cas Maryes",
+   "desc": "Étude de cas Maryes Vidéo : un site de vidéaste mariage à Paris, avec portfolio en vidéo, offres mariage et entreprise et vérification des disponibilités.",
+   "canonical": "https://aurea-media.fr/realisations/maryes-video/",
    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
    "h1": [
-    "Xpert Medical"
+    "Maryes Vidéo"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "CreativeWork",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 993,
+   "imgs": 11,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/havel-trading/",
+    "https://aurea-media.fr/realisations/maryes-video/",
+    "https://aurea-media.fr/realisations/portugal-expert-properties/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-maryes-42b9b4.webp"
+  },
+  "https://aurea-media.fr/realisations/havel-trading/": {
+   "url": "https://aurea-media.fr/realisations/havel-trading/",
+   "status": 200,
+   "ms": 652,
+   "location": "",
+   "bytes": 96925,
+   "lang": "fr-FR",
+   "title": "Site internet de négoce d’énergie, Genève : Havel Trading",
+   "desc": "Étude de cas Havel Trading : un site internet de négoce d’énergie à Genève, en anglais, conçu pour inspirer confiance aux producteurs, énergéticiens et banques.",
+   "canonical": "https://aurea-media.fr/realisations/havel-trading/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Havel Trading"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "CreativeWork",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 1097,
+   "imgs": 11,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/groupe-verisol/",
+    "https://aurea-media.fr/realisations/havel-trading/",
+    "https://aurea-media.fr/realisations/inas/",
+    "https://aurea-media.fr/realisations/portugal-expert-properties/",
+    "https://aurea-media.fr/realisations/sultan-conseil-leviers/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-havel-trading-4c43e4.webp"
+  },
+  "https://aurea-media.fr/realisations/sunrock/": {
+   "url": "https://aurea-media.fr/realisations/sunrock/",
+   "status": 200,
+   "ms": 637,
+   "location": "",
+   "bytes": 93271,
+   "lang": "fr-FR",
+   "title": "Catalogue en ligne défense et sécurité : étude de cas Sunrock",
+   "desc": "Étude de cas Sunrock : un catalogue en ligne d’équipements balistiques et tactiques pour les acteurs de la défense et du maintien de l’ordre, clair et structuré.",
+   "canonical": "https://aurea-media.fr/realisations/sunrock/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Sunrock"
+   ],
+   "h2n": 10,
+   "hreflang": [],
+   "schema": [
+    "ProfessionalService",
+    "Person",
+    "BreadcrumbList",
+    "CreativeWork",
+    "WebSite",
+    "WebPage"
+   ],
+   "words": 942,
+   "imgs": 9,
+   "img_no_alt": 0,
+   "img_no_dims": 0,
+   "links": [
+    "https://aurea-media.fr/",
+    "https://aurea-media.fr/agence-web-hauts-de-seine/",
+    "https://aurea-media.fr/agence-web-paris/",
+    "https://aurea-media.fr/agence/",
+    "https://aurea-media.fr/conseils/",
+    "https://aurea-media.fr/contact/",
+    "https://aurea-media.fr/creation-site-ecommerce/",
+    "https://aurea-media.fr/creation-site-vitrine/",
+    "https://aurea-media.fr/en/",
+    "https://aurea-media.fr/logo-identite-visuelle/",
+    "https://aurea-media.fr/maquettes-presentation/",
+    "https://aurea-media.fr/mentions-legales/",
+    "https://aurea-media.fr/motion-design/",
+    "https://aurea-media.fr/plan-du-site/",
+    "https://aurea-media.fr/politique-confidentialite/",
+    "https://aurea-media.fr/realisations/",
+    "https://aurea-media.fr/realisations/perle-hair/",
+    "https://aurea-media.fr/realisations/sunrock/",
+    "https://aurea-media.fr/refonte-site-internet/",
+    "https://aurea-media.fr/site-internet-architecte/",
+    "https://aurea-media.fr/site-internet-artisan-btp/",
+    "https://aurea-media.fr/site-internet-avocat/",
+    "https://aurea-media.fr/site-internet-coach-consultant/",
+    "https://aurea-media.fr/site-internet-professions-sante/",
+    "https://aurea-media.fr/site-internet-restaurant/",
+    "https://aurea-media.fr/tarifs/"
+   ],
+   "ext_scripts": [],
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-sunrock-3b3a1f.webp"
+  },
+  "https://aurea-media.fr/realisations/portugal-expert-properties/": {
+   "url": "https://aurea-media.fr/realisations/portugal-expert-properties/",
+   "status": 200,
+   "ms": 633,
+   "location": "",
+   "bytes": 96553,
+   "lang": "fr-FR",
+   "title": "Site internet de constructeur de luxe : Portugal Expert",
+   "desc": "Étude de cas Portugal Expert Properties : un site internet de constructeur de luxe au sud de Lisbonne, mis en scène comme un magazine d’architecture.",
+   "canonical": "https://aurea-media.fr/realisations/portugal-expert-properties/",
+   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "h1": [
+    "Portugal Expert Properties"
    ],
    "h2n": 10,
    "hreflang": [],
@@ -4946,9 +4999,9 @@
     "https://aurea-media.fr/politique-confidentialite/",
     "https://aurea-media.fr/realisations/",
     "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/groupe-verisol/",
     "https://aurea-media.fr/realisations/havel-trading/",
     "https://aurea-media.fr/realisations/portugal-expert-properties/",
-    "https://aurea-media.fr/realisations/xpert-medical/",
     "https://aurea-media.fr/refonte-site-internet/",
     "https://aurea-media.fr/site-internet-architecte/",
     "https://aurea-media.fr/site-internet-artisan-btp/",
@@ -4959,21 +5012,21 @@
     "https://aurea-media.fr/tarifs/"
    ],
    "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-xpert-medical-585845.webp"
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-portugal-expert-2c7c8e.webp"
   },
-  "https://aurea-media.fr/realisations/dual-tech/": {
-   "url": "https://aurea-media.fr/realisations/dual-tech/",
+  "https://aurea-media.fr/realisations/eddy-bilou/": {
+   "url": "https://aurea-media.fr/realisations/eddy-bilou/",
    "status": 200,
-   "ms": 235,
+   "ms": 620,
    "location": "",
-   "bytes": 97217,
+   "bytes": 96097,
    "lang": "fr-FR",
-   "title": "Site internet de salon professionnel : Dual Tech 2026",
-   "desc": "Étude de cas Dual Tech : un site internet de salon professionnel pour l’industrie duale européenne, avec accréditations, programme et espace partenaires.",
-   "canonical": "https://aurea-media.fr/realisations/dual-tech/",
+   "title": "Site de photographe de mariage à Paris : Eddy Bilou",
+   "desc": "Étude de cas Eddy Bilou : un site de photographe de mariage à Paris, conçu comme une galerie cinématographique qui laisse toute la place aux images.",
+   "canonical": "https://aurea-media.fr/realisations/eddy-bilou/",
    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
    "h1": [
-    "Dual Tech"
+    "Eddy Bilou"
    ],
    "h2n": 10,
    "hreflang": [],
@@ -4985,7 +5038,7 @@
     "WebSite",
     "WebPage"
    ],
-   "words": 1173,
+   "words": 1047,
    "imgs": 11,
    "img_no_alt": 0,
    "img_no_dims": 0,
@@ -5006,10 +5059,10 @@
     "https://aurea-media.fr/plan-du-site/",
     "https://aurea-media.fr/politique-confidentialite/",
     "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/dual-tech/",
     "https://aurea-media.fr/realisations/eddy-bilou/",
+    "https://aurea-media.fr/realisations/groupe-verisol/",
     "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/inas/",
+    "https://aurea-media.fr/realisations/maryes-video/",
     "https://aurea-media.fr/realisations/portugal-expert-properties/",
     "https://aurea-media.fr/refonte-site-internet/",
     "https://aurea-media.fr/site-internet-architecte/",
@@ -5021,142 +5074,19 @@
     "https://aurea-media.fr/tarifs/"
    ],
    "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-dual-tech-1d7186.webp"
-  },
-  "https://aurea-media.fr/realisations/villa-moniris/": {
-   "url": "https://aurea-media.fr/realisations/villa-moniris/",
-   "status": 200,
-   "ms": 243,
-   "location": "",
-   "bytes": 96187,
-   "lang": "fr-FR",
-   "title": "Site internet de location de villa en Provence : Moniris",
-   "desc": "Étude de cas Villa Moniris : un site internet de location de villa en Provence, avec réservation par espace, galerie immersive et activités de la Côte d’Azur.",
-   "canonical": "https://aurea-media.fr/realisations/villa-moniris/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Villa Moniris"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "CreativeWork",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 1054,
-   "imgs": 11,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/domaine-duchentyls/",
-    "https://aurea-media.fr/realisations/eddy-bilou/",
-    "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/portugal-expert-properties/",
-    "https://aurea-media.fr/realisations/villa-moniris/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-villa-moniris-67e8d4.webp"
-  },
-  "https://aurea-media.fr/realisations/barber-korner/": {
-   "url": "https://aurea-media.fr/realisations/barber-korner/",
-   "status": 200,
-   "ms": 236,
-   "location": "",
-   "bytes": 97208,
-   "lang": "fr-FR",
-   "title": "Site internet de barbier à Montpellier : Barber Korner",
-   "desc": "Étude de cas Barber Korner : un site internet de barbier à Montpellier, pensé pour la prise de rendez vous en ligne et une ambiance de salon traditionnel.",
-   "canonical": "https://aurea-media.fr/realisations/barber-korner/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
-   "h1": [
-    "Barber Korner"
-   ],
-   "h2n": 10,
-   "hreflang": [],
-   "schema": [
-    "ProfessionalService",
-    "Person",
-    "BreadcrumbList",
-    "CreativeWork",
-    "WebSite",
-    "WebPage"
-   ],
-   "words": 1201,
-   "imgs": 11,
-   "img_no_alt": 0,
-   "img_no_dims": 0,
-   "links": [
-    "https://aurea-media.fr/",
-    "https://aurea-media.fr/agence-web-hauts-de-seine/",
-    "https://aurea-media.fr/agence-web-paris/",
-    "https://aurea-media.fr/agence/",
-    "https://aurea-media.fr/conseils/",
-    "https://aurea-media.fr/contact/",
-    "https://aurea-media.fr/creation-site-ecommerce/",
-    "https://aurea-media.fr/creation-site-vitrine/",
-    "https://aurea-media.fr/en/",
-    "https://aurea-media.fr/logo-identite-visuelle/",
-    "https://aurea-media.fr/maquettes-presentation/",
-    "https://aurea-media.fr/mentions-legales/",
-    "https://aurea-media.fr/motion-design/",
-    "https://aurea-media.fr/plan-du-site/",
-    "https://aurea-media.fr/politique-confidentialite/",
-    "https://aurea-media.fr/realisations/",
-    "https://aurea-media.fr/realisations/barber-korner/",
-    "https://aurea-media.fr/realisations/eddy-bilou/",
-    "https://aurea-media.fr/realisations/havel-trading/",
-    "https://aurea-media.fr/realisations/portugal-expert-properties/",
-    "https://aurea-media.fr/refonte-site-internet/",
-    "https://aurea-media.fr/site-internet-architecte/",
-    "https://aurea-media.fr/site-internet-artisan-btp/",
-    "https://aurea-media.fr/site-internet-avocat/",
-    "https://aurea-media.fr/site-internet-coach-consultant/",
-    "https://aurea-media.fr/site-internet-professions-sante/",
-    "https://aurea-media.fr/site-internet-restaurant/",
-    "https://aurea-media.fr/tarifs/"
-   ],
-   "ext_scripts": [],
-   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-barber-korner-01c7dd.webp"
+   "og_image": "https://aurea-media.fr/wp-content/uploads/2026/10/realisation-eddy-bilou-70358e.webp"
   },
   "https://aurea-media.fr/conseils/categorie/e-commerce/": {
    "url": "https://aurea-media.fr/conseils/categorie/e-commerce/",
    "status": 200,
-   "ms": 225,
+   "ms": 600,
    "location": "",
-   "bytes": 68446,
+   "bytes": 68298,
    "lang": "fr-FR",
    "title": "E-commerce — Conseils Web | Aurea Media",
    "desc": "",
-   "canonical": "https://aurea-media.fr/conseils/categorie/e-commerce/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "canonical": "",
+   "robots": "follow, noindex",
    "h1": [
     "E-commerce"
    ],
@@ -5212,12 +5142,12 @@
    "status": 200,
    "ms": 229,
    "location": "",
-   "bytes": 68258,
+   "bytes": 68116,
    "lang": "fr-FR",
    "title": "Prix — Conseils Web | Aurea Media",
    "desc": "",
-   "canonical": "https://aurea-media.fr/conseils/categorie/prix/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "canonical": "",
+   "robots": "follow, noindex",
    "h1": [
     "Prix"
    ],
@@ -5271,14 +5201,14 @@
   "https://aurea-media.fr/conseils/categorie/referencement/": {
    "url": "https://aurea-media.fr/conseils/categorie/referencement/",
    "status": 200,
-   "ms": 240,
+   "ms": 774,
    "location": "",
-   "bytes": 69464,
+   "bytes": 69313,
    "lang": "fr-FR",
    "title": "Référencement — Conseils Web | Aurea Media",
    "desc": "",
-   "canonical": "https://aurea-media.fr/conseils/categorie/referencement/",
-   "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+   "canonical": "",
+   "robots": "follow, noindex",
    "h1": [
     "Référencement"
    ],

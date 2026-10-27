@@ -1,8 +1,4 @@
 https://aurea-media.fr/realisations/
-https://aurea-media.fr/realisations/xpert-medical/
-https://aurea-media.fr/realisations/dual-tech/
-https://aurea-media.fr/realisations/villa-moniris/
-https://aurea-media.fr/realisations/barber-korner/
 https://aurea-media.fr/realisations/maitre-laurence-paoli/
 https://aurea-media.fr/realisations/normande-disolation/
 https://aurea-media.fr/realisations/tcm-grand-est/
@@ -18,6 +14,10 @@ https://aurea-media.fr/realisations/perle-hair/
 https://aurea-media.fr/realisations/affaire-tayeb-benabderrahmane/
 https://aurea-media.fr/realisations/novexia-construction/
 https://aurea-media.fr/realisations/maryes-video/
+https://aurea-media.fr/realisations/xpert-medical/
+https://aurea-media.fr/realisations/dual-tech/
+https://aurea-media.fr/realisations/villa-moniris/
+https://aurea-media.fr/realisations/barber-korner/
 https://aurea-media.fr/realisations/havel-trading/
 https://aurea-media.fr/realisations/sunrock/
 https://aurea-media.fr/realisations/portugal-expert-properties/

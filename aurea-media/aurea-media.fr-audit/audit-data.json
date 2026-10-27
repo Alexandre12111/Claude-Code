@@ -1,26 +1,26 @@
 {
  "summary": {
-  "health_score": 83,
+  "health_score": 89,
   "business_type": "Agence web (services B2B, France et Europe, ancrage local Paris)",
   "top_findings": [
-   "Permaliens des articles changés (/conseils/titre/ devenu /titre/)",
-   "Anciennes adresses d'articles redirigées vers des pages services",
-   "Page anglaise vide /en/accueil-english/ indexable",
-   "LCP mobile 3,1 à 4,2 s en laboratoire",
-   "Rubriques du blog indexables sans contenu propre"
+   "Liens non explorables dans une illustration (corrigé en 3.1.4)",
+   "Liens « Learn more » peu descriptifs en anglais (corrigé en 3.1.4)",
+   "Contraste et ordre des titres (corrigé en 3.1.4)",
+   "Blog encore jeune (6 articles)",
+   "Peu de mentions externes de la marque"
   ],
   "quick_wins": [
-   "Remettre /conseils/%postname%/",
-   "Installer le thème 3.1.2",
-   "Compléter les mentions légales",
+   "Installer le thème 3.1.4",
    "Renvoyer le sitemap à la Search Console",
-   "Désactiver GTranslate"
+   "Publier le pack 1 d'articles",
+   "Demander des avis Google",
+   "Inscrire l'agence dans des annuaires"
   ]
  },
  "categories": [
   {
    "name": "Technical SEO",
-   "score": 78,
+   "score": 92,
    "what_works": [
     "78 URLs en 200",
     "HTTPS + HSTS et en-têtes de sécurité",
@@ -28,24 +28,6 @@
     "hreflang réciproques"
    ],
    "findings": [
-    {
-     "title": "Structure des permaliens modifiée",
-     "severity": "Critical",
-     "description": "Les articles sont servis sous /titre/ au lieu de /conseils/titre/.",
-     "recommendation": "Remettre /conseils/%postname%/."
-    },
-    {
-     "title": "Anciennes adresses d'articles mal redirigées",
-     "severity": "Critical",
-     "description": "/conseils/prix-site-vitrine/ redirige en 301 vers /tarifs/ (6 articles concernés).",
-     "recommendation": "Thème 3.1.2 : recherche par slug avant la redirection thématique."
-    },
-    {
-     "title": "Page anglaise vide indexable",
-     "severity": "High",
-     "description": "/en/accueil-english/ : 5 mots, sans description, dans le sitemap.",
-     "recommendation": "Thème 3.1.2 : mise à la corbeille automatique."
-    },
     {
      "title": "Rubriques du blog indexables",
      "severity": "Medium",
@@ -62,7 +44,7 @@
   },
   {
    "name": "Content Quality",
-   "score": 82,
+   "score": 84,
    "what_works": [
     "Pages services de 700 à 1 600 mots",
     "Blocs En bref signés et datés",
@@ -85,7 +67,7 @@
   },
   {
    "name": "On-Page SEO",
-   "score": 90,
+   "score": 92,
    "what_works": [
     "Titres et descriptions dans les longueurs, sans doublon",
     "Un H1 par page",
@@ -104,7 +86,7 @@
   },
   {
    "name": "Performance (CWV)",
-   "score": 72,
+   "score": 96,
    "what_works": [
     "CLS 0",
     "Ordinateur : LCP 1,4 à 1,8 s"
@@ -143,7 +125,7 @@
   },
   {
    "name": "Images",
-   "score": 92,
+   "score": 94,
    "what_works": [
     "Alt et dimensions partout",
     "WebP et srcset",

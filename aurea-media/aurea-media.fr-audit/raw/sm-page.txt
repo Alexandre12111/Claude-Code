@@ -1,6 +1,8 @@
 https://aurea-media.fr/
 https://aurea-media.fr/en/legal-notice/
 https://aurea-media.fr/en/privacy/
+https://aurea-media.fr/mentions-legales/
+https://aurea-media.fr/politique-confidentialite/
 https://aurea-media.fr/en/web-design-portfolio/
 https://aurea-media.fr/en/law-firm-website-design/
 https://aurea-media.fr/en/healthcare-website-design/
@@ -18,8 +20,6 @@ https://aurea-media.fr/en/website-redesign/
 https://aurea-media.fr/en/brand-identity-design/
 https://aurea-media.fr/en/motion-design-videos/
 https://aurea-media.fr/en/presentation-design/
-https://aurea-media.fr/mentions-legales/
-https://aurea-media.fr/politique-confidentialite/
 https://aurea-media.fr/en/
 https://aurea-media.fr/en/website-design/
 https://aurea-media.fr/en/site-map/
