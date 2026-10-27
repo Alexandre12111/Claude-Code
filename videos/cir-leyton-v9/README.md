@@ -14,7 +14,7 @@ Le design system appliqué est décrit dans [`design-system/MASTER.md`](design-s
 * Couleurs en tokens : orange de marque réservé aux grands formats, orange foncé pour les petits textes (contraste 5,3:1)
 * Effets réduits à ce qui porte un sens : deux types de transitions, une emphase par tableau, plus de halo ni de balayage lumineux
 * Sous-titres sur fond navy opaque avec meilleur contraste des mots à venir
-* « R&D » prononcé d’Ne traite, sans pause entre les lettres
+* « R&D » prononcé d’une traite, sans pause entre les lettres
 
 ## Livrables
 
