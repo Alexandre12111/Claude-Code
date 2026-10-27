@@ -1599,3 +1599,21 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 .gg-res .gg-a{display:block;font-size:.72rem;color:#1a0dab;line-height:1.25}
 .tile-bar b{color:var(--mute)}
 .browser-bar span{color:#8e8e87}
+
+/* Avis de l'accueil : carrousel, 3 avis visibles, flèches et points */
+.avis-defile{position:relative}
+.reviews--defile{display:flex;grid-template-columns:none;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px 6px;margin:0 -2px;overscroll-behavior-x:contain}
+.reviews--defile::-webkit-scrollbar{display:none}
+.reviews--defile>.review{flex:0 0 calc((100% - 32px)/3);scroll-snap-align:start;opacity:1;transform:none}
+.defile-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:26px}
+.defile-nav[hidden]{display:none}
+.defile-btn{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line-2);background:rgba(255,255,255,.02);color:var(--cream);cursor:pointer;transition:border-color .3s,background .3s,color .3s,opacity .3s}
+.defile-btn svg{width:18px;height:18px}
+.defile-btn[data-prec] svg{transform:rotate(180deg)}
+.defile-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+.defile-btn:disabled{opacity:.35;cursor:default}
+.defile-points{display:flex;gap:8px}
+.defile-points button{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:var(--line-2);cursor:pointer;transition:width .35s var(--ease),background .35s}
+.defile-points button[aria-current]{width:26px;background:var(--gold)}
+@media (max-width:900px){.reviews--defile>.review{flex-basis:calc((100% - 16px)/2)}}
+@media (max-width:640px){.reviews--defile{margin:0 calc(-1 * var(--g));padding:4px var(--g) 6px;scroll-padding:0 var(--g)}.reviews--defile>.review{flex-basis:86%}}

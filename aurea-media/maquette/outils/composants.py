@@ -54,7 +54,7 @@ PIED = INDEX[INDEX.index("</main>"):]
 STEPS = element(INDEX, '<div class="steps">')
 LOGOS = _bloc('<section class="logos"', "</section>")
 PRIX = element(INDEX, '<div class="prices">')
-AVIS = element(INDEX, '<div class="reviews">')
+AVIS = element(INDEX, '<div class="reviews reviews--defile">').replace('<div class="reviews reviews--defile">', '<div class="reviews">', 1)  # grille simple hors accueil
 
 
 def page(fichier, titre, description, corps, precharge=""):

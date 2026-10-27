@@ -100,6 +100,8 @@ function aurea_t( $fr ) {
 			'Trop de demandes envoyées.'                  => 'Too many requests sent.',
 			'Réessayez dans une heure, ou appelez nous directement.' => 'Try again in an hour, or call us directly.',
 			'Langue'                                      => 'Language',
+			'Avis précédents'                             => 'Previous reviews',
+			'Avis suivants'                               => 'Next reviews',
 			'Agence web indépendante : création de sites vitrines et e-commerce sur mesure, identité visuelle, motion design et présentations, pour les indépendants, TPE et PME en France et en Europe.' => 'Independent web design agency: custom business and e-commerce websites, brand identity, motion design and presentations for freelancers, small businesses and SMEs in France and across Europe.',
 			'Fondateur, développeur et designer web'      => 'Founder, web developer and designer',
 			'Création de site e-commerce'                 => 'E-commerce website design',

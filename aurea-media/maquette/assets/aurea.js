@@ -259,3 +259,31 @@
     summary.addEventListener('click', e => { e.preventDefault(); d.open && !d.classList.contains('is-fermeture') ? fermer() : ouvrir(); });
   });
 })();
+
+/* Avis de l'accueil : carrousel (flèches, points, glisser au doigt) */
+document.querySelectorAll('[data-defile]').forEach(bloc => {
+  const piste = bloc.querySelector('.reviews--defile'), nav = bloc.querySelector('.defile-nav');
+  if (!piste || !nav) return;
+  const cartes = [...piste.children], prec = nav.querySelector('[data-prec]'), suiv = nav.querySelector('[data-suiv]'), points = nav.querySelector('.defile-points');
+  const parPage = () => Math.max(1, Math.round(piste.clientWidth / (cartes[0].getBoundingClientRect().width + 16)));
+  const pages = () => Math.max(1, Math.ceil(cartes.length / parPage()));
+  const page = () => Math.round(piste.scrollLeft / Math.max(1, piste.scrollWidth - piste.clientWidth) * (pages() - 1)) || 0;
+  const aller = n => { const c = cartes[Math.min(cartes.length - 1, n * parPage())]; piste.scrollTo({ left: c.offsetLeft - cartes[0].offsetLeft, behavior: 'smooth' }); };
+  const dessiner = () => {
+    const n = pages();
+    nav.hidden = n < 2;
+    if (points.children.length !== n) {
+      points.innerHTML = '';
+      for (let i = 0; i < n; i++) { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', (document.documentElement.lang || '').startsWith('en') ? 'Go to reviews ' + (i + 1) : 'Aller aux avis ' + (i + 1)); b.addEventListener('click', () => aller(i)); points.appendChild(b); }
+    }
+    const p = page();
+    [...points.children].forEach((b, i) => b.toggleAttribute('aria-current', i === p));
+    prec.disabled = piste.scrollLeft < 4;
+    suiv.disabled = piste.scrollLeft > piste.scrollWidth - piste.clientWidth - 4;
+  };
+  prec.addEventListener('click', () => aller(Math.max(0, page() - 1)));
+  suiv.addEventListener('click', () => aller(Math.min(pages() - 1, page() + 1)));
+  let t; piste.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(dessiner, 60); }, { passive: true });
+  window.addEventListener('resize', dessiner);
+  dessiner();
+});

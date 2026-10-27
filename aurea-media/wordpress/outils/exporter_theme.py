@@ -124,6 +124,8 @@ def dynamiser(html, fichier):
     if '<div class="work-track">' in html:
         a, b = interieur(html, '<div class="work-track">')
         html = html[:a] + "[aurea_portfolio]" + html[b:]
+    if '<div class="avis-defile"' in html:  # accueil : carrousel de 3 avis visibles
+        html = remplacer_element(html, '<div class="avis-defile"', '[aurea_avis_cartes defile="1"]')
     if '<div class="reviews">' in html:
         html = remplacer_element(html, '<div class="reviews">', "[aurea_avis_cartes]")
     if '<div class="g-score' in html:

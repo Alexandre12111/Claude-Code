@@ -220,8 +220,9 @@ add_shortcode( 'aurea_avis_cartes', function ( $atts ) {
 	if ( ! function_exists( 'aurea_avis' ) ) {
 		return '';
 	}
-	$a    = shortcode_atts( array( 'nombre' => null ), $atts );
-	$avis = aurea_avis( null === $a['nombre'] ? null : (int) $a['nombre'] );
+	$a    = shortcode_atts( array( 'nombre' => null, 'defile' => '' ), $atts );
+	$nombre = null === $a['nombre'] ? ( $a['defile'] ? 12 : null ) : (int) $a['nombre']; // carrousel : tous les avis disponibles
+	$avis   = aurea_avis( $nombre );
 	if ( ! $avis ) {
 		// En attendant les avis (API Google ou avis ajoutés dans Aurea Studio) : un renvoi propre vers la fiche Google
 		$fiche = function_exists( 'aurea_coordonnees' ) ? ( aurea_coordonnees()['google'] ?? '' ) : '';
@@ -242,7 +243,14 @@ add_shortcode( 'aurea_avis_cartes', function ( $atts ) {
 			esc_html( $v['quand'] )
 		);
 	}
-	return $html . '</div>';
+	$html .= '</div>';
+	if ( $a['defile'] ) { // accueil : carrousel, 3 avis visibles (assets/aurea.js)
+		$fleche = '<svg><use href="#i-arrow"/></svg>';
+		$html   = '<div class="avis-defile" data-defile>' . str_replace( '<div class="reviews">', '<div class="reviews reviews--defile">', $html )
+			. '<div class="defile-nav" hidden><button type="button" class="defile-btn" data-prec aria-label="' . esc_attr( aurea_t( 'Avis précédents' ) ) . '">' . $fleche . '</button><span class="defile-points"></span>'
+			. '<button type="button" class="defile-btn" data-suiv aria-label="' . esc_attr( aurea_t( 'Avis suivants' ) ) . '">' . $fleche . '</button></div></div>';
+	}
+	return $html;
 } );
 
 add_shortcode( 'aurea_avis_note', function () {
