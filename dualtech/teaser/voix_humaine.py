@@ -5,13 +5,15 @@ pour une diction française naturelle. Même texte et mêmes fichiers de sortie 
 voix/voix.json) : le montage et les sous titres se recalent tout seuls.
 Usage : <python avec chatterbox-tts> voix_humaine.py <extrait-de-reference.wav>
 """
-import json, sys
+import json, sys, wave
 from pathlib import Path
-import torch, torchaudio
+import torch
 from voix import PHRASES
 
 ICI = Path(__file__).resolve().parent
 torch.manual_seed(2611)
+_charge = torch.load
+torch.load = lambda *a, **k: _charge(*a, **{**k, "map_location": "cpu"})   # modèle publié pour carte graphique : chargement sur processeur
 
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
 modele = ChatterboxMultilingualTTS.from_pretrained(device=torch.device("cpu"))
@@ -24,7 +26,9 @@ for ident, texte, st in PHRASES:
     if seulement and ident not in seulement:
         continue
     wav = modele.generate(texte, language_id="fr", exaggeration=.45, cfg_weight=.5, temperature=.7)
-    torchaudio.save(str(sortie / f"{ident}.wav"), wav, modele.sr)
+    with wave.open(str(sortie / f"{ident}.wav"), "wb") as w:   # écriture directe en 16 bits
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(modele.sr)
+        w.writeframes((wav.squeeze().clamp(-1, 1).numpy() * 32767).astype("int16").tobytes())
     d = wav.shape[-1] / modele.sr
     infos[ident] = {"id": ident, "texte": texte, "sous_titre": st, "duree": round(d, 3)}
     print(f"{ident} {d:5.2f} s  {texte}", flush=True)
