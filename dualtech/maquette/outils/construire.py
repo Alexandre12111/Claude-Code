@@ -70,3 +70,6 @@ for p in sorted(RACINE.glob("*.html")):
     ok &= not alerte
     print(f"{p.name:38} title {lt:>3} · desc {ld:>3} · {'OK' if not alerte else ' / '.join(alerte)}")
 print("Maquette reconstruite." if ok else "Maquette reconstruite, avec des points à corriger.")
+
+# Version autonome et navigable de la maquette (un seul fichier)
+subprocess.run([sys.executable, "interactive.py"], cwd=ICI, check=True)
