@@ -191,3 +191,50 @@ CALENDRIER_PRIX = [
     ("Novembre", "Jury & pitch", "Novembre 2026 · Finale", "Jurys et sessions de pitch", "Les finalistes présenteront leur projet devant les jurys de sélection de chacune des trois catégories."),
     ("Fin novembre", "DualTech", "Fin novembre 2026 · DualTech 2026", "Remise des Prix à DualTech", "Annonce des trois lauréats et remise officielle des Prix à l'occasion de l'événement DualTech 2026."),
 ]
+
+
+# Descriptions des partenaires 2026 (fenêtre ouverte au clic sur un logo, reprises du site actuel)
+DESCRIPTIONS = {
+    "European Innovation Council (EIC)": "Le Conseil européen de l’innovation soutient les innovations de rupture et le développement des entreprises innovantes en Europe.",
+    "Paris Ouest La Défense": "Paris Ouest La Défense est l’établissement public territorial partenaire de DualTech.",
+    "Bpifrance": "Bpifrance est la banque publique d'investissement chargée d'accompagner les entreprises, startups, PME et ETI à chaque étape de leur développement, à travers le financement, l'innovation, les fonds propres, la garantie et l'accompagnement stratégique.",
+    "Euronext": "Euronext est la principale place boursière paneuropéenne. Elle joue un rôle central dans l'accès des entreprises au financement via les marchés de capitaux.",
+    "Défense Angels": "Défense Angels est un réseau de business angels dédié aux technologies de défense, de sécurité et duales. Le réseau finance et accompagne des startups développant des solutions stratégiques.",
+    "Expansion": "Expansion accompagne le financement des technologies stratégiques.",
+    "GIFAS": "Groupement des Industries Françaises Aéronautiques et Spatiales.",
+    "France Deeptech": "France Deeptech fédère les acteurs de l’écosystème deeptech français.",
+    "La Place Stratégique": "La Place Stratégique est un média et une plateforme spécialisée dans les enjeux de souveraineté, de défense, d'industrie et de stratégie.",
+    "NSI Group": "L'agence globale d'influence stratégique du groupe ADIT, pour accompagner dirigeants, entreprises et États.",
+    "Décideurs Innovation": "Décideurs Innovation est un média consacré à l’innovation et à ses acteurs."
+}
+# Partenaires du Prix : rôle affiché quand le site actuel ne donne pas de description
+for _n, _f, _d in PARTENAIRES_2025:
+    DESCRIPTIONS.setdefault(_n, _d)
+DESCRIPTIONS.setdefault("INAS", "L'Institut National des Affaires Stratégiques organise DualTech et s'associe au Prix de l'innovation duale.")
+DESCRIPTIONS.setdefault("Defence Angels", DESCRIPTIONS["Défense Angels"])
+
+# Vidéos présentes sur le site actuel
+VIDEO_CAMPUS = "ZuQblYJsOiU"
+MP4_AERO = SITE + "/wp-content/uploads/2026/08/YTDown.com_YouTube_Aerospace-Industry-Edit-Can-You-Hear-The_Media_eY8bwqf1nv8_001_1080p.mp4"
+MP4_PRIX = SITE + "/wp-content/uploads/2026/08/WhatsApp-Video-2026-08-19-at-15.37.10.mp4"
+MP4_RESEAU = "assets/video/fond-reseau.mp4"
+
+# Photos libres de droits (Unsplash, licence gratuite) associées aux filières
+PHOTOS_FILIERES = {
+    "Aéronautique": "aeronautique-avion-de-chasse", "Communication": "communication-paraboles", "Cybersécurité": "cybersecurite-circuit",
+    "Data": "data-particules", "Électronique": "electronique-wafer", "Intelligence artificielle": "intelligence-artificielle-processeur",
+    "Maritime": "maritime-navire", "Quantique": "quantique-puce", "Robotique": "robotique-bras", "Spatial": "spatial-satellite",
+}
+
+# Univers des intervenants (filtres de la page Intervenants)
+UNIVERS = [("tous", "Tous"), ("institutions", "Institutions et territoires"), ("industrie", "Industrie et technologies"), ("finance", "Financement et marchés"), ("inas", "Organisateur (INAS)")]
+def univers(orga):
+    o = orga.lower()
+    if "inas" in o or "affaires stratégiques" in o: return "inas"
+    if any(k in o for k in ("euronext", "eurazeo", "expansion", "rothschild")): return "finance"
+    if any(k in o for k in ("onera", "eismea", "ministère", "mairie", "paris ouest", "french tech")): return "institutions"
+    return "industrie"
+for _i in INTERVENANTS:
+    _i["univers"] = univers(_i["orga"])
+    _i["sessions"] = [(d, f, t, titre, "modération" if _i["nom"] in mods else "intervention")
+                      for _, cr in PROGRAMME for d, f, t, titre, _n, ivs, mods in cr if _i["nom"] in ivs or _i["nom"] in mods]

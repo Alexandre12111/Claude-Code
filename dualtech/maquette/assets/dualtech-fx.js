@@ -12,7 +12,13 @@
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
   }), { threshold: .2 });
-  $$('.fx-trace, [data-volet], .anneau').forEach((el) => io.observe(el));
+  $$('.fx-trace, .anneau').forEach((el) => io.observe(el));
+  /* un bloc masqué par son propre clip-path n'est jamais « visible » : on observe son parent */
+  const ioVolet = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; ioVolet.unobserve(e.target);
+    $$(':scope > [data-volet]', e.target).forEach((v) => v.classList.add('is-in'));
+  }), { threshold: .15 });
+  $$('[data-volet]').forEach((el) => ioVolet.observe(el.parentElement));
 
   /* ---------- Surtitres déchiffrés (effet de décodage) ---------- */
   const signes = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/·';
@@ -38,6 +44,93 @@
       ioS.observe(s);
     });
   }
+
+
+  /* ---------- Fiches partenaires (logo cliqué : présentation) ---------- */
+  const fiche = $('#fiche');
+  if (fiche) {
+    let liste = [], pos = 0;
+    const remplir = (b) => {
+      $('.fiche__logo img', fiche).src = b.querySelector('img').src;
+      $('.fiche__logo img', fiche).alt = 'Logo ' + b.dataset.nom;
+      $('.fiche__cat', fiche).textContent = b.dataset.cat;
+      $('#fiche-nom', fiche).textContent = b.dataset.nom;
+      $('.fiche__desc', fiche).textContent = b.dataset.desc || 'Partenaire de DualTech 2026.';
+    };
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-fiche]'); if (!b) return;
+      const portee = b.closest('.vue') || document;
+      const vus = new Set();
+      liste = $$('[data-fiche]', portee).filter((x) => !vus.has(x.dataset.nom) && vus.add(x.dataset.nom));
+      pos = liste.findIndex((x) => x.dataset.nom === b.dataset.nom);
+      remplir(b); fiche.showModal();
+    });
+    $$('[data-fiche-pas]', fiche).forEach((n) => n.addEventListener('click', () => { pos = (pos + +n.dataset.fichePas + liste.length) % liste.length; remplir(liste[pos]); }));
+    $('.fiche__fermer', fiche).addEventListener('click', () => fiche.close());
+    fiche.addEventListener('click', (e) => { if (e.target === fiche) fiche.close(); });
+  }
+
+  /* ---------- Page Intervenants : univers, recherche, vue, fiche ---------- */
+  const grille = $('#iv-grille');
+  if (grille) {
+    const cartes = $$('.iv-carte', grille), champ = $('#iv-recherche');
+    let univers = 'tous';
+    const norm = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+    const appliquer = () => {
+      const q = norm(champ.value.trim()); let n = 0;
+      cartes.forEach((c) => { const ok = (univers === 'tous' || c.dataset.univers === univers) && (!q || c.dataset.cherche.includes(q)); c.hidden = !ok; n += ok; });
+      $('#iv-vide').hidden = n > 0;
+      $('#iv-statut').textContent = `${n} intervenant${n > 1 ? 's' : ''}`;
+      if (window.gsap && !calme) gsap.fromTo(cartes.filter((c) => !c.hidden), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .5, ease: 'expo.out', stagger: .025 });
+    };
+    $$('.iv-barre .filtres button').forEach((b) => b.addEventListener('click', () => {
+      univers = b.dataset.univers;
+      $$('.iv-barre .filtres button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+      appliquer();
+    }));
+    champ.addEventListener('input', appliquer);
+    $('#iv-effacer').addEventListener('click', () => { champ.value = ''; appliquer(); champ.focus(); });
+    $$('.vues button').forEach((b) => b.addEventListener('click', () => {
+      $$('.vues button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+      grille.classList.toggle('iv-grille--liste', b.dataset.vue === 'liste');
+    }));
+    const fi = $('#fiche-iv'); let pos = 0;
+    const visibles = () => cartes.filter((c) => !c.hidden);
+    const ouvrir = (c) => {
+      const d = c.dataset;
+      $('.fiche__photo img', fi).src = d.photo; $('.fiche__photo img', fi).alt = d.nom;
+      $('.fiche__cat', fi).textContent = c.querySelector('.iv-carte__univers').textContent;
+      $('#fiche-iv-nom', fi).textContent = d.nom;
+      $('.fiche__fonction', fi).textContent = `${d.fonction}, ${d.orga}`;
+      const s = JSON.parse(d.sessions);
+      $('.fiche__sessions', fi).innerHTML = s.length ? s.map((x) => `<li><b>${x.h}</b><span>${x.t}<small>${x.r === 'modération' ? 'Modération' : 'Intervention'}</small></span></li>`).join('') : '<li><b>2026</b><span>Horaire de passage communiqué prochainement.</span></li>';
+    };
+    cartes.forEach((c) => c.addEventListener('click', () => { pos = visibles().indexOf(c); ouvrir(c); fi.showModal(); }));
+    fi.addEventListener('close', () => { const c = visibles()[pos]; if (c) c.querySelector('.iv-carte__ouvrir').focus(); });
+    $$('[data-iv-pas]', fi).forEach((n) => n.addEventListener('click', () => { const v = visibles(); pos = (pos + +n.dataset.ivPas + v.length) % v.length; ouvrir(v[pos]); }));
+    $('.fiche__fermer', fi).addEventListener('click', () => fi.close());
+    fi.addEventListener('click', (e) => { if (e.target === fi) fi.close(); });
+  }
+
+  /* ---------- Vidéos MP4 et YouTube chargées à l'approche (jamais en lecture auto si moins d'animations) ---------- */
+  const ioV = new IntersectionObserver((es) => es.forEach((e) => {
+    const v = e.target;
+    if (e.isIntersecting) {
+      if (!v.src && v.dataset.src) { v.src = v.dataset.src; }
+      if (!calme) v.play().catch(() => {});
+    } else if (!v.paused) v.pause();
+  }), { rootMargin: '200px 0px' });
+  $$('video[data-src]').forEach((v) => ioV.observe(v));
+  const ioY = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting || calme) return; ioY.unobserve(e.target);
+    const cible = e.target.querySelector(':scope > [data-yt]') || e.target;
+    const id = cible.dataset.yt, f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&start=10&playsinline=1&rel=0&modestbranding=1`;
+    f.title = 'Vidéo du Campus Cyber'; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
+    f.addEventListener('load', () => setTimeout(() => f.classList.add('is-pret'), 1200));
+    cible.insertBefore(f, cible.querySelector('.lieu__etiquette'));
+  }), { threshold: .3 });
+  $$('[data-yt]').forEach((el) => ioY.observe(el.parentElement));
 
   if (calme) { document.documentElement.classList.add('fx-calme'); return; }
 
@@ -119,6 +212,8 @@
     const cv = document.createElement('canvas'); cv.className = 'reseau'; cv.setAttribute('aria-hidden', 'true');
     sec.prepend(cv); sec.classList.add('avec-reseau');
     const ctx = cv.getContext('2d'); let w, h, pts = [], actif = false, souris = { x: -999, y: -999 };
+    const clair = !!sec.closest('.sec--blanc, .sec--papier') || sec.matches('.sec--blanc, .sec--papier');
+    const cLigne = clair ? '27,95,193' : '73,167,255', cPoint = clair ? 'rgba(91,103,121,.7)' : 'rgba(157,182,220,.8)';
     const dpr = Math.min(devicePixelRatio || 1, 2);
     const taille = () => {
       w = sec.offsetWidth; h = sec.offsetHeight; if (!w || !h) return;
@@ -141,9 +236,9 @@
       }
       for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) {
         const a = pts[i], b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < 130) { ctx.strokeStyle = `rgba(73,167,255,${(1 - d / 130) * .28})`; ctx.lineWidth = .6; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+        if (d < 130) { ctx.strokeStyle = `rgba(${cLigne},${(1 - d / 130) * (clair ? .22 : .28)})`; ctx.lineWidth = .6; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
       }
-      for (const p of pts) { ctx.fillStyle = p.rouge ? '#DF2229' : 'rgba(157,182,220,.8)'; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); }
+      for (const p of pts) { ctx.fillStyle = p.rouge ? '#DF2229' : cPoint; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); }
       requestAnimationFrame(dessine);
     }
   });
@@ -263,11 +358,49 @@
   });
 
   /* ---------- Programme : fondu des créneaux filtrés ---------- */
-  const filtres = $('.filtres');
+  const filtres = $('#programme-vide') && $('.filtres');
   if (filtres) filtres.addEventListener('click', () => requestAnimationFrame(() => {
     G.fromTo($$('.creneau:not([hidden])'), { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: .5, ease: 'expo.out', stagger: .03 });
     ScrollTrigger.refresh();
   }));
+
+  /* ---------- Section cinéma : la vidéo s'ouvre en plein écran au défilement ---------- */
+  $$('.cinema').forEach((c) => {
+    const tl = G.timeline({ scrollTrigger: { trigger: c, start: 'top top', end: '+=90%', pin: true, scrub: 1 } });
+    tl.fromTo($('.cinema__cadre', c), { clipPath: 'inset(14% 12% 14% 12% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none' })
+      .from($('.cinema__texte h2', c), { y: 80, opacity: 0, ease: 'none' }, .25)
+      .from($('.cinema__texte p', c), { y: 60, opacity: 0, ease: 'none' }, .4)
+      .from($('.cinema__badge', c), { opacity: 0, ease: 'none' }, .5);
+  });
+
+  /* ---------- Galerie : parallaxe des photos et entrée en cascade ---------- */
+  $$('[data-parallaxe-img]').forEach((img) => G.fromTo(img, { yPercent: -10 }, { yPercent: 2, ease: 'none', scrollTrigger: { trigger: img.parentElement, scrub: true } }));
+  $$('.experience').forEach((g) => G.from(g.children, { clipPath: 'inset(100% 0 0 0)', duration: 1.2, ease: 'expo.inOut', stagger: .1, scrollTrigger: { trigger: g, start: 'top 80%' } }));
+
+  /* ---------- Icônes des secteurs : attirées par la souris ---------- */
+  if (fin) $$('.secteur').forEach((c) => {
+    const ico = $('.secteur__ico-cadre', c);
+    const xTo = G.quickTo(ico, 'x', { duration: .6, ease: 'power3' }), yTo = G.quickTo(ico, 'y', { duration: .6, ease: 'power3' });
+    c.addEventListener('pointermove', (e) => { const r = c.getBoundingClientRect(); xTo((e.clientX - r.left - r.width / 2) * .12); yTo((e.clientY - r.top - r.height / 2) * .12); });
+    c.addEventListener('pointerleave', () => { xTo(0); yTo(0); });
+  });
+
+  /* ---------- Titres de section : mots qui montent avec un léger flou ---------- */
+  $$('.sec h2.lignes .l > span').forEach((l) => {
+    l.innerHTML = l.innerHTML.split(' ').map((m) => `<span class="mot-titre">${m}</span>`).join(' ');
+  });
+  $$('.sec h2.lignes').forEach((h) => G.from($$('.mot-titre', h), { filter: 'blur(8px)', opacity: .2, duration: 1, ease: 'expo.out', stagger: .05, scrollTrigger: { trigger: h, start: 'top 85%' } }));
+
+  /* ---------- Mosaïque de la page Intervenants : portraits qui s'allument ---------- */
+  $$('.iv-mosaique').forEach((m) => {
+    const imgs = $$('img', m);
+    G.from(imgs, { opacity: 0, scale: .6, duration: .8, ease: 'expo.out', stagger: { each: .025, from: 'random' } });
+    setInterval(() => { imgs.forEach((i) => i.classList.remove('is-on')); for (let k = 0; k < 4; k++) imgs[(Math.random() * imgs.length) | 0].classList.add('is-on'); }, 1400);
+    G.to(m, { yPercent: -8, ease: 'none', scrollTrigger: { trigger: m.closest('section'), start: 'top top', end: 'bottom top', scrub: true } });
+  });
+
+  /* ---------- Vedettes et cartes d'intervenants : entrée échelonnée ---------- */
+  $$('.iv-vedettes, .iv-grille').forEach((g) => G.from(libre([...g.children]).slice(0, 12), { y: 50, opacity: 0, duration: .9, ease: 'expo.out', stagger: .06, scrollTrigger: { trigger: g, start: 'top 85%' }, clearProps: 'opacity,transform' }));
 
   /* recalcul après chargement des images, polices et changements de vue (maquette autonome) */
   addEventListener('load', () => ScrollTrigger.refresh());

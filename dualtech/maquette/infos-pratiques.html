@@ -63,7 +63,7 @@
       <p class="maj">Mis à jour le 28 octobre 2026 par l'équipe DualTech.</p>
     </div>
     <div class="lieu">
-  <div class="lieu__visuel" data-volet><img src="assets/img/campus-cyber-tour-eria.webp" alt="Campus Cyber dans la Tour Eria à La Défense" width="1024" height="683" loading="lazy"><span class="lieu__etiquette">2026 / La Défense</span></div>
+  <div class="lieu__visuel" data-volet data-yt="ZuQblYJsOiU"><img src="assets/img/campus-cyber-video.webp" alt="Le Campus Cyber à La Défense" width="640" height="360" loading="lazy"><span class="lieu__etiquette">2026 / La Défense</span><button type="button" class="btn btn--ghost btn--petit btn-video" data-film="ZuQblYJsOiU">Voir le film du Campus Cyber<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M240 128a15.74 15.74 0 0 1-7.6 13.51L88.32 229.65a16 16 0 0 1-16.2.3A15.86 15.86 0 0 1 64 216.13V39.87a15.86 15.86 0 0 1 8.12-13.82 16 16 0 0 1 16.2.3l144.08 88.14A15.74 15.74 0 0 1 240 128Z"/></svg></button></div>
   <div>
     <p class="surtitre" data-reveal>Lieu et accès</p>
     <h2 class="h2 lignes" id="titre-lieu"><span class="l"><span style="--i:0">Campus Cyber</span></span></h2>
@@ -142,6 +142,20 @@
     <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
+<dialog class="modale" id="film" aria-label="Lecture de la vidéo">
+  <button class="rond modale__fermer" type="button" aria-label="Fermer la vidéo"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+  <div class="modale__cadre"></div>
+</dialog>
+<dialog class="fiche" id="fiche" aria-labelledby="fiche-nom">
+  <button class="fiche__fermer" type="button" aria-label="Fermer la présentation"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+  <div class="fiche__logo"><img src="" alt="" width="240" height="80"></div>
+  <div class="fiche__corps">
+    <p class="fiche__cat"></p>
+    <h2 id="fiche-nom"></h2>
+    <p class="fiche__desc"></p>
+    <div class="fiche__nav"><button type="button" data-fiche-pas="-1">Partenaire précédent</button><button type="button" data-fiche-pas="1">Partenaire suivant</button></div>
+  </div>
+</dialog>
 <script src="assets/vendor/gsap.min.js" defer></script>
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/dualtech.js" defer></script>

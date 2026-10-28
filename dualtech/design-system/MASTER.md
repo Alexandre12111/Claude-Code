@@ -89,3 +89,13 @@ Moteur : GSAP 3.12.5 et ScrollTrigger hébergés avec le site (`assets/vendor/`)
 | Médaille animée et reflet sur la dotation, cadre doré en rotation | Prix |
 | Images révélées par volet, anneaux de progression sur les chiffres, date finale qui se remplit | Partout |
 | Bouton haut de page avec anneau de progression, transition en volet entre les pages | Partout |
+
+## Version 3 (retours client)
+
+* **Typographie** réduite d'environ 15 % : H1 `clamp(2.25rem, 4.8vw, 4.5rem)`, H2 `clamp(1.75rem, 3.1vw, 2.875rem)`, texte 1rem.
+* **Alternance des fonds** blanc, papier et marine, avec un bandeau bleu `--bleu`. Variables de surface par fond (`--surface`, `--surface-2`, `--fond`, `--titre-c`) pour que chaque composant s'adapte au fond clair ou sombre.
+* **Vidéos du site actuel** : YouTube du hero, film aéronautique (section « cinéma » qui s'ouvre en plein écran au défilement), vidéo réseau en fond des chiffres, vidéo du Prix (en-tête de la page Prix et panneau de l'accueil), vidéo YouTube du Campus Cyber (bloc Lieu), vidéo des workshops. Toutes chargées à l'approche, jamais en lecture automatique si l'animation est désactivée.
+* **Photos libres de droits** (Unsplash, licence gratuite, usage commercial sans attribution obligatoire) : `assets/photos/`. Elles illustrent 10 filières (au survol), la galerie « Une journée, six formats » et les en-têtes de pages. Mention « Photos d'illustration » sous la galerie.
+* **Partenaires** : chaque logo ouvre une fiche (logo, catégorie, description reprise du site actuel), avec partenaire précédent et suivant.
+* **Intervenants** : en-tête avec mosaïque animée de portraits, trois prises de parole à ne pas manquer, barre collante (univers, recherche, grille ou liste), fiche par intervenant avec ses horaires de passage tirés du programme.
+* **Effets ajoutés** : faisceau lumineux sur le contour des blocs, reflet sur les boutons, icônes attirées par la souris et retracées au survol, titres qui apparaissent mot à mot avec un flou, galerie révélée par volets avec parallaxe.

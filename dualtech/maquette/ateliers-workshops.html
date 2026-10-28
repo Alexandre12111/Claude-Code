@@ -65,14 +65,14 @@
       <p class="lead" data-reveal>Les workshops permettent d'approfondir un sujet, de partager des expériences et de faire dialoguer les acteurs de l'innovation duale. Vous pouvez proposer une thématique ou construire votre projet avec l'équipe DualTech.</p>
     </div>
     <div class="cartes cartes--2">
-      <article class="carte-b projecteur" data-reveal>
+      <article class="carte-b projecteur faisceau" data-reveal>
         <span class="etiq">Proposer un sujet</span>
         <h3 class="h3">Vous avez une thématique</h3>
         <p>Votre organisation souhaite partager une expertise ou ouvrir une discussion sur un enjeu identifié ? Présentez le sujet que vous souhaitez aborder lors de votre workshop.</p>
         <ul class="puces puces--check"><li>Partager une expertise en lien avec l'innovation duale</li><li>Approfondir un besoin opérationnel ou un enjeu industriel et technologique</li><li>Favoriser les échanges autour de retours d'expérience et de cas concrets</li></ul>
         <a class="lien-fleche" href="#formulaire">Proposer un workshop<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a>
       </article>
-      <article class="carte-b projecteur" data-reveal style="--d:.1s">
+      <article class="carte-b projecteur faisceau" data-reveal style="--d:.1s">
         <span class="etiq">Construire un atelier</span>
         <h3 class="h3">Votre projet reste à préciser</h3>
         <p>Vous souhaitez contribuer à DualTech sans avoir encore arrêté le sujet de votre atelier ? Manifestez votre intérêt pour engager un échange avec notre équipe.</p>
@@ -146,6 +146,20 @@
     <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
+<dialog class="modale" id="film" aria-label="Lecture de la vidéo">
+  <button class="rond modale__fermer" type="button" aria-label="Fermer la vidéo"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+  <div class="modale__cadre"></div>
+</dialog>
+<dialog class="fiche" id="fiche" aria-labelledby="fiche-nom">
+  <button class="fiche__fermer" type="button" aria-label="Fermer la présentation"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+  <div class="fiche__logo"><img src="" alt="" width="240" height="80"></div>
+  <div class="fiche__corps">
+    <p class="fiche__cat"></p>
+    <h2 id="fiche-nom"></h2>
+    <p class="fiche__desc"></p>
+    <div class="fiche__nav"><button type="button" data-fiche-pas="-1">Partenaire précédent</button><button type="button" data-fiche-pas="1">Partenaire suivant</button></div>
+  </div>
+</dialog>
 <script src="assets/vendor/gsap.min.js" defer></script>
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/dualtech.js" defer></script>

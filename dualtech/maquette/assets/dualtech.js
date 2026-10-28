@@ -197,7 +197,7 @@
   }));
 
   /* Programme : filtres par format et fil de temps */
-  const filtres = $('.filtres');
+  const filtres = $('#programme-vide') && $('.filtres');
   if (filtres) {
     const creneaux = $$('.creneau[data-type]');
     filtres.addEventListener('click', (e) => {

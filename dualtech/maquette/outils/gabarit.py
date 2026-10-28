@@ -153,6 +153,20 @@ def pied():
     <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
+<dialog class="modale" id="film" aria-label="Lecture de la vidéo">
+  <button class="rond modale__fermer" type="button" aria-label="Fermer la vidéo">{ico('x')}</button>
+  <div class="modale__cadre"></div>
+</dialog>
+<dialog class="fiche" id="fiche" aria-labelledby="fiche-nom">
+  <button class="fiche__fermer" type="button" aria-label="Fermer la présentation">{ico('x')}</button>
+  <div class="fiche__logo"><img src="" alt="" width="240" height="80"></div>
+  <div class="fiche__corps">
+    <p class="fiche__cat"></p>
+    <h2 id="fiche-nom"></h2>
+    <p class="fiche__desc"></p>
+    <div class="fiche__nav"><button type="button" data-fiche-pas="-1">Partenaire précédent</button><button type="button" data-fiche-pas="1">Partenaire suivant</button></div>
+  </div>
+</dialog>
 <script src="assets/vendor/gsap.min.js" defer></script>
 <script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/dualtech.js" defer></script>

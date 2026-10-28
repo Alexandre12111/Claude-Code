@@ -40,17 +40,46 @@ def bloc_orateur(i, niveau="h3"):
 </li>"""
 
 
-def bloc_logos(liste, cls="logos"):
+def logo_btn(nom, f, cat="Partenaire de DualTech 2026"):
+    d = DESCRIPTIONS.get(nom, "")
+    return (f'<button type="button" class="logo-btn" data-fiche data-nom="{escape(nom)}" data-cat="{escape(cat)}" data-desc="{escape(d)}" data-logo="assets/partenaires/{f}.webp" aria-label="{escape(nom)} : voir la présentation">'
+            f'<img src="assets/partenaires/{f}.webp" alt="Logo {escape(nom)}" width="200" height="64" loading="lazy"></button>')
+
+
+EXPERIENCE_ITEMS = [
+    ("conference-keynote", "Keynotes", "Des prises de parole de dirigeants publics, industriels et européens tout au long de la journée."),
+    ("conference-table-ronde", "Tables rondes", "Défense, financement, réindustrialisation : quatre tables rondes réunissent décideurs et experts."),
+    ("conference-networking", "Networking", "Petit-déjeuner, pauses et déjeuner pour rencontrer donneurs d'ordre, investisseurs et startups."),
+    ("conference-auditoire", "Pitch sessions", "Les entreprises des filières stratégiques présentent leurs innovations duales."),
+    ("robotique-bras", "Expositions", "Un espace exposants pour découvrir les technologies à double usage."),
+    ("conference-public", "Ateliers", "Workshops et ateliers au Campus Cyber, de 15h00 à 15h45."),
+]
+EXPERIENCE = f"""<section class="sec sec--blanc" aria-labelledby="titre-experience">
+  <div class="wrap">
+    <div class="tete-sec tete-sec--split">
+      <div>
+        <p class="surtitre" data-reveal>L'expérience DualTech</p>
+        {lignes("Une journée,", "six formats", attrs=' id="titre-experience"')}
+      </div>
+      <p class="lead" data-reveal>Tables rondes, keynotes, pitch sessions, expositions, ateliers et learning expeditions : DualTech met en lumière, tout au long de la journée, les acteurs des filières stratégiques à double usage.</p>
+    </div>
+    <div class="experience">{"".join(f'<figure class="experience__item"><img src="assets/photos/{f}.webp" alt="" width="800" height="533" loading="lazy" data-parallaxe-img><span class="num-exp">{n + 1:02d}</span><figcaption><b>{t}</b><span>{d}</span></figcaption></figure>' for n, (f, t, d) in enumerate(EXPERIENCE_ITEMS))}</div>
+    <p class="mention" style="margin-top:16px">Photos d'illustration.</p>
+  </div>
+</section>"""
+
+
+def bloc_logos(liste, cls="logos", cat="Partenaire de DualTech 2026"):
     out = []
     for nom, f in liste:
         if f:
-            out.append(f'<li><img src="assets/partenaires/{f}.webp" alt="Logo {escape(nom)}" width="200" height="64" loading="lazy"></li>')
+            out.append(f'<li>{logo_btn(nom, f, cat)}</li>')
         else:
             out.append(f'<li><span style="font:700 1.25rem var(--titre);color:var(--encre);letter-spacing:-.01em">{escape(nom)}</span></li>')
     return f'<ul class="{cls}">{"".join(out)}</ul>'
 
 
-def bloc_lieu(titre_h2="Campus Cyber", texte=None, surtitre="Infos pratiques", carte=True, bouton=True, image="assets/img/campus-cyber-tour-eria.webp", alt="Campus Cyber dans la Tour Eria à La Défense"):
+def bloc_lieu(titre_h2="Campus Cyber", texte=None, surtitre="Infos pratiques", carte=True, bouton=True, image="assets/img/campus-cyber-video.webp", alt="Le Campus Cyber à La Défense"):
     texte = texte or "Le Campus Cyber est un lieu phare dédié à la cybersécurité qui rassemble les principaux acteurs nationaux et internationaux du domaine. Il permet en particulier d'accueillir sur un même site des entreprises (grands groupes, PME), des services de l'État, des organismes de formation, des acteurs de la recherche et des associations."
     icos = ["pin", "train", "badge", "accessible"]
     infos = "".join(f'<li><span class="num">{ico(icos[n])}</span><h3>{t}</h3><p>{d}</p></li>' for n, (t, d) in enumerate(INFOS_LIEU))
@@ -59,7 +88,7 @@ def bloc_lieu(titre_h2="Campus Cyber", texte=None, surtitre="Infos pratiques", c
     </div>""" if carte else ""
     b = f'<div class="actions" style="margin-top:32px">{btn("Préparer sa venue", lien("infos"), "ghost")}</div>' if bouton else ""
     return f"""<div class="lieu">
-  <div class="lieu__visuel" data-volet><img src="{image}" alt="{alt}" width="1024" height="683" loading="lazy"><span class="lieu__etiquette">2026 / La Défense</span></div>
+  <div class="lieu__visuel" data-volet data-yt="{VIDEO_CAMPUS}"><img src="{image}" alt="{alt}" width="640" height="360" loading="lazy"><span class="lieu__etiquette">2026 / La Défense</span><button type="button" class="btn btn--ghost btn--petit btn-video" data-film="{VIDEO_CAMPUS}">Voir le film du Campus Cyber{ico('play')}</button></div>
   <div>
     <p class="surtitre" data-reveal>{surtitre}</p>
     {lignes(titre_h2)}
@@ -113,10 +142,13 @@ def decompte_hero():
 # ACCUEIL
 # ====================================================================
 def accueil():
-    filieres = "".join(f'<li class="secteur fx-trace" tabindex="0" style="--td:{(n % 5) * .08:.2f}s"><div class="secteur__haut"><span class="secteur__ico-cadre">{icone(t)}</span><span class="secteur__num">{n + 1:02d}</span></div><h3>{t}</h3><p>{d}</p></li>' for n, (t, d) in enumerate(FILIERES))
+    def ph(t):
+        f = PHOTOS_FILIERES.get(t)
+        return f'<span class="secteur__photo" aria-hidden="true"><img src="assets/photos/{f}.webp" alt="" width="400" height="300" loading="lazy"></span>' if f else ""
+    filieres = "".join(f'<li class="secteur fx-trace faisceau{" secteur--photo" if t in PHOTOS_FILIERES else ""}" tabindex="0" style="--td:{(n % 5) * .08:.2f}s">{ph(t)}<div class="secteur__haut"><span class="secteur__ico-cadre">{icone(t)}</span><span class="secteur__num">{n + 1:02d}</span></div><h3>{t}</h3><p>{d}</p></li>' for n, (t, d) in enumerate(FILIERES))
     bande = "".join(f"<span>{t}</span>" for t, _ in FILIERES)
     chiffres = "".join(f'<li><svg class="anneau" viewBox="0 0 64 64" aria-hidden="true" style="--v:{(0, .12, .3, .2)[n]}"><circle class="fond" cx="32" cy="32" r="30"/><circle class="val" cx="32" cy="32" r="30" pathLength="1"/></svg><b class="chiffre"><sup>{s}</sup><span data-compte="{v}">{v}</span></b><span class="chiffres__lib">{t}</span></li>'.replace("<sup></sup>", "") for n, (v, s, t) in enumerate(CHIFFRES))
-    profils = "".join(f'<article class="profil projecteur" data-incline><span class="profil__num">{n + 1:02d}</span>{ico(i, "ico")}<h3>{t}</h3><p>{d}</p></article>' for n, (t, d, i) in enumerate(PROFILS))
+    profils = "".join(f'<article class="profil projecteur faisceau" data-incline><span class="profil__num">{n + 1:02d}</span>{ico(i, "ico")}<h3>{t}</h3><p>{d}</p></article>' for n, (t, d, i) in enumerate(PROFILS))
     vedettes = ["Stéphane Boujnah", "Emmanuel Chiva", "Stéphane Ouaki", "Benoist Grossmann", "Alexandre Papaemmanuel", "Charles Beigbeder",
                 "Jean-Louis Constanza", "Eric Ottou", "Mathieu Fossat", "Jean-Christophe Fromantin", "Alexandra André", "François Carlot"]
     orateurs = "".join(bloc_orateur(PAR_NOM[n]) for n in vedettes)
@@ -137,7 +169,7 @@ def accueil():
     rang = lambda l: "".join(f'<figure class="portrait"><img src="{i["photo"]}" alt="" width="168" height="168" loading="lazy"><figcaption><b>{escape(i["nom"])}</b><br>{escape(i["orga"])}</figcaption></figure>' for i in l)
     r1, r2 = portraits[::2], portraits[1::2]
     tous_logos = [x for _, g in PARTENAIRES_2026 for x in g] + [(n, f) for n, f in PARTENAIRES_PRIX if f and n not in ("Paris Ouest La Défense", "La Place Stratégique")]
-    rang_logos = lambda l: "".join(f'<li><img src="assets/partenaires/{f}.webp" alt="Logo {escape(n)}" width="200" height="64" loading="lazy"></li>' for n, f in l)
+    rang_logos = lambda l: "".join(f'<li>{logo_btn(n, f)}</li>' for n, f in l)
     moitie = len(tous_logos) // 2
     corps = f"""
 <div class="intro" aria-hidden="true">
@@ -177,15 +209,15 @@ def accueil():
   <span class="defiler" aria-hidden="true">Défiler</span>
 </section>
 
-<section class="orga" aria-label="Organisateurs">
+<section class="orga orga--clair" aria-label="Organisateurs">
   <div class="wrap orga__in">
     <p class="orga__txt"><strong>DualTech 2026</strong> est porté par un think tank indépendant et par le territoire du premier quartier d'affaires européen.</p>
-    <a class="orga__carte" href="https://inas-france.fr/" target="_blank" rel="noopener"><img src="assets/partenaires/inas-blanc.webp" alt="Institut National des Affaires Stratégiques (INAS)" width="52" height="52" loading="lazy"><span>Découvrir l'Institut National des Affaires Stratégiques (INAS)</span>{ico('sortie')}</a>
-    <a class="orga__carte" href="https://www.parisouestladefense.fr/app/uploads/2026/07/Version-finale-Plaquette-marketing-territorial.pdf" target="_blank" rel="noopener"><img src="assets/partenaires/pold-blanc.webp" alt="Paris Ouest La Défense" width="104" height="52" loading="lazy"><span>Découvrir un territoire qui s'engage pour la souveraineté et l'innovation</span>{ico('sortie')}</a>
+    <a class="orga__carte" href="https://inas-france.fr/" target="_blank" rel="noopener"><img src="assets/partenaires/inas.webp" alt="Institut National des Affaires Stratégiques (INAS)" width="104" height="47" loading="lazy"><span>Découvrir l'Institut National des Affaires Stratégiques (INAS)</span>{ico('sortie')}</a>
+    <a class="orga__carte" href="https://www.parisouestladefense.fr/app/uploads/2026/07/Version-finale-Plaquette-marketing-territorial.pdf" target="_blank" rel="noopener"><img src="assets/partenaires/pold.webp" alt="Paris Ouest La Défense" width="104" height="52" loading="lazy"><span>Découvrir un territoire qui s'engage pour la souveraineté et l'innovation</span>{ico('sortie')}</a>
   </div>
 </section>
 
-<section class="sec" aria-labelledby="titre-manifeste" data-reseau>
+<section class="sec sec--blanc" aria-labelledby="titre-manifeste" data-reseau>
   <div class="wrap manifeste">
     <div>
       <p class="surtitre" data-reveal>Filières industrielles représentées</p>
@@ -198,9 +230,20 @@ def accueil():
   </div>
 </section>
 
-<div class="bandeau" aria-hidden="true"><div class="bandeau__piste">{bande}{bande}</div></div>
+<section class="cinema" aria-labelledby="titre-cinema">
+  <div class="cinema__cadre">
+    <video data-src="{MP4_AERO}" poster="assets/img/aero-poster.webp" muted loop playsinline preload="none" aria-hidden="true"></video>
+  </div>
+  <p class="cinema__badge" aria-hidden="true">Industrie duale · civil et défense</p>
+  <div class="wrap cinema__texte">
+    <h2 id="titre-cinema">Des technologies au service du civil et de la défense</h2>
+    <p>L'industrie duale conçoit des technologies dont les applications servent à la fois les marchés civils et les besoins de défense et de sécurité. Le quantique, le spatial, la robotique, l'intelligence artificielle et les matériaux avancés en sont les principales filières.</p>
+  </div>
+</section>
 
-<section class="sec" aria-labelledby="titre-filieres">
+<div class="bandeau bandeau--bleu" aria-hidden="true"><div class="bandeau__piste">{bande}{bande}</div></div>
+
+<section class="sec sec--papier" aria-labelledby="titre-filieres">
   <div class="wrap">
     <div class="tete-sec tete-sec--split">
       <div>
@@ -213,10 +256,8 @@ def accueil():
   </div>
 </section>
 
-<div class="bandeau bandeau--inverse" aria-hidden="true"><div class="bandeau__piste">{bande}{bande}</div></div>
-
 <section class="sec sec--nuit chiffres-sec" aria-labelledby="titre-chiffres">
-  <div class="chiffres-sec__fond" style="background-image:url(assets/img/skyline-la-defense.webp)" data-parallaxe=".18" aria-hidden="true"></div>
+  <div class="video-fond" aria-hidden="true"><video data-src="{MP4_RESEAU}" poster="assets/img/fond-reseau-poster.webp" muted loop playsinline preload="none"></video></div>
   <div class="wrap">
     <div class="tete-sec tete-sec--split">
       <div>
@@ -229,7 +270,7 @@ def accueil():
   </div>
 </section>
 
-<section class="sec horizon-sec" aria-labelledby="titre-temps">
+<section class="sec sec--blanc horizon-sec" aria-labelledby="titre-temps">
   <div class="wrap">
     <div class="tete-sec tete-sec--split">
       <div>
@@ -275,10 +316,11 @@ def accueil():
     <div class="profils">{profils}</div>
   </div>
 </section>
+{EXPERIENCE}
 
 <section class="sec sec--nuit" aria-labelledby="titre-prix">
   <div class="wrap">
-    <div class="prix-teaser" data-reveal><svg class="medaille" viewBox="0 0 88 88" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><g class="rayons"><circle cx="44" cy="44" r="42" stroke-dasharray="2 5"/><circle cx="44" cy="44" r="36" stroke-opacity=".5"/></g><circle cx="44" cy="44" r="27"/><path d="M44 29l4.4 9 9.9 1.4-7.2 7 1.7 9.8L44 51.6l-8.8 4.6 1.7-9.8-7.2-7 9.9-1.4Z" fill="currentColor" fill-opacity=".18"/></svg>
+    <div class="prix-teaser" data-reveal><div class="video-fond prix-teaser__video" aria-hidden="true"><video data-src="{MP4_PRIX}" poster="assets/img/prix-poster.webp" muted loop playsinline preload="none"></video></div><svg class="medaille" viewBox="0 0 88 88" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><g class="rayons"><circle cx="44" cy="44" r="42" stroke-dasharray="2 5"/><circle cx="44" cy="44" r="36" stroke-opacity=".5"/></g><circle cx="44" cy="44" r="27"/><path d="M44 29l4.4 9 9.9 1.4-7.2 7 1.7 9.8L44 51.6l-8.8 4.6 1.7-9.8-7.2-7 9.9-1.4Z" fill="currentColor" fill-opacity=".18"/></svg>
       <div class="theme-or">
         <p class="surtitre surtitre--or">Prix de l'innovation duale · Édition 2026</p>
         {lignes("Faire émerger les", "innovations stratégiques", "de demain.", attrs=' id="titre-prix"')}
@@ -291,7 +333,7 @@ def accueil():
   </div>
 </section>
 
-<section class="sec sec--blanc" aria-labelledby="titre-partenaires">
+<section class="sec sec--papier" aria-labelledby="titre-partenaires">
   <div class="wrap">
     <div class="tete-sec tete-sec--split">
       <div>
@@ -313,7 +355,7 @@ def accueil():
   </div>
 </section>
 
-<section class="sec sec--papier" aria-labelledby="titre-faq">
+<section class="sec sec--blanc" aria-labelledby="titre-faq">
   <div class="wrap deux-col deux-col--5-7">
     <div class="collant">
       <p class="surtitre" data-reveal>Questions fréquentes</p>
@@ -325,11 +367,6 @@ def accueil():
 </section>
 
 {bloc_final()}
-
-<dialog class="modale" id="film" aria-label="Film de présentation DualTech">
-  <button class="rond modale__fermer" type="button" aria-label="Fermer la vidéo">{ico('x')}</button>
-  <div class="modale__cadre"></div>
-</dialog>
 """
     graphe = BASE + [EVENEMENT, webpage("accueil", "DualTech 2026 : le rendez-vous de l'industrie duale", extra={"about": {"@id": f"{SITE}/#dualtech-2026"}, "primaryImageOfPage": f"{SITE}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"})]
     graphe[-1].pop("breadcrumb")
@@ -374,7 +411,7 @@ def programme():
     corps = phero([("accueil", "Accueil"), (None, "Programme 2026")], "26 novembre 2026 · Campus Cyber", ["Le programme", "de la journée"],
                   "Tables rondes, keynotes, sessions de pitch, espace exposants et learning expeditions rythmeront cette journée entièrement consacrée à l'innovation duale et à la souveraineté technologique.",
                   btn("S'inscrire", lien("inscription")) + btn("Voir les intervenants", lien("intervenants"), "ghost"),
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/img/conference-pleniere.webp" alt="" width="1600" height="1067"></div>', meta)
+                  '<div class="phero__fond" aria-hidden="true"><img src="assets/photos/conference-keynote.webp" alt="" width="1600" height="1067"></div>', meta)
     corps += f"""
 <section class="sec sec--blanc" aria-labelledby="titre-journee">
   <div class="wrap">
@@ -411,27 +448,97 @@ def programme():
 # INTERVENANTS
 # ====================================================================
 def intervenants():
-    cartes = "".join(bloc_orateur(i, "h2") for i in INTERVENANTS)
-    corps = phero([("accueil", "Accueil"), (None, "Intervenants")], "26 novembre 2026 · Campus Cyber", ["Speakers 2026"],
-                  "Dirigeants industriels, investisseurs, responsables publics et experts de l'INAS : découvrez les personnalités qui interviendront lors de la seconde édition de DualTech.",
-                  btn("Voir le programme", lien("programme")) + btn("S'inscrire", lien("inscription"), "ghost"),
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/img/table-ronde.webp" alt="" width="1400" height="788"></div>')
-    corps += f"""
-<section class="sec sec--nuit" aria-label="Liste des intervenants">
-  <div class="wrap">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;margin-bottom:48px">
-      <div class="recherche">
-        <label class="sr-only" for="recherche-intervenant">Rechercher un intervenant, une fonction ou une organisation</label>
-        {ico('loupe')}
-        <input id="recherche-intervenant" type="search" placeholder="Nom, fonction, organisation" autocomplete="off">
-        <button type="button" id="recherche-effacer" aria-label="Effacer la recherche">{ico('x')}</button>
-      </div>
-      <p class="secondaire" id="intervenants-statut" aria-live="polite">{len(INTERVENANTS)} intervenants</p>
+    import json as _json
+    lib = dict(UNIVERS)
+    def carte(i):
+        sess = [{"h": f"{d} à {f}", "t": titre, "r": role} for d, f, t, titre, role in i["sessions"]]
+        prem = i["sessions"][0] if i["sessions"] else None
+        voile = f'<small>{prem[0]} · {TYPES[prem[2]]}</small><span>{escape(prem[3])}</span>' if prem else '<small>Intervenant 2026</small>'
+        resume = " · ".join(f"{d} {TYPES[t]}" for d, f, t, *_ in i["sessions"]) or "Programme à venir"
+        cherche = escape(slug(f"{i['nom']} {i['fonction']} {i['orga']}").replace("-", " "))
+        return (f'<article class="iv-carte" data-univers="{i["univers"]}" data-cherche="{cherche}" data-nom="{escape(i["nom"])}" data-fonction="{escape(i["fonction"])}" '
+                f'data-orga="{escape(i["orga"])}" data-photo="{i["photo"]}" data-sessions="{escape(_json.dumps(sess, ensure_ascii=False))}" data-incline>'
+                f'<button type="button" class="iv-carte__ouvrir" aria-label="Voir la fiche de {escape(i["nom"])}"></button>'
+                f'<div class="iv-carte__photo"><img src="{i["photo"]}" alt="" width="480" height="480" loading="lazy"><span class="iv-carte__univers">{lib[i["univers"]]}</span>'
+                f'<span class="iv-carte__plus" aria-hidden="true">{ico("fleche")}</span><span class="iv-carte__voile" aria-hidden="true">{voile}</span></div>'
+                f'<h2>{escape(i["nom"])}</h2><p>{escape(i["fonction"])}<strong>{escape(i["orga"])}</strong></p><span class="iv-carte__sessions">{escape(resume)}</span></article>')
+    cartes = "".join(carte(i) for i in INTERVENANTS)
+    comptes = {k: sum(1 for i in INTERVENANTS if k == "tous" or i["univers"] == k) for k, _ in UNIVERS}
+    filtres = "".join(f'<button type="button" data-univers="{k}" aria-pressed="{"true" if k == "tous" else "false"}">{t}<span class="n">{comptes[k]}</span></button>' for k, t in UNIVERS)
+    mosaique = "".join(f'<img src="{i["photo"]}" alt="" width="120" height="120" loading="lazy">' for i in (INTERVENANTS * 2)[:30])
+    vedettes = []
+    for nom in ("Stéphane Boujnah", "Emmanuel Chiva", "Stéphane Ouaki"):
+        i = PAR_NOM[nom]; d, f, t, titre, _ = i["sessions"][0]
+        vedettes.append(f'<article class="iv-vedette faisceau"><div class="iv-vedette__photo"><img src="{i["photo"]}" alt="{escape(nom)}" width="480" height="480" loading="lazy"></div>'
+                        f'<div class="iv-vedette__corps"><p class="iv-vedette__heure">{d}</p><span class="badge badge--{t}" style="margin-top:12px">{TYPES[t]}</span><h3>{escape(titre)}</h3>'
+                        f'<p><b style="color:var(--blanc)">{escape(nom)}</b>, {escape(i["fonction"])}, {escape(i["orga"])}</p></div></article>')
+    nb_keynotes = sum(1 for _, c in PROGRAMME for x in c if x[2] == "keynote")
+    nb_tables = sum(1 for _, c in PROGRAMME for x in c if x[2] == "table")
+    corps = f"""
+<section class="iv-hero" data-reseau>
+  <div class="phero__grille-deco" aria-hidden="true"></div>
+  <div class="wrap iv-hero__grille">
+    <div>
+      <nav aria-label="Fil d'Ariane"><ol class="ariane"><li><a href="{lien('accueil')}">Accueil</a></li><li aria-current="page">Intervenants</li></ol></nav>
+      <p class="surtitre" data-reveal>26 novembre 2026 · Campus Cyber</p>
+      <h1 class="lignes"><span class="l"><span style="--i:0">Speakers <b>2026</b></span></span></h1>
+      <p class="lead" data-reveal style="margin-top:24px;color:var(--brume)">Dirigeants industriels, investisseurs, responsables publics et experts de l'INAS : découvrez les personnalités qui interviendront lors de la seconde édition de DualTech, et retrouvez l'heure de leur passage.</p>
+      <div class="actions" data-reveal style="margin-top:32px">{btn("Voir le programme", lien("programme"))}{btn("S'inscrire", lien("inscription"), "ghost")}</div>
+      <div class="iv-stats" data-reveal><div><b><span data-compte="{len(INTERVENANTS)}">{len(INTERVENANTS)}</span></b><span>intervenants</span></div><div><b><span data-compte="{nb_keynotes}">{nb_keynotes}</span></b><span>keynotes</span></div><div><b><span data-compte="{nb_tables}">{nb_tables}</span></b><span>tables rondes</span></div></div>
     </div>
-    <ul class="orateurs orateurs--6">{cartes}</ul>
-    <p class="vide" id="intervenants-vide" hidden>Aucun intervenant ne correspond à votre recherche.</p>
+    <div class="iv-mosaique" aria-hidden="true">{mosaique}</div>
   </div>
 </section>
+
+<section class="sec sec--nuit" aria-labelledby="titre-vedettes">
+  <div class="wrap">
+    <div class="tete-sec tete-sec--split">
+      <div>
+        <p class="surtitre" data-reveal>À ne pas manquer</p>
+        {lignes("Trois prises de parole", "qui rythment la journée", attrs=' id="titre-vedettes"')}
+      </div>
+      <p class="lead" data-reveal>De l'allocution d'ouverture d'Euronext à la stratégie européenne d'innovation, en passant par la recherche aérospatiale.</p>
+    </div>
+    <div class="iv-vedettes">{"".join(vedettes)}</div>
+  </div>
+</section>
+
+<div class="iv-barre">
+  <div class="wrap iv-barre__in">
+    <div class="filtres" role="group" aria-label="Filtrer les intervenants par univers">{filtres}</div>
+    <div style="display:flex;gap:12px;align-items:center;flex:1 1 320px;justify-content:flex-end">
+      <div class="recherche">
+        <label class="sr-only" for="iv-recherche">Rechercher un intervenant, une fonction ou une organisation</label>
+        {ico('loupe')}
+        <input id="iv-recherche" type="search" placeholder="Nom, fonction, organisation" autocomplete="off">
+        <button type="button" id="iv-effacer" aria-label="Effacer la recherche">{ico('x')}</button>
+      </div>
+      <div class="vues" role="group" aria-label="Affichage"><button type="button" data-vue="grille" aria-pressed="true" aria-label="Afficher en grille"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M104 40H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 64H56V56h48Zm96-64h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 64h-48V56h48Zm-96 32H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16Zm0 64H56v-48h48Zm96-64h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16Zm0 64h-48v-48h48Z"/></svg></button><button type="button" data-vue="liste" aria-pressed="false" aria-label="Afficher en liste"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+    </div>
+  </div>
+</div>
+
+<section class="sec sec--blanc" aria-label="Liste des intervenants" style="padding-top:56px">
+  <div class="wrap">
+    <p class="secondaire" id="iv-statut" aria-live="polite" style="margin-bottom:24px">{len(INTERVENANTS)} intervenants</p>
+    <div class="iv-grille" id="iv-grille">{cartes}</div>
+    <p class="vide" id="iv-vide" hidden>Aucun intervenant ne correspond à votre recherche.</p>
+  </div>
+</section>
+
+<dialog class="fiche fiche--iv" id="fiche-iv" aria-labelledby="fiche-iv-nom">
+  <button class="fiche__fermer" type="button" aria-label="Fermer la fiche">{ico('x')}</button>
+  <div class="fiche__grille">
+    <div class="fiche__photo"><img src="" alt="" width="480" height="480"></div>
+    <div class="fiche__corps">
+      <p class="fiche__cat"></p>
+      <h2 id="fiche-iv-nom"></h2>
+      <p class="fiche__fonction"></p>
+      <ul class="fiche__sessions"></ul>
+      <div class="fiche__nav"><button type="button" data-iv-pas="-1">Intervenant précédent</button><a class="lien-fleche" href="{lien('programme')}">Programme complet{ico('fleche')}</a><button type="button" data-iv-pas="1">Intervenant suivant</button></div>
+    </div>
+  </div>
+</dialog>
 {bloc_final()}"""
     liste = {"@type": "ItemList", "name": "Intervenants DualTech 2026", "numberOfItems": len(INTERVENANTS),
              "itemListElement": [{"@type": "ListItem", "position": n + 1, "item": {"@type": "Person", "name": i["nom"], "jobTitle": i["fonction"], "worksFor": {"@type": "Organization", "name": i["orga"]}, "image": f"{SITE}/wp-content/themes/dualtech/{i['photo']}"}} for n, i in enumerate(INTERVENANTS)]}
@@ -459,14 +566,14 @@ def workshops():
       <p class="lead" data-reveal>Les workshops permettent d'approfondir un sujet, de partager des expériences et de faire dialoguer les acteurs de l'innovation duale. Vous pouvez proposer une thématique ou construire votre projet avec l'équipe DualTech.</p>
     </div>
     <div class="cartes cartes--2">
-      <article class="carte-b projecteur" data-reveal>
+      <article class="carte-b projecteur faisceau" data-reveal>
         <span class="etiq">Proposer un sujet</span>
         <h3 class="h3">Vous avez une thématique</h3>
         <p>Votre organisation souhaite partager une expertise ou ouvrir une discussion sur un enjeu identifié ? Présentez le sujet que vous souhaitez aborder lors de votre workshop.</p>
         <ul class="puces puces--check"><li>Partager une expertise en lien avec l'innovation duale</li><li>Approfondir un besoin opérationnel ou un enjeu industriel et technologique</li><li>Favoriser les échanges autour de retours d'expérience et de cas concrets</li></ul>
         <a class="lien-fleche" href="#formulaire">Proposer un workshop{ico('fleche')}</a>
       </article>
-      <article class="carte-b projecteur" data-reveal style="--d:.1s">
+      <article class="carte-b projecteur faisceau" data-reveal style="--d:.1s">
         <span class="etiq">Construire un atelier</span>
         <h3 class="h3">Votre projet reste à préciser</h3>
         <p>Vous souhaitez contribuer à DualTech sans avoir encore arrêté le sujet de votre atelier ? Manifestez votre intérêt pour engager un échange avec notre équipe.</p>
@@ -512,12 +619,12 @@ def workshops():
 # PARTENAIRES
 # ====================================================================
 def partenaires():
-    groupes = "".join(f'<div class="logos-groupe" data-reveal><h3>{g}</h3>{bloc_logos(l)}</div>' for g, l in PARTENAIRES_2026)
+    groupes = "".join(f'<div class="logos-groupe" data-reveal><h3>{g}</h3>{bloc_logos(l, cat=g)}</div>' for g, l in PARTENAIRES_2026)
     meta = """<dl class="phero__meta" data-reveal style="--d:.45s"><div><dt>Participants</dt><dd>400 attendus sur accréditation</dd></div><div><dt>Intervenants</dt><dd>40 publics, industriels et financiers</dd></div><div><dt>Filières</dt><dd>+20 représentées</dd></div></dl>"""
     corps = phero([("accueil", "Accueil"), (None, "Devenir partenaire")], "Partenariats 2026", ["Associez votre", "organisation à DualTech"],
                   "Rejoignez les institutions, industriels et investisseurs qui font de DualTech un rendez-vous industriel de haut niveau. Deux niveaux de partenariat existent, du soutien institutionnel à la prise de parole en plénière.",
                   btn("Recevoir le dossier de partenariat", "#demande") + btn("Voir les partenaires actuels", "#partenaires", "ghost"),
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/img/campus-cyber-auditorium.webp" alt="" width="1200" height="900"></div>', meta)
+                  '<div class="phero__fond" aria-hidden="true"><img src="assets/photos/conference-networking.webp" alt="" width="1600" height="1067"></div>', meta)
     corps += f"""
 <section class="sec sec--blanc" id="partenaires" aria-labelledby="titre-part">
   <div class="wrap">
@@ -542,13 +649,13 @@ def partenaires():
       <p class="lead" data-reveal>DualTech s'appuie sur un réseau de partenaires institutionnels et médias associés à la préparation, à la visibilité et au rayonnement de l'événement. Deux modalités de partenariat sont proposées selon la nature et le niveau d'implication de chaque organisation.</p>
     </div>
     <div class="cartes cartes--2">
-      <article class="carte-b projecteur" data-reveal>
+      <article class="carte-b projecteur faisceau" data-reveal>
         <span class="etiq">Institutionnel</span>
         <h3 class="h3">Partenaire institutionnel</h3>
         <p>Le partenariat institutionnel associe votre organisation à DualTech et permet de valoriser son engagement au sein de l'écosystème industriel, technologique et institutionnel réuni à l'occasion de l'événement.</p>
         <ul class="puces puces--check"><li>Présence du logo de votre organisation sur le site internet et les principaux supports de communication de DualTech</li><li>Mise en lumière de votre organisation dans les communications institutionnelles relatives à l'événement</li><li>Association de votre organisation à l'écosystème de partenaires mobilisés autour de DualTech</li><li>Implication dans l'événement et, selon les modalités convenues, dans certaines séquences de son programme</li></ul>
       </article>
-      <article class="carte-b projecteur" data-reveal style="--d:.1s">
+      <article class="carte-b projecteur faisceau" data-reveal style="--d:.1s">
         <span class="etiq">Média</span>
         <h3 class="h3">Partenaire média</h3>
         <p>Le partenariat média vise à associer des médias de référence à la diffusion de DualTech et à renforcer la visibilité de l'événement auprès des publics concernés par ses thématiques.</p>
@@ -591,7 +698,7 @@ def partenaires():
 # PRIX DE L'INNOVATION DUALE
 # ====================================================================
 def prix():
-    cats = "".join(f'<article class="carte-b projecteur" data-reveal style="--d:{n * .08}s"><span class="etiq" style="color:var(--or-texte)">{n + 1:02d}</span><h3 class="h3">{t}</h3><p>{d}</p><a class="lien-fleche" href="{CANDIDATURE_PRIX}" target="_blank" rel="noopener" style="color:var(--or-texte)">Candidater{ico("sortie")}</a></article>' for n, (t, d) in enumerate(CATEGORIES_PRIX))
+    cats = "".join(f'<article class="carte-b projecteur faisceau" data-reveal style="--d:{n * .08}s"><span class="etiq" style="color:var(--or-texte)">{n + 1:02d}</span><h3 class="h3">{t}</h3><p>{d}</p><a class="lien-fleche" href="{CANDIDATURE_PRIX}" target="_blank" rel="noopener" style="color:var(--or-texte)">Candidater{ico("sortie")}</a></article>' for n, (t, d) in enumerate(CATEGORIES_PRIX))
     avantages = [
         ("01 · Soutien financier", "Une dotation pour soutenir le développement du projet", "Chaque lauréat recevra une dotation de 5 000 euros destinée à contribuer au développement de son innovation et à la poursuite de ses prochaines étapes."),
         ("02 · Écosystème", "Un accès privilégié aux réseaux partenaires", "Les lauréats bénéficieront de mises en relation avec les écosystèmes de Paris Ouest La Défense, de l'INAS et de La Place Stratégique, afin de faciliter les connexions avec les acteurs pertinents pour leur développement."),
@@ -607,7 +714,7 @@ def prix():
                   ["Faire émerger les", "innovations stratégiques", "de demain."],
                   "Le Prix de l'innovation duale porté par Paris Ouest La Défense vise à identifier, valoriser et accompagner les entreprises innovantes développant des technologies à fort potentiel de double usage, répondant à la fois aux besoins des marchés civils et aux enjeux de défense et de sécurité.",
                   btn("Candidater au Prix", CANDIDATURE_PRIX, "or", "sortie", True) + btn("Découvrir les catégories", "#categories", "ghost"),
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/img/carte-tactique.webp" alt="" width="1000" height="667"></div>', meta).replace('<section class="phero">', '<section class="phero theme-or">').replace('<p class="surtitre" data-reveal>', '<p class="surtitre surtitre--or" data-reveal>', 1)
+                  '<div class="phero__fond" aria-hidden="true"><video data-src="{MP4_PRIX}" poster="assets/img/prix-poster.webp" muted loop playsinline preload="none"></video></div>', meta).replace('<section class="phero">', '<section class="phero theme-or">').replace('<p class="surtitre" data-reveal>', '<p class="surtitre surtitre--or" data-reveal>', 1)
     corps += f"""
 <section class="sec" aria-labelledby="titre-pold">
   <div class="wrap deux-col deux-col--centre">
@@ -685,7 +792,7 @@ def prix():
       </div>
       <p class="lead" data-reveal>Le Prix de l'innovation duale réunit des acteurs publics, institutionnels, industriels et financiers engagés au service de l'innovation stratégique et des technologies à double usage.</p>
     </div>
-    <div data-reveal>{bloc_logos(PARTENAIRES_PRIX, "logos logos--6")}</div>
+    <div data-reveal>{bloc_logos(PARTENAIRES_PRIX, "logos logos--6", "Partenaire du Prix de l'innovation duale")}</div>
   </div>
 </section>
 
@@ -842,16 +949,16 @@ def retrospective():
 def contact():
     corps = phero([("accueil", "Accueil"), (None, "Contact")], "Nous contacter", ["Une question", "sur DualTech ?"],
                   "Programme, inscription, partenariat, presse : l'équipe DualTech vous répond sous 48h ouvrées.", "",
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/img/salle-operations.webp" alt="" width="1000" height="563"></div>')
+                  '<div class="phero__fond" aria-hidden="true"><img src="assets/photos/cybersecurite-circuit.webp" alt="" width="1600" height="1068"></div>')
     corps += f"""
 <section class="sec sec--papier" aria-labelledby="titre-contact">
   <div class="wrap deux-col deux-col--5-7">
     <div>
       <h2 class="sr-only" id="titre-contact">Écrire à l'équipe DualTech</h2>
       <div class="cartes" style="gap:16px">
-        <a class="carte-b projecteur" href="{lien('partenaires', '#demande')}" data-reveal><span class="etiq">Partenariats</span><span class="h3" style="font:700 1.375rem var(--titre)">Formulaire dédié</span><span class="lien-fleche" style="padding:0">Devenir partenaire{ico('fleche')}</span></a>
-        <a class="carte-b projecteur" href="{lien('inscription')}" data-reveal style="--d:.08s"><span class="etiq">Inscription</span><span class="h3" style="font:700 1.375rem var(--titre)">S'inscrire gratuitement</span><span class="lien-fleche" style="padding:0">Demander une accréditation{ico('fleche')}</span></a>
-        <a class="carte-b projecteur" href="{LINKEDIN}" target="_blank" rel="noopener" data-reveal style="--d:.16s"><span class="etiq">Suivre l'événement</span><span class="h3" style="font:700 1.375rem var(--titre)">LinkedIn</span><span class="lien-fleche" style="padding:0">{ico('linkedin')}DualTech sur LinkedIn</span></a>
+        <a class="carte-b projecteur faisceau" href="{lien('partenaires', '#demande')}" data-reveal><span class="etiq">Partenariats</span><span class="h3" style="font:700 1.375rem var(--titre)">Formulaire dédié</span><span class="lien-fleche" style="padding:0">Devenir partenaire{ico('fleche')}</span></a>
+        <a class="carte-b projecteur faisceau" href="{lien('inscription')}" data-reveal style="--d:.08s"><span class="etiq">Inscription</span><span class="h3" style="font:700 1.375rem var(--titre)">S'inscrire gratuitement</span><span class="lien-fleche" style="padding:0">Demander une accréditation{ico('fleche')}</span></a>
+        <a class="carte-b projecteur faisceau" href="{LINKEDIN}" target="_blank" rel="noopener" data-reveal style="--d:.16s"><span class="etiq">Suivre l'événement</span><span class="h3" style="font:700 1.375rem var(--titre)">LinkedIn</span><span class="lien-fleche" style="padding:0">{ico('linkedin')}DualTech sur LinkedIn</span></a>
       </div>
     </div>
     <div class="panneau-form" data-reveal>
@@ -884,7 +991,7 @@ def inscription():
     corps = phero([("accueil", "Accueil"), (None, "Inscription")], "Jeudi 26 novembre 2026 · Campus Cyber", ["S'inscrire"],
                   "400 places sont disponibles sur inscription préalable. Chaque demande est examinée par l'organisation avant l'envoi de la confirmation définitive de participation.",
                   btn("Accéder au formulaire d'inscription", LUMA, "primaire", "sortie", True),
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/img/echanges.webp" alt="" width="1000" height="562"></div>', meta)
+                  '<div class="phero__fond" aria-hidden="true"><img src="assets/photos/conference-salle.webp" alt="" width="1600" height="1067"></div>', meta)
     corps = corps.replace('<div class="actions" data-reveal style="--d:.35s">', '<div class="actions" data-reveal style="--d:.35s;flex-direction:column;align-items:flex-start">', 1).replace(
         f'{ico("sortie")}</a></div>', f'{ico("sortie")}</a><p class="secondaire" style="font-size:.875rem">Vous serez redirigé vers notre plateforme de billetterie sécurisée Luma pour finaliser votre demande.</p></div>', 1)
     corps += f"""
@@ -907,7 +1014,7 @@ def inscription():
       <p class="surtitre" data-reveal>Pour qui ?</p>
       {lignes("Intérêt de la participation", "pour les acteurs de l'écosystème", attrs=' id="titre-profils"')}
     </div>
-    <div class="cartes cartes--3">{"".join(f'<article class="carte-b projecteur" data-reveal style="--d:{n * .08}s">{ico(i, "ico")}<h3 class="h3">{t}</h3><p>{d}</p></article>'.replace('class="ico"', 'class="ico" style="width:32px;height:32px;color:var(--tech)"') for n, (t, d, i) in enumerate(PROFILS))}</div>
+    <div class="cartes cartes--3">{"".join(f'<article class="carte-b projecteur faisceau" data-reveal style="--d:{n * .08}s">{ico(i, "ico")}<h3 class="h3">{t}</h3><p>{d}</p></article>'.replace('class="ico"', 'class="ico" style="width:32px;height:32px;color:var(--tech)"') for n, (t, d, i) in enumerate(PROFILS))}</div>
   </div>
 </section>
 {bloc_final(texte="Chaque demande est examinée par l'organisation avant l'envoi de la confirmation définitive de participation.")}"""

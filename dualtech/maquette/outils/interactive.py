@@ -25,7 +25,7 @@ tete = idx[:idx.index("</head>")]
 tete = re.sub(r'<script type="application/ld\+json">.*?</script>', "", tete, flags=re.S)
 tete = re.sub(r'<link rel="(canonical|preload|icon|apple-touch-icon)"[^>]*>\n?', "", tete)
 entete = bloc(idx, '<a class="skip"', '</div>\n<main id="contenu">').removesuffix('<main id="contenu">')
-pied = bloc(idx, '<footer class="pied">', "</footer>")
+pied = bloc(idx, '<footer class="pied">', "</footer>") + bloc(idx, '<dialog class="modale"', "</dialog>\n<dialog class=\"fiche\"") .removesuffix('<dialog class="fiche"') + bloc(idx, '<dialog class="fiche" id="fiche"', "</dialog>")
 
 # Identifiants présents sur plusieurs pages : préfixés par la page pour rester uniques
 mains = {f: bloc(s, '<main id="contenu">', "</main>")[len('<main id="contenu">'):-len("</main>")] for f, s in html.items()}
@@ -58,8 +58,8 @@ for f, m in mains.items():
 corps = liens(entete) + '<main id="contenu">' + "".join(vues) + "</main>" + liens(pied)
 
 # Images : chaque fichier est embarqué une seule fois, puis attribué au chargement
-assets = sorted(set(re.findall(r'assets/[\w/.-]+\.(?:webp|png|jpg)', corps)))
-carte = {a: f"data:image/{'jpeg' if a.endswith('jpg') else a.rsplit('.', 1)[1]};base64," + base64.b64encode((RACINE / a).read_bytes()).decode() for a in assets}
+assets = sorted(set(re.findall(r'assets/[\w/.-]+\.(?:webp|png|jpg|mp4)', corps)))
+carte = {a: f"data:{'video/mp4' if a.endswith('mp4') else 'image/' + ('jpeg' if a.endswith('jpg') else a.rsplit('.', 1)[1])};base64," + base64.b64encode((RACINE / a).read_bytes()).decode() for a in assets}
 corps = re.sub(r'<img([^>]*?) src="(assets/[^"]+)"', r'<img\1 data-a="\2"', corps)
 corps = re.sub(r'url\((assets/[^)]+)\)', lambda mo: f'url({carte[mo.group(1)]})', corps)
 
@@ -70,6 +70,7 @@ routeur = """
 (() => {
   const A = JSON.parse(document.getElementById('images').textContent);
   document.querySelectorAll('img[data-a]').forEach((i) => { i.src = A[i.dataset.a]; });
+  ['poster', 'data-src', 'data-photo', 'data-logo'].forEach((at) => document.querySelectorAll(`[${at}^="assets/"]`).forEach((e) => { const v = A[e.getAttribute(at)]; if (v) e.setAttribute(at, v); }));
   const T = %s;
   const vues = [...document.querySelectorAll('.vue')];
   const volet = document.createElement('div');
