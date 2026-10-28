@@ -93,6 +93,8 @@
     $$('.vues button').forEach((b) => b.addEventListener('click', () => {
       $$('.vues button').forEach((x) => x.setAttribute('aria-pressed', x === b));
       grille.classList.toggle('iv-grille--liste', b.dataset.vue === 'liste');
+      grille.parentElement.classList.toggle('iv-liste-active', b.dataset.vue === 'liste');
+      if (window.gsap && !calme) gsap.fromTo(cartes.filter((c) => !c.hidden), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .45, ease: 'expo.out', stagger: .02 });
     }));
     const fi = $('#fiche-iv'); let pos = 0;
     const visibles = () => cartes.filter((c) => !c.hidden);
@@ -315,6 +317,15 @@
       scrollTrigger: { trigger: '.secteurs', start: 'top 80%' } });
   }
 
+  /* ---------- Section cinéma : la vidéo s'ouvre en plein écran au défilement ---------- */
+  $$('.cinema').forEach((c) => {
+    const tl = G.timeline({ scrollTrigger: { trigger: c, start: 'top top', end: '+=90%', pin: true, scrub: 1, refreshPriority: 2 } });
+    tl.fromTo($('.cinema__cadre', c), { clipPath: 'inset(14% 12% 14% 12% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none' })
+      .from($('.cinema__texte h2', c), { y: 80, opacity: 0, ease: 'none' }, .25)
+      .from($('.cinema__texte p', c), { y: 60, opacity: 0, ease: 'none' }, .4)
+      .from($('.cinema__badge', c), { opacity: 0, ease: 'none' }, .5);
+  });
+
   /* ---------- Programme de l'accueil : défilement horizontal épinglé ---------- */
   const horizon = $('.horizon-sec');
   const mm = G.matchMedia();
@@ -328,7 +339,7 @@
         return Math.max(0, piste.offsetLeft + piste.scrollWidth - droite);
       };
       const tw = G.to(piste, { x: () => -distance(), ease: 'none',
-        scrollTrigger: { trigger: horizon, start: 'top top', end: () => '+=' + distance(), pin: true, scrub: 1, invalidateOnRefresh: true,
+        scrollTrigger: { trigger: horizon, start: 'top top', end: () => '+=' + distance(), pin: true, scrub: 1, invalidateOnRefresh: true, refreshPriority: 1,
           onUpdate: (s) => {
             G.set(progres, { scaleX: s.progress });
             const i = Math.min(cartes.length - 1, Math.round(s.progress * (cartes.length - 1)));
@@ -364,15 +375,6 @@
     ScrollTrigger.refresh();
   }));
 
-  /* ---------- Section cinéma : la vidéo s'ouvre en plein écran au défilement ---------- */
-  $$('.cinema').forEach((c) => {
-    const tl = G.timeline({ scrollTrigger: { trigger: c, start: 'top top', end: '+=90%', pin: true, scrub: 1 } });
-    tl.fromTo($('.cinema__cadre', c), { clipPath: 'inset(14% 12% 14% 12% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none' })
-      .from($('.cinema__texte h2', c), { y: 80, opacity: 0, ease: 'none' }, .25)
-      .from($('.cinema__texte p', c), { y: 60, opacity: 0, ease: 'none' }, .4)
-      .from($('.cinema__badge', c), { opacity: 0, ease: 'none' }, .5);
-  });
-
   /* ---------- Galerie : parallaxe des photos et entrée en cascade ---------- */
   $$('[data-parallaxe-img]').forEach((img) => G.fromTo(img, { yPercent: -10 }, { yPercent: 2, ease: 'none', scrollTrigger: { trigger: img.parentElement, scrub: true } }));
   $$('.experience').forEach((g) => G.from(g.children, { clipPath: 'inset(100% 0 0 0)', duration: 1.2, ease: 'expo.inOut', stagger: .1, scrollTrigger: { trigger: g, start: 'top 80%' } }));
@@ -403,6 +405,7 @@
   $$('.iv-vedettes, .iv-grille').forEach((g) => G.from(libre([...g.children]).slice(0, 12), { y: 50, opacity: 0, duration: .9, ease: 'expo.out', stagger: .06, scrollTrigger: { trigger: g, start: 'top 85%' }, clearProps: 'opacity,transform' }));
 
   /* recalcul après chargement des images, polices et changements de vue (maquette autonome) */
+  ScrollTrigger.sort();
   addEventListener('load', () => ScrollTrigger.refresh());
   window.DT_refresh = () => { ScrollTrigger.refresh(); };
 })();

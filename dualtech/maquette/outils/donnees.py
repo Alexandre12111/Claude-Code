@@ -224,6 +224,10 @@ PHOTOS_FILIERES = {
     "Aéronautique": "aeronautique-avion-de-chasse", "Communication": "communication-paraboles", "Cybersécurité": "cybersecurite-circuit",
     "Data": "data-particules", "Électronique": "electronique-wafer", "Intelligence artificielle": "intelligence-artificielle-processeur",
     "Maritime": "maritime-navire", "Quantique": "quantique-puce", "Robotique": "robotique-bras", "Spatial": "spatial-satellite",
+    "Biotechnologies": "biotechnologies-microscope", "Blockchain": "blockchain-cubes", "Construction & infrastructures": "construction-pont",
+    "Énergie": "energie-pylones", "Greentech": "greentech-eoliennes", "Infrastructures critiques": "infrastructures-salle-de-controle",
+    "Matières premières critiques": "matieres-premieres-mine", "Médical": "medical-imagerie", "Mobilité": "mobilite-convoi",
+    "Photonique & optronique": "photonique-laser",
 }
 
 # Univers des intervenants (filtres de la page Intervenants)

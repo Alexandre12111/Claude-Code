@@ -1131,3 +1131,81 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
 .iv-carte__ouvrir:focus-visible { outline-offset: 4px; }
 .iv-carte:focus-within .iv-carte__photo img { filter: none; }
 .iv-carte:focus-within .iv-carte__voile { transform: none; }
+
+/* =====================================================================
+   VERSION 4 : barre des intervenants, grille et liste retravaillées
+   ===================================================================== */
+.iv-barre, .ancres { transition: top .35s var(--ease); }
+.nav-cachee .iv-barre, .nav-cachee .ancres { top: 0; }
+.iv-barre__in { flex-wrap: nowrap; padding-block: 12px; }
+.iv-barre .filtres { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; min-width: 0; padding: 2px; }
+.iv-barre .filtres::-webkit-scrollbar { display: none; }
+.iv-barre .filtres button { min-height: 40px; padding: 0 14px; white-space: nowrap; }
+.iv-barre .recherche { flex: 0 1 260px; }
+@media (max-width: 899px) { .iv-barre__in { flex-wrap: wrap; } .iv-barre .recherche { flex: 1 1 200px; } }
+
+/* grille : carte plus éditoriale */
+.iv-carte { display: flex; flex-direction: column; border: 1px solid var(--filet); background: var(--blanc); transition: border-color .35s var(--ease), box-shadow .45s var(--ease), transform .45s var(--ease); }
+.iv-carte:hover, .iv-carte:focus-within { border-color: transparent; box-shadow: 0 28px 56px -28px rgba(11, 34, 68, .45); }
+.iv-carte::after { content: ""; position: absolute; left: 0; bottom: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--signal), var(--bleu)); transition: width .6s var(--ease); z-index: 2; }
+.iv-carte:hover::after, .iv-carte:focus-within::after { width: 100%; }
+.iv-carte__photo { aspect-ratio: 1; }
+.iv-carte__texte { position: relative; padding: 18px 18px 6px; }
+.iv-carte__num { position: absolute; top: 18px; right: 18px; font: 600 .6875rem var(--titre); letter-spacing: .14em; color: var(--gris); font-variant-numeric: tabular-nums; }
+.iv-carte h2 { margin-top: 0; padding-right: 28px; font-size: 1.0625rem; }
+.iv-carte__passages { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 18px 18px; margin-top: auto; }
+.iv-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 999px; background: var(--papier); font-size: .75rem; color: var(--gris); }
+.iv-chip b { font-weight: 700; color: var(--encre); font-variant-numeric: tabular-nums; }
+.iv-chip--keynote b { color: var(--bleu); }
+.iv-chip--table b { color: #0F7A55; }
+.iv-chip--temps-fort b { color: #8A6A1F; }
+.iv-carte__fleche { display: none; }
+.iv-entete { display: none; }
+
+/* liste : tableau éditorial */
+.iv-grille--liste { gap: 0; border: 0; }
+.iv-grille--liste + .vide { margin-top: 0; }
+.iv-grille--liste .iv-carte { display: grid; grid-template-columns: 72px 1fr auto; align-items: center; gap: 0 20px; padding: 16px 20px 16px 16px; border: 0; border-bottom: 1px solid var(--filet); box-shadow: none; background: transparent; }
+.iv-grille--liste .iv-carte::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--signal); transform: scaleY(0); transform-origin: top; transition: transform .45s var(--ease); }
+.iv-grille--liste .iv-carte:hover, .iv-grille--liste .iv-carte:focus-within { background: var(--papier); box-shadow: none; }
+.iv-grille--liste .iv-carte:hover::before, .iv-grille--liste .iv-carte:focus-within::before { transform: scaleY(1); }
+.iv-grille--liste .iv-carte::after { display: none; }
+.iv-grille--liste .iv-carte__photo { width: 72px; height: 72px; aspect-ratio: 1; border-radius: 50%; grid-row: auto; }
+.iv-grille--liste .iv-carte__photo img { border-radius: 50%; }
+.iv-grille--liste .iv-carte__texte { padding: 0; display: grid; gap: 2px; }
+.iv-grille--liste .iv-carte__num { position: static; order: -1; }
+.iv-grille--liste .iv-carte h2 { padding: 0; font-size: 1.125rem; transition: color .3s; }
+.iv-grille--liste .iv-carte:hover h2 { color: var(--bleu); }
+.iv-grille--liste .iv-carte__passages { display: none; padding: 0; margin: 0; }
+.iv-grille--liste .iv-carte__fleche { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--filet); color: var(--encre); transition: background-color .3s, color .3s, transform .45s var(--ease), border-color .3s; }
+.iv-grille--liste .iv-carte__fleche svg { width: 18px; height: 18px; }
+.iv-grille--liste .iv-carte:hover .iv-carte__fleche { background: var(--bleu); border-color: var(--bleu); color: var(--blanc); transform: rotate(-45deg); }
+@media (min-width: 900px) {
+  .iv-grille--liste .iv-carte { grid-template-columns: 72px minmax(0, 1.5fr) minmax(0, 1.2fr) auto; gap: 0 28px; }
+  .iv-grille--liste .iv-carte__texte { display: contents; }
+  .iv-grille--liste .iv-carte__texte .iv-carte__num { display: none; }
+  .iv-grille--liste .iv-carte h2 { grid-column: 2; }
+  .iv-grille--liste .iv-carte p { grid-column: 3; grid-row: 1; margin: 0; font-size: .875rem; }
+  .iv-grille--liste .iv-carte__passages { display: flex; grid-column: 4; grid-row: 1; justify-content: flex-end; }
+  .iv-grille--liste .iv-carte__fleche { grid-column: 5; grid-row: 1; }
+  .iv-grille--liste .iv-carte { grid-template-columns: 72px minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) 44px; }
+  .iv-grille--liste .iv-carte h2 { grid-row: 1; }
+  .iv-grille--liste .iv-carte__photo { grid-column: 1; grid-row: 1; }
+  .iv-grille--liste ~ .iv-entete, .iv-liste-active .iv-entete { display: grid; }
+}
+.iv-liste-active .iv-entete { grid-template-columns: 72px minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) 44px; gap: 0 28px; padding: 0 20px 12px 16px; border-bottom: 2px solid var(--encre); font: 600 .6875rem var(--titre); letter-spacing: .16em; text-transform: uppercase; color: var(--gris); }
+.iv-liste-active .iv-entete span:first-child { grid-column: 1 / 3; }
+.iv-liste-active .iv-entete span:last-child { grid-column: 4; text-align: right; }
+@media (max-width: 899px) { .iv-liste-active .iv-entete { display: none; } }
+.iv-grille > * { min-width: 0; }
+.iv-carte p, .iv-carte h2 { overflow-wrap: anywhere; }
+@media (max-width: 639px) {
+  .iv-grille { gap: 12px; }
+  .iv-carte__texte { padding: 14px 12px 4px; }
+  .iv-carte__passages { padding: 8px 12px 14px; }
+  .iv-carte__univers { font-size: .5625rem; padding: 4px 6px; top: 8px; left: 8px; right: 8px; width: fit-content; }
+  .iv-carte__num { display: none; }
+  .iv-carte h2 { padding-right: 0; font-size: 1rem; }
+  .iv-grille--liste .iv-carte { grid-template-columns: 56px 1fr 44px; gap: 0 14px; padding: 14px 8px; }
+  .iv-grille--liste .iv-carte__photo { width: 56px; height: 56px; }
+}

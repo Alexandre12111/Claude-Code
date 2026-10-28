@@ -13,6 +13,7 @@
     const y = scrollY;
     nav.classList.toggle('is-solid', y > 40 || !$('.hero'));
     nav.classList.toggle('is-cachee', y > 640 && y > dernierY && !document.body.classList.contains('menu-ouvert'));
+    doc.classList.toggle('nav-cachee', nav.classList.contains('is-cachee'));
     dernierY = y;
     const h = doc.scrollHeight - innerHeight;
     if (barre) barre.style.transform = `scaleX(${h > 0 ? y / h : 0})`;
@@ -104,7 +105,7 @@
     if (!calme) {
       addEventListener('load', () => ('requestIdleCallback' in window ? requestIdleCallback(charger, { timeout: 1500 }) : setTimeout(charger, 600)));
     }
-    ctrlSon.addEventListener('click', () => {
+    if (ctrlSon) ctrlSon.addEventListener('click', () => {
       charger();
       const actif = ctrlSon.dataset.etat === 'son-on';
       commande(actif ? 'mute' : 'unMute');
@@ -113,16 +114,16 @@
       ctrlSon.setAttribute('aria-pressed', !actif);
       ctrlSon.setAttribute('aria-label', actif ? 'Activer le son de la vidéo' : 'Couper le son de la vidéo');
     });
-    ctrlLecture.addEventListener('click', () => {
+    if (ctrlLecture) ctrlLecture.addEventListener('click', () => {
       const enPause = ctrlLecture.dataset.etat === 'pause';
       if (enPause) { charger(); commande('playVideo'); hero.classList.add('is-video'); } else commande('pauseVideo');
       ctrlLecture.dataset.etat = enPause ? 'lecture' : 'pause';
       ctrlLecture.setAttribute('aria-label', enPause ? 'Mettre la vidéo en pause' : 'Lire la vidéo');
     });
-    if (calme) { ctrlLecture.dataset.etat = 'pause'; ctrlLecture.setAttribute('aria-label', 'Lire la vidéo'); }
+    if (calme && ctrlLecture) { ctrlLecture.dataset.etat = 'pause'; ctrlLecture.setAttribute('aria-label', 'Lire la vidéo'); }
     /* pause automatique quand le hero sort de l'écran */
     new IntersectionObserver(([e]) => {
-      if (ctrlLecture.dataset.etat === 'pause') return;
+      if (ctrlLecture && ctrlLecture.dataset.etat === 'pause') return;
       commande(e.isIntersecting ? 'playVideo' : 'pauseVideo');
     }, { threshold: .05 }).observe(hero);
   }
@@ -156,7 +157,7 @@
     modale.addEventListener('close', () => {
       cadre.innerHTML = '';
       const ctrl = $('[data-action="lecture"]');
-      if (ctrl && ctrl.dataset.etat !== 'pause') commande('playVideo');
+      if (!ctrl || ctrl.dataset.etat !== 'pause') commande('playVideo');
     });
   }
 

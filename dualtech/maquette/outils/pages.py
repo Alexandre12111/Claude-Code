@@ -199,11 +199,6 @@ def accueil():
     <div class="wrap hero__bas-in">
       <p class="hero__edition"><strong>Seconde édition</strong> organisée par l'Institut National des Affaires Stratégiques en partenariat avec l'établissement public territorial Paris Ouest La Défense.</p>
       {decompte_hero()}
-      <div class="video-ctrl">
-        <button type="button" class="film" data-film="{VIDEO_HERO}"><span class="disque">{ico('play')}</span>Voir le film</button>
-        <button type="button" data-action="son" data-etat="son-off" aria-pressed="false" aria-label="Activer le son de la vidéo">{ico('muet', 'ico-son-off')}{ico('son', 'ico-son-on')}</button>
-        <button type="button" data-action="lecture" data-etat="lecture" aria-label="Mettre la vidéo en pause">{ico('pause', 'ico-pause')}{ico('play', 'ico-play')}</button>
-      </div>
     </div>
   </div>
   <span class="defiler" aria-hidden="true">Défiler</span>
@@ -450,28 +445,22 @@ def programme():
 def intervenants():
     import json as _json
     lib = dict(UNIVERS)
-    def carte(i):
+    def carte(i, n):
         sess = [{"h": f"{d} à {f}", "t": titre, "r": role} for d, f, t, titre, role in i["sessions"]]
         prem = i["sessions"][0] if i["sessions"] else None
         voile = f'<small>{prem[0]} · {TYPES[prem[2]]}</small><span>{escape(prem[3])}</span>' if prem else '<small>Intervenant 2026</small>'
-        resume = " · ".join(f"{d} {TYPES[t]}" for d, f, t, *_ in i["sessions"]) or "Programme à venir"
+        chips = "".join(f'<span class="iv-chip iv-chip--{t}"><b>{d}</b>{TYPES[t]}</span>' for d, f, t, *_ in i["sessions"]) or '<span class="iv-chip"><b>2026</b>Horaire à venir</span>'
         cherche = escape(slug(f"{i['nom']} {i['fonction']} {i['orga']}").replace("-", " "))
         return (f'<article class="iv-carte" data-univers="{i["univers"]}" data-cherche="{cherche}" data-nom="{escape(i["nom"])}" data-fonction="{escape(i["fonction"])}" '
                 f'data-orga="{escape(i["orga"])}" data-photo="{i["photo"]}" data-sessions="{escape(_json.dumps(sess, ensure_ascii=False))}" data-incline>'
                 f'<button type="button" class="iv-carte__ouvrir" aria-label="Voir la fiche de {escape(i["nom"])}"></button>'
                 f'<div class="iv-carte__photo"><img src="{i["photo"]}" alt="" width="480" height="480" loading="lazy"><span class="iv-carte__univers">{lib[i["univers"]]}</span>'
                 f'<span class="iv-carte__plus" aria-hidden="true">{ico("fleche")}</span><span class="iv-carte__voile" aria-hidden="true">{voile}</span></div>'
-                f'<h2>{escape(i["nom"])}</h2><p>{escape(i["fonction"])}<strong>{escape(i["orga"])}</strong></p><span class="iv-carte__sessions">{escape(resume)}</span></article>')
-    cartes = "".join(carte(i) for i in INTERVENANTS)
+                f'<div class="iv-carte__texte"><span class="iv-carte__num">{n:02d}</span><h2>{escape(i["nom"])}</h2><p>{escape(i["fonction"])}<strong>{escape(i["orga"])}</strong></p></div><div class="iv-carte__passages">{chips}</div><span class="iv-carte__fleche" aria-hidden="true">{ico("fleche")}</span></article>')
+    cartes = "".join(carte(i, n + 1) for n, i in enumerate(INTERVENANTS))
     comptes = {k: sum(1 for i in INTERVENANTS if k == "tous" or i["univers"] == k) for k, _ in UNIVERS}
     filtres = "".join(f'<button type="button" data-univers="{k}" aria-pressed="{"true" if k == "tous" else "false"}">{t}<span class="n">{comptes[k]}</span></button>' for k, t in UNIVERS)
     mosaique = "".join(f'<img src="{i["photo"]}" alt="" width="120" height="120" loading="lazy">' for i in (INTERVENANTS * 2)[:30])
-    vedettes = []
-    for nom in ("Stéphane Boujnah", "Emmanuel Chiva", "Stéphane Ouaki"):
-        i = PAR_NOM[nom]; d, f, t, titre, _ = i["sessions"][0]
-        vedettes.append(f'<article class="iv-vedette faisceau"><div class="iv-vedette__photo"><img src="{i["photo"]}" alt="{escape(nom)}" width="480" height="480" loading="lazy"></div>'
-                        f'<div class="iv-vedette__corps"><p class="iv-vedette__heure">{d}</p><span class="badge badge--{t}" style="margin-top:12px">{TYPES[t]}</span><h3>{escape(titre)}</h3>'
-                        f'<p><b style="color:var(--blanc)">{escape(nom)}</b>, {escape(i["fonction"])}, {escape(i["orga"])}</p></div></article>')
     nb_keynotes = sum(1 for _, c in PROGRAMME for x in c if x[2] == "keynote")
     nb_tables = sum(1 for _, c in PROGRAMME for x in c if x[2] == "table")
     corps = f"""
@@ -490,19 +479,6 @@ def intervenants():
   </div>
 </section>
 
-<section class="sec sec--nuit" aria-labelledby="titre-vedettes">
-  <div class="wrap">
-    <div class="tete-sec tete-sec--split">
-      <div>
-        <p class="surtitre" data-reveal>À ne pas manquer</p>
-        {lignes("Trois prises de parole", "qui rythment la journée", attrs=' id="titre-vedettes"')}
-      </div>
-      <p class="lead" data-reveal>De l'allocution d'ouverture d'Euronext à la stratégie européenne d'innovation, en passant par la recherche aérospatiale.</p>
-    </div>
-    <div class="iv-vedettes">{"".join(vedettes)}</div>
-  </div>
-</section>
-
 <div class="iv-barre">
   <div class="wrap iv-barre__in">
     <div class="filtres" role="group" aria-label="Filtrer les intervenants par univers">{filtres}</div>
@@ -510,7 +486,7 @@ def intervenants():
       <div class="recherche">
         <label class="sr-only" for="iv-recherche">Rechercher un intervenant, une fonction ou une organisation</label>
         {ico('loupe')}
-        <input id="iv-recherche" type="search" placeholder="Nom, fonction, organisation" autocomplete="off">
+        <input id="iv-recherche" type="search" placeholder="Rechercher" autocomplete="off">
         <button type="button" id="iv-effacer" aria-label="Effacer la recherche">{ico('x')}</button>
       </div>
       <div class="vues" role="group" aria-label="Affichage"><button type="button" data-vue="grille" aria-pressed="true" aria-label="Afficher en grille"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M104 40H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 64H56V56h48Zm96-64h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 64h-48V56h48Zm-96 32H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16Zm0 64H56v-48h48Zm96-64h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16Zm0 64h-48v-48h48Z"/></svg></button><button type="button" data-vue="liste" aria-pressed="false" aria-label="Afficher en liste"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
@@ -521,6 +497,7 @@ def intervenants():
 <section class="sec sec--blanc" aria-label="Liste des intervenants" style="padding-top:56px">
   <div class="wrap">
     <p class="secondaire" id="iv-statut" aria-live="polite" style="margin-bottom:24px">{len(INTERVENANTS)} intervenants</p>
+    <div class="iv-entete" aria-hidden="true"><span>Intervenant</span><span>Fonction et organisation</span><span>Passage sur scène</span></div>
     <div class="iv-grille" id="iv-grille">{cartes}</div>
     <p class="vide" id="iv-vide" hidden>Aucun intervenant ne correspond à votre recherche.</p>
   </div>
@@ -624,7 +601,7 @@ def partenaires():
     corps = phero([("accueil", "Accueil"), (None, "Devenir partenaire")], "Partenariats 2026", ["Associez votre", "organisation à DualTech"],
                   "Rejoignez les institutions, industriels et investisseurs qui font de DualTech un rendez-vous industriel de haut niveau. Deux niveaux de partenariat existent, du soutien institutionnel à la prise de parole en plénière.",
                   btn("Recevoir le dossier de partenariat", "#demande") + btn("Voir les partenaires actuels", "#partenaires", "ghost"),
-                  '<div class="phero__fond" aria-hidden="true"><img src="assets/photos/conference-networking.webp" alt="" width="1600" height="1067"></div>', meta)
+                  '<div class="phero__fond" aria-hidden="true"><img src="assets/photos/partenariat-poignee-de-main.webp" alt="" width="1600" height="1067"></div>', meta)
     corps += f"""
 <section class="sec sec--blanc" id="partenaires" aria-labelledby="titre-part">
   <div class="wrap">
