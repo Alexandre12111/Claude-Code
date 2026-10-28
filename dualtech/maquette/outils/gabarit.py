@@ -23,6 +23,8 @@ _P = {
     "institution": "M24 104h24v64H32a8 8 0 0 0 0 16h192a8 8 0 0 0 0-16h-16v-64h24a8 8 0 0 0 4.19-14.81l-104-64a8 8 0 0 0-8.38 0l-104 64A8 8 0 0 0 24 104Zm40 0h32v64H64Zm80 0v64h-32v-64Zm48 64h-32v-64h32ZM128 41.39 203.74 88H52.26ZM248 208a8 8 0 0 1-8 8H16a8 8 0 0 1 0-16h224a8 8 0 0 1 8 8Z",
     "calendrier": "M208 32h-24v-8a8 8 0 0 0-16 0v8H88v-8a8 8 0 0 0-16 0v8H48a16 16 0 0 0-16 16v160a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V48a16 16 0 0 0-16-16ZM72 48v8a8 8 0 0 0 16 0v-8h80v8a8 8 0 0 0 16 0v-8h24v32H48V48Zm136 160H48V96h160v112Z",
     "badge": "M200 112a8 8 0 0 1-8 8h-40a8 8 0 0 1 0-16h40a8 8 0 0 1 8 8Zm-8 24h-40a8 8 0 0 0 0 16h40a8 8 0 0 0 0-16Zm40-80v144a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16h176a16 16 0 0 1 16 16Zm-16 144V56H40v144Zm-80.26-34a8 8 0 1 1-15.5 4c-2.63-10.26-13.06-18-25.25-18s-22.61 7.73-25.25 18a8 8 0 1 1-15.5-4 31.89 31.89 0 0 1 17.73-21.07 28 28 0 1 1 46 0A31.89 31.89 0 0 1 135.74 166ZM96 144a12 12 0 1 0-12-12 12 12 0 0 0 12 12Z",
+    "train": "M184 24H72a32 32 0 0 0-32 32v120a32 32 0 0 0 32 32h4l-12 16a8 8 0 0 0 12.8 9.6L94 208h68l17.2 23.6a8 8 0 1 0 12.8-9.6l-12-16h4a32 32 0 0 0 32-32V56a32 32 0 0 0-32-32ZM56 120V80h64v40Zm80-40h64v40h-64ZM72 40h112a16 16 0 0 1 16 16v8H56v-8a16 16 0 0 1 16-16Zm112 152H72a16 16 0 0 1-16-16v-40h144v40a16 16 0 0 1-16 16Zm-84-28a12 12 0 1 1-12-12 12 12 0 0 1 12 12Zm80 0a12 12 0 1 1-12-12 12 12 0 0 1 12 12Z",
+    "accessible": "M128 72a28 28 0 1 0-28-28 28 28 0 0 0 28 28Zm0-40a12 12 0 1 1-12 12 12 12 0 0 1 12-12Zm80 64a8 8 0 0 1-8 8h-56v24.93l38.44 72.07a8 8 0 0 1-14.12 7.52L131.39 160h-6.78l-36.93 68.52a8 8 0 1 1-14.12-7.52L112 128.93V104H56a8 8 0 0 1 0-16h144a8 8 0 0 1 8 8Z",
     "trophee": "M232 64h-24V48a8 8 0 0 0-8-8H56a8 8 0 0 0-8 8v16H24A16 16 0 0 0 8 80v16a40 40 0 0 0 40 40h3.65A80.13 80.13 0 0 0 120 191.61V216H96a8 8 0 0 0 0 16h64a8 8 0 0 0 0-16h-24v-24.42c31.94-3.23 58.44-25.64 68.08-55.58H208a40 40 0 0 0 40-40V80a16 16 0 0 0-16-16ZM48 120a24 24 0 0 1-24-24V80h24v32q0 4 .39 8Zm144-8.9c0 35.52-28.49 64.64-63.51 64.9H128a64 64 0 0 1-64-64V56h128ZM232 96a24 24 0 0 1-24 24h-.5a81.81 81.81 0 0 0 .5-8.9V80h24Z",
 }
 
@@ -151,7 +153,10 @@ def pied():
     <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/dualtech.js" defer></script>
+<script src="assets/dualtech-fx.js" defer></script>
 </body>
 </html>
 """
@@ -159,7 +164,7 @@ def pied():
 
 def phero(ariane, surtitre, titre_lignes, lead, actions="", fond="", meta="", deco=True):
     ar = "".join(f'<li><a href="{lien(k)}">{t}</a></li>' if k else f'<li aria-current="page">{t}</li>' for k, t in ariane)
-    return f"""<section class="phero">
+    return f"""<section class="phero" data-reseau>
   {fond}{'<div class="phero__grille-deco" aria-hidden="true"></div>' if deco else ''}
   <div class="wrap">
     <nav aria-label="Fil d'Ariane"><ol class="ariane">{ar}</ol></nav>

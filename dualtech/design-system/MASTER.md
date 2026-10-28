@@ -69,3 +69,23 @@ Tout est coupé avec `prefers-reduced-motion: reduce` : contenu dans son état f
 ## À éviter
 
 Néons, glitch, typographie « militaire » pochoir, camouflage, carrousels automatiques, pop up à l'arrivée, rouge en aplat, plus d'une action principale par écran.
+
+## Effets dynamiques (version 2, à la demande du client)
+
+Moteur : GSAP 3.12.5 et ScrollTrigger hébergés avec le site (`assets/vendor/`), effets dans `assets/dualtech-fx.js`. Règles du skill suivies : au plus une section épinglée par page, défilement lié en `scrub` doux, apparitions courtes, tout coupé avec `prefers-reduced-motion`.
+
+| Effet | Où |
+|---|---|
+| Intro : logo révélé, barre rouge et compteur 000 à 100, puis rideau (une fois par session) | Accueil |
+| Titre du hero animé lettre par lettre, ligne de balayage radar, bandeau d'informations, profondeur au défilement (vidéo qui zoome, texte qui s'efface) | Accueil |
+| Curseur réticule (point rouge et cercle), « Voir » sur les portraits et la vidéo | Desktop |
+| Boutons magnétiques, cartes inclinées en 3D, halo qui suit la souris sur les cartes | Partout |
+| 20 icônes de filières dessinées au trait, chacune avec son animation (radar, ADN, roues, orbites, ECG, houle, éclair…) | Accueil |
+| Constellation de points reliés qui s'écarte de la souris | Manifeste, en-têtes des pages |
+| Bandeaux de filières dont la vitesse et l'inclinaison suivent le défilement | Accueil |
+| Programme des temps forts en défilement horizontal épinglé, avec horloge et règle horaire | Accueil, desktop |
+| Défilé de portraits sur deux rangs, logos partenaires défilants | Accueil |
+| Surtitres « déchiffrés » façon décodage | Partout |
+| Médaille animée et reflet sur la dotation, cadre doré en rotation | Prix |
+| Images révélées par volet, anneaux de progression sur les chiffres, date finale qui se remplit | Partout |
+| Bouton haut de page avec anneau de progression, transition en volet entre les pages | Partout |

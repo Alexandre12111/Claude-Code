@@ -43,7 +43,7 @@
   <a class="btn btn--primaire" href="inscription.html">S'inscrire à l'événement<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a>
 </div>
 <main id="contenu">
-<section class="phero">
+<section class="phero" data-reseau>
   <div class="phero__fond" aria-hidden="true"><img src="assets/img/conference-pleniere.webp" alt="" width="1600" height="1067"></div><div class="phero__grille-deco" aria-hidden="true"></div>
   <div class="wrap">
     <nav aria-label="Fil d'Ariane"><ol class="ariane"><li><a href="index.html">Accueil</a></li><li aria-current="page">Programme 2026</li></ol></nav>
@@ -154,13 +154,13 @@
 
 <section class="sec" aria-labelledby="titre-lieu">
   <div class="wrap"><div class="lieu">
-  <div class="lieu__visuel" data-reveal><img src="assets/img/campus-cyber-tour-eria.webp" alt="Campus Cyber dans la Tour Eria à La Défense" width="1024" height="683" loading="lazy" data-parallaxe=".1"><span class="lieu__etiquette">2026 / La Défense</span></div>
+  <div class="lieu__visuel" data-volet><img src="assets/img/campus-cyber-tour-eria.webp" alt="Campus Cyber dans la Tour Eria à La Défense" width="1024" height="683" loading="lazy"><span class="lieu__etiquette">2026 / La Défense</span></div>
   <div>
     <p class="surtitre" data-reveal>Infos pratiques</p>
     <h2 class="h2 lignes" id="titre-lieu"><span class="l"><span style="--i:0">Campus Cyber</span></span></h2>
     <p class="lead" data-reveal style="margin-top:24px">Le Campus Cyber est un lieu phare dédié à la cybersécurité qui rassemble les principaux acteurs nationaux et internationaux du domaine. Il permet en particulier d'accueillir sur un même site des entreprises (grands groupes, PME), des services de l'État, des organismes de formation, des acteurs de la recherche et des associations.</p>
     <h3 class="h3" data-reveal style="margin-top:40px">Au cœur du premier quartier d'affaires européen</h3>
-    <ul class="infos" data-reveal><li><span class="num">01</span><h3>Adresse</h3><p>Campus Cyber, 5-7 rue Bellini, 92800 Puteaux</p></li><li><span class="num">02</span><h3>Transports</h3><p>RER A et Transilien L, station La Défense Grande Arche. Métro 1, terminus La Défense.</p></li><li><span class="num">03</span><h3>Accès</h3><p>Sur accréditation nominative, pièce d'identité demandée à l'entrée.</p></li><li><span class="num">04</span><h3>Accessibilité</h3><p>Site accessible aux personnes à mobilité réduite.</p></li></ul>
+    <ul class="infos" data-reveal><li><span class="num"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M128 64a40 40 0 1 0 40 40 40 40 0 0 0-40-40Zm0 64a24 24 0 1 1 24-24 24 24 0 0 1-24 24Zm0-112a88.1 88.1 0 0 0-88 88c0 31.4 14.51 64.68 42 96.25a254.19 254.19 0 0 0 41.45 38.3 8 8 0 0 0 9.18 0 254.19 254.19 0 0 0 41.37-38.3c27.45-31.57 42-64.85 42-96.25a88.1 88.1 0 0 0-88-88Zm0 206c-16.53-13-72-60.75-72-118a72 72 0 0 1 144 0c0 57.23-55.47 105-72 118Z"/></svg></span><h3>Adresse</h3><p>Campus Cyber, 5-7 rue Bellini, 92800 Puteaux</p></li><li><span class="num"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M184 24H72a32 32 0 0 0-32 32v120a32 32 0 0 0 32 32h4l-12 16a8 8 0 0 0 12.8 9.6L94 208h68l17.2 23.6a8 8 0 1 0 12.8-9.6l-12-16h4a32 32 0 0 0 32-32V56a32 32 0 0 0-32-32ZM56 120V80h64v40Zm80-40h64v40h-64ZM72 40h112a16 16 0 0 1 16 16v8H56v-8a16 16 0 0 1 16-16Zm112 152H72a16 16 0 0 1-16-16v-40h144v40a16 16 0 0 1-16 16Zm-84-28a12 12 0 1 1-12-12 12 12 0 0 1 12 12Zm80 0a12 12 0 1 1-12-12 12 12 0 0 1 12 12Z"/></svg></span><h3>Transports</h3><p>RER A et Transilien L, station La Défense Grande Arche. Métro 1, terminus La Défense.</p></li><li><span class="num"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200 112a8 8 0 0 1-8 8h-40a8 8 0 0 1 0-16h40a8 8 0 0 1 8 8Zm-8 24h-40a8 8 0 0 0 0 16h40a8 8 0 0 0 0-16Zm40-80v144a16 16 0 0 1-16 16H40a16 16 0 0 1-16-16V56a16 16 0 0 1 16-16h176a16 16 0 0 1 16 16Zm-16 144V56H40v144Zm-80.26-34a8 8 0 1 1-15.5 4c-2.63-10.26-13.06-18-25.25-18s-22.61 7.73-25.25 18a8 8 0 1 1-15.5-4 31.89 31.89 0 0 1 17.73-21.07 28 28 0 1 1 46 0A31.89 31.89 0 0 1 135.74 166ZM96 144a12 12 0 1 0-12-12 12 12 0 0 0 12 12Z"/></svg></span><h3>Accès</h3><p>Sur accréditation nominative, pièce d'identité demandée à l'entrée.</p></li><li><span class="num"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M128 72a28 28 0 1 0-28-28 28 28 0 0 0 28 28Zm0-40a12 12 0 1 1-12 12 12 12 0 0 1 12-12Zm80 64a8 8 0 0 1-8 8h-56v24.93l38.44 72.07a8 8 0 0 1-14.12 7.52L131.39 160h-6.78l-36.93 68.52a8 8 0 1 1-14.12-7.52L112 128.93V104H56a8 8 0 0 1 0-16h144a8 8 0 0 1 8 8Z"/></svg></span><h3>Accessibilité</h3><p>Site accessible aux personnes à mobilité réduite.</p></li></ul>
     <div class="actions" style="margin-top:32px"><a class="btn btn--ghost" href="infos-pratiques.html">Préparer sa venue<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a></div>
   </div>
 </div>
@@ -204,6 +204,9 @@
     <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/dualtech.js" defer></script>
+<script src="assets/dualtech-fx.js" defer></script>
 </body>
 </html>

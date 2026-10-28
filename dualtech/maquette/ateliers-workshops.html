@@ -43,7 +43,7 @@
   <a class="btn btn--primaire" href="inscription.html">S'inscrire à l'événement<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a>
 </div>
 <main id="contenu">
-<section class="phero">
+<section class="phero" data-reseau>
   <div class="phero__fond" aria-hidden="true" data-video-fond="fMLbi6lVYv0" data-fin="38"><img src="assets/img/workshops-poster.webp" alt="" width="1600" height="900"></div><div class="phero__grille-deco" aria-hidden="true"></div>
   <div class="wrap">
     <nav aria-label="Fil d'Ariane"><ol class="ariane"><li><a href="index.html">Accueil</a></li><li aria-current="page">Ateliers & Workshops</li></ol></nav>
@@ -65,14 +65,14 @@
       <p class="lead" data-reveal>Les workshops permettent d'approfondir un sujet, de partager des expériences et de faire dialoguer les acteurs de l'innovation duale. Vous pouvez proposer une thématique ou construire votre projet avec l'équipe DualTech.</p>
     </div>
     <div class="cartes cartes--2">
-      <article class="carte-b" data-reveal>
+      <article class="carte-b projecteur" data-reveal>
         <span class="etiq">Proposer un sujet</span>
         <h3 class="h3">Vous avez une thématique</h3>
         <p>Votre organisation souhaite partager une expertise ou ouvrir une discussion sur un enjeu identifié ? Présentez le sujet que vous souhaitez aborder lors de votre workshop.</p>
         <ul class="puces puces--check"><li>Partager une expertise en lien avec l'innovation duale</li><li>Approfondir un besoin opérationnel ou un enjeu industriel et technologique</li><li>Favoriser les échanges autour de retours d'expérience et de cas concrets</li></ul>
         <a class="lien-fleche" href="#formulaire">Proposer un workshop<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a>
       </article>
-      <article class="carte-b" data-reveal style="--d:.1s">
+      <article class="carte-b projecteur" data-reveal style="--d:.1s">
         <span class="etiq">Construire un atelier</span>
         <h3 class="h3">Votre projet reste à préciser</h3>
         <p>Vous souhaitez contribuer à DualTech sans avoir encore arrêté le sujet de votre atelier ? Manifestez votre intérêt pour engager un échange avec notre équipe.</p>
@@ -146,6 +146,9 @@
     <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
+<script src="assets/vendor/gsap.min.js" defer></script>
+<script src="assets/vendor/ScrollTrigger.min.js" defer></script>
 <script src="assets/dualtech.js" defer></script>
+<script src="assets/dualtech-fx.js" defer></script>
 </body>
 </html>

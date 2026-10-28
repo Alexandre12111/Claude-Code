@@ -64,7 +64,7 @@ corps = re.sub(r'<img([^>]*?) src="(assets/[^"]+)"', r'<img\1 data-a="\2"', corp
 corps = re.sub(r'url\((assets/[^)]+)\)', lambda mo: f'url({carte[mo.group(1)]})', corps)
 
 css = (RACINE / "assets/dualtech.css").read_text()
-js = (RACINE / "assets/dualtech.js").read_text()
+js = "\n".join((RACINE / f).read_text() for f in ("assets/vendor/gsap.min.js", "assets/vendor/ScrollTrigger.min.js", "assets/dualtech.js", "assets/dualtech-fx.js"))
 
 routeur = """
 (() => {
@@ -72,7 +72,24 @@ routeur = """
   document.querySelectorAll('img[data-a]').forEach((i) => { i.src = A[i.dataset.a]; });
   const T = %s;
   const vues = [...document.querySelectorAll('.vue')];
-  const aller = () => {
+  const volet = document.createElement('div');
+  volet.className = 'volet'; volet.setAttribute('aria-hidden', 'true');
+  volet.innerHTML = '<img alt="" src="' + A['assets/logo-dualtech.webp'] + '" width="180" height="25">';
+  document.body.appendChild(volet);
+  const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let premier = true;
+  const transition = () => {
+    if (premier || calme || !window.gsap) { premier = false; afficher(); return; }
+    const g = window.gsap, logo = volet.querySelector('img');
+    g.timeline()
+      .set(volet, { y: 0, yPercent: 100 }).set(logo, { opacity: 0, y: 20 })
+      .to(volet, { yPercent: 0, duration: .55, ease: 'expo.inOut' })
+      .to(logo, { opacity: 1, y: 0, duration: .3, ease: 'power2.out' }, '-=.15')
+      .add(afficher)
+      .to(logo, { opacity: 0, duration: .2 }, '+=.1')
+      .to(volet, { yPercent: -100, duration: .6, ease: 'expo.inOut' });
+  };
+  const afficher = () => {
     const [, page = 'accueil', ancre] = (location.hash.match(/^#\\/([^/]*)\\/?(.*)$/) || []);
     const v = vues.find((x) => x.dataset.vue === page) ? page : 'accueil';
     vues.forEach((x) => { x.hidden = x.dataset.vue !== v; });
@@ -84,7 +101,9 @@ routeur = """
     const cible = ancre && document.getElementById(ancre);
     if (cible) requestAnimationFrame(() => cible.scrollIntoView({ behavior: 'instant' })); else scrollTo({ top: 0, behavior: 'instant' });
     dispatchEvent(new Event('scroll'));
+    if (window.DT_refresh) setTimeout(window.DT_refresh, 50);
   };
+  const aller = transition;
   addEventListener('hashchange', aller);
   /* ancres internes à une page (#formulaire…) : défilement sans changer de vue */
   document.addEventListener('click', (e) => {
