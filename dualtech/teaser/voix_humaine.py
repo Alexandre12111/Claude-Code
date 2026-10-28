@@ -11,7 +11,8 @@ import torch
 from voix import PHRASES
 
 ICI = Path(__file__).resolve().parent
-torch.manual_seed(2611)
+import os
+torch.manual_seed(int(os.environ.get("GRAINE", 2611)))
 _charge = torch.load
 torch.load = lambda *a, **k: _charge(*a, **{**k, "map_location": "cpu"})   # modèle publié pour carte graphique : chargement sur processeur
 

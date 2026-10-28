@@ -1,4 +1,4 @@
-"""Bande son du teaser DualTech 2026, version 2 (48 s, 48 kHz, stéréo) : musique originale synthétisée + voix off.
+"""Bande son du teaser DualTech 2026, version 3 (durée calée sur la voix, 48 kHz, stéréo) : musique originale synthétisée + voix off.
 
 Musique au tempo de 120 (un temps = 0,5 s) calée sur le montage : ouverture et impact sur le logo, accompagnement
 discret sous le but et l'objectif du salon, rythmique pleine sur les filières et les chiffres, respiration sur le Prix,
@@ -11,11 +11,14 @@ import numpy as np
 
 ICI = Path(__file__).resolve().parent
 SR = 48000
-DUREE = 48.0
+CALAGE = json.loads((ICI / "calage.json").read_text())
+DUREE = CALAGE["duree"]                       # durée réelle, calée sur la voix (calage.py)
+REP = CALAGE["reperes"]
+def R(x):                                      # temps de référence du montage vers temps réel
+    return float(np.interp(x, CALAGE["ancrages_reference"], CALAGE["ancrages_reels"]))
 N = int(SR * DUREE)
 t = np.arange(N) / SR
 rng = np.random.default_rng(26112026)
-DEBUTS = {"v1": 1.0, "v2": 4.6, "v3": 10.0, "v4": 14.4, "v5": 19.6, "v6": 24.7, "v7": 30.4, "v8": 35.9, "v9": 38.6, "v10": 43.7}
 
 
 def piste():
@@ -24,13 +27,14 @@ def piste():
 ML, MR = piste()
 
 
-def ajoute(sig, debut, gain=1.0, pan=0.0, L=None, R=None):
-    L = ML if L is None else L; R = MR if R is None else R
-    i = int(debut * SR)
+def ajoute(sig, debut, gain=1.0, pan=0.0, L=None, Rd=None, reel=False):
+    """debut est un temps du montage de référence, converti en temps réel (sauf reel=True)."""
+    L = ML if L is None else L; Rd = MR if Rd is None else Rd
+    i = int((debut if reel else R(debut)) * SR)
     if i >= N or i + len(sig) <= 0: return
     if i < 0: sig = sig[-i:]; i = 0
     sig = sig[: N - i] * gain
-    L[i:i + len(sig)] += sig * np.sqrt(.5 * (1 - pan)); R[i:i + len(sig)] += sig * np.sqrt(.5 * (1 + pan))
+    L[i:i + len(sig)] += sig * np.sqrt(.5 * (1 - pan)); Rd[i:i + len(sig)] += sig * np.sqrt(.5 * (1 + pan))
 
 
 def env(n, a=.005, r=.2):
@@ -62,9 +66,9 @@ for k in range(int(DUREE / 2) + 1):
     acc = ACCORDS[k % 4] if a >= 4 else ACCORDS[0]
     s = sum(np.sin(2 * np.pi * note(m) * tt * (1 + d)) for m in acc for d in (-.003, .003)) / 10
     nappe[i0:i0 + n] += s * np.minimum(1, tt / .25) * np.minimum(1, (2.2 - tt) / .25)
-nappe = filtre(nappe, bas=1800) * np.minimum(1, t / 1.5) * np.where(t > 44, np.exp(-(t - 44) / 2.5), 1)
+nappe = filtre(nappe, bas=1800) * np.minimum(1, t / 1.5) * np.where(t > R(44), np.exp(-(t - R(44)) / 2.5), 1)
 ajoute(nappe, 0, .3, -.15); ajoute(np.roll(nappe, int(.011 * SR)), 0, .3, .15)
-ajoute(np.sin(2 * np.pi * 55 * t) * np.minimum(1, t / 2) * np.where(t > 45, np.exp(-(t - 45) / 1.2), 1), 0, .07)
+ajoute(np.sin(2 * np.pi * 55 * t) * np.minimum(1, t / 2) * np.where(t > R(45), np.exp(-(t - R(45)) / 1.2), 1), 0, .07)
 
 # ---------- percussions ----------
 def tic(longueur=.04, fc=7000):
@@ -123,7 +127,7 @@ def souffle(d=.8):
 ajoute(montee(1.0), 0.0, .3)                        # rai de lumière avant le logo
 for fin, d in ((24.5, 2.0), (43.5, 2.5)):
     ajoute(montee(d), fin - d, .3)
-for c in (4.5, 14, 17.5, 30.25, 35.75, 38.5):
+for c in (4.5, 14, REP["double_usage"], 30.25, 35.75, 38.5):
     ajoute(impact(1.6, .8), c, .7)
 ajoute(impact(2.5, 1.1), 1.0, .8); ajoute(impact(1.4, .7), 24.5, .7); ajoute(impact(4.0, 1.3), 43.5, .85)
 for i, c in enumerate((4.5, 14, 24.5, 30.25, 35.75, 38.5, 43.5)):
@@ -138,7 +142,7 @@ for k in range(int(1.0 / .06)):
     ajoute(bip(1800 + rng.integers(0, 6) * 300), 2.5 + k * .06, .05, rng.uniform(-.5, .5))
 for k in range(16):
     ajoute(bip(1800 + rng.integers(0, 6) * 300), 39.8 + k * .06, .05, rng.uniform(-.5, .5))
-for a in (6.0, 7.3, 8.2, 9.1, 20.6, 22.0, 23.4):      # panneaux et nœuds qui apparaissent
+for a in REP["panneaux"] + REP["noeuds"]:      # panneaux et nœuds qui apparaissent
     ajoute(bip(1320, .12), a, .06, .3); ajoute(souffle(.4), a - .2, .08, -.3)
 for k in range(int(1.1 / .07)):
     ajoute(bip(3200, .02), 30.45 + k * .07, .04, .2); ajoute(bip(3000, .02), 31.6 + k * .07, .04, -.2)
@@ -161,13 +165,13 @@ ML, MR = reverb(ML), reverb(MR)
 
 # ---------- voix off : rééchantillonnage, égalisation, compression douce, légère ambiance ----------
 VL, VR = piste()
-for v in json.loads((ICI / "voix" / "voix.json").read_text()):
-    with wave.open(str(ICI / "voix" / f"{v['id']}.wav")) as w:
+for v in CALAGE["phrases"]:                  # voix/final : débit accéléré de 8 %
+    with wave.open(str(ICI / "voix" / "final" / f"{v['id']}.wav")) as w:
         sr = w.getframerate(); a = np.frombuffer(w.readframes(w.getnframes()), np.int16) / 32768
     a = np.interp(np.arange(int(len(a) * SR / sr)) / SR, np.arange(len(a)) / sr, a)
     a = filtre(a, haut=90, bas=11000)
     a = np.tanh(a * 2.2) / np.tanh(2.2)
-    ajoute(a, DEBUTS[v["id"]], 1.0, 0, VL, VR)
+    ajoute(a, v["debut"] - v["attaque"], 1.0, 0, VL, VR, reel=True)
 voix = (VL + VR) / 2
 voix = reverb(voix, 1.2, .1)
 VL = VR = voix
@@ -190,7 +194,7 @@ def normalise(x, c=.89):
 musique_L, musique_R = normalise(ML), normalise(MR)
 mixL = musique_L * gain_musique * .62 + normalise(voix) * .95
 mixR = musique_R * gain_musique * .62 + normalise(voix) * .95
-fondu = np.minimum(1, t / .05) * np.where(t > 47.2, np.clip((48 - t) / .8, 0, 1), 1)
+fondu = np.minimum(1, t / .05) * np.where(t > DUREE - .8, np.clip((DUREE - t) / .8, 0, 1), 1)
 mixL, mixR = mixL * fondu, mixR * fondu
 for c in (mixL, mixR): c[:] = np.tanh(c * 1.1) / np.tanh(1.1)
 crete = max(np.abs(mixL).max(), np.abs(mixR).max()); mixL *= .89 / crete; mixR *= .89 / crete

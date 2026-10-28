@@ -1,46 +1,46 @@
 1
-00:00:01,000 --> 00:00:03,663
+00:00:01,000 --> 00:00:04,060
 DualTech, le rendez-vous de l'industrie duale.
 
 2
-00:00:04,600 --> 00:00:09,841
+00:00:04,600 --> 00:00:10,430
 Une journée pour réunir les acteurs publics,
 industriels, scientifiques et financiers
 
 3
-00:00:10,000 --> 00:00:13,778
+00:00:10,580 --> 00:00:15,680
 qui construisent la souveraineté technologique
 française et européenne de demain.
 
 4
-00:00:14,400 --> 00:00:19,397
+00:00:15,830 --> 00:00:21,520
 Notre objectif : promouvoir les technologies à
 double usage, civil et défense,
 
 5
-00:00:19,600 --> 00:00:24,283
+00:00:21,670 --> 00:00:27,310
 et accélérer les rencontres entre ceux qui innovent,
 ceux qui financent et ceux qui décident.
 
 6
-00:00:24,700 --> 00:00:29,964
+00:00:27,460 --> 00:00:32,960
 Vingt filières stratégiques : du spatial à la
 cybersécurité, de la robotique au quantique.
 
 7
-00:00:30,400 --> 00:00:35,478
+00:00:33,160 --> 00:00:38,610
 400 participants, 40 intervenants. Tables rondes,
 conférences et ateliers.
 
 8
-00:00:35,900 --> 00:00:37,855
+00:00:38,760 --> 00:00:41,230
 Et la remise du Prix de l'innovation duale.
 
 9
-00:00:38,600 --> 00:00:42,958
+00:00:41,460 --> 00:00:46,850
 Jeudi 26 novembre 2026, au Campus Cyber de La
 Défense.
 
 10
-00:00:43,700 --> 00:00:45,922
+00:00:47,000 --> 00:00:49,540
 DualTech. Inscrivez-vous dès maintenant.

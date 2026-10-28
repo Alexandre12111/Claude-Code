@@ -1,4 +1,4 @@
-"""Génère teaser.html : le teaser motion design de DualTech 2026, version 2 avec voix off et sous titres (48 s, 1920 x 1080).
+"""Génère teaser.html : le teaser motion design de DualTech 2026, version 3 avec voix off naturelle et sous titres (1920 x 1080).
 
 Le montage suit la voix (voix/voix.json) : DualTech et sa promesse d'abord, puis le but du salon, son objectif,
 et seulement ensuite les filières, les chiffres, les intervenants, le Prix et le lieu.
@@ -14,15 +14,17 @@ from donnees import FILIERES, PHOTOS_FILIERES, INTERVENANTS, PAR_NOM
 from icones import icone
 
 A = "../maquette/assets/"
-DUREE = 48.0
-# début de chaque phrase de la voix off (s), calé sur le tempo de 120 (un temps = 0,5 s)
-DEBUTS = {"v1": 1.0, "v2": 4.6, "v3": 10.0, "v4": 14.4, "v5": 19.6, "v6": 24.7, "v7": 30.4, "v8": 35.9, "v9": 38.6, "v10": 43.7}
+# calage sur la voix (calage.py) : début réel de chaque phrase et correspondance avec la ligne de temps de référence
+CALAGE = json.loads((ICI / "calage.json").read_text())
+DUREE = CALAGE["duree"]
+DEBUTS = {l["id"]: l["debut"] for l in CALAGE["phrases"]}
+PAROLE = {l["id"]: l["parole"] for l in CALAGE["phrases"]}
 VOIX = json.loads((ICI / "voix" / "voix.json").read_text())
 
 # ---------- sous titres : deux lignes au plus, 52 caractères par ligne ----------
 SOUS_TITRES = []
 for v in VOIX:
-    debut = DEBUTS[v["id"]]; fin = debut + v["duree"] - .1
+    debut = DEBUTS[v["id"]]; fin = debut + PAROLE[v["id"]] + .1
     lignes = textwrap.wrap(v["sous_titre"], 52)
     if len(lignes) > 2:       # phrase longue : deux cartons successifs
         moitie = (len(lignes) + 1) // 2; coupe = debut + (fin - debut) * moitie / len(lignes)
@@ -307,10 +309,15 @@ const trace = (svg, pr) => svg.querySelectorAll('.trace').forEach((e, i) => { e.
 const ST = __ST__;
 const SC = { sA: [0, 4.75], sB: [4.35, 14.25], sC: [13.85, 24.75], sD: [24.35, 30.5], sE: [30.0, 36.0], sF: [35.5, 38.75], sG: [38.25, 43.75], sH: [43.25, 48] };
 const COUPES = [4.5, 14, 24.5, 30.25, 35.75, 38.5, 43.5];
-const IMPACTS = [1.0, 4.5, 10, 14, 17.5, 19.6, 24.5, 30.25, 35.75, 38.5, 43.5];
+const REP = __REP__;
+const IMPACTS = [1.0, 4.5, 10, 14, REP.double_usage, 19.6, 24.5, 30.25, 35.75, 38.5, 43.5];
 
-window.rendre = (t) => {
-  const f = Math.round(t * 30);
+/* ligne de temps dilatée par morceaux : t (référence) en fonction du temps réel tr */
+const ANC_R = __ANC_R__, ANC_D = __ANC_D__, DUREE_R = __DUREE__;
+const warp = (tr) => { for (let i = 1; i < ANC_R.length; i++) if (tr <= ANC_R[i]) return ANC_D[i - 1] + (tr - ANC_R[i - 1]) * (ANC_D[i] - ANC_D[i - 1]) / (ANC_R[i] - ANC_R[i - 1]); return ANC_D[ANC_D.length - 1]; };
+window.rendre = (tr) => {
+  const t = warp(tr);
+  const f = Math.round(tr * 30);
   /* caméra : zooms sur les temps forts, secousse aux impacts, décalage chromatique aux coupes */
   let zoom = 1, dx = 0, dy = 0, rgb = 0;
   for (const c of IMPACTS) if (t >= c && t < c + .6) { const q = p(t, c, c + .6); zoom += .035 * (1 - eo(q)); dx += (hash(f) - .5) * 18 * (1 - q); dy += (hash(f + 9) - .5) * 12 * (1 - q); }
@@ -322,18 +329,18 @@ window.rendre = (t) => {
   S($('#fuite'), { transform: `translate(${300 + Math.sin(t * .4) * 600}px, ${-300 + Math.cos(t * .3) * 300}px)`, opacity: .6 + .4 * Math.sin(t * .7) });
   $$('.pt').forEach((d, i) => { const v = 40 + hash(i) * 120, y = (hash(i + 50) * 1200 - t * v) % 1200; S(d, { transform: `translate(${hash(i + 7) * 1920}px, ${(y < 0 ? y + 1200 : y) - 60}px)`, opacity: .15 + hash(i + 3) * .5 }); });
   S($('#hud'), { opacity: p(t, 2.2, 3) * (1 - p(t, 47.2, 47.9)) });
-  $('#h-b').textContent = `00:${String(Math.floor(t)).padStart(2, '0')}:${String(f % 30).padStart(2, '0')} · 26.11.2026`;
+  $('#h-b').textContent = `00:${String(Math.floor(tr)).padStart(2, '0')}:${String(f % 30).padStart(2, '0')} · 26.11.2026`;
   $('#h-g b').style.opacity = Math.floor(t * 2) % 2 ? .25 : 1;
-  S($('#barre'), { transform: `scaleX(${t / 48})` });
+  S($('#barre'), { transform: `scaleX(${tr / DUREE_R})` });
   for (const k in SC) $('#' + k).style.opacity = vis(t, SC[k][0], SC[k][1], .12, .12);
   let v1 = -101, v2 = -101, ecl = 0;
   for (const c of COUPES) if (t > c - .4 && t < c + .4) { const q = p(t, c - .4, c + .4); v1 = -101 + eio(q) * 202; v2 = -101 + eio(cl(q * 1.15 - .1)) * 202; }
-  for (const c of [1.0, 17.5, 43.5]) if (t >= c && t < c + .3) ecl = Math.max(ecl, 1 - p(t, c, c + .3));
+  for (const c of [1.0, REP.double_usage, 43.5]) if (t >= c && t < c + .3) ecl = Math.max(ecl, 1 - p(t, c, c + .3));
   S($('#volet'), { transform: `translateX(${v1}%)` }); S($('#volet2'), { transform: `translateX(${v2}%)` }); $('#eclair').style.opacity = ecl * .7;
   /* sous titres */
-  const s = ST.find(([a, b]) => t >= a && t < b);
+  const s = ST.find(([a, b]) => tr >= a && tr < b);
   const span = $('#st span');
-  if (s) { span.innerHTML = s[2]; S($('#st'), { opacity: p(t, s[0], s[0] + .12) * (1 - p(t, s[1] - .1, s[1])), transform: `translateY(${(1 - eo(p(t, s[0], s[0] + .3))) * 16}px)` }); }
+  if (s) { span.innerHTML = s[2]; S($('#st'), { opacity: p(tr, s[0], s[0] + .12) * (1 - p(tr, s[1] - .1, s[1])), transform: `translateY(${(1 - eo(p(tr, s[0], s[0] + .3))) * 16}px)` }); }
   else $('#st').style.opacity = 0;
 
   /* A : DualTech d'entrée (0 à 4,5 s) */
@@ -348,7 +355,7 @@ window.rendre = (t) => {
 
   /* B : le salon (4,5 à 14 s) */
   monte($$('#bTitre .l > span'), t, 4.6);
-  const MOTS = [6.0, 7.3, 8.2, 9.1];
+  const MOTS = REP.panneaux;
   $$('.pan').forEach((el, i) => {
     const q = p(t, MOTS[i] - .35, MOTS[i] + .35);
     S(el, { clipPath: `inset(${(1 - eo(q)) * 100}% 0 0 0)`, transform: `translateY(${(1 - eo(q)) * 60}px)` });
@@ -362,17 +369,18 @@ window.rendre = (t) => {
   S($('#bDemain'), { opacity: p(t, 12.4, 12.8) });
 
   /* C : l'objectif (14 à 24,5 s) */
-  const sep = eio(p(t, 17.2, 17.9));
+  const DU = REP.double_usage;
+  const sep = eio(p(t, DU - .3, DU + .4));
   S($('#cG'), { transform: `translateX(${(1 - eo(p(t, 14.2, 15.2))) * -960 + sep * 240}px)` });
   S($('#cD'), { transform: `translateX(${(1 - eo(p(t, 14.6, 15.6))) * 960 - sep * 240}px)` });
   S($('#cG img'), { transform: `scale(${1.15 - p(t, 14, 19.6) * .1})` }); S($('#cD img'), { transform: `scale(${1.15 - p(t, 14, 19.6) * .1})` });
-  $$('.cMot').forEach((m, i) => S(m, { opacity: p(t, 15.6 + i * .5, 15.9 + i * .5) * (1 - p(t, 17.3, 17.6)), transform: `translateY(${(1 - eo(p(t, 15.6 + i * .5, 16.2 + i * .5))) * 60}px)` }));
-  S($('#cTrait'), { transform: `scaleY(${eo(p(t, 14.4, 15.2))})`, opacity: 1 - p(t, 17.2, 17.5) });
+  $$('.cMot').forEach((m, i) => S(m, { opacity: p(t, 15.6 + i * .5, 15.9 + i * .5) * (1 - p(t, DU - .2, DU + .1)), transform: `translateY(${(1 - eo(p(t, 15.6 + i * .5, 16.2 + i * .5))) * 60}px)` }));
+  S($('#cTrait'), { transform: `scaleY(${eo(p(t, 14.4, 15.2))})`, opacity: 1 - p(t, DU - .3, DU) });
   S($('#cObj'), { opacity: p(t, 14.5, 14.8) * (1 - p(t, 19.3, 19.6)) });
-  S($('#cDU'), { opacity: p(t, 17.5, 17.6) * (1 - p(t, 19.3, 19.6)), transform: `translateX(-50%) scale(${1.3 - eo(p(t, 17.5, 18.1)) * .3})` });
+  S($('#cDU'), { opacity: p(t, DU, DU + .1) * (1 - p(t, 19.3, 19.6)), transform: `translateX(-50%) scale(${1.3 - eo(p(t, DU, DU + .6)) * .3})` });
   S($('#c1'), { opacity: 1 - p(t, 19.45, 19.65) });
   S($('#c2'), { opacity: p(t, 19.45, 19.7) });
-  const NO = [20.6, 22.0, 23.4];
+  const NO = REP.noeuds;
   ['#n0', '#n1', '#n2'].forEach((n, i) => { const q = p(t, NO[i] - .3, NO[i] + .3); S($(n), { opacity: eo(q), transform: `scale(${.6 + eo(q) * .4})` }); trace($(n).querySelector('.ic'), p(t, NO[i], NO[i] + .8)); });
   ['#li0', '#li1', '#li2'].forEach((l, i) => { $(l).style.strokeDashoffset = 1 - eo(p(t, NO[i] + .1, NO[i] + .9)); });
   const SEG = [[480, 600, 960, 330], [960, 330, 1440, 600], [1440, 600, 480, 600]];
@@ -447,6 +455,7 @@ window.rendre(0);
 
 points = "".join('<span class="pt"></span>' for _ in range(36))
 html = (HTML.replace("__PANNEAUX__", panneaux).replace("__SLIDES__", slides).replace("__FLASH__", flash).replace("__MOSAIQUE__", mosaique)
+        .replace("__ANC_R__", json.dumps(CALAGE["ancrages_reels"])).replace("__ANC_D__", json.dumps(CALAGE["ancrages_reference"])).replace("__DUREE__", str(DUREE)).replace("__REP__", json.dumps(CALAGE["reperes"]))
         .replace("__CARTES__", cartes).replace("__POINTS__", points).replace("__ST__", st_json)
         .replace("__ICO_INNOVER__", icone("Intelligence artificielle", "ic")).replace("__ICO_FINANCER__", icone("Data", "ic"))
         .replace("__ICO_DECIDER__", icone("Infrastructures critiques", "ic")).replace("__A__", A))
