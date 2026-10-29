@@ -72,7 +72,7 @@ function schiesser_carte_druck_html() {
 				. '<span class="d"></span><span class="p">' . esc_html( str_replace( 'CHF ', '', (string) $p['prix'] ) ) . '</span></div>'
 				. ( '' !== $desc ? '<p>' . esc_html( $desc ) . '</p>' : '' ) . '</div>';
 		}
-		$html = '<section class="rub"><header><span class="no">' . sprintf( '%02d', $i + 1 ) . '</span>'
+		$html = '<section class="rub"><header>'
 			. '<h2>' . esc_html( $r['nom'] ) . '</h2>' . $orn . '</header><div class="plats">' . $plats . '</div></section>';
 		if ( $charge + $poids > 30 ) {
 			$pages[] = '';
@@ -144,7 +144,7 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 <body>
 <p class="aide">Carte imprimable : Imprimer → « Enregistrer au format PDF », format A4, marges « Aucune », graphiques d’arrière-plan activés. <button type="button" onclick="window.print()">Imprimer</button></p>
 <div class="page couv">
-	<?php echo schiesser_logo_svg( 'incline', $nom ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+	<?php echo schiesser_logo_svg( 'droit', $nom ); // phpcs:ignore WordPress.Security.EscapeOutput ?>
 	<h1>Tea Room &amp; Rathstübli</h1>
 	<p class="sous"><?php echo esc_html( schiesser_t( 'Ein Kaffeehaus mit über 100 Jahren Geschichte' ) ); ?></p>
 	<?php echo $orn; // phpcs:ignore WordPress.Security.EscapeOutput ?>

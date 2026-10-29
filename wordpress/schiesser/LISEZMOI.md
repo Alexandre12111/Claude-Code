@@ -1,7 +1,18 @@
-# Thème Schiesser 0.21
+# Thème Schiesser 0.22
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.22 : demandes de la cliente (document « Website adjustments »)
+
+* **Logo droit, sans arabesques, partout** : en-tête, pied de page, sceau de l'accueil, filigrane des sections sombres, plan, page 404, connexion, écrans maison et carte en PDF. Les fichiers `schiesser-incline.svg` et `schiesser-cartouche-droit.svg` disparaissent ; `schiesser-cartouche.svg` devient le logo sur une plaque arrondie (plan).
+* **Plus aucun numéro** : chapitres (« N° 02 »), étapes du savoir-faire, cartes des étages, « Gut zu wissen », cartes « So bestellen Sie », liens « Weiter im Haus », galerie, et toute la carte du Tea Room (onglets, titres de rubrique, « 6 Angebote »), y compris dans le PDF.
+* **Plus de pastilles vertes** qui ressemblent à des boutons : le petit titre de la grande photo et l'étiquette des paliers (montée au Tea Room) deviennent du simple texte.
+* **« Gut zu wissen »** : des pictogrammes fins, sans fond plein, qui ne bougent plus au survol.
+* **Carte du Tea Room sans photos** (ni photo de rubrique, ni photo de la recommandation).
+* **Grande photo** : une phrase de moins de 90 caractères tient sur une seule ligne sur grand écran.
+* Carte du Tea Room en PDF régénérée dans les trois langues à partir de la carte actuelle du site.
+* Changements de contenu livrés à part (fichier d'import de l'extension « Export Schiesser ») : boutons « Unser Sortiment » (accueil) et « Der Laden in Bildern » (Confiserie) retirés, titre de la galerie « Der Laden in Bildern » rétabli sur fond clair, cartes « So bestellen Sie » et « Firmengeschenke » toutes beiges, lignes de « Frisch aus unserer Backstube » sans espace.
 
 ## Version 0.21 : administration épurée
 

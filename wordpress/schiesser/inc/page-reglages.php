@@ -133,7 +133,7 @@ function schiesser_page_reglages() {
 	?>
 	<div class="wrap s-admin">
 		<div class="s-entete">
-			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'incline' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'droit' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 			<div class="s-entete-texte">
 				<h1>Réglages de la maison</h1>
 				<p>Saisies une seule fois, ces informations se mettent à jour partout sur le site : bandeau « Ouvert / Fermé », pied de page, horaires, fiche Google.</p>

@@ -23,7 +23,7 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 	<div class="wrap">
 		<div class="fgrid<?php echo $ancres ? ' fgrid--4' : ''; ?>">
 			<div class="fbrand">
-				<span class="brand"><?php schiesser_logo( 'incline', schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?></span>
+				<span class="brand"><?php schiesser_logo( 'droit', schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ); ?></span>
 				<p><?php echo esc_html( schiesser_reglage( 'presentation' ) ); ?></p>
 				<div class="x-social">
 					<?php if ( $ig ) : ?>

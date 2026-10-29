@@ -285,7 +285,7 @@ function schiesser_page_guide() {
 	?>
 	<div class="wrap s-admin s-guide">
 		<div class="s-entete">
-			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'incline' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'droit' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 			<div class="s-entete-texte">
 				<h1>Guide du site</h1>
 				<p>Les gestes du quotidien, pas à pas. Aucun code n'est nécessaire.</p>
@@ -315,7 +315,7 @@ add_action( 'login_enqueue_scripts', function () {
 	?>
 	<style>
 		body.login{background:<?php echo esc_html( $c['paper'] ); ?>}
-		.login h1 a{background:url("data:image/svg+xml;base64,<?php echo base64_encode( $logo ); // phpcs:ignore ?>") center/contain no-repeat!important;width:210px!important;height:131px!important;text-indent:-9999px!important;overflow:hidden;margin-bottom:22px}
+		.login h1 a{background:url("data:image/svg+xml;base64,<?php echo base64_encode( $logo ); // phpcs:ignore ?>") center/contain no-repeat!important;width:240px!important;height:83px!important;text-indent:-9999px!important;overflow:hidden;margin-bottom:22px}
 		.login form{border:1px solid rgba(58,40,24,.14);border-radius:6px;box-shadow:0 20px 40px -30px rgba(39,27,18,.5)}
 		.wp-core-ui .button-primary{background:<?php echo esc_html( $c['vert'] ); ?>;border-color:<?php echo esc_html( $c['vert'] ); ?>}
 		.wp-core-ui .button-primary:hover,.wp-core-ui .button-primary:focus{background:<?php echo esc_html( $c['dark'] ); ?>;border-color:<?php echo esc_html( $c['dark'] ); ?>}

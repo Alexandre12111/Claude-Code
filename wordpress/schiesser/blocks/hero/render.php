@@ -78,7 +78,7 @@ $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 			<h1><?php echo schiesser_kses_titre( $a['titre'] ?: get_the_title() ); // phpcs:ignore WordPress.Security.EscapeOutput ?></h1>
 
 			<?php if ( ! empty( $a['texte'] ) ) : ?>
-				<p class="hero-sub"><?php echo schiesser_kses_titre( $a['texte'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
+				<p class="hero-sub<?php echo mb_strlen( wp_strip_all_tags( (string) $a['texte'] ) ) <= 90 ? ' hero-sub--ligne' : ''; // une phrase courte : une seule ligne sur grand écran ?>"><?php echo schiesser_kses_titre( $a['texte'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
 			<?php endif; ?>
 
 			<?php if ( $boutons ) : ?>

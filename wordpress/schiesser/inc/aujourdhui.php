@@ -106,7 +106,7 @@ function schiesser_page_aujourdhui() {
 	?>
 	<div class="wrap s-admin s-auj">
 		<div class="s-entete">
-			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'incline' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
+			<div class="s-entete-logo" aria-hidden="true"><?php echo schiesser_logo_svg( 'droit' ); // phpcs:ignore WordPress.Security.EscapeOutput ?></div>
 			<div class="s-entete-texte">
 				<h1>Aujourd’hui, <?php echo esc_html( wp_date( 'l j F' ) ); ?></h1>
 				<p>Ce qui change d’un jour à l’autre, sur un seul écran. Tout s’enregistre d’un clic en bas de la page.</p>

@@ -144,7 +144,7 @@ function schiesser_sceau_svg() {
 		. '<g class="ring"><text class="seal-txt" font-size="11" font-weight="600" letter-spacing="3" fill="currentColor">'
 		. '<textPath href="#sealRing" textLength="496" lengthAdjust="spacing">' . esc_html( schiesser_t( 'CONFISERIE · TEA-ROOM · MARKTPLATZ BASEL · SEIT 1870 ·' ) ) . '</textPath></text></g>'
 		. '<circle cx="100" cy="100" r="67" fill="none" stroke="currentColor" stroke-opacity=".5"/>'
-		. schiesser_logo_svg_dans( 'incline', 100, 100, 116 )
+		. schiesser_logo_svg_dans( 'droit', 100, 100, 116 )
 		. '</svg></div>';
 }
 

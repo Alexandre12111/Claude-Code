@@ -212,8 +212,7 @@ function schiesser_liens_menu( $position = 'principal' ) {
  * Logo de la maison dessiné dans la page (fichiers assets/images/logo/), de la couleur du texte qui
  * l'entoure : la feuille de style règle couleur et taille selon l'endroit.
  *
- * @param string $variante droit (en-tête, cartes), incline (tel que dessiné : pied de page, sceaux),
- *                         cartouche ou cartouche-droit (avec son fond découpé : sur une photo, sur le plan).
+ * @param string $variante droit (le logo, partout) ou cartouche (le logo sur sa plaque : sur le plan).
  * @param string $titre    Nom lu par les lecteurs d'écran ; vide : logo décoratif.
  */
 function schiesser_logo_svg( $variante = 'droit', $titre = '' ) {
@@ -248,7 +247,7 @@ function schiesser_logo_svg_dans( $variante, $x, $y, $largeur ) {
 }
 
 /**
- * Logo de la maison (en-tête : droit ; pied de page : incliné).
+ * Logo de la maison, droit et sans arabesques.
  */
 function schiesser_logo( $variante = 'droit', $titre = '' ) {
 	echo schiesser_logo_svg( $variante, $titre ); // phpcs:ignore WordPress.Security.EscapeOutput

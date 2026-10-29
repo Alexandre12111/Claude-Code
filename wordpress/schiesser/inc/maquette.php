@@ -273,8 +273,8 @@ add_action( 'enqueue_block_editor_assets', function () {
 		'transfert'  => current_user_can( 'edit_pages' ) ? wp_nonce_url( admin_url( 'admin-post.php?action=schiesser_transferer_carte' ), 'schiesser_transferer_carte' ) : '',
 	);
 	wp_localize_script( 'schiesser-blocs-maquette', 'SCHIESSER_ED', array(
-		'logo'         => schiesser_logo_svg( 'incline' ),             // filigrane et sceau des blocs
-		'logoSceau'    => schiesser_logo_svg_dans( 'incline', 100, 100, 116 ), // centre du sceau tournant du Hero
+		'logo'         => schiesser_logo_svg( 'droit' ),             // filigrane et sceau des blocs
+		'logoSceau'    => schiesser_logo_svg_dans( 'droit', 100, 100, 116 ), // centre du sceau tournant du Hero
 		'gmap'         => schiesser_mq_google_src( 16 ),
 		'tearoom'      => $tearoom,
 		'produits'     => $produits,
@@ -476,12 +476,12 @@ function schiesser_mq_fonds() {
 
 /** Filigrane des sections sombres : le logo incliné, très pâle. */
 function schiesser_mq_marque() {
-	return '<span class="x-mark" aria-hidden="true">' . schiesser_logo_svg( 'incline' ) . '</span>';
+	return '<span class="x-mark" aria-hidden="true">' . schiesser_logo_svg( 'droit' ) . '</span>';
 }
 
 /** Sceau de la maison : le logo incliné (plaque, page 404). */
 function schiesser_mq_sceau() {
-	return '<span class="x-seal" aria-hidden="true">' . schiesser_logo_svg( 'incline' ) . '</span>';
+	return '<span class="x-seal" aria-hidden="true">' . schiesser_logo_svg( 'droit' ) . '</span>';
 }
 
 /** En-tête de section : N° ——— / titre / note. */
@@ -1270,13 +1270,11 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	if ( ! $rubriques ) {
 		return '';
 	}
-	$photos  = '';
 	$onglets = '';
 	$listes  = '';
 	$tous_al = array();
 	foreach ( $rubriques as $i => $r ) {
 		$nom      = schiesser_mq_brut( $r['nom'] );
-		$photos  .= schiesser_mq_image( $r, 'image', 'full', array( 'data-c' => (string) $i, 'class' => 0 === $i ? 'on' : '', 'sizes' => '(min-width: 1200px) 1140px, 100vw' ) );
 		$onglets .= '<button type="button" class="mtab' . ( 0 === $i ? ' on' : '' ) . '" data-c="' . $i . '" data-nom="' . esc_attr( $nom ) . '" data-nb="' . count( $r['plats'] ) . '" aria-pressed="' . ( 0 === $i ? 'true' : 'false' ) . '"><span class="mtab-no" aria-hidden="true">' . schiesser_mq_num( $i + 1 ) . '</span>' . esc_html( $nom ) . '</button>';
 		$plats    = '';
 		foreach ( $r['plats'] as $k => $q ) {
@@ -1295,16 +1293,14 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 		$s_titre = $sg['nom'];
 		$s_texte = $sg['description'];
 		$s_prix  = $sg['prix'];
-		$s_image = $sg['imageId'] ? schiesser_mq_image( $sg, 'image', 'medium_large' ) : schiesser_mq_image( $a, 's', 'medium_large' );
 	} else {
 		$s_titre = $a['sTitre'];
 		$s_texte = $a['sTexte'];
 		$s_prix  = $a['sPrix'];
-		$s_image = schiesser_mq_image( $a, 's', 'medium_large' );
 	}
 	$suggestion = '';
 	if ( '' !== trim( wp_strip_all_tags( $s_titre ) ) ) {
-		$suggestion = '<div class="sugg"><div class="si ph" data-label="' . esc_attr( schiesser_mq_brut( $a['sSurtitre'] ) ) . '">' . $s_image . '</div><div class="sb">'
+		$suggestion = '<div class="sugg"><div class="sb">'
 			. '<div class="sk">' . schiesser_mq_riche( $a['sSurtitre'] ) . '</div><div class="sh">' . schiesser_mq_riche( $s_titre ) . '</div>'
 			. ( '' !== trim( $s_texte ) ? '<p class="sp">' . schiesser_mq_texte( $s_texte ) . '</p>' : '' )
 			. '<div class="sf"><span>' . schiesser_mq_riche( $a['sPied'] ) . '</span><b>' . esc_html( schiesser_mq_brut( $s_prix ) ) . '</b></div></div></div>';
@@ -1317,8 +1313,7 @@ function schiesser_mq_rendu_carte_salon( $a, $content, $block ) {
 	$contenu = '<div class="carte rv js-carte-salon">'
 		. '<div class="mn-bar"><div class="mn-tabs" role="group" aria-label="' . esc_attr( schiesser_t( 'Rubriken der Karte' ) ) . '">' . $onglets . '</div></div>'
 		. '<div class="mn"><div class="mn-listes">' . ( empty( $a['apercu'] ) ? schiesser_allergenes_filtres( array_filter( $tous_al ) ) : '' ) . $listes . '</div><aside class="mn-side">'
-		. '<div class="x-menupic">' . $photos . '<span class="mn-logo" aria-hidden="true">' . schiesser_logo_svg( 'cartouche' ) . '</span><span class="x-mc"><span class="js-mn-legende">' . esc_html( schiesser_mq_brut( $rubriques[0]['nom'] ) ) . '</span></span></div>'
-		. $pdf . $suggestion
+		. $pdf . $suggestion // pas de photo dans la carte (demande du client, version 0.22)
 		. ( array_filter( $tous_al ) ? schiesser_allergenes_note() : '' )
 		. ( empty( $a['apercu'] ) && is_singular() ? schiesser_partage( get_permalink(), schiesser_t( 'Die Karte des Tea Room' ) . ' · ' . ( schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) ), 'partage--carte' ) : '' )
 		. ( '' !== trim( $a['mention'] ) ? '<p class="mn-note">' . schiesser_mq_riche( $a['mention'] ) . '</p>' : '' ) . '</aside></div></div>';

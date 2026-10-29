@@ -108,9 +108,9 @@ header.scrolled{background:color-mix(in srgb,var(--paper) 95%,transparent);box-s
 /* logo : droit et vert sapin dans l'en-tête, incliné et clair sur le chocolat du pied de page */
 .logo{display:block;fill:currentColor;overflow:visible}
 .brand{display:inline-block;text-decoration:none;color:var(--vert);line-height:0;flex-shrink:0}
-.brand .logo{height:60px;width:auto;aspect-ratio:1000/622}
-.fbrand .brand .logo{height:auto;width:min(212px,62vw);aspect-ratio:1000/723}
-@media(max-width:520px){.brand .logo{height:46px}}
+.brand .logo{height:46px;width:auto;aspect-ratio:988/341}
+.fbrand .brand .logo{height:auto;width:min(240px,62vw);aspect-ratio:988/341}
+@media(max-width:520px){.brand .logo{height:38px}}
 
 /* navigation */
 nav.main{display:flex;align-items:center;gap:clamp(18px,2.2vw,34px)}
@@ -2598,3 +2598,31 @@ p,.x-fd,.note{text-wrap:pretty}
   .prac h3{margin:2px 0 8px;padding-right:28px}
   .prac .pcell::before{top:24px;right:20px}
 }
+
+/* ==================================================================
+   VERSION 0.22 : sans numéros, sans pastilles vertes, logo droit
+   ================================================================== */
+
+/* ---------- Plus aucun numéro de chapitre, d'étape ni de carte ---------- */
+.sec-head .idx,.cstep .cn,.cm-num,.gv-cap .gn,.val .vn,.oc .on,.x-floor .x-num,.gp-n,.cat-row .n,
+.carte .mtab-no,.carte .mn-no,.carte .mn-nb,.ml-no{display:none!important}
+.prac .pcell::before{content:none!important}
+
+/* ---------- Petits titres sur les photos : du texte, pas une pastille ---------- */
+.hero .eyebrow{display:block;padding:0;border-radius:0;background:none;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;letter-spacing:.22em}
+.hero .eyebrow::before{content:none}
+
+/* ---------- « Gut zu wissen » : des pictogrammes, pas des boutons ---------- */
+.prac .pcell,.prac .pcell:hover{transition:none}
+.prac .pcell:hover{background:var(--sec-bg);background:color-mix(in srgb,var(--paper-3) 40%,var(--sec-bg))}
+.prac .pi,.prac .pcell:hover .pi{width:52px;height:52px;transform:none;background:none;background-image:none;
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--vert) 55%,transparent);transition:none}
+.prac .pi svg,.prac .pcell:hover .pi svg{stroke:var(--vert)}
+
+/* ---------- Carte du Tea Room : sans photos, la liste prend la largeur ---------- */
+.carte .x-menupic,.carte .sugg .si{display:none}
+.carte .sugg{grid-template-columns:1fr}
+
+/* ---------- Grande photo : une phrase courte tient sur une ligne ---------- */
+@media(min-width:1100px){.hero-sub--ligne{max-width:none;white-space:nowrap}}
+.asc-floor .fk{padding:0;background:none;box-shadow:none;color:var(--mint)}
