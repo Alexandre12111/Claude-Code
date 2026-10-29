@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Schiesser · Export et import du site
  * Description:       Exporte tout le contenu du site (pages, produits, carte du Tea Room, menus, réglages, médias) dans un fichier JSON, puis réimporte un fichier modifié avec un aperçu des changements et un retour en arrière possible.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Confiserie Schiesser
@@ -11,7 +11,10 @@
  * Écran : Outils → Export Schiesser (administrateurs seulement).
  *
  * Export : un fichier JSON lisible (pages et produits avec leur contenu en blocs, méta, langues
- * Polylang, rubriques, menus, médias sans les fichiers, réglages du thème, de Polylang et de Rank Math).
+ * Polylang, rubriques, menus, médias sans les fichiers, réglages du thème, de Polylang et de Rank Math),
+ * pour tout le site ou une partie (une page dans ses trois langues, avec son aperçu HTML ; la boutique ;
+ * la carte du Tea Room ; les réglages). Chaque export contient un mode d'emploi et la liste des blocs,
+ * pour que Claude puisse préparer seul un fichier d'import (voir claude-projet-schiesser.md).
  * Ne sont pas exportés : comptes utilisateurs, messages reçus, commandes, et les secrets
  * (clés API, mots de passe), remplacés par « ***masqué*** ».
  *
@@ -142,9 +145,123 @@ function schiesser_ex_contenu( WP_Post $p ) {
 	);
 }
 
-function schiesser_ex_donnees() {
+/**
+ * Parties du site que l'on peut exporter seules : tout, une page (avec ses traductions),
+ * la boutique, la carte du Tea Room, les réglages.
+ */
+function schiesser_ex_portees() {
+	$p = array( 'tout' => 'Tout le site' );
+	$q = new WP_Query( array( 'post_type' => 'page', 'post_status' => array( 'publish', 'draft', 'private' ), 'posts_per_page' => -1, 'orderby' => 'menu_order title', 'order' => 'ASC', 'no_found_rows' => true, 'lang' => '' ) );
+	$vues = array();
+	foreach ( $q->posts as $page ) {
+		$tr = schiesser_ex_polylang() ? pll_get_post_translations( $page->ID ) : array();
+		$id = (int) ( $tr['de'] ?? ( $tr ? reset( $tr ) : $page->ID ) ); // une entrée par page, au nom de sa version allemande
+		if ( isset( $vues[ $id ] ) ) {
+			continue;
+		}
+		$vues[ $id ] = true;
+		$p[ 'page:' . $id ] = 'Page « ' . get_the_title( $id ) . ' »' . ( count( $tr ) > 1 ? ' (' . implode( ', ', array_map( 'strtoupper', array_keys( array_merge( array_intersect_key( array( 'de' => 0, 'fr' => 0, 'en' => 0 ), $tr ), $tr ) ) ) ) . ')' : '' );
+	}
+	if ( post_type_exists( 'schiesser_produit' ) ) {
+		$p['type:schiesser_produit'] = 'Produits de la boutique';
+	}
+	if ( post_type_exists( 'schiesser_tearoom' ) ) {
+		$p['type:schiesser_tearoom'] = 'Carte du Tea Room (produits)';
+	}
+	$p['reglages'] = 'Réglages du site seulement (charte, CSS personnalisé, coordonnées)';
+	return $p;
+}
+
+/** Aperçu HTML d'une page tel que le thème l'affiche, allégé (pour écrire du CSS). */
+function schiesser_ex_apercu_html( WP_Post $p ) {
+	global $post;
+	$ancien = $post;
+	$post   = $p; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+	setup_postdata( $p );
+	// Polylang : les textes du thème dans la langue de la page.
+	$pll    = function_exists( 'PLL' ) && isset( PLL()->model ) ? PLL() : null;
+	$langue = $pll ? $pll->curlang : null;
+	if ( $pll && schiesser_ex_polylang() ) {
+		$pll->curlang = $pll->model->get_language( pll_get_post_language( $p->ID ) ) ?: $langue;
+	}
+	$html = (string) apply_filters( 'the_content', $p->post_content );
+	if ( $pll ) {
+		$pll->curlang = $langue;
+	}
+	$post = $ancien; // phpcs:ignore WordPress.WP.GlobalVariablesOverride
+	wp_reset_postdata();
+	$html = preg_replace( '#<svg\b[^>]*>.*?</svg>#s', '<svg/>', $html );
+	$html = preg_replace( '#\s(srcset|sizes|style|decoding|loading|fetchpriority)="[^"]*"#', '', $html );
+	return trim( preg_replace( "/\n\s*\n+/", "\n", $html ) );
+}
+
+/** Médias cités par des contenus (images des blocs, photos à la une). */
+function schiesser_ex_medias_cites( array $contenus ) {
+	$ids = array();
+	foreach ( $contenus as $c ) {
+		preg_match_all( '/"(?:\w*[iI]mage)?Id":(\d+)/', (string) $c['contenu'], $m );
+		$ids = array_merge( $ids, array_map( 'intval', $m[1] ) );
+		$meta = (array) $c['meta'];
+		if ( ! empty( $meta['_thumbnail_id'] ) ) {
+			$ids[] = (int) $meta['_thumbnail_id'];
+		}
+	}
+	return array_values( array_unique( array_filter( $ids ) ) );
+}
+
+/** Les blocs présents dans les contenus exportés : titre, rôle et réglages possibles (avec leur valeur par défaut). */
+function schiesser_ex_catalogue_blocs( array $contenus ) {
+	$noms = array();
+	foreach ( $contenus as $c ) {
+		preg_match_all( '#<!-- wp:([a-z0-9-]+/[a-z0-9-]+)#', (string) $c['contenu'], $m );
+		$noms = array_merge( $noms, $m[1] );
+	}
+	$noms = array_unique( $noms );
+	sort( $noms );
+	$out = array();
+	foreach ( $noms as $nom ) {
+		$type = WP_Block_Type_Registry::get_instance()->get_registered( $nom );
+		if ( ! $type || 0 !== strpos( $nom, 'schiesser/' ) ) {
+			continue;
+		}
+		$reglages = array();
+		foreach ( (array) $type->attributes as $cle => $def ) {
+			if ( in_array( $cle, array( 'lock', 'metadata', 'className', 'align', 'apercu', 'style' ), true ) ) {
+				continue;
+			}
+			$reglages[ $cle ] = array_key_exists( 'default', $def ) ? $def['default'] : ( $def['type'] ?? '' );
+		}
+		$out[ $nom ] = array( 'titre' => (string) $type->title, 'role' => (string) $type->description, 'parent' => $type->parent ? implode( ', ', (array) $type->parent ) : '', 'reglages_et_valeurs_par_defaut' => (object) $reglages );
+	}
+	return (object) $out;
+}
+
+/** Mode d'emploi joint à chaque export, pour Claude (ou toute personne) qui prépare un fichier d'import. */
+function schiesser_ex_mode_emploi() {
+	return array(
+		'Ce fichier est un export du site WordPress de la Confiserie Schiesser (thème « Schiesser », fait sur mesure), créé par l’extension « Schiesser · Export et import du site ». Il sert à préparer des changements qui seront réimportés sur le site.',
+		'RÉSULTAT ATTENDU : un fichier JSON au même format, avec seulement ce qui change : {"format":"schiesser-export","version":1,"contenus":[...],"options":{...}}. Nom conseillé : schiesser-import-AAAA-MM-JJ.json. Joindre un résumé des changements en français. Ne pas renvoyer les champs en lecture seule : apercu_html, lien, traductions, blocs, mode_emploi_pour_claude.',
+		'CONTENUS : pour chaque contenu modifié, garder ID, type, titre, langue et modifie_le TELS QUELS (modifie_le permet à l’import de repérer une page modifiée sur le site depuis l’export : elle est alors laissée telle quelle), puis donner les champs changés : contenu, titre, extrait, slug, statut, ordre, meta, termes. Un champ absent ne change pas.',
+		'LANGUES : le site existe en allemand (langue principale, « de »), français (« fr ») et anglais (« en ») ; chaque langue est une page à part, reliée aux autres (champ traductions). Sauf demande contraire, faire le même changement dans les trois langues, en traduisant les textes.',
+		'BLOCS : le champ contenu contient des blocs WordPress. Les blocs du thème s’écrivent <!-- wp:schiesser/nom {"réglage":"valeur"} /--> ou, s’ils ont des éléments dedans, <!-- wp:schiesser/nom {...} --> ... <!-- /wp:schiesser/nom -->. Leurs textes sont dans les réglages JSON. La liste « blocs » donne, pour chaque bloc présent, son rôle et ses réglages avec leur valeur par défaut. Modifier les réglages, sans toucher au reste du texte.',
+		'ÉCRITURE DES RÉGLAGES : JSON compact (sans espaces), accents tels quels, et dans les valeurs : < devient <, > devient >, & devient &, un guillemet devient ", -- devient -- (comme le fait WordPress). Un réglage absent prend sa valeur par défaut : pour vider un texte (par exemple supprimer un bouton), mettre "" au lieu de retirer la clé.',
+		'ASTUCES DU THÈME : masquer une section sans la supprimer : "afficherDu":"2099-12-31T00:00" (retirer la clé pour la réafficher). Fond d’une section : "fond" = papier, clair, alterne, sable ou sombre (vert sapin). Un bouton dont le texte est vide n’apparaît pas. Les numéros de chapitre (réglage numero) ne sont plus affichés par le thème. Liens : adresses complètes du site (voir le champ lien des pages).',
+		'IMAGES : un bloc montre une image par imageId (numéro du média), imageUrl et imageAlt. Utiliser un média de la liste « medias ». Une nouvelle photo ne peut pas venir de ce fichier : la personne l’ajoute d’abord dans la Médiathèque, puis donne son numéro ou son nom de fichier, ou refait un export.',
+		'APPARENCE SUR TOUT LE SITE (couleur, espacement, élément à cacher partout…) : utiliser le CSS personnalisé, dans options.schiesser_charte.css_perso. Renvoyer {"options":{"schiesser_charte":{"css_perso":"…"}}} avec le CSS existant suivi des ajouts : les autres réglages de la charte ne bougent pas. Les classes à viser se lisent dans apercu_html (page exportée seule). Couleurs de la charte en variables CSS : var(--vert) vert sapin #174633, var(--dark) chocolat #271B12, var(--mint) beige #E4D3B4, var(--paper) crème #F1EADE, var(--paper-deep) sable #E4D8C3, var(--ink) titres, var(--text) texte. Commenter chaque ajout (/* … */) en français.',
+		'RÉGLAGES : seuls les réglages dont le nom commence par schiesser, rank-math-options- et quelques réglages WordPress (nom du site, page d’accueil…) sont acceptés. Pour un réglage en tableau, ne donner que les clés à changer : elles sont fusionnées avec l’existant. Ne jamais modifier une valeur ***masqué*** (clé secrète) : elle est toujours conservée.',
+		'AUTRES OPÉRATIONS : supprimer un contenu : {"ID":123,"supprimer":true} (il va à la corbeille). Créer un contenu : sans ID, avec type, titre, statut, contenu, langue et traduction_de (ID de la version allemande). Une méta à null est supprimée. Référencement Rank Math : méta rank_math_title, rank_math_description, rank_math_focus_keyword (titre 50 à 60 caractères, description 140 à 160).',
+		'LIMITES : ce fichier ne change pas le fonctionnement du thème (nouveau type de bloc, PHP, PDF de la carte du Tea Room, logo). Si la demande l’exige, le dire clairement : il faut une mise à jour du thème par le développeur.',
+		'POUR LA PERSONNE QUI IMPORTE : Outils → Export Schiesser → « Importer un fichier modifié » → vérifier l’aperçu → « Appliquer ». En cas de souci : « Annuler le dernier import ». Puis vider le cache (Réglages → WP Super Cache → Supprimer le cache).',
+		'AVANT DE RENDRE LE FICHIER : vérifier que le JSON est valide, que chaque bloc modifié s’ouvre et se ferme correctement, et que seuls les réglages voulus changent.',
+	);
+}
+
+function schiesser_ex_donnees( $portee = 'tout' ) {
 	global $wpdb;
 	@set_time_limit( 300 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+	$portees = schiesser_ex_portees();
+	$portee  = isset( $portees[ $portee ] ) ? $portee : 'tout';
+	$tout    = 'tout' === $portee;
 
 	$langues = array();
 	if ( function_exists( 'pll_languages_list' ) ) {
@@ -167,21 +284,35 @@ function schiesser_ex_donnees() {
 	$theme = wp_get_theme();
 
 	// Pages, produits, carte du Tea Room, menus, blocs réutilisables…
-	$types = array_values( array_filter( get_post_types(), 'schiesser_ex_type_exporte' ) );
-	$q     = new WP_Query( array(
-		'post_type'      => $types,
+	$args = array(
+		'post_type'      => array_values( array_filter( get_post_types(), 'schiesser_ex_type_exporte' ) ),
 		'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future' ),
 		'posts_per_page' => -1,
 		'orderby'        => array( 'type' => 'ASC', 'ID' => 'ASC' ),
 		'no_found_rows'  => true,
 		'lang'           => '', // Polylang : toutes les langues
-	) );
-	$contenus = array_map( 'schiesser_ex_contenu', $q->posts );
+	);
+	if ( 0 === strpos( $portee, 'page:' ) ) {
+		$id                = (int) substr( $portee, 5 );
+		$args['post_type'] = 'page';
+		$args['post__in']  = array_values( schiesser_ex_polylang() ? ( pll_get_post_translations( $id ) ?: array( $id ) ) : array( $id ) );
+	} elseif ( 0 === strpos( $portee, 'type:' ) ) {
+		$args['post_type'] = substr( $portee, 5 );
+	}
+	$contenus = 'reglages' === $portee ? array() : array_map( 'schiesser_ex_contenu', ( new WP_Query( $args ) )->posts );
+	if ( 0 === strpos( $portee, 'page:' ) ) {
+		foreach ( $contenus as $k => $c ) {
+			$contenus[ $k ]['apercu_html'] = schiesser_ex_apercu_html( get_post( $c['ID'] ) ); // lecture seule
+		}
+	}
 
 	// Rubriques, catégories, menus.
 	$taxonomies = array();
+	$garder     = $tout ? null : array_unique( array_merge( array(), ...array_map( function ( $c ) {
+		return array_keys( (array) $c['termes'] );
+	}, $contenus ?: array( array( 'termes' => array() ) ) ) ) );
 	foreach ( get_taxonomies() as $tax ) {
-		if ( ! schiesser_ex_taxonomie_exportee( $tax ) ) {
+		if ( ! schiesser_ex_taxonomie_exportee( $tax ) || ( null !== $garder && ! in_array( $tax, $garder, true ) ) || ( 0 === strpos( $portee, 'page:' ) ) ) {
 			continue;
 		}
 		$termes = get_terms( array( 'taxonomy' => $tax, 'hide_empty' => false, 'orderby' => 'term_id', 'lang' => '' ) );
@@ -203,10 +334,13 @@ function schiesser_ex_donnees() {
 		}
 	}
 
-	// Médias : les informations, pas les fichiers.
+	// Médias : les informations, pas les fichiers (pour une page : ceux qu'elle montre).
 	$medias = array();
-	$q      = new WP_Query( array( 'post_type' => 'attachment', 'post_status' => array( 'inherit', 'private' ), 'posts_per_page' => -1, 'orderby' => 'ID', 'order' => 'ASC', 'no_found_rows' => true, 'lang' => '' ) );
-	foreach ( $q->posts as $m ) {
+	$margs  = array( 'post_type' => 'attachment', 'post_status' => array( 'inherit', 'private' ), 'posts_per_page' => -1, 'orderby' => 'ID', 'order' => 'ASC', 'no_found_rows' => true, 'lang' => '' );
+	if ( ! $tout ) {
+		$margs['post__in'] = schiesser_ex_medias_cites( $contenus ) ?: array( 0 );
+	}
+	foreach ( ( new WP_Query( $margs ) )->posts as $m ) {
 		$info     = wp_get_attachment_metadata( $m->ID );
 		$medias[] = array(
 			'ID'          => $m->ID,
@@ -225,22 +359,27 @@ function schiesser_ex_donnees() {
 		);
 	}
 
-	// Réglages.
+	// Réglages (export partiel : la charte, avec le CSS personnalisé, et les réglages de la maison).
 	$noms = $wpdb->get_col( "SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE 'schiesser%' OR option_name LIKE 'rank-math-options-%' ORDER BY option_name" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-	$noms = array_merge( array( 'blogname', 'blogdescription', 'show_on_front', 'page_on_front', 'page_for_posts', 'permalink_structure', 'WPLANG', 'timezone_string', 'date_format', 'time_format', 'start_of_week', 'site_icon', 'sticky_posts', 'polylang' ), $noms );
+	$noms = $tout || 'reglages' === $portee ? array_merge( array( 'blogname', 'blogdescription', 'show_on_front', 'page_on_front', 'page_for_posts', 'permalink_structure', 'WPLANG', 'timezone_string', 'date_format', 'time_format', 'start_of_week', 'site_icon', 'sticky_posts', 'polylang' ), $noms ) : array( 'schiesser_charte', 'schiesser_reglages' );
 	$options = array();
 	foreach ( array_unique( $noms ) as $nom ) {
 		if ( schiesser_ex_option_exportee( $nom ) && false !== get_option( $nom, false ) ) {
 			$options[ $nom ] = schiesser_ex_masquer( get_option( $nom ), $nom );
 		}
 	}
+	// Charte jamais enregistrée : ses valeurs d'origine, pour que le CSS personnalisé y figure.
+	if ( ! isset( $options['schiesser_charte'] ) && function_exists( 'schiesser_charte' ) ) {
+		$options['schiesser_charte'] = schiesser_ex_masquer( schiesser_charte(), 'schiesser_charte' );
+	}
 
-	return array(
-		'format'      => SCHIESSER_EX_FORMAT,
-		'version'     => 1,
-		'lisez_moi'   => 'Export complet du site. Pour un import : garder ce format, avec seulement les éléments à changer si on le souhaite. Contenus et médias par ID ; sans ID (ou "ID": 0) un contenu est créé ; "supprimer": true le met à la corbeille ; une méta à null est supprimée. Les valeurs ***masqué*** ne sont jamais modifiées.',
-		'genere_le'   => gmdate( 'Y-m-d H:i:s' ),
-		'site'        => array(
+	$d = array(
+		'format'                  => SCHIESSER_EX_FORMAT,
+		'version'                 => 1,
+		'portee'                  => $portees[ $portee ],
+		'genere_le'               => gmdate( 'Y-m-d H:i:s' ),
+		'mode_emploi_pour_claude' => schiesser_ex_mode_emploi(),
+		'site'                    => array(
 			'nom'        => get_bloginfo( 'name' ),
 			'adresse'    => home_url( '/' ),
 			'wordpress'  => get_bloginfo( 'version' ),
@@ -249,12 +388,17 @@ function schiesser_ex_donnees() {
 			'extensions' => $extensions,
 			'langues'    => $langues,
 		),
-		'options'     => (object) $options,
-		'theme_mods'  => (object) schiesser_ex_masquer( (array) get_theme_mods() ),
-		'taxonomies'  => (object) $taxonomies,
-		'contenus'    => $contenus,
-		'medias'      => $medias,
+		'options'                 => (object) $options,
+		'theme_mods'              => (object) ( $tout ? schiesser_ex_masquer( (array) get_theme_mods() ) : array() ),
+		'taxonomies'              => (object) $taxonomies,
+		'contenus'                => $contenus,
+		'medias'                  => $medias,
+		'blocs'                   => schiesser_ex_catalogue_blocs( $contenus ),
 	);
+	if ( ! $tout ) {
+		unset( $d['theme_mods'] );
+	}
+	return $d;
 }
 
 /* ------------------------------------------------------------------ */
@@ -459,6 +603,10 @@ function schiesser_ex_plan( array $d ) {
 		}
 		$actuel = get_option( $nom, null );
 		$v      = schiesser_ex_demasquer( is_object( $v ) ? json_decode( wp_json_encode( $v ), true ) : $v, $actuel );
+		// Réglage en tableau : les clés données sont fusionnées avec l'existant (les autres ne bougent pas).
+		if ( is_array( $actuel ) && is_array( $v ) && $v && array_keys( $v ) !== range( 0, count( $v ) - 1 ) ) {
+			$v = array_replace( $actuel, $v );
+		}
 		if ( null === $actuel || ! schiesser_ex_egal( $actuel, $v ) ) {
 			$ops[] = array( 'genre' => 'option', 'nom' => $nom, 'valeur' => $v, 'objet' => 'Réglage ' . $nom, 'details' => schiesser_ex_details_valeur( $actuel, $v ) );
 		}
@@ -760,10 +908,12 @@ function schiesser_ex_verifier( $action ) {
 
 add_action( 'admin_post_schiesser_ex_exporter', function () {
 	schiesser_ex_verifier( 'schiesser_ex_exporter' );
-	$json = wp_json_encode( schiesser_ex_donnees(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE );
+	$portee = sanitize_text_field( wp_unslash( $_POST['portee'] ?? 'tout' ) ); // phpcs:ignore WordPress.Security.NonceVerification
+	$json   = wp_json_encode( schiesser_ex_donnees( $portee ), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE );
+	$suffixe = 'tout' === $portee ? '' : '-' . sanitize_title( 0 === strpos( $portee, 'page:' ) ? get_post_field( 'post_name', (int) substr( $portee, 5 ) ) : str_replace( array( 'type:', 'schiesser_' ), '', $portee ) );
 	nocache_headers();
 	header( 'Content-Type: application/json; charset=utf-8' );
-	header( 'Content-Disposition: attachment; filename="schiesser-export-' . wp_date( 'Y-m-d-Hi' ) . '.json"' );
+	header( 'Content-Disposition: attachment; filename="schiesser-export' . $suffixe . '-' . wp_date( 'Y-m-d-Hi' ) . '.json"' );
 	header( 'Content-Length: ' . strlen( $json ) );
 	echo $json; // phpcs:ignore WordPress.Security.EscapeOutput
 	exit;
@@ -900,8 +1050,18 @@ function schiesser_ex_page() {
 		?>
 		<div class="sx-carte">
 			<h2>1. Exporter le site</h2>
-			<p>Un fichier JSON avec tout le contenu : pages (blocs compris) dans les trois langues, produits de la boutique, carte du Tea Room, rubriques, menus, informations des médias (sans les fichiers), réglages du thème, de Polylang et de Rank Math. Les comptes, les messages reçus et les clés secrètes ne sont pas exportés.</p>
-			<?php schiesser_ex_bouton( 'schiesser_ex_exporter', 'Télécharger l’export complet', 'button button-primary' ); ?>
+			<p>Un fichier JSON lisible par Claude, avec son mode d’emploi : pages (blocs compris) dans les trois langues, produits, carte du Tea Room, informations des médias (sans les fichiers) et réglages. Pour demander un changement à Claude, exportez seulement la page concernée : le fichier est petit et contient aussi l’aperçu HTML de la page, utile pour les retouches de style. Les comptes, les messages reçus et les clés secrètes ne sont jamais exportés.</p>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<?php wp_nonce_field( 'schiesser_ex_exporter' ); ?>
+				<input type="hidden" name="action" value="schiesser_ex_exporter">
+				<label for="sx-portee" class="screen-reader-text">Partie du site à exporter</label>
+				<select name="portee" id="sx-portee" style="min-width:320px;max-width:100%">
+					<?php foreach ( schiesser_ex_portees() as $cle => $nom ) : ?>
+						<option value="<?php echo esc_attr( $cle ); ?>"><?php echo esc_html( $nom ); ?></option>
+					<?php endforeach; ?>
+				</select>
+				<button class="button button-primary">Télécharger l’export</button>
+			</form>
 		</div>
 		<div class="sx-carte">
 			<h2>2. Importer un fichier modifié</h2>
