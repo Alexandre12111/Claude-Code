@@ -2626,3 +2626,16 @@ p,.x-fd,.note{text-wrap:pretty}
 /* ---------- Grande photo : une phrase courte tient sur une ligne ---------- */
 @media(min-width:1100px){.hero-sub--ligne{max-width:none;white-space:nowrap}}
 .asc-floor .fk{padding:0;background:none;box-shadow:none;color:var(--mint)}
+
+/* ==================================================================
+   VERSION 0.23 : grande photo sans petit titre, cartes alignées
+   ================================================================== */
+
+/* « Weiter im Haus » : les textes des trois cartes commencent à la même hauteur, sous la flèche */
+.ml-carte{padding-top:76px}
+.ml-k{margin-top:0}
+
+/* Introduction (accroche et texte) sur fond vert sapin : textes clairs */
+.bg-ink .asc-intro .lead{color:var(--on-dark);border-left-color:var(--mint)}
+.bg-ink .asc-intro .body,.bg-ink .asc-intro .body p{color:var(--on-dark-2)}
+.bg-ink .asc-intro .body a:not(.btn){color:var(--mint)}

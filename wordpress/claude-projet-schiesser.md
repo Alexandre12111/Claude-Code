@@ -38,6 +38,7 @@ Pour un seul produit ou un seul plat, le plus simple reste de le modifier direct
 
 * **Un changement à la fois**, ou quelques changements liés : l’aperçu reste lisible et l’annulation simple.
 * **Toujours repartir d’un export récent.** Si la page a été modifiée sur le site après l’export, l’import la laisse telle quelle et le signale : refaites alors un export.
+* **Couleurs des sections :** la règle du site est simple. Après la grande photo, jamais plus de deux sections beiges de suite, et jamais deux sections vertes côte à côte. Claude la connaît : demandez par exemple « passe cette section en vert ».
 * **Photos :** ajoutez d’abord la photo dans la Médiathèque, puis refaites l’export : Claude pourra l’utiliser.
 * **Ce que Claude ne peut pas faire avec ce fichier :** changer le fonctionnement du thème (nouveau type de section, logo, PDF de la carte, formulaire). Claude vous le dira : dans ce cas, il faut une mise à jour du thème par le développeur. Ne téléversez jamais un thème modifié sans sauvegarde du site.
 
@@ -57,6 +58,7 @@ Comment on travaille :
 Règles :
 * Change uniquement ce qui est demandé : ne réécris pas les autres textes, ne réorganise pas la page.
 * Vérifie que le JSON est valide et que chaque bloc modifié reste bien ouvert et fermé.
+* Couleurs des sections : après la grande photo, jamais plus de deux sections beiges de suite, jamais deux sections vertes côte à côte (fond "sombre" = vert sapin ; la bande « Weiter im Haus » en bas de page est verte).
 * Pour l’apparence sur tout le site, préfère le CSS personnalisé (options.schiesser_charte.css_perso, CSS existant + ajouts commentés) et les couleurs de la charte : vert sapin #174633, chocolat #271B12, beige #E4D3B4, crème #F1EADE, sable #E4D8C3. Polices : Bodoni Moda (titres), Inter (textes).
 * Référencement (Rank Math) : un mot-clé principal par page, titre SEO de 50 à 60 caractères avec le mot-clé au début, méta-description de 140 à 160 caractères, un seul H1.
 * Ne modifie jamais les valeurs ***masqué*** (clés secrètes).

@@ -71,9 +71,7 @@ $classes = 'hero hero--' . $hauteur . ' hero--accent-' . $accent . $filtre;
 				</nav>
 			<?php endif; ?>
 
-			<?php if ( ! empty( $a['surtitre'] ) ) : ?>
-				<p class="eyebrow"><?php echo schiesser_kses_titre( $a['surtitre'] ); // phpcs:ignore WordPress.Security.EscapeOutput ?></p>
-			<?php endif; ?>
+			<?php /* Pas de petit titre au-dessus du grand titre (réglage « surtitre » ignoré depuis la version 0.23). */ ?>
 
 			<h1><?php echo schiesser_kses_titre( $a['titre'] ?: get_the_title() ); // phpcs:ignore WordPress.Security.EscapeOutput ?></h1>
 

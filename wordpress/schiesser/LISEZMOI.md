@@ -1,7 +1,14 @@
-# Thème Schiesser 0.22
+# Thème Schiesser 0.23
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.23 : grande photo épurée, rythme des couleurs
+
+* **Grande photo (Hero)** : plus de petit titre au-dessus du grand titre, sur toutes les pages (le réglage « surtitre » est ignoré).
+* **« Weiter im Haus »** : les textes des trois cartes commencent à la même hauteur, sous la flèche.
+* **Introduction (accroche et texte) sur fond vert** : textes clairs, lisibles.
+* **Règle des fonds** : après la grande photo, jamais plus de deux sections beiges de suite, jamais deux sections vertes côte à côte. Appliquée par le fichier d'import du 30 octobre : Confiserie (« Gut zu wissen » et « Frisch aus unserer Backstube » en vert), Besuch (« Das Haus erkennen »), Firmengeschenke (introduction et « Für eine schnelle Offerte »), dans les trois langues. Le même import traduit la description et la mention du Brownie (carte du Tea Room) restées en français sur les versions allemande et anglaise.
 
 ## Version 0.22 : demandes de la cliente (document « Website adjustments »)
 
