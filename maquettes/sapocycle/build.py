@@ -15,11 +15,11 @@ ASSETS = ROOT / "assets"
 GSAP = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
 SCROLLTRIGGER = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
 LENIS = "https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"
-FONTS = ("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700"
-         "&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700"
-         "&family=Montserrat:wght@400;500;600;700&display=swap")
+FONTS = ("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900"
+         "&family=Geist:wght@300..600&display=swap")
 
 TITLE = "Maquette SapoCycle"
+BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 DESCRIPTION = ("Recyclage des savons d'hôtel : SapoCycle collecte vos savons usagés, "
                "les fait recycler par des personnes en situation de handicap et les offre à des familles.")
 
@@ -49,7 +49,17 @@ def build() -> None:
     body = body.replace("{{LOGO_GROUP}}", logo_group())
     body = body.replace("{{ICONS}}", (SRC / "icons.html").read_text(encoding="utf-8"))
     body = body.replace("{{FILM}}", (SRC / "film.html").read_text(encoding="utf-8"))
-    body = re.sub(r"\{\{IMG:([\w-]+)\}\}", lambda m: data_uri(m.group(1)), body)
+    # Chaque photo n'est intégrée qu'une fois ; les reprises copient sa source au chargement (voir app.js).
+    seen = set()
+
+    def img(m):
+        name = m.group(1)
+        if name in seen:
+            return f'src="{BLANK}" data-same="{name}"'
+        seen.add(name)
+        return f'src="{data_uri(name)}" data-img="{name}"'
+
+    body = re.sub(r'src="\{\{IMG:([\w-]+)\}\}"', img, body)
 
     head = f"""<title>{TITLE}</title>
 <meta name="claude:viewport-fit-sides" content="cover">

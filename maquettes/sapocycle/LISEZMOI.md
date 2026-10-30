@@ -1,6 +1,24 @@
-# Maquette SapoCycle 2026, version 2
+# Maquette SapoCycle 2026, version 3
 
-Refonte de https://sapocycle.org/ pour les hôtels, dans le registre des grandes maisons (parfumerie, savonnerie de luxe) : photographie plein cadre, typographie raffinée, peu de blocs, et des visages réels.
+Refonte de https://sapocycle.org/ pour les hôtels : un site de 8 pages (Accueil, La Maison, Savoir-faire, Hôtels, Impact, Partenaires, Journal, Contact), dans un registre de maison contemporaine.
+
+Chaque page a sa propre adresse (`index.html#maison`, `#hotels`...), avec une transition plein écran entre les pages.
+
+## Typographie
+
+* Archivo, en version étendue et fine pour les titres. Sa largeur et sa graisse sont variables : les lettres du titre d'accueil se resserrent et s'épaississent sous le curseur, et le logotype du pied de page s'étire au défilement.
+* Geist pour le texte courant.
+
+## Effets
+
+* Transition de page en deux volets (bleu SapoCycle puis bleu nuit) avec le nom de la page
+* Titre d'accueil à lettres variables, vague d'ouverture
+* Survol « eau savonneuse » des photos (distorsion douce)
+* Bandeau qui accélère et s'incline avec la vitesse du défilement
+* Parcours horizontal épinglé (Savoir-faire), cartes qui s'empilent (Hôtels)
+* Curseur sur mesure, boutons magnétiques, pastille de navigation qui glisse
+* Aperçu photo qui suit le curseur dans le Journal, accordéons, frise à faire glisser
+* Simulateur d'impact et film « solide ou liquide »
 
 ## Fichiers
 
@@ -14,23 +32,7 @@ Refonte de https://sapocycle.org/ pour les hôtels, dans le registre des grandes
 
 ## Direction artistique
 
-* Ivoire, bleu nuit et bleu du logo `#0069B4` en accent. Angles nets, filets fins, aucune icône décorative.
-* Bodoni Moda pour les titres, Montserrat (police historique) pour le texte.
-* Photos documentaires de l'atelier et des familles en noir et blanc chaud, façon reportage de manufacture.
-* Animations lentes : révélation des photos, rideau ivoire entre les sections, manifeste qui s'éclaire. Trois bulles discrètes seulement, au‑dessus du savon du hero.
-
-## Parcours
-
-1. Hero : le vrai savon SapoCycle embossé
-2. Presse : Le Temps, Femina, 20 Minuten, annabelle, Brigitte
-3. Manifeste signé par la fondatrice
-4. Le geste en trois temps : la chambre, l'atelier, les familles
-5. Film « solide ou liquide »
-6. Pour la planète : trois chiffres sur un lac alpin
-7. Visages : Dorothée Schiesser, le conseil, l'équipe et les artisans de WohnWerk
-8. Pour les hôtels : bénéfices, quatre étapes, labels
-9. Hygiène : citation UNICEF
-10. Formulaire de contact
+* Ivoire, bleu nuit et bleu du logo `#0069B4`. Photos documentaires de l'atelier et des familles en noir et blanc chaud.
 
 ## Crédits photo
 
@@ -42,6 +44,8 @@ Photos Unsplash, licence Unsplash gratuite (usage commercial autorisé, crédit 
 * Salle de bain minérale : Ela De Pure, https://unsplash.com/photos/HIu7A27ptE0
 * Lac de Seealpsee : Fabian Kleiser, https://unsplash.com/photos/atEGGVXWOv8
 * Mains d'enfant au lavabo : Maria Lin Kim, https://unsplash.com/photos/I3x3xn8o3G8
+* Chambre d'hôtel : Markus Winkler, https://unsplash.com/photos/zk3DLNjeObQ
+* Pains de savon empilés : Annie Spratt, https://unsplash.com/photos/cxAZxTuL7Sk
 
 ## SEO de la page d'accueil (Rank Math)
 
