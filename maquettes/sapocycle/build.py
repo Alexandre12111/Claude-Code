@@ -47,7 +47,9 @@ def build() -> None:
     js = (SRC / "app.js").read_text(encoding="utf-8")
     body = (SRC / "body.html").read_text(encoding="utf-8")
     body = body.replace("{{LOGO_GROUP}}", logo_group())
-    body = re.sub(r"\{\{IMG:(\w+)\}\}", lambda m: data_uri(m.group(1)), body)
+    body = body.replace("{{ICONS}}", (SRC / "icons.html").read_text(encoding="utf-8"))
+    body = body.replace("{{FILM}}", (SRC / "film.html").read_text(encoding="utf-8"))
+    body = re.sub(r"\{\{IMG:([\w-]+)\}\}", lambda m: data_uri(m.group(1)), body)
 
     head = f"""<title>{TITLE}</title>
 <meta name="claude:viewport-fit-sides" content="cover">

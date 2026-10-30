@@ -1,37 +1,47 @@
-# Maquette SapoCycle 2026
+# Maquette SapoCycle 2026, version 2
 
-Proposition de refonte de https://sapocycle.org/, pensée pour les hôtels : premium, immersive, centrée sur le savon, l'écologie et l'impact humain.
+Refonte de https://sapocycle.org/ pour les hôtels, dans le registre des grandes maisons (parfumerie, savonnerie de luxe) : photographie plein cadre, typographie raffinée, peu de blocs, et des visages réels.
 
 ## Fichiers
 
 | Fichier | Rôle |
 |---|---|
 | `index.html` | Maquette complète, à ouvrir dans un navigateur (images et logo intégrés) |
-| `video/sapocycle-solide-vs-liquide.mp4` | Film « solide ou liquide » exporté en 1080p, 52 s |
-| `src/body.html`, `src/styles.css`, `src/app.js` | Sources de la page |
+| `video/sapocycle-solide-vs-liquide.mp4` | Film « solide ou liquide » en 1080p, 52 s |
+| `src/body.html`, `src/styles.css`, `src/app.js`, `src/film.html` | Sources |
 | `build.py` | Régénère `index.html` et `artifact.html` : `python3 build.py` |
-| `assets/` | Logo officiel et photos du site actuel, compressées en WebP |
+| `assets/` | Photos retouchées en WebP et logo officiel |
 
-## Identité conservée
+## Direction artistique
 
-* Bleu du logo `#0069B4`, bleus du site `#0175D6` et `#52ABFF`, rose du badge 10 ans en accent.
-* Montserrat (police historique) pour le texte, Bodoni Moda pour les titres (registre palace), Comfortaa pour l'esprit arrondi du logo.
-* Signature « Bubbles saving lives », savon embossé, bulles.
+* Ivoire, bleu nuit et bleu du logo `#0069B4` en accent. Angles nets, filets fins, aucune icône décorative.
+* Bodoni Moda pour les titres, Montserrat (police historique) pour le texte.
+* Photos documentaires de l'atelier et des familles en noir et blanc chaud, façon reportage de manufacture.
+* Animations lentes : révélation des photos, rideau ivoire entre les sections, manifeste qui s'éclaire. Trois bulles discrètes seulement, au‑dessus du savon du hero.
 
-## Parcours de la page
+## Parcours
 
-1. Hero : savon 3D qui suit la souris, mousse au clic, bulles qui éclatent au survol
-2. Labels verts (Green Globe, Clef Verte, EarthCheck, myclimate, Green Sign)
-3. Manifeste qui s'allume mot à mot
-4. Parcours d'un savon en défilement horizontal, en 5 étapes
-5. Film animé « solide ou liquide » avec lecteur et chapitres, puis comparateur interactif
-6. Trois piliers : environnement, intégration sociale, action humanitaire
-7. Chiffres clés européens animés
-8. Espace hôtels : bénéfices, 4 étapes avec bac bleu qui se remplit, simulateur d'impact
-9. Ambassadeurs, hygiène et santé (UNICEF), frise 2014 à 2026, partenaires, actualités
-10. Formulaire « Rejoindre le programme »
+1. Hero : le vrai savon SapoCycle embossé
+2. Presse : Le Temps, Femina, 20 Minuten, annabelle, Brigitte
+3. Manifeste signé par la fondatrice
+4. Le geste en trois temps : la chambre, l'atelier, les familles
+5. Film « solide ou liquide »
+6. Pour la planète : trois chiffres sur un lac alpin
+7. Visages : Dorothée Schiesser, le conseil, l'équipe et les artisans de WohnWerk
+8. Pour les hôtels : bénéfices, quatre étapes, labels
+9. Hygiène : citation UNICEF
+10. Formulaire de contact
 
-Transitions « mousse » entre les sections, curseur bulle, boutons magnétiques, défilement doux. Le mode « mouvement réduit » du système est respecté.
+## Crédits photo
+
+Photos SapoCycle : hero, atelier WohnWerk, distribution, enfants, portraits (site sapocycle.org).
+
+Photos Unsplash, licence Unsplash gratuite (usage commercial autorisé, crédit apprécié) :
+
+* Salle de bain en marbre : Tsuyoshi Kozu, https://unsplash.com/photos/jC9a3X0uiBo
+* Salle de bain minérale : Ela De Pure, https://unsplash.com/photos/HIu7A27ptE0
+* Lac de Seealpsee : Fabian Kleiser, https://unsplash.com/photos/atEGGVXWOv8
+* Mains d'enfant au lavabo : Maria Lin Kim, https://unsplash.com/photos/I3x3xn8o3G8
 
 ## SEO de la page d'accueil (Rank Math)
 
@@ -42,12 +52,10 @@ Transitions « mousse » entre les sections, curseur bulle, boutons magnétiques
 | SEO Title | Recyclage savon hôtel \| Fondation SapoCycle (44 caractères) |
 | Meta description | Recyclage des savons d'hôtel : SapoCycle collecte vos savons usagés, les fait recycler par des personnes en situation de handicap et les offre à des familles. |
 | H1 | Le recyclage des savons d'hôtel qui sauve des vies. |
-| Schema | NGO (déjà intégré en JSON-LD), FAQ et Service sur la future page Hôtels |
-| Slug page hôtels | /recyclage-savon-hotel/ |
+| Schema | NGO (intégré en JSON-LD), FAQ et Service sur la future page Hôtels |
 
-## Points à valider avec SapoCycle
+## À prévoir pour la mise en ligne
 
-* Chiffres du film et du comparateur : étude ETH Zurich (Koehler et Wildbolz, 2009), article Femina 2025, étude FHNW 2016.
-* Hypothèses du simulateur (7 g récupérables par nuitée occupée).
-* Remplacer les photos de 2016 par un shooting récent de l'atelier et des savons.
-* Traductions DE et EN, et sélecteur de pays Suisse, France, Allemagne.
+* Un shooting professionnel à l'atelier WohnWerk et chez un hôtel partenaire : c'est ce qui fera la différence finale.
+* Valider les chiffres du film (ETH Zurich 2009, Femina 2025, FHNW 2016) et l'accord des personnes photographiées.
+* Traductions DE et EN.

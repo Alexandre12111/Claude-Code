@@ -1,875 +1,297 @@
 <a class="skip" href="#main">Aller au contenu</a>
 
-<!-- Sprites : logo officiel et icônes -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
   <defs>
     {{LOGO_GROUP}}
-    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
-    <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12-7.5a1 1 0 0 0 0-1.72l-12-7.5A1 1 0 0 0 7 4.5z"/></symbol>
-    <symbol id="i-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1.2"/><rect x="14" y="4" width="4" height="16" rx="1.2"/></symbol>
-    <symbol id="i-restart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></symbol>
-    <symbol id="i-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></symbol>
-    <symbol id="i-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></symbol>
-    <symbol id="i-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></symbol>
-    <symbol id="i-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-    <symbol id="i-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
-    <symbol id="i-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></symbol>
-    <symbol id="i-recycle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.8a1.8 1.8 0 0 1-1.57-.88 1.8 1.8 0 0 1 0-1.78L7.2 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.56-.89 1.8 1.8 0 0 0 0-1.78l-1.23-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.3 13.6 7.2 9.5 3.1 10.6"/><path d="m9.34 5.81 1.1-1.89A1.8 1.8 0 0 1 12 3a1.8 1.8 0 0 1 1.53.89l3.94 6.84"/><path d="m13.38 9.63 4.1 1.1 1.1-4.1"/></symbol>
-    <symbol id="i-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.48 12.89 17 22l-5-3-5 3 1.52-9.11"/></symbol>
-    <symbol id="i-megaphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
-    <symbol id="i-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></symbol>
-    <symbol id="i-hotel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01"/></symbol>
-    <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
-    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
-    <symbol id="i-soap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="15" height="9" rx="4.5"/><circle cx="17" cy="6" r="2.5"/><circle cx="12" cy="5" r="1.5"/><circle cx="20.5" cy="10" r="1.2"/></symbol>
-    <symbol id="i-bottle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2h5"/><path d="M14 2v2.5h3"/><path d="M10 4.5h4V8"/><path d="M8 8h8a2 2 0 0 1 2 2v9a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3v-9a2 2 0 0 1 2-2z"/><path d="M6 13h12"/></symbol>
-    <symbol id="i-linkedin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></symbol>
-    <symbol id="i-facebook" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></symbol>
-    <symbol id="i-instagram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><path d="M17.5 6.5h.01"/></symbol>
-    <symbol id="i-drag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m18 8 4 4-4 4"/><path d="m6 8-4 4 4 4"/><path d="M2 12h20"/></symbol>
+    {{ICONS}}
   </defs>
 </svg>
 
-<!-- Préchargement -->
 <div class="loader" aria-hidden="true">
-  <div class="loader__inner">
-    <svg class="loader__logo" viewBox="0 0 348.4 372"><use href="#logo-g"/></svg>
-    <span class="loader__line">Bubbles saving lives</span>
-    <span class="loader__bar"><span></span></span>
+  <div>
+    <svg viewBox="0 0 348.4 372"><use href="#logo-g"/></svg>
+    <span class="loader__line"><span></span></span>
   </div>
 </div>
-
-<!-- Transition mousse entre les sections -->
-<div class="foam" aria-hidden="true"></div>
-
-<!-- Curseur bulle (pointeur fin uniquement) -->
-<div class="cursor" aria-hidden="true"><span class="bubble"></span><span class="cursor__label">Voir</span></div>
+<div class="curtain" aria-hidden="true"><svg viewBox="0 0 348.4 372"><use href="#logo-g"/></svg></div>
 
 <!-- Navigation -->
 <header class="nav" id="nav">
   <div class="nav__in">
-    <a class="nav__brand" href="#top" aria-label="SapoCycle, retour en haut de page">
-      <svg viewBox="0 0 348.4 372" aria-hidden="true"><use href="#logo-g"/></svg>
-      <span>Bubbles<br>saving lives</span>
-    </a>
     <ul class="nav__links">
-      <li><a href="#parcours">Notre approche</a></li>
+      <li><a href="#maison">La Maison</a></li>
+      <li><a href="#geste">Le geste</a></li>
       <li><a href="#solide-liquide">Solide ou liquide</a></li>
-      <li><a href="#impact">Impact</a></li>
-      <li><a href="#hotels">Hôtels</a></li>
-      <li><a href="#partenaires">Partenaires</a></li>
-      <li><a href="#actualites">Actualités</a></li>
+      <li><a href="#visages">Visages</a></li>
     </ul>
-    <div class="nav__tools">
-      <div class="lang" role="group" aria-label="Langue">
-        <button type="button" aria-pressed="true">FR</button>
-        <button type="button" aria-pressed="false">DE</button>
-        <button type="button" aria-pressed="false">EN</button>
-      </div>
-      <a class="btn magnetic" href="#contact">Rejoindre le programme</a>
-      <button class="burger" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Ouvrir le menu"><span></span></button>
+    <button class="nav__menu" type="button" aria-expanded="false" aria-controls="mobile-menu">Menu</button>
+    <a class="nav__brand" href="#top" aria-label="SapoCycle, retour en haut de page"><svg viewBox="0 0 348.4 372" aria-hidden="true"><use href="#logo-g"/></svg></a>
+    <div class="nav__right">
+      <button class="nav__lang" type="button" aria-label="Changer de langue">FR · DE · EN</button>
+      <a class="nav__cta" href="#hotels">Pour les hôtels</a>
     </div>
   </div>
-  <div class="nav__progress" aria-hidden="true"><span></span></div>
 </header>
 
 <nav class="mobile-menu" id="mobile-menu" aria-label="Menu principal">
   <ul>
-    <li><a href="#parcours">Notre approche</a></li>
+    <li><a href="#maison">La Maison</a></li>
+    <li><a href="#geste">Le geste</a></li>
     <li><a href="#solide-liquide">Solide ou liquide</a></li>
-    <li><a href="#impact">Impact</a></li>
-    <li><a href="#hotels">Hôtels</a></li>
-    <li><a href="#partenaires">Partenaires</a></li>
-    <li><a href="#actualites">Actualités</a></li>
+    <li><a href="#visages">Visages</a></li>
+    <li><a href="#hotels">Pour les hôtels</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <p class="src">Suisse · France · Allemagne</p>
+  <span class="label">Suisse · France · Allemagne</span>
 </nav>
 
 <main id="main">
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="top" aria-labelledby="hero-title">
-  <canvas class="hero__canvas" id="heroBubbles" aria-hidden="true"></canvas>
-  <div class="wrap hero__grid">
+  <div class="hero__media" data-hero-media>
+    <img src="{{IMG:hero-savon}}" alt="Savons SapoCycle recyclés, frappés du logo, posés sur un fond blanc" width="2400" height="1096" fetchpriority="high">
+  </div>
+  <div class="fizz" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap hero__in">
     <div class="hero__copy">
-      <span class="eyebrow" data-hero>Fondation à but non lucratif · depuis 2014</span>
-      <h1 class="hero__title split" id="hero-title" data-hero-title>Le recyclage des savons d'hôtel qui <em>sauve des vies.</em></h1>
-      <p class="hero__lead" data-hero>SapoCycle collecte les savons entamés de votre hôtel. Des personnes en situation de handicap les transforment en savons neufs, sous contrôle bactériologique strict. Ils sont ensuite offerts à des familles qui en manquent.</p>
+      <span class="label" data-hero>Fondation SapoCycle · Bâle · depuis 2014</span>
+      <h1 class="split" id="hero-title" data-hero-title>Le recyclage des savons d'hôtel <em>qui sauve des vies.</em></h1>
+      <p class="hero__lead" data-hero>Nous redonnons vie aux savons entamés des plus beaux hôtels d'Europe. Refaçonnés à la main par des personnes en situation de handicap, ils sont offerts à des familles qui en manquent.</p>
       <div class="hero__cta" data-hero>
-        <a class="btn magnetic" href="#contact" data-cursor="Go">Devenir hôtel membre <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        <a class="btn btn--ghost magnetic" href="#solide-liquide" data-cursor="Film"><svg aria-hidden="true"><use href="#i-play"/></svg> Voir le film</a>
-      </div>
-      <ul class="hero__facts" data-hero>
-        <li><strong class="num">299</strong><span>hôtels participants</span></li>
-        <li><strong class="num">420 000</strong><span>savons redistribués</span></li>
-        <li><strong class="num">130 t</strong><span>de CO₂ économisées</span></li>
-      </ul>
-    </div>
-
-    <div class="hero__visual">
-      <div class="soap-stage" id="soapStage" role="button" tabindex="0" aria-label="Savon SapoCycle recyclé. Cliquer pour faire mousser." data-cursor="Mousser">
-        <div class="soap-halo"></div>
-        <div class="soap-shadow"></div>
-        <div class="soap-float" id="soapFloat">
-          <div class="soap" id="soap">
-            <div class="soap__edge"></div>
-            <div class="soap__body"></div>
-            <div class="soap__face"></div>
-            <div class="soap__mark" aria-hidden="true">
-              <span class="soap__word">sapo</span>
-              <span class="soap__word">cycle</span>
-              <svg class="soap__smile" viewBox="0 0 100 100" fill="none" stroke="#E7E2D9" stroke-width="4" stroke-linecap="round">
-                <circle cx="56" cy="62" r="26"/><circle cx="47" cy="57" r="2.6" fill="#E7E2D9"/><circle cx="64" cy="57" r="2.6" fill="#E7E2D9"/><path d="M45 69c6 6 16 6 22 0"/>
-                <circle cx="34" cy="22" r="9"/><circle cx="50" cy="12" r="6"/><circle cx="62" cy="26" r="5"/><circle cx="76" cy="33" r="4"/>
-              </svg>
-            </div>
-            <div class="soap__sheen"></div>
-          </div>
-        </div>
-        <span class="bubble" style="width:58px;height:58px;left:14%;top:20%" data-float="1"></span>
-        <span class="bubble" style="width:26px;height:26px;left:24%;top:12%" data-float="2"></span>
-        <span class="bubble" style="width:90px;height:90px;right:9%;bottom:20%" data-float="3"></span>
-        <span class="bubble" style="width:34px;height:34px;right:22%;bottom:12%" data-float="4"></span>
-        <span class="soap-hint">Cliquez pour faire mousser</span>
-      </div>
-      <div class="badge10" aria-label="SapoCycle fête ses 10 ans">
-        <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="badgeCircle" d="M50,50 m-40,0 a40,40 0 1,1 80,0 a40,40 0 1,1 -80,0"/></defs><text><textPath href="#badgeCircle">BUBBLES SAVING LIVES · 10 ANS ·</textPath></text></svg>
-        <b>10<small>ANS</small></b>
+        <a class="btn" href="#contact">Devenir hôtel membre</a>
+        <a class="link" href="#solide-liquide"><svg aria-hidden="true"><use href="#i-play"/></svg>Voir le film</a>
       </div>
     </div>
   </div>
-  <a class="scroll-hint" href="#mission"><i></i>Découvrir</a>
+  <div class="hero__foot">
+    <a class="hero__scroll" href="#maison"><i></i>Découvrir</a>
+    <p class="hero__caption">Savon SapoCycle<br>refaçonné à l'atelier WohnWerk, Bâle</p>
+  </div>
 </section>
 
-<!-- ============ LABELS ============ -->
-<section class="marquee" aria-label="Labels et réseaux hôteliers qui soutiennent SapoCycle">
-  <span class="marquee__label">Recommandé par les labels verts de l'hôtellerie</span>
-  <div class="marquee__track">
-    <div class="marquee__group">
-      <span class="marquee__item">Green Globe</span><span class="marquee__item">Clef Verte</span><span class="marquee__item">EarthCheck</span><span class="marquee__item">myclimate</span><span class="marquee__item">Green Sign</span><span class="marquee__item">Swiss Deluxe Hotels</span><span class="marquee__item">HotellerieSuisse</span>
-    </div>
-    <div class="marquee__group" aria-hidden="true">
-      <span class="marquee__item">Green Globe</span><span class="marquee__item">Clef Verte</span><span class="marquee__item">EarthCheck</span><span class="marquee__item">myclimate</span><span class="marquee__item">Green Sign</span><span class="marquee__item">Swiss Deluxe Hotels</span><span class="marquee__item">HotellerieSuisse</span>
-    </div>
+<!-- ============ PRESSE ============ -->
+<section class="press" aria-label="Ils parlent de SapoCycle">
+  <div class="wrap press__in">
+    <span class="label">Ils en parlent</span>
+    <ul>
+      <li>Le Temps</li><li>Femina</li><li>20 Minuten</li><li>annabelle</li><li>Brigitte</li>
+    </ul>
   </div>
 </section>
 
 <!-- ============ MANIFESTE ============ -->
-<section class="section manifesto" id="mission" aria-labelledby="mission-title">
-  <span class="bubble" style="width:140px;height:140px;right:6%;top:12%" data-parallax="-30"></span>
-  <span class="bubble" style="width:46px;height:46px;right:16%;top:34%" data-parallax="-60"></span>
+<section class="section manifesto" id="maison" aria-labelledby="maison-title">
   <div class="wrap">
-    <span class="eyebrow">Notre mission</span>
-    <h2 class="visually-hidden" id="mission-title">Pourquoi SapoCycle existe</h2>
-    <p class="manifesto__text" id="manifesto" style="margin-top:28px">Chaque jour, des millions de savons d'hôtel à peine utilisés partent à la décharge ou à l'incinération. Ils pourraient laver des mains, protéger des enfants et créer des emplois. <em>Chez SapoCycle, chaque savon a une seconde vie.</em></p>
-    <div class="manifesto__foot">
-      <div class="manifesto__sig">
-        <span><strong>Dorothée Schiesser</strong>Fondatrice et présidente de SapoCycle</span>
-      </div>
-      <a class="link-arrow" href="#parcours">Suivre le parcours d'un savon <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    <span class="label" id="maison-title">La Maison</span>
+    <h2 class="manifesto__text" id="manifesto">Chaque jour, des millions de savons à peine entamés quittent les chambres d'hôtel pour la décharge. <em>Nous leur offrons une seconde vie, et à d'autres, une vie plus digne.</em></h2>
+    <div class="manifesto__sig">
+      <strong>Dorothée Schiesser</strong>
+      <span>Fondatrice et présidente</span>
     </div>
   </div>
 </section>
 
-<!-- ============ PARCOURS ============ -->
-<section class="journey" id="parcours" aria-labelledby="parcours-title">
-  <div class="wrap journey__head">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Notre approche</span>
-        <h2 class="h2 split" id="parcours-title">Le parcours d'un savon, <em>de la chambre aux familles.</em></h2>
+<!-- ============ LE GESTE ============ -->
+<section class="section ivory" id="geste" aria-labelledby="geste-title">
+  <div class="wrap">
+    <div class="head">
+      <div class="head__title">
+        <span class="label">Le geste SapoCycle</span>
+        <h2 class="h2 split" id="geste-title">Trois temps, <em>une seconde vie.</em></h2>
       </div>
-      <p class="lead">Un circuit court et contrôlé, pensé pour ne rien changer à l'organisation de vos équipes. Faites défiler pour suivre un savon étape par étape.</p>
+      <p class="lead">De la salle de bain de vos clients aux mains d'un enfant, un circuit court, artisanal et contrôlé.</p>
     </div>
-  </div>
 
-  <div class="journey__pin" id="journeyPin">
-    <div class="journey__progress" aria-hidden="true">
-      <div class="journey__rail"><span id="journeyFill"></span><div class="journey__dot" id="journeyDot"><span class="bubble"></span></div></div>
-      <ol class="journey__steps"><li>Chambre</li><li>Collecte</li><li>Transport</li><li>Atelier</li><li>Familles</li></ol>
-    </div>
-    <div class="journey__track" id="journeyTrack">
+    <article class="chapter">
+      <div class="chapter__media">
+        <div class="frame frame--tall reveal"><img src="{{IMG:salle-de-bain}}" alt="Salle de bain d'hôtel en marbre, baignoire sous une grande fenêtre" loading="lazy" width="1000" height="1500" data-depth></div>
+      </div>
+      <div class="chapter__copy">
+        <span class="roman">I. La chambre</span>
+        <h3 class="h3">Un savon à peine entamé <em>n'est pas un déchet.</em></h3>
+        <p>Vos clients n'en utilisent que quelques grammes. Vos équipes d'étage les déposent, secs, dans nos conteneurs bleus. Les produits d'accueil liquides et leurs flacons rejoignent eux aussi la boucle.</p>
+        <div class="chapter__detail"><span>Savons solides</span><span>Produits liquides</span><span>Flacons recyclés</span></div>
+      </div>
+    </article>
 
-      <article class="step">
-        <div class="step__copy">
-          <span class="step__n" aria-hidden="true">01</span>
-          <h3 class="h3">Dans la chambre</h3>
-          <p>Un client utilise quelques grammes de son savon puis repart. Le reste, encore parfaitement utilisable, était jusqu'ici jeté avec les déchets de la chambre.</p>
-          <ul class="step__meta"><li>Savons solides</li><li>Produits d'accueil liquides</li></ul>
-        </div>
-        <div class="step__art" aria-hidden="true">
-          <svg viewBox="0 0 400 300">
-            <ellipse cx="200" cy="222" rx="150" ry="34" fill="#FFFFFF" stroke="#0175D6" stroke-width="1.5"/>
-            <ellipse cx="200" cy="214" rx="120" ry="22" fill="#E4F0FB"/>
-            <g class="worn-soap">
-              <path d="M124 196c-8-24 10-46 42-52 30-6 66-8 94 0 26 8 34 26 26 44-8 16-38 22-80 22-46 0-78-2-82-14z" fill="#F6F3EC" stroke="#0175D6" stroke-width="1.5"/>
-              <path d="M156 168c22-9 64-12 94-3" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
-            </g>
-            <g class="mini-bubbles" fill="none" stroke="#52ABFF" stroke-width="1.5">
-              <circle cx="300" cy="120" r="14"/><circle cx="322" cy="92" r="8"/><circle cx="282" cy="86" r="5"/><circle cx="110" cy="130" r="9"/><circle cx="96" cy="104" r="5"/>
-            </g>
-          </svg>
-          <span class="tag">Un savon entamé = une ressource</span>
-        </div>
-      </article>
+    <article class="chapter chapter--rev">
+      <div class="chapter__media">
+        <div class="frame frame--wide reveal"><img src="{{IMG:atelier-sourire}}" alt="Une collaboratrice de l'atelier WohnWerk, souriante, râpe des savons usagés" loading="lazy" width="1100" height="969" data-depth></div>
+        <div class="frame inset reveal" style="aspect-ratio:4/3.3"><img src="{{IMG:atelier-decoupe}}" alt="Une collaboratrice découpe des pains de savon" loading="lazy" width="1000" height="804"></div>
+      </div>
+      <div class="chapter__copy">
+        <span class="roman">II. L'atelier</span>
+        <h3 class="h3">Des mains <em>qui redonnent forme.</em></h3>
+        <p>À Bâle, dix personnes en situation de handicap de l'atelier WohnWerk râpent, refondent et pressent chaque savon. Un savoir-faire développé avec la Haute école FHNW, sous contrôle bactériologique strict.</p>
+        <div class="chapter__detail"><span>WohnWerk, Bâle</span><span>Fait main</span><span>Contrôle bactériologique</span></div>
+      </div>
+    </article>
 
-      <article class="step">
-        <div class="step__copy">
-          <span class="step__n" aria-hidden="true">02</span>
-          <h3 class="h3">La collecte par vos équipes</h3>
-          <p>Le service d'étage dépose les savons usagés dans nos conteneurs bleus SapoCycle. Les savons doivent être secs pour éviter la moisissure, et sans sac plastique. Les produits liquides et leurs flacons sont aussi collectés.</p>
-          <ul class="step__meta"><li>Conteneurs fournis</li><li>Aucun tri complexe</li></ul>
-        </div>
-        <div class="step__art" aria-hidden="true">
-          <svg viewBox="0 0 400 340">
-            <defs>
-              <clipPath id="binClipA"><path d="M112 96h176l-14 196a16 16 0 0 1-16 15H142a16 16 0 0 1-16-15z"/></clipPath>
-              <pattern id="soapsA" width="46" height="30" patternUnits="userSpaceOnUse"><rect x="3" y="4" width="38" height="22" rx="10" fill="#F6F3EC" stroke="#D9D2C5" stroke-width="1"/></pattern>
-            </defs>
-            <path d="M112 96h176l-14 196a16 16 0 0 1-16 15H142a16 16 0 0 1-16-15z" fill="#0175D6" opacity=".14"/>
-            <g clip-path="url(#binClipA)"><rect class="bin-fill" x="100" y="150" width="200" height="170" fill="url(#soapsA)"/></g>
-            <path d="M112 96h176l-14 196a16 16 0 0 1-16 15H142a16 16 0 0 1-16-15z" fill="none" stroke="#0069B4" stroke-width="3"/>
-            <line x1="124" y1="150" x2="276" y2="150" stroke="#E9488F" stroke-width="2" stroke-dasharray="6 6"/>
-            <text x="286" y="154" font-family="Montserrat, sans-serif" font-size="13" font-weight="700" fill="#E9488F">3/4</text>
-            <rect x="98" y="74" width="204" height="26" rx="9" fill="#0069B4"/>
-            <rect x="172" y="60" width="56" height="16" rx="8" fill="none" stroke="#0069B4" stroke-width="3"/>
-            <rect x="166" y="190" width="68" height="50" rx="10" fill="#0069B4"/>
-            <text x="200" y="213" text-anchor="middle" font-family="Comfortaa, sans-serif" font-size="15" fill="#FFFFFF">sapo</text>
-            <text x="200" y="231" text-anchor="middle" font-family="Comfortaa, sans-serif" font-size="15" fill="#FFFFFF">cycle</text>
-          </svg>
-          <span class="tag">Bac rempli aux 3/4 : on vient le chercher</span>
-        </div>
-      </article>
-
-      <article class="step">
-        <div class="step__copy">
-          <span class="step__n" aria-hidden="true">03</span>
-          <h3 class="h3">Le transport, sans effort</h3>
-          <p>Lorsque le bac est rempli aux trois quarts, un simple e-mail suffit. Notre partenaire logistique Planzer récupère les bacs pleins et vous livre le même nombre de bacs vides.</p>
-          <ul class="step__meta"><li>Partenaire Planzer</li><li>Échange bac plein / bac vide</li></ul>
-        </div>
-        <div class="step__art" aria-hidden="true">
-          <svg viewBox="0 0 400 260">
-            <line x1="0" y1="206" x2="400" y2="206" stroke="#0069B4" stroke-width="2"/>
-            <g class="road-dashes" stroke="#52ABFF" stroke-width="3" stroke-linecap="round"><line x1="10" y1="226" x2="40" y2="226"/><line x1="90" y1="226" x2="120" y2="226"/><line x1="170" y1="226" x2="200" y2="226"/><line x1="250" y1="226" x2="280" y2="226"/><line x1="330" y1="226" x2="360" y2="226"/><line x1="410" y1="226" x2="440" y2="226"/></g>
-            <g class="van">
-              <rect x="96" y="96" width="150" height="92" rx="10" fill="#FFFFFF" stroke="#0069B4" stroke-width="2.5"/>
-              <path d="M246 118h40l30 34v36h-70z" fill="#E4F0FB" stroke="#0069B4" stroke-width="2.5" stroke-linejoin="round"/>
-              <path d="M258 128h24l20 24h-44z" fill="#FFFFFF" stroke="#0069B4" stroke-width="2"/>
-              <circle cx="140" cy="192" r="16" fill="#0069B4"/><circle cx="140" cy="192" r="6" fill="#FFFFFF"/>
-              <circle cx="276" cy="192" r="16" fill="#0069B4"/><circle cx="276" cy="192" r="6" fill="#FFFFFF"/>
-              <rect x="116" y="118" width="54" height="40" rx="8" fill="#0175D6" opacity=".9"/>
-              <rect x="176" y="126" width="48" height="32" rx="8" fill="#52ABFF" opacity=".8"/>
-              <g fill="none" stroke="#52ABFF" stroke-width="2"><line x1="40" y1="130" x2="80" y2="130"/><line x1="56" y1="150" x2="84" y2="150"/><line x1="30" y1="170" x2="76" y2="170"/></g>
-            </g>
-          </svg>
-          <span class="tag">Logistique Planzer en Suisse</span>
-        </div>
-      </article>
-
-      <article class="step">
-        <div class="step__copy">
-          <span class="step__n" aria-hidden="true">04</span>
-          <h3 class="h3">L'atelier WohnWerk à Bâle</h3>
-          <p>Dix personnes en situation de handicap râpent, réduisent en poudre et pressent les savons pour en faire des pains neufs. Les liquides sont reconditionnés. Un procédé unique, développé avec la FHNW, sous contrôle bactériologique strict.</p>
-          <ul class="step__meta"><li>Emploi stable</li><li>Contrôle bactériologique</li></ul>
-        </div>
-        <div class="step__art">
-          <img src="{{IMG:atelier}}" alt="Un collaborateur de l'atelier WohnWerk râpe des savons usagés pour les recycler" loading="lazy" width="1100" height="725">
-          <span class="tag">WohnWerk, Bâle</span>
-        </div>
-      </article>
-
-      <article class="step">
-        <div class="step__copy">
-          <span class="step__n" aria-hidden="true">05</span>
-          <h3 class="h3">Offert aux familles</h3>
-          <p>Nos partenaires de distribution remettent les savons à des familles dans le besoin en Suisse, dans des camps de réfugiés en Europe et dans des pays en développement. Ils nous font des retours réguliers sur l'impact.</p>
-          <ul class="step__meta"><li>Tischlein deck dich</li><li>Croix-Rouge</li><li>UNHCR</li></ul>
-        </div>
-        <div class="step__art">
-          <img src="{{IMG:distribution}}" alt="Remise de savons SapoCycle recyclés à une association partenaire" loading="lazy" width="1000" height="666">
-          <span class="tag">Une seconde vie utile</span>
-        </div>
-      </article>
-
-    </div>
+    <article class="chapter">
+      <div class="chapter__media">
+        <div class="frame frame--tall reveal"><img src="{{IMG:enfants}}" alt="Des enfants se lavent les mains avec du savon dans une bassine" loading="lazy" width="1000" height="1333" data-depth></div>
+        <div class="frame inset reveal" style="aspect-ratio:3/2"><img src="{{IMG:distribution}}" alt="Remise de savons SapoCycle recyclés à une association partenaire" loading="lazy" width="1100" height="733"></div>
+      </div>
+      <div class="chapter__copy">
+        <span class="roman">III. Les familles</span>
+        <h3 class="h3">Un savon neuf, <em>offert.</em></h3>
+        <p>Nos partenaires de distribution les remettent à des familles dans le besoin en Suisse, dans des camps de réfugiés en Europe et dans des pays en développement.</p>
+        <div class="chapter__detail"><span>Tischlein deck dich</span><span>Croix-Rouge</span><span>UNHCR</span></div>
+      </div>
+    </article>
   </div>
 </section>
 
-<!-- ============ FILM SOLIDE VS LIQUIDE ============ -->
+<!-- ============ FILM ============ -->
 <section class="section film-section on-dark" id="solide-liquide" aria-labelledby="film-title">
-  <div class="bg-glow" aria-hidden="true"></div>
-  <div class="wrap" style="position:relative">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Le film · 52 secondes</span>
-        <h2 class="h2 split" id="film-title">Savon solide ou liquide, <em>ce que votre choix change.</em></h2>
+  <div class="wrap">
+    <div class="head">
+      <div class="head__title">
+        <span class="label">Le film · 52 secondes</span>
+        <h2 class="h2 split" id="film-title">Solide ou liquide, <em>le choix qui compte.</em></h2>
       </div>
-      <p class="lead">De nombreux hôtels passent aux distributeurs liquides. Voici pourquoi le savon solide reste le choix le plus sobre, et pourquoi, une fois recyclé, il devient une ressource qui sauve des vies.</p>
+      <p class="lead">Beaucoup d'hôtels passent aux distributeurs liquides. Voici pourquoi le savon solide reste le choix le plus sobre.</p>
     </div>
-
-    <div class="film" id="film">
-      <div class="film__stage">
-        <svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax meet" role="img" aria-labelledby="film-desc">
-          <desc id="film-desc">Animation comparant le savon solide et le savon liquide : composition, transport, emballage, quantité utilisée par lavage, empreinte carbone, puis recyclage par SapoCycle.</desc>
-          <defs>
-            <linearGradient id="fbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#073560"/><stop offset="1" stop-color="#031A31"/></linearGradient>
-            <radialGradient id="fglow" cx=".5" cy=".7" r=".55"><stop offset="0" stop-color="#0175D6" stop-opacity=".45"/><stop offset="1" stop-color="#0175D6" stop-opacity="0"/></radialGradient>
-            <linearGradient id="fsoap" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#F3EFE6"/><stop offset="1" stop-color="#DCD5C8"/></linearGradient>
-            <linearGradient id="fwater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#52ABFF"/><stop offset="1" stop-color="#0175D6"/></linearGradient>
-            <symbol id="fBar" viewBox="0 0 300 200">
-              <rect x="6" y="24" width="288" height="170" rx="64" fill="#BDB5A6"/>
-              <rect x="6" y="6" width="288" height="170" rx="64" fill="url(#fsoap)"/>
-              <rect x="30" y="26" width="240" height="130" rx="50" fill="none" stroke="#FFFFFF" stroke-width="3" opacity=".9"/>
-              <text x="150" y="88" text-anchor="middle" font-family="Comfortaa, sans-serif" font-size="56" fill="#DDD6C9">sapo</text>
-              <text x="150" y="140" text-anchor="middle" font-family="Comfortaa, sans-serif" font-size="56" fill="#DDD6C9">cycle</text>
-            </symbol>
-            <symbol id="fBottle" viewBox="0 0 200 420">
-              <rect x="66" y="8" width="80" height="26" rx="9" fill="#E4F0FB"/>
-              <rect x="138" y="14" width="56" height="13" rx="6.5" fill="#E4F0FB"/>
-              <rect x="94" y="34" width="22" height="30" fill="#9CC6EE"/>
-              <rect x="70" y="60" width="72" height="42" rx="10" fill="#E4F0FB"/>
-              <rect x="20" y="96" width="172" height="314" rx="46" fill="#52ABFF" fill-opacity=".22" stroke="#E4F0FB" stroke-width="5"/>
-              <rect x="46" y="196" width="120" height="104" rx="14" fill="#FFFFFF" fill-opacity=".18"/>
-            </symbol>
-            <symbol id="fTruck" viewBox="0 0 260 130">
-              <rect x="4" y="8" width="170" height="92" rx="10" fill="#E4F0FB"/>
-              <path d="M174 30h44l36 38v32h-80z" fill="#52ABFF"/>
-              <path d="M186 40h28l26 28h-54z" fill="#073560"/>
-              <circle cx="52" cy="106" r="18" fill="#031A31" stroke="#E4F0FB" stroke-width="5"/>
-              <circle cx="214" cy="106" r="18" fill="#031A31" stroke="#E4F0FB" stroke-width="5"/>
-            </symbol>
-            <symbol id="fDrop" viewBox="0 0 40 56"><path d="M20 2S4 24 4 36a16 16 0 0 0 32 0C36 24 20 2 20 2z" fill="#52ABFF"/><ellipse cx="14" cy="36" rx="4" ry="7" fill="#FFFFFF" opacity=".5"/></symbol>
-            <clipPath id="cBottle"><rect x="900" y="470" width="236" height="350" rx="58"/></clipPath>
-          </defs>
-
-          <rect width="1600" height="900" fill="url(#fbg)"/>
-          <rect width="1600" height="900" fill="url(#fglow)"/>
-          <g id="filmBubbles" fill="none" stroke="#FFFFFF" stroke-opacity=".22" stroke-width="2">
-            <circle cx="120" cy="820" r="18"/><circle cx="260" cy="760" r="10"/><circle cx="1440" cy="800" r="24"/><circle cx="1520" cy="700" r="12"/><circle cx="1360" cy="860" r="8"/><circle cx="60" cy="640" r="7"/>
-          </g>
-
-          <!-- Scène 1 -->
-          <g class="scene" id="sc1">
-            <use href="#fBar" x="420" y="520" width="360" height="240" class="s1-bar"/>
-            <g class="s1-or"><circle cx="840" cy="650" r="40" fill="none" stroke="#52ABFF" stroke-width="2"/><text x="840" y="660" text-anchor="middle" font-family="Bodoni Moda, Didot, Georgia, serif" font-style="italic" font-size="34" fill="#FFFFFF">ou</text></g>
-            <use href="#fBottle" x="930" y="420" width="190" height="400" class="s1-bottle"/>
-          </g>
-
-          <!-- Scène 2 : composition -->
-          <g class="scene" id="sc2">
-            <use href="#fBar" x="330" y="610" width="270" height="180"/>
-            <text x="465" y="840" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#E4F0FB">CONCENTRÉ</text>
-            <g>
-              <rect x="984" y="400" width="68" height="74" rx="12" fill="#E4F0FB"/>
-              <rect x="964" y="372" width="108" height="30" rx="10" fill="#E4F0FB"/>
-              <g clip-path="url(#cBottle)">
-                <rect x="900" y="470" width="236" height="350" fill="#FFFFFF" fill-opacity=".06"/>
-                <g class="s2-water"><rect x="880" y="560" width="280" height="300" fill="url(#fwater)"/><path class="s2-wave" d="M760 560 q40 -18 80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 t80 0 v20 h-640z" fill="#52ABFF"/></g>
-              </g>
-              <rect x="900" y="470" width="236" height="350" rx="58" fill="none" stroke="#E4F0FB" stroke-width="5"/>
-              <text class="s2-label" x="1018" y="720" text-anchor="middle" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="64" font-style="italic" fill="#FFFFFF">eau</text>
-            </g>
-            <text x="1018" y="868" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#E4F0FB">DILUÉ</text>
-          </g>
-
-          <!-- Scène 3 : transport -->
-          <g class="scene" id="sc3">
-            <line x1="0" y1="690" x2="1600" y2="690" stroke="#E4F0FB" stroke-opacity=".25" stroke-width="2"/>
-            <line x1="0" y1="850" x2="1600" y2="850" stroke="#E4F0FB" stroke-opacity=".25" stroke-width="2"/>
-            <text x="120" y="560" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#E4F0FB">SOLIDE</text>
-            <text x="120" y="722" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#52ABFF">LIQUIDE</text>
-            <g class="s3-solid"><use href="#fTruck" x="0" y="580" width="180" height="90"/></g>
-            <g class="s3-liquid">
-              <use href="#fTruck" x="0" y="740" width="230" height="115"/>
-              <use href="#fTruck" x="-260" y="740" width="230" height="115"/>
-              <use href="#fTruck" x="-520" y="740" width="230" height="115"/>
-            </g>
-          </g>
-
-          <!-- Scène 4 : emballage -->
-          <g class="scene" id="sc4">
-            <g class="s4-bar">
-              <use href="#fBar" x="250" y="600" width="300" height="200"/>
-              <rect x="350" y="606" width="100" height="186" fill="#C9A87A" fill-opacity=".85"/>
-              <text x="400" y="850" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#E4F0FB">PAPIER</text>
-            </g>
-            <g class="s4-bottles">
-              <use href="#fBottle" x="900" y="690" width="70" height="147"/>
-              <use href="#fBottle" x="975" y="700" width="70" height="147"/>
-              <use href="#fBottle" x="1050" y="690" width="70" height="147"/>
-              <use href="#fBottle" x="1125" y="700" width="70" height="147"/>
-              <use href="#fBottle" x="1200" y="692" width="70" height="147"/>
-              <use href="#fBottle" x="940" y="560" width="70" height="147"/>
-              <use href="#fBottle" x="1015" y="568" width="70" height="147"/>
-              <use href="#fBottle" x="1090" y="558" width="70" height="147"/>
-              <use href="#fBottle" x="1165" y="566" width="70" height="147"/>
-              <use href="#fBottle" x="1052" y="430" width="70" height="147"/>
-            </g>
-          </g>
-
-          <!-- Scène 5 : dose par lavage -->
-          <g class="scene" id="sc5">
-            <g class="s5-flake"><rect x="430" y="640" width="70" height="40" rx="16" fill="url(#fsoap)"/></g>
-            <text x="465" y="760" text-anchor="middle" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="72" fill="#FFFFFF">0,35 g</text>
-            <text x="465" y="806" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="20" font-weight="600" letter-spacing="3" fill="#E4F0FB">SOLIDE</text>
-            <g class="s5-drops">
-              <use href="#fDrop" x="860" y="610" width="48" height="68"/><use href="#fDrop" x="920" y="610" width="48" height="68"/><use href="#fDrop" x="980" y="610" width="48" height="68"/><use href="#fDrop" x="1040" y="610" width="48" height="68"/><use href="#fDrop" x="1100" y="610" width="48" height="68"/><use href="#fDrop" x="1160" y="610" width="48" height="68"/><use href="#fDrop" x="1220" y="610" width="48" height="68"/>
-            </g>
-            <text x="1064" y="760" text-anchor="middle" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="72" fill="#52ABFF">2,3 g</text>
-            <text x="1064" y="806" text-anchor="middle" font-family="Montserrat, sans-serif" font-size="20" font-weight="600" letter-spacing="3" fill="#52ABFF">LIQUIDE</text>
-          </g>
-
-          <!-- Scène 6 : empreinte carbone (échelle : 100 = savon solide, 6 px par point) -->
-          <g class="scene" id="sc6">
-            <text x="200" y="612" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#E4F0FB">SOLIDE</text>
-            <rect x="420" y="580" width="600" height="56" rx="28" fill="#F3EFE6" class="s6-a"/>
-            <text class="s6-ta" x="1040" y="620" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="44" fill="#FFFFFF">100</text>
-            <text x="200" y="742" font-family="Montserrat, sans-serif" font-size="22" font-weight="600" letter-spacing="3" fill="#52ABFF">LIQUIDE</text>
-            <rect x="420" y="710" width="750" height="56" rx="28" fill="#52ABFF" class="s6-b"/>
-            <text class="s6-tb" x="1190" y="750" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="44" fill="#52ABFF">≈ 125</text>
-            <text x="420" y="830" font-family="Montserrat, sans-serif" font-size="18" fill="#B9CCE0">Indice d'empreinte carbone par lavage, savon solide = 100</text>
-          </g>
-
-          <!-- Scène 7 : SapoCycle -->
-          <g class="scene" id="sc7">
-            <g class="s7-ring"><circle cx="560" cy="650" r="170" fill="none" stroke="#52ABFF" stroke-width="3" stroke-dasharray="14 18"/><path d="M720 600 l26 30 l-38 6z" fill="#52ABFF"/></g>
-            <use href="#fBar" x="450" y="575" width="220" height="146" class="s7-bar"/>
-            <g class="s7-bubbles" fill="none" stroke="#FFFFFF" stroke-width="2.5">
-              <circle cx="520" cy="560" r="14"/><circle cx="600" cy="540" r="9"/><circle cx="560" cy="510" r="6"/><circle cx="640" cy="570" r="5"/>
-            </g>
-            <text class="s7-big" x="880" y="720" font-family="Bodoni Moda, Didot, Georgia, serif" font-size="210" fill="#FFFFFF">−90 %</text>
-            <text x="890" y="790" font-family="Montserrat, sans-serif" font-size="24" font-weight="600" letter-spacing="3" fill="#52ABFF">DE CO₂ PAR RAPPORT À L'INCINÉRATION</text>
-          </g>
-        </svg>
-
-        <div class="film__txt" data-scene="1"><span class="film__kicker">SapoCycle présente</span><p class="film__line">Savon solide ou savon liquide <em>?</em></p><p class="film__sub">Ce que ce petit choix change pour la planète, en six images.</p></div>
-        <div class="film__txt" data-scene="2"><span class="film__kicker">1 · La composition</span><p class="film__line">Un savon liquide est composé <em>majoritairement d'eau.</em></p></div>
-        <div class="film__txt" data-scene="3"><span class="film__kicker">2 · Le transport</span><p class="film__line">Plus de poids à transporter, <em>donc plus d'énergie.</em></p></div>
-        <div class="film__txt" data-scene="4"><span class="film__kicker">3 · L'emballage</span><p class="film__line">Des flacons plastiques <em>rarement recyclés.</em></p><p class="film__sub">Jusqu'à 20 fois plus d'énergie pour produire l'emballage d'un savon liquide.*</p></div>
-        <div class="film__txt" data-scene="5"><span class="film__kicker">4 · L'usage</span><p class="film__line">À chaque lavage, <em>environ 7 fois plus</em> de produit.</p></div>
-        <div class="film__txt" data-scene="6"><span class="film__kicker">5 · Le bilan</span><p class="film__line">Une empreinte carbone <em>environ 25 % plus élevée</em> par lavage.*</p></div>
-        <div class="film__txt" data-scene="7"><span class="film__kicker">6 · La seconde vie</span><p class="film__line">Recyclé par SapoCycle, le savon d'hôtel <em>sauve des vies.</em></p></div>
-
-        <button class="film__play" type="button" id="filmPlay" aria-label="Lancer le film"><span><svg aria-hidden="true"><use href="#i-play"/></svg></span><em>Lancer le film</em></button>
-      </div>
-
-      <div class="film__bar">
-        <button class="film__btn" type="button" id="filmToggle" aria-label="Lecture"><svg aria-hidden="true"><use href="#i-play"/></svg></button>
-        <button class="film__btn film__btn--restart" type="button" id="filmRestart" aria-label="Revoir depuis le début"><svg aria-hidden="true"><use href="#i-restart"/></svg></button>
-        <div class="film__seek"><label class="visually-hidden" for="filmSeek">Position dans le film</label><input type="range" id="filmSeek" min="0" max="1000" value="0" step="1"><div class="film__marks" id="filmMarks"></div></div>
-        <span class="film__time num" id="filmTime">0:00 / 0:52</span>
-      </div>
-      <ol class="film__chapters" id="filmChapters"></ol>
-      <p class="film__caption" id="filmCaption">* ETH Zurich, Koehler et Wildbolz, Environmental Science &amp; Technology, 2009. Composition et emballage : Femina, 2025. Recyclage : étude FHNW, 2016.</p>
-    </div>
-
-    <!-- Comparateur interactif -->
-    <div class="compare">
-      <div style="display:grid;gap:20px">
-        <span class="eyebrow">Comparez vous-même</span>
-        <h3 class="h2" style="font-size:clamp(2rem,3.6vw,3.2rem)">Combien de lavages par jour dans votre hôtel ?</h3>
-        <p class="lead">Faites glisser le curseur. Les quantités suivent les moyennes mesurées par l'ETH Zurich : 0,35 g de savon solide contre 2,3 g de savon liquide par lavage de mains.</p>
-      </div>
-      <div class="compare__panel">
-        <div class="range">
-          <label for="washes"><span>Lavages de mains</span><output class="num" id="washesOut" for="washes">1 000</output></label>
-          <input type="range" id="washes" min="100" max="10000" step="100" value="1000">
-        </div>
-        <div class="cmp-row">
-          <div class="cmp-row__top"><span>Savon solide</span><strong class="num" id="solidOut">350 g</strong></div>
-          <div class="cmp-bar cmp-bar--solid"><span id="solidBar" style="width:15.2%"></span></div>
-        </div>
-        <div class="cmp-row">
-          <div class="cmp-row__top"><span>Savon liquide</span><strong class="num" id="liquidOut">2,3 kg</strong></div>
-          <div class="cmp-bar cmp-bar--liquid"><span id="liquidBar" style="width:100%"></span></div>
-        </div>
-        <div class="cmp-facts">
-          <div class="cmp-fact"><strong>×6,6</strong><span>de produit consommé avec le liquide</span></div>
-          <div class="cmp-fact"><strong>×20</strong><span>d'énergie pour l'emballage*</span></div>
-          <div class="cmp-fact"><strong>+25 %</strong><span>d'empreinte carbone par lavage*</span></div>
-        </div>
-      </div>
-    </div>
+    {{FILM}}
   </div>
 </section>
 
-<!-- ============ PILIERS ============ -->
-<section class="section" id="piliers" aria-labelledby="piliers-title" style="background:var(--paper)">
+<!-- ============ PLANÈTE ============ -->
+<section class="planet" id="impact" aria-labelledby="impact-title">
+  <div class="planet__media" data-planet><img src="{{IMG:lac-alpin}}" alt="Lac alpin de Seealpsee, en Appenzell, entre des falaises et des prairies" loading="lazy" width="2000" height="1333"></div>
   <div class="wrap">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Bubbles saving lives</span>
-        <h2 class="h2 split" id="piliers-title">Un savon, <em>trois impacts.</em></h2>
-      </div>
-      <p class="lead">Le programme SapoCycle repose sur trois piliers indissociables. C'est ce qui le rend unique en Europe, et ce qui donne du sens à l'engagement de votre hôtel.</p>
+    <span class="label">Pour la planète</span>
+    <h2 class="h2 split" id="impact-title">Moins de déchets. Moins de CO₂. <em>Plus de dignité.</em></h2>
+    <div class="figures">
+      <div class="figure"><strong class="num"><b data-count="63700" style="font-weight:inherit">63 700</b><small>KG</small></strong><span>de savons sauvés de la décharge</span></div>
+      <div class="figure"><strong class="num"><b data-count="420000" style="font-weight:inherit">420 000</b></strong><span>savons neufs offerts à des familles</span></div>
+      <div class="figure"><strong class="num">−90<small>%</small></strong><span>de CO₂ par rapport à l'incinération</span></div>
     </div>
-    <div class="pillars">
-      <article class="pillar pillar--env" data-cursor="Planète">
-        <div class="pillar__art" aria-hidden="true">
-          <span class="bubble" style="width:220px;height:220px;right:-40px;top:40px"></span>
-          <span class="bubble" style="width:90px;height:90px;left:30px;top:90px"></span>
-          <span class="bubble" style="width:40px;height:40px;left:140px;top:40px"></span>
-          <span class="bubble" style="width:130px;height:130px;left:60px;top:220px"></span>
-        </div>
-        <div class="pillar__body">
-          <span class="pillar__icon"><svg aria-hidden="true"><use href="#i-leaf"/></svg></span>
-          <h3>Environnement</h3>
-          <p>Recycler les savons d'hôtel usagés réduit les émissions de CO₂ de 90 % par rapport à leur incinération.</p>
-          <div class="pillar__stat"><strong class="num">−90 %</strong><span>de CO₂, étude FHNW 2016</span></div>
-        </div>
-      </article>
-      <article class="pillar" data-cursor="Humain">
-        <div class="pillar__img"><img src="{{IMG:presse}}" alt="Un collaborateur de WohnWerk presse un savon recyclé" loading="lazy" width="600" height="704"></div>
-        <div class="pillar__body">
-          <span class="pillar__icon"><svg aria-hidden="true"><use href="#i-users"/></svg></span>
-          <h3>Intégration sociale</h3>
-          <p>Avec nos ateliers de recyclage, nous offrons à des personnes en situation de handicap un travail stable et une place légitime dans l'économie.</p>
-          <div class="pillar__stat"><strong class="num">10</strong><span>personnes à l'atelier chaque jour</span></div>
-        </div>
-      </article>
-      <article class="pillar" data-cursor="Familles">
-        <div class="pillar__img"><img src="{{IMG:malaxeur}}" alt="Fabrication de savons recyclés à l'atelier WohnWerk" loading="lazy" width="900" height="649"></div>
-        <div class="pillar__body">
-          <span class="pillar__icon"><svg aria-hidden="true"><use href="#i-heart"/></svg></span>
-          <h3>Action humanitaire</h3>
-          <p>Nous facilitons l'accès au savon pour les familles dans le besoin en Europe et ailleurs dans le monde, pour améliorer leur santé.</p>
-          <div class="pillar__stat"><strong class="num">−40 %</strong><span>d'infections diarrhéiques, UNICEF</span></div>
-        </div>
-      </article>
-    </div>
+    <div class="planet__src"><span>299 hôtels membres en Suisse, en France et en Allemagne · 130 586 kg de CO₂ économisés</span><span>Sources : SapoCycle, étude FHNW 2016</span></div>
   </div>
 </section>
 
-<!-- ============ IMPACT ============ -->
-<section class="section impact on-dark" id="impact" aria-labelledby="impact-title">
-  <canvas class="impact__canvas" id="impactBubbles" aria-hidden="true"></canvas>
+<!-- ============ VISAGES ============ -->
+<section class="section" id="visages" aria-labelledby="visages-title">
   <div class="wrap">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Impact européen</span>
-        <h2 class="h2 split" id="impact-title">Dix ans de bulles, <em>des résultats concrets.</em></h2>
+    <div class="founder">
+      <div class="frame frame--tall reveal"><img src="{{IMG:portrait-dorothee}}" alt="Dorothée Schiesser, fondatrice de SapoCycle, tenant deux savons recyclés" loading="lazy" width="600" height="746" data-depth></div>
+      <div>
+        <span class="label" id="visages-title">Les visages de SapoCycle</span>
+        <blockquote style="margin-top:30px">« Je n'aurais jamais imaginé qu'une décennie plus tard, SapoCycle serait <em>plus fort que jamais</em>, et que notre mission trouverait un tel écho. »</blockquote>
+        <div class="founder__who"><strong>Dorothée Schiesser</strong><span>Fondatrice et présidente</span></div>
+        <p class="founder__bio">Franco-suisse, diplômée en sciences politiques, Dorothée a vécu au Cameroun, où elle a mesuré le poids des maladies liées au manque d'hygiène. En 2014, elle fonde SapoCycle à Bâle avec Cintia Jaime.</p>
       </div>
-      <p class="lead">Les chiffres clés de SapoCycle en Suisse, en France et en Allemagne, depuis le premier lot de savons redistribué en avril 2015.</p>
     </div>
-    <div class="stats">
-      <div class="stat"><svg class="stat__icon" aria-hidden="true"><use href="#i-hotel"/></svg><strong class="num" data-count="299">299</strong><span>hôtels participants</span></div>
-      <div class="stat"><svg class="stat__icon" aria-hidden="true"><use href="#i-soap"/></svg><strong class="num"><b data-count="63700" style="font-weight:inherit">63 700</b><small>kg</small></strong><span>de savons collectés</span></div>
-      <div class="stat"><svg class="stat__icon" aria-hidden="true"><use href="#i-bottle"/></svg><strong class="num"><b data-count="19290" style="font-weight:inherit">19 290</b><small>kg</small></strong><span>de produits d'accueil liquides collectés</span></div>
-      <div class="stat"><svg class="stat__icon" aria-hidden="true"><use href="#i-heart"/></svg><strong class="num" data-count="420000">420 000</strong><span>savons redistribués</span></div>
-      <div class="stat"><svg class="stat__icon" aria-hidden="true"><use href="#i-drop"/></svg><strong class="num"><b data-count="14970" style="font-weight:inherit">14 970</b><small>L</small></strong><span>de savon liquide distribués</span></div>
-      <div class="stat"><svg class="stat__icon" aria-hidden="true"><use href="#i-cloud"/></svg><strong class="num"><b data-count="130586" style="font-weight:inherit">130 586</b><small>kg</small></strong><span>de CO₂ économisés</span></div>
+
+    <div class="people">
+      <div class="people__head"><span class="label">Conseil consultatif et équipe</span></div>
+      <figure class="person" style="margin:0">
+        <div class="frame reveal"><img src="{{IMG:portrait-rudolph}}" alt="Portrait de Rudolph Schiesser" loading="lazy" width="600" height="745"></div>
+        <figcaption><strong>Rudolph Schiesser</strong><span>Hôtelier, président du conseil du Grand Hôtel Les Trois Rois, Bâle</span></figcaption>
+      </figure>
+      <figure class="person" style="margin:0">
+        <div class="frame reveal"><img src="{{IMG:portrait-cintia}}" alt="Portrait de Cintia Jaime" loading="lazy" width="600" height="746"></div>
+        <figcaption><strong>Cintia Jaime</strong><span>Cofondatrice, entrepreneure sociale, fondatrice d'Es Vicis</span></figcaption>
+      </figure>
+      <figure class="person" style="margin:0">
+        <div class="frame reveal"><img src="{{IMG:portrait-bertrand}}" alt="Portrait de Bertrand Jungo" loading="lazy" width="600" height="746"></div>
+        <figcaption><strong>Bertrand Jungo</strong><span>Délégué du conseil du Kulm Group, St. Moritz</span></figcaption>
+      </figure>
+      <figure class="person" style="margin:0">
+        <div class="frame reveal"><img src="{{IMG:portrait-constanza}}" alt="Constanza Radavero tenant deux savons SapoCycle" loading="lazy" width="600" height="746"></div>
+        <figcaption><strong>Constanza Radavero</strong><span>Responsable de la communication, cheffe de projet Suisse</span></figcaption>
+      </figure>
     </div>
-    <div class="impact__note"><span class="src">Source : SapoCycle, chiffres clés européens publiés sur sapocycle.org.</span><span class="src">Suisse · France (depuis 2018) · Allemagne (depuis 2023)</span></div>
-    <div class="big-claim">
-      <strong class="num">153 318</strong>
-      <p>kilomètres parcourus par la profession hôtelière lors du SapoCycle Run organisé par Swiss Deluxe Hotels en 2026. Quand l'hôtellerie se mobilise, les bulles vont loin.</p>
+
+    <div class="artisans">
+      <div class="artisans__copy">
+        <span class="label">Les artisans</span>
+        <h3 class="h3">Ce sont eux qui font <em>chaque savon.</em></h3>
+        <p>Chez WohnWerk, le recyclage du savon offre un travail stable et une place légitime dans l'économie à des adultes en situation de handicap. C'est le cœur du modèle SapoCycle.</p>
+      </div>
+      <div class="artisans__strip">
+        <div class="frame reveal"><img src="{{IMG:atelier-equipe}}" alt="Deux collaboratrices de l'atelier, tout sourire" loading="lazy" width="948" height="621"></div>
+        <div class="frame reveal"><img src="{{IMG:atelier-presse}}" alt="Un artisan au pressage des savons" loading="lazy" width="600" height="704"></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ============ HÔTELS ============ -->
-<section class="section hotels" id="hotels" aria-labelledby="hotels-title">
-  <div class="wrap">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Pour les hôtels</span>
-        <h2 class="h2 split" id="hotels-title">Un engagement RSE <em>visible, simple et utile.</em></h2>
-      </div>
-      <p class="lead">Tous les hôtels qui proposent des savons et des produits d'accueil individuels sont les bienvenus. Vos équipes collectent, nous nous occupons de tout le reste.</p>
+<section class="section ivory" id="hotels" aria-labelledby="hotels-title">
+  <div class="wrap hotels">
+    <div class="hotels__media">
+      <div class="frame reveal"><img src="{{IMG:hotel-spa}}" alt="Salle de bain d'hôtel minérale avec vasque en pierre et plantes" loading="lazy" width="900" height="1200" data-depth></div>
     </div>
-
-    <div class="bento">
-      <article class="card card--a card--blue">
-        <span class="card__icon"><svg aria-hidden="true"><use href="#i-award"/></svg></span>
-        <h3>Valorisez vos labels</h3>
-        <p>SapoCycle est soutenu par les principaux labels verts de l'hôtellerie. Votre participation nourrit concrètement vos audits et votre reporting durable.</p>
-        <ul class="labels-row"><li>Green Globe</li><li>Clef Verte</li><li>EarthCheck</li><li>myclimate</li><li>Green Sign</li></ul>
-      </article>
-      <article class="card card--b">
-        <span class="card__icon"><svg aria-hidden="true"><use href="#i-truck"/></svg></span>
-        <h3>Une logistique clé en main</h3>
-        <p>Conteneurs bleus fournis contre caution, enlèvement et échange des bacs par Planzer. Aucun matériel ni stockage supplémentaire pour vos équipes.</p>
-        <div class="swap" aria-label="Planzer reprend le bac plein et livre un bac vide">
-          <span><i style="--lvl:75%"></i>Bac plein aux 3/4</span>
-          <svg class="swap__arrow" aria-hidden="true"><use href="#i-truck"/></svg>
-          <span><i style="--lvl:0%"></i>Bac vide livré</span>
-        </div>
-      </article>
-      <article class="card card--c">
-        <span class="card__icon"><svg aria-hidden="true"><use href="#i-megaphone"/></svg></span>
-        <h3>Un récit pour vos clients</h3>
-        <p>Outils marketing dédiés et mention de votre établissement comme Hôtel Membre Premium sur le site SapoCycle.</p>
-      </article>
-      <article class="card card--d">
-        <span class="card__icon"><svg aria-hidden="true"><use href="#i-recycle"/></svg></span>
-        <h3>Solides et liquides</h3>
-        <p>Les restes de produits liquides sont reconditionnés, et les flacons vides recyclés avec Bring Plastic Back et InnoRecycling.</p>
-      </article>
-      <article class="card card--e">
-        <span class="card__icon"><svg aria-hidden="true"><use href="#i-chart"/></svg></span>
-        <h3>Un impact mesurable</h3>
-        <p>Kilos collectés, savons redistribués, CO₂ évité : des chiffres concrets à partager avec vos clients et vos parties prenantes.</p>
-      </article>
-      <article class="card card--f">
-        <div style="display:grid;gap:10px">
-          <h3>Déjà 299 hôtels membres en Europe.</h3>
-          <p>Des palaces aux hôtels familiaux, en Suisse, en France et en Allemagne. Rejoignez le mouvement en quelques minutes.</p>
-        </div>
-        <a class="btn btn--light magnetic" href="#contact">Rejoindre le programme <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
-      </article>
-    </div>
-
-    <!-- Étapes avec bac bleu qui se remplit -->
-    <div class="join" id="join">
-      <div class="join__visual" aria-hidden="true">
-        <div class="join__level"><strong class="num" id="binPct">0 %</strong><span>Remplissage du bac</span></div>
-        <svg viewBox="0 0 400 400">
-          <defs>
-            <clipPath id="binClipB"><path d="M104 104h192l-16 226a18 18 0 0 1-18 16H138a18 18 0 0 1-18-16z"/></clipPath>
-            <pattern id="soapsB" width="50" height="32" patternUnits="userSpaceOnUse"><rect x="3" y="4" width="42" height="24" rx="11" fill="#F6F3EC" stroke="#D9D2C5" stroke-width="1"/><rect x="28" y="20" width="0" height="0"/></pattern>
-          </defs>
-          <ellipse cx="200" cy="356" rx="130" ry="16" fill="#04223F" opacity=".08"/>
-          <path d="M104 104h192l-16 226a18 18 0 0 1-18 16H138a18 18 0 0 1-18-16z" fill="#0175D6" opacity=".16"/>
-          <g clip-path="url(#binClipB)"><rect id="binFillB" x="90" y="346" width="220" height="250" fill="url(#soapsB)"/></g>
-          <path d="M104 104h192l-16 226a18 18 0 0 1-18 16H138a18 18 0 0 1-18-16z" fill="none" stroke="#0069B4" stroke-width="3.5"/>
-          <line x1="118" y1="168" x2="282" y2="168" stroke="#E9488F" stroke-width="2" stroke-dasharray="6 6"/>
-          <text x="292" y="173" font-family="Montserrat, sans-serif" font-size="14" font-weight="700" fill="#E9488F">3/4</text>
-          <g id="binLid"><rect x="88" y="80" width="224" height="28" rx="10" fill="#0069B4"/><rect x="168" y="64" width="64" height="18" rx="9" fill="none" stroke="#0069B4" stroke-width="3.5"/></g>
-          <rect x="162" y="208" width="76" height="56" rx="12" fill="#0069B4"/>
-          <text x="200" y="233" text-anchor="middle" font-family="Comfortaa, sans-serif" font-size="17" fill="#FFFFFF">sapo</text>
-          <text x="200" y="253" text-anchor="middle" font-family="Comfortaa, sans-serif" font-size="17" fill="#FFFFFF">cycle</text>
-        </svg>
-      </div>
-      <div>
-        <div style="display:grid;gap:18px;margin-bottom:24px">
-          <span class="eyebrow">Rejoindre SapoCycle</span>
-          <h3 class="h2" style="font-size:clamp(2rem,3.6vw,3.2rem)">Quatre étapes, <em>zéro complication.</em></h3>
-        </div>
-        <ol class="join__steps">
-          <li class="join__step" data-fill="0"><b>1</b><div><h3>Inscription au programme</h3><p>Vous contactez notre équipe via le formulaire et devenez <strong>Hôtel Membre Premium</strong>. Nous vous transmettons les instructions et vos outils de communication.</p></div></li>
-          <li class="join__step" data-fill="12"><b>2</b><div><h3>Réception des conteneurs</h3><p>Vous recevez nos <strong>conteneurs bleus SapoCycle</strong>, contre une caution, pour les savons solides et les produits d'accueil liquides.</p></div></li>
-          <li class="join__step" data-fill="48"><b>3</b><div><h3>Collecte au quotidien</h3><p>Le service d'étage dépose les savons usagés dans les bacs. Ils doivent être <strong>secs</strong>, sans sac plastique, pour éviter toute moisissure.</p></div></li>
-          <li class="join__step" data-fill="75"><b>4</b><div><h3>Enlèvement par Planzer</h3><p>Dès que le bac est <strong>rempli aux 3/4</strong>, un e-mail à Planzer suffit. Ils récupèrent les bacs pleins et livrent le même nombre de bacs vides.</p></div></li>
-        </ol>
-      </div>
-    </div>
-
-    <!-- Calculateur -->
-    <div class="calc" id="calculateur">
-      <div class="calc__in">
-        <span class="eyebrow">Simulateur d'impact</span>
-        <h3 class="h2" style="font-size:clamp(2rem,3.4vw,3rem)">Et votre hôtel, <em>quel impact par an ?</em></h3>
-        <div class="range">
-          <label for="rooms"><span>Nombre de chambres</span><output class="num" id="roomsOut" for="rooms">120</output></label>
-          <input type="range" id="rooms" min="10" max="600" step="5" value="120">
-        </div>
-        <div class="range">
-          <label for="occ"><span>Taux d'occupation moyen</span><output class="num" id="occOut" for="occ">72 %</output></label>
-          <input type="range" id="occ" min="30" max="100" step="1" value="72">
-        </div>
-        <p class="src">Estimation indicative. Hypothèses : 7 g de savon récupérable par nuitée occupée ; ratios moyens SapoCycle Europe de 152 g collectés par savon redistribué et de 1,57 kg de CO₂ évité par kilo collecté (solides et liquides). À affiner avec l'équipe SapoCycle.</p>
-      </div>
-      <div class="calc__out" aria-live="polite">
-        <span class="bubble" style="width:180px;height:180px;right:-50px;top:-40px" aria-hidden="true"></span>
-        <span class="bubble" style="width:60px;height:60px;right:120px;bottom:30px" aria-hidden="true"></span>
-        <div class="calc__res"><strong class="num" id="resKg">221 kg</strong><span>de savon détournés de la décharge chaque année</span></div>
-        <div class="calc__res"><strong class="num" id="resSoaps">1 450</strong><span>savons neufs offerts à des familles</span></div>
-        <div class="calc__res"><strong class="num" id="resCo2">347 kg</strong><span>de CO₂ évités</span></div>
-      </div>
+    <div class="hotels__copy">
+      <span class="label">Pour les hôtels</span>
+      <h2 class="h2 split" id="hotels-title">Devenez <em>hôtel membre.</em></h2>
+      <p class="lead">Des palaces aux maisons familiales, 299 hôtels ont déjà rejoint SapoCycle. Vos équipes collectent, nous nous occupons de tout le reste.</p>
+      <ul class="benefits">
+        <li><h3>Un engagement qui se voit</h3><p>Votre établissement est présenté comme Hôtel Membre Premium et reçoit des outils de communication pour vos clients.</p></li>
+        <li><h3>Rien à changer</h3><p>Conteneurs fournis contre caution, enlèvement et échange des bacs par notre partenaire Planzer.</p></li>
+        <li><h3>Vos labels valorisés</h3><p>Une action concrète reconnue par les labels verts de l'hôtellerie, utile à vos audits et à votre reporting.</p></li>
+      </ul>
+      <ol class="steps" aria-label="Rejoindre SapoCycle en quatre temps">
+        <li><span><strong>Inscription</strong> via le formulaire, puis instructions et outils de communication.</span></li>
+        <li><span><strong>Livraison</strong> de vos conteneurs bleus SapoCycle.</span></li>
+        <li><span><strong>Collecte</strong> des savons secs par le service d'étage, sans sac plastique.</span></li>
+        <li><span><strong>Enlèvement</strong> par Planzer dès que le bac est plein aux trois quarts.</span></li>
+      </ol>
+      <p class="labels">Recommandé par <b>Green Globe</b> · <b>Clef Verte</b> · <b>EarthCheck</b> · <b>myclimate</b> · <b>Green Sign</b></p>
+      <div><a class="btn" href="#contact">Rejoindre SapoCycle</a></div>
     </div>
   </div>
 </section>
 
-<!-- ============ TÉMOIGNAGES ============ -->
-<section class="section voices" id="voix" aria-labelledby="voix-title">
-  <div class="wrap voices__wrap">
-    <div style="display:grid;gap:22px">
-      <span class="eyebrow">Ils portent SapoCycle</span>
-      <h2 class="h2 split" id="voix-title">Nos ambassadeurs <em>en parlent mieux que nous.</em></h2>
-      <div class="voices__ctrl">
-        <button class="round" type="button" id="qPrev" aria-label="Témoignage précédent"><svg aria-hidden="true"><use href="#i-left"/></svg></button>
-        <button class="round" type="button" id="qNext" aria-label="Témoignage suivant"><svg aria-hidden="true"><use href="#i-right"/></svg></button>
-        <button class="round" type="button" id="qPause" aria-label="Mettre en pause le défilement"><svg aria-hidden="true"><use href="#i-pause"/></svg></button>
-        <span class="voices__count num" id="qCount" aria-live="polite">1 / 4</span>
-      </div>
-    </div>
-    <div class="quote-stage" id="quotes">
-      <figure class="quote is-active">
-        <blockquote>Tenir un savon SapoCycle entre vos mains vous fait réaliser que de petits pas peuvent mener à quelque chose de grand.</blockquote>
-        <figcaption><i aria-hidden="true">MB</i><span><strong>Madlaina Barth</strong><small>Ambassadrice SapoCycle</small></span></figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Éviter le gaspillage, créer des emplois stables pour les personnes handicapées et fournir des savons à ceux qui n'ont pas accès à l'hygiène. Une solution simple mais puissante.</blockquote>
-        <figcaption><i aria-hidden="true">AC</i><span><strong>Agnès Catineau</strong><small>Conseillère principale chez Brunswick</small></span></figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Mon cœur bat pour le monde de SapoCycle. Assumer la responsabilité de la planète et de la durabilité est quelque chose que nous prenons très au sérieux.</blockquote>
-        <figcaption><i aria-hidden="true">RZ</i><span><strong>Ruth Züblin</strong><small>Propriétaire de Ruth Züblin Associates</small></span></figcaption>
-      </figure>
-      <figure class="quote">
-        <blockquote>Je n'aurais jamais pu imaginer qu'une décennie plus tard, SapoCycle serait toujours là, plus fort que jamais, et que notre mission trouverait un tel écho.</blockquote>
-        <figcaption><i aria-hidden="true">DS</i><span><strong>Dorothée Schiesser</strong><small>Fondatrice et présidente de SapoCycle</small></span></figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ============ BUBBLES SAVING LIVES ============ -->
-<section class="section lives" id="hygiene" aria-labelledby="lives-title">
-  <div class="wrap lives__grid">
-    <figure class="lives__photo reveal-img" style="margin:0">
-      <img src="{{IMG:kids}}" alt="Des enfants se lavent les mains avec du savon dans une bassine" loading="lazy" width="700" height="933" data-parallax-img>
-      <figcaption>Se laver les mains avec du savon est l'une des protections les plus simples et les moins chères contre les maladies.</figcaption>
-    </figure>
-    <div>
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Hygiène et santé</span>
-        <h2 class="h2 split" id="lives-title">Un geste simple <em>qui sauve des vies.</em></h2>
-        <p class="lead">La précarité hygiénique est aussi un facteur d'exclusion sociale. Donner du savon à ceux qui en manquent aide à prévenir des maladies qui peuvent être mortelles.</p>
-      </div>
-      <div class="lives__facts">
-        <div class="lives__fact"><strong class="num">1,4 M</strong><span>de personnes meurent chaque année de maladies largement évitables, comme la pneumonie et la diarrhée.</span></div>
-        <div class="lives__fact"><strong class="num">−40 %</strong><span>d'infections diarrhéiques grâce au lavage des mains avec du savon avant les repas et après les toilettes.</span></div>
-      </div>
-      <blockquote class="pull">« Un bon lavage des mains peut sauver la vie de 800 enfants par jour dans le monde. »<cite>UNICEF</cite></blockquote>
-    </div>
-  </div>
-</section>
-
-<!-- ============ HISTOIRE ============ -->
-<section class="section story on-dark" id="histoire" aria-labelledby="histoire-title">
-  <div class="wrap">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Notre histoire</span>
-        <h2 class="h2 split" id="histoire-title">D'une idée à Bâle <em>à un mouvement européen.</em></h2>
-      </div>
-      <div style="display:grid;gap:16px">
-        <p class="lead">Fondée par Dorothée Schiesser-Peyrouzet, sensibilisée au Cameroun aux maladies liées au manque d'hygiène, SapoCycle est la première organisation à but non lucratif en Europe à recycler les savons d'hôtel.</p>
-        <span class="story__hint"><svg width="18" height="18" aria-hidden="true"><use href="#i-drag"/></svg>Faites glisser la frise</span>
-      </div>
-    </div>
-  </div>
-  <ol class="timeline" id="timeline" style="list-style:none;margin:0" tabindex="0" aria-label="Frise chronologique de SapoCycle">
-    <li class="tl"><b>2014</b><h3>Lancement en Suisse</h3><p>SapoCycle démarre à Bâle, sous l'égide de la Fondation des Fondateurs.</p></li>
-    <li class="tl"><b>2015</b><h3>Premier lot redistribué</h3><p>En avril, les premiers savons recyclés sont offerts à des familles dans le besoin.</p></li>
-    <li class="tl"><b>2016</b><h3>Prix Suisse du tourisme</h3><p>La Fondation est nominée. L'étude FHNW mesure −90 % de CO₂ par rapport à l'incinération.</p></li>
-    <li class="tl"><b>2018</b><h3>SapoCycle France</h3><p>L'association est créée à Mulhouse par sept membres fondateurs.</p></li>
-    <li class="tl"><b>2022</b><h3>Programme liquides</h3><p>Les produits d'accueil liquides et leurs flacons entrent dans la boucle.</p></li>
-    <li class="tl"><b>2023</b><h3>Arrivée en Allemagne</h3><p>Le programme s'étend à un troisième pays européen.</p></li>
-    <li class="tl tl--hl"><b>2025</b><h3>Dix ans de bulles</h3><p>130 invités de l'hôtellerie célèbrent l'anniversaire au Grand Casino de Bâle.</p></li>
-    <li class="tl"><b>2026</b><h3>SapoCycle Run</h3><p>153 318 km parcourus avec Swiss Deluxe Hotels, remise des prix au Mandarin Oriental Savoy Zurich.</p></li>
-  </ol>
-</section>
-
-<!-- ============ PARTENAIRES ============ -->
-<section class="section partners" id="partenaires" aria-labelledby="partenaires-title">
-  <div class="wrap">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Saponistis et Saponistas</span>
-        <h2 class="h2 split" id="partenaires-title">Un cercle de partenaires <em>qui partagent nos valeurs.</em></h2>
-      </div>
-      <p class="lead">Hôtels, atelier de recyclage, logisticien, distributeurs, fondations et entreprises : chaque étape du programme repose sur leur engagement.</p>
-    </div>
-    <div class="tabs" role="tablist" aria-label="Catégories de partenaires">
-      <button type="button" role="tab" id="tab-dist" aria-selected="true" aria-controls="panel-dist">Distribution</button>
-      <button type="button" role="tab" id="tab-ops" aria-selected="false" aria-controls="panel-ops" tabindex="-1">Atelier et logistique</button>
-      <button type="button" role="tab" id="tab-fin" aria-selected="false" aria-controls="panel-fin" tabindex="-1">Soutiens financiers</button>
-      <button type="button" role="tab" id="tab-coop" aria-selected="false" aria-controls="panel-coop" tabindex="-1">Coopération</button>
-      <button type="button" role="tab" id="tab-acad" aria-selected="false" aria-controls="panel-acad" tabindex="-1">Académiques</button>
-    </div>
-    <div class="tabpanel" role="tabpanel" id="panel-dist" aria-labelledby="tab-dist">
-      <p>Associations et ONG locales et internationales qui remettent nos savons aux familles et nous font des retours réguliers sur l'impact.</p>
-      <ul class="chips"><li>Tischlein deck dich</li><li>Table Suisse</li><li>Croix-Rouge suisse</li><li>UNHCR Suisse</li><li>Épicerie Caritas</li><li>Cartons du Cœur</li><li>Secours d'hiver</li><li>InContro Verein</li><li>H2H Happy to Help Basel</li><li>Diakonische Stadtarbeit Elim</li><li>Soup and Chill</li><li>MadagasCare</li><li>Thanksgiver Schweiz</li><li>Volunteers for Humanity</li><li>CA-RL Lausanne</li></ul>
-    </div>
-    <div class="tabpanel" role="tabpanel" id="panel-ops" aria-labelledby="tab-ops" hidden>
-      <p>WohnWerk à Bâle a développé avec la FHNW un procédé de recyclage adapté aux personnes handicapées. Planzer assure une logistique professionnelle en Suisse.</p>
-      <ul class="chips"><li>WohnWerk, Bâle</li><li>Planzer Colis</li><li>Bring Plastic Back</li><li>InnoRecycling AG</li></ul>
-    </div>
-    <div class="tabpanel" role="tabpanel" id="panel-fin" aria-labelledby="tab-fin" hidden>
-      <p>Fondations, entreprises et plus de 160 donateurs privés rendent la mission possible.</p>
-      <ul class="chips"><li>Fondation Ernst Göhner</li><li>Pictet Group Foundation</li><li>Lions Club Bâle Passerelle</li><li>Lions Club Bâle Kunsthalle</li><li>Swiss Airlines</li><li>Victorinox</li><li>Manor</li><li>Calida</li><li>IWB</li><li>Fossil</li><li>Qoqa</li><li>Saviva</li><li>Permamed</li></ul>
-    </div>
-    <div class="tabpanel" role="tabpanel" id="panel-coop" aria-labelledby="tab-coop" hidden>
-      <p>Des fournisseurs de l'hôtellerie qui recommandent la solution SapoCycle à leurs clients et fournissent des contenants.</p>
-      <ul class="chips"><li>ADA Cosmetics</li><li>GM Switzerland</li><li>Feuerstein</li><li>Johnson &amp; Johnson</li><li>Permamed</li><li>Fischer Söhne AG</li></ul>
-    </div>
-    <div class="tabpanel" role="tabpanel" id="panel-acad" aria-labelledby="tab-acad" hidden>
-      <p>Des écoles de référence qui accompagnent la recherche, le design et la formation.</p>
-      <ul class="chips"><li>Fachhochschule Nordwestschweiz (FHNW)</li><li>École cantonale d'art de Lausanne (ECAL)</li><li>École hôtelière de Lausanne (EHL)</li></ul>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ACTUALITÉS ============ -->
-<section class="section news" id="actualites" aria-labelledby="actualites-title">
-  <div class="wrap">
-    <div class="section-head section-head--split">
-      <div style="display:grid;gap:22px">
-        <span class="eyebrow">Actualités</span>
-        <h2 class="h2 split" id="actualites-title">Quoi de neuf <em>chez SapoCycle ?</em></h2>
-      </div>
-      <a class="link-arrow" href="https://sapocycle.org/fr/actualites/" target="_blank" rel="noopener">Toutes les actualités <svg width="18" height="18" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-    </div>
-    <div class="news__grid">
-      <a class="post" href="https://sapocycle.org/fr/course-cycliste-sapocycle-153-318-kilometres-pour-la-bonne-cause/" target="_blank" rel="noopener" data-cursor="Lire">
-        <div class="post__cover post__cover--a"><span class="bubble" style="width:120px;height:120px;right:20px;top:18px"></span><span class="bubble" style="width:40px;height:40px;right:150px;top:70px"></span><span>153 318 km</span></div>
-        <div class="post__body"><span class="post__meta">6 octobre 2026</span><h3>SapoCycle Run : 153 318 kilomètres pour la bonne cause</h3><p>Remise des prix à Zurich avec Swiss Deluxe Hotels, au Mandarin Oriental Savoy.</p></div>
-      </a>
-      <a class="post" href="https://sapocycle.org/fr/le-pouvoir-du-savon-solide-un-choix-durable-qui-change-des-vies/" target="_blank" rel="noopener" data-cursor="Lire">
-        <div class="post__cover post__cover--b"><span class="bubble" style="width:100px;height:100px;right:30px;top:24px"></span><span>Savon solide</span></div>
-        <div class="post__body"><span class="post__meta">Presse · Femina</span><h3>Le pouvoir du savon solide, un choix durable</h3><p>Pourquoi le savon solide reste le choix le plus sobre pour les hôtels.</p></div>
-      </a>
-      <a class="post" href="https://sapocycle.org/fr/sapocycle-fete-ses-10-ans/" target="_blank" rel="noopener" data-cursor="Lire">
-        <div class="post__cover post__cover--c"><span class="bubble" style="width:130px;height:130px;right:16px;top:14px"></span><span class="bubble" style="width:34px;height:34px;right:160px;top:40px"></span><span>10 ans</span></div>
-        <div class="post__body"><span class="post__meta">Événement</span><h3>SapoCycle fête ses 10 ans au Grand Casino de Bâle</h3><p>130 invités de l'hôtellerie, partenaires et soutiens réunis autour de la mission.</p></div>
-      </a>
+<!-- ============ HYGIÈNE ============ -->
+<section class="lives on-dark" id="hygiene" aria-labelledby="lives-title">
+  <div class="lives__media"><img src="{{IMG:mains-enfant}}" alt="Les mains d'un enfant sous l'eau du robinet, pendant le lavage" loading="lazy" width="1200" height="630" data-lives></div>
+  <div class="lives__copy">
+    <span class="label" id="lives-title">Bubbles saving lives</span>
+    <blockquote>« Un bon lavage des mains peut sauver la vie de <em>800 enfants par jour</em> dans le monde. »<cite>UNICEF</cite></blockquote>
+    <div class="lives__facts">
+      <div><strong class="num">−40 %</strong><span>d'infections diarrhéiques grâce au lavage des mains avec du savon</span></div>
+      <div><strong class="num">1,4 M</strong><span>de décès chaque année par des maladies largement évitables</span></div>
     </div>
   </div>
 </section>
 
 <!-- ============ CONTACT ============ -->
-<section class="section contact on-dark" id="contact" aria-labelledby="contact-title">
-  <canvas class="impact__canvas" id="contactBubbles" aria-hidden="true"></canvas>
-  <div class="wrap contact__grid">
+<section class="section" id="contact" aria-labelledby="contact-title">
+  <div class="wrap contact">
     <div class="contact__aside">
-      <span class="eyebrow">Rejoindre le programme</span>
+      <span class="label">Rejoindre SapoCycle</span>
       <h2 class="h2 split" id="contact-title">Offrez une seconde vie <em>à vos savons.</em></h2>
-      <p class="lead">Dites-nous en un peu plus sur votre établissement. Notre équipe vous répond pour organiser la livraison de vos premiers conteneurs.</p>
-      <div class="contact__info">
+      <p class="lead">Parlez-nous de votre établissement. Notre équipe vous répond pour organiser la livraison de vos premiers conteneurs.</p>
+      <div class="coords">
         <div><small>E-mail</small><span class="copy"><code id="mail">info@sapocycle.org</code><button type="button" id="copyMail">Copier</button></span></div>
-        <div><small>Bureau en Suisse</small><span>Fondation SapoCycle, c/o Rakete Dreispitz<br>Münchensteinerstrasse 274, 4053 Bâle</span></div>
-        <div><small>Atelier de recyclage</small><span>WohnWerk, Programme SapoCycle<br>Missionsstrasse 47, 4055 Bâle</span></div>
+        <div><small>Bureau</small><span>Fondation SapoCycle, c/o Rakete Dreispitz<br>Münchensteinerstrasse 274, 4053 Bâle</span></div>
       </div>
     </div>
 
     <form class="form" id="joinForm" novalidate>
       <fieldset class="full">
-        <legend>Quel est le sujet de votre demande ?</legend>
+        <legend>Votre demande</legend>
         <div class="seg">
-          <label><input type="radio" name="topic" id="t-hotel" value="hotel" checked><span>Rejoindre en tant qu'hôtel</span></label>
-          <label><input type="radio" name="topic" id="t-partner" value="partner"><span>Devenir partenaire</span></label>
+          <label><input type="radio" name="topic" id="t-hotel" value="hotel" checked><span>Hôtel</span></label>
+          <label><input type="radio" name="topic" id="t-partner" value="partner"><span>Partenaire</span></label>
           <label><input type="radio" name="topic" id="t-volunteer" value="volunteer"><span>Bénévolat</span></label>
-          <label><input type="radio" name="topic" id="t-info" value="info"><span>En savoir plus</span></label>
+          <label><input type="radio" name="topic" id="t-info" value="info"><span>Information</span></label>
         </div>
       </fieldset>
-      <div class="field"><label for="f-first">Prénom <i>*</i></label><input id="f-first" name="first" autocomplete="given-name" required><span class="err">Indiquez votre prénom.</span></div>
-      <div class="field"><label for="f-last">Nom <i>*</i></label><input id="f-last" name="last" autocomplete="family-name" required><span class="err">Indiquez votre nom.</span></div>
-      <div class="field"><label for="f-role">Poste dans l'hôtel <i>*</i></label><input id="f-role" name="role" autocomplete="organization-title" placeholder="Ex. directrice RSE" required><span class="err">Indiquez votre poste.</span></div>
-      <div class="field"><label for="f-mail">E-mail professionnel <i>*</i></label><input id="f-mail" name="email" type="email" autocomplete="email" required><span class="err">Saisissez une adresse e-mail valide, par exemple nom@hotel.ch.</span></div>
-      <div class="field"><label for="f-hotel">Nom de l'hôtel <i>*</i></label><input id="f-hotel" name="hotel" autocomplete="organization" required><span class="err">Indiquez le nom de l'établissement.</span></div>
-      <div class="field"><label for="f-rooms">Nombre de chambres <i>*</i></label><input id="f-rooms" name="rooms" type="number" min="1" inputmode="numeric" required><span class="err">Indiquez un nombre de chambres.</span></div>
-      <div class="field full"><label for="f-country">Pays <i>*</i></label><select id="f-country" name="country" required><option value="CH">Suisse</option><option value="FR">France</option><option value="DE">Allemagne</option><option value="other">Autre pays</option></select></div>
-      <div class="field full"><label for="f-msg">Message</label><textarea id="f-msg" name="message" placeholder="Votre projet, vos questions, vos délais…"></textarea></div>
+      <div class="field"><label for="f-name">Nom et prénom</label><input id="f-name" name="name" autocomplete="name" required><span class="err">Indiquez votre nom.</span></div>
+      <div class="field"><label for="f-mail">E-mail</label><input id="f-mail" name="email" type="email" autocomplete="email" required><span class="err">Saisissez une adresse valide, par exemple nom@hotel.ch.</span></div>
+      <div class="field"><label for="f-hotel">Établissement</label><input id="f-hotel" name="hotel" autocomplete="organization" required><span class="err">Indiquez le nom de l'établissement.</span></div>
+      <div class="field"><label for="f-rooms">Chambres</label><input id="f-rooms" name="rooms" type="number" min="1" inputmode="numeric" required><span class="err">Indiquez un nombre de chambres.</span></div>
+      <div class="field full"><label for="f-msg">Message</label><textarea id="f-msg" name="message"></textarea></div>
       <div class="form__foot full">
-        <small>* Champs obligatoires. Maquette : aucune donnée n'est envoyée.</small>
-        <button class="btn magnetic" type="submit">Envoyer ma demande <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        <small>Maquette : aucune donnée n'est envoyée.</small>
+        <button class="btn" type="submit">Envoyer</button>
       </div>
-      <div class="form__done" role="status"><strong>Merci, votre demande est prête.</strong><span>Sur le site final, elle sera transmise à l'équipe SapoCycle qui vous recontactera rapidement.</span></div>
+      <div class="form__done" role="status"><strong>Merci.</strong><span>Sur le site final, votre demande sera transmise à l'équipe SapoCycle, qui vous recontactera rapidement.</span></div>
     </form>
   </div>
 </section>
@@ -881,21 +303,20 @@
     <div class="footer__top">
       <div class="footer__brand">
         <svg viewBox="0 0 348.4 410.8" role="img" aria-label="SapoCycle, Bubbles saving lives"><use href="#logo-g"/></svg>
-        <p>Restez informés et participez à notre aventure.</p>
-        <form class="news-form" id="newsForm"><label class="visually-hidden" for="news-mail">Votre e-mail</label><input id="news-mail" type="email" placeholder="Votre e-mail" autocomplete="email" required><button type="submit">S'abonner</button></form>
+        <p>Bubbles saving lives.</p>
+        <form class="news-form" id="newsForm"><label class="visually-hidden" for="news-mail">Votre e-mail</label><input id="news-mail" type="email" placeholder="Recevoir nos nouvelles" autocomplete="email" required><button type="submit">S'abonner</button></form>
       </div>
-      <div><h4>SapoCycle</h4><ul><li><a href="#mission">À propos</a></li><li><a href="#parcours">Notre approche</a></li><li><a href="#histoire">Notre histoire</a></li><li><a href="#actualites">Actualités et presse</a></li></ul></div>
-      <div><h4>S'engager</h4><ul><li><a href="#contact">Hôtels membres</a></li><li><a href="#partenaires">Partenaires</a></li><li><a href="https://sapocycle.org/fr/famille/" target="_blank" rel="noopener">SapoCycle Family</a></li><li><a href="https://sapocycle.org/donate/" target="_blank" rel="noopener">Faire un don</a></li></ul></div>
+      <div><h4>La Maison</h4><ul><li><a href="#maison">Notre mission</a></li><li><a href="#geste">Le geste</a></li><li><a href="#visages">Visages</a></li><li><a href="https://sapocycle.org/fr/actualites/" target="_blank" rel="noopener">Actualités</a></li></ul></div>
+      <div><h4>S'engager</h4><ul><li><a href="#hotels">Hôtels membres</a></li><li><a href="https://sapocycle.org/fr/partenaires/" target="_blank" rel="noopener">Partenaires</a></li><li><a href="https://sapocycle.org/fr/famille/" target="_blank" rel="noopener">SapoCycle Family</a></li><li><a href="https://sapocycle.org/donate/" target="_blank" rel="noopener">Faire un don</a></li></ul></div>
       <div><h4>Fondation</h4><ul><li>Fondation SapoCycle</li><li>Fondation des Fondateurs</li><li>Breitingerstrasse 35</li><li>8002 Zurich</li></ul></div>
     </div>
-    <div class="footer__giant" aria-hidden="true">bubbles saving lives</div>
     <div class="footer__bottom">
-      <span>© 2026 Fondation SapoCycle. Proposition de maquette, octobre 2026.</span>
-      <div class="socials">
-        <a href="https://www.linkedin.com/company/sapocycle/" target="_blank" rel="noopener" aria-label="SapoCycle sur LinkedIn"><svg aria-hidden="true"><use href="#i-linkedin"/></svg></a>
-        <a href="https://www.facebook.com/sapocycle/" target="_blank" rel="noopener" aria-label="SapoCycle sur Facebook"><svg aria-hidden="true"><use href="#i-facebook"/></svg></a>
-        <a href="https://www.instagram.com/sapocycle/" target="_blank" rel="noopener" aria-label="SapoCycle sur Instagram"><svg aria-hidden="true"><use href="#i-instagram"/></svg></a>
-      </div>
+      <span>© 2026 Fondation SapoCycle · Suisse · France · Allemagne</span>
+      <nav aria-label="Réseaux sociaux">
+        <a href="https://www.linkedin.com/company/sapocycle/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://www.instagram.com/sapocycle/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/sapocycle/" target="_blank" rel="noopener">Facebook</a>
+      </nav>
     </div>
   </div>
 </footer>
