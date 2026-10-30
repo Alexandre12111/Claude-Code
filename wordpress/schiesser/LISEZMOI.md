@@ -3,6 +3,10 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.23.1 : cartes sans effet au survol
+
+* Les cartes d'informations (« Gut zu wissen », « Für eine schnelle Offerte », cartes « principes ») ne changent plus de couleur au survol, sur fond clair comme sur fond vert (le survol donnait un vert grisé sur fond vert sapin).
+
 ## Version 0.23 : grande photo épurée, rythme des couleurs
 
 * **Grande photo (Hero)** : plus de petit titre au-dessus du grand titre, sur toutes les pages (le réglage « surtitre » est ignoré).

@@ -2639,3 +2639,8 @@ p,.x-fd,.note{text-wrap:pretty}
 .bg-ink .asc-intro .lead{color:var(--on-dark);border-left-color:var(--mint)}
 .bg-ink .asc-intro .body,.bg-ink .asc-intro .body p{color:var(--on-dark-2)}
 .bg-ink .asc-intro .body a:not(.btn){color:var(--mint)}
+
+/* Cartes d'informations (« Gut zu wissen », principes) : aucun changement au survol, sur tous les fonds */
+:is(.pcell,.pc,.val):hover{background:var(--paper-3);box-shadow:inset 0 0 0 1px var(--line-2)}
+.bg-soft :is(.pcell,.pc,.val):hover{background:var(--paper)}
+.prac .pcell:hover{background:var(--paper-3);box-shadow:none}
