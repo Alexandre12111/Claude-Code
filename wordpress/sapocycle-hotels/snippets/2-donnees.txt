@@ -13,14 +13,14 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	 * Données
 	 * ===================================================================== */
 
-	public static function get_hotels() {
+	public static function sapo_get_hotels() {
 		$data = get_option( self::OPT_DATA, array() );
 		return is_array( $data ) ? array_values( $data ) : array();
 	}
 
-	private static function save_hotels( array $hotels, $backup = false ) {
+	private static function sapo_save_hotels( array $hotels, $backup = false ) {
 		if ( $backup ) {
-			update_option( self::OPT_BACKUP, array( 'time' => time(), 'data' => self::get_hotels() ), false );
+			update_option( self::OPT_BACKUP, array( 'time' => time(), 'data' => self::sapo_get_hotels() ), false );
 		}
 		usort(
 			$hotels,
@@ -32,7 +32,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		update_option( self::OPT_UPDATED, time(), false );
 	}
 
-	public static function default_settings() {
+	public static function sapo_default_settings() {
 		return array(
 			'tiles'         => 'soft',
 			'tiles_url'     => '',
@@ -49,13 +49,13 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 				'de' => 'Premium-Hotels, die uns mit einer Spende unterstützen',
 				'en' => 'Premium Hotels that make a donation to us',
 			),
-			'columns'       => array_fill_keys( array_keys( self::MAP_COUNTRIES ), self::default_columns() ),
+			'columns'       => array_fill_keys( array_keys( self::MAP_COUNTRIES ), self::sapo_default_columns() ),
 			'header_row'    => array_fill_keys( array_keys( self::MAP_COUNTRIES ), 1 ),
 		);
 	}
 
 	/** Colonnes Excel lues à l'import (lettre de colonne, vide = non utilisée). */
-	public static function default_columns() {
+	public static function sapo_default_columns() {
 		return array(
 			'name'    => 'E',
 			'address' => 'I',
@@ -66,7 +66,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		);
 	}
 
-	public static function column_labels( $country = 'CH' ) {
+	public static function sapo_column_labels( $country = 'CH' ) {
 		$region = array(
 			'CH' => 'Canton',
 			'FR' => 'Région ou département',
@@ -82,12 +82,12 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		);
 	}
 
-	public static function map_country_code( $v ) {
-		$c = self::country_code( $v );
+	public static function sapo_map_country_code( $v ) {
+		$c = self::sapo_country_code( $v );
 		return isset( self::MAP_COUNTRIES[ $c ] ) ? $c : '';
 	}
 
-	private static function col_index( $letter ) {
+	private static function sapo_col_index( $letter ) {
 		$letter = strtoupper( preg_replace( '/[^A-Za-z]/', '', (string) $letter ) );
 		if ( '' === $letter || strlen( $letter ) > 3 ) {
 			return null;
@@ -99,9 +99,9 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return $i - 1;
 	}
 
-	private static function sanitize_columns( $in ) {
+	private static function sapo_sanitize_columns( $in ) {
 		$out = array();
-		foreach ( self::default_columns() as $field => $def ) {
+		foreach ( self::sapo_default_columns() as $field => $def ) {
 			$v             = strtoupper( preg_replace( '/[^A-Za-z]/', '', (string) ( is_array( $in ) && isset( $in[ $field ] ) ? $in[ $field ] : $def ) ) );
 			$out[ $field ] = strlen( $v ) <= 3 ? $v : $def;
 		}
@@ -111,9 +111,9 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return $out;
 	}
 
-	public static function get_settings() {
+	public static function sapo_get_settings() {
 		$saved = get_option( self::OPT_SETTINGS, array() );
-		$def   = self::default_settings();
+		$def   = self::sapo_default_settings();
 		if ( ! is_array( $saved ) ) {
 			return $def;
 		}
@@ -129,7 +129,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		$saved['columns']    = array();
 		$saved['header_row'] = array();
 		foreach ( array_keys( self::MAP_COUNTRIES ) as $c ) {
-			$saved['columns'][ $c ]    = self::sanitize_columns( isset( $cols[ $c ] ) ? $cols[ $c ] : self::default_columns() );
+			$saved['columns'][ $c ]    = self::sapo_sanitize_columns( isset( $cols[ $c ] ) ? $cols[ $c ] : self::sapo_default_columns() );
 			$saved['header_row'][ $c ] = ( ! isset( $head[ $c ] ) || $head[ $c ] ) ? 1 : 0;
 		}
 		foreach ( $def as $k => $v ) {
@@ -146,22 +146,22 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	}
 
 	/** Normalise une chaîne pour les comparaisons (minuscules, sans accents). */
-	private static function norm( $s ) {
+	private static function sapo_norm( $s ) {
 		$s = remove_accents( wp_strip_all_tags( (string) $s ) );
 		$s = function_exists( 'mb_strtolower' ) ? mb_strtolower( $s, 'UTF-8' ) : strtolower( $s );
 		$s = preg_replace( '/[^a-z0-9]+/u', ' ', $s );
 		return trim( preg_replace( '/\s+/', ' ', $s ) );
 	}
 
-	private static function hotel_key( array $h ) {
-		return ( isset( $h['country'] ) ? $h['country'] : 'CH' ) . '|' . self::norm( $h['name'] ) . '|' . self::norm( $h['zip'] );
+	private static function sapo_hotel_key( array $h ) {
+		return ( isset( $h['country'] ) ? $h['country'] : 'CH' ) . '|' . self::sapo_norm( $h['name'] ) . '|' . self::sapo_norm( $h['zip'] );
 	}
 
-	private static function new_id() {
+	private static function sapo_new_id() {
 		return 'h' . strtolower( wp_generate_password( 10, false, false ) );
 	}
 
-	private static function clean_url( $url ) {
+	private static function sapo_clean_url( $url ) {
 		$url = trim( (string) $url );
 		if ( '' === $url ) {
 			return '';
@@ -172,11 +172,11 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return esc_url_raw( $url );
 	}
 
-	private static function to_bool( $v, $default = false ) {
+	private static function sapo_to_bool( $v, $default = false ) {
 		if ( is_bool( $v ) ) {
 			return $v;
 		}
-		$v = self::norm( $v );
+		$v = self::sapo_norm( $v );
 		if ( '' === $v ) {
 			return $default;
 		}
@@ -189,7 +189,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return $default;
 	}
 
-	private static function to_coord( $v, $max ) {
+	private static function sapo_to_coord( $v, $max ) {
 		$v = str_replace( array( ' ', ',' ), array( '', '.' ), trim( (string) $v ) );
 		if ( '' === $v || ! is_numeric( $v ) ) {
 			return null;
@@ -202,7 +202,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	}
 
 	/** Nettoie et valide un hôtel (depuis le formulaire ou l'import). */
-	private static function sanitize_hotel( array $raw, array $base = array() ) {
+	private static function sapo_sanitize_hotel( array $raw, array $base = array() ) {
 		$h = array_merge(
 			array(
 				'id'      => '',
@@ -236,19 +236,19 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 			$h['zip'] = (string) (int) $h['zip'];
 		}
 		if ( array_key_exists( 'country', $raw ) ) {
-			$h['country'] = self::country_code( $raw['country'] );
+			$h['country'] = self::sapo_country_code( $raw['country'] );
 		}
 		if ( array_key_exists( 'canton', $raw ) ) {
-			$h['canton'] = self::canton_value( $raw['canton'], $h['country'] );
+			$h['canton'] = self::sapo_canton_value( $raw['canton'], $h['country'] );
 		}
 		if ( array_key_exists( 'website', $raw ) ) {
-			$h['website'] = self::clean_url( $raw['website'] );
+			$h['website'] = self::sapo_clean_url( $raw['website'] );
 		}
 		if ( array_key_exists( 'lat', $raw ) ) {
-			$h['lat'] = self::to_coord( $raw['lat'], 90 );
+			$h['lat'] = self::sapo_to_coord( $raw['lat'], 90 );
 		}
 		if ( array_key_exists( 'lng', $raw ) ) {
-			$h['lng'] = self::to_coord( $raw['lng'], 180 );
+			$h['lng'] = self::sapo_to_coord( $raw['lng'], 180 );
 		}
 		if ( null === $h['lat'] || null === $h['lng'] ) {
 			$h['lat'] = null;
@@ -260,14 +260,14 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 			if ( preg_match( '/\x{2733}/u', $p ) ) {
 				$h['premium'] = true;
 			} elseif ( '' !== $p ) {
-				$h['premium'] = self::to_bool( $p, false );
+				$h['premium'] = self::sapo_to_bool( $p, false );
 			}
 		}
 		if ( array_key_exists( 'active', $raw ) ) {
-			$h['active'] = self::to_bool( $raw['active'], true );
+			$h['active'] = self::sapo_to_bool( $raw['active'], true );
 		}
 		if ( '' === $h['id'] ) {
-			$h['id'] = self::new_id();
+			$h['id'] = self::sapo_new_id();
 		}
 		return $h;
 	}
@@ -276,7 +276,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	 * Pays et cantons
 	 * ===================================================================== */
 
-	public static function countries() {
+	public static function sapo_countries() {
 		return array(
 			'CH' => array( 'fr' => 'Suisse', 'de' => 'Schweiz', 'en' => 'Switzerland', 'alt' => array( 'svizzera', 'svizra', 'suisse', 'schweiz', 'switzerland', 'swiss', 'ch', 'che' ) ),
 			'LI' => array( 'fr' => 'Liechtenstein', 'de' => 'Liechtenstein', 'en' => 'Liechtenstein', 'alt' => array( 'li', 'lie' ) ),
@@ -299,14 +299,14 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		);
 	}
 
-	private static function country_code( $v ) {
-		$n = self::norm( $v );
+	private static function sapo_country_code( $v ) {
+		$n = self::sapo_norm( $v );
 		if ( '' === $n ) {
 			return 'CH';
 		}
-		foreach ( self::countries() as $code => $c ) {
+		foreach ( self::sapo_countries() as $code => $c ) {
 			if ( $n === strtolower( $code ) || in_array( $n, $c['alt'], true )
-				|| $n === self::norm( $c['fr'] ) || $n === self::norm( $c['de'] ) || $n === self::norm( $c['en'] ) ) {
+				|| $n === self::sapo_norm( $c['fr'] ) || $n === self::sapo_norm( $c['de'] ) || $n === self::sapo_norm( $c['en'] ) ) {
 				return $code;
 			}
 		}
@@ -316,12 +316,12 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return 'CH';
 	}
 
-	public static function country_name( $code, $lang ) {
-		$c = self::countries();
+	public static function sapo_country_name( $code, $lang ) {
+		$c = self::sapo_countries();
 		return isset( $c[ $code ][ $lang ] ) ? $c[ $code ][ $lang ] : $code;
 	}
 
-	public static function cantons() {
+	public static function sapo_cantons() {
 		return array(
 			'AG' => array( 'Argovie', 'Aargau', 'Aargau' ),
 			'AI' => array( 'Appenzell Rhodes-Intérieures', 'Appenzell Innerrhoden', 'Appenzell Innerrhoden' ),
@@ -353,21 +353,21 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	}
 
 	/** Pour la Suisse : accepte « ZH », « Zurich », « Zürich »… et renvoie le code. */
-	private static function canton_value( $v, $country ) {
+	private static function sapo_canton_value( $v, $country ) {
 		$v = sanitize_text_field( (string) $v );
 		if ( 'CH' !== $country || '' === $v ) {
 			return $v;
 		}
-		$n = self::norm( $v );
+		$n = self::sapo_norm( $v );
 		if ( 'th' === $n ) {
 			return 'TG'; // Ancienne abréviation erronée de Thurgovie.
 		}
-		foreach ( self::cantons() as $code => $names ) {
+		foreach ( self::sapo_cantons() as $code => $names ) {
 			if ( $n === strtolower( $code ) ) {
 				return $code;
 			}
 			foreach ( $names as $name ) {
-				if ( $n === self::norm( $name ) ) {
+				if ( $n === self::sapo_norm( $name ) ) {
 					return $code;
 				}
 			}
@@ -375,9 +375,9 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return $v;
 	}
 
-	public static function canton_label( $canton, $country, $lang ) {
+	public static function sapo_canton_label( $canton, $country, $lang ) {
 		if ( 'CH' === $country ) {
-			$c = self::cantons();
+			$c = self::sapo_cantons();
 			if ( isset( $c[ $canton ] ) ) {
 				$i = array( 'fr' => 0, 'de' => 1, 'en' => 2 );
 				return $c[ $canton ][ $i[ $lang ] ];
@@ -390,17 +390,17 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	 * Icônes
 	 * ===================================================================== */
 
-	public static function smiley_svg( $color = 'green', $w = 42, $h = 69 ) {
+	public static function sapo_smiley_svg( $color = 'green', $w = 42, $h = 69 ) {
 		$fill   = 'red' === $color ? '#D0786D' : '#A2BD2F';
 		$stroke = 'red' === $color ? '#92352A' : '#5B6D12';
 		return '<svg xmlns="http://www.w3.org/2000/svg" width="' . (int) $w . '" height="' . (int) $h . '" viewBox="0 0 42 69" aria-hidden="true" focusable="false"><g fill="none" fill-rule="evenodd" transform="translate(-2)"><path fill="' . $fill . '" stroke="' . $stroke . '" stroke-width="2" d="' . self::PIN_PATH . '"/><path fill="#FFF" d="' . self::FACE_PATH . '"/></g></svg>';
 	}
 
-	public static function smiley_data_uri( $color ) {
-		return 'data:image/svg+xml;base64,' . base64_encode( self::smiley_svg( $color ) );
+	public static function sapo_smiley_data_uri( $color ) {
+		return 'data:image/svg+xml;base64,' . base64_encode( self::sapo_smiley_svg( $color ) );
 	}
 
-	public static function premium_svg( $size = 18 ) {
+	public static function sapo_premium_svg( $size = 18 ) {
 		return '<svg class="sapo-hm-premium-icon" width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
 	}
 
@@ -408,7 +408,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 	 * Langues
 	 * ===================================================================== */
 
-	public static function current_lang( $forced = '' ) {
+	public static function sapo_current_lang( $forced = '' ) {
 		$forced = strtolower( (string) $forced );
 		if ( in_array( $forced, array( 'fr', 'de', 'en' ), true ) ) {
 			return $forced;
@@ -424,7 +424,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Donnees', false ) ) {
 		return in_array( $lang, array( 'fr', 'de', 'en' ), true ) ? $lang : 'en';
 	}
 
-	public static function strings( $lang ) {
+	public static function sapo_strings( $lang ) {
 		$s = array(
 			'fr' => array(
 				'search'       => 'Rechercher un hôtel, une ville, un NPA…',

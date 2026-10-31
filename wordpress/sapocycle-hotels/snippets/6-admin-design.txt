@@ -13,7 +13,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminDesign', false ) ) {
 	 * Administration : CSS
 	 * ===================================================================== */
 
-	private static function admin_css() {
+	private static function sapo_admin_css() {
 		return <<<'CSS'
 .sapo-a{--b:#0069B4;--b2:#0175D6;--sky:#2EA3F2;--g:#A2BD2F;--gd:#5E7F12;--r:#C0392B;--t:#1F2328;--m:#5F6670;--line:#E2E5E9;--bg:#F6F7F9;--w:#fff;--rad:10px;max-width:1360px;margin:20px 20px 40px 0;color:var(--t);font-size:14px}
 .sapo-a *{box-sizing:border-box}

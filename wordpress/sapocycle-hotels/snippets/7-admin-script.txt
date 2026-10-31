@@ -13,7 +13,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminScript', false ) ) {
 	 * Administration : JS
 	 * ===================================================================== */
 
-	private static function admin_js() {
+	private static function sapo_admin_js() {
 		return <<<'JS'
 (function(){
 "use strict";

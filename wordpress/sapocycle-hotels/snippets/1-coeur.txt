@@ -74,26 +74,26 @@ function sapo_hotels_boot() {
 		 * Bootstrap
 		 * ===================================================================== */
 
-		public static function init() {
-			add_action( 'init', array( __CLASS__, 'register_shortcode' ) );
-			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_front_assets' ) );
-			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
-			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_assets' ) );
+		public static function sapo_init() {
+			add_action( 'init', array( __CLASS__, 'sapo_register_shortcode' ) );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'sapo_register_front_assets' ) );
+			add_action( 'admin_menu', array( __CLASS__, 'sapo_admin_menu' ) );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'sapo_admin_assets' ) );
 
 			foreach ( array( 'save', 'delete', 'import', 'geocode', 'settings', 'restore' ) as $a ) {
-				add_action( 'wp_ajax_sapo_hotels_' . $a, array( __CLASS__, 'ajax_' . $a ) );
+				add_action( 'wp_ajax_sapo_hotels_' . $a, array( __CLASS__, 'sapo_ajax_' . $a ) );
 			}
-			add_action( 'admin_post_sapo_hotels_export', array( __CLASS__, 'download_export' ) );
+			add_action( 'admin_post_sapo_hotels_export', array( __CLASS__, 'sapo_download_export' ) );
 		}
 
-		public static function capability() {
+		public static function sapo_capability() {
 			return apply_filters( 'sapo_hotels_capability', 'edit_pages' );
 		}
 	}
 
-	Sapo_Hotels_Map::init();
+	Sapo_Hotels_Map::sapo_init();
 	if ( did_action( 'init' ) ) {
-		Sapo_Hotels_Map::register_shortcode();
+		Sapo_Hotels_Map::sapo_register_shortcode();
 	}
 }
 

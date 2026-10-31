@@ -13,19 +13,19 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
 	 * Administration : menu et page
 	 * ===================================================================== */
 
-	public static function admin_menu() {
+	public static function sapo_admin_menu() {
 		add_menu_page(
 			'Carte des hôtels SapoCycle',
 			'Carte des hôtels',
-			self::capability(),
+			self::sapo_capability(),
 			self::SLUG,
-			array( __CLASS__, 'render_admin' ),
+			array( __CLASS__, 'sapo_render_admin' ),
 			'data:image/svg+xml;base64,' . base64_encode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 69"><g transform="translate(-2)"><path fill="#a7aaad" d="' . self::PIN_PATH . '"/><path fill="#1d2327" d="' . self::FACE_PATH . '"/></g></svg>' ),
 			26
 		);
 	}
 
-	public static function admin_assets( $hook ) {
+	public static function sapo_admin_assets( $hook ) {
 		if ( 'toplevel_page_' . self::SLUG !== $hook ) {
 			return;
 		}
@@ -34,17 +34,17 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
 
 		wp_register_style( 'sapo-hotels-admin', false, array( 'sapo-leaflet' ), self::VERSION );
 		wp_enqueue_style( 'sapo-hotels-admin' );
-		wp_add_inline_style( 'sapo-hotels-admin', self::admin_css() );
+		wp_add_inline_style( 'sapo-hotels-admin', self::sapo_admin_css() );
 
 		wp_register_script( 'sapo-hotels-admin', false, array( 'sapo-leaflet' ), self::VERSION, true );
 		wp_enqueue_script( 'sapo-hotels-admin' );
 
 		$countries = array();
-		foreach ( self::countries() as $code => $c ) {
+		foreach ( self::sapo_countries() as $code => $c ) {
 			$countries[ $code ] = $c['fr'];
 		}
 		$cantons = array();
-		foreach ( self::cantons() as $code => $n ) {
+		foreach ( self::sapo_cantons() as $code => $n ) {
 			$cantons[ $code ] = $n[0];
 		}
 		$backup = get_option( self::OPT_BACKUP );
@@ -53,34 +53,34 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
 			'nonce'     => wp_create_nonce( self::NONCE ),
 			'export'    => wp_nonce_url( admin_url( 'admin-post.php?action=sapo_hotels_export' ), 'sapo_hotels_export' ),
 			'template'  => wp_nonce_url( admin_url( 'admin-post.php?action=sapo_hotels_export&template=1' ), 'sapo_hotels_export' ),
-			'hotels'    => self::get_hotels(),
-			'settings'  => self::get_settings(),
+			'hotels'    => self::sapo_get_hotels(),
+			'settings'  => self::sapo_get_settings(),
 			'countries' => $countries,
 			'cantons'   => $cantons,
-			'colLabels' => array_combine( array_keys( self::MAP_COUNTRIES ), array_map( array( __CLASS__, 'column_labels' ), array_keys( self::MAP_COUNTRIES ) ) ),
+			'colLabels' => array_combine( array_keys( self::MAP_COUNTRIES ), array_map( array( __CLASS__, 'sapo_column_labels' ), array_keys( self::MAP_COUNTRIES ) ) ),
 			'mapCountries' => array_keys( self::MAP_COUNTRIES ),
 			'imports'   => array_map( function ( $t ) { return wp_date( 'd.m.Y à H:i', $t ); }, (array) get_option( self::OPT_IMPORTS, array() ) ),
 			'icons'     => array(
-				'green' => self::smiley_data_uri( 'green' ),
+				'green' => self::sapo_smiley_data_uri( 'green' ),
 			),
 			'backup'    => ( is_array( $backup ) && ! empty( $backup['time'] ) ) ? wp_date( 'd.m.Y à H:i', $backup['time'] ) : '',
 			'updated'   => get_option( self::OPT_UPDATED ) ? wp_date( 'd.m.Y à H:i', get_option( self::OPT_UPDATED ) ) : '',
 		);
 		wp_add_inline_script( 'sapo-hotels-admin', 'window.SAPO_HOTELS=' . wp_json_encode( $data, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE ) . ';', 'before' );
-		wp_add_inline_script( 'sapo-hotels-admin', self::admin_js() );
+		wp_add_inline_script( 'sapo-hotels-admin', self::sapo_admin_js() );
 	}
 
-	public static function render_admin() {
-		if ( ! current_user_can( self::capability() ) ) {
+	public static function sapo_render_admin() {
+		if ( ! current_user_can( self::sapo_capability() ) ) {
 			wp_die( esc_html__( 'Accès refusé.', 'sapo-hotels' ) );
 		}
-		$premium = self::premium_svg( 16 );
+		$premium = self::sapo_premium_svg( 16 );
 		?>
 		<div class="wrap sapo-a" id="sapo-a">
 			<h1 class="sapo-a__sr">Carte des hôtels SapoCycle</h1>
 			<header class="sapo-a__head">
 				<div class="sapo-a__brand">
-					<span class="sapo-a__logo"><?php echo self::smiley_svg( 'green', 26, 43 ); // phpcs:ignore ?></span>
+					<span class="sapo-a__logo"><?php echo self::sapo_smiley_svg( 'green', 26, 43 ); // phpcs:ignore ?></span>
 					<div>
 						<p class="sapo-a__title">Carte des hôtels</p>
 						<p class="sapo-a__sub">Gérez les hôtels membres affichés sur la carte, en français, allemand et anglais. <span data-updated></span></p>
@@ -168,7 +168,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
 						?>
 						<button type="button" role="tab" class="sapo-country" data-imp-country="<?php echo esc_attr( $code ); ?>" aria-selected="<?php echo $first ? 'true' : 'false'; ?>">
 							<?php echo $flags[ $code ]; // phpcs:ignore ?>
-							<span class="sapo-country__t"><strong><?php echo esc_html( self::country_name( $code, 'fr' ) ); ?></strong><small data-imp-meta="<?php echo esc_attr( $code ); ?>"></small></span>
+							<span class="sapo-country__t"><strong><?php echo esc_html( self::sapo_country_name( $code, 'fr' ) ); ?></strong><small data-imp-meta="<?php echo esc_attr( $code ); ?>"></small></span>
 						</button>
 						<?php
 						$first = false;
@@ -201,7 +201,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
 							<fieldset class="sapo-colmap">
 								<legend>Colonnes lues dans le fichier Excel</legend>
 								<div class="sapo-colmap__grid">
-									<?php foreach ( self::column_labels( 'CH' ) as $field => $label ) : ?>
+									<?php foreach ( self::sapo_column_labels( 'CH' ) as $field => $label ) : ?>
 										<label class="sapo-colmap__item"><span data-col-label="<?php echo esc_attr( $field ); ?>"><?php echo esc_html( $label ); ?></span><input name="<?php echo esc_attr( 'col_' . $field ); ?>" maxlength="3" autocomplete="off" spellcheck="false" aria-label="<?php echo esc_attr( 'Lettre de colonne : ' . $label ); ?>"></label>
 									<?php endforeach; ?>
 								</div>
@@ -250,7 +250,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
 						<div class="sapo-sc">
 							<div class="sapo-sc__h"></div><div class="sapo-sc__h">Français</div><div class="sapo-sc__h">Deutsch</div><div class="sapo-sc__h">English</div>
 							<?php foreach ( self::MAP_COUNTRIES as $code => $slug ) : ?>
-								<div class="sapo-sc__k"><?php echo $flags[ $code ]; // phpcs:ignore ?><?php echo esc_html( self::country_name( $code, 'fr' ) ); ?></div>
+								<div class="sapo-sc__k"><?php echo $flags[ $code ]; // phpcs:ignore ?><?php echo esc_html( self::sapo_country_name( $code, 'fr' ) ); ?></div>
 								<?php foreach ( array( 'fr', 'de', 'en' ) as $l ) : $tag = '[sapocycle_' . $slug . '_' . $l . ']'; ?>
 									<button type="button" class="sapo-sc__b" data-copy="<?php echo esc_attr( $tag ); ?>" title="Copier"><code><?php echo esc_html( $tag ); ?></code><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
 								<?php endforeach; ?>

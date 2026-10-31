@@ -108,9 +108,9 @@ function sapo_hotels_boot() {
 %s
 	}
 
-	Sapo_Hotels_Map::init();
+	Sapo_Hotels_Map::sapo_init();
 	if ( did_action( 'init' ) ) {
-		Sapo_Hotels_Map::register_shortcode();
+		Sapo_Hotels_Map::sapo_register_shortcode();
 	}
 }
 

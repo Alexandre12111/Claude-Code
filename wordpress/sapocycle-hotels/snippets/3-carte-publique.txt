@@ -14,7 +14,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 	 * ===================================================================== */
 
 	/** Les 9 shortcodes : [sapocycle_suisse_fr], [sapocycle_suisse_de], [sapocycle_suisse_en], [sapocycle_france_fr]… */
-	public static function shortcode_names() {
+	public static function sapo_shortcode_names() {
 		$out = array();
 		foreach ( self::MAP_COUNTRIES as $code => $slug ) {
 			foreach ( array( 'fr', 'de', 'en' ) as $lang ) {
@@ -24,37 +24,37 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 		return $out;
 	}
 
-	public static function register_shortcode() {
-		add_shortcode( 'sapocycle_hotels', array( __CLASS__, 'shortcode' ) );
-		foreach ( self::shortcode_names() as $tag => $cl ) {
+	public static function sapo_register_shortcode() {
+		add_shortcode( 'sapocycle_hotels', array( __CLASS__, 'sapo_shortcode' ) );
+		foreach ( self::sapo_shortcode_names() as $tag => $cl ) {
 			add_shortcode(
 				$tag,
 				function ( $atts ) use ( $cl ) {
 					$atts            = (array) $atts;
 					$atts['country'] = $cl[0];
 					$atts['lang']    = $cl[1];
-					return self::shortcode( $atts );
+					return self::sapo_shortcode( $atts );
 				}
 			);
 		}
 	}
 
-	public static function register_front_assets() {
+	public static function sapo_register_front_assets() {
 		wp_register_style( 'sapo-leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/' . self::LEAFLET_VER . '/leaflet.min.css', array(), self::LEAFLET_VER );
 		wp_register_style( 'sapo-leaflet-cluster', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/' . self::CLUSTER_VER . '/MarkerCluster.min.css', array( 'sapo-leaflet' ), self::CLUSTER_VER );
 		wp_register_script( 'sapo-leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/' . self::LEAFLET_VER . '/leaflet.min.js', array(), self::LEAFLET_VER, true );
 		wp_register_script( 'sapo-leaflet-cluster', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/' . self::CLUSTER_VER . '/leaflet.markercluster.min.js', array( 'sapo-leaflet' ), self::CLUSTER_VER, true );
 
 		wp_register_style( 'sapo-hotels', false, array( 'sapo-leaflet', 'sapo-leaflet-cluster' ), self::VERSION );
-		wp_add_inline_style( 'sapo-hotels', self::front_css() );
+		wp_add_inline_style( 'sapo-hotels', self::sapo_front_css() );
 		wp_register_script( 'sapo-hotels', false, array( 'sapo-leaflet', 'sapo-leaflet-cluster' ), self::VERSION, true );
-		wp_add_inline_script( 'sapo-hotels', self::front_js() );
+		wp_add_inline_script( 'sapo-hotels', self::sapo_front_js() );
 
 		// Chargement anticipé des styles dans le <head> si le shortcode est présent.
 		if ( is_singular() ) {
 			$post = get_post();
 			if ( $post ) {
-				foreach ( array_merge( array( 'sapocycle_hotels' ), array_keys( self::shortcode_names() ) ) as $tag ) {
+				foreach ( array_merge( array( 'sapocycle_hotels' ), array_keys( self::sapo_shortcode_names() ) ) as $tag ) {
 					if ( has_shortcode( $post->post_content, $tag ) ) {
 						wp_enqueue_style( 'sapo-hotels' );
 						break;
@@ -64,7 +64,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 		}
 	}
 
-	public static function shortcode( $atts ) {
+	public static function sapo_shortcode( $atts ) {
 		$atts = shortcode_atts(
 			array(
 				'country' => '',
@@ -78,22 +78,22 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 		);
 
 		if ( ! wp_style_is( 'sapo-hotels', 'registered' ) ) {
-			self::register_front_assets();
+			self::sapo_register_front_assets();
 		}
 		wp_enqueue_style( 'sapo-hotels' );
 		wp_enqueue_script( 'sapo-hotels' );
 
-		$lang     = self::current_lang( $atts['lang'] );
-		$t        = self::strings( $lang );
-		$settings = self::get_settings();
+		$lang     = self::sapo_current_lang( $atts['lang'] );
+		$t        = self::sapo_strings( $lang );
+		$settings = self::sapo_get_settings();
 		$height   = absint( $atts['height'] ? $atts['height'] : $settings['height'] );
 		$height   = max( 320, min( 1200, $height ? $height : 620 ) );
 
-		$wanted = array_filter( array_map( array( __CLASS__, 'country_code' ), array_filter( array_map( 'trim', explode( ',', $atts['country'] ) ) ) ) );
+		$wanted = array_filter( array_map( array( __CLASS__, 'sapo_country_code' ), array_filter( array_map( 'trim', explode( ',', $atts['country'] ) ) ) ) );
 
 		$hotels    = array();
 		$countries = array();
-		foreach ( self::get_hotels() as $h ) {
+		foreach ( self::sapo_get_hotels() as $h ) {
 			if ( empty( $h['active'] ) || null === $h['lat'] || null === $h['lng'] ) {
 				continue;
 			}
@@ -107,7 +107,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 				'z' => $h['zip'],
 				'c' => $h['city'],
 				'k' => $h['canton'],
-				'kl' => self::canton_label( $h['canton'], $h['country'], $lang ),
+				'kl' => self::sapo_canton_label( $h['canton'], $h['country'], $lang ),
 				'p' => $h['country'],
 				'w' => $h['website'],
 				'la' => (float) $h['lat'],
@@ -132,7 +132,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 		foreach ( $order as $code ) {
 			$country_list[] = array(
 				'code'  => $code,
-				'name'  => self::country_name( $code, $lang ),
+				'name'  => self::sapo_country_name( $code, $lang ),
 				'count' => $countries[ $code ],
 			);
 		}
@@ -148,12 +148,12 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 			'lang'      => $lang,
 			'hotels'    => $hotels,
 			'countries' => $country_list,
-			'cantons'   => self::cantons_for_front( $lang ),
+			'cantons'   => self::sapo_cantons_for_front( $lang ),
 			't'         => $t,
 			'tiles'     => $tile,
 			'cluster'   => ! empty( $settings['cluster'] ),
 			'icons'     => array(
-				'green' => self::smiley_data_uri( 'green' ),
+				'green' => self::sapo_smiley_data_uri( 'green' ),
 			),
 		);
 
@@ -221,8 +221,8 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 			<ul class="sapo-hm__legend">
 				<?php
 				$leg = array(
-					array( self::smiley_svg( 'green', 16, 26 ), $settings['legend_member'][ $lang ] ),
-					array( self::premium_svg( 18 ), $settings['legend_premium'][ $lang ] ),
+					array( self::sapo_smiley_svg( 'green', 16, 26 ), $settings['legend_member'][ $lang ] ),
+					array( self::sapo_premium_svg( 18 ), $settings['legend_premium'][ $lang ] ),
 				);
 				foreach ( $leg as $l ) :
 					if ( '' === trim( (string) $l[1] ) ) {
@@ -240,10 +240,10 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 		return ob_get_clean();
 	}
 
-	private static function cantons_for_front( $lang ) {
+	private static function sapo_cantons_for_front( $lang ) {
 		$out = array();
-		foreach ( array_keys( self::cantons() ) as $code ) {
-			$out[ $code ] = self::canton_label( $code, 'CH', $lang );
+		foreach ( array_keys( self::sapo_cantons() ) as $code ) {
+			$out[ $code ] = self::sapo_canton_label( $code, 'CH', $lang );
 		}
 		return $out;
 	}
@@ -252,7 +252,7 @@ if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
 	 * Front : CSS
 	 * ===================================================================== */
 
-	private static function front_css() {
+	private static function sapo_front_css() {
 		return <<<'CSS'
 .sapo-hm{--sapo-blue:#0069B4;--sapo-blue-2:#0175D6;--sapo-sky:#2EA3F2;--sapo-green:#A2BD2F;--sapo-green-d:#5B6D12;--sapo-text:#3D3D3D;--sapo-muted:#666B73;--sapo-bg:#F4F4F4;--sapo-line:#E3E5E8;--sapo-white:#fff;--sapo-r:6px;--sapo-head:'Montserrat',Helvetica,Arial,Lucida,sans-serif;--sapo-body:'Source Sans Pro',Helvetica,Arial,Lucida,sans-serif;font-family:var(--sapo-body);color:var(--sapo-text);font-size:16px;line-height:1.5;margin:0 0 24px;-webkit-font-smoothing:antialiased}
 .sapo-hm *,.sapo-hm *::before,.sapo-hm *::after{box-sizing:border-box}
@@ -375,7 +375,7 @@ CSS;
 	 * Front : JS
 	 * ===================================================================== */
 
-	private static function front_js() {
+	private static function sapo_front_js() {
 		return <<<'JS'
 (function(){
 "use strict";
