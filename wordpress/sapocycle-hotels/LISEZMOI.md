@@ -3,7 +3,7 @@
 Module WordPress qui remplace la carte WP Store Locator de la page Hôtels de sapocycle.org.
 
 * Une carte par pays (onglets automatiques dès qu'un 2e pays apparaît dans la liste)
-* Les smileys vert et rouge du site comme marqueurs, le ✳️ Premium devient une icône dédiée
+* Le smiley vert du site comme marqueur (plus de pin rouge), le ✳️ Premium devient une icône dédiée
 * Barre de recherche (nom, adresse, NPA, ville, canton) + filtre par canton
 * Fiche hôtel : nom, adresse, NPA, ville, canton, site internet
 * Traduction automatique FR / DE / EN via WPML
@@ -17,7 +17,7 @@ Module WordPress qui remplace la carte WP Store Locator de la page Hôtels de sa
 | `sapocycle-hotels-map.php` | Le module complet (un seul fichier) |
 | `code-snippet-sans-balise-php.txt` | Le même code sans la ligne `<?php`, prêt à coller dans Code Snippets |
 | `sapocycle-hotels-map.zip` | Le même code en extension WordPress installable |
-| `hotels-sapocycle-import.xlsx` | Les 95 hôtels actuels du site, nettoyés, à importer une première fois |
+| `hotels-sapocycle-import.xlsx` | Les 95 hôtels actuels du site, nettoyés, au format colonnes E, I, J, K, L, M |
 | `apercus/` | Captures de la carte et de l'administration |
 
 ## Installation
@@ -60,11 +60,24 @@ Le bouton **Annuler le dernier import** restaure la liste précédente.
 
 Les hôtels sans latitude/longitude sont géolocalisés automatiquement à partir de l'adresse (environ 1 seconde par hôtel). Une adresse introuvable se place à la main dans la fiche de l'hôtel en faisant glisser le smiley.
 
-### Colonnes reconnues
+### Colonnes lues
 
-Titres en français, allemand ou anglais, dans n'importe quel ordre :
+L'import lit uniquement ces colonnes du fichier Excel (première feuille) :
 
-`Nom` (obligatoire), `Adresse`, `NPA`, `Ville`, `Canton`, `Pays`, `Site internet`, `Smiley` (vert / rouge), `Premium` (oui / non), `Actif` (oui / non), `Latitude`, `Longitude`.
+| Colonne | Contenu |
+|---|---|
+| **E** | Nom de l'hôtel (obligatoire). Un nom qui commence par ✳️ = hôtel Premium donateur |
+| **I** | Adresse |
+| **J** | NPA |
+| **K** | Ville |
+| **L** | Canton (ZH, VD… ou nom complet) |
+| **M** | Site internet |
+
+Toutes les autres colonnes sont ignorées. Les lettres se changent dans l'onglet Import Excel si le fichier évolue. Par défaut la ligne 1 est considérée comme une ligne de titres et ignorée (case à cocher).
+
+Coordonnées GPS : celles d'un hôtel déjà connu (même nom, NPA et adresse) sont conservées. Pour les autres, le module reprend d'abord les coordonnées de l'ancienne carte WP Store Locator si elle est encore installée (instantané), sinon il géolocalise l'adresse via OpenStreetMap (environ 1 seconde par hôtel). **Gardez donc WP Store Locator actif jusqu'au premier import.**
+
+La case « Visible sur la carte » réglée dans l'administration est conservée d'un import à l'autre.
 
 Formats : `.xlsx` ou `.csv` (le vieux `.xls` doit être réenregistré en `.xlsx`).
 
@@ -83,12 +96,11 @@ Restent à compléter (filtre « Infos incomplètes » dans l'administration) :
 
 * 26 hôtels sans NPA
 * 2 hôtels sans site internet : Airport Hotel Basel, La Réserve Genève
-* Signification du smiley rouge (4 hôtels) : à renseigner dans Réglages › Textes de la légende si vous voulez l'afficher
 
 ## Bon à savoir
 
 * **Droits** : le menu est accessible aux éditeurs et administrateurs (capacité `edit_pages`).
 * **Cookies** : la carte charge les tuiles OpenStreetMap et Leaflet depuis cdnjs. Si Complianz bloquait la carte Google, vérifiez qu'il ne bloque pas `tile.openstreetmap.org`, ou déclarez le service OpenStreetMap.
 * **Fond de carte** : « OpenStreetMap adouci » par défaut. Un fournisseur avec clé (MapTiler, Stadia, CARTO) peut être renseigné dans Réglages.
-* **Ancienne carte** : WP Store Locator peut être désactivé une fois la nouvelle carte en ligne.
+* **Ancienne carte** : WP Store Locator peut être désactivé une fois le premier import terminé et la nouvelle carte en ligne.
 * Les données sont stockées dans l'option WordPress `sapo_hotels_data`.
