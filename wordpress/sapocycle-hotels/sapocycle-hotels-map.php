@@ -718,7 +718,7 @@ final class Sapo_Hotels_Map {
 		ob_start();
 		?>
 		<div class="sapo-hm<?php echo $soft ? ' sapo-hm--soft' : ''; ?>" id="<?php echo esc_attr( $uid ); ?>" style="--sapo-hm-h:<?php echo (int) $height; ?>px" data-lang="<?php echo esc_attr( $lang ); ?>">
-			<script type="application/json" class="sapo-hm__data"><?php echo wp_json_encode( $config, JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE ); ?></script>
+			<div class="sapo-hm__data" hidden data-config="<?php echo esc_attr( wp_json_encode( $config, JSON_UNESCAPED_UNICODE ) ); ?>"></div>
 
 			<?php if ( ! $hotels ) : ?>
 				<p class="sapo-hm__empty-all"><?php echo esc_html( $t['empty'] ); ?></p>
@@ -942,7 +942,7 @@ var PREMIUM='<svg class="sapo-hm-premium-icon" width="18" height="18" viewBox="0
 var EXT='<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 function Map_(root){
-  var cfg;try{cfg=JSON.parse(root.querySelector(".sapo-hm__data").textContent);}catch(e){return;}
+  var cfg;try{cfg=JSON.parse(root.querySelector(".sapo-hm__data").getAttribute("data-config"));}catch(e){return;}
   if(!cfg.hotels||!cfg.hotels.length||!window.L)return;
   var t=cfg.t,L=window.L;
   var $=function(s){return root.querySelector(s);};
