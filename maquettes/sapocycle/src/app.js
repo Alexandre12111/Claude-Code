@@ -54,13 +54,20 @@
     const walk = (node) => {
       Array.from(node.childNodes).forEach((ch) => {
         if (ch.nodeType === 3) {
+          // Les lettres sont regroupées par mot pour ne jamais couper un mot en fin de ligne
           const frag = document.createDocumentFragment();
-          Array.from(ch.textContent).forEach((c) => {
-            if (c === ' ') { frag.appendChild(document.createTextNode(' ')); return; }
-            const s = document.createElement('span');
-            s.className = 'ch';
-            s.textContent = c;
-            frag.appendChild(s);
+          ch.textContent.split(/(\s+)/).forEach((word) => {
+            if (!word) return;
+            if (/^\s+$/.test(word)) { frag.appendChild(document.createTextNode(' ')); return; }
+            const w = document.createElement('span');
+            w.className = 'chw';
+            Array.from(word).forEach((c) => {
+              const s = document.createElement('span');
+              s.className = 'ch';
+              s.textContent = c;
+              w.appendChild(s);
+            });
+            frag.appendChild(w);
           });
           node.replaceChild(frag, ch);
         } else if (ch.nodeType === 1) {
@@ -199,7 +206,7 @@
   if (morph && MOTION) {
     $$('.line', morph).forEach((l) => splitChars(l));
     chars = $$('.ch', morph);
-    const hero = morph.closest('.hero');
+    const hero = morph.closest('.xp__ch--hero') || morph.parentElement;
     hero.addEventListener('pointermove', (e) => { pointer.x = e.clientX; pointer.y = e.clientY; }, { passive: true });
     hero.addEventListener('pointerleave', () => { pointer.x = -9999; pointer.y = -9999; });
     window.addEventListener('resize', measureChars);
@@ -233,11 +240,61 @@
   if (HAS_GSAP) gsap.ticker.add(marqueeTick);
 
   /* ------------------------------------------------------------------ */
+  /* Expérience 3D : le savon suit le défilement                         */
+  /* ------------------------------------------------------------------ */
+  let xp = null;
+  function webglOK() {
+    try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); } catch (e) { return false; }
+  }
+  function setupXP(view) {
+    const sec = $('#xp', view);
+    if (!sec) return;
+    if (!window.SoapXP || !webglOK()) { sec.classList.add('is-static'); return; }
+    const boot = () => {
+      if (!xp) {
+        xp = window.SoapXP($('#soapGL'), { particles: window.innerWidth < 820 ? 2600 : 5200, crowd: window.innerWidth < 820 ? 60 : 90 });
+        window.addEventListener('resize', () => xp.resize());
+        window.addEventListener('pointermove', (e) => xp.setPointer(e.clientX / window.innerWidth * 2 - 1, e.clientY / window.innerHeight * 2 - 1), { passive: true });
+      }
+      xp.resize();
+      xp.play();
+    };
+    if (document.fonts && document.fonts.load) document.fonts.load('200px Comfortaa').then(boot, boot); else boot();
+
+    const steps = $$('.xp__steps li', sec), bar = $('.xp__bar span', sec), lives = $$('[data-live]', sec);
+    const chs = $$('.xp__ch', sec);
+    // Progression calée sur le chapitre au centre de l'écran : le chapitre i couvre [i/7, (i+1)/7]
+    const chapterProgress = () => {
+      const mid = window.innerHeight * 0.5;
+      for (let i = 0; i < chs.length; i++) {
+        const r = chs[i].getBoundingClientRect();
+        if (mid >= r.top && mid < r.bottom) return { i, p: (i + (mid - r.top) / r.height) / chs.length };
+      }
+      return chs[0].getBoundingClientRect().top > mid ? { i: 0, p: 0 } : { i: chs.length - 1, p: 1 };
+    };
+    ScrollTrigger.create({
+      trigger: sec, start: 'top bottom', end: 'bottom top',
+      onUpdate: () => {
+        const { i, p } = chapterProgress();
+        if (xp) xp.setProgress(p);
+        sec.dataset.tone = i === 3 || i === 4 ? 'dark' : i === 5 ? 'blue' : 'light';
+        bar.style.transform = 'scaleX(' + p + ')';
+        steps.forEach((li, k) => li.classList.toggle('is-on', k < i));
+        lives.forEach((el) => { const k = clamp((p - Number(el.dataset.from)) / (Number(el.dataset.to) - Number(el.dataset.from)), 0, 1); el.textContent = fmt(Number(el.dataset.live) * k); });
+      },
+      onToggle: (s) => { if (!xp) return; if (s.isActive) xp.play(); else xp.pause(); }
+    });
+    $$('.xp__ch:not(.xp__ch--hero) .xp__box', sec).forEach((b) => {
+      gsap.from(b.children, { y: 50, opacity: 0, stagger: 0.08, duration: 1.2, ease: 'expo.out', scrollTrigger: { trigger: b, start: 'top 78%', toggleActions: 'play none none reverse' } });
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Animations propres à chaque page                                    */
   /* ------------------------------------------------------------------ */
   let ctx = null;
   function initView(view, name) {
-    if (!MOTION) return;
+    if (!MOTION) { const s = $('#xp', view); if (s) s.classList.add('is-static'); return; }
     ctx = gsap.context(() => {
       $$('.split', view).forEach((h) => {
         const words = splitWords(h);
@@ -277,12 +334,8 @@
         ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => { const o = { v: 0 }; gsap.to(o, { v: end, duration: 2.4, ease: 'power3.out', onUpdate: () => { el.textContent = fmt(o.v); } }); } });
       });
 
-      // Accueil
-      if (name === 'accueil') {
-        gsap.to('[data-hero-media] img', { yPercent: 10, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
-        gsap.to('.hero__title', { yPercent: -18, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
-        gsap.to('.cta .bub', { yPercent: -30, ease: 'none', scrollTrigger: { trigger: '.cta', start: 'top bottom', end: 'bottom top', scrub: true } });
-      }
+      // Accueil : l'expérience du savon
+      if (name === 'accueil') setupXP(view);
 
       // Savoir-faire : parcours horizontal épinglé
       if (name === 'savoir-faire') {
@@ -337,6 +390,7 @@
     document.title = (name === 'accueil' ? 'SapoCycle' : views[name].dataset.title + ' · SapoCycle');
     movePill(currentLink());
     if (ctx) { ctx.revert(); ctx = null; }
+    if (xp && name !== 'accueil') xp.pause();
     scrollTop();
     initView(views[name], name);
     if (HAS_GSAP) ScrollTrigger.refresh();
@@ -387,10 +441,9 @@
   function heroIntro() {
     if (!MOTION || current !== 'accueil') return;
     gsap.timeline({ defaults: { ease: 'expo.out' } })
-      .fromTo('[data-hero-media] img', { scale: 1.15 }, { scale: 1, duration: 3, ease: 'power3.out' }, 0)
       .from('.hero__title .line', { yPercent: 60, opacity: 0, duration: 1.6, stagger: 0.12 }, 0.15)
       .from('[data-hero]', { y: 24, opacity: 0, duration: 1.4, stagger: 0.1 }, 0.5)
-      .from('.hero__badge', { scale: 0.4, opacity: 0, rotate: -90, duration: 1.6 }, 0.6);
+      .from('#soapGL', { opacity: 0, scale: 0.92, duration: 2.2, ease: 'power3.out' }, 0);
   }
   show(first);
   if (loader) {

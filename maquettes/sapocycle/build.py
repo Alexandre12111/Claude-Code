@@ -15,8 +15,9 @@ ASSETS = ROOT / "assets"
 GSAP = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
 SCROLLTRIGGER = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
 LENIS = "https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"
+THREE = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
 FONTS = ("https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900"
-         "&family=Geist:wght@300..600&display=swap")
+         "&family=Geist:wght@300..600&family=Comfortaa:wght@400&display=swap")
 
 TITLE = "Maquette SapoCycle"
 BLANK = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -44,7 +45,7 @@ def data_uri(name: str) -> str:
 
 def build() -> None:
     css = (SRC / "styles.css").read_text(encoding="utf-8")
-    js = (SRC / "app.js").read_text(encoding="utf-8")
+    js = (SRC / "xp.js").read_text(encoding="utf-8") + "\n" + (SRC / "app.js").read_text(encoding="utf-8")
     body = (SRC / "body.html").read_text(encoding="utf-8")
     body = body.replace("{{LOGO_GROUP}}", logo_group())
     body = body.replace("{{ICONS}}", (SRC / "icons.html").read_text(encoding="utf-8"))
@@ -75,6 +76,7 @@ def build() -> None:
     scripts = f"""<script src="{GSAP}"></script>
 <script src="{SCROLLTRIGGER}"></script>
 <script src="{LENIS}"></script>
+<script src="{THREE}"></script>
 <script>
 {js}
 </script>"""

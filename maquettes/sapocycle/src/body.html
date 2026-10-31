@@ -24,12 +24,12 @@
   <div class="nav__in">
     <a class="nav__brand" href="#accueil" aria-label="SapoCycle, accueil"><svg viewBox="0 0 348.4 372" aria-hidden="true"><use href="#logo-g"/></svg><span>Bubbles<br>saving lives</span></a>
     <ul class="nav__links">
-      <li><a href="#maison">La Maison</a></li>
-      <li><a href="#savoir-faire">Savoir-faire</a></li>
+      <li><a href="#qui-sommes-nous">Qui sommes-nous</a></li>
+      <li><a href="#approche">Notre approche</a></li>
       <li><a href="#hotels">Hôtels</a></li>
       <li><a href="#impact">Impact</a></li>
       <li><a href="#partenaires">Partenaires</a></li>
-      <li><a href="#journal">Journal</a></li>
+      <li><a href="#actualites">Actualités</a></li>
       <li aria-hidden="true" class="nav__pill"></li>
     </ul>
     <div class="nav__right">
@@ -43,12 +43,12 @@
 <nav class="mmenu" id="mmenu" aria-label="Menu principal">
   <ol>
     <li><a href="#accueil">Accueil</a></li>
-    <li><a href="#maison">La Maison</a></li>
-    <li><a href="#savoir-faire">Savoir-faire</a></li>
+    <li><a href="#qui-sommes-nous">Qui sommes-nous</a></li>
+    <li><a href="#approche">Notre approche</a></li>
     <li><a href="#hotels">Hôtels</a></li>
     <li><a href="#impact">Impact</a></li>
     <li><a href="#partenaires">Partenaires</a></li>
-    <li><a href="#journal">Journal</a></li>
+    <li><a href="#actualites">Actualités</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
   <span class="label">Suisse · France · Allemagne</span>
@@ -60,93 +60,117 @@
 <!-- 01 ACCUEIL                                                          -->
 <!-- ================================================================== -->
 <div data-view="accueil" data-title="Accueil">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero__media" data-hero-media><img src="{{IMG:hero-savon}}" alt="Savons SapoCycle recyclés, frappés du logo, sur un fond blanc" width="2400" height="1096" fetchpriority="high"></div>
-    <div class="fizz" aria-hidden="true"><i></i><i></i><i></i></div>
-    <div class="hero__badge" aria-label="Dix ans de SapoCycle">
-      <svg viewBox="0 0 100 100" aria-hidden="true"><defs><path id="badgePath" d="M50,50 m-42,0 a42,42 0 1,1 84,0 a42,42 0 1,1 -84,0"/></defs><text textLength="262" lengthAdjust="spacing"><textPath href="#badgePath" textLength="262" lengthAdjust="spacing">BUBBLES SAVING LIVES · DEPUIS 2014 ·</textPath></text></svg>
-      <b>10<small>ANS</small></b>
-    </div>
-    <div class="wrap hero__in">
-      <span class="label" data-hero><i></i>Fondation SapoCycle · Bâle</span>
-      <h1 class="hero__title" id="hero-title" data-morph style="margin-top:22px">
-        <span class="line">Le savon d'hôtel</span>
-        <span class="line">qui <em>sauve des vies.</em></span>
-      </h1>
-      <div class="hero__row" data-hero>
-        <p class="lead">Nous redonnons vie aux savons entamés des hôtels d'Europe. Refaçonnés à la main par des personnes en situation de handicap, ils sont offerts à des familles qui en manquent.</p>
-        <div class="hero__cta">
-          <a class="btn magnetic" href="#hotels"><span class="roll"><span>Devenir hôtel membre</span><span aria-hidden="true">Devenir hôtel membre</span></span><span class="btn__dot"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
-          <a class="link" href="#savoir-faire">Notre savoir-faire<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        </div>
+  <section class="xp" id="xp" data-tone="light" aria-label="La seconde vie d'un savon, racontée au fil du défilement">
+    <div class="xp__layer"><div class="xp__sticky">
+      <canvas class="xp__canvas" id="soapGL" aria-hidden="true"></canvas>
+      <div class="xp__fallback"><img src="{{IMG:hero-savon}}" alt="Savon SapoCycle recyclé, frappé du logo" width="2400" height="1096"></div>
+      <div class="xp__hud" aria-hidden="true">
+        <ol class="xp__steps"><li>Chambre</li><li>Collecte</li><li>Atelier</li><li>Contrôle</li><li>Familles</li></ol>
+        <div class="xp__bar"><span></span></div>
       </div>
+    </div></div>
+
+    <div class="xp__ch xp__ch--hero" data-ch="0">
+      <div class="wrap"><div class="xp__box">
+        <span class="label" data-hero><i></i>Fondation SapoCycle · depuis 2014</span>
+        <h1 class="hero__title" id="hero-title" data-morph>
+          <span class="line">Le savon d'hôtel</span>
+          <span class="line">qui <em>sauve des vies.</em></span>
+        </h1>
+        <p class="lead" data-hero>Nous collectons les savons entamés des hôtels, nous les faisons recycler par des personnes en situation de handicap, puis nous les offrons à des familles qui en manquent.</p>
+        <p class="xp__cue" data-hero><span></span>Faites défiler pour suivre la seconde vie d'un savon</p>
+      </div></div>
+    </div>
+
+    <div class="xp__ch" data-ch="1">
+      <div class="wrap"><div class="xp__box">
+        <span class="xp__idx">01 / 05 · La chambre</span>
+        <h2 class="d h2">Quelques minutes d'usage. <em>Puis la poubelle.</em></h2>
+        <p>Un client utilise une petite partie de son savon, puis il repart. Le reste est encore parfaitement utilisable. Pourtant, chaque jour, des millions de savons d'hôtel finissent à la décharge ou à l'incinération.</p>
+        <div class="xp__stat"><strong>Des millions</strong><span>de savons d'hôtel jetés chaque jour</span></div>
+      </div></div>
+    </div>
+
+    <div class="xp__ch" data-ch="2">
+      <div class="wrap"><div class="xp__box">
+        <span class="xp__idx">02 / 05 · La collecte</span>
+        <h2 class="d h2">Les hôtels membres <em>les mettent de côté.</em></h2>
+        <p>Le service d'étage dépose les savons usagés, bien secs, dans nos conteneurs bleus. Quand le bac est plein, notre partenaire Planzer vient le chercher et le remplace par un bac vide.</p>
+        <div class="xp__stat"><strong class="num" data-live="299" data-from="0.3" data-to="0.39">299</strong><span>hôtels membres en Suisse, en France et en Allemagne</span></div>
+      </div></div>
+    </div>
+
+    <div class="xp__ch" data-ch="3">
+      <div class="wrap"><div class="xp__box">
+        <span class="xp__idx">03 / 05 · L'atelier</span>
+        <h2 class="d h2">À Bâle, ils sont râpés <em>et refondus.</em></h2>
+        <p>À l'atelier WohnWerk, des personnes en situation de handicap râpent les savons, les réduisent en poudre et les pressent en savons neufs. C'est pour elles un emploi stable et une vraie place dans l'économie.</p>
+        <div class="xp__stat"><strong class="num">10</strong><span>personnes travaillent chaque jour au recyclage</span></div>
+      </div></div>
+    </div>
+
+    <div class="xp__ch" data-ch="4">
+      <div class="wrap"><div class="xp__box">
+        <span class="xp__idx">04 / 05 · Le contrôle</span>
+        <h2 class="d h2">Un savon neuf, <em>sûr et contrôlé.</em></h2>
+        <p>Chaque lot passe un contrôle bactériologique strict avant de quitter l'atelier. Et recycler un savon plutôt que de le brûler évite l'essentiel de ses émissions de CO₂.</p>
+        <div class="xp__stat"><strong class="num">−90 %</strong><span>de CO₂ par rapport à l'incinération (étude FHNW, 2016)</span></div>
+      </div></div>
+    </div>
+
+    <div class="xp__ch" data-ch="5">
+      <div class="wrap"><div class="xp__box">
+        <span class="xp__idx">05 / 05 · Les familles</span>
+        <h2 class="d h2">Offert à celles et ceux <em>qui en manquent.</em></h2>
+        <p>Nos partenaires remettent les savons à des familles en Suisse, dans des camps de réfugiés en Europe et dans des pays en développement. Se laver les mains avec du savon réduit de 40 % les infections diarrhéiques (UNICEF).</p>
+        <div class="xp__stat"><strong class="num" data-live="420000" data-from="0.73" data-to="0.84">420 000</strong><span>savons offerts depuis 2015</span></div>
+      </div></div>
+    </div>
+
+    <div class="xp__ch xp__ch--end" data-ch="6">
+      <div class="wrap"><div class="xp__box">
+        <span class="label"><i></i>Et votre hôtel ?</span>
+        <h2 class="d h2">Chaque savon que vous gardez <em>peut aider une famille.</em></h2>
+        <p>Participer ne demande presque rien à vos équipes. Nous fournissons les conteneurs, nous organisons l'enlèvement et nous vous donnons des outils pour en parler à vos clients.</p>
+        <div class="hero__cta" style="justify-content:flex-start">
+          <a class="btn magnetic" href="#hotels"><span class="roll"><span>Devenir hôtel membre</span><span aria-hidden="true">Devenir hôtel membre</span></span><span class="btn__dot"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+          <a class="link" href="#approche">Comment ça marche<svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        </div>
+      </div></div>
     </div>
   </section>
 
-  <div class="marquee" aria-hidden="true" data-marquee>
-    <div class="marquee__track">
-      <div class="marquee__item">Bubbles saving lives<i></i><em>Seconde vie</em><i></i>Fait main à Bâle<i></i><em>Zéro déchet</em><i></i></div>
-      <div class="marquee__item">Bubbles saving lives<i></i><em>Seconde vie</em><i></i>Fait main à Bâle<i></i><em>Zéro déchet</em><i></i></div>
-    </div>
-  </div>
-
   <section class="section">
     <div class="wrap">
-      <div class="head">
-        <div><span class="label"><i></i>La Maison SapoCycle</span>
-        <p class="manifesto" data-words>Chaque jour, des millions de savons à peine entamés partent à la décharge. <em>Nous leur offrons une seconde vie, et à d'autres, une vie plus digne.</em></p></div>
-      </div>
+      <div class="head"><div><span class="label"><i></i>En savoir plus</span><h2 class="d h2 split">Trois façons <em>de nous découvrir.</em></h2></div></div>
       <div class="doors">
-        <a class="door" href="#savoir-faire" data-cursor="Découvrir">
+        <a class="door" href="#approche" data-cursor="Découvrir">
           <div class="frame ripple"><img src="{{IMG:atelier-sourire}}" alt="Une collaboratrice de l'atelier WohnWerk râpe des savons usagés" loading="lazy" width="1100" height="969"></div>
           <span class="door__go"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
-          <div class="door__body"><span class="idx">03 · Savoir-faire</span><h3>Refaçonné à la main</h3><p>De la chambre d'hôtel à l'atelier WohnWerk de Bâle, chaque étape du geste.</p></div>
+          <div class="door__body"><span class="idx">Notre approche</span><h3>Comment un savon est recyclé</h3><p>Les cinq étapes, de la chambre d'hôtel à l'atelier de Bâle.</p></div>
         </a>
         <a class="door" href="#hotels" data-cursor="Découvrir">
-          <div class="frame ripple"><img src="{{IMG:salle-de-bain}}" alt="Salle de bain d'hôtel en marbre sous une grande fenêtre" loading="lazy" width="1000" height="1500"></div>
+          <div class="frame ripple"><img src="{{IMG:salle-de-bain}}" alt="Salle de bain d'hôtel" loading="lazy" width="1000" height="1500"></div>
           <span class="door__go"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
-          <div class="door__body"><span class="idx">04 · Hôtels</span><h3>Devenir membre</h3><p>Un engagement visible, sans rien changer à l'organisation de vos équipes.</p></div>
+          <div class="door__body"><span class="idx">Hôtels</span><h3>Rejoindre le programme</h3><p>Ce que cela demande à votre hôtel, et ce que cela change.</p></div>
         </a>
         <a class="door" href="#impact" data-cursor="Découvrir">
           <div class="frame ripple"><img src="{{IMG:enfants}}" alt="Des enfants se lavent les mains avec du savon" loading="lazy" width="1000" height="1333"></div>
           <span class="door__go"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span>
-          <div class="door__body"><span class="idx">05 · Impact</span><h3>Bubbles saving lives</h3><p>Planète, inclusion, hygiène : ce que dix ans de savons ont changé.</p></div>
+          <div class="door__body"><span class="idx">Impact</span><h3>Dix ans de résultats</h3><p>Pour la planète, pour l'inclusion et pour la santé des familles.</p></div>
         </a>
       </div>
     </div>
   </section>
 
-  <section class="section on-dark">
-    <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Depuis 2015</span><h2 class="d h2 split">Dix ans de bulles, <em>des résultats concrets.</em></h2></div></div>
-      <div class="figs">
-        <div class="fig"><strong class="num" data-count="299">299</strong><span>hôtels membres</span></div>
-        <div class="fig"><strong class="num"><b data-count="63700" style="font-weight:inherit">63 700</b><small>KG</small></strong><span>de savons collectés</span></div>
-        <div class="fig"><strong class="num" data-count="420000">420 000</strong><span>savons offerts</span></div>
-        <div class="fig"><strong class="num"><b data-count="130586" style="font-weight:inherit">130 586</b><small>KG</small></strong><span>de CO₂ économisés</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
+  <section class="section ivory">
     <div class="wrap quote-block">
       <div class="frame frame--r reveal" style="aspect-ratio:4/5"><img src="{{IMG:portrait-dorothee}}" alt="Dorothée Schiesser, fondatrice de SapoCycle, tenant deux savons" loading="lazy" width="600" height="746" data-depth></div>
       <div>
         <span class="label"><i></i>Le mot de la fondatrice</span>
-        <blockquote style="margin-top:28px" data-words>« Je n'aurais jamais imaginé qu'une décennie plus tard, SapoCycle serait <em>plus fort que jamais</em>, et que notre mission trouverait un tel écho. »</blockquote>
-        <div class="who"><span><strong>Dorothée Schiesser</strong>Fondatrice et présidente</span></div>
-        <div style="margin-top:34px"><a class="link" href="#maison">Découvrir la Maison<svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:0">
-    <div class="wrap">
-      <div class="cta on-blue">
-        <span class="bub" aria-hidden="true"></span><span class="bub" aria-hidden="true"></span>
-        <span class="label"><i></i>Hôtels</span>
-        <h2 class="d h2 split">Offrez une seconde vie <em>à vos savons.</em></h2>
-        <a class="btn btn--light magnetic" href="#contact"><span class="roll"><span>Rejoindre SapoCycle</span><span aria-hidden="true">Rejoindre SapoCycle</span></span><span class="btn__dot"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a>
+        <blockquote style="margin-top:28px" data-words>« Je suis profondément touchée de savoir que les milliers de savons que nous avons distribués ont pu aider, même un peu, <em>les familles dans le besoin.</em> »</blockquote>
+        <div class="who"><span><strong>Dorothée Schiesser</strong>Fondatrice et présidente de SapoCycle</span></div>
+        <div style="margin-top:34px"><a class="link" href="#qui-sommes-nous">Qui sommes-nous<svg aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
       </div>
     </div>
   </section>
@@ -155,13 +179,13 @@
 <!-- ================================================================== -->
 <!-- 02 LA MAISON                                                        -->
 <!-- ================================================================== -->
-<div data-view="maison" data-title="La Maison">
+<div data-view="qui-sommes-nous" data-title="Qui sommes-nous">
   <header class="phead">
     <div class="wrap">
-      <div class="phead__top"><span class="label"><i></i>La Maison</span><span class="idx">02 / 08</span></div>
-      <h1 class="d split">Une idée simple, <em>un mouvement européen.</em></h1>
+      <div class="phead__top"><span class="label"><i></i>Qui sommes-nous</span><span class="idx">02 / 08</span></div>
+      <h1 class="d split">Une idée simple, <em>née à Bâle.</em></h1>
       <div class="phead__foot">
-        <p class="lead">SapoCycle est la première organisation à but non lucratif en Europe à recycler les savons d'hôtel. Fondée à Bâle en 2014, elle est active en Suisse, en France et en Allemagne.</p>
+        <p class="lead">SapoCycle est la première organisation à but non lucratif en Europe à collecter les savons jetés dans les hôtels pour en faire des savons neufs, offerts à des familles dans le besoin. Nous sommes actifs en Suisse, en France et en Allemagne.</p>
       </div>
     </div>
   </header>
@@ -172,8 +196,8 @@
       <div class="split2__copy">
         <span class="label"><i></i>La fondatrice</span>
         <h2 class="d h3" style="font-size:clamp(2rem,3.4vw,3.2rem)">Dorothée Schiesser-Peyrouzet</h2>
-        <p>Franco-suisse, diplômée en sciences politiques et en gestion, Dorothée a vécu au Cameroun avec son mari. Elle y a mesuré le poids des maladies liées au manque d'hygiène.</p>
-        <p>En 2014, elle fonde SapoCycle à Bâle avec Cintia Jaime. En 2016, la Fondation est nominée pour le Prix Suisse du tourisme.</p>
+        <p>Franco-suisse, diplômée en sciences politiques et en gestion, Dorothée a vécu au Cameroun. Elle y a vu combien le manque d'hygiène rend les familles malades.</p>
+        <p>En 2014, elle fonde SapoCycle à Bâle avec Cintia Jaime, autour d'une idée simple : donner une seconde vie aux savons jetés par les hôtels pour améliorer l'hygiène des familles dans le besoin.</p>
         <ul class="tags"><li>Fondation des Fondateurs</li><li>Bâle, Suisse</li></ul>
       </div>
     </div>
@@ -181,7 +205,7 @@
 
   <section class="section">
     <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Trois piliers</span><h2 class="d h2 split">Un savon, <em>trois impacts.</em></h2></div><p class="lead">Ensemble, ils font de SapoCycle un programme unique en Europe : Bubbles Saving Lives.</p></div>
+      <div class="head"><div><span class="label"><i></i>Trois piliers</span><h2 class="d h2 split">Un savon, <em>trois impacts.</em></h2></div><p class="lead">Notre programme Bubbles Saving Lives agit à la fois pour la planète, pour l'inclusion et pour la santé.</p></div>
       <div class="pillars">
         <article class="pillar">
           <div class="frame ripple reveal" data-cursor="Planète"><img src="{{IMG:lac-alpin}}" alt="Lac alpin entre des falaises" loading="lazy" width="2000" height="1333"></div>
@@ -206,7 +230,7 @@
   </section>
 
   <section class="section on-dark" style="padding-bottom:clamp(60px,7vw,110px)">
-    <div class="wrap"><div class="head"><div><span class="label"><i></i>Notre histoire</span><h2 class="d h2 split">De Bâle <em>à l'Europe.</em></h2></div><span class="drag-hint"><svg aria-hidden="true"><use href="#i-drag"/></svg>Faites glisser la frise</span></div></div>
+    <div class="wrap"><div class="head"><div><span class="label"><i></i>Notre histoire</span><h2 class="d h2 split">Dix ans <em>en huit dates.</em></h2></div><span class="drag-hint"><svg aria-hidden="true"><use href="#i-drag"/></svg>Faites glisser la frise</span></div></div>
     <ol class="timeline" data-drag tabindex="0" aria-label="Frise chronologique">
       <li class="tl"><b>2014</b><h3>Lancement en Suisse</h3><p>SapoCycle démarre à Bâle, sous l'égide de la Fondation des Fondateurs.</p></li>
       <li class="tl"><b>2015</b><h3>Premier lot offert</h3><p>En avril, les premiers savons recyclés rejoignent des familles dans le besoin.</p></li>
@@ -221,7 +245,7 @@
 
   <section class="section">
     <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Conseil et équipe</span><h2 class="d h2 split">Les visages <em>de SapoCycle.</em></h2></div></div>
+      <div class="head"><div><span class="label"><i></i>Conseil et équipe</span><h2 class="d h2 split">Les personnes <em>derrière SapoCycle.</em></h2></div></div>
       <div class="people">
         <figure class="person"><div class="frame reveal"><img src="{{IMG:portrait-rudolph}}" alt="Portrait de Rudolph Schiesser" loading="lazy" width="600" height="745"></div><figcaption><strong>Rudolph Schiesser</strong><span>Hôtelier, président du conseil du Grand Hôtel Les Trois Rois, Bâle</span></figcaption></figure>
         <figure class="person"><div class="frame reveal"><img src="{{IMG:portrait-cintia}}" alt="Portrait de Cintia Jaime" loading="lazy" width="600" height="746"></div><figcaption><strong>Cintia Jaime</strong><span>Cofondatrice, fondatrice d'Es Vicis</span></figcaption></figure>
@@ -235,12 +259,12 @@
 <!-- ================================================================== -->
 <!-- 03 SAVOIR-FAIRE                                                     -->
 <!-- ================================================================== -->
-<div data-view="savoir-faire" data-title="Savoir-faire">
+<div data-view="approche" data-title="Notre approche">
   <header class="phead">
     <div class="wrap">
-      <div class="phead__top"><span class="label"><i></i>Savoir-faire</span><span class="idx">03 / 08</span></div>
-      <h1 class="d split">De la chambre <em>aux familles.</em></h1>
-      <div class="phead__foot"><p class="lead">Un circuit court, artisanal et contrôlé, pensé pour ne rien changer au quotidien de vos équipes.</p></div>
+      <div class="phead__top"><span class="label"><i></i>Notre approche</span><span class="idx">03 / 08</span></div>
+      <h1 class="d split">Du savon jeté <em>au savon offert.</em></h1>
+      <div class="phead__foot"><p class="lead">Cinq étapes simples relient la salle de bain d'un hôtel aux mains d'un enfant. Faites défiler pour les suivre.</p></div>
     </div>
   </header>
 
@@ -262,8 +286,8 @@
       <div class="split2__media"><div class="frame frame--r reveal" style="aspect-ratio:5/4"><img src="{{IMG:atelier-equipe}}" alt="Deux collaboratrices de l'atelier WohnWerk" loading="lazy" width="948" height="621" data-depth></div></div>
       <div class="split2__copy">
         <span class="label"><i></i>Les artisans</span>
-        <h2 class="d h3" style="font-size:clamp(2rem,3.4vw,3.2rem)">Ce sont eux qui font <em>chaque savon.</em></h2>
-        <p>WohnWerk, à Bâle, a développé avec la Haute école FHNW un procédé de recyclage adapté aux personnes en situation de handicap. Dix personnes y travaillent chaque jour.</p>
+        <h2 class="d h3" style="font-size:clamp(2rem,3.4vw,3.2rem)">Un travail stable <em>pour dix personnes.</em></h2>
+        <p>Le recyclage est confié à WohnWerk, une institution bâloise qui emploie des adultes en situation de handicap. Avec la Haute école FHNW, elle a mis au point un procédé adapté à leurs compétences. Dix personnes y travaillent chaque jour.</p>
         <ul class="tags"><li>WohnWerk</li><li>FHNW</li><li>Fait main</li></ul>
       </div>
     </div>
@@ -274,7 +298,7 @@
       <div class="split2__media"><div class="frame frame--r reveal" style="aspect-ratio:4/5"><img src="{{IMG:hotel-spa}}" alt="Flacons de produits d'accueil dans une salle de bain d'hôtel" loading="lazy" width="900" height="1200" data-depth></div></div>
       <div class="split2__copy">
         <span class="label"><i></i>Programme liquides · depuis 2022</span>
-        <h2 class="d h3" style="font-size:clamp(2rem,3.4vw,3.2rem)">Le flacon aussi <em>a une seconde vie.</em></h2>
+        <h2 class="d h3" style="font-size:clamp(2rem,3.4vw,3.2rem)">Les produits liquides <em>aussi.</em></h2>
         <p>Les restes de produits d'accueil liquides sont reconditionnés. Les flacons vides sont collectés avec Bring Plastic Back et transformés en nouveaux emballages par InnoRecycling AG.</p>
         <ul class="tags"><li>Bring Plastic Back</li><li>InnoRecycling AG</li></ul>
       </div>
@@ -283,7 +307,7 @@
 
   <section class="section on-dark" id="solide-liquide">
     <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Le film · 52 secondes</span><h2 class="d h2 split">Solide ou liquide, <em>le choix qui compte.</em></h2></div><p class="lead">Beaucoup d'hôtels passent aux distributeurs liquides. Voici pourquoi le savon solide reste le choix le plus sobre.</p></div>
+      <div class="head"><div><span class="label"><i></i>Le film · 52 secondes</span><h2 class="d h2 split">Pourquoi nous défendons <em>le savon solide.</em></h2></div><p class="lead">Beaucoup d'hôtels passent aux distributeurs liquides. Voici pourquoi le savon solide reste le choix le plus sobre.</p></div>
       {{FILM}}
     </div>
   </section>
@@ -296,9 +320,9 @@
   <header class="phead">
     <div class="wrap">
       <div class="phead__top"><span class="label"><i></i>Pour les hôtels</span><span class="idx">04 / 08</span></div>
-      <h1 class="d split">Devenez <em>hôtel membre.</em></h1>
+      <h1 class="d split">Rejoignez <em>le programme.</em></h1>
       <div class="phead__foot">
-        <p class="lead">Des palaces aux maisons familiales, 299 hôtels ont rejoint SapoCycle. Vos équipes collectent, nous nous occupons de tout le reste.</p>
+        <p class="lead">Tous les hôtels qui proposent des savons et des produits d'accueil individuels peuvent participer. 299 l'ont déjà fait. Vos équipes mettent les savons de côté, nous nous occupons du reste.</p>
         <div><a class="btn magnetic" href="#contact"><span class="roll"><span>Demander l'adhésion</span><span aria-hidden="true">Demander l'adhésion</span></span><span class="btn__dot"><svg aria-hidden="true"><use href="#i-arrow"/></svg></span></a></div>
       </div>
       <div class="phead__img"><div class="frame frame--r ripple" data-cursor="Membre"><img src="{{IMG:hotel-chambre}}" alt="Chambre d'hôtel au linge blanc, éclairée par des appliques" width="1800" height="1200" data-depth style="object-position:50% 60%"></div></div>
@@ -307,7 +331,7 @@
 
   <section class="section" style="padding-top:clamp(40px,5vw,80px)">
     <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Quatre temps</span><h2 class="d h2 split">Rejoindre SapoCycle, <em>simplement.</em></h2></div></div>
+      <div class="head"><div><span class="label"><i></i>Quatre temps</span><h2 class="d h2 split">Comment participer, <em>en quatre étapes.</em></h2></div></div>
       <div class="stack">
         <article class="scard"><span class="scard__n">01</span><h3>Inscription</h3><p>Vous contactez notre équipe et devenez Hôtel Membre Premium. Nous vous transmettons les instructions et vos outils de communication.</p></article>
         <article class="scard"><span class="scard__n">02</span><h3>Livraison des conteneurs</h3><p>Vous recevez nos conteneurs bleus SapoCycle, contre une caution, pour les savons solides et les produits liquides.</p></article>
@@ -319,7 +343,7 @@
 
   <section class="section ivory">
     <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Simulateur</span><h2 class="d h2 split">Et votre hôtel, <em>quel impact ?</em></h2></div><p class="lead">Une estimation indicative, à affiner avec notre équipe.</p></div>
+      <div class="head"><div><span class="label"><i></i>Simulateur</span><h2 class="d h2 split">Combien de savons <em>votre hôtel peut-il sauver ?</em></h2></div><p class="lead">Une estimation indicative, à affiner avec notre équipe.</p></div>
       <div class="sim">
         <div class="sim__in">
           <div class="range"><label for="rooms"><span>Nombre de chambres</span><output class="num" id="roomsOut" for="rooms">120</output></label><input type="range" id="rooms" min="10" max="600" step="5" value="120"></div>
@@ -339,7 +363,7 @@
     <div class="wrap split2">
       <div class="split2__copy">
         <span class="label"><i></i>Questions fréquentes</span>
-        <h2 class="d h2 split">Tout ce que <em>vous demandez.</em></h2>
+        <h2 class="d h2 split">Vos questions, <em>nos réponses.</em></h2>
         <p>Recommandé par Green Globe, Clef Verte, EarthCheck, myclimate et Green Sign.</p>
       </div>
       <div class="acc" data-acc>
@@ -361,7 +385,7 @@
     <div class="bleed__media" data-bleed><img src="{{IMG:lac-alpin}}" alt="Lac alpin de Seealpsee en Appenzell" width="2000" height="1333"></div>
     <div class="wrap">
       <div class="phead__top"><span class="label" style="color:rgba(255,255,255,.85)"><i></i>Impact</span><span class="idx" style="color:var(--sky)">05 / 08</span></div>
-      <h1 class="d mega split" style="margin-bottom:clamp(50px,7vw,100px)">Moins de déchets. <em style="color:var(--white)">Plus de dignité.</em></h1>
+      <h1 class="d mega split" style="margin-bottom:clamp(50px,7vw,100px)">Ce que dix ans <em style="color:var(--white)">ont changé.</em></h1>
       <div class="figs">
         <div class="fig"><strong class="num"><b data-count="63700" style="font-weight:inherit">63 700</b><small>KG</small></strong><span>de savons collectés</span></div>
         <div class="fig"><strong class="num"><b data-count="19290" style="font-weight:inherit">19 290</b><small>KG</small></strong><span>de produits liquides collectés</span></div>
@@ -388,7 +412,7 @@
 
   <section class="section">
     <div class="wrap">
-      <div class="head"><div><span class="label"><i></i>Par pilier</span><h2 class="d h2 split">Trois impacts, <em>mesurés.</em></h2></div><p class="lead">Chiffres clés européens publiés par SapoCycle, depuis le premier lot offert en avril 2015.</p></div>
+      <div class="head"><div><span class="label"><i></i>Nos trois piliers</span><h2 class="d h2 split">Planète, inclusion, <em>santé.</em></h2></div><p class="lead">Chiffres clés européens publiés par SapoCycle, depuis le premier lot offert en avril 2015.</p></div>
       <div class="figs">
         <div class="fig"><strong class="num">−90<small>%</small></strong><span>de CO₂ par rapport à l'incinération (FHNW 2016)</span></div>
         <div class="fig"><strong class="num">10</strong><span>artisans en situation de handicap chaque jour à Bâle</span></div>
@@ -406,8 +430,8 @@
   <header class="phead">
     <div class="wrap">
       <div class="phead__top"><span class="label"><i></i>Partenaires</span><span class="idx">06 / 08</span></div>
-      <h1 class="d split">Saponistis <em>et Saponistas.</em></h1>
-      <div class="phead__foot"><p class="lead">Hôtels, atelier, logisticien, distributeurs, fondations et entreprises : un cercle qui partage nos valeurs et porte chaque étape du programme.</p></div>
+      <h1 class="d split">Ceux qui rendent <em>le programme possible.</em></h1>
+      <div class="phead__foot"><p class="lead">Hôtels, atelier de recyclage, logisticien, associations, fondations et entreprises : nous les appelons nos « Saponistis » et « Saponistas ». Sans eux, aucun savon n'arriverait jusqu'aux familles.</p></div>
     </div>
   </header>
   <section class="section" style="padding-top:0">
@@ -437,11 +461,11 @@
 <!-- ================================================================== -->
 <!-- 07 JOURNAL                                                          -->
 <!-- ================================================================== -->
-<div data-view="journal" data-title="Journal">
+<div data-view="actualites" data-title="Actualités">
   <header class="phead">
     <div class="wrap">
-      <div class="phead__top"><span class="label"><i></i>Journal</span><span class="idx">07 / 08</span></div>
-      <h1 class="d split">Les nouvelles <em>de la Maison.</em></h1>
+      <div class="phead__top"><span class="label"><i></i>Actualités</span><span class="idx">07 / 08</span></div>
+      <h1 class="d split">Les dernières <em>nouvelles.</em></h1>
     </div>
   </header>
   <section class="section" style="padding-top:0">
@@ -471,13 +495,13 @@
   <header class="phead" style="padding-bottom:clamp(40px,5vw,70px)">
     <div class="wrap">
       <div class="phead__top"><span class="label"><i></i>Contact</span><span class="idx">08 / 08</span></div>
-      <h1 class="d split">Parlons <em>de vos savons.</em></h1>
+      <h1 class="d split">Parlons <em>de votre projet.</em></h1>
     </div>
   </header>
   <section class="section" style="padding-top:0">
     <div class="wrap contact">
       <div style="display:grid;gap:28px;align-content:start">
-        <p class="lead">Hôtel, partenaire, bénévole ou simplement curieux : notre équipe vous répond rapidement.</p>
+        <p class="lead">Vous dirigez un hôtel, vous souhaitez devenir partenaire ou bénévole, ou vous avez simplement une question : écrivez-nous, notre équipe vous répond.</p>
         <div class="coords">
           <div><small>E-mail</small><span class="copy"><code id="mail">info@sapocycle.org</code><button type="button" id="copyMail">Copier</button></span></div>
           <div><small>Bureau</small><span>Fondation SapoCycle, c/o Rakete Dreispitz<br>Münchensteinerstrasse 274, 4053 Bâle</span></div>
@@ -514,7 +538,7 @@
         <p>Chaque savon mérite une seconde vie.</p>
         <form class="news-form" id="newsForm"><label class="visually-hidden" for="news-mail">Votre e-mail</label><input id="news-mail" type="email" placeholder="Recevoir nos nouvelles" autocomplete="email" required><button type="submit">S'abonner</button></form>
       </div>
-      <div><h4>Maison</h4><ul><li><a href="#maison">La Maison</a></li><li><a href="#savoir-faire">Savoir-faire</a></li><li><a href="#impact">Impact</a></li><li><a href="#journal">Journal</a></li></ul></div>
+      <div><h4>SapoCycle</h4><ul><li><a href="#qui-sommes-nous">Qui sommes-nous</a></li><li><a href="#approche">Notre approche</a></li><li><a href="#impact">Impact</a></li><li><a href="#actualites">Actualités</a></li></ul></div>
       <div><h4>S'engager</h4><ul><li><a href="#hotels">Hôtels membres</a></li><li><a href="#partenaires">Partenaires</a></li><li><a href="https://sapocycle.org/fr/famille/" target="_blank" rel="noopener">SapoCycle Family</a></li><li><a href="https://sapocycle.org/donate/" target="_blank" rel="noopener">Faire un don</a></li></ul></div>
       <div><h4>Fondation</h4><ul><li>Fondation SapoCycle</li><li>Fondation des Fondateurs</li><li>Breitingerstrasse 35</li><li>8002 Zurich</li></ul></div>
     </div>

@@ -1,6 +1,22 @@
-# Maquette SapoCycle 2026, version 3
+# Maquette SapoCycle 2026, version 4
 
-Refonte de https://sapocycle.org/ pour les hôtels : un site de 8 pages (Accueil, La Maison, Savoir-faire, Hôtels, Impact, Partenaires, Journal, Contact), dans un registre de maison contemporaine.
+Refonte de https://sapocycle.org/ pour les hôtels : un site de 8 pages (Accueil, Qui sommes-nous, Notre approche, Hôtels, Impact, Partenaires, Actualités, Contact).
+
+## L'expérience de l'accueil
+
+Un savon SapoCycle en 3D (Three.js), embossé du logo, reste au premier plan. Le défilement raconte sa seconde vie en cinq chapitres :
+
+1. La chambre : le savon s'use et se creuse
+2. La collecte : des dizaines de savons rejoignent la pile (compteur 299 hôtels)
+3. L'atelier : le savon éclate en copeaux sur fond bleu nuit
+4. Le contrôle : les copeaux se reforment en savon neuf, logo intact
+5. Les familles : le savon se multiplie sur fond bleu SapoCycle (compteur 420 000 savons)
+
+Le fond, la frise de progression et les chiffres suivent le chapitre lu. Sans WebGL ou avec le mouvement réduit, la photo du savon remplace la 3D et tout le texte reste lisible.
+
+## Textes
+
+Tous les textes ont été réécrits dans un langage clair, centré sur la mission et l'impact, à partir des contenus du site actuel.
 
 Chaque page a sa propre adresse (`index.html#maison`, `#hotels`...), avec une transition plein écran entre les pages.
 
@@ -11,6 +27,7 @@ Chaque page a sa propre adresse (`index.html#maison`, `#hotels`...), avec une tr
 
 ## Effets
 
+* Savon 3D piloté par le défilement (accueil)
 * Transition de page en deux volets (bleu SapoCycle puis bleu nuit) avec le nom de la page
 * Titre d'accueil à lettres variables, vague d'ouverture
 * Survol « eau savonneuse » des photos (distorsion douce)
@@ -26,7 +43,7 @@ Chaque page a sa propre adresse (`index.html#maison`, `#hotels`...), avec une tr
 |---|---|
 | `index.html` | Maquette complète, à ouvrir dans un navigateur (images et logo intégrés) |
 | `video/sapocycle-solide-vs-liquide.mp4` | Film « solide ou liquide » en 1080p, 52 s |
-| `src/body.html`, `src/styles.css`, `src/app.js`, `src/film.html` | Sources |
+| `src/body.html`, `src/styles.css`, `src/app.js`, `src/xp.js`, `src/film.html` | Sources (`xp.js` : le savon 3D) |
 | `build.py` | Régénère `index.html` et `artifact.html` : `python3 build.py` |
 | `assets/` | Photos retouchées en WebP et logo officiel |
 
