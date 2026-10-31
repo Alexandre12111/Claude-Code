@@ -15,26 +15,28 @@ Module WordPress qui remplace la carte WP Store Locator de sapocycle.org.
 
 | Fichier | Rôle |
 |---|---|
-| `sapocycle-hotels-map.php` | Le module complet (un seul fichier) |
-| `code-snippet-sans-balise-php.txt` | Le même code sans la ligne `<?php`, prêt à coller dans Code Snippets |
-| `sapocycle-hotels-map.zip` | Le même code en extension WordPress installable |
+| `snippets/1-coeur.txt` à `snippets/7-admin-script.txt` | Les 7 snippets à coller dans Code Snippets |
+| `sapocycle-hotels-map.php` | Le même module en un seul fichier (extension WordPress) |
+| `sapocycle-hotels-map.zip` | L'extension installable, si l'hébergeur autorise l'envoi d'extensions |
 | `hotels-sapocycle-suisse.xlsx` | Les 95 hôtels suisses actuels du site, nettoyés, au format colonnes E, I, J, K, L, M |
+| `outils/split_snippets.py` | Régénère les 7 snippets à partir de `sapocycle-hotels-map.php` |
 | `apercus/` | Captures de la carte et de l'administration |
 
-## Installation
+## Installation avec Code Snippets (7 snippets)
 
-### Option A : Code Snippets
+Le module est découpé en 7 snippets plus petits, plus faciles à copier et à enregistrer. Pour **chacun** des 7 fichiers du dossier `snippets/` :
 
-1. Extensions › Code Snippets › Ajouter (ou ouvrir le snippet existant).
-2. Type **PHP**, titre « Carte des hôtels SapoCycle ».
-3. Coller le contenu de `code-snippet-sans-balise-php.txt` (remplace tout l'ancien code).
-4. **Exécuter le snippet partout**, puis Enregistrer et activer.
+1. Snippets › Ajouter.
+2. Type **PHP**.
+3. Titre : reprendre le nom du fichier (par exemple « Carte hôtels 1 : cœur »).
+4. Coller tout le contenu du fichier (télécharger le fichier puis Ctrl+A / Ctrl+C, ne pas copier depuis un aperçu).
+5. **Exécuter le snippet partout**, puis Enregistrer et activer.
 
-### Option B : extension classique
+L'ordre n'a pas d'importance. Supprimer d'abord les anciens snippets « Carte des hôtels ».
 
-Extensions › Ajouter › Téléverser une extension › `sapocycle-hotels-map.zip` › Activer.
+Contrôle : le menu **Carte des hôtels** apparaît dès que le snippet 1 est actif. Tant qu'un snippet manque, une bannière rouge et la page du menu indiquent lequel (« Manquant »). Quand les 7 sont chargés, l'administration complète s'affiche.
 
-N'utilisez qu'une seule des deux options à la fois.
+Pour une installation en extension (si l'hébergeur l'autorise) : Extensions › Ajouter › Téléverser › `sapocycle-hotels-map.zip`. Ne pas utiliser les deux méthodes en même temps.
 
 ## Les 9 shortcodes
 

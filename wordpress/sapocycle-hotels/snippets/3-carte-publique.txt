@@ -1,0 +1,514 @@
+/*
+ * SapoCycle · Carte des hôtels · Snippet 3/7 : Carte publique et shortcodes
+ * Code Snippets : type PHP, « Exécuter le snippet partout ».
+ * Les 7 snippets sont nécessaires. Le snippet 1 indique s'il en manque un.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
+}
+if ( ! trait_exists( 'Sapo_Hotels_Part_Carte', false ) ) {
+	trait Sapo_Hotels_Part_Carte {
+
+	/* =====================================================================
+	 * Front : shortcode
+	 * ===================================================================== */
+
+	/** Les 9 shortcodes : [sapocycle_suisse_fr], [sapocycle_suisse_de], [sapocycle_suisse_en], [sapocycle_france_fr]… */
+	public static function shortcode_names() {
+		$out = array();
+		foreach ( self::MAP_COUNTRIES as $code => $slug ) {
+			foreach ( array( 'fr', 'de', 'en' ) as $lang ) {
+				$out[ 'sapocycle_' . $slug . '_' . $lang ] = array( $code, $lang );
+			}
+		}
+		return $out;
+	}
+
+	public static function register_shortcode() {
+		add_shortcode( 'sapocycle_hotels', array( __CLASS__, 'shortcode' ) );
+		foreach ( self::shortcode_names() as $tag => $cl ) {
+			add_shortcode(
+				$tag,
+				function ( $atts ) use ( $cl ) {
+					$atts            = (array) $atts;
+					$atts['country'] = $cl[0];
+					$atts['lang']    = $cl[1];
+					return self::shortcode( $atts );
+				}
+			);
+		}
+	}
+
+	public static function register_front_assets() {
+		wp_register_style( 'sapo-leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/' . self::LEAFLET_VER . '/leaflet.min.css', array(), self::LEAFLET_VER );
+		wp_register_style( 'sapo-leaflet-cluster', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/' . self::CLUSTER_VER . '/MarkerCluster.min.css', array( 'sapo-leaflet' ), self::CLUSTER_VER );
+		wp_register_script( 'sapo-leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/' . self::LEAFLET_VER . '/leaflet.min.js', array(), self::LEAFLET_VER, true );
+		wp_register_script( 'sapo-leaflet-cluster', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/' . self::CLUSTER_VER . '/leaflet.markercluster.min.js', array( 'sapo-leaflet' ), self::CLUSTER_VER, true );
+
+		wp_register_style( 'sapo-hotels', false, array( 'sapo-leaflet', 'sapo-leaflet-cluster' ), self::VERSION );
+		wp_add_inline_style( 'sapo-hotels', self::front_css() );
+		wp_register_script( 'sapo-hotels', false, array( 'sapo-leaflet', 'sapo-leaflet-cluster' ), self::VERSION, true );
+		wp_add_inline_script( 'sapo-hotels', self::front_js() );
+
+		// Chargement anticipé des styles dans le <head> si le shortcode est présent.
+		if ( is_singular() ) {
+			$post = get_post();
+			if ( $post ) {
+				foreach ( array_merge( array( 'sapocycle_hotels' ), array_keys( self::shortcode_names() ) ) as $tag ) {
+					if ( has_shortcode( $post->post_content, $tag ) ) {
+						wp_enqueue_style( 'sapo-hotels' );
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	public static function shortcode( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'country' => '',
+				'lang'    => '',
+				'height'  => '',
+				'search'  => 'yes',
+				'legend'  => 'yes',
+			),
+			$atts,
+			'sapocycle_hotels'
+		);
+
+		if ( ! wp_style_is( 'sapo-hotels', 'registered' ) ) {
+			self::register_front_assets();
+		}
+		wp_enqueue_style( 'sapo-hotels' );
+		wp_enqueue_script( 'sapo-hotels' );
+
+		$lang     = self::current_lang( $atts['lang'] );
+		$t        = self::strings( $lang );
+		$settings = self::get_settings();
+		$height   = absint( $atts['height'] ? $atts['height'] : $settings['height'] );
+		$height   = max( 320, min( 1200, $height ? $height : 620 ) );
+
+		$wanted = array_filter( array_map( array( __CLASS__, 'country_code' ), array_filter( array_map( 'trim', explode( ',', $atts['country'] ) ) ) ) );
+
+		$hotels    = array();
+		$countries = array();
+		foreach ( self::get_hotels() as $h ) {
+			if ( empty( $h['active'] ) || null === $h['lat'] || null === $h['lng'] ) {
+				continue;
+			}
+			if ( $wanted && ! in_array( $h['country'], $wanted, true ) ) {
+				continue;
+			}
+			$hotels[] = array(
+				'i' => $h['id'],
+				'n' => $h['name'],
+				'a' => $h['address'],
+				'z' => $h['zip'],
+				'c' => $h['city'],
+				'k' => $h['canton'],
+				'kl' => self::canton_label( $h['canton'], $h['country'], $lang ),
+				'p' => $h['country'],
+				'w' => $h['website'],
+				'la' => (float) $h['lat'],
+				'lo' => (float) $h['lng'],
+				's' => 0,
+				'pr' => empty( $h['premium'] ) ? 0 : 1,
+			);
+			$countries[ $h['country'] ] = isset( $countries[ $h['country'] ] ) ? $countries[ $h['country'] ] + 1 : 1;
+		}
+
+		// Ordre des onglets : ordre demandé, sinon Suisse d'abord puis par nombre d'hôtels.
+		if ( $wanted ) {
+			$order = array_values( array_intersect( $wanted, array_keys( $countries ) ) );
+		} else {
+			arsort( $countries );
+			$order = array_keys( $countries );
+			if ( isset( $countries['CH'] ) ) {
+				$order = array_merge( array( 'CH' ), array_diff( $order, array( 'CH' ) ) );
+			}
+		}
+		$country_list = array();
+		foreach ( $order as $code ) {
+			$country_list[] = array(
+				'code'  => $code,
+				'name'  => self::country_name( $code, $lang ),
+				'count' => $countries[ $code ],
+			);
+		}
+
+		$osm  = array( 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' );
+		$tile = $osm;
+		if ( 'custom' === $settings['tiles'] && '' !== $settings['tiles_url'] ) {
+			$tile = array( $settings['tiles_url'], '' !== $settings['tiles_attr'] ? $settings['tiles_attr'] : $osm[1] );
+		}
+		$soft = 'soft' === $settings['tiles'];
+
+		$config = array(
+			'lang'      => $lang,
+			'hotels'    => $hotels,
+			'countries' => $country_list,
+			'cantons'   => self::cantons_for_front( $lang ),
+			't'         => $t,
+			'tiles'     => $tile,
+			'cluster'   => ! empty( $settings['cluster'] ),
+			'icons'     => array(
+				'green' => self::smiley_data_uri( 'green' ),
+			),
+		);
+
+		++self::$instance_count;
+		$uid       = 'sapo-hm-' . self::$instance_count;
+		$show_tabs = count( $country_list ) > 1;
+
+		ob_start();
+		?>
+		<div class="sapo-hm<?php echo $soft ? ' sapo-hm--soft' : ''; ?>" id="<?php echo esc_attr( $uid ); ?>" style="--sapo-hm-h:<?php echo (int) $height; ?>px" data-lang="<?php echo esc_attr( $lang ); ?>">
+			<div class="sapo-hm__data" hidden data-config="<?php echo esc_attr( wp_json_encode( $config, JSON_UNESCAPED_UNICODE ) ); ?>"></div>
+
+			<?php if ( ! $hotels ) : ?>
+				<p class="sapo-hm__empty-all"><?php echo esc_html( $t['empty'] ); ?></p>
+			<?php else : ?>
+
+			<?php if ( $show_tabs ) : ?>
+			<div class="sapo-hm__tabs" role="tablist" aria-label="<?php echo esc_attr( $t['countries'] ); ?>">
+				<?php foreach ( $country_list as $i => $c ) : ?>
+					<button type="button" role="tab" class="sapo-hm__tab" id="<?php echo esc_attr( $uid . '-tab-' . $c['code'] ); ?>" aria-controls="<?php echo esc_attr( $uid . '-panel' ); ?>" aria-selected="<?php echo 0 === $i ? 'true' : 'false'; ?>" tabindex="<?php echo 0 === $i ? '0' : '-1'; ?>" data-country="<?php echo esc_attr( $c['code'] ); ?>">
+						<span><?php echo esc_html( $c['name'] ); ?></span>
+						<span class="sapo-hm__tab-count"><?php echo (int) $c['count']; ?></span>
+					</button>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
+
+			<div class="sapo-hm__panel" id="<?php echo esc_attr( $uid . '-panel' ); ?>" <?php echo $show_tabs ? 'role="tabpanel"' : ''; ?>>
+				<?php if ( 'no' !== $atts['search'] ) : ?>
+				<div class="sapo-hm__toolbar">
+					<div class="sapo-hm__search">
+						<svg class="sapo-hm__search-icon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.6-3.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+						<label class="sapo-hm__sr" for="<?php echo esc_attr( $uid . '-q' ); ?>"><?php echo esc_html( $t['search_label'] ); ?></label>
+						<input type="search" id="<?php echo esc_attr( $uid . '-q' ); ?>" class="sapo-hm__input" placeholder="<?php echo esc_attr( $t['search'] ); ?>" autocomplete="off" spellcheck="false" enterkeyhint="search">
+						<button type="button" class="sapo-hm__clear" hidden aria-label="<?php echo esc_attr( $t['clear'] ); ?>">
+							<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+						</button>
+					</div>
+					<div class="sapo-hm__select-wrap">
+						<label class="sapo-hm__sr" for="<?php echo esc_attr( $uid . '-k' ); ?>"><?php echo esc_html( $t['filter_label'] ); ?></label>
+						<select id="<?php echo esc_attr( $uid . '-k' ); ?>" class="sapo-hm__select"></select>
+						<svg class="sapo-hm__chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+					</div>
+					<p class="sapo-hm__count" aria-live="polite"></p>
+				</div>
+				<?php endif; ?>
+
+				<div class="sapo-hm__body">
+					<div class="sapo-hm__list-wrap">
+						<ul class="sapo-hm__list" aria-label="<?php echo esc_attr( $t['list'] ); ?>"></ul>
+						<div class="sapo-hm__none" hidden>
+							<p><?php echo esc_html( $t['none'] ); ?></p>
+							<div class="sapo-hm__elsewhere" hidden></div>
+							<button type="button" class="sapo-hm__reset"><?php echo esc_html( $t['reset'] ); ?></button>
+						</div>
+					</div>
+					<div class="sapo-hm__map-wrap">
+						<div class="sapo-hm__map" role="region" aria-label="<?php echo esc_attr( $t['map'] ); ?>"></div>
+						<div class="sapo-hm__hint" aria-hidden="true"><?php echo esc_html( $t['zoom_hint'] ); ?></div>
+					</div>
+				</div>
+			</div>
+
+			<?php if ( 'no' !== $atts['legend'] ) : ?>
+			<ul class="sapo-hm__legend">
+				<?php
+				$leg = array(
+					array( self::smiley_svg( 'green', 16, 26 ), $settings['legend_member'][ $lang ] ),
+					array( self::premium_svg( 18 ), $settings['legend_premium'][ $lang ] ),
+				);
+				foreach ( $leg as $l ) :
+					if ( '' === trim( (string) $l[1] ) ) {
+						continue;
+					}
+					?>
+					<li><?php echo $l[0]; // phpcs:ignore WordPress.Security.EscapeOutput -- SVG interne. ?><span><?php echo esc_html( $l[1] ); ?></span></li>
+				<?php endforeach; ?>
+			</ul>
+			<?php endif; ?>
+
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	private static function cantons_for_front( $lang ) {
+		$out = array();
+		foreach ( array_keys( self::cantons() ) as $code ) {
+			$out[ $code ] = self::canton_label( $code, 'CH', $lang );
+		}
+		return $out;
+	}
+
+	/* =====================================================================
+	 * Front : CSS
+	 * ===================================================================== */
+
+	private static function front_css() {
+		return <<<'CSS'
+.sapo-hm{--sapo-blue:#0069B4;--sapo-blue-2:#0175D6;--sapo-sky:#2EA3F2;--sapo-green:#A2BD2F;--sapo-green-d:#5B6D12;--sapo-text:#3D3D3D;--sapo-muted:#666B73;--sapo-bg:#F4F4F4;--sapo-line:#E3E5E8;--sapo-white:#fff;--sapo-r:6px;--sapo-head:'Montserrat',Helvetica,Arial,Lucida,sans-serif;--sapo-body:'Source Sans Pro',Helvetica,Arial,Lucida,sans-serif;font-family:var(--sapo-body);color:var(--sapo-text);font-size:16px;line-height:1.5;margin:0 0 24px;-webkit-font-smoothing:antialiased}
+.sapo-hm *,.sapo-hm *::before,.sapo-hm *::after{box-sizing:border-box}
+.sapo-hm__sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sapo-hm button{font-family:inherit}
+.sapo-hm :focus-visible{outline:2px solid var(--sapo-sky);outline-offset:2px}
+
+/* Onglets pays */
+.sapo-hm__tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;padding:0}
+.sapo-hm__tab{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 18px;border:1px solid var(--sapo-line);border-radius:999px;background:var(--sapo-white);color:var(--sapo-text);font-family:var(--sapo-head);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.sapo-hm__tab:hover{border-color:var(--sapo-blue);color:var(--sapo-blue)}
+.sapo-hm__tab[aria-selected="true"]{background:var(--sapo-blue);border-color:var(--sapo-blue);color:#fff}
+.sapo-hm__tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:24px;height:22px;padding:0 7px;border-radius:999px;background:var(--sapo-bg);color:var(--sapo-text);font-size:12px;letter-spacing:0}
+.sapo-hm__tab[aria-selected="true"] .sapo-hm__tab-count{background:rgba(255,255,255,.2);color:#fff}
+
+/* Barre de recherche */
+.sapo-hm__toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 16px}
+.sapo-hm__search{position:relative;flex:1 1 320px;min-width:0}
+.sapo-hm__search-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--sapo-muted);pointer-events:none}
+.sapo-hm .sapo-hm__input{width:100%;height:52px;margin:0;padding:0 48px 0 48px;border:1px solid var(--sapo-line);border-radius:var(--sapo-r);background:var(--sapo-white);color:var(--sapo-text);font-family:var(--sapo-body);font-size:17px;line-height:52px;box-shadow:none;-webkit-appearance:none;appearance:none;transition:border-color .2s ease,box-shadow .2s ease}
+.sapo-hm .sapo-hm__input::placeholder{color:#8A8F96;opacity:1}
+.sapo-hm .sapo-hm__input:focus{outline:none;border-color:var(--sapo-blue);box-shadow:0 0 0 3px rgba(0,105,180,.15)}
+.sapo-hm__input::-webkit-search-cancel-button{display:none}
+.sapo-hm__clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--sapo-muted);cursor:pointer;transition:background-color .2s ease,color .2s ease}
+.sapo-hm__clear:hover{background:var(--sapo-bg);color:var(--sapo-text)}
+.sapo-hm__select-wrap{position:relative;flex:0 1 240px}
+.sapo-hm .sapo-hm__select{width:100%;height:52px;margin:0;padding:0 40px 0 16px;border:1px solid var(--sapo-line);border-radius:var(--sapo-r);background:var(--sapo-white);color:var(--sapo-text);font-family:var(--sapo-body);font-size:16px;cursor:pointer;-webkit-appearance:none;appearance:none;transition:border-color .2s ease}
+.sapo-hm .sapo-hm__select:hover,.sapo-hm .sapo-hm__select:focus{border-color:var(--sapo-blue);outline:none}
+.sapo-hm__chev{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--sapo-muted);pointer-events:none}
+.sapo-hm__count{flex:0 0 auto;margin:0 0 0 auto!important;padding:0!important;font-family:var(--sapo-head);font-size:12px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--sapo-muted)}
+
+/* Corps : liste + carte */
+.sapo-hm__body{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:var(--sapo-hm-h,620px);border:1px solid var(--sapo-line);border-radius:var(--sapo-r);overflow:hidden;background:var(--sapo-white)}
+.sapo-hm__list-wrap{position:relative;min-height:0;border-right:1px solid var(--sapo-line);background:var(--sapo-white)}
+.sapo-hm__list{height:100%;margin:0!important;padding:0!important;list-style:none!important;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#C9D6E3 transparent}
+.sapo-hm__list::-webkit-scrollbar{width:8px}
+.sapo-hm__list::-webkit-scrollbar-thumb{background:#C9D6E3;border-radius:8px}
+.sapo-hm__item{position:relative;margin:0!important;padding:0!important;list-style:none!important;border-bottom:1px solid var(--sapo-line)}
+.sapo-hm__item::before{display:none!important}
+.sapo-hm__card{display:grid;grid-template-columns:22px 1fr;gap:4px 14px;width:100%;padding:18px 20px 18px 18px;border:0;border-left:3px solid transparent;background:transparent;color:inherit;text-align:left;cursor:pointer;transition:background-color .2s ease,border-color .2s ease}
+.sapo-hm__card:hover{background:#F7F9FB}
+.sapo-hm__item.is-active .sapo-hm__card{background:#EEF5FB;border-left-color:var(--sapo-blue)}
+.sapo-hm__pin{grid-row:1/span 3;padding-top:2px}
+.sapo-hm__pin svg{display:block;width:18px;height:auto}
+.sapo-hm__name{display:flex;align-items:flex-start;gap:8px;margin:0;font-family:var(--sapo-head);font-size:15px;font-weight:700;line-height:1.35;color:var(--sapo-blue)}
+.sapo-hm__name .sapo-hm-premium-icon{flex:0 0 auto;margin-top:1px}
+.sapo-hm__addr{margin:0;font-size:15px;line-height:1.45;color:var(--sapo-text)}
+.sapo-hm__meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:4px 0 0;font-size:14px;color:var(--sapo-muted)}
+.sapo-hm__chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:4px;background:var(--sapo-bg);font-family:var(--sapo-head);font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--sapo-text)}
+.sapo-hm__web{position:absolute;right:12px;top:14px;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;color:var(--sapo-blue-2);transition:background-color .2s ease}
+.sapo-hm__web:hover{background:#E3EEF8}
+.sapo-hm__item.has-web .sapo-hm__card{padding-right:52px}
+.sapo-hm mark{background:#FFF1A8;color:inherit;padding:0 1px;border-radius:2px}
+.sapo-hm__none{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:32px;text-align:center;color:var(--sapo-muted)}
+.sapo-hm__none[hidden]{display:none}
+.sapo-hm__none p{margin:0;padding:0}
+.sapo-hm__elsewhere{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;font-size:14px}
+.sapo-hm__elsewhere[hidden]{display:none}
+.sapo-hm__elsewhere span{width:100%}
+.sapo-hm__elsewhere button,.sapo-hm__reset{min-height:44px;padding:10px 18px;border:0;border-radius:var(--sapo-r);background:var(--sapo-sky);color:#fff;font-family:var(--sapo-head);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background-color .2s ease}
+.sapo-hm__elsewhere button{background:var(--sapo-blue)}
+.sapo-hm__elsewhere button:hover,.sapo-hm__reset:hover{background:var(--sapo-blue-2)}
+
+/* Carte */
+.sapo-hm__map-wrap{position:relative;min-height:0}
+.sapo-hm__map{position:absolute;inset:0;background:#E9EEF2;z-index:0}
+.sapo-hm__hint{position:absolute;left:50%;bottom:28px;transform:translate(-50%,8px);padding:8px 14px;border-radius:999px;background:rgba(61,61,61,.88);color:#fff;font-size:13px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:500}
+.sapo-hm__hint.is-visible{opacity:1;transform:translate(-50%,0)}
+.sapo-hm .leaflet-container{font-family:var(--sapo-body);font-size:14px}
+.sapo-hm--soft .leaflet-tile-pane{filter:grayscale(.55) saturate(.85) brightness(1.04) contrast(.92)}
+.sapo-hm .leaflet-bar{border:1px solid var(--sapo-line);border-radius:var(--sapo-r);box-shadow:none;overflow:hidden}
+.sapo-hm .leaflet-bar a{width:36px;height:36px;line-height:36px;color:var(--sapo-text);border-bottom-color:var(--sapo-line)}
+.sapo-hm .leaflet-bar a:hover{background:var(--sapo-bg);color:var(--sapo-blue)}
+.sapo-hm .leaflet-control-attribution{font-size:11px;background:rgba(255,255,255,.85)}
+.sapo-hm .leaflet-marker-icon.sapo-hm-marker{transition:filter .2s ease}
+.sapo-hm .leaflet-marker-icon.sapo-hm-marker.is-active{filter:drop-shadow(0 4px 6px rgba(0,0,0,.25))}
+.sapo-hm-cluster{display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;background:var(--sapo-blue);border:3px solid #fff;color:#fff;font-family:var(--sapo-head);font-size:13px;font-weight:700;box-shadow:0 0 0 1px rgba(0,105,180,.35)}
+.sapo-hm-cluster.is-md{width:46px;height:46px;font-size:14px}
+.sapo-hm-cluster.is-lg{width:54px;height:54px;font-size:15px}
+
+/* Popup */
+.sapo-hm .leaflet-popup-content-wrapper{border-radius:var(--sapo-r);box-shadow:0 8px 28px rgba(0,0,0,.14);padding:0}
+.sapo-hm .leaflet-popup-content{margin:0;width:280px!important;line-height:1.45}
+.sapo-hm .leaflet-popup-tip{box-shadow:none}
+.sapo-hm .leaflet-container a.leaflet-popup-close-button{top:8px;right:8px;width:32px;height:32px;font-size:20px;line-height:30px;color:var(--sapo-muted)}
+.sapo-hm__pop{padding:18px 20px 16px}
+.sapo-hm__pop-badge{display:flex!important;align-items:center;gap:8px;margin:0 28px 8px 0!important;font-size:13px!important;font-weight:600;color:#4D6B0F!important}
+.sapo-hm__pop h3{margin:0 24px 8px 0!important;padding:0!important;font-family:var(--sapo-head)!important;font-size:16px!important;font-weight:700!important;line-height:1.3!important;color:var(--sapo-blue)!important}
+.sapo-hm__pop p{margin:0!important;padding:0!important;font-size:15px;color:var(--sapo-text)}
+.sapo-hm__pop .sapo-hm__meta{margin-top:8px}
+.sapo-hm__pop-cta{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;margin-top:14px;padding:10px 16px;border-radius:var(--sapo-r);background:var(--sapo-sky);color:#fff!important;font-family:var(--sapo-head);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:none!important;transition:background-color .2s ease}
+.sapo-hm__pop-cta:hover{background:var(--sapo-blue-2)}
+
+/* Légende */
+.sapo-hm__legend{display:flex;flex-wrap:wrap;gap:12px 28px;margin:16px 0 0!important;padding:0!important;list-style:none!important;font-size:15px;color:var(--sapo-text)}
+.sapo-hm__legend li{display:flex;align-items:center;gap:10px;margin:0!important;padding:0!important;list-style:none!important}
+.sapo-hm__legend li::before{display:none!important}
+.sapo-hm__legend svg{flex:0 0 auto}
+.sapo-hm__empty-all{padding:32px;border:1px dashed var(--sapo-line);border-radius:var(--sapo-r);text-align:center;color:var(--sapo-muted)}
+
+/* Responsive */
+@media (max-width:980px){
+ .sapo-hm__body{grid-template-columns:1fr;grid-template-rows:min(56vh,440px) auto;height:auto}
+ .sapo-hm__map-wrap{order:-1;height:min(56vh,440px)}
+ .sapo-hm__list-wrap{border-right:0;border-top:1px solid var(--sapo-line);min-height:180px}
+ .sapo-hm__list{max-height:440px}
+ .sapo-hm__select-wrap{flex:1 1 200px}
+ .sapo-hm__count{width:100%;margin:0!important}
+}
+@media (max-width:480px){
+ .sapo-hm__tab{padding:8px 14px;font-size:12px}
+ .sapo-hm .sapo-hm__input,.sapo-hm .sapo-hm__select{height:48px;font-size:16px}
+ .sapo-hm .leaflet-popup-content{width:240px!important}
+}
+@media (prefers-reduced-motion:reduce){.sapo-hm *{transition:none!important;animation:none!important}}
+CSS;
+	}
+
+	/* =====================================================================
+	 * Front : JS
+	 * ===================================================================== */
+
+	private static function front_js() {
+		return <<<'JS'
+(function(){
+"use strict";
+var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,"");}catch(e){return u;}}
+function hl(text,terms){var t=esc(text);if(!terms.length)return t;var plain=String(text||""),n=plain.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();var marks=[];terms.forEach(function(term){if(term.length<2)return;var i=n.indexOf(term);while(i>-1){if(i===0||!/[a-z0-9]/.test(n.charAt(i-1)))marks.push([i,i+term.length]);i=n.indexOf(term,i+term.length);}});if(!marks.length||n.length!==plain.length)return t;marks.sort(function(a,b){return a[0]-b[0];});var out="",pos=0;marks.forEach(function(m){if(m[0]<pos)return;out+=esc(plain.slice(pos,m[0]))+"<mark>"+esc(plain.slice(m[0],m[1]))+"</mark>";pos=m[1];});return out+esc(plain.slice(pos));}
+var PREMIUM='<svg class="sapo-hm-premium-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
+var EXT='<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function Map_(root){
+  var cfg;try{cfg=JSON.parse(root.querySelector(".sapo-hm__data").getAttribute("data-config"));}catch(e){return;}
+  if(!cfg.hotels||!cfg.hotels.length||!window.L)return;
+  var t=cfg.t,L=window.L;
+  var $=function(s){return root.querySelector(s);};
+  var input=$(".sapo-hm__input"),clear=$(".sapo-hm__clear"),sel=$(".sapo-hm__select"),count=$(".sapo-hm__count"),list=$(".sapo-hm__list"),none=$(".sapo-hm__none"),elsewhere=$(".sapo-hm__elsewhere"),hint=$(".sapo-hm__hint"),mapEl=$(".sapo-hm__map");
+  var tabs=[].slice.call(root.querySelectorAll(".sapo-hm__tab"));
+  var country=cfg.countries.length?cfg.countries[0].code:"CH";
+  cfg.hotels.forEach(function(h){h._s=" "+norm([h.n,h.a,h.z,h.c,h.k,h.kl,h.w?host(h.w).replace(/\./g," "):""].join(" "));});
+  cfg.hotels.sort(function(a,b){return a.n.localeCompare(b.n,cfg.lang,{sensitivity:"base"});});
+
+  var map=L.map(mapEl,{scrollWheelZoom:false,zoomControl:true,attributionControl:true,worldCopyJump:true,tap:true});
+  L.tileLayer(cfg.tiles[0],{attribution:cfg.tiles[1],maxZoom:19,subdomains:"abcd"}).addTo(map);
+  map.zoomControl.setPosition("topright");
+  map.on("click focus",function(){map.scrollWheelZoom.enable();});
+  map.on("mouseout",function(){map.scrollWheelZoom.disable();});
+  var hintTimer;mapEl.addEventListener("wheel",function(){if(map.scrollWheelZoom.enabled()||!hint)return;hint.classList.add("is-visible");clearTimeout(hintTimer);hintTimer=setTimeout(function(){hint.classList.remove("is-visible");},1400);},{passive:true});
+
+  function icon(h,big){var w=big?38:28,hh=Math.round(w*69/42);return L.icon({iconUrl:cfg.icons.green,iconSize:[w,hh],iconAnchor:[Math.round(w*23.3/42),hh],popupAnchor:[0,-hh+4],className:"sapo-hm-marker"+(big?" is-active":"")});}
+  var layer=(cfg.cluster&&L.markerClusterGroup)?L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:42,spiderfyOnMaxZoom:true,disableClusteringAtZoom:15,iconCreateFunction:function(c){var n=c.getChildCount();var cls=n>=25?" is-lg":n>=10?" is-md":"";var s=n>=25?54:n>=10?46:40;return L.divIcon({html:'<div class="sapo-hm-cluster'+cls+'"><span>'+n+'</span></div>',className:"",iconSize:[s,s]});}}):L.layerGroup();
+  layer.addTo(map);
+
+  function popup(h){
+    var meta=(h.k?'<span class="sapo-hm__chip">'+esc(h.k)+'</span>':'')+(h.kl&&h.kl!==h.k?'<span>'+esc((h.p==="CH"?t.canton:t.region)+" "+h.kl)+'</span>':'');
+    return '<div class="sapo-hm__pop">'+(h.pr?'<p class="sapo-hm__pop-badge">'+PREMIUM+esc(t.premium)+'</p>':'')+'<h3>'+esc(h.n)+'</h3><p>'+esc(h.a)+'</p><p>'+esc([h.z,h.c].filter(Boolean).join(" "))+'</p>'+(meta?'<p class="sapo-hm__meta">'+meta+'</p>':'')+(h.w?'<a class="sapo-hm__pop-cta" href="'+esc(h.w)+'" target="_blank" rel="noopener">'+esc(t.visit)+EXT+'<span class="sapo-hm__sr"> '+esc(t.new_tab)+'</span></a>':'')+'</div>';
+  }
+  cfg.hotels.forEach(function(h){
+    h._m=L.marker([h.la,h.lo],{icon:icon(h,false),title:h.n,alt:h.n,riseOnHover:true,keyboard:true});
+    h._m.bindPopup(function(){return popup(h);},{maxWidth:300,minWidth:240,autoPanPadding:[24,24],closeButton:true});
+    h._m.on("click",function(){activate(h,false);});
+    h._m.on("popupclose",function(){if(active===h)deactivate();});
+  });
+
+  var active=null,visible=[],first=true;
+  function deactivate(){if(!active)return;active._m.setIcon(icon(active,false));if(active._li)active._li.classList.remove("is-active");active=null;}
+  function activate(h,fromList){
+    if(active&&active!==h)deactivate();
+    active=h;h._m.setIcon(icon(h,true));h._m.setZIndexOffset(1000);
+    if(h._li){h._li.classList.add("is-active");if(!fromList){var top=h._li.offsetTop-list.clientHeight/2+h._li.offsetHeight/2;list.scrollTo({top:Math.max(0,top),behavior:reduce?"auto":"smooth"});}}
+  }
+  function focusHotel(h){
+    activate(h,true);
+    var go=function(){h._m.openPopup();};
+    if(layer.zoomToShowLayer){var z=Math.max(map.getZoom(),13);if(reduce){map.setView([h.la,h.lo],z);}else{map.flyTo([h.la,h.lo],z,{duration:.6});}map.once("moveend",function(){layer.zoomToShowLayer(h._m,go);});}
+    else{map.setView([h.la,h.lo],Math.max(map.getZoom(),13),{animate:!reduce});go();}
+  }
+
+  function fillCantons(){
+    if(!sel)return;
+    var seen={},opts=[];
+    cfg.hotels.forEach(function(h){if(h.p===country&&h.k&&!seen[h.k]){seen[h.k]=1;opts.push({v:h.k,l:h.kl&&h.kl!==h.k?h.kl+" ("+h.k+")":h.k});}});
+    opts.sort(function(a,b){return a.l.localeCompare(b.l,cfg.lang);});
+    sel.innerHTML='<option value="">'+esc(country==="CH"?t.all_cantons:t.all_regions)+'</option>'+opts.map(function(o){return'<option value="'+esc(o.v)+'">'+esc(o.l)+'</option>';}).join("");
+    sel.parentNode.style.display=opts.length>1?"":"none";
+  }
+
+  function terms(){return norm(input?input.value:"").split(" ").filter(Boolean);}
+  function match(h,ts,k){if(k&&h.k!==k)return false;for(var i=0;i<ts.length;i++){if(h._s.indexOf(" "+ts[i])===-1)return false;}return true;}
+
+  function render(fit){
+    var ts=terms(),k=sel?sel.value:"";
+    if(clear)clear.hidden=!(input&&input.value);
+    visible=cfg.hotels.filter(function(h){return h.p===country&&match(h,ts,k);});
+    deactivate();map.closePopup();
+    layer.clearLayers();
+    var ms=visible.map(function(h){return h._m;});
+    if(layer.addLayers)layer.addLayers(ms);else ms.forEach(function(m){layer.addLayer(m);});
+    var html="";
+    visible.forEach(function(h,i){
+      var meta=(h.k?'<span class="sapo-hm__chip" title="'+esc(h.kl||h.k)+'">'+esc(h.k)+'</span>':'')+(h.w?'<span>'+esc(host(h.w))+'</span>':'');
+      html+='<li class="sapo-hm__item'+(h.w?' has-web':'')+'" data-i="'+i+'"><button type="button" class="sapo-hm__card" aria-label="'+esc(h.n+", "+[h.a,h.z,h.c].filter(Boolean).join(" ")+". "+t.show)+'"><span class="sapo-hm__pin" aria-hidden="true"><img src="'+cfg.icons.green+'" alt="" width="18" height="30"></span><span class="sapo-hm__name">'+(h.pr?PREMIUM:'')+'<span>'+hl(h.n,ts)+'</span></span><span class="sapo-hm__addr">'+hl(h.a,ts)+'<br>'+hl([h.z,h.c].filter(Boolean).join(" "),ts)+'</span>'+(meta?'<span class="sapo-hm__meta">'+meta+'</span>':'')+'</button>'+(h.w?'<a class="sapo-hm__web" href="'+esc(h.w)+'" target="_blank" rel="noopener" aria-label="'+esc(t.visit+" "+h.n+" "+t.new_tab)+'">'+EXT+'</a>':'')+'</li>';
+    });
+    list.innerHTML=html;
+    [].forEach.call(list.children,function(li){var h=visible[+li.getAttribute("data-i")];h._li=li;li.firstChild.addEventListener("click",function(){focusHotel(h);});});
+    list.scrollTop=0;
+    var n=visible.length;
+    if(count)count.textContent=n===1?t.count_one:t.count_many.replace("%d",n);
+    none.hidden=n>0;list.hidden=n===0;
+    if(!n&&elsewhere){
+      var other={};cfg.hotels.forEach(function(h){if(h.p!==country&&match(h,ts,""))other[h.p]=(other[h.p]||0)+1;});
+      var keys=Object.keys(other);
+      elsewhere.hidden=!keys.length||!ts.length;
+      elsewhere.innerHTML=keys.length?'<span>'+esc(t.elsewhere)+'</span>'+keys.map(function(c){var cc=cfg.countries.filter(function(x){return x.code===c;})[0];return'<button type="button" data-c="'+esc(c)+'">'+esc((cc?cc.name:c)+" ("+other[c]+")")+'</button>';}).join(""):"";
+      [].forEach.call(elsewhere.querySelectorAll("button"),function(b){b.addEventListener("click",function(){var keep=input.value;setCountry(b.getAttribute("data-c"),true);input.value=keep;render(true);});});
+    }
+    if(fit!==false){
+      var pts=(n?visible:cfg.hotels.filter(function(h){return h.p===country;})).map(function(h){return[h.la,h.lo];});
+      if(pts.length===1)map.setView(pts[0],13,{animate:!first&&!reduce});
+      else if(pts.length)map.fitBounds(L.latLngBounds(pts),{padding:[36,36],maxZoom:13,animate:!first&&!reduce});
+      first=false;
+    }
+  }
+
+  function setCountry(c,focusTab){
+    country=c;
+    tabs.forEach(function(b){var on=b.getAttribute("data-country")===c;b.setAttribute("aria-selected",on?"true":"false");b.tabIndex=on?0:-1;if(on&&focusTab)b.focus();});
+    if(sel)sel.value="";
+    if(input)input.value="";
+    fillCantons();render(true);
+  }
+  tabs.forEach(function(b,i){
+    b.addEventListener("click",function(){setCountry(b.getAttribute("data-country"),false);});
+    b.addEventListener("keydown",function(e){var d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;if(e.key==="Home")d=-i;if(e.key==="End")d=tabs.length-1-i;if(!d)return;e.preventDefault();var nb=tabs[(i+d+tabs.length)%tabs.length];setCountry(nb.getAttribute("data-country"),true);});
+  });
+
+  var deb;
+  if(input){
+    input.addEventListener("input",function(){clearTimeout(deb);deb=setTimeout(function(){render(true);},160);});
+    input.addEventListener("keydown",function(e){if(e.key==="Escape"&&input.value){input.value="";render(true);}if(e.key==="Enter"&&visible.length===1){e.preventDefault();focusHotel(visible[0]);}});
+  }
+  if(clear)clear.addEventListener("click",function(){input.value="";render(true);input.focus();});
+  if(sel)sel.addEventListener("change",function(){render(true);});
+  var reset=$(".sapo-hm__reset");if(reset)reset.addEventListener("click",function(){if(input)input.value="";if(sel)sel.value="";render(true);if(input)input.focus();});
+
+  fillCantons();render(true);
+  if("ResizeObserver" in window){new ResizeObserver(function(){map.invalidateSize();}).observe(mapEl);}
+}
+function boot(){[].forEach.call(document.querySelectorAll(".sapo-hm"),function(el){if(el.__sapo)return;el.__sapo=1;Map_(el);});}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+window.addEventListener("load",boot);
+})();
+JS;
+	}
+	}
+}

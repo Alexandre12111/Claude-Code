@@ -1,0 +1,122 @@
+/*
+ * SapoCycle · Carte des hôtels · Snippet 1/7 : Cœur et diagnostic
+ * Code Snippets : type PHP, « Exécuter le snippet partout ».
+ * Les 7 snippets sont nécessaires. Le snippet 1 indique s'il en manque un.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
+}
+
+/** Liste des snippets attendus (trait => libellé). */
+function sapo_hotels_parts() {
+	return array(
+		'Sapo_Hotels_Part_Donnees' => '2 · Données, pays, cantons, langues',
+		'Sapo_Hotels_Part_Carte' => '3 · Carte publique et shortcodes',
+		'Sapo_Hotels_Part_AdminPage' => '4 · Page d\'administration',
+		'Sapo_Hotels_Part_Import' => '5 · Enregistrement, import et export Excel',
+		'Sapo_Hotels_Part_AdminDesign' => '6 · Design de l\'administration',
+		'Sapo_Hotels_Part_AdminScript' => '7 · Script de l\'administration',
+	);
+}
+
+function sapo_hotels_missing_parts() {
+	$missing = array();
+	foreach ( sapo_hotels_parts() as $trait => $label ) {
+		if ( ! trait_exists( $trait, false ) ) {
+			$missing[] = $label;
+		}
+	}
+	return $missing;
+}
+
+/** Démarre la carte une fois tous les snippets chargés (l'ordre des snippets n'a pas d'importance). */
+function sapo_hotels_boot() {
+	if ( class_exists( 'Sapo_Hotels_Map', false ) ) {
+		return;
+	}
+	$missing = sapo_hotels_missing_parts();
+	if ( $missing ) {
+		add_action( 'admin_menu', 'sapo_hotels_diagnostic_menu' );
+		add_action( 'admin_notices', 'sapo_hotels_diagnostic_notice' );
+		return;
+	}
+
+	final class Sapo_Hotels_Map {
+		use Sapo_Hotels_Part_Donnees, Sapo_Hotels_Part_Carte, Sapo_Hotels_Part_AdminPage, Sapo_Hotels_Part_Import, Sapo_Hotels_Part_AdminDesign, Sapo_Hotels_Part_AdminScript;
+
+
+		const VERSION      = '1.0.0';
+		const SLUG         = 'sapo-hotels';
+		const OPT_DATA     = 'sapo_hotels_data';
+		const OPT_BACKUP   = 'sapo_hotels_backup';
+		const OPT_SETTINGS = 'sapo_hotels_settings';
+		const OPT_UPDATED  = 'sapo_hotels_updated';
+		const NONCE        = 'sapo_hotels_admin';
+		const OPT_IMPORTS  = 'sapo_hotels_imports';
+
+		/** Les trois pays du site : chacun a son fichier Excel et ses trois shortcodes (FR, DE, EN). */
+		const MAP_COUNTRIES = array(
+			'CH' => 'suisse',
+			'FR' => 'france',
+			'DE' => 'allemagne',
+		);
+
+		const LEAFLET_VER = '1.9.4';
+		const CLUSTER_VER = '1.5.3';
+
+		/** Chemins SVG des smileys (repris des icônes actuelles du site). */
+		const PIN_PATH  = 'M25.3,64.9 L32.5,38.6 L32.8,38.4 C39.1,34.9 43,28.3 43,21 C43,10 34,1 23,1 C12,1 3,10 3,21 C3,29.4 8.2,36.8 15.9,39.7 L16.4,39.9 L25.3,64.9 Z';
+		const FACE_PATH = 'M12.6,12.2 C12.7,12.2 12.7,12.3 12.8,12.3 C12.8,12.3 12.8,12.3 12.8,12.3 C12.7,12.1 12.8,11.8 13.1,11.7 C13.1,11.6 13.2,11.6 13.3,11.6 C13.5,11.6 13.6,11.7 13.7,11.8 C14,11.5 14.5,11.4 14.9,11.4 C15,11.4 15,11.4 15.1,11.4 C15.1,11.4 15.2,11.4 15.2,11.5 C15.5,11.5 15.8,11.7 16.1,11.9 C16.4,12.2 16.4,12.7 16.3,13.1 C16.3,13.1 16.3,13.2 16.3,13.3 C16.3,13.3 16.3,13.3 16.4,13.3 C16.4,13.3 16.4,13.3 16.4,13.3 C16.7,13.5 16.7,13.9 16.6,14.2 C16.1,15.1 15.1,15.4 14.2,14.8 C14.1,14.8 14.1,14.7 14,14.6 C13.7,14.6 13.5,14.5 13.3,14.4 C12.6,13.9 11.8,11.7 12.6,12.2 M10.7,16.6 C10.7,16.7 10.7,16.8 10.8,16.8 L11,17.3 L11.7,17.6 C11.9,17.7 12.1,17.7 12.3,17.8 C12.4,17.9 12.5,17.9 12.5,17.9 C12.8,18.1 13.1,18.2 13.6,18.3 C13.7,18.3 13.8,18.3 13.9,18.3 C14,18.3 14.1,18.3 14.3,18.3 C15.4,18.3 16.5,17.8 17.4,17 C17.8,16.7 18.1,16.4 18.5,16 C18.8,15.5 19,15 19.1,14.6 L19.1,14.5 C19.3,14.1 19.4,13.4 19.2,12.8 C19.3,12.6 19.4,12.2 19.2,11.7 C19.2,11.7 19.2,11.6 19.1,11.4 L19.3,11.2 C19.1,10.9 18.9,10.7 18.7,10.4 L18.5,10.6 C18.5,10.5 18.4,10.4 18.4,10.3 L18.3,10 C17.9,9.1 17.1,8.5 16.2,8.5 C16,8.4 15.8,8.4 15.5,8.4 C15.1,8.3 14.6,8.3 14.1,8.3 L14,8.3 C13.1,8.3 12.1,8.5 11.3,9.4 L11.2,9.5 C10.8,9.9 10.2,10.6 10.1,11.5 C9.6,11.9 9.5,12.6 9.5,12.9 C9.5,12.9 9.4,13 9.4,13 C9.2,13.9 9.4,14.7 9.9,15.2 C10,15.8 10.3,16.2 10.7,16.6 M35.7,21.4 C35.7,21.3 35.6,21.3 35.6,21.3 C35.4,21.3 35.3,21.2 35.2,21 C35.1,20.9 35,20.8 35,20.7 C35,20.6 34.9,20.6 34.9,20.6 C34.8,20.5 34.8,20.4 34.8,20.3 C34.6,20.4 34.5,20.5 34.3,20.6 C33.9,20.6 33.6,20.6 33.2,20.6 C33.2,20.7 33.1,20.6 33,20.6 L33,20.7 C33,20.7 33,20.7 33,20.8 C32.8,21 32.4,21.5 32.5,22.2 C32.5,22.6 32.4,22.9 32.2,23.5 C32.1,23.9 32.1,24.3 32,24.6 C32,24.7 32,24.9 32,25 C32,25.1 31.9,25.3 31.9,25.5 C31.7,26.1 31.6,26.6 31.3,26.9 L31,27.2 L30.9,27.5 C30.7,28.3 30.1,28.8 29.3,29.5 C29.1,29.7 28.9,29.9 28.7,30 C28.3,30.4 27.7,30.7 27.2,31.1 C26.9,31.2 26.7,31.3 26.4,31.5 C26.4,31.5 26.4,31.5 26.4,31.5 C25.7,31.5 25,31.7 24.5,31.8 C24.2,31.9 23.9,32 23.7,32 C23.4,32.1 22.9,32.1 22.5,32.1 L22.3,32.1 C22,31.8 21.6,31.7 21.2,31.7 C21.1,31.7 21,31.7 20.9,31.7 L20.7,31.7 C20.6,31.7 20.6,31.6 20.5,31.6 C19.9,31.1 19.1,30.9 18.3,30.9 L17.8,30.5 C17.4,30.2 17.1,29.9 16.8,29.6 C16.5,29.5 16.4,29.2 16.1,28.9 C15.8,28.4 15.4,27.8 14.8,27.4 C14.7,27.3 14.6,27.3 14.5,27.2 C14.5,26.9 14.5,26.7 14.4,26.4 C14.3,26.1 14.1,25.8 14,25.5 C14,25.3 13.9,25.2 13.8,25 C13.4,24 13.3,23.2 13.2,22.4 L13.2,22.1 C13,22.1 12.8,21.9 12.8,21.6 C12.7,21.6 12.7,21.4 12.7,21.3 L10.9,20.7 C10.8,20.8 10.6,20.9 10.4,20.9 C10.3,20.9 10.3,20.9 10.2,20.9 C10.2,20.9 10.2,20.9 10.2,20.9 L9.9,21.5 C9.4,22.3 9.1,23.3 9.6,24.6 C9.7,24.7 9.7,24.9 9.6,25.2 C9.6,25.5 9.6,25.7 9.6,25.9 L9.5,27 L10.1,27.2 C10.1,27.7 10.2,28.2 10.6,28.6 C10.8,28.8 11,29.1 11.1,29.3 C11.6,30 12.2,30.8 13,31.4 C13.1,31.5 13.2,31.6 13.2,32 L13.3,32.7 L13.9,33 C14.1,33.1 14.3,33.2 14.5,33.3 C14.8,33.4 15.1,33.5 15.3,33.7 C16.1,34.3 17,34.8 18.1,35.1 C18.4,35.2 18.7,35.3 19,35.4 C19.4,35.6 19.8,35.7 20.2,35.9 C20.9,36 21.8,36.2 22.6,36.3 C22.8,36.3 23,36.3 23.1,36.3 C23.6,36.3 24.1,36.2 24.6,36 C24.6,36 24.7,36 24.7,36 L24.9,36.1 C25,36.1 25.1,36.1 25.2,36.1 L25.3,36.1 C25.7,36 26.3,36 26.7,35.4 L27.2,35.5 C27.2,35.5 27.3,35.5 27.3,35.5 C27.7,35.5 28,35.3 28.3,35.1 C28.4,35 28.7,34.9 29,34.8 C29.6,34.5 30.4,34.2 30.9,33.3 C30.9,33.3 31,33.3 31,33.3 C31.7,32.8 32.3,32.3 32.7,31.8 C32.9,31.6 33.1,31.5 33.2,31.3 C33.7,30.8 34.1,30.1 34.2,29.4 C34.5,29.2 34.8,28.9 34.9,28.6 C35.2,27.7 35.5,26.9 35.8,26.1 C36,25.7 35.9,25.3 35.8,25.1 C35.9,24.8 36,24.6 36,24.3 C35.9,24.2 35.8,24.1 35.8,23.8 L35.8,23.5 C35.8,23.2 36,23 36.2,23 C36.3,22.8 36.3,22.7 36.3,22.5 C36.3,22.3 36.3,22.2 36.3,22 L36.3,22 C36.2,21.9 36,21.8 35.9,21.7 C35.8,21.6 35.7,21.5 35.7,21.4 M29.4,11.5 C29.5,11.5 29.6,11.5 29.6,11.4 C29.8,11.2 30,11.1 30.3,11.1 C30.4,11.2 30.5,11.2 30.5,11.2 C30.6,11.1 30.8,11 31,11 C31.2,11 31.4,11.1 31.4,11.3 L31.4,11.3 C31.6,11.3 31.8,11.4 32,11.4 C32.2,11.4 32.4,11.5 32.5,11.6 C32.9,11.7 33,12.3 32.7,12.5 C32.8,12.6 32.8,12.7 32.8,12.8 C32.8,13.1 32.6,13.4 32.3,13.5 C32.2,13.8 32,14 31.7,14.2 C31.2,14.7 30.4,15 29.7,14.5 C28.6,13.9 28.2,12.2 29.4,11.5 M27.9,16.1 C28,16.2 28.1,16.3 28.2,16.4 C28.3,16.6 28.7,16.9 29.2,17 C29.4,17 29.5,17 29.8,17.1 C30.1,17.2 30.5,17.3 30.9,17.3 C31,17.3 31.1,17.3 31.2,17.3 C31.5,17.3 31.9,17.2 32.3,17 C33.9,16.4 35.3,15.4 35.3,12.6 L35.3,12.5 L34.5,12.6 L35.3,12.4 C35.3,12.2 35.3,12 35.2,11.7 C34.9,10.1 34.1,9.1 32.9,8.7 C31.5,8.2 30.3,8.2 29.1,8.5 C28.5,8.6 28,9 27.7,9.3 C26.1,10.8 25.9,13.4 27.1,15.1 C27.4,15.5 27.7,15.8 27.9,16.1';
+
+		private static $instance_count = 0;
+
+		/* =====================================================================
+		 * Bootstrap
+		 * ===================================================================== */
+
+		public static function init() {
+			add_action( 'init', array( __CLASS__, 'register_shortcode' ) );
+			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'register_front_assets' ) );
+			add_action( 'admin_menu', array( __CLASS__, 'admin_menu' ) );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_assets' ) );
+
+			foreach ( array( 'save', 'delete', 'import', 'geocode', 'settings', 'restore' ) as $a ) {
+				add_action( 'wp_ajax_sapo_hotels_' . $a, array( __CLASS__, 'ajax_' . $a ) );
+			}
+			add_action( 'admin_post_sapo_hotels_export', array( __CLASS__, 'download_export' ) );
+		}
+
+		public static function capability() {
+			return apply_filters( 'sapo_hotels_capability', 'edit_pages' );
+		}
+	}
+
+	Sapo_Hotels_Map::init();
+	if ( did_action( 'init' ) ) {
+		Sapo_Hotels_Map::register_shortcode();
+	}
+}
+
+function sapo_hotels_diagnostic_notice() {
+	$missing = sapo_hotels_missing_parts();
+	echo '<div class="notice notice-error"><p><strong>Carte des hôtels SapoCycle :</strong> il manque ' . count( $missing ) . ' snippet(s) sur 7 : ' . esc_html( implode( ', ', $missing ) ) . '. Ajoutez-les dans Code Snippets (type PHP, « Exécuter le snippet partout »).</p></div>';
+}
+
+function sapo_hotels_diagnostic_menu() {
+	add_menu_page( 'Carte des hôtels', 'Carte des hôtels', 'edit_pages', 'sapo-hotels', 'sapo_hotels_diagnostic_page', 'dashicons-location-alt', 26 );
+}
+
+function sapo_hotels_diagnostic_page() {
+	echo '<div class="wrap"><h1>Carte des hôtels : installation incomplète</h1><table class="widefat striped" style="max-width:640px"><tbody>';
+	foreach ( sapo_hotels_parts() as $trait => $label ) {
+		$ok = trait_exists( $trait, false );
+		echo '<tr><td>' . esc_html( $label ) . '</td><td><strong style="color:' . ( $ok ? '#3c7a12' : '#b32d2e' ) . '">' . ( $ok ? 'Chargé' : 'Manquant' ) . '</strong></td></tr>';
+	}
+	echo '</tbody></table><p>Le snippet 1 est bien actif. Ajoutez ou réactivez les snippets marqués « Manquant », puis rechargez cette page.</p></div>';
+}
+
+if ( did_action( 'after_setup_theme' ) ) {
+	sapo_hotels_boot();
+} else {
+	add_action( 'after_setup_theme', 'sapo_hotels_boot', 1 );
+}

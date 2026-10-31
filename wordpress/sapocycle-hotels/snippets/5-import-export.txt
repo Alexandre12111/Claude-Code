@@ -1,0 +1,704 @@
+/*
+ * SapoCycle · Carte des hôtels · Snippet 5/7 : Enregistrement, import et export Excel
+ * Code Snippets : type PHP, « Exécuter le snippet partout ».
+ * Les 7 snippets sont nécessaires. Le snippet 1 indique s'il en manque un.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
+}
+if ( ! trait_exists( 'Sapo_Hotels_Part_Import', false ) ) {
+	trait Sapo_Hotels_Part_Import {
+
+	/* =====================================================================
+	 * Administration : AJAX
+	 * ===================================================================== */
+
+	private static function check_ajax() {
+		if ( ! current_user_can( self::capability() ) || ! check_ajax_referer( self::NONCE, 'nonce', false ) ) {
+			wp_send_json_error( array( 'message' => 'Session expirée ou droits insuffisants. Rechargez la page.' ), 403 );
+		}
+	}
+
+	public static function ajax_save() {
+		self::check_ajax();
+		$raw = isset( $_POST['hotel'] ) ? json_decode( wp_unslash( $_POST['hotel'] ), true ) : null; // phpcs:ignore
+		if ( ! is_array( $raw ) ) {
+			wp_send_json_error( array( 'message' => 'Données invalides.' ) );
+		}
+		$hotels = self::get_hotels();
+		$found  = false;
+		foreach ( $hotels as $i => $h ) {
+			if ( ! empty( $raw['id'] ) && $h['id'] === $raw['id'] ) {
+				$hotels[ $i ] = self::sanitize_hotel( $raw, $h );
+				$saved        = $hotels[ $i ];
+				$found        = true;
+				break;
+			}
+		}
+		if ( ! $found ) {
+			unset( $raw['id'] );
+			$saved    = self::sanitize_hotel( $raw );
+			$hotels[] = $saved;
+		}
+		if ( '' === $saved['name'] ) {
+			wp_send_json_error( array( 'message' => 'Le nom de l\'hôtel est obligatoire.' ) );
+		}
+		self::save_hotels( $hotels );
+		wp_send_json_success( array( 'hotel' => $saved, 'hotels' => self::get_hotels() ) );
+	}
+
+	public static function ajax_delete() {
+		self::check_ajax();
+		$ids = isset( $_POST['ids'] ) ? array_map( 'sanitize_text_field', (array) json_decode( wp_unslash( $_POST['ids'] ), true ) ) : array(); // phpcs:ignore
+		$act = isset( $_POST['act'] ) ? sanitize_key( $_POST['act'] ) : 'delete';
+		$hotels = self::get_hotels();
+		if ( 'delete' === $act ) {
+			$hotels = array_values( array_filter( $hotels, function ( $h ) use ( $ids ) { return ! in_array( $h['id'], $ids, true ); } ) );
+		} else {
+			foreach ( $hotels as $i => $h ) {
+				if ( in_array( $h['id'], $ids, true ) ) {
+					$hotels[ $i ]['active'] = ( 'show' === $act );
+				}
+			}
+		}
+		self::save_hotels( $hotels );
+		wp_send_json_success( array( 'hotels' => self::get_hotels() ) );
+	}
+
+	public static function ajax_restore() {
+		self::check_ajax();
+		$backup = get_option( self::OPT_BACKUP );
+		if ( ! is_array( $backup ) || ! isset( $backup['data'] ) ) {
+			wp_send_json_error( array( 'message' => 'Aucune sauvegarde disponible.' ) );
+		}
+		self::save_hotels( (array) $backup['data'] );
+		delete_option( self::OPT_BACKUP );
+		wp_send_json_success( array( 'hotels' => self::get_hotels() ) );
+	}
+
+	public static function ajax_settings() {
+		self::check_ajax();
+		$in  = isset( $_POST['settings'] ) ? json_decode( wp_unslash( $_POST['settings'] ), true ) : array(); // phpcs:ignore
+		$def = self::default_settings();
+		$out = array(
+			'tiles'      => in_array( $in['tiles'] ?? '', array( 'soft', 'osm', 'custom' ), true ) ? $in['tiles'] : 'soft',
+			'tiles_url'  => preg_match( '#^https://[^\s"<>]+\{z\}[^\s"<>]*$#', trim( (string) ( $in['tiles_url'] ?? '' ) ) ) ? trim( $in['tiles_url'] ) : '',
+			'tiles_attr' => wp_kses( (string) ( $in['tiles_attr'] ?? '' ), array( 'a' => array( 'href' => true, 'target' => true, 'rel' => true ) ) ),
+			'height'  => max( 320, min( 1200, absint( $in['height'] ?? 620 ) ) ),
+			'cluster' => empty( $in['cluster'] ) ? 0 : 1,
+		);
+		$current           = self::get_settings();
+		$out['columns']    = $current['columns'];
+		$out['header_row'] = $current['header_row'];
+		foreach ( array( 'legend_member', 'legend_premium' ) as $k ) {
+			foreach ( array( 'fr', 'de', 'en' ) as $l ) {
+				$out[ $k ][ $l ] = sanitize_text_field( $in[ $k ][ $l ] ?? $def[ $k ][ $l ] );
+			}
+		}
+		update_option( self::OPT_SETTINGS, $out, false );
+		wp_send_json_success( array( 'settings' => self::get_settings() ) );
+	}
+
+	/** Géolocalise un hôtel via Nominatim (OpenStreetMap). */
+	public static function ajax_geocode() {
+		self::check_ajax();
+		$id     = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : '';
+		$preview = ! empty( $_POST['preview'] );
+		if ( $preview ) {
+			$h = self::sanitize_hotel(
+				array(
+					'name'    => wp_unslash( $_POST['name'] ?? '' ),    // phpcs:ignore
+					'address' => wp_unslash( $_POST['address'] ?? '' ), // phpcs:ignore
+					'zip'     => wp_unslash( $_POST['zip'] ?? '' ),     // phpcs:ignore
+					'city'    => wp_unslash( $_POST['city'] ?? '' ),    // phpcs:ignore
+					'country' => wp_unslash( $_POST['country'] ?? 'CH' ), // phpcs:ignore
+				)
+			);
+			$pos = self::geocode( $h );
+			if ( ! $pos ) {
+				wp_send_json_error( array( 'message' => 'Adresse introuvable. Placez le smiley manuellement sur la carte.' ) );
+			}
+			wp_send_json_success( $pos );
+		}
+
+		$hotels = self::get_hotels();
+		foreach ( $hotels as $i => $h ) {
+			if ( $h['id'] !== $id ) {
+				continue;
+			}
+			$pos = self::geocode( $h );
+			if ( ! $pos ) {
+				wp_send_json_error( array( 'message' => 'Adresse introuvable : ' . $h['name'], 'id' => $id ) );
+			}
+			$hotels[ $i ]['lat'] = $pos['lat'];
+			$hotels[ $i ]['lng'] = $pos['lng'];
+			self::save_hotels( $hotels );
+			wp_send_json_success( array( 'hotel' => $hotels[ $i ], 'fast' => ! empty( $pos['fast'] ) ) );
+		}
+		wp_send_json_error( array( 'message' => 'Hôtel introuvable.' ) );
+	}
+
+	/** Coordonnées déjà connues dans WP Store Locator (ancienne carte du site), si l'extension est encore là. */
+	private static function wpsl_position( array $h ) {
+		static $index = null;
+		if ( null === $index ) {
+			$index = array();
+			if ( post_type_exists( 'wpsl_stores' ) || get_posts( array( 'post_type' => 'wpsl_stores', 'numberposts' => 1, 'post_status' => 'any', 'fields' => 'ids', 'suppress_filters' => true ) ) ) {
+				$ids = get_posts( array( 'post_type' => 'wpsl_stores', 'numberposts' => -1, 'post_status' => 'any', 'fields' => 'ids', 'suppress_filters' => true ) );
+				foreach ( $ids as $id ) {
+					$lat = get_post_meta( $id, 'wpsl_lat', true );
+					$lng = get_post_meta( $id, 'wpsl_lng', true );
+					if ( ! is_numeric( $lat ) || ! is_numeric( $lng ) ) {
+						continue;
+					}
+					$title = html_entity_decode( get_the_title( $id ), ENT_QUOTES, 'UTF-8' );
+					$title = preg_replace( '/^\s*\x{2733}\x{FE0F}?\s*/u', '', $title );
+					$title = preg_replace( '/\s*\([A-Z]{2}(\s*[^)]*)?\)\s*$/u', '', $title );
+					$pos   = array( 'lat' => round( (float) $lat, 6 ), 'lng' => round( (float) $lng, 6 ) );
+					$index[ 'n:' . self::norm( $title ) ] = $pos;
+					$addr = self::norm( get_post_meta( $id, 'wpsl_address', true ) . ' ' . get_post_meta( $id, 'wpsl_city', true ) );
+					if ( '' !== $addr ) {
+						$index[ 'a:' . $addr ] = $pos;
+					}
+				}
+			}
+		}
+		$n = 'n:' . self::norm( $h['name'] );
+		if ( isset( $index[ $n ] ) ) {
+			return $index[ $n ];
+		}
+		$a = 'a:' . self::norm( $h['address'] . ' ' . $h['city'] );
+		return isset( $index[ $a ] ) ? $index[ $a ] : null;
+	}
+
+	private static function geocode( array $h ) {
+		$known = self::wpsl_position( $h );
+		if ( $known ) {
+			return $known + array( 'fast' => true );
+		}
+		$cc      = strtolower( $h['country'] ? $h['country'] : 'CH' );
+		$queries = array();
+		if ( $h['address'] && ( $h['zip'] || $h['city'] ) ) {
+			$queries[] = array( 'street' => $h['address'], 'postalcode' => $h['zip'], 'city' => $h['city'] );
+			$queries[] = array( 'q' => trim( $h['address'] . ', ' . $h['zip'] . ' ' . $h['city'] ) );
+		}
+		if ( $h['name'] && $h['city'] ) {
+			$queries[] = array( 'q' => $h['name'] . ', ' . $h['city'] );
+		}
+		if ( $h['zip'] || $h['city'] ) {
+			$queries[] = array( 'q' => trim( $h['zip'] . ' ' . $h['city'] ) );
+		}
+		foreach ( $queries as $n => $q ) {
+			if ( $n > 0 ) {
+				usleep( 1100000 ); // Politique d'usage Nominatim : 1 requête par seconde maximum.
+			}
+			$q   = array_filter( $q );
+			$url = add_query_arg(
+				array_merge(
+					$q,
+					array(
+						'format'       => 'jsonv2',
+						'limit'        => 1,
+						'countrycodes' => $cc,
+					)
+				),
+				'https://nominatim.openstreetmap.org/search'
+			);
+			$res = wp_remote_get(
+				$url,
+				array(
+					'timeout'    => 12,
+					'user-agent' => 'SapoCycle-Hotels-Map/' . self::VERSION . ' (' . home_url() . ')',
+					'headers'    => array( 'Accept-Language' => 'fr,de,en' ),
+				)
+			);
+			if ( is_wp_error( $res ) || 200 !== wp_remote_retrieve_response_code( $res ) ) {
+				continue;
+			}
+			$body = json_decode( wp_remote_retrieve_body( $res ), true );
+			if ( ! empty( $body[0]['lat'] ) ) {
+				return array(
+					'lat' => round( (float) $body[0]['lat'], 6 ),
+					'lng' => round( (float) $body[0]['lon'], 6 ),
+				);
+			}
+		}
+		return null;
+	}
+
+	/* =====================================================================
+	 * Import Excel / CSV
+	 * ===================================================================== */
+
+	public static function ajax_import() {
+		self::check_ajax();
+		if ( empty( $_FILES['file']['tmp_name'] ) || ! is_uploaded_file( $_FILES['file']['tmp_name'] ) ) { // phpcs:ignore
+			wp_send_json_error( array( 'message' => 'Aucun fichier reçu.' ) );
+		}
+		$name = sanitize_file_name( wp_unslash( $_FILES['file']['name'] ) ); // phpcs:ignore
+		$ext  = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+		$tmp  = $_FILES['file']['tmp_name']; // phpcs:ignore
+		$mode    = ( isset( $_POST['mode'] ) && 'merge' === $_POST['mode'] ) ? 'merge' : 'replace';
+		$country = self::map_country_code( isset( $_POST['country'] ) ? sanitize_text_field( wp_unslash( $_POST['country'] ) ) : '' );
+		if ( '' === $country ) {
+			wp_send_json_error( array( 'message' => 'Choisissez le pays du fichier (Suisse, France ou Allemagne).' ) );
+		}
+
+		// Enregistre la correspondance des colonnes de ce pays pour les prochains imports.
+		$settings = self::get_settings();
+		if ( isset( $_POST['columns'] ) ) {
+			$settings['columns'][ $country ] = self::sanitize_columns( json_decode( wp_unslash( $_POST['columns'] ), true ) ); // phpcs:ignore
+		}
+		if ( isset( $_POST['header_row'] ) ) {
+			$settings['header_row'][ $country ] = '1' === $_POST['header_row'] ? 1 : 0;
+		}
+		update_option( self::OPT_SETTINGS, $settings, false );
+
+		try {
+			if ( 'xlsx' === $ext ) {
+				$rows = self::read_xlsx( $tmp );
+			} elseif ( 'csv' === $ext || 'txt' === $ext ) {
+				$rows = self::read_csv( $tmp );
+			} elseif ( 'xls' === $ext ) {
+				throw new Exception( 'Le format .xls (Excel 97-2003) n\'est pas pris en charge. Dans Excel : Fichier › Enregistrer sous › Classeur Excel (.xlsx).' );
+			} else {
+				throw new Exception( 'Format non reconnu. Utilisez un fichier .xlsx ou .csv.' );
+			}
+			$result = self::import_rows( $rows, $mode, $settings['columns'][ $country ], ! empty( $settings['header_row'][ $country ] ), $country );
+			$result['country']     = $country;
+			$result['columns_map'] = $settings['columns'][ $country ];
+			$result['header_row']  = (int) $settings['header_row'][ $country ];
+			$imports               = (array) get_option( self::OPT_IMPORTS, array() );
+			$imports[ $country ]   = time();
+			update_option( self::OPT_IMPORTS, $imports, false );
+			$result['imported']    = wp_date( 'd.m.Y à H:i' );
+		} catch ( Exception $e ) {
+			wp_send_json_error( array( 'message' => $e->getMessage() ) );
+		}
+		wp_send_json_success( $result );
+	}
+
+	private static function import_rows( array $rows, $mode, $columns = null, $has_header = true, $country = 'CH' ) {
+		$cols = array();
+		foreach ( (array) ( $columns ? $columns : self::default_columns() ) as $field => $letter ) {
+			$i = self::col_index( $letter );
+			if ( null !== $i ) {
+				$cols[ $field ] = $i;
+			}
+		}
+		if ( ! isset( $cols['name'] ) ) {
+			throw new Exception( 'Indiquez la lettre de la colonne contenant le nom de l\'hôtel.' );
+		}
+		$first_line = 1;
+		if ( $has_header && $rows ) {
+			array_shift( $rows );
+			$first_line = 2;
+		}
+		// Sécurité : ignore une ligne de titres restée en tête (« Nom », « Name », « Hotel »…).
+		if ( $rows ) {
+			$probe = self::norm( $rows[0][ $cols['name'] ] ?? '' );
+			if ( in_array( $probe, array( 'nom', 'name', 'hotel', 'hotels', 'nom de l hotel', 'hotelname', 'hotel name' ), true ) ) {
+				array_shift( $rows );
+				++$first_line;
+			}
+		}
+		if ( ! $rows ) {
+			throw new Exception( 'Le fichier ne contient aucune ligne d\'hôtel.' );
+		}
+
+		// Seuls les hôtels du pays importé sont concernés : les autres pays restent intacts.
+		$all      = self::get_hotels();
+		$others   = array_values( array_filter( $all, function ( $h ) use ( $country ) { return $h['country'] !== $country; } ) );
+		$existing = array_values( array_filter( $all, function ( $h ) use ( $country ) { return $h['country'] === $country; } ) );
+		$by_key   = array();
+		foreach ( $existing as $h ) {
+			$by_key[ self::hotel_key( $h ) ] = $h;
+		}
+
+		$warnings = array();
+		$incoming = array();
+		$seen     = array();
+		foreach ( $rows as $idx => $r ) {
+			$line = $idx + $first_line;
+			$raw  = array();
+			foreach ( $cols as $field => $i ) {
+				$raw[ $field ] = isset( $r[ $i ] ) ? $r[ $i ] : '';
+			}
+			if ( '' === trim( (string) $raw['name'] ) ) {
+				if ( array_filter( $r, function ( $v ) { return '' !== trim( (string) $v ); } ) ) {
+					$warnings[] = 'Ligne ' . $line . ' ignorée : nom manquant.';
+				}
+				continue;
+			}
+			$h   = self::sanitize_hotel( $raw, array( 'country' => $country ) );
+			$key = self::hotel_key( $h );
+			if ( isset( $seen[ $key ] ) ) {
+				$warnings[] = 'Ligne ' . $line . ' ignorée : « ' . $h['name'] . ' » apparaît deux fois dans le fichier.';
+				continue;
+			}
+			$seen[ $key ] = true;
+			if ( '' === $h['address'] && '' === $h['city'] ) {
+				$warnings[] = 'Ligne ' . $line . ' : « ' . $h['name'] . ' » n\'a ni adresse ni ville.';
+			}
+			$incoming[ $key ] = array( 'hotel' => $h, 'raw' => $raw );
+		}
+		if ( ! $incoming ) {
+			throw new Exception( 'Aucun hôtel trouvé dans la colonne ' . strtoupper( (string) ( $columns['name'] ?? 'E' ) ) . '. Vérifiez les lettres de colonnes.' );
+		}
+
+		$added   = 0;
+		$updated = 0;
+		$result  = array();
+
+		foreach ( $incoming as $key => $item ) {
+			$h = $item['hotel'];
+			if ( isset( $by_key[ $key ] ) ) {
+				$old = $by_key[ $key ];
+				if ( 'merge' === $mode ) {
+					// Seules les cellules remplies écrasent les valeurs existantes.
+					$raw = array_filter( $item['raw'], function ( $v ) { return '' !== trim( (string) $v ); } );
+					$h   = self::sanitize_hotel( $raw, $old );
+				} else {
+					$h['id']     = $old['id'];
+					$h['active'] = $old['active']; // Le fichier ne gère pas la visibilité : on garde le choix fait dans l'admin.
+				}
+				// Conserve les coordonnées si l'adresse n'a pas changé et que le fichier n'en fournit pas.
+				if ( null === $h['lat'] && null !== $old['lat'] && self::norm( $old['address'] . $old['zip'] . $old['city'] ) === self::norm( $h['address'] . $h['zip'] . $h['city'] ) ) {
+					$h['lat'] = $old['lat'];
+					$h['lng'] = $old['lng'];
+				}
+				++$updated;
+			} else {
+				++$added;
+			}
+			$result[ $key ] = $h;
+		}
+
+		$removed = 0;
+		if ( 'merge' === $mode ) {
+			foreach ( $existing as $old ) {
+				$k = self::hotel_key( $old );
+				if ( ! isset( $result[ $k ] ) ) {
+					$result[ $k ] = $old;
+				}
+			}
+		} else {
+			foreach ( $existing as $old ) {
+				if ( ! isset( $result[ self::hotel_key( $old ) ] ) ) {
+					++$removed;
+				}
+			}
+		}
+
+		self::save_hotels( array_merge( $others, array_values( $result ) ), true );
+		$hotels = self::get_hotels();
+		$nogeo  = array_values(
+			array_map(
+				function ( $h ) { return $h['id']; },
+				array_filter( $hotels, function ( $h ) use ( $country ) { return null === $h['lat'] && $h['country'] === $country; } )
+			)
+		);
+
+		return array(
+			'added'    => $added,
+			'updated'  => $updated,
+			'removed'  => $removed,
+			'total'    => count( array_filter( $hotels, function ( $h ) use ( $country ) { return $h['country'] === $country; } ) ),
+			'warnings' => array_slice( $warnings, 0, 50 ),
+			'nogeo'    => $nogeo,
+			'columns'  => array_keys( $cols ),
+			'preview'  => array_slice( array_map( function ( $x ) { return $x['hotel']; }, array_values( $incoming ) ), 0, 3 ),
+			'hotels'   => $hotels,
+			'backup'   => wp_date( 'd.m.Y à H:i' ),
+		);
+	}
+
+	/** Lecture d'un fichier .xlsx sans bibliothèque externe (première feuille). */
+	public static function read_xlsx( $path ) {
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			throw new Exception( 'L\'extension PHP ZipArchive est requise pour lire les fichiers .xlsx. Utilisez un fichier .csv ou contactez votre hébergeur.' );
+		}
+		$zip = new ZipArchive();
+		if ( true !== $zip->open( $path ) ) {
+			throw new Exception( 'Impossible d\'ouvrir le fichier Excel. Est-ce bien un fichier .xlsx ?' );
+		}
+		$prev = libxml_use_internal_errors( true );
+
+		$shared = array();
+		$ss     = $zip->getFromName( 'xl/sharedStrings.xml' );
+		if ( false !== $ss ) {
+			$xml = simplexml_load_string( $ss, 'SimpleXMLElement', LIBXML_NONET | LIBXML_COMPACT );
+			if ( $xml ) {
+				foreach ( $xml->si as $si ) {
+					$shared[] = self::xlsx_text( $si );
+				}
+			}
+		}
+
+		$sheet = 'xl/worksheets/sheet1.xml';
+		$wb    = $zip->getFromName( 'xl/workbook.xml' );
+		$rels  = $zip->getFromName( 'xl/_rels/workbook.xml.rels' );
+		if ( $wb && $rels ) {
+			$wbx = simplexml_load_string( $wb, 'SimpleXMLElement', LIBXML_NONET );
+			$rx  = simplexml_load_string( $rels, 'SimpleXMLElement', LIBXML_NONET );
+			if ( $wbx && $rx && isset( $wbx->sheets->sheet[0] ) ) {
+				$first = $wbx->sheets->sheet[0];
+				$rid   = '';
+				foreach ( $first->attributes( 'r', true ) as $k => $v ) {
+					if ( 'id' === $k ) {
+						$rid = (string) $v;
+					}
+				}
+				if ( '' === $rid ) {
+					foreach ( $first->getNamespaces( true ) as $ns ) {
+						$a = $first->attributes( $ns );
+						if ( isset( $a['id'] ) ) {
+							$rid = (string) $a['id'];
+						}
+					}
+				}
+				foreach ( $rx->Relationship as $r ) {
+					if ( (string) $r['Id'] === $rid ) {
+						$target = (string) $r['Target'];
+						$sheet  = 0 === strpos( $target, '/' ) ? ltrim( $target, '/' ) : 'xl/' . preg_replace( '#^\./#', '', $target );
+					}
+				}
+			}
+		}
+		$sx = $zip->getFromName( $sheet );
+		$zip->close();
+		if ( false === $sx ) {
+			libxml_use_internal_errors( $prev );
+			throw new Exception( 'Feuille de calcul introuvable dans le fichier.' );
+		}
+		$xml = simplexml_load_string( $sx, 'SimpleXMLElement', LIBXML_NONET | LIBXML_COMPACT | LIBXML_PARSEHUGE );
+		libxml_use_internal_errors( $prev );
+		if ( ! $xml || ! isset( $xml->sheetData ) ) {
+			throw new Exception( 'Feuille de calcul illisible.' );
+		}
+
+		$rows = array();
+		$auto = 0;
+		foreach ( $xml->sheetData->row as $row ) {
+			$ri  = isset( $row['r'] ) ? (int) $row['r'] - 1 : $auto;
+			$auto = $ri + 1;
+			$cells = array();
+			$ci    = 0;
+			foreach ( $row->c as $c ) {
+				if ( isset( $c['r'] ) && preg_match( '/^([A-Z]+)/', (string) $c['r'], $m ) ) {
+					$ci = 0;
+					foreach ( str_split( $m[1] ) as $ch ) {
+						$ci = $ci * 26 + ( ord( $ch ) - 64 );
+					}
+					--$ci;
+				}
+				$type = (string) $c['t'];
+				if ( 's' === $type ) {
+					$v = $shared[ (int) $c->v ] ?? '';
+				} elseif ( 'inlineStr' === $type ) {
+					$v = self::xlsx_text( $c->is );
+				} elseif ( 'b' === $type ) {
+					$v = '1' === (string) $c->v ? 'oui' : 'non';
+				} else {
+					$v = (string) $c->v;
+					if ( is_numeric( $v ) && false !== stripos( $v, 'E' ) ) {
+						$v = rtrim( rtrim( sprintf( '%.10F', (float) $v ), '0' ), '.' );
+					}
+				}
+				$cells[ $ci ] = trim( $v );
+				++$ci;
+			}
+			if ( $cells ) {
+				$max = max( array_keys( $cells ) );
+				$line = array();
+				for ( $i = 0; $i <= $max; $i++ ) {
+					$line[] = $cells[ $i ] ?? '';
+				}
+				$rows[ $ri ] = $line;
+			}
+		}
+		ksort( $rows );
+		return array_values( $rows );
+	}
+
+	private static function xlsx_text( $node ) {
+		if ( ! $node ) {
+			return '';
+		}
+		if ( isset( $node->t ) ) {
+			return (string) $node->t;
+		}
+		$s = '';
+		if ( isset( $node->r ) ) {
+			foreach ( $node->r as $run ) {
+				$s .= (string) $run->t;
+			}
+		}
+		return $s;
+	}
+
+	public static function read_csv( $path ) {
+		$content = file_get_contents( $path ); // phpcs:ignore
+		if ( false === $content || '' === trim( $content ) ) {
+			throw new Exception( 'Le fichier est vide.' );
+		}
+		$content = preg_replace( '/^\xEF\xBB\xBF/', '', $content );
+		if ( function_exists( 'mb_check_encoding' ) && ! mb_check_encoding( $content, 'UTF-8' ) ) {
+			$content = mb_convert_encoding( $content, 'UTF-8', 'Windows-1252' );
+		}
+		$first = strtok( $content, "\n" );
+		$delim = ';';
+		$best  = 0;
+		foreach ( array( ';', ',', "\t" ) as $d ) {
+			$c = substr_count( $first, $d );
+			if ( $c > $best ) {
+				$best  = $c;
+				$delim = $d;
+			}
+		}
+		$fh = fopen( 'php://temp', 'r+' ); // phpcs:ignore
+		fwrite( $fh, $content ); // phpcs:ignore
+		rewind( $fh );
+		$rows = array();
+		while ( false !== ( $r = fgetcsv( $fh, 0, $delim, '"', '\\' ) ) ) {
+			$rows[] = array_map( 'trim', $r );
+		}
+		fclose( $fh ); // phpcs:ignore
+		return $rows;
+	}
+
+	/* =====================================================================
+	 * Export Excel (.xlsx généré sans bibliothèque)
+	 * ===================================================================== */
+
+	public static function download_export() {
+		if ( ! current_user_can( self::capability() ) || ! check_admin_referer( 'sapo_hotels_export' ) ) {
+			wp_die( 'Accès refusé.' );
+		}
+		$template = ! empty( $_GET['template'] );
+		$country  = self::map_country_code( isset( $_GET['country'] ) ? sanitize_text_field( wp_unslash( $_GET['country'] ) ) : 'CH' );
+		$country  = $country ? $country : 'CH';
+		$settings = self::get_settings();
+		$map      = array();
+		foreach ( $settings['columns'][ $country ] as $field => $letter ) {
+			$i = self::col_index( $letter );
+			if ( null !== $i ) {
+				$map[ $field ] = $i;
+			}
+		}
+		$width  = $map ? max( $map ) + 1 : 1;
+		$labels = self::column_labels( $country );
+		$line   = function ( $values ) use ( $map, $width ) {
+			$row = array_fill( 0, $width, '' );
+			foreach ( $map as $field => $i ) {
+				$row[ $i ] = isset( $values[ $field ] ) ? $values[ $field ] : '';
+			}
+			return $row;
+		};
+		$rows = array();
+		if ( ! empty( $settings['header_row'][ $country ] ) ) {
+			$rows[] = $line( $labels );
+		}
+		$examples = array(
+			'CH' => array( '✳️ Exemple Hôtel du Lac', 'Quai du Mont-Blanc 1', '1201', 'Genève', 'GE', 'https://www.exemple.ch' ),
+			'FR' => array( '✳️ Exemple Hôtel de la Paix', '1 rue de la Paix', '75002', 'Paris', 'Île-de-France', 'https://www.exemple.fr' ),
+			'DE' => array( '✳️ Beispiel Hotel am See', 'Seestraße 1', '10117', 'Berlin', 'Berlin', 'https://www.beispiel.de' ),
+		);
+		$ex     = $examples[ $country ];
+		$hotels = $template ? array(
+			self::sanitize_hotel(
+				array(
+					'name'    => $ex[0],
+					'address' => $ex[1],
+					'zip'     => $ex[2],
+					'city'    => $ex[3],
+					'canton'  => $ex[4],
+					'website' => $ex[5],
+				),
+				array( 'country' => $country )
+			),
+		) : array_values( array_filter( self::get_hotels(), function ( $h ) use ( $country ) { return $h['country'] === $country; } ) );
+		foreach ( $hotels as $h ) {
+			$rows[] = $line(
+				array(
+					'name'    => ( empty( $h['premium'] ) ? '' : "\u{2733}\u{FE0F} " ) . $h['name'],
+					'address' => $h['address'],
+					'zip'     => $h['zip'],
+					'city'    => $h['city'],
+					'canton'  => $h['canton'],
+					'website' => $h['website'],
+				)
+			);
+		}
+		$widths = array_fill( 0, $width, 4 );
+		$size   = array( 'name' => 44, 'address' => 34, 'zip' => 9, 'city' => 22, 'canton' => 10, 'website' => 44 );
+		foreach ( $map as $field => $i ) {
+			$widths[ $i ] = $size[ $field ];
+		}
+		$file = self::build_xlsx( $rows, $widths, ! empty( $settings['header_row'][ $country ] ) );
+		$slug = self::MAP_COUNTRIES[ $country ];
+		$name = $template ? 'modele-hotels-sapocycle-' . $slug . '.xlsx' : 'hotels-sapocycle-' . $slug . '-' . wp_date( 'Y-m-d' ) . '.xlsx';
+		nocache_headers();
+		header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
+		header( 'Content-Disposition: attachment; filename="' . $name . '"' );
+		header( 'Content-Length: ' . filesize( $file ) );
+		readfile( $file ); // phpcs:ignore
+		@unlink( $file ); // phpcs:ignore
+		exit;
+	}
+
+	public static function build_xlsx( array $rows, array $widths = array(), $has_header = true ) {
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			wp_die( 'L\'extension PHP ZipArchive est requise pour générer le fichier Excel.' );
+		}
+		$x = function ( $s ) {
+			return htmlspecialchars( (string) $s, ENT_XML1 | ENT_QUOTES, 'UTF-8' );
+		};
+		$col = function ( $i ) {
+			$s = '';
+			for ( $i++; $i > 0; $i = intdiv( $i - 1, 26 ) ) {
+				$s = chr( 65 + ( $i - 1 ) % 26 ) . $s;
+			}
+			return $s;
+		};
+		$last  = $col( max( 0, count( $rows[0] ) - 1 ) );
+		$pane  = $has_header ? '<pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/>' : '';
+		$sheet = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView workbookViewId="0">' . $pane . '</sheetView></sheetViews><cols>';
+		foreach ( $widths as $i => $w ) {
+			$sheet .= '<col min="' . ( $i + 1 ) . '" max="' . ( $i + 1 ) . '" width="' . (float) $w . '" customWidth="1"/>';
+		}
+		$sheet .= '</cols><sheetData>';
+		foreach ( $rows as $r => $row ) {
+			$sheet .= '<row r="' . ( $r + 1 ) . '">';
+			foreach ( array_values( $row ) as $c => $v ) {
+				$ref = $col( $c ) . ( $r + 1 );
+				$st  = ( 0 === $r && $has_header ) ? ' s="1"' : '';
+				if ( is_float( $v ) || is_int( $v ) ) {
+					$sheet .= '<c r="' . $ref . '"' . $st . '><v>' . $v . '</v></c>';
+				} elseif ( '' !== (string) $v ) {
+					$sheet .= '<c r="' . $ref . '" t="inlineStr"' . $st . '><is><t xml:space="preserve">' . $x( $v ) . '</t></is></c>';
+				}
+			}
+			$sheet .= '</row>';
+		}
+		$sheet .= '</sheetData>' . ( $has_header ? '<autoFilter ref="A1:' . $last . count( $rows ) . '"/>' : '' ) . '</worksheet>';
+
+		$files = array(
+			'[Content_Types].xml'        => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
+			'_rels/.rels'                => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+			'xl/workbook.xml'            => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Hotels" sheetId="1" r:id="rId1"/></sheets><definedNames><definedName name="_xlnm._FilterDatabase" localSheetId="0" hidden="1">Hotels!$A$1:$' . $last . '$' . count( $rows ) . '</definedName></definedNames></workbook>',
+			'xl/_rels/workbook.xml.rels' => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
+			'xl/styles.xml'              => '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0069B4"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>',
+			'xl/worksheets/sheet1.xml'   => $sheet,
+		);
+		$tmp = wp_tempnam( 'sapo-hotels.xlsx' );
+		$zip = new ZipArchive();
+		$zip->open( $tmp, ZipArchive::CREATE | ZipArchive::OVERWRITE );
+		foreach ( $files as $p => $c ) {
+			$zip->addFromString( $p, $c );
+		}
+		$zip->close();
+		return $tmp;
+	}
+	}
+}

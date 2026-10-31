@@ -934,10 +934,10 @@ CSS;
 (function(){
 "use strict";
 var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-function norm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();}
+function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function host(u){try{return new URL(u).hostname.replace(/^www\./,"");}catch(e){return u;}}
-function hl(text,terms){var t=esc(text);if(!terms.length)return t;var plain=String(text||""),n=plain.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();var marks=[];terms.forEach(function(term){if(term.length<2)return;var i=n.indexOf(term);while(i>-1){if(i===0||!/[a-z0-9]/.test(n.charAt(i-1)))marks.push([i,i+term.length]);i=n.indexOf(term,i+term.length);}});if(!marks.length||n.length!==plain.length)return t;marks.sort(function(a,b){return a[0]-b[0];});var out="",pos=0;marks.forEach(function(m){if(m[0]<pos)return;out+=esc(plain.slice(pos,m[0]))+"<mark>"+esc(plain.slice(m[0],m[1]))+"</mark>";pos=m[1];});return out+esc(plain.slice(pos));}
+function hl(text,terms){var t=esc(text);if(!terms.length)return t;var plain=String(text||""),n=plain.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();var marks=[];terms.forEach(function(term){if(term.length<2)return;var i=n.indexOf(term);while(i>-1){if(i===0||!/[a-z0-9]/.test(n.charAt(i-1)))marks.push([i,i+term.length]);i=n.indexOf(term,i+term.length);}});if(!marks.length||n.length!==plain.length)return t;marks.sort(function(a,b){return a[0]-b[0];});var out="",pos=0;marks.forEach(function(m){if(m[0]<pos)return;out+=esc(plain.slice(pos,m[0]))+"<mark>"+esc(plain.slice(m[0],m[1]))+"</mark>";pos=m[1];});return out+esc(plain.slice(pos));}
 var PREMIUM='<svg class="sapo-hm-premium-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
 var EXT='<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
@@ -2357,7 +2357,7 @@ var root=document.getElementById("sapo-a");if(!root)return;
 var $=function(s,c){return(c||root).querySelector(s);},$$=function(s,c){return[].slice.call((c||root).querySelectorAll(s));};
 var hotels=D.hotels||[],sortKey="name",sortDir=1,selected={};
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
-function norm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();}
+function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();}
 function host(u){try{return new URL(u).hostname.replace(/^www\./,"");}catch(e){return u;}}
 var PREMIUM='<svg width="16" height="16" viewBox="0 0 24 24" aria-label="Premium"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
 var PIN=function(c,w){w=w||16;return'<img src="'+D.icons.green+'" alt="" width="'+w+'" height="'+Math.round(w*69/42)+'">';};

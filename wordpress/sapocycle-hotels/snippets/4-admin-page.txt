@@ -1,0 +1,376 @@
+/*
+ * SapoCycle · Carte des hôtels · Snippet 4/7 : Page d'administration
+ * Code Snippets : type PHP, « Exécuter le snippet partout ».
+ * Les 7 snippets sont nécessaires. Le snippet 1 indique s'il en manque un.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
+}
+if ( ! trait_exists( 'Sapo_Hotels_Part_AdminPage', false ) ) {
+	trait Sapo_Hotels_Part_AdminPage {
+
+	/* =====================================================================
+	 * Administration : menu et page
+	 * ===================================================================== */
+
+	public static function admin_menu() {
+		add_menu_page(
+			'Carte des hôtels SapoCycle',
+			'Carte des hôtels',
+			self::capability(),
+			self::SLUG,
+			array( __CLASS__, 'render_admin' ),
+			'data:image/svg+xml;base64,' . base64_encode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 69"><g transform="translate(-2)"><path fill="#a7aaad" d="' . self::PIN_PATH . '"/><path fill="#1d2327" d="' . self::FACE_PATH . '"/></g></svg>' ),
+			26
+		);
+	}
+
+	public static function admin_assets( $hook ) {
+		if ( 'toplevel_page_' . self::SLUG !== $hook ) {
+			return;
+		}
+		wp_enqueue_style( 'sapo-leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/' . self::LEAFLET_VER . '/leaflet.min.css', array(), self::LEAFLET_VER );
+		wp_enqueue_script( 'sapo-leaflet', 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/' . self::LEAFLET_VER . '/leaflet.min.js', array(), self::LEAFLET_VER, true );
+
+		wp_register_style( 'sapo-hotels-admin', false, array( 'sapo-leaflet' ), self::VERSION );
+		wp_enqueue_style( 'sapo-hotels-admin' );
+		wp_add_inline_style( 'sapo-hotels-admin', self::admin_css() );
+
+		wp_register_script( 'sapo-hotels-admin', false, array( 'sapo-leaflet' ), self::VERSION, true );
+		wp_enqueue_script( 'sapo-hotels-admin' );
+
+		$countries = array();
+		foreach ( self::countries() as $code => $c ) {
+			$countries[ $code ] = $c['fr'];
+		}
+		$cantons = array();
+		foreach ( self::cantons() as $code => $n ) {
+			$cantons[ $code ] = $n[0];
+		}
+		$backup = get_option( self::OPT_BACKUP );
+		$data   = array(
+			'ajax'      => admin_url( 'admin-ajax.php' ),
+			'nonce'     => wp_create_nonce( self::NONCE ),
+			'export'    => wp_nonce_url( admin_url( 'admin-post.php?action=sapo_hotels_export' ), 'sapo_hotels_export' ),
+			'template'  => wp_nonce_url( admin_url( 'admin-post.php?action=sapo_hotels_export&template=1' ), 'sapo_hotels_export' ),
+			'hotels'    => self::get_hotels(),
+			'settings'  => self::get_settings(),
+			'countries' => $countries,
+			'cantons'   => $cantons,
+			'colLabels' => array_combine( array_keys( self::MAP_COUNTRIES ), array_map( array( __CLASS__, 'column_labels' ), array_keys( self::MAP_COUNTRIES ) ) ),
+			'mapCountries' => array_keys( self::MAP_COUNTRIES ),
+			'imports'   => array_map( function ( $t ) { return wp_date( 'd.m.Y à H:i', $t ); }, (array) get_option( self::OPT_IMPORTS, array() ) ),
+			'icons'     => array(
+				'green' => self::smiley_data_uri( 'green' ),
+			),
+			'backup'    => ( is_array( $backup ) && ! empty( $backup['time'] ) ) ? wp_date( 'd.m.Y à H:i', $backup['time'] ) : '',
+			'updated'   => get_option( self::OPT_UPDATED ) ? wp_date( 'd.m.Y à H:i', get_option( self::OPT_UPDATED ) ) : '',
+		);
+		wp_add_inline_script( 'sapo-hotels-admin', 'window.SAPO_HOTELS=' . wp_json_encode( $data, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE ) . ';', 'before' );
+		wp_add_inline_script( 'sapo-hotels-admin', self::admin_js() );
+	}
+
+	public static function render_admin() {
+		if ( ! current_user_can( self::capability() ) ) {
+			wp_die( esc_html__( 'Accès refusé.', 'sapo-hotels' ) );
+		}
+		$premium = self::premium_svg( 16 );
+		?>
+		<div class="wrap sapo-a" id="sapo-a">
+			<h1 class="sapo-a__sr">Carte des hôtels SapoCycle</h1>
+			<header class="sapo-a__head">
+				<div class="sapo-a__brand">
+					<span class="sapo-a__logo"><?php echo self::smiley_svg( 'green', 26, 43 ); // phpcs:ignore ?></span>
+					<div>
+						<p class="sapo-a__title">Carte des hôtels</p>
+						<p class="sapo-a__sub">Gérez les hôtels membres affichés sur la carte, en français, allemand et anglais. <span data-updated></span></p>
+					</div>
+				</div>
+				<div class="sapo-a__head-actions">
+					<button type="button" class="sapo-btn sapo-btn--ghost" data-goto-import><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Importer un fichier Excel</button>
+					<button type="button" class="sapo-btn sapo-btn--primary" data-add><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Ajouter un hôtel</button>
+				</div>
+			</header>
+
+			<section class="sapo-a__stats" aria-label="Statistiques">
+				<div class="sapo-stat"><span class="sapo-stat__n" data-stat="total">0</span><span class="sapo-stat__l">Hôtels</span></div>
+				<div class="sapo-stat"><span class="sapo-stat__n" data-stat="visible">0</span><span class="sapo-stat__l">Visibles sur la carte</span></div>
+				<div class="sapo-stat"><span class="sapo-stat__n" data-stat="premium">0</span><span class="sapo-stat__l"><?php echo $premium; // phpcs:ignore ?> Premium donateurs</span></div>
+				<div class="sapo-stat"><span class="sapo-stat__n" data-stat="countries">0</span><span class="sapo-stat__l">Pays</span></div>
+				<div class="sapo-stat sapo-stat--warn" data-stat-box="nogeo"><span class="sapo-stat__n" data-stat="nogeo">0</span><span class="sapo-stat__l">Sans coordonnées</span><button type="button" class="sapo-link" data-geocode-all>Géolocaliser</button></div>
+			</section>
+
+			<nav class="sapo-a__tabs" role="tablist" aria-label="Sections">
+				<button type="button" role="tab" class="sapo-a__tab" aria-selected="true" data-tab="hotels">Hôtels</button>
+				<button type="button" role="tab" class="sapo-a__tab" aria-selected="false" data-tab="import">Import Excel</button>
+				<button type="button" role="tab" class="sapo-a__tab" aria-selected="false" data-tab="settings">Intégration et réglages</button>
+			</nav>
+
+			<!-- ============ HÔTELS ============ -->
+			<section class="sapo-a__panel" data-panel="hotels">
+				<div class="sapo-a__toolbar">
+					<div class="sapo-field sapo-field--search">
+						<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.6-3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+						<label class="sapo-a__sr" for="sapo-q">Rechercher</label>
+						<input id="sapo-q" type="search" placeholder="Rechercher par nom, ville, NPA, canton…" data-q>
+					</div>
+					<label class="sapo-a__sr" for="sapo-fc">Pays</label>
+					<select id="sapo-fc" data-fcountry><option value="">Tous les pays</option></select>
+					<label class="sapo-a__sr" for="sapo-fs">Filtre</label>
+					<select id="sapo-fs" data-fstatus>
+						<option value="">Tous les hôtels</option>
+						<option value="premium">Premium donateurs</option>
+						<option value="hidden">Masqués de la carte</option>
+						<option value="nogeo">Sans coordonnées</option>
+						<option value="incomplete">Infos incomplètes</option>
+					</select>
+					<span class="sapo-a__count" data-count></span>
+				</div>
+
+				<div class="sapo-bulk" data-bulk hidden>
+					<span data-bulk-n></span>
+					<button type="button" class="sapo-btn sapo-btn--small" data-bulk-act="show">Afficher sur la carte</button>
+					<button type="button" class="sapo-btn sapo-btn--small" data-bulk-act="hide">Masquer</button>
+					<button type="button" class="sapo-btn sapo-btn--small sapo-btn--danger" data-bulk-act="delete">Supprimer</button>
+				</div>
+
+				<div class="sapo-table-wrap">
+					<table class="sapo-table">
+						<thead>
+							<tr>
+								<th class="sapo-col-check"><input type="checkbox" data-check-all aria-label="Tout sélectionner"></th>
+								<th class="sapo-col-icon"><span class="sapo-a__sr">Smiley</span></th>
+								<th><button type="button" class="sapo-sort" data-sort="name">Hôtel</button></th>
+								<th>Adresse</th>
+								<th><button type="button" class="sapo-sort" data-sort="city">NPA et ville</button></th>
+								<th><button type="button" class="sapo-sort" data-sort="canton">Canton</button></th>
+								<th>Site internet</th>
+								<th class="sapo-col-status">Carte</th>
+								<th class="sapo-col-actions"><span class="sapo-a__sr">Actions</span></th>
+							</tr>
+						</thead>
+						<tbody data-rows></tbody>
+					</table>
+					<div class="sapo-empty" data-empty hidden>
+						<p><strong>Aucun hôtel trouvé.</strong></p>
+						<p>Modifiez votre recherche, ajoutez un hôtel ou importez un fichier Excel.</p>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ IMPORT ============ -->
+			<section class="sapo-a__panel" data-panel="import" hidden>
+				<div class="sapo-country-switch" role="tablist" aria-label="Pays du fichier Excel">
+					<?php
+					$flags = array( 'CH' => '<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#DA291C"/><path d="M13 7h6v6h6v6h-6v6h-6v-6H7v-6h6z" fill="#fff"/></svg>', 'FR' => '<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><clipPath id="sfr"><rect width="32" height="32" rx="6"/></clipPath><g clip-path="url(#sfr)"><path fill="#002654" d="M0 0h11v32H0z"/><path fill="#fff" d="M11 0h10v32H11z"/><path fill="#CE1126" d="M21 0h11v32H21z"/></g></svg>', 'DE' => '<svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><clipPath id="sde"><rect width="32" height="32" rx="6"/></clipPath><g clip-path="url(#sde)"><path fill="#000" d="M0 0h32v11H0z"/><path fill="#DD0000" d="M0 11h32v10H0z"/><path fill="#FFCE00" d="M0 21h32v11H0z"/></g></svg>' );
+					$first = true;
+					foreach ( self::MAP_COUNTRIES as $code => $slug ) :
+						?>
+						<button type="button" role="tab" class="sapo-country" data-imp-country="<?php echo esc_attr( $code ); ?>" aria-selected="<?php echo $first ? 'true' : 'false'; ?>">
+							<?php echo $flags[ $code ]; // phpcs:ignore ?>
+							<span class="sapo-country__t"><strong><?php echo esc_html( self::country_name( $code, 'fr' ) ); ?></strong><small data-imp-meta="<?php echo esc_attr( $code ); ?>"></small></span>
+						</button>
+						<?php
+						$first = false;
+					endforeach;
+					?>
+				</div>
+				<div class="sapo-grid">
+					<div class="sapo-card">
+						<h2 data-imp-title>Hôtels en Suisse</h2>
+						<p class="sapo-muted" data-imp-sub></p>
+						<form data-import-form>
+							<label class="sapo-drop" data-drop>
+								<input type="file" accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv" data-file>
+								<svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+								<span class="sapo-drop__t" data-drop-text></span>
+								<span class="sapo-drop__s">Formats acceptés : .xlsx ou .csv</span>
+							</label>
+
+							<fieldset class="sapo-modes">
+								<legend>Mode d'import</legend>
+								<label class="sapo-mode">
+									<input type="radio" name="mode" value="replace" checked>
+									<span><strong>Remplacer la liste</strong> (recommandé)<br><small data-mode-replace></small></span>
+								</label>
+								<label class="sapo-mode">
+									<input type="radio" name="mode" value="merge">
+									<span><strong>Fusionner</strong><br><small>Met à jour les hôtels existants (même nom et code postal) et ajoute les nouveaux. Rien n'est supprimé.</small></span>
+								</label>
+							</fieldset>
+							<fieldset class="sapo-colmap">
+								<legend>Colonnes lues dans le fichier Excel</legend>
+								<div class="sapo-colmap__grid">
+									<?php foreach ( self::column_labels( 'CH' ) as $field => $label ) : ?>
+										<label class="sapo-colmap__item"><span data-col-label="<?php echo esc_attr( $field ); ?>"><?php echo esc_html( $label ); ?></span><input name="<?php echo esc_attr( 'col_' . $field ); ?>" maxlength="3" autocomplete="off" spellcheck="false" aria-label="<?php echo esc_attr( 'Lettre de colonne : ' . $label ); ?>"></label>
+									<?php endforeach; ?>
+								</div>
+								<label class="sapo-check"><input type="checkbox" name="header_row" value="1"> La ligne 1 contient les titres des colonnes (elle est ignorée)</label>
+							</fieldset>
+							<label class="sapo-check"><input type="checkbox" name="geocode" value="1" checked> Géolocaliser automatiquement les adresses (latitude et longitude)</label>
+							<div class="sapo-actions">
+								<button type="submit" class="sapo-btn sapo-btn--primary" data-import-btn disabled>Importer le fichier</button>
+								<a class="sapo-btn sapo-btn--ghost" data-export href="#"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-export-label>Exporter la liste actuelle</span></a>
+								<button type="button" class="sapo-btn sapo-btn--ghost" data-restore hidden>Annuler le dernier import</button>
+							</div>
+						</form>
+						<div class="sapo-result" data-result hidden></div>
+						<div class="sapo-progress" data-progress hidden>
+							<div class="sapo-progress__top"><span data-progress-label>Géolocalisation…</span><span data-progress-n></span></div>
+							<div class="sapo-progress__bar"><span data-progress-bar></span></div>
+							<p class="sapo-muted sapo-small">Les adresses sont localisées une par une (environ 1 seconde par hôtel). Gardez cette page ouverte.</p>
+						</div>
+					</div>
+
+					<div class="sapo-card sapo-card--soft">
+						<h2>Format du fichier</h2>
+						<p class="sapo-muted">Chaque pays a son propre fichier Excel. L'import lit uniquement les colonnes indiquées à gauche (par défaut E, I, J, K, L et M) ; les autres colonnes sont ignorées. Seule la première feuille du classeur est lue.</p>
+						<p><a class="sapo-btn sapo-btn--ghost sapo-btn--small" data-template href="#"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Télécharger le modèle Excel</a></p>
+						<table class="sapo-doc">
+							<thead><tr><th>Colonne</th><th>Contenu</th></tr></thead>
+							<tbody data-coldoc></tbody>
+						</table>
+						<ul class="sapo-notes">
+							<li>Importer un pays ne modifie jamais les hôtels des deux autres pays.</li>
+							<li>Le nom est obligatoire : une ligne sans nom est ignorée.</li>
+							<li>Un nom qui commence par ✳️ marque l'hôtel comme <?php echo $premium; // phpcs:ignore ?> Premium donateur.</li>
+							<li>Suisse : canton en code (ZH, VD…) ou en toutes lettres. France et Allemagne : région libre (Île-de-France, Bayern…).</li>
+							<li>Les coordonnées d'un hôtel déjà connu (même nom, code postal et adresse) sont conservées. Les autres adresses sont géolocalisées.</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+
+			<!-- ============ RÉGLAGES ============ -->
+			<section class="sapo-a__panel" data-panel="settings" hidden>
+				<div class="sapo-grid">
+					<div class="sapo-card sapo-card--wide">
+						<h2>Intégrer les cartes</h2>
+						<p class="sapo-muted">Un shortcode par pays et par langue. Collez-le dans la page Hôtels correspondante (module Texte ou Code de Divi).</p>
+						<div class="sapo-sc">
+							<div class="sapo-sc__h"></div><div class="sapo-sc__h">Français</div><div class="sapo-sc__h">Deutsch</div><div class="sapo-sc__h">English</div>
+							<?php foreach ( self::MAP_COUNTRIES as $code => $slug ) : ?>
+								<div class="sapo-sc__k"><?php echo $flags[ $code ]; // phpcs:ignore ?><?php echo esc_html( self::country_name( $code, 'fr' ) ); ?></div>
+								<?php foreach ( array( 'fr', 'de', 'en' ) as $l ) : $tag = '[sapocycle_' . $slug . '_' . $l . ']'; ?>
+									<button type="button" class="sapo-sc__b" data-copy="<?php echo esc_attr( $tag ); ?>" title="Copier"><code><?php echo esc_html( $tag ); ?></code><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+								<?php endforeach; ?>
+							<?php endforeach; ?>
+						</div>
+						<p class="sapo-muted sapo-small">Cliquez sur un shortcode pour le copier. Options possibles : <code>height="620"</code> hauteur en pixels, <code>search="no"</code> masquer la recherche, <code>legend="no"</code> masquer la légende. Exemple : <code>[sapocycle_suisse_fr height="700"]</code>.</p>
+					</div>
+
+					<form class="sapo-card" data-settings-form>
+						<h2>Réglages de la carte</h2>
+						<div class="sapo-row">
+							<label class="sapo-label" for="sapo-tiles">Style du fond de carte</label>
+							<select id="sapo-tiles" name="tiles">
+								<option value="soft">OpenStreetMap adouci (recommandé)</option>
+								<option value="osm">OpenStreetMap standard</option>
+								<option value="custom">Fournisseur personnalisé (MapTiler, Stadia, CARTO…)</option>
+							</select>
+						</div>
+						<div class="sapo-row" data-custom-tiles>
+							<label class="sapo-label" for="sapo-tiles-url">URL des tuiles</label>
+							<input id="sapo-tiles-url" name="tiles_url" placeholder="https://api.maptiler.com/maps/pastel/{z}/{x}/{y}.png?key=VOTRE_CLE">
+							<label class="sapo-label" for="sapo-tiles-attr" style="margin-top:10px">Mention de copyright</label>
+							<input id="sapo-tiles-attr" name="tiles_attr" placeholder="&copy; MapTiler &copy; OpenStreetMap">
+						</div>
+						<div class="sapo-row sapo-row--2">
+							<div>
+								<label class="sapo-label" for="sapo-height">Hauteur sur ordinateur (px)</label>
+								<input id="sapo-height" type="number" name="height" min="320" max="1200" step="10">
+							</div>
+							<div>
+								<span class="sapo-label">Regroupement des smileys</span>
+								<label class="sapo-switch"><input type="checkbox" name="cluster" value="1"><span></span>Regrouper les hôtels proches</label>
+							</div>
+						</div>
+						<h3>Textes de la légende</h3>
+						<p class="sapo-muted sapo-small">Laissez un champ vide pour masquer cette ligne de la légende.</p>
+						<div class="sapo-legend-grid">
+							<?php
+							$legend_rows = array(
+								'legend_member'  => array( '<span class="sapo-inline-pin" data-pin="green"></span>Smiley vert', 'Smiley vert' ),
+								'legend_premium' => array( $premium . 'Premium donateur', 'Premium' ),
+							);
+							foreach ( $legend_rows as $key => $lr ) :
+								?>
+								<div class="sapo-legend-item">
+									<div class="sapo-legend-k"><?php echo $lr[0]; // phpcs:ignore ?></div>
+									<?php foreach ( array( 'fr' => 'FR', 'de' => 'DE', 'en' => 'EN' ) as $l => $ll ) : ?>
+										<label class="sapo-legend-in"><span><?php echo esc_html( $ll ); ?></span><input name="<?php echo esc_attr( $key . '[' . $l . ']' ); ?>" aria-label="<?php echo esc_attr( $lr[1] . ' ' . $ll ); ?>"></label>
+									<?php endforeach; ?>
+								</div>
+							<?php endforeach; ?>
+						</div>
+						<div class="sapo-actions"><button type="submit" class="sapo-btn sapo-btn--primary">Enregistrer les réglages</button></div>
+					</form>
+				</div>
+			</section>
+
+			<!-- ============ TIROIR D'ÉDITION ============ -->
+			<div class="sapo-drawer" data-drawer hidden>
+				<div class="sapo-drawer__overlay" data-close></div>
+				<form class="sapo-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="sapo-drawer-title" data-edit-form novalidate>
+					<header class="sapo-drawer__head">
+						<h2 id="sapo-drawer-title" data-drawer-title>Modifier l'hôtel</h2>
+						<button type="button" class="sapo-icon-btn" data-close aria-label="Fermer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+					</header>
+					<div class="sapo-drawer__body">
+						<input type="hidden" name="id">
+						<div class="sapo-row">
+							<label class="sapo-label" for="sapo-e-name">Nom de l'hôtel <span class="sapo-req">obligatoire</span></label>
+							<input id="sapo-e-name" name="name" required autocomplete="off">
+							<p class="sapo-error" data-err="name" hidden>Le nom est obligatoire.</p>
+						</div>
+						<div class="sapo-row">
+							<label class="sapo-label" for="sapo-e-address">Adresse</label>
+							<input id="sapo-e-address" name="address" autocomplete="off">
+						</div>
+						<div class="sapo-row sapo-row--zip">
+							<div><label class="sapo-label" for="sapo-e-zip">NPA</label><input id="sapo-e-zip" name="zip" inputmode="numeric" autocomplete="off"></div>
+							<div><label class="sapo-label" for="sapo-e-city">Ville</label><input id="sapo-e-city" name="city" autocomplete="off"></div>
+						</div>
+						<div class="sapo-row sapo-row--2">
+							<div><label class="sapo-label" for="sapo-e-country">Pays</label><select id="sapo-e-country" name="country"></select></div>
+							<div>
+								<label class="sapo-label" for="sapo-e-canton" data-canton-label>Canton</label>
+								<select id="sapo-e-canton" name="canton_select"></select>
+								<input id="sapo-e-canton-txt" name="canton_text" hidden autocomplete="off" aria-label="Région">
+							</div>
+						</div>
+						<div class="sapo-row">
+							<label class="sapo-label" for="sapo-e-website">Site internet</label>
+							<div class="sapo-input-action"><input id="sapo-e-website" name="website" type="url" placeholder="https://" autocomplete="off"><a href="#" target="_blank" rel="noopener" class="sapo-icon-btn" data-open-web aria-label="Ouvrir le site"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+						</div>
+
+												<div class="sapo-row sapo-row--2">
+							<label class="sapo-switch"><input type="checkbox" name="premium" value="1"><span></span><?php echo $premium; // phpcs:ignore ?> Premium donateur</label>
+							<label class="sapo-switch"><input type="checkbox" name="active" value="1"><span></span>Visible sur la carte</label>
+						</div>
+
+						<div class="sapo-row">
+							<div class="sapo-label-line"><span class="sapo-label">Position sur la carte</span><button type="button" class="sapo-link" data-locate>Localiser depuis l'adresse</button></div>
+							<div class="sapo-minimap" data-minimap></div>
+							<p class="sapo-muted sapo-small">Faites glisser le smiley pour ajuster la position, ou cliquez sur la carte.</p>
+							<div class="sapo-row--2 sapo-coords">
+								<div><label class="sapo-label" for="sapo-e-lat">Latitude</label><input id="sapo-e-lat" name="lat" inputmode="decimal" autocomplete="off"></div>
+								<div><label class="sapo-label" for="sapo-e-lng">Longitude</label><input id="sapo-e-lng" name="lng" inputmode="decimal" autocomplete="off"></div>
+							</div>
+						</div>
+					</div>
+					<footer class="sapo-drawer__foot">
+						<button type="button" class="sapo-btn sapo-btn--danger-ghost" data-delete>Supprimer</button>
+						<span class="sapo-spacer"></span>
+						<button type="button" class="sapo-btn sapo-btn--ghost" data-close>Annuler</button>
+						<button type="submit" class="sapo-btn sapo-btn--primary" data-save>Enregistrer</button>
+					</footer>
+				</form>
+			</div>
+
+			<div class="sapo-toasts" aria-live="polite" data-toasts></div>
+		</div>
+		<?php
+	}
+	}
+}

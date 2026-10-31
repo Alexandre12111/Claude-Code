@@ -1,0 +1,257 @@
+/*
+ * SapoCycle · Carte des hôtels · Snippet 7/7 : Script de l'administration
+ * Code Snippets : type PHP, « Exécuter le snippet partout ».
+ * Les 7 snippets sont nécessaires. Le snippet 1 indique s'il en manque un.
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	return;
+}
+if ( ! trait_exists( 'Sapo_Hotels_Part_AdminScript', false ) ) {
+	trait Sapo_Hotels_Part_AdminScript {
+
+	/* =====================================================================
+	 * Administration : JS
+	 * ===================================================================== */
+
+	private static function admin_js() {
+		return <<<'JS'
+(function(){
+"use strict";
+var D=window.SAPO_HOTELS;if(!D)return;
+var root=document.getElementById("sapo-a");if(!root)return;
+var $=function(s,c){return(c||root).querySelector(s);},$$=function(s,c){return[].slice.call((c||root).querySelectorAll(s));};
+var hotels=D.hotels||[],sortKey="name",sortDir=1,selected={};
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,"");}catch(e){return u;}}
+var PREMIUM='<svg width="16" height="16" viewBox="0 0 24 24" aria-label="Premium"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
+var PIN=function(c,w){w=w||16;return'<img src="'+D.icons.green+'" alt="" width="'+w+'" height="'+Math.round(w*69/42)+'">';};
+
+$$("[data-pin]").forEach(function(el){el.style.backgroundImage="url('"+D.icons[el.getAttribute("data-pin")]+"')";});
+$$("[data-pin-img]").forEach(function(el){el.src=D.icons[el.getAttribute("data-pin-img")];});
+$("[data-goto-import]").addEventListener("click",function(){$('.sapo-a__tab[data-tab="import"]').click();});
+
+function toast(msg,err){var el=document.createElement("div");el.className="sapo-toast "+(err?"sapo-toast--err":"sapo-toast--ok");el.textContent=msg;$("[data-toasts]").appendChild(el);setTimeout(function(){el.remove();},err?6000:3200);}
+function post(action,data){var fd=data instanceof FormData?data:new FormData();if(!(data instanceof FormData)&&data)Object.keys(data).forEach(function(k){fd.append(k,data[k]);});fd.append("action","sapo_hotels_"+action);fd.append("nonce",D.nonce);
+  return fetch(D.ajax,{method:"POST",body:fd,credentials:"same-origin"}).then(function(r){return r.json().catch(function(){throw new Error("Réponse invalide du serveur ("+r.status+").");});}).then(function(j){if(!j||!j.success)throw new Error(j&&j.data&&j.data.message?j.data.message:"Une erreur est survenue.");return j.data;});}
+function busy(btn,on){if(btn){btn.classList.toggle("is-loading",on);btn.disabled=on;}}
+
+/* ---------- Onglets ---------- */
+$$(".sapo-a__tab").forEach(function(tab){tab.addEventListener("click",function(){$$(".sapo-a__tab").forEach(function(t){t.setAttribute("aria-selected",t===tab?"true":"false");});$$(".sapo-a__panel").forEach(function(p){p.hidden=p.getAttribute("data-panel")!==tab.getAttribute("data-tab");});try{localStorage.setItem("sapoHotelsTab",tab.getAttribute("data-tab"));}catch(e){}});});
+try{var st=localStorage.getItem("sapoHotelsTab");if(st){var tb=$('.sapo-a__tab[data-tab="'+st+'"]');if(tb)tb.click();}}catch(e){}
+
+/* ---------- Statistiques ---------- */
+function stats(){
+  var c={};hotels.forEach(function(h){c[h.country]=1;});
+  var nogeo=hotels.filter(function(h){return h.lat===null;}).length;
+  $('[data-stat="total"]').textContent=hotels.length;
+  $('[data-stat="visible"]').textContent=hotels.filter(function(h){return h.active&&h.lat!==null;}).length;
+  $('[data-stat="premium"]').textContent=hotels.filter(function(h){return h.premium;}).length;
+  $('[data-stat="countries"]').textContent=Object.keys(c).length;
+  $('[data-stat="nogeo"]').textContent=nogeo;
+  $('[data-stat-box="nogeo"]').classList.toggle("is-on",nogeo>0);
+  var fc=$("[data-fcountry]"),cur=fc.value,cnt=function(k){return hotels.filter(function(h){return h.country===k;}).length;};
+  fc.innerHTML='<option value="">Tous les pays ('+hotels.length+')</option>'+D.mapCountries.map(function(k){return'<option value="'+esc(k)+'">'+esc(D.countries[k]||k)+' ('+cnt(k)+')</option>';}).join("");
+  fc.value=cur;
+  D.mapCountries.forEach(function(k){var m=$('[data-imp-meta="'+k+'"]');if(m)m.textContent=cnt(k)+" hôtel"+(cnt(k)>1?"s":"")+(D.imports&&D.imports[k]?" · import du "+D.imports[k]:" · aucun import");});
+  if(D.updated)$("[data-updated]").textContent="Dernière mise à jour : "+D.updated+".";
+}
+
+/* ---------- Tableau ---------- */
+function filtered(){
+  var q=norm($("[data-q]").value).split(/\s+/).filter(Boolean),fc=$("[data-fcountry]").value,fs=$("[data-fstatus]").value;
+  return hotels.filter(function(h){
+    if(fc&&h.country!==fc)return false;
+    if(fs==="premium"&&!h.premium)return false;
+    if(fs==="hidden"&&h.active)return false;
+    if(fs==="nogeo"&&h.lat!==null)return false;
+    if(fs==="incomplete"&&h.address&&h.zip&&h.city&&h.canton&&h.website)return false;
+    var s=norm([h.name,h.address,h.zip,h.city,h.canton,D.cantons[h.canton]||"",D.countries[h.country]||"",h.website].join(" "));
+    return q.every(function(t){return s.indexOf(t)>-1;});
+  }).sort(function(a,b){var x=sortKey==="city"?(a.city||"")+a.zip:a[sortKey]||"",y=sortKey==="city"?(b.city||"")+b.zip:b[sortKey]||"";return sortDir*String(x).localeCompare(String(y),"fr",{sensitivity:"base"});});
+}
+function render(){
+  var list=filtered(),tb=$("[data-rows]");
+  tb.innerHTML=list.map(function(h){
+    var status=h.lat===null?'<span class="sapo-tag sapo-tag--warn">À localiser</span>':h.active?'<span class="sapo-tag sapo-tag--ok">Visible</span>':'<span class="sapo-tag sapo-tag--off">Masqué</span>';
+    var miss=function(v,l){return v?esc(v):'<span class="sapo-missing">'+l+' manquant</span>';};
+    return '<tr data-id="'+esc(h.id)+'" class="'+(h.active?"":"is-hidden")+'">'+
+      '<td class="sapo-col-check"><input type="checkbox" data-sel aria-label="Sélectionner '+esc(h.name)+'"'+(selected[h.id]?" checked":"")+'></td>'+
+      '<td class="sapo-col-icon">'+PIN("green",14)+'</td>'+
+      '<td><span class="sapo-name">'+(h.premium?PREMIUM:'')+esc(h.name)+'</span>'+(h.country!=="CH"?'<span class="sapo-cell-muted"> · '+esc(D.countries[h.country]||h.country)+'</span>':'')+'</td>'+
+      '<td class="sapo-cell-muted">'+miss(h.address,"Adresse")+'</td>'+
+      '<td>'+(h.zip?esc(h.zip)+" ":'<span class="sapo-missing">NPA manquant</span> ')+esc(h.city)+'</td>'+
+      '<td>'+(h.canton?'<span class="sapo-chip" title="'+esc(D.cantons[h.canton]||h.canton)+'">'+esc(h.canton)+'</span>':'<span class="sapo-missing">—</span>')+'</td>'+
+      '<td>'+(h.website?'<a class="sapo-web" href="'+esc(h.website)+'" target="_blank" rel="noopener" data-stop>'+esc(host(h.website))+'</a>':'<span class="sapo-missing">—</span>')+'</td>'+
+      '<td class="sapo-col-status">'+status+'</td>'+
+      '<td class="sapo-col-actions"><button type="button" class="sapo-icon-btn" data-edit aria-label="Modifier '+esc(h.name)+'"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Zm11-15 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button><button type="button" class="sapo-icon-btn" data-del aria-label="Supprimer '+esc(h.name)+'"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td></tr>';
+  }).join("");
+  $("[data-empty]").hidden=list.length>0;
+  $("[data-count]").textContent=list.length+" / "+hotels.length+" hôtels";
+  $$(".sapo-sort").forEach(function(b){b.classList.toggle("is-asc",b.getAttribute("data-sort")===sortKey&&sortDir===1);b.classList.toggle("is-desc",b.getAttribute("data-sort")===sortKey&&sortDir===-1);});
+  bulkUI();stats();
+}
+function byId(id){for(var i=0;i<hotels.length;i++)if(hotels[i].id===id)return hotels[i];return null;}
+$("[data-rows]").addEventListener("click",function(e){
+  var tr=e.target.closest("tr");if(!tr)return;var h=byId(tr.getAttribute("data-id"));
+  if(e.target.closest("[data-stop]"))return;
+  if(e.target.matches("[data-sel]")){if(e.target.checked)selected[h.id]=1;else delete selected[h.id];bulkUI();return;}
+  if(e.target.closest("[data-del]")){remove([h.id],"« "+h.name+" »");return;}
+  openDrawer(h);
+});
+var deb;$("[data-q]").addEventListener("input",function(){clearTimeout(deb);deb=setTimeout(render,120);});
+$("[data-fcountry]").addEventListener("change",render);$("[data-fstatus]").addEventListener("change",render);
+$$(".sapo-sort").forEach(function(b){b.addEventListener("click",function(){var k=b.getAttribute("data-sort");if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}render();});});
+$("[data-check-all]").addEventListener("change",function(e){filtered().forEach(function(h){if(e.target.checked)selected[h.id]=1;else delete selected[h.id];});render();});
+function bulkUI(){var n=Object.keys(selected).filter(byId).length;$("[data-bulk]").hidden=!n;$("[data-bulk-n]").textContent=n+(n>1?" hôtels sélectionnés":" hôtel sélectionné");var all=$("[data-check-all]");var f=filtered();all.checked=f.length>0&&f.every(function(h){return selected[h.id];});}
+$$("[data-bulk-act]").forEach(function(b){b.addEventListener("click",function(){var ids=Object.keys(selected).filter(byId),act=b.getAttribute("data-bulk-act");if(!ids.length)return;
+  if(act==="delete"){remove(ids,ids.length+" hôtels");return;}
+  busy(b,true);post("delete",{ids:JSON.stringify(ids),act:act}).then(function(d){hotels=d.hotels;selected={};render();toast(act==="show"?"Hôtels affichés sur la carte.":"Hôtels masqués de la carte.");}).catch(function(e){toast(e.message,true);}).finally(function(){busy(b,false);});});});
+function remove(ids,label){if(!window.confirm("Supprimer définitivement "+label+" ?"))return;post("delete",{ids:JSON.stringify(ids),act:"delete"}).then(function(d){hotels=d.hotels;ids.forEach(function(i){delete selected[i];});render();closeDrawer();toast(ids.length>1?ids.length+" hôtels supprimés.":"Hôtel supprimé.");}).catch(function(e){toast(e.message,true);});}
+
+/* ---------- Tiroir d'édition ---------- */
+var drawer=$("[data-drawer]"),form=$("[data-edit-form]"),mini=null,miniMarker=null,lastFocus=null;
+var fCountry=form.elements.country,fCanton=form.elements.canton_select,fCantonTxt=form.elements.canton_text;
+fCountry.innerHTML=D.mapCountries.map(function(k){return'<option value="'+k+'">'+esc(D.countries[k])+'</option>';}).join("");
+fCanton.innerHTML='<option value="">Choisir un canton</option>'+Object.keys(D.cantons).map(function(k){return'<option value="'+k+'">'+k+" · "+esc(D.cantons[k])+'</option>';}).join("");
+function cantonMode(){var ch=fCountry.value==="CH";fCanton.hidden=!ch;fCantonTxt.hidden=ch;$("[data-canton-label]").textContent=ch?"Canton":"Région";$("[data-canton-label]").htmlFor=ch?"sapo-e-canton":"sapo-e-canton-txt";}
+fCountry.addEventListener("change",cantonMode);
+function setPos(lat,lng,pan){form.elements.lat.value=lat==null?"":(+lat).toFixed(6);form.elements.lng.value=lng==null?"":(+lng).toFixed(6);if(!mini)return;
+  if(lat==null){if(miniMarker){mini.removeLayer(miniMarker);miniMarker=null;}return;}
+  var ll=[+lat,+lng];if(!miniMarker){miniMarker=L.marker(ll,{draggable:true,icon:L.icon({iconUrl:D.icons[smiley()],iconSize:[30,49],iconAnchor:[17,49]})}).addTo(mini);miniMarker.on("dragend",function(){var p=miniMarker.getLatLng();setPos(p.lat,p.lng,false);});}else miniMarker.setLatLng(ll);
+  if(pan)mini.setView(ll,Math.max(mini.getZoom(),15));}
+function smiley(){return "green";}
+["lat","lng"].forEach(function(n){form.elements[n].addEventListener("change",function(){var a=parseFloat(form.elements.lat.value.replace(",",".")),b=parseFloat(form.elements.lng.value.replace(",","."));if(!isNaN(a)&&!isNaN(b))setPos(a,b,true);});});
+form.elements.website.addEventListener("input",function(){var v=form.elements.website.value.trim();$("[data-open-web]").href=v?(/^https?:\/\//i.test(v)?v:"https://"+v):"#";});
+
+function openDrawer(h){
+  lastFocus=document.activeElement;
+  var isNew=!h;h=h||{id:"",name:"",address:"",zip:"",city:"",canton:"",country:$("[data-fcountry]").value||"CH",website:"",lat:null,lng:null,smiley:"green",premium:false,active:true};
+  $("[data-drawer-title]").textContent=isNew?"Ajouter un hôtel":"Modifier l'hôtel";
+  $("[data-delete]").hidden=isNew;
+  ["id","name","address","zip","city","website"].forEach(function(k){form.elements[k].value=h[k]||"";});
+  form.elements.website.dispatchEvent(new Event("input"));
+  if(!D.countries[h.country]){var o=document.createElement("option");o.value=h.country;o.textContent=h.country;fCountry.appendChild(o);}
+  fCountry.value=h.country||"CH";cantonMode();
+  if(h.country==="CH"&&!D.cantons[h.canton]&&h.canton){var o2=document.createElement("option");o2.value=h.canton;o2.textContent=h.canton;fCanton.appendChild(o2);}
+  fCanton.value=h.country==="CH"?h.canton||"":"";fCantonTxt.value=h.country==="CH"?"":h.canton||"";
+  form.elements.premium.checked=!!h.premium;form.elements.active.checked=!!h.active;
+  $$(".is-invalid",form).forEach(function(i){i.classList.remove("is-invalid");});$('[data-err="name"]').hidden=true;
+  drawer.hidden=false;document.body.style.overflow="hidden";
+  setTimeout(function(){
+    if(window.L&&!mini){mini=L.map($("[data-minimap]"),{scrollWheelZoom:true}).setView([46.8,8.2],7);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap",maxZoom:19}).addTo(mini);mini.on("click",function(e){setPos(e.latlng.lat,e.latlng.lng,false);});}
+    if(mini){mini.invalidateSize();if(miniMarker){mini.removeLayer(miniMarker);miniMarker=null;}if(h.lat!==null&&h.lat!==undefined){setPos(h.lat,h.lng,true);}else{setPos(null,null);mini.setView([46.8,8.2],7);}}
+    else setPos(h.lat,h.lng);
+    form.elements.name.focus();
+  },60);
+}
+function closeDrawer(){if(drawer.hidden)return;drawer.hidden=true;document.body.style.overflow="";if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+$$("[data-close]",drawer).forEach(function(b){b.addEventListener("click",closeDrawer);});
+document.addEventListener("keydown",function(e){if(drawer.hidden)return;if(e.key==="Escape"){closeDrawer();}
+  if(e.key==="Tab"){var f=$$('input:not([hidden]):not([type=hidden]),select:not([hidden]),button:not([hidden]),a[href]',form).filter(function(x){return x.offsetParent!==null;});if(!f.length)return;var a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}}});
+$("[data-add]").addEventListener("click",function(){openDrawer(null);});
+$("[data-delete]").addEventListener("click",function(){var h=byId(form.elements.id.value);if(h)remove([h.id],"« "+h.name+" »");});
+$("[data-locate]").addEventListener("click",function(){var b=this;if(!form.elements.address.value&&!form.elements.city.value&&!form.elements.zip.value){toast("Renseignez d'abord l'adresse, le NPA ou la ville.",true);return;}
+  b.disabled=true;b.textContent="Recherche…";
+  post("geocode",{preview:1,name:form.elements.name.value,address:form.elements.address.value,zip:form.elements.zip.value,city:form.elements.city.value,country:fCountry.value}).then(function(p){setPos(p.lat,p.lng,true);toast("Adresse localisée. Vérifiez la position puis enregistrez.");}).catch(function(e){toast(e.message,true);}).finally(function(){b.disabled=false;b.textContent="Localiser depuis l'adresse";});});
+form.addEventListener("submit",function(e){
+  e.preventDefault();
+  var name=form.elements.name.value.trim();
+  if(!name){form.elements.name.classList.add("is-invalid");$('[data-err="name"]').hidden=false;form.elements.name.focus();return;}
+  var lat=form.elements.lat.value.trim(),lng=form.elements.lng.value.trim();
+  var h={id:form.elements.id.value,name:name,address:form.elements.address.value,zip:form.elements.zip.value,city:form.elements.city.value,country:fCountry.value,canton:fCountry.value==="CH"?fCanton.value:fCantonTxt.value,website:form.elements.website.value,smiley:smiley(),premium:form.elements.premium.checked?"oui":"non",active:form.elements.active.checked?"oui":"non",lat:lat,lng:lng};
+  var btn=$("[data-save]");busy(btn,true);
+  var isNew=!h.id;
+  post("save",{hotel:JSON.stringify(h)}).then(function(d){hotels=d.hotels;render();closeDrawer();toast(isNew?"Hôtel ajouté.":"Modifications enregistrées.");
+    if(d.hotel.lat===null&&(d.hotel.address||d.hotel.city)){geocodeIds([d.hotel.id]);}
+  }).catch(function(err){toast(err.message,true);}).finally(function(){busy(btn,false);});
+});
+
+/* ---------- Géolocalisation en série ---------- */
+var geoRunning=false;
+function geocodeIds(ids){
+  if(geoRunning||!ids.length)return Promise.resolve();
+  geoRunning=true;var box=$("[data-progress]"),bar=$("[data-progress-bar]"),lab=$("[data-progress-n]"),done=0,fails=[];
+  box.hidden=false;bar.style.width="0%";lab.textContent="0 / "+ids.length;
+  var i=0;
+  return new Promise(function(resolve){
+    (function next(){
+      if(i>=ids.length){geoRunning=false;$("[data-progress-label]").textContent=fails.length?"Géolocalisation terminée avec "+fails.length+" adresse(s) introuvable(s)":"Géolocalisation terminée";
+        if(fails.length){toast(fails.length+" adresse(s) introuvable(s). Filtrez « Sans coordonnées » pour les placer à la main.",true);}else toast("Toutes les adresses ont été localisées.");
+        setTimeout(function(){if(!geoRunning)box.hidden=true;},6000);resolve();return;}
+      var id=ids[i++];$("[data-progress-label]").textContent="Géolocalisation…";
+      var fast=false;
+      post("geocode",{id:id}).then(function(d){fast=!!d.fast;for(var k=0;k<hotels.length;k++)if(hotels[k].id===d.hotel.id)hotels[k]=d.hotel;}).catch(function(){fails.push(id);}).finally(function(){done++;bar.style.width=Math.round(done/ids.length*100)+"%";lab.textContent=done+" / "+ids.length;if(done%10===0||done===ids.length||!fast)render();setTimeout(next,fast?60:1100);});
+    })();
+  });
+}
+$("[data-geocode-all]").addEventListener("click",function(){var ids=hotels.filter(function(h){return h.lat===null;}).map(function(h){return h.id;});$('.sapo-a__tab[data-tab="import"]').click();geocodeIds(ids);});
+
+/* ---------- Import (un fichier par pays) ---------- */
+var drop=$("[data-drop]"),file=$("[data-file]"),impBtn=$("[data-import-btn]"),result=$("[data-result]");
+var impForm=$("[data-import-form]"),impCountry="CH",COLS=Object.keys(D.colLabels.CH);
+var IN={CH:"en Suisse",FR:"en France",DE:"en Allemagne"};
+function countIn(c){return hotels.filter(function(h){return h.country===c;}).length;}
+function colDoc(){var L=D.colLabels[impCountry];$("[data-coldoc]").innerHTML=COLS.map(function(k){var v=(impForm.elements["col_"+k].value||"").toUpperCase();return'<tr><td><code>'+(v?esc(v):"non lue")+'</code></td><td>'+esc(L[k])+(k==="name"?' <span class="sapo-req">obligatoire</span>':'')+'</td></tr>';}).join("");}
+COLS.forEach(function(k){var i=impForm.elements["col_"+k];i.addEventListener("input",function(){i.value=i.value.replace(/[^a-z]/gi,"").toUpperCase();colDoc();});});
+function setImpCountry(c){
+  impCountry=c;var L=D.colLabels[c],name=D.countries[c];
+  $$("[data-imp-country]").forEach(function(b){b.setAttribute("aria-selected",b.getAttribute("data-imp-country")===c?"true":"false");});
+  $("[data-imp-title]").textContent="Hôtels "+IN[c];
+  $("[data-imp-sub]").textContent="Déposez le fichier Excel des hôtels "+IN[c]+" : les cartes "+name+" en français, allemand et anglais se mettent à jour immédiatement.";
+  $("[data-mode-replace]").textContent="Le fichier devient la liste complète des hôtels "+IN[c]+". Les hôtels "+IN[c]+" absents du fichier sont retirés.";
+  COLS.forEach(function(k){impForm.elements["col_"+k].value=(D.settings.columns[c]&&D.settings.columns[c][k])||"";$('[data-col-label="'+k+'"]').textContent=L[k];impForm.elements["col_"+k].setAttribute("aria-label","Lettre de colonne : "+L[k]);});
+  impForm.elements.header_row.checked=!!+(D.settings.header_row||{})[c];
+  $("[data-export]").href=D.export+"&country="+c;$("[data-export-label]").textContent="Exporter les hôtels "+IN[c]+" ("+countIn(c)+")";
+  $("[data-template]").href=D.template+"&country="+c;
+  result.hidden=true;colDoc();showFile();
+}
+$$("[data-imp-country]").forEach(function(b){b.addEventListener("click",function(){setImpCountry(b.getAttribute("data-imp-country"));});});
+function setFile(f){if(!f)return;var dt=new DataTransfer();dt.items.add(f);file.files=dt.files;showFile();}
+function showFile(){var f=file.files[0];drop.classList.toggle("has-file",!!f);$("[data-drop-text]").innerHTML=f?"<strong>"+esc(f.name)+"</strong> prêt à importer pour : "+esc(D.countries[impCountry]):"Glissez le fichier des hôtels "+esc(IN[impCountry])+" ici ou <u>parcourez</u>";impBtn.disabled=!f;impBtn.textContent=f?"Importer pour : "+D.countries[impCountry]:"Importer le fichier";}
+file.addEventListener("change",showFile);
+["dragenter","dragover"].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add("is-over");});});
+["dragleave","drop"].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove("is-over");});});
+drop.addEventListener("drop",function(e){if(e.dataTransfer.files[0])setFile(e.dataTransfer.files[0]);});
+impForm.addEventListener("submit",function(e){
+  e.preventDefault();var f=file.files[0];if(!f)return;
+  var frm=this,c=impCountry,mode=frm.elements.mode.value,n=countIn(c);
+  if(mode==="replace"&&n&&!window.confirm("Remplacer les "+n+" hôtels "+IN[c]+" par le contenu du fichier « "+f.name+" » ?\n\nLes hôtels des autres pays ne sont pas touchés. Une sauvegarde est conservée : vous pourrez annuler cet import."))return;
+  var cols={};COLS.forEach(function(k){cols[k]=(frm.elements["col_"+k].value||"").trim().toUpperCase();});
+  if(!/^[A-Z]{1,3}$/.test(cols.name)){toast("Indiquez la lettre de la colonne du nom de l'hôtel.",true);frm.elements.col_name.focus();return;}
+  var fd=new FormData();fd.append("file",f);fd.append("mode",mode);fd.append("country",c);
+  fd.append("columns",JSON.stringify(cols));fd.append("header_row",frm.elements.header_row.checked?"1":"0");
+  var geo=frm.elements.geocode.checked;
+  busy(impBtn,true);result.hidden=true;result.classList.remove("is-error");
+  post("import",fd).then(function(d){
+    hotels=d.hotels;selected={};D.backup=d.backup;restoreUI();
+    D.settings.columns[c]=d.columns_map;D.settings.header_row[c]=d.header_row;D.imports=D.imports||{};D.imports[c]=d.imported;render();
+    var L=D.colLabels[c];
+    var prev=d.preview&&d.preview.length?'<p><strong>Aperçu des premières lignes lues :</strong></p><div class="sapo-preview-wrap"><table class="sapo-preview"><thead><tr>'+COLS.map(function(k){return"<th>"+esc(L[k])+" ("+esc(d.columns_map[k]||"?")+")</th>";}).join("")+'</tr></thead><tbody>'+d.preview.map(function(h){return"<tr>"+COLS.map(function(k){return"<td>"+esc(h[k]||"")+"</td>";}).join("")+"</tr>";}).join("")+'</tbody></table></div>':'';
+    result.innerHTML='<h3>Import terminé : '+esc(D.countries[c])+'</h3><div class="sapo-result__nums"><span><b>'+d.total+'</b>hôtels '+IN[c]+'</span><span><b>'+d.added+'</b>ajoutés</span><span><b>'+d.updated+'</b>mis à jour</span>'+(mode==="replace"?'<span><b>'+d.removed+'</b>retirés</span>':'')+'<span><b>'+d.nogeo.length+'</b>à géolocaliser</span></div>'+(d.warnings.length?'<p><strong>Points à vérifier :</strong></p><ul>'+d.warnings.map(function(w){return"<li>"+esc(w)+"</li>";}).join("")+'</ul>':'')+prev;
+    result.hidden=false;toast("Import réussi : les cartes "+D.countries[c]+" sont à jour.");
+    file.value="";showFile();setImpCountry(c);result.hidden=false;
+    if(geo&&d.nogeo.length)geocodeIds(d.nogeo);
+  }).catch(function(err){result.classList.add("is-error");result.innerHTML="<h3>Import impossible</h3><p>"+esc(err.message)+"</p>";result.hidden=false;}).finally(function(){busy(impBtn,false);showFile();});
+});
+function restoreUI(){var b=$("[data-restore]");b.hidden=!D.backup;b.title=D.backup?"Revenir à la liste d'avant l'import du "+D.backup:"";}
+$("[data-restore]").addEventListener("click",function(){var b=this;if(!window.confirm("Revenir à la liste des hôtels d'avant le dernier import ("+D.backup+") ?"))return;busy(b,true);
+  post("restore",{}).then(function(d){hotels=d.hotels;D.backup="";restoreUI();render();toast("Dernier import annulé.");result.hidden=true;}).catch(function(e){toast(e.message,true);}).finally(function(){busy(b,false);});});
+
+/* ---------- Réglages ---------- */
+var sf=$("[data-settings-form]");
+function tilesUI(){$("[data-custom-tiles]").hidden=sf.elements.tiles.value!=="custom";}
+sf.elements.tiles.addEventListener("change",tilesUI);
+function fillSettings(s){sf.elements.tiles.value=s.tiles;sf.elements.tiles_url.value=s.tiles_url||"";sf.elements.tiles_attr.value=s.tiles_attr||"";tilesUI();sf.elements.height.value=s.height;sf.elements.cluster.checked=!!+s.cluster;["legend_member","legend_premium"].forEach(function(k){["fr","de","en"].forEach(function(l){sf.elements[k+"["+l+"]"].value=(s[k]&&s[k][l])||"";});});}
+fillSettings(D.settings);
+sf.addEventListener("submit",function(e){e.preventDefault();var s={tiles:sf.elements.tiles.value,tiles_url:sf.elements.tiles_url.value,tiles_attr:sf.elements.tiles_attr.value,height:sf.elements.height.value,cluster:sf.elements.cluster.checked?1:0};
+  ["legend_member","legend_premium"].forEach(function(k){s[k]={};["fr","de","en"].forEach(function(l){s[k][l]=sf.elements[k+"["+l+"]"].value;});});
+  var b=sf.querySelector("[type=submit]");busy(b,true);post("settings",{settings:JSON.stringify(s)}).then(function(d){fillSettings(d.settings);toast("Réglages enregistrés.");}).catch(function(e){toast(e.message,true);}).finally(function(){busy(b,false);});});
+$$("[data-copy]").forEach(function(b){b.addEventListener("click",function(){var v=b.getAttribute("data-copy");(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){toast("Shortcode copié.");}).catch(function(){window.prompt("Copiez le shortcode :",v);});});});
+
+restoreUI();render();setImpCountry("CH");
+})();
+JS;
+	}
+	}
+}
