@@ -1,0 +1,1640 @@
+<?php
+/**
+ * Plugin Name: SapoCycle · Carte des hôtels
+ * Description: Cartes des hôtels membres SapoCycle (Suisse, France, Allemagne) en français, allemand et anglais, avec import Excel par pays.
+ * Version:     2.0.0
+ * Author:      SapoCycle
+ *
+ * Snippet unique pour Code Snippets : type PHP, « Exécuter le snippet partout ».
+ * Shortcodes : [sapocycle_suisse_fr] [sapocycle_suisse_de] [sapocycle_suisse_en]
+ *              [sapocycle_france_fr] [sapocycle_france_de] [sapocycle_france_en]
+ *              [sapocycle_allemagne_fr] [sapocycle_allemagne_de] [sapocycle_allemagne_en]
+ */
+
+if ( ! class_exists( 'SapoCycle_Hotels' ) ) {
+
+	final class SapoCycle_Hotels {
+
+		const VERSION  = '2.0.0';
+		const SLUG     = 'sapocycle-hotels';
+		const OPT_DATA = 'sapocycle_hotels_data';
+		const OPT_SET  = 'sapocycle_hotels_settings';
+		const OPT_BAK  = 'sapocycle_hotels_backup';
+		const OPT_LOG  = 'sapocycle_hotels_imports';
+		const NONCE    = 'sapocycle_hotels';
+		const CAP      = 'edit_pages';
+		const LEAFLET  = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/';
+		const CLUSTER  = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/';
+
+		/** Les trois pays du site. */
+		const COUNTRIES = array(
+			'CH' => array( 'slug' => 'suisse', 'fr' => 'Suisse', 'de' => 'Schweiz', 'en' => 'Switzerland', 'in' => 'en Suisse' ),
+			'FR' => array( 'slug' => 'france', 'fr' => 'France', 'de' => 'Frankreich', 'en' => 'France', 'in' => 'en France' ),
+			'DE' => array( 'slug' => 'allemagne', 'fr' => 'Allemagne', 'de' => 'Deutschland', 'en' => 'Germany', 'in' => 'en Allemagne' ),
+		);
+
+		/** Colonnes Excel lues par défaut (E, I, J, K, L, M). */
+		const DEFAULT_COLUMNS = array(
+			'name'    => 'E',
+			'address' => 'I',
+			'zip'     => 'J',
+			'city'    => 'K',
+			'region'  => 'L',
+			'website' => 'M',
+		);
+
+		/** Cantons suisses : code => array( fr, de, en ). */
+		const CANTONS = array(
+			'AG' => array( 'Argovie', 'Aargau', 'Aargau' ),
+			'AI' => array( 'Appenzell Rhodes-Intérieures', 'Appenzell Innerrhoden', 'Appenzell Innerrhoden' ),
+			'AR' => array( 'Appenzell Rhodes-Extérieures', 'Appenzell Ausserrhoden', 'Appenzell Ausserrhoden' ),
+			'BE' => array( 'Berne', 'Bern', 'Bern' ),
+			'BL' => array( 'Bâle-Campagne', 'Basel-Landschaft', 'Basel-Landschaft' ),
+			'BS' => array( 'Bâle-Ville', 'Basel-Stadt', 'Basel-Stadt' ),
+			'FR' => array( 'Fribourg', 'Freiburg', 'Fribourg' ),
+			'GE' => array( 'Genève', 'Genf', 'Geneva' ),
+			'GL' => array( 'Glaris', 'Glarus', 'Glarus' ),
+			'GR' => array( 'Grisons', 'Graubünden', 'Grisons' ),
+			'JU' => array( 'Jura', 'Jura', 'Jura' ),
+			'LU' => array( 'Lucerne', 'Luzern', 'Lucerne' ),
+			'NE' => array( 'Neuchâtel', 'Neuenburg', 'Neuchâtel' ),
+			'NW' => array( 'Nidwald', 'Nidwalden', 'Nidwalden' ),
+			'OW' => array( 'Obwald', 'Obwalden', 'Obwalden' ),
+			'SG' => array( 'Saint-Gall', 'St. Gallen', 'St. Gallen' ),
+			'SH' => array( 'Schaffhouse', 'Schaffhausen', 'Schaffhausen' ),
+			'SO' => array( 'Soleure', 'Solothurn', 'Solothurn' ),
+			'SZ' => array( 'Schwytz', 'Schwyz', 'Schwyz' ),
+			'TG' => array( 'Thurgovie', 'Thurgau', 'Thurgau' ),
+			'TI' => array( 'Tessin', 'Tessin', 'Ticino' ),
+			'UR' => array( 'Uri', 'Uri', 'Uri' ),
+			'VD' => array( 'Vaud', 'Waadt', 'Vaud' ),
+			'VS' => array( 'Valais', 'Wallis', 'Valais' ),
+			'ZG' => array( 'Zoug', 'Zug', 'Zug' ),
+			'ZH' => array( 'Zurich', 'Zürich', 'Zurich' ),
+		);
+
+		/** Smiley SapoCycle (repris des marqueurs du site). */
+		const PIN_PATH  = 'M25.3,64.9 L32.5,38.6 L32.8,38.4 C39.1,34.9 43,28.3 43,21 C43,10 34,1 23,1 C12,1 3,10 3,21 C3,29.4 8.2,36.8 15.9,39.7 L16.4,39.9 L25.3,64.9 Z';
+		const FACE_PATH = 'M12.6,12.2 C12.7,12.2 12.7,12.3 12.8,12.3 C12.8,12.3 12.8,12.3 12.8,12.3 C12.7,12.1 12.8,11.8 13.1,11.7 C13.1,11.6 13.2,11.6 13.3,11.6 C13.5,11.6 13.6,11.7 13.7,11.8 C14,11.5 14.5,11.4 14.9,11.4 C15,11.4 15,11.4 15.1,11.4 C15.1,11.4 15.2,11.4 15.2,11.5 C15.5,11.5 15.8,11.7 16.1,11.9 C16.4,12.2 16.4,12.7 16.3,13.1 C16.3,13.1 16.3,13.2 16.3,13.3 C16.3,13.3 16.3,13.3 16.4,13.3 C16.4,13.3 16.4,13.3 16.4,13.3 C16.7,13.5 16.7,13.9 16.6,14.2 C16.1,15.1 15.1,15.4 14.2,14.8 C14.1,14.8 14.1,14.7 14,14.6 C13.7,14.6 13.5,14.5 13.3,14.4 C12.6,13.9 11.8,11.7 12.6,12.2 M10.7,16.6 C10.7,16.7 10.7,16.8 10.8,16.8 L11,17.3 L11.7,17.6 C11.9,17.7 12.1,17.7 12.3,17.8 C12.4,17.9 12.5,17.9 12.5,17.9 C12.8,18.1 13.1,18.2 13.6,18.3 C13.7,18.3 13.8,18.3 13.9,18.3 C14,18.3 14.1,18.3 14.3,18.3 C15.4,18.3 16.5,17.8 17.4,17 C17.8,16.7 18.1,16.4 18.5,16 C18.8,15.5 19,15 19.1,14.6 L19.1,14.5 C19.3,14.1 19.4,13.4 19.2,12.8 C19.3,12.6 19.4,12.2 19.2,11.7 C19.2,11.7 19.2,11.6 19.1,11.4 L19.3,11.2 C19.1,10.9 18.9,10.7 18.7,10.4 L18.5,10.6 C18.5,10.5 18.4,10.4 18.4,10.3 L18.3,10 C17.9,9.1 17.1,8.5 16.2,8.5 C16,8.4 15.8,8.4 15.5,8.4 C15.1,8.3 14.6,8.3 14.1,8.3 L14,8.3 C13.1,8.3 12.1,8.5 11.3,9.4 L11.2,9.5 C10.8,9.9 10.2,10.6 10.1,11.5 C9.6,11.9 9.5,12.6 9.5,12.9 C9.5,12.9 9.4,13 9.4,13 C9.2,13.9 9.4,14.7 9.9,15.2 C10,15.8 10.3,16.2 10.7,16.6 M35.7,21.4 C35.7,21.3 35.6,21.3 35.6,21.3 C35.4,21.3 35.3,21.2 35.2,21 C35.1,20.9 35,20.8 35,20.7 C35,20.6 34.9,20.6 34.9,20.6 C34.8,20.5 34.8,20.4 34.8,20.3 C34.6,20.4 34.5,20.5 34.3,20.6 C33.9,20.6 33.6,20.6 33.2,20.6 C33.2,20.7 33.1,20.6 33,20.6 L33,20.7 C33,20.7 33,20.7 33,20.8 C32.8,21 32.4,21.5 32.5,22.2 C32.5,22.6 32.4,22.9 32.2,23.5 C32.1,23.9 32.1,24.3 32,24.6 C32,24.7 32,24.9 32,25 C32,25.1 31.9,25.3 31.9,25.5 C31.7,26.1 31.6,26.6 31.3,26.9 L31,27.2 L30.9,27.5 C30.7,28.3 30.1,28.8 29.3,29.5 C29.1,29.7 28.9,29.9 28.7,30 C28.3,30.4 27.7,30.7 27.2,31.1 C26.9,31.2 26.7,31.3 26.4,31.5 C26.4,31.5 26.4,31.5 26.4,31.5 C25.7,31.5 25,31.7 24.5,31.8 C24.2,31.9 23.9,32 23.7,32 C23.4,32.1 22.9,32.1 22.5,32.1 L22.3,32.1 C22,31.8 21.6,31.7 21.2,31.7 C21.1,31.7 21,31.7 20.9,31.7 L20.7,31.7 C20.6,31.7 20.6,31.6 20.5,31.6 C19.9,31.1 19.1,30.9 18.3,30.9 L17.8,30.5 C17.4,30.2 17.1,29.9 16.8,29.6 C16.5,29.5 16.4,29.2 16.1,28.9 C15.8,28.4 15.4,27.8 14.8,27.4 C14.7,27.3 14.6,27.3 14.5,27.2 C14.5,26.9 14.5,26.7 14.4,26.4 C14.3,26.1 14.1,25.8 14,25.5 C14,25.3 13.9,25.2 13.8,25 C13.4,24 13.3,23.2 13.2,22.4 L13.2,22.1 C13,22.1 12.8,21.9 12.8,21.6 C12.7,21.6 12.7,21.4 12.7,21.3 L10.9,20.7 C10.8,20.8 10.6,20.9 10.4,20.9 C10.3,20.9 10.3,20.9 10.2,20.9 C10.2,20.9 10.2,20.9 10.2,20.9 L9.9,21.5 C9.4,22.3 9.1,23.3 9.6,24.6 C9.7,24.7 9.7,24.9 9.6,25.2 C9.6,25.5 9.6,25.7 9.6,25.9 L9.5,27 L10.1,27.2 C10.1,27.7 10.2,28.2 10.6,28.6 C10.8,28.8 11,29.1 11.1,29.3 C11.6,30 12.2,30.8 13,31.4 C13.1,31.5 13.2,31.6 13.2,32 L13.3,32.7 L13.9,33 C14.1,33.1 14.3,33.2 14.5,33.3 C14.8,33.4 15.1,33.5 15.3,33.7 C16.1,34.3 17,34.8 18.1,35.1 C18.4,35.2 18.7,35.3 19,35.4 C19.4,35.6 19.8,35.7 20.2,35.9 C20.9,36 21.8,36.2 22.6,36.3 C22.8,36.3 23,36.3 23.1,36.3 C23.6,36.3 24.1,36.2 24.6,36 C24.6,36 24.7,36 24.7,36 L24.9,36.1 C25,36.1 25.1,36.1 25.2,36.1 L25.3,36.1 C25.7,36 26.3,36 26.7,35.4 L27.2,35.5 C27.2,35.5 27.3,35.5 27.3,35.5 C27.7,35.5 28,35.3 28.3,35.1 C28.4,35 28.7,34.9 29,34.8 C29.6,34.5 30.4,34.2 30.9,33.3 C30.9,33.3 31,33.3 31,33.3 C31.7,32.8 32.3,32.3 32.7,31.8 C32.9,31.6 33.1,31.5 33.2,31.3 C33.7,30.8 34.1,30.1 34.2,29.4 C34.5,29.2 34.8,28.9 34.9,28.6 C35.2,27.7 35.5,26.9 35.8,26.1 C36,25.7 35.9,25.3 35.8,25.1 C35.9,24.8 36,24.6 36,24.3 C35.9,24.2 35.8,24.1 35.8,23.8 L35.8,23.5 C35.8,23.2 36,23 36.2,23 C36.3,22.8 36.3,22.7 36.3,22.5 C36.3,22.3 36.3,22.2 36.3,22 L36.3,22 C36.2,21.9 36,21.8 35.9,21.7 C35.8,21.6 35.7,21.5 35.7,21.4 M29.4,11.5 C29.5,11.5 29.6,11.5 29.6,11.4 C29.8,11.2 30,11.1 30.3,11.1 C30.4,11.2 30.5,11.2 30.5,11.2 C30.6,11.1 30.8,11 31,11 C31.2,11 31.4,11.1 31.4,11.3 L31.4,11.3 C31.6,11.3 31.8,11.4 32,11.4 C32.2,11.4 32.4,11.5 32.5,11.6 C32.9,11.7 33,12.3 32.7,12.5 C32.8,12.6 32.8,12.7 32.8,12.8 C32.8,13.1 32.6,13.4 32.3,13.5 C32.2,13.8 32,14 31.7,14.2 C31.2,14.7 30.4,15 29.7,14.5 C28.6,13.9 28.2,12.2 29.4,11.5 M27.9,16.1 C28,16.2 28.1,16.3 28.2,16.4 C28.3,16.6 28.7,16.9 29.2,17 C29.4,17 29.5,17 29.8,17.1 C30.1,17.2 30.5,17.3 30.9,17.3 C31,17.3 31.1,17.3 31.2,17.3 C31.5,17.3 31.9,17.2 32.3,17 C33.9,16.4 35.3,15.4 35.3,12.6 L35.3,12.5 L34.5,12.6 L35.3,12.4 C35.3,12.2 35.3,12 35.2,11.7 C34.9,10.1 34.1,9.1 32.9,8.7 C31.5,8.2 30.3,8.2 29.1,8.5 C28.5,8.6 28,9 27.7,9.3 C26.1,10.8 25.9,13.4 27.1,15.1 C27.4,15.5 27.7,15.8 27.9,16.1';
+
+		private static $map_count = 0;
+
+		/* ------------------------------------------------------------------
+		 * Démarrage
+		 * ------------------------------------------------------------------ */
+
+		public static function boot() {
+			add_action( 'init', array( __CLASS__, 'register_shortcodes' ) );
+			add_action( 'admin_menu', array( __CLASS__, 'add_menu' ) );
+			add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin_enqueue' ) );
+			add_action( 'wp_ajax_sapocycle_hotels', array( __CLASS__, 'ajax' ) );
+			add_action( 'admin_post_sapocycle_hotels_export', array( __CLASS__, 'export' ) );
+			if ( did_action( 'init' ) ) {
+				self::register_shortcodes();
+			}
+		}
+
+		/* ------------------------------------------------------------------
+		 * Données
+		 * ------------------------------------------------------------------ */
+
+		public static function hotels() {
+			$list = get_option( self::OPT_DATA, array() );
+			return is_array( $list ) ? array_values( $list ) : array();
+		}
+
+		private static function store( array $list ) {
+			usort(
+				$list,
+				function ( $a, $b ) {
+					return strcasecmp( remove_accents( $a['name'] ), remove_accents( $b['name'] ) );
+				}
+			);
+			update_option( self::OPT_DATA, array_values( $list ), false );
+		}
+
+		public static function settings() {
+			$s = get_option( self::OPT_SET, array() );
+			$s = is_array( $s ) ? $s : array();
+			$d = array(
+				'height'  => 620,
+				'cluster' => 1,
+				'tiles'   => 'soft',
+				'legend'  => array(
+					'member_fr'  => 'Hôtel membre',
+					'member_de'  => 'Mitgliedshotel',
+					'member_en'  => 'Member hotel',
+					'premium_fr' => 'Les Hôtels Premium qui nous font une donation',
+					'premium_de' => 'Premium-Hotels, die uns mit einer Spende unterstützen',
+					'premium_en' => 'Premium Hotels that make a donation to us',
+				),
+				'columns' => array(),
+				'header'  => array(),
+			);
+			$out = array_merge( $d, $s );
+			$out['legend'] = array_merge( $d['legend'], isset( $s['legend'] ) && is_array( $s['legend'] ) ? $s['legend'] : array() );
+			foreach ( array_keys( self::COUNTRIES ) as $c ) {
+				$cols = isset( $out['columns'][ $c ] ) && is_array( $out['columns'][ $c ] ) ? $out['columns'][ $c ] : array();
+				$out['columns'][ $c ] = self::clean_columns( $cols );
+				$out['header'][ $c ]  = isset( $out['header'][ $c ] ) ? ( $out['header'][ $c ] ? 1 : 0 ) : 1;
+			}
+			return $out;
+		}
+
+		private static function clean_columns( $in ) {
+			$out = array();
+			foreach ( self::DEFAULT_COLUMNS as $field => $def ) {
+				$v = isset( $in[ $field ] ) ? strtoupper( preg_replace( '/[^A-Za-z]/', '', (string) $in[ $field ] ) ) : $def;
+				$out[ $field ] = strlen( $v ) <= 3 ? $v : $def;
+			}
+			if ( '' === $out['name'] ) {
+				$out['name'] = 'E';
+			}
+			return $out;
+		}
+
+		private static function col_index( $letter ) {
+			$letter = strtoupper( preg_replace( '/[^A-Za-z]/', '', (string) $letter ) );
+			if ( '' === $letter ) {
+				return null;
+			}
+			$i = 0;
+			foreach ( str_split( $letter ) as $ch ) {
+				$i = $i * 26 + ( ord( $ch ) - 64 );
+			}
+			return $i - 1;
+		}
+
+		private static function norm( $s ) {
+			$s = strtolower( remove_accents( wp_strip_all_tags( (string) $s ) ) );
+			return trim( preg_replace( '/[^a-z0-9]+/', ' ', $s ) );
+		}
+
+		private static function key_of( array $h ) {
+			return $h['country'] . '|' . self::norm( $h['name'] ) . '|' . self::norm( $h['zip'] );
+		}
+
+		private static function make_url( $url ) {
+			$url = trim( (string) $url );
+			if ( '' === $url ) {
+				return '';
+			}
+			if ( ! preg_match( '#^https?://#i', $url ) ) {
+				$url = 'https://' . ltrim( $url, '/' );
+			}
+			return esc_url_raw( $url );
+		}
+
+		private static function coord( $v, $max ) {
+			$v = str_replace( ',', '.', trim( (string) $v ) );
+			if ( '' === $v || ! is_numeric( $v ) || 0.0 === (float) $v || abs( (float) $v ) > $max ) {
+				return null;
+			}
+			return round( (float) $v, 6 );
+		}
+
+		/** Nettoie un hôtel venant du formulaire ou du fichier Excel. */
+		private static function clean_hotel( array $raw, array $base = array() ) {
+			$h = array_merge(
+				array(
+					'id'      => '',
+					'country' => 'CH',
+					'name'    => '',
+					'address' => '',
+					'zip'     => '',
+					'city'    => '',
+					'region'  => '',
+					'website' => '',
+					'lat'     => null,
+					'lng'     => null,
+					'premium' => false,
+					'visible' => true,
+				),
+				$base
+			);
+			foreach ( array( 'name', 'address', 'zip', 'city', 'region' ) as $f ) {
+				if ( array_key_exists( $f, $raw ) ) {
+					$h[ $f ] = sanitize_text_field( html_entity_decode( (string) $raw[ $f ], ENT_QUOTES, 'UTF-8' ) );
+				}
+			}
+			// Un nom qui commence par ✳️ (ou *) désigne un hôtel Premium donateur.
+			if ( preg_match( '/^\s*(\x{2733}\x{FE0F}?|\*)\s*/u', $h['name'] ) ) {
+				$h['name']    = trim( preg_replace( '/^\s*(\x{2733}\x{FE0F}?|\*)\s*/u', '', $h['name'] ) );
+				$h['premium'] = true;
+			}
+			if ( preg_match( '/^(\d+)\.0+$/', $h['zip'], $m ) ) {
+				$h['zip'] = $m[1];
+			}
+			if ( isset( $raw['country'] ) && isset( self::COUNTRIES[ $raw['country'] ] ) ) {
+				$h['country'] = $raw['country'];
+			}
+			if ( 'CH' === $h['country'] && '' !== $h['region'] ) {
+				$h['region'] = self::canton_code( $h['region'] );
+			}
+			if ( array_key_exists( 'website', $raw ) ) {
+				$h['website'] = self::make_url( $raw['website'] );
+			}
+			if ( array_key_exists( 'lat', $raw ) ) {
+				$h['lat'] = self::coord( $raw['lat'], 90 );
+			}
+			if ( array_key_exists( 'lng', $raw ) ) {
+				$h['lng'] = self::coord( $raw['lng'], 180 );
+			}
+			if ( null === $h['lat'] || null === $h['lng'] ) {
+				$h['lat'] = null;
+				$h['lng'] = null;
+			}
+			if ( array_key_exists( 'premium', $raw ) ) {
+				$h['premium'] = ! empty( $raw['premium'] ) && 'false' !== $raw['premium'] && '0' !== (string) $raw['premium'];
+			}
+			if ( array_key_exists( 'visible', $raw ) ) {
+				$h['visible'] = ! empty( $raw['visible'] ) && 'false' !== $raw['visible'] && '0' !== (string) $raw['visible'];
+			}
+			if ( '' === $h['id'] ) {
+				$h['id'] = 'h' . strtolower( wp_generate_password( 10, false, false ) );
+			}
+			return $h;
+		}
+
+		/** « Zürich », « zurich », « ZH » → « ZH ». Ancienne abréviation « TH » → « TG ». */
+		private static function canton_code( $v ) {
+			$n = self::norm( $v );
+			if ( 'th' === $n ) {
+				return 'TG';
+			}
+			foreach ( self::CANTONS as $code => $names ) {
+				if ( strtolower( $code ) === $n || in_array( $n, array_map( array( __CLASS__, 'norm' ), $names ), true ) ) {
+					return $code;
+				}
+			}
+			return $v;
+		}
+
+		private static function region_label( $h, $lang ) {
+			if ( 'CH' === $h['country'] && isset( self::CANTONS[ $h['region'] ] ) ) {
+				$i = array( 'fr' => 0, 'de' => 1, 'en' => 2 );
+				return self::CANTONS[ $h['region'] ][ $i[ $lang ] ];
+			}
+			return $h['region'];
+		}
+
+		public static function field_labels( $country ) {
+			return array(
+				'name'    => 'Nom de l\'hôtel',
+				'address' => 'Adresse',
+				'zip'     => 'CH' === $country ? 'NPA' : ( 'DE' === $country ? 'PLZ (code postal)' : 'Code postal' ),
+				'city'    => 'Ville',
+				'region'  => 'CH' === $country ? 'Canton' : ( 'DE' === $country ? 'Land (Bundesland)' : 'Région' ),
+				'website' => 'Site internet',
+			);
+		}
+
+		/* ------------------------------------------------------------------
+		 * Icônes
+		 * ------------------------------------------------------------------ */
+
+		public static function smiley( $w = 42 ) {
+			$h = (int) round( $w * 69 / 42 );
+			return '<svg xmlns="http://www.w3.org/2000/svg" width="' . (int) $w . '" height="' . $h . '" viewBox="0 0 42 69" aria-hidden="true" focusable="false"><g transform="translate(-2)"><path fill="#A2BD2F" stroke="#5B6D12" stroke-width="2" d="' . self::PIN_PATH . '"/><path fill="#FFFFFF" d="' . self::FACE_PATH . '"/></g></svg>';
+		}
+
+		public static function smiley_uri() {
+			return 'data:image/svg+xml;base64,' . base64_encode( self::smiley() );
+		}
+
+		public static function flag( $c ) {
+			$f = array(
+				'CH' => '<rect width="24" height="24" fill="#DA291C"/><path d="M10 5h4v5h5v4h-5v5h-4v-5H5v-4h5z" fill="#fff"/>',
+				'FR' => '<rect width="8" height="24" fill="#002654"/><rect x="8" width="8" height="24" fill="#fff"/><rect x="16" width="8" height="24" fill="#CE1126"/>',
+				'DE' => '<rect width="24" height="8" fill="#000"/><rect y="8" width="24" height="8" fill="#DD0000"/><rect y="16" width="24" height="8" fill="#FFCE00"/>',
+			);
+			return '<svg class="sapo-flag" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' . $f[ $c ] . '</svg>';
+		}
+
+		/* ------------------------------------------------------------------
+		 * Carte publique : shortcodes
+		 * ------------------------------------------------------------------ */
+
+		public static function register_shortcodes() {
+			foreach ( self::COUNTRIES as $code => $c ) {
+				foreach ( array( 'fr', 'de', 'en' ) as $lang ) {
+					add_shortcode( 'sapocycle_' . $c['slug'] . '_' . $lang, array( __CLASS__, 'shortcode' ) );
+				}
+			}
+		}
+
+		/** Un seul callback pour les 9 shortcodes : le pays et la langue viennent du nom du shortcode. */
+		public static function shortcode( $atts, $content = '', $tag = '' ) {
+			$atts = shortcode_atts( array( 'height' => '' ), $atts, $tag );
+			if ( ! preg_match( '/^sapocycle_([a-z]+)_(fr|de|en)$/', (string) $tag, $m ) ) {
+				return '';
+			}
+			$country = '';
+			foreach ( self::COUNTRIES as $code => $c ) {
+				if ( $c['slug'] === $m[1] ) {
+					$country = $code;
+				}
+			}
+			if ( '' === $country ) {
+				return '';
+			}
+			return self::render_map( $country, $m[2], $atts );
+		}
+
+		private static function strings( $lang ) {
+			$t = array(
+				'fr' => array( 'search' => 'Rechercher un hôtel, une ville, un NPA…', 'searchLabel' => 'Rechercher un hôtel', 'clear' => 'Effacer la recherche', 'allCH' => 'Tous les cantons', 'all' => 'Toutes les régions', 'filter' => 'Filtrer par région', 'one' => '1 hôtel', 'many' => '%d hôtels', 'none' => 'Aucun hôtel ne correspond à votre recherche.', 'reset' => 'Réinitialiser', 'site' => 'Site internet', 'premium' => 'Hôtel Premium donateur', 'list' => 'Liste des hôtels', 'map' => 'Carte des hôtels membres', 'hint' => 'Cliquez sur la carte pour zoomer avec la molette', 'newTab' => '(nouvel onglet)', 'empty' => 'Aucun hôtel pour le moment.', 'show' => 'Voir sur la carte' ),
+				'de' => array( 'search' => 'Hotel, Ort oder PLZ suchen…', 'searchLabel' => 'Hotel suchen', 'clear' => 'Suche löschen', 'allCH' => 'Alle Kantone', 'all' => 'Alle Regionen', 'filter' => 'Nach Region filtern', 'one' => '1 Hotel', 'many' => '%d Hotels', 'none' => 'Kein Hotel entspricht Ihrer Suche.', 'reset' => 'Zurücksetzen', 'site' => 'Webseite', 'premium' => 'Premium-Hotel mit Spende', 'list' => 'Hotelliste', 'map' => 'Karte der Mitgliedshotels', 'hint' => 'Klicken Sie auf die Karte, um mit dem Mausrad zu zoomen', 'newTab' => '(neuer Tab)', 'empty' => 'Noch keine Hotels.', 'show' => 'Auf der Karte zeigen' ),
+				'en' => array( 'search' => 'Search a hotel, city or ZIP code…', 'searchLabel' => 'Search a hotel', 'clear' => 'Clear search', 'allCH' => 'All cantons', 'all' => 'All regions', 'filter' => 'Filter by region', 'one' => '1 hotel', 'many' => '%d hotels', 'none' => 'No hotel matches your search.', 'reset' => 'Reset', 'site' => 'Website', 'premium' => 'Premium donor hotel', 'list' => 'Hotel list', 'map' => 'Map of member hotels', 'hint' => 'Click the map to zoom with the scroll wheel', 'newTab' => '(new tab)', 'empty' => 'No hotels yet.', 'show' => 'Show on map' ),
+			);
+			return $t[ $lang ];
+		}
+
+		private static function render_map( $country, $lang, $atts ) {
+			$set    = self::settings();
+			$height = absint( $atts['height'] ? $atts['height'] : $set['height'] );
+			$height = max( 320, min( 1200, $height ? $height : 620 ) );
+			$list   = array();
+			foreach ( self::hotels() as $h ) {
+				if ( $h['country'] !== $country || empty( $h['visible'] ) || null === $h['lat'] ) {
+					continue;
+				}
+				$list[] = array(
+					'n'  => $h['name'],
+					'a'  => $h['address'],
+					'z'  => $h['zip'],
+					'c'  => $h['city'],
+					'r'  => $h['region'],
+					'rl' => self::region_label( $h, $lang ),
+					'w'  => $h['website'],
+					'la' => (float) $h['lat'],
+					'lo' => (float) $h['lng'],
+					'p'  => empty( $h['premium'] ) ? 0 : 1,
+				);
+			}
+			$config = array(
+				'lang'    => $lang,
+				'country' => $country,
+				'hotels'  => $list,
+				't'       => self::strings( $lang ),
+				'icon'    => self::smiley_uri(),
+				'cluster' => ! empty( $set['cluster'] ),
+				'soft'    => 'soft' === $set['tiles'],
+				'legend'  => array(
+					'member'  => $set['legend'][ 'member_' . $lang ],
+					'premium' => $set['legend'][ 'premium_' . $lang ],
+				),
+			);
+
+			self::front_enqueue();
+			++self::$map_count;
+			return '<div class="sapo-map" id="sapo-map-' . self::$map_count . '" lang="' . esc_attr( $lang ) . '" style="--sapo-h:' . $height . 'px" data-config="' . esc_attr( wp_json_encode( $config ) ) . '"></div>';
+		}
+
+		private static function front_enqueue() {
+			if ( wp_script_is( 'sapocycle-hotels', 'enqueued' ) ) {
+				return;
+			}
+			wp_enqueue_style( 'sapocycle-leaflet', self::LEAFLET . 'leaflet.min.css', array(), '1.9.4' );
+			wp_enqueue_style( 'sapocycle-cluster', self::CLUSTER . 'MarkerCluster.min.css', array( 'sapocycle-leaflet' ), '1.5.3' );
+			wp_register_style( 'sapocycle-hotels', false, array( 'sapocycle-cluster' ), self::VERSION );
+			wp_enqueue_style( 'sapocycle-hotels' );
+			wp_add_inline_style( 'sapocycle-hotels', self::front_css() );
+
+			wp_enqueue_script( 'sapocycle-leaflet', self::LEAFLET . 'leaflet.min.js', array(), '1.9.4', true );
+			wp_enqueue_script( 'sapocycle-cluster', self::CLUSTER . 'leaflet.markercluster.min.js', array( 'sapocycle-leaflet' ), '1.5.3', true );
+			wp_register_script( 'sapocycle-hotels', false, array( 'sapocycle-cluster' ), self::VERSION, true );
+			wp_enqueue_script( 'sapocycle-hotels' );
+			wp_add_inline_script( 'sapocycle-hotels', self::front_js() );
+		}
+
+		private static function front_css() {
+			return <<<'CSS'
+.sapo-map{--b:#0069B4;--b2:#0175D6;--sky:#2EA3F2;--g:#A2BD2F;--t:#3D3D3D;--m:#646A72;--bg:#F4F5F6;--line:#E3E5E8;--r:6px;--hd:'Montserrat',Helvetica,Arial,sans-serif;--bd:'Source Sans Pro',Helvetica,Arial,sans-serif;font-family:var(--bd);color:var(--t);font-size:16px;line-height:1.5;margin:0 0 24px}
+.sapo-map *,.sapo-map *::before,.sapo-map *::after{box-sizing:border-box}
+.sapo-map .sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0;white-space:nowrap}
+.sapo-map :focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.sapo-map__bar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 16px}
+.sapo-map__search{position:relative;flex:1 1 320px;min-width:0}
+.sapo-map__search svg{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--m);pointer-events:none}
+.sapo-map input.sapo-map__q{width:100%;height:52px;margin:0;padding:0 48px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--t);font:17px/52px var(--bd);box-shadow:none;-webkit-appearance:none;appearance:none;transition:border-color .2s,box-shadow .2s}
+.sapo-map input.sapo-map__q::placeholder{color:#888E95;opacity:1}
+.sapo-map input.sapo-map__q:focus{outline:none;border-color:var(--b);box-shadow:0 0 0 3px rgba(0,105,180,.15)}
+.sapo-map input.sapo-map__q::-webkit-search-cancel-button{display:none}
+.sapo-map__clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;color:var(--m);cursor:pointer}
+.sapo-map__clear:hover{background:var(--bg);color:var(--t)}
+.sapo-map__clear[hidden]{display:none}
+.sapo-map__sel{position:relative;flex:0 1 250px}
+.sapo-map select.sapo-map__region{width:100%;height:52px;margin:0;padding:0 40px 0 16px;border:1px solid var(--line);border-radius:var(--r);background:#fff;color:var(--t);font:16px var(--bd);cursor:pointer;-webkit-appearance:none;appearance:none}
+.sapo-map select.sapo-map__region:focus{outline:none;border-color:var(--b)}
+.sapo-map__sel svg{position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--m);pointer-events:none}
+.sapo-map__count{margin:0 0 0 auto!important;padding:0!important;font:600 12px var(--hd);letter-spacing:.1em;text-transform:uppercase;color:var(--m)}
+.sapo-map__body{display:grid;grid-template-columns:minmax(300px,380px) 1fr;height:var(--sapo-h,620px);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:#fff}
+.sapo-map__side{position:relative;min-height:0;border-right:1px solid var(--line)}
+.sapo-map ul.sapo-map__list{height:100%;margin:0!important;padding:0!important;list-style:none!important;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#C9D6E3 transparent}
+.sapo-map li.sapo-map__item{position:relative;margin:0!important;padding:0!important;list-style:none!important;border-bottom:1px solid var(--line)}
+.sapo-map li.sapo-map__item::before{display:none!important}
+.sapo-map__card{display:grid;grid-template-columns:20px 1fr;gap:4px 14px;width:100%;margin:0;padding:18px 54px 18px 18px;border:0;border-left:3px solid transparent;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background-color .2s,border-color .2s}
+.sapo-map__card:hover{background:#F7F9FB}
+.sapo-map__item.is-on .sapo-map__card{background:#EEF5FB;border-left-color:var(--b)}
+.sapo-map__pin{grid-row:1/span 3;padding-top:2px}
+.sapo-map__pin img{display:block;width:18px;height:auto}
+.sapo-map__name{display:flex;align-items:flex-start;gap:8px;font:700 15px/1.35 var(--hd);color:var(--b)}
+.sapo-map__name svg{flex:0 0 auto;margin-top:1px}
+.sapo-map__addr{font-size:15px;line-height:1.45}
+.sapo-map__meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:4px;font-size:14px;color:var(--m)}
+.sapo-map__chip{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:4px;background:var(--bg);font:600 11px var(--hd);letter-spacing:.06em;text-transform:uppercase;color:var(--t)}
+.sapo-map a.sapo-map__ext{position:absolute;right:10px;top:12px;display:flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:50%;color:var(--b2);transition:background-color .2s}
+.sapo-map a.sapo-map__ext:hover{background:#E3EEF8}
+.sapo-map mark{background:#FFF1A8;color:inherit;padding:0 1px;border-radius:2px}
+.sapo-map__none{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center;color:var(--m)}
+.sapo-map__none[hidden]{display:none}
+.sapo-map__btn{min-height:44px;padding:10px 20px;border:0;border-radius:var(--r);background:var(--sky);color:#fff;font:700 13px var(--hd);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background-color .2s}
+.sapo-map__btn:hover{background:var(--b2)}
+.sapo-map__canvas{position:relative;min-height:0}
+.sapo-map__leaflet{position:absolute;inset:0;z-index:0;background:#E9EEF2}
+.sapo-map--soft .leaflet-tile-pane{filter:grayscale(.55) saturate(.85) brightness(1.04) contrast(.92)}
+.sapo-map__hint{position:absolute;left:50%;bottom:28px;z-index:500;padding:8px 14px;border-radius:999px;background:rgba(61,61,61,.88);color:#fff;font-size:13px;white-space:nowrap;opacity:0;transform:translate(-50%,8px);pointer-events:none;transition:opacity .25s,transform .25s}
+.sapo-map__hint.is-on{opacity:1;transform:translate(-50%,0)}
+.sapo-map .leaflet-container{font-family:var(--bd);font-size:14px}
+.sapo-map .leaflet-bar{border:1px solid var(--line);border-radius:var(--r);box-shadow:none;overflow:hidden}
+.sapo-map .leaflet-bar a{width:36px;height:36px;line-height:36px;color:var(--t)}
+.sapo-map .leaflet-popup-content-wrapper{padding:0;border-radius:var(--r);box-shadow:0 8px 28px rgba(0,0,0,.14)}
+.sapo-map .leaflet-popup-content{width:280px!important;margin:0;line-height:1.45}
+.sapo-map .leaflet-container a.leaflet-popup-close-button{top:8px;right:8px;width:32px;height:32px;font-size:20px;line-height:30px;color:var(--m)}
+.sapo-map__pop{padding:18px 20px 16px}
+.sapo-map__pop .sapo-map__badge{display:flex;align-items:center;gap:8px;margin:0 28px 8px 0;font-size:13px;font-weight:600;color:#4D6B0F}
+.sapo-map__pop strong.sapo-map__ttl{display:block;margin:0 24px 8px 0;font:700 16px/1.3 var(--hd);color:var(--b)}
+.sapo-map__pop span{display:block;font-size:15px}
+.sapo-map__pop .sapo-map__meta{display:flex;margin-top:8px}
+.sapo-map__pop a.sapo-map__cta{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;margin-top:14px;padding:10px 16px;border-radius:var(--r);background:var(--sky);color:#fff!important;font:700 13px var(--hd);letter-spacing:.06em;text-transform:uppercase;text-decoration:none!important}
+.sapo-map__pop a.sapo-map__cta:hover{background:var(--b2)}
+.sapo-cluster{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border:3px solid #fff;border-radius:50%;background:var(--b,#0069B4);color:#fff;font:700 13px 'Montserrat',Arial,sans-serif;box-shadow:0 0 0 1px rgba(0,105,180,.35)}
+.sapo-map ul.sapo-map__legend{display:flex;flex-wrap:wrap;gap:12px 28px;margin:16px 0 0!important;padding:0!important;list-style:none!important;font-size:15px}
+.sapo-map__legend li{display:flex;align-items:center;gap:10px;margin:0!important;padding:0!important;list-style:none!important}
+.sapo-map__legend li::before{display:none!important}
+.sapo-map__empty{padding:32px;border:1px dashed var(--line);border-radius:var(--r);text-align:center;color:var(--m)}
+.sapo-map--narrow .sapo-map__body{grid-template-columns:1fr;height:auto}.sapo-map--narrow .sapo-map__canvas{order:-1;height:min(56vh,440px)}.sapo-map--narrow .sapo-map__side{border-right:0;border-top:1px solid var(--line);min-height:180px}.sapo-map--narrow ul.sapo-map__list{max-height:440px}.sapo-map--narrow .sapo-map__sel{flex:1 1 200px}.sapo-map--narrow .sapo-map__count{width:100%;margin:0!important}
+@media (prefers-reduced-motion:reduce){.sapo-map *{transition:none!important}}
+CSS;
+		}
+
+		private static function front_js() {
+			return <<<'JS'
+(function(){
+"use strict";
+var RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function norm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/ß/g,"ss").replace(/[^a-z0-9]+/g," ").trim();}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,"");}catch(e){return u;}}
+function hl(text,terms){var plain=String(text||""),low=plain.normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();if(!terms.length||low.length!==plain.length)return esc(plain);var marks=[];terms.forEach(function(term){var i=low.indexOf(term);while(i>-1){if(i===0||!/[a-z0-9]/.test(low.charAt(i-1)))marks.push([i,i+term.length]);i=low.indexOf(term,i+term.length);}});if(!marks.length)return esc(plain);marks.sort(function(a,b){return a[0]-b[0];});var out="",pos=0;marks.forEach(function(m){if(m[0]<pos)return;out+=esc(plain.slice(pos,m[0]))+"<mark>"+esc(plain.slice(m[0],m[1]))+"</mark>";pos=m[1];});return out+esc(plain.slice(pos));}
+var SVG_SEARCH='<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.6-3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+var SVG_X='<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+var SVG_CHEV='<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var SVG_EXT='<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var SVG_PREM='<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
+
+function build(root){
+  if(root.getAttribute("data-ready"))return;root.setAttribute("data-ready","1");
+  var C;try{C=JSON.parse(root.getAttribute("data-config"));}catch(e){return;}
+  var t=C.t,H=C.hotels||[],uid=root.id;
+  if(!H.length){root.innerHTML='<p class="sapo-map__empty">'+esc(t.empty)+'</p>';return;}
+  if(!window.L){return;}
+  if(C.soft)root.className+=" sapo-map--soft";
+  if(root.clientWidth<820)root.className+=" sapo-map--narrow";
+  var regions={};H.forEach(function(h){if(h.r)regions[h.r]=h.rl&&h.rl!==h.r?h.rl+" ("+h.r+")":h.r;});
+  var rk=Object.keys(regions).sort(function(a,b){return regions[a].localeCompare(regions[b],C.lang);});
+  root.innerHTML=
+   '<div class="sapo-map__bar"><div class="sapo-map__search">'+SVG_SEARCH+'<label class="sr" for="'+uid+'-q">'+esc(t.searchLabel)+'</label><input type="search" id="'+uid+'-q" class="sapo-map__q" placeholder="'+esc(t.search)+'" autocomplete="off" enterkeyhint="search"><button type="button" class="sapo-map__clear" hidden aria-label="'+esc(t.clear)+'">'+SVG_X+'</button></div>'+
+   (rk.length>1?'<div class="sapo-map__sel"><label class="sr" for="'+uid+'-r">'+esc(t.filter)+'</label><select id="'+uid+'-r" class="sapo-map__region"><option value="">'+esc(C.country==="CH"?t.allCH:t.all)+'</option>'+rk.map(function(k){return'<option value="'+esc(k)+'">'+esc(regions[k])+'</option>';}).join("")+'</select>'+SVG_CHEV+'</div>':'')+
+   '<p class="sapo-map__count" aria-live="polite"></p></div>'+
+   '<div class="sapo-map__body"><div class="sapo-map__side"><ul class="sapo-map__list" aria-label="'+esc(t.list)+'"></ul><div class="sapo-map__none" hidden><p>'+esc(t.none)+'</p><button type="button" class="sapo-map__btn">'+esc(t.reset)+'</button></div></div>'+
+   '<div class="sapo-map__canvas"><div class="sapo-map__leaflet" role="region" aria-label="'+esc(t.map)+'"></div><div class="sapo-map__hint" aria-hidden="true">'+esc(t.hint)+'</div></div></div>'+
+   '<ul class="sapo-map__legend">'+(C.legend.member?'<li><img src="'+C.icon+'" alt="" width="16" height="26"><span>'+esc(C.legend.member)+'</span></li>':'')+(C.legend.premium&&H.some(function(h){return h.p;})?'<li>'+SVG_PREM+'<span>'+esc(C.legend.premium)+'</span></li>':'')+'</ul>';
+  var $=function(s){return root.querySelector(s);};
+  var q=$(".sapo-map__q"),clr=$(".sapo-map__clear"),sel=$(".sapo-map__region"),cnt=$(".sapo-map__count"),list=$(".sapo-map__list"),none=$(".sapo-map__none"),hint=$(".sapo-map__hint"),el=$(".sapo-map__leaflet");
+  H.forEach(function(h){h.s=" "+norm([h.n,h.a,h.z,h.c,h.r,h.rl,h.w?host(h.w).replace(/\./g," "):""].join(" "));});
+  H.sort(function(a,b){return a.n.localeCompare(b.n,C.lang,{sensitivity:"base"});});
+
+  var map=L.map(el,{scrollWheelZoom:false,zoomControl:false});
+  L.control.zoom({position:"topright"}).addTo(map);
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
+  map.on("click",function(){map.scrollWheelZoom.enable();});
+  map.on("mouseout",function(){map.scrollWheelZoom.disable();});
+  var ht;el.addEventListener("wheel",function(){if(map.scrollWheelZoom.enabled())return;hint.classList.add("is-on");clearTimeout(ht);ht=setTimeout(function(){hint.classList.remove("is-on");},1400);},{passive:true});
+  function icon(big){var w=big?38:28,h=Math.round(w*69/42);return L.icon({iconUrl:C.icon,iconSize:[w,h],iconAnchor:[Math.round(w*23.3/42),h],popupAnchor:[0,-h+4]});}
+  var IC=icon(false),IB=icon(true);
+  var layer=C.cluster&&L.markerClusterGroup?L.markerClusterGroup({showCoverageOnHover:false,maxClusterRadius:42,disableClusteringAtZoom:15,iconCreateFunction:function(c){var n=c.getChildCount(),s=n>=25?54:n>=10?46:40;return L.divIcon({html:'<div class="sapo-cluster">'+n+'</div>',className:"",iconSize:[s,s]});}}):L.layerGroup();
+  layer.addTo(map);
+  function popup(h){var meta=h.r?'<span class="sapo-map__meta"><span class="sapo-map__chip">'+esc(h.r)+'</span>'+(h.rl&&h.rl!==h.r?esc(h.rl):'')+'</span>':'';
+    return '<div class="sapo-map__pop">'+(h.p?'<span class="sapo-map__badge">'+SVG_PREM+esc(t.premium)+'</span>':'')+'<strong class="sapo-map__ttl">'+esc(h.n)+'</strong><span>'+esc(h.a)+'</span><span>'+esc([h.z,h.c].filter(Boolean).join(" "))+'</span>'+meta+(h.w?'<a class="sapo-map__cta" href="'+esc(h.w)+'" target="_blank" rel="noopener">'+esc(t.site)+SVG_EXT+'<span class="sr"> '+esc(t.newTab)+'</span></a>':'')+'</div>';}
+  var active=null;
+  H.forEach(function(h){h.m=L.marker([h.la,h.lo],{icon:IC,title:h.n,alt:h.n,riseOnHover:true});h.m.bindPopup(function(){return popup(h);},{maxWidth:300,minWidth:240,autoPanPadding:[24,24]});h.m.on("click",function(){activate(h,false);});h.m.on("popupclose",function(){if(active===h)off();});});
+  function off(){if(!active)return;active.m.setIcon(IC);if(active.li)active.li.classList.remove("is-on");active=null;}
+  function activate(h,fromList){if(active&&active!==h)off();active=h;h.m.setIcon(IB);h.m.setZIndexOffset(1000);if(h.li){h.li.classList.add("is-on");if(!fromList)list.scrollTo({top:Math.max(0,h.li.offsetTop-list.clientHeight/2+h.li.offsetHeight/2),behavior:RM?"auto":"smooth"});}}
+  function focusHotel(h){activate(h,true);var z=Math.max(map.getZoom(),13),go=function(){h.m.openPopup();};
+    if(layer.zoomToShowLayer){map.once("moveend",function(){layer.zoomToShowLayer(h.m,go);});if(RM)map.setView([h.la,h.lo],z);else map.flyTo([h.la,h.lo],z,{duration:.6});}
+    else{map.setView([h.la,h.lo],z,{animate:!RM});go();}}
+  var first=true,visible=[];
+  function render(){
+    var terms=norm(q.value).split(" ").filter(Boolean),r=sel?sel.value:"";
+    clr.hidden=!q.value;
+    visible=H.filter(function(h){if(r&&h.r!==r)return false;for(var i=0;i<terms.length;i++){if(h.s.indexOf(" "+terms[i])===-1)return false;}return true;});
+    off();map.closePopup();layer.clearLayers();
+    if(layer.addLayers)layer.addLayers(visible.map(function(h){return h.m;}));else visible.forEach(function(h){layer.addLayer(h.m);});
+    list.innerHTML=visible.map(function(h,i){return '<li class="sapo-map__item" data-i="'+i+'"><button type="button" class="sapo-map__card" aria-label="'+esc(h.n+". "+[h.a,h.z,h.c].filter(Boolean).join(" ")+". "+t.show)+'"><span class="sapo-map__pin" aria-hidden="true"><img src="'+C.icon+'" alt="" width="18" height="30"></span><span class="sapo-map__name">'+(h.p?SVG_PREM:'')+'<span>'+hl(h.n,terms)+'</span></span><span class="sapo-map__addr">'+hl(h.a,terms)+'<br>'+hl([h.z,h.c].filter(Boolean).join(" "),terms)+'</span><span class="sapo-map__meta">'+(h.r?'<span class="sapo-map__chip" title="'+esc(h.rl||h.r)+'">'+esc(h.r)+'</span>':'')+(h.w?'<span>'+esc(host(h.w))+'</span>':'')+'</span></button>'+(h.w?'<a class="sapo-map__ext" href="'+esc(h.w)+'" target="_blank" rel="noopener" aria-label="'+esc(t.site+" "+h.n+" "+t.newTab)+'">'+SVG_EXT+'</a>':'')+'</li>';}).join("");
+    [].forEach.call(list.children,function(li){var h=visible[+li.getAttribute("data-i")];h.li=li;li.firstChild.addEventListener("click",function(){focusHotel(h);});});
+    list.scrollTop=0;
+    cnt.textContent=visible.length===1?t.one:t.many.replace("%d",visible.length);
+    none.hidden=visible.length>0;list.hidden=!visible.length;
+    var pts=(visible.length?visible:H).map(function(h){return[h.la,h.lo];});
+    if(pts.length===1)map.setView(pts[0],13,{animate:!first&&!RM});else map.fitBounds(L.latLngBounds(pts),{padding:[36,36],maxZoom:13,animate:!first&&!RM});
+    first=false;
+  }
+  var deb;q.addEventListener("input",function(){clearTimeout(deb);deb=setTimeout(render,160);});
+  q.addEventListener("keydown",function(e){if(e.key==="Escape"&&q.value){q.value="";render();}if(e.key==="Enter"&&visible.length===1){e.preventDefault();focusHotel(visible[0]);}});
+  clr.addEventListener("click",function(){q.value="";render();q.focus();});
+  if(sel)sel.addEventListener("change",render);
+  none.querySelector("button").addEventListener("click",function(){q.value="";if(sel)sel.value="";render();q.focus();});
+  render();
+  if("ResizeObserver" in window){new ResizeObserver(function(){root.classList.toggle("sapo-map--narrow",root.clientWidth<820);map.invalidateSize();}).observe(root);}
+}
+function boot(){[].forEach.call(document.querySelectorAll(".sapo-map[data-config]"),build);}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot);else boot();
+})();
+JS;
+		}
+
+		/* ------------------------------------------------------------------
+		 * Administration
+		 * ------------------------------------------------------------------ */
+
+		public static function add_menu() {
+			$icon = 'data:image/svg+xml;base64,' . base64_encode( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 69"><g transform="translate(-2)"><path fill="#a7aaad" d="' . self::PIN_PATH . '"/><path fill="#1d2327" d="' . self::FACE_PATH . '"/></g></svg>' );
+			add_menu_page( 'Carte des hôtels', 'Carte des hôtels', self::CAP, self::SLUG, array( __CLASS__, 'admin_page' ), $icon, 26 );
+		}
+
+		public static function admin_enqueue( $hook ) {
+			if ( 'toplevel_page_' . self::SLUG !== $hook ) {
+				return;
+			}
+			wp_enqueue_style( 'sapocycle-leaflet', self::LEAFLET . 'leaflet.min.css', array(), '1.9.4' );
+			wp_enqueue_script( 'sapocycle-leaflet', self::LEAFLET . 'leaflet.min.js', array(), '1.9.4', true );
+			wp_register_style( 'sapocycle-admin', false, array( 'sapocycle-leaflet' ), self::VERSION );
+			wp_enqueue_style( 'sapocycle-admin' );
+			wp_add_inline_style( 'sapocycle-admin', self::admin_css() );
+			wp_register_script( 'sapocycle-admin', false, array( 'sapocycle-leaflet' ), self::VERSION, true );
+			wp_enqueue_script( 'sapocycle-admin' );
+
+			$countries = array();
+			foreach ( self::COUNTRIES as $code => $c ) {
+				$countries[ $code ] = array(
+					'name'   => $c['fr'],
+					'in'     => $c['in'],
+					'slug'   => $c['slug'],
+					'labels' => self::field_labels( $code ),
+				);
+			}
+			$cantons = array();
+			foreach ( self::CANTONS as $code => $n ) {
+				$cantons[ $code ] = $n[0];
+			}
+			$log  = get_option( self::OPT_LOG, array() );
+			$logs = array();
+			foreach ( (array) $log as $c => $time ) {
+				$logs[ $c ] = wp_date( 'd.m.Y à H:i', $time );
+			}
+			$bak  = get_option( self::OPT_BAK );
+			$data = array(
+				'ajax'      => admin_url( 'admin-ajax.php' ),
+				'nonce'     => wp_create_nonce( self::NONCE ),
+				'export'    => add_query_arg( array( 'action' => 'sapocycle_hotels_export', '_wpnonce' => wp_create_nonce( 'sapocycle_hotels_export' ) ), admin_url( 'admin-post.php' ) ),
+				'hotels'    => self::hotels(),
+				'settings'  => self::settings(),
+				'countries' => $countries,
+				'cantons'   => $cantons,
+				'icon'      => self::smiley_uri(),
+				'imports'   => $logs,
+				'backup'    => ( is_array( $bak ) && ! empty( $bak['time'] ) ) ? wp_date( 'd.m.Y à H:i', $bak['time'] ) : '',
+			);
+			wp_add_inline_script( 'sapocycle-admin', 'window.SAPOCYCLE=' . wp_json_encode( $data ) . ';', 'before' );
+			wp_add_inline_script( 'sapocycle-admin', self::admin_js() );
+		}
+
+		public static function admin_page() {
+			if ( ! current_user_can( self::CAP ) ) {
+				return;
+			}
+			$flags = array();
+			foreach ( array_keys( self::COUNTRIES ) as $c ) {
+				$flags[ '%FLAG_' . $c . '%' ] = self::flag( $c );
+			}
+			$flags['%SMILEY%'] = self::smiley( 24 );
+			echo strtr( self::admin_html(), $flags ); // phpcs:ignore WordPress.Security.EscapeOutput -- gabarit interne statique.
+		}
+
+		private static function admin_html() {
+			return <<<'HTML'
+<div class="wrap sapo-a" id="sapo-a">
+<h1 class="sr">Carte des hôtels</h1>
+<header class="sapo-a__head">
+	<div class="sapo-a__brand"><span class="sapo-a__logo">%SMILEY%</span><div><p class="sapo-a__title">Carte des hôtels</p><p class="sapo-a__sub">Hôtels membres en Suisse, en France et en Allemagne, affichés en français, allemand et anglais.</p></div></div>
+	<button type="button" class="sapo-btn sapo-btn--primary" data-add><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Ajouter un hôtel</button>
+</header>
+
+<div class="sapo-stats">
+	<div class="sapo-stat"><b data-stat="total">0</b><span>Hôtels</span></div>
+	<div class="sapo-stat"><b data-stat="CH">0</b><span>%FLAG_CH% Suisse</span></div>
+	<div class="sapo-stat"><b data-stat="FR">0</b><span>%FLAG_FR% France</span></div>
+	<div class="sapo-stat"><b data-stat="DE">0</b><span>%FLAG_DE% Allemagne</span></div>
+	<div class="sapo-stat sapo-stat--warn" data-nogeo-box><b data-stat="nogeo">0</b><span>Sans position</span><button type="button" class="sapo-link" data-geo-all>Localiser</button></div>
+</div>
+
+<nav class="sapo-tabs" role="tablist">
+	<button type="button" role="tab" class="sapo-tab" aria-selected="true" data-tab="hotels">Hôtels</button>
+	<button type="button" role="tab" class="sapo-tab" aria-selected="false" data-tab="import">Import Excel</button>
+	<button type="button" role="tab" class="sapo-tab" aria-selected="false" data-tab="settings">Shortcodes et réglages</button>
+</nav>
+
+<section class="sapo-panel" data-panel="hotels">
+	<div class="sapo-toolbar">
+		<div class="sapo-seg" data-filter-country>
+			<button type="button" data-fc="" aria-pressed="true">Tous <i data-n=""></i></button>
+			<button type="button" data-fc="CH" aria-pressed="false">%FLAG_CH% Suisse <i data-n="CH"></i></button>
+			<button type="button" data-fc="FR" aria-pressed="false">%FLAG_FR% France <i data-n="FR"></i></button>
+			<button type="button" data-fc="DE" aria-pressed="false">%FLAG_DE% Allemagne <i data-n="DE"></i></button>
+		</div>
+		<div class="sapo-search"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.6-3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><label class="sr" for="sapo-q">Rechercher</label><input type="search" id="sapo-q" placeholder="Rechercher un hôtel, une ville, un code postal…" data-q></div>
+	</div>
+	<div class="sapo-table-wrap">
+		<table class="sapo-table">
+			<thead><tr><th class="c-pin"></th><th>Hôtel</th><th>Adresse</th><th>Code postal et ville</th><th>Canton / région</th><th>Site internet</th><th>Carte</th><th class="c-act"></th></tr></thead>
+			<tbody data-rows></tbody>
+		</table>
+		<div class="sapo-empty" data-empty hidden><strong>Aucun hôtel.</strong><br>Importez un fichier Excel dans l'onglet « Import Excel » ou ajoutez un hôtel.</div>
+	</div>
+</section>
+
+<section class="sapo-panel" data-panel="import" hidden>
+	<div class="sapo-countries" role="tablist" aria-label="Pays du fichier">
+		<button type="button" class="sapo-country" data-ic="CH" aria-selected="true">%FLAG_CH%<span><strong>Suisse</strong><small data-ic-meta="CH"></small></span></button>
+		<button type="button" class="sapo-country" data-ic="FR" aria-selected="false">%FLAG_FR%<span><strong>France</strong><small data-ic-meta="FR"></small></span></button>
+		<button type="button" class="sapo-country" data-ic="DE" aria-selected="false">%FLAG_DE%<span><strong>Allemagne</strong><small data-ic-meta="DE"></small></span></button>
+	</div>
+	<div class="sapo-grid">
+		<form class="sapo-card" data-import>
+			<h2 data-ic-title></h2>
+			<p class="sapo-muted" data-ic-sub></p>
+			<label class="sapo-drop" data-drop><input type="file" accept=".xlsx,.csv" data-file><svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0-4 4m4-4 4 4M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="sapo-drop__t" data-drop-text></span><span class="sapo-muted">Fichier .xlsx ou .csv</span></label>
+			<fieldset class="sapo-box"><legend>Mode d'import</legend>
+				<label class="sapo-radio"><input type="radio" name="mode" value="replace" checked><span><strong>Remplacer la liste du pays</strong> (recommandé)<br><small data-mode-text></small></span></label>
+				<label class="sapo-radio"><input type="radio" name="mode" value="merge"><span><strong>Fusionner</strong><br><small>Met à jour les hôtels déjà présents (même nom et code postal) et ajoute les nouveaux. Rien n'est supprimé.</small></span></label>
+			</fieldset>
+			<fieldset class="sapo-box"><legend>Colonnes lues dans le fichier Excel</legend>
+				<div class="sapo-cols" data-cols></div>
+				<label class="sapo-check"><input type="checkbox" name="header" value="1"> La ligne 1 contient les titres des colonnes (elle est ignorée)</label>
+			</fieldset>
+			<div class="sapo-actions">
+				<button type="submit" class="sapo-btn sapo-btn--primary" data-import-btn disabled>Importer le fichier</button>
+				<a class="sapo-btn" data-export href="#"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-export-text>Exporter</span></a>
+				<button type="button" class="sapo-btn" data-restore hidden>Annuler le dernier import</button>
+			</div>
+			<div class="sapo-result" data-result hidden></div>
+			<div class="sapo-progress" data-progress hidden><div class="sapo-progress__top"><span data-progress-text>Localisation des adresses…</span><span data-progress-n></span></div><div class="sapo-progress__bar"><span data-progress-bar></span></div><p class="sapo-muted">Environ 1 seconde par hôtel. Gardez cette page ouverte.</p></div>
+		</form>
+		<div class="sapo-card sapo-card--soft">
+			<h2>Format du fichier</h2>
+			<p class="sapo-muted">Un fichier Excel par pays. Seules les colonnes indiquées sont lues, les autres sont ignorées. Seule la première feuille du classeur est lue.</p>
+			<table class="sapo-doc"><tbody data-doc></tbody></table>
+			<ul class="sapo-notes">
+				<li>Importer un pays ne modifie jamais les hôtels des deux autres pays.</li>
+				<li>Un nom qui commence par ✳️ désigne un hôtel Premium donateur.</li>
+				<li>Suisse : canton en code (ZH, VD…) ou en toutes lettres.</li>
+				<li>Les positions déjà connues sont conservées. Les nouvelles adresses sont localisées automatiquement.</li>
+			</ul>
+		</div>
+	</div>
+</section>
+
+<section class="sapo-panel" data-panel="settings" hidden>
+	<div class="sapo-card">
+		<h2>Les 9 shortcodes</h2>
+		<p class="sapo-muted">Collez le shortcode dans la page Hôtels du pays et de la langue correspondants (module Texte ou Code de Divi). Cliquez pour copier.</p>
+		<div class="sapo-sc" data-shortcodes></div>
+		<p class="sapo-muted">Option : hauteur de la carte, par exemple <code>[sapocycle_suisse_fr height="700"]</code>.</p>
+	</div>
+	<form class="sapo-card" data-settings>
+		<h2>Réglages de la carte</h2>
+		<div class="sapo-row2">
+			<label class="sapo-field"><span>Hauteur de la carte sur ordinateur (px)</span><input type="number" name="height" min="320" max="1200" step="10"></label>
+			<label class="sapo-field"><span>Fond de carte</span><select name="tiles"><option value="soft">OpenStreetMap adouci (recommandé)</option><option value="osm">OpenStreetMap standard</option></select></label>
+		</div>
+		<label class="sapo-check"><input type="checkbox" name="cluster" value="1"> Regrouper les hôtels proches (pastilles numérotées)</label>
+		<h3>Textes de la légende</h3>
+		<div class="sapo-legend">
+			<div></div><div>Français</div><div>Deutsch</div><div>English</div>
+			<div>%SMILEY% Hôtel membre</div><input name="member_fr" aria-label="Hôtel membre FR"><input name="member_de" aria-label="Hôtel membre DE"><input name="member_en" aria-label="Hôtel membre EN">
+			<div>✳️ Premium</div><input name="premium_fr" aria-label="Premium FR"><input name="premium_de" aria-label="Premium DE"><input name="premium_en" aria-label="Premium EN">
+		</div>
+		<div class="sapo-actions"><button type="submit" class="sapo-btn sapo-btn--primary">Enregistrer les réglages</button></div>
+	</form>
+</section>
+
+<div class="sapo-drawer" data-drawer hidden>
+	<div class="sapo-drawer__bg" data-close></div>
+	<form class="sapo-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="sapo-d-title" data-edit novalidate>
+		<header class="sapo-drawer__head"><h2 id="sapo-d-title" data-d-title>Modifier l'hôtel</h2><button type="button" class="sapo-icon" data-close aria-label="Fermer"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></header>
+		<div class="sapo-drawer__body">
+			<input type="hidden" name="id">
+			<label class="sapo-field"><span>Pays</span><select name="country"><option value="CH">Suisse</option><option value="FR">France</option><option value="DE">Allemagne</option></select></label>
+			<label class="sapo-field"><span>Nom de l'hôtel <em>obligatoire</em></span><input name="name" autocomplete="off"></label>
+			<label class="sapo-field"><span>Adresse</span><input name="address" autocomplete="off"></label>
+			<div class="sapo-row2 sapo-row2--zip"><label class="sapo-field"><span data-zip-label>Code postal</span><input name="zip" autocomplete="off"></label><label class="sapo-field"><span>Ville</span><input name="city" autocomplete="off"></label></div>
+			<label class="sapo-field" data-canton-field><span>Canton</span><select name="canton"></select></label>
+			<label class="sapo-field" data-region-field><span data-region-label>Région</span><input name="region" autocomplete="off"></label>
+			<label class="sapo-field"><span>Site internet</span><input name="website" type="url" placeholder="https://" autocomplete="off"></label>
+			<div class="sapo-row2"><label class="sapo-switch"><input type="checkbox" name="premium"><i></i>✳️ Premium donateur</label><label class="sapo-switch"><input type="checkbox" name="visible"><i></i>Visible sur la carte</label></div>
+			<div class="sapo-field"><span class="sapo-field__line"><span>Position sur la carte</span><button type="button" class="sapo-link" data-locate>Localiser depuis l'adresse</button></span><div class="sapo-mini" data-mini></div><small class="sapo-muted">Faites glisser le smiley ou cliquez sur la carte pour ajuster la position.</small></div>
+			<div class="sapo-row2"><label class="sapo-field"><span>Latitude</span><input name="lat" inputmode="decimal" autocomplete="off"></label><label class="sapo-field"><span>Longitude</span><input name="lng" inputmode="decimal" autocomplete="off"></label></div>
+		</div>
+		<footer class="sapo-drawer__foot"><button type="button" class="sapo-btn sapo-btn--danger" data-delete>Supprimer</button><span class="sapo-grow"></span><button type="button" class="sapo-btn" data-close>Annuler</button><button type="submit" class="sapo-btn sapo-btn--primary" data-save>Enregistrer</button></footer>
+	</form>
+</div>
+<div class="sapo-toasts" aria-live="polite" data-toasts></div>
+</div>
+HTML;
+		}
+
+		private static function admin_css() {
+			return <<<'CSS'
+.sapo-a{--b:#0069B4;--b2:#005A9C;--sky:#2EA3F2;--g:#A2BD2F;--red:#B3261E;--t:#1F2328;--m:#5F6670;--line:#E2E5E9;--bg:#F6F7F9;max-width:1360px;margin:20px 20px 40px 0;color:var(--t);font-size:14px}
+.sapo-a *{box-sizing:border-box}
+.sapo-a .sr{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0}
+.sapo-a :focus-visible{outline:2px solid var(--sky);outline-offset:2px}
+.sapo-flag{flex:0 0 auto;border-radius:4px;box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+.sapo-a__head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.sapo-a__brand{display:flex;align-items:center;gap:16px}
+.sapo-a__logo{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:#EEF5FB}
+.sapo-a__title{margin:0;font-size:24px;font-weight:700;color:var(--b)}
+.sapo-a__sub{margin:4px 0 0;color:var(--m)}
+.sapo-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:8px 16px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--t);font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:background-color .15s,border-color .15s}
+.sapo-btn:hover{background:var(--bg);border-color:#C8CDD3;color:var(--t)}
+.sapo-btn:disabled{opacity:.5;cursor:not-allowed}
+.sapo-btn--primary{background:var(--b);border-color:var(--b);color:#fff}
+.sapo-btn--primary:hover{background:var(--b2);border-color:var(--b2);color:#fff}
+.sapo-btn--danger{border-color:transparent;background:none;color:var(--red)}
+.sapo-btn--danger:hover{background:#FDF1EF;border-color:transparent;color:var(--red)}
+.sapo-btn.is-busy{opacity:.6;pointer-events:none}
+.sapo-link{padding:0;border:0;background:none;color:var(--b);font-weight:600;font-size:13px;text-decoration:underline;cursor:pointer}
+.sapo-icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border:0;border-radius:8px;background:none;color:var(--m);cursor:pointer}
+.sapo-icon:hover{background:var(--bg);color:var(--t)}
+.sapo-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:20px}
+.sapo-stat{display:flex;flex-direction:column;gap:4px;padding:16px 18px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.sapo-stat b{font-size:26px;line-height:1.1}
+.sapo-stat span{display:flex;align-items:center;gap:6px;color:var(--m);font-size:13px}
+.sapo-stat svg{width:16px;height:16px}
+.sapo-stat--warn .sapo-link{align-self:flex-start}
+.sapo-stat--warn.is-on{border-color:#F3D19C;background:#FFF9EE}
+.sapo-stat--warn:not(.is-on) .sapo-link{display:none}
+.sapo-tabs{display:flex;gap:4px;margin-bottom:16px;border-bottom:1px solid var(--line)}
+.sapo-tab{position:relative;padding:12px 16px;border:0;background:none;color:var(--m);font-size:14px;font-weight:600;cursor:pointer}
+.sapo-tab[aria-selected="true"]{color:var(--b)}
+.sapo-tab[aria-selected="true"]::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--b)}
+.sapo-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:12px}
+.sapo-seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:10px;background:#E9ECF0}
+.sapo-seg button{display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:6px 12px;border:0;border-radius:7px;background:none;color:var(--m);font-weight:600;cursor:pointer}
+.sapo-seg button[aria-pressed="true"]{background:#fff;color:var(--t);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sapo-seg svg{width:16px;height:16px}
+.sapo-seg i{font-style:normal;color:var(--m);font-weight:500}
+.sapo-search{position:relative;flex:1 1 280px}
+.sapo-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--m)}
+.sapo-a input[type=search],.sapo-a input[type=number],.sapo-a input[type=url],.sapo-a input:not([type]),.sapo-a select{width:100%;max-width:none;min-height:40px;padding:8px 12px;border:1px solid #D3D8DE;border-radius:8px;background:#fff;color:var(--t);font-size:14px;box-shadow:none}
+.sapo-search input{padding-left:38px!important}
+.sapo-a input:focus,.sapo-a select:focus{border-color:var(--b);box-shadow:0 0 0 3px rgba(0,105,180,.14);outline:none}
+.sapo-table-wrap{border:1px solid var(--line);border-radius:10px;background:#fff;overflow:auto}
+.sapo-table{width:100%;border-collapse:collapse}
+.sapo-table th{padding:12px;border-bottom:1px solid var(--line);background:#FAFBFC;color:var(--m);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;text-align:left;white-space:nowrap}
+.sapo-table td{padding:12px;border-bottom:1px solid #EEF0F2;vertical-align:middle}
+.sapo-table tbody tr{cursor:pointer}
+.sapo-table tbody tr:hover{background:#F7FAFD}
+.sapo-table tr.is-off td{opacity:.55}
+.sapo-table .c-pin{width:28px}
+.sapo-table .c-act{width:84px;text-align:right;white-space:nowrap}
+.sapo-name{display:flex;align-items:center;gap:8px;font-weight:600}
+.sapo-name svg{width:16px;height:16px;flex:0 0 auto}
+.sapo-muted{color:var(--m)}
+.sapo-miss{color:#A35F00;font-size:12px}
+.sapo-chip{display:inline-block;padding:2px 7px;border-radius:5px;background:var(--bg);font-size:12px;font-weight:600}
+.sapo-web{color:var(--b);text-decoration:none;max-width:200px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:middle}
+.sapo-tag{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.sapo-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.sapo-tag--ok{background:#EEF6E3;color:#4D6B0F}
+.sapo-tag--off{background:#F1F2F4;color:var(--m)}
+.sapo-tag--warn{background:#FFF3DF;color:#9A5B00}
+.sapo-empty{padding:48px 24px;text-align:center;color:var(--m)}
+.sapo-countries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.sapo-country{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;text-align:left;cursor:pointer}
+.sapo-country[aria-selected="true"]{border-color:var(--b);background:#F3F8FD;box-shadow:inset 0 0 0 1px var(--b)}
+.sapo-country span{display:flex;flex-direction:column;gap:2px}
+.sapo-country strong{font-size:15px}
+.sapo-country small{color:var(--m);font-size:12.5px}
+.sapo-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:start}
+.sapo-card{margin:0 0 20px;padding:24px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.sapo-card--soft{background:#FAFBFC}
+.sapo-card h2{margin:0 0 6px;font-size:18px}
+.sapo-card h3{margin:22px 0 8px;font-size:14px}
+.sapo-card>.sapo-muted{margin:0 0 16px}
+.sapo-drop{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:160px;padding:24px;border:2px dashed #C9D3DE;border-radius:12px;background:#FAFCFE;color:var(--b);text-align:center;cursor:pointer}
+.sapo-drop:hover,.sapo-drop.is-over{border-color:var(--b);background:#EEF5FB}
+.sapo-drop.has-file{border-style:solid;border-color:var(--g);background:#F6FAEC}
+.sapo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.sapo-drop__t{font-size:15px;font-weight:600;color:var(--t)}
+.sapo-box{margin:16px 0 0;padding:12px 16px 14px;border:1px solid var(--line);border-radius:10px}
+.sapo-box legend{padding:0 6px;font-weight:600}
+.sapo-radio{display:flex;gap:10px;padding:8px 0;cursor:pointer}
+.sapo-radio input{margin-top:3px}
+.sapo-radio small{color:var(--m)}
+.sapo-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 12px;margin:4px 0 12px}
+.sapo-col{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 6px 6px 12px;border:1px solid var(--line);border-radius:8px;font-weight:600;font-size:13px}
+.sapo-a .sapo-col input{width:52px;min-height:34px;padding:4px;text-align:center;font-weight:700;text-transform:uppercase;color:var(--b)}
+.sapo-check{display:flex;align-items:center;gap:8px;margin:12px 0 0}
+.sapo-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.sapo-result{margin-top:18px;padding:16px;border:1px solid #D4E6F6;border-radius:10px;background:#F3F8FD}
+.sapo-result.is-error{border-color:#F1C9C4;background:#FDF1EF;color:#8E2A1E}
+.sapo-result h3{margin:0 0 8px;font-size:15px}
+.sapo-result__n{display:flex;flex-wrap:wrap;gap:6px 20px}
+.sapo-result__n b{font-size:18px;margin-right:4px}
+.sapo-result ul{margin:10px 0 0 18px;list-style:disc;font-size:12.5px;max-height:150px;overflow:auto}
+.sapo-preview{width:100%;margin-top:10px;border-collapse:collapse;font-size:12.5px;background:#fff}
+.sapo-preview th,.sapo-preview td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.sapo-preview th{background:#EEF3F8;color:var(--m);font-size:11px;text-transform:uppercase}
+.sapo-progress{margin-top:16px}
+.sapo-progress[hidden]{display:none}
+.sapo-progress__top{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:600}
+.sapo-progress__bar{height:8px;border-radius:8px;background:#E7ECF1;overflow:hidden}
+.sapo-progress__bar span{display:block;width:0;height:100%;background:var(--g);transition:width .3s}
+.sapo-progress p{margin:8px 0 0;font-size:12.5px}
+.sapo-doc{width:100%;border-collapse:collapse;font-size:13px}
+.sapo-doc td{padding:8px 6px;border-bottom:1px solid var(--line)}
+.sapo-doc code{padding:2px 8px;border-radius:4px;background:#EEF1F4;font-weight:700;color:var(--b)}
+.sapo-notes{margin:14px 0 0 18px;list-style:disc;color:var(--m);font-size:12.5px}
+.sapo-sc{display:grid;grid-template-columns:150px repeat(3,minmax(0,1fr));gap:8px;align-items:center;margin-bottom:14px}
+.sapo-sc__h{color:var(--m);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.sapo-sc__k{display:flex;align-items:center;gap:8px;font-weight:600}
+.sapo-sc__b{display:flex;align-items:center;justify-content:space-between;gap:6px;min-height:40px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#FAFBFC;cursor:pointer;font-family:Menlo,Consolas,monospace;font-size:12.5px;font-weight:600;color:var(--b)}
+.sapo-sc__b:hover{border-color:var(--b);background:#F3F8FD}
+.sapo-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sapo-row2--zip{grid-template-columns:130px 1fr}
+.sapo-field{display:block;margin:0 0 14px}
+.sapo-field>span,.sapo-field__line{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-weight:600;font-size:13px}
+.sapo-field em{margin-left:6px;padding:0 6px;border-radius:4px;background:#FDECEA;color:var(--red);font-size:11px;font-style:normal}
+.sapo-field[hidden]{display:none}
+.sapo-legend{display:grid;grid-template-columns:140px repeat(3,minmax(0,1fr));gap:8px;align-items:center}
+.sapo-legend>div{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px;color:var(--m)}
+.sapo-legend svg{width:14px;height:23px}
+.sapo-switch{display:flex;align-items:center;gap:10px;min-height:40px;margin-bottom:14px;font-weight:600;cursor:pointer}
+.sapo-switch input{position:absolute;opacity:0}
+.sapo-switch i{position:relative;flex:0 0 auto;width:40px;height:24px;border-radius:999px;background:#C9CFD6;transition:background-color .15s}
+.sapo-switch i::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .15s}
+.sapo-switch input:checked+i{background:var(--g)}
+.sapo-switch input:checked+i::after{transform:translateX(16px)}
+.sapo-switch input:focus-visible+i{outline:2px solid var(--sky);outline-offset:2px}
+.sapo-drawer{position:fixed;inset:0;z-index:100000}
+.sapo-drawer[hidden]{display:none}
+.sapo-drawer__bg{position:absolute;inset:0;background:rgba(17,24,39,.35)}
+.sapo-drawer__panel{position:absolute;top:0;right:0;bottom:0;display:flex;flex-direction:column;width:min(520px,100%);background:#fff;box-shadow:-12px 0 32px rgba(0,0,0,.12)}
+.sapo-drawer__head{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--line)}
+.sapo-drawer__head h2{margin:0;font-size:18px}
+.sapo-drawer__body{flex:1;overflow-y:auto;padding:20px 24px 8px}
+.sapo-drawer__foot{display:flex;align-items:center;gap:8px;padding:14px 24px;border-top:1px solid var(--line);background:#FAFBFC}
+.sapo-grow{flex:1}
+.sapo-mini{height:220px;margin-bottom:6px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.sapo-toasts{position:fixed;right:24px;bottom:24px;z-index:100001;display:flex;flex-direction:column;gap:8px}
+.sapo-toast{max-width:420px;padding:12px 16px;border-radius:10px;background:#1F2328;color:#fff;font-weight:500;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.sapo-toast--err{background:#8E2A1E}
+@media (max-width:1100px){.sapo-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.sapo-grid{grid-template-columns:1fr}.sapo-sc{grid-template-columns:1fr}.sapo-sc__h{display:none}}
+@media (max-width:782px){.sapo-a{margin-right:10px}.sapo-stats,.sapo-countries,.sapo-cols{grid-template-columns:repeat(2,minmax(0,1fr))}.sapo-legend{grid-template-columns:1fr}}
+CSS;
+		}
+
+		private static function admin_js() {
+			return <<<'JS'
+(function(){
+"use strict";
+var D=window.SAPOCYCLE,root=document.getElementById("sapo-a");if(!D||!root)return;
+var $=function(s,c){return(c||root).querySelector(s);},$$=function(s,c){return[].slice.call((c||root).querySelectorAll(s));};
+var hotels=D.hotels||[],fCountry="",impC="CH",FIELDS=["name","address","zip","city","region","website"];
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function norm(s){return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();}
+function host(u){try{return new URL(u).hostname.replace(/^www\./,"");}catch(e){return u;}}
+function count(c){return hotels.filter(function(h){return h.country===c;}).length;}
+function byId(id){for(var i=0;i<hotels.length;i++)if(hotels[i].id===id)return hotels[i];return null;}
+var PREM='<svg viewBox="0 0 24 24" aria-label="Premium"><rect width="24" height="24" rx="5" fill="#8DB33A"/><g stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14M7.05 7.05l9.9 9.9M16.95 7.05l-9.9 9.9"/></g></svg>';
+function toast(msg,err){var el=document.createElement("div");el.className="sapo-toast"+(err?" sapo-toast--err":"");el.textContent=msg;$("[data-toasts]").appendChild(el);setTimeout(function(){el.remove();},err?7000:3500);}
+function post(what,data){var fd=data instanceof FormData?data:new FormData();if(!(data instanceof FormData))Object.keys(data||{}).forEach(function(k){fd.append(k,data[k]);});fd.append("action","sapocycle_hotels");fd.append("do",what);fd.append("nonce",D.nonce);
+  return fetch(D.ajax,{method:"POST",body:fd,credentials:"same-origin"}).then(function(r){return r.text();}).then(function(txt){var j;try{j=JSON.parse(txt);}catch(e){throw new Error("Réponse inattendue du serveur. Rechargez la page et réessayez.");}if(!j.success)throw new Error(j.data&&j.data.message?j.data.message:"Une erreur est survenue.");return j.data;});}
+function busy(b,on){if(b){b.classList.toggle("is-busy",on);b.disabled=on;}}
+
+/* Onglets */
+$$(".sapo-tab").forEach(function(tab){tab.addEventListener("click",function(){$$(".sapo-tab").forEach(function(x){x.setAttribute("aria-selected",x===tab?"true":"false");});$$(".sapo-panel").forEach(function(p){p.hidden=p.getAttribute("data-panel")!==tab.getAttribute("data-tab");});});});
+function goTab(n){$('.sapo-tab[data-tab="'+n+'"]').click();}
+
+/* Statistiques */
+function stats(){
+  $('[data-stat="total"]').textContent=hotels.length;
+  ["CH","FR","DE"].forEach(function(c){$('[data-stat="'+c+'"]').textContent=count(c);$('[data-n="'+c+'"]').textContent=count(c);var m=$('[data-ic-meta="'+c+'"]');m.textContent=count(c)+" hôtel"+(count(c)>1?"s":"")+(D.imports[c]?" · import du "+D.imports[c]:" · aucun import");});
+  $('[data-n=""]').textContent=hotels.length;
+  var ng=hotels.filter(function(h){return h.lat===null;}).length;$('[data-stat="nogeo"]').textContent=ng;$("[data-nogeo-box]").classList.toggle("is-on",ng>0);
+}
+
+/* Tableau */
+$$("[data-fc]").forEach(function(b){b.addEventListener("click",function(){fCountry=b.getAttribute("data-fc");$$("[data-fc]").forEach(function(x){x.setAttribute("aria-pressed",x===b?"true":"false");});render();});});
+var deb;$("[data-q]").addEventListener("input",function(){clearTimeout(deb);deb=setTimeout(render,120);});
+function render(){
+  var q=norm($("[data-q]").value).split(/\s+/).filter(Boolean);
+  var list=hotels.filter(function(h){if(fCountry&&h.country!==fCountry)return false;var s=norm([h.name,h.address,h.zip,h.city,h.region,D.cantons[h.region]||"",h.website].join(" "));return q.every(function(t){return s.indexOf(t)>-1;});});
+  $("[data-rows]").innerHTML=list.map(function(h){
+    var st=h.lat===null?'<span class="sapo-tag sapo-tag--warn">Sans position</span>':h.visible?'<span class="sapo-tag sapo-tag--ok">Visible</span>':'<span class="sapo-tag sapo-tag--off">Masqué</span>';
+    return '<tr data-id="'+esc(h.id)+'" class="'+(h.visible?"":"is-off")+'"><td><img src="'+D.icon+'" alt="" width="14" height="23"></td>'+
+    '<td><span class="sapo-name">'+(h.premium?PREM:"")+esc(h.name)+'</span>'+(fCountry?"":'<span class="sapo-muted">'+esc(D.countries[h.country].name)+'</span>')+'</td>'+
+    '<td class="sapo-muted">'+(h.address?esc(h.address):'<span class="sapo-miss">Adresse manquante</span>')+'</td>'+
+    '<td>'+(h.zip?esc(h.zip)+" ":'<span class="sapo-miss">Code postal manquant</span> ')+esc(h.city)+'</td>'+
+    '<td>'+(h.region?'<span class="sapo-chip" title="'+esc(D.cantons[h.region]||h.region)+'">'+esc(h.region)+'</span>':'<span class="sapo-miss">-</span>')+'</td>'+
+    '<td>'+(h.website?'<a class="sapo-web" href="'+esc(h.website)+'" target="_blank" rel="noopener" data-stop>'+esc(host(h.website))+'</a>':'<span class="sapo-miss">-</span>')+'</td>'+
+    '<td>'+st+'</td><td class="c-act"><button type="button" class="sapo-icon" data-edit aria-label="Modifier '+esc(h.name)+'"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Zm11-15 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button><button type="button" class="sapo-icon" data-del aria-label="Supprimer '+esc(h.name)+'"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></td></tr>';
+  }).join("");
+  $("[data-empty]").hidden=list.length>0;
+  stats();
+}
+$("[data-rows]").addEventListener("click",function(e){var tr=e.target.closest("tr");if(!tr||e.target.closest("[data-stop]"))return;var h=byId(tr.getAttribute("data-id"));if(!h)return;if(e.target.closest("[data-del]")){remove(h);return;}openDrawer(h);});
+function remove(h){if(!window.confirm("Supprimer « "+h.name+" » ?"))return;post("delete",{id:h.id}).then(function(d){hotels=d.hotels;render();closeDrawer();toast("Hôtel supprimé.");}).catch(function(e){toast(e.message,true);});}
+
+/* Tiroir d'édition */
+var drawer=$("[data-drawer]"),form=$("[data-edit]"),mini=null,pin=null,lastFocus=null;
+form.elements.canton.innerHTML='<option value="">Choisir un canton</option>'+Object.keys(D.cantons).map(function(k){return'<option value="'+k+'">'+k+" · "+esc(D.cantons[k])+'</option>';}).join("");
+function countryUI(){var c=form.elements.country.value,L=D.countries[c].labels;$("[data-canton-field]").hidden=c!=="CH";$("[data-region-field]").hidden=c==="CH";$("[data-region-label]").textContent=L.region;$("[data-zip-label]").textContent=L.zip;}
+form.elements.country.addEventListener("change",countryUI);
+function setPos(lat,lng,pan){form.elements.lat.value=lat==null?"":(+lat).toFixed(6);form.elements.lng.value=lng==null?"":(+lng).toFixed(6);if(!mini)return;
+  if(lat==null){if(pin){mini.removeLayer(pin);pin=null;}return;}
+  if(!pin){pin=L.marker([lat,lng],{draggable:true,icon:L.icon({iconUrl:D.icon,iconSize:[30,49],iconAnchor:[17,49]})}).addTo(mini);pin.on("dragend",function(){var p=pin.getLatLng();setPos(p.lat,p.lng,false);});}else pin.setLatLng([lat,lng]);
+  if(pan)mini.setView([lat,lng],Math.max(mini.getZoom(),15));}
+["lat","lng"].forEach(function(n){form.elements[n].addEventListener("change",function(){var a=parseFloat(form.elements.lat.value.replace(",",".")),b=parseFloat(form.elements.lng.value.replace(",","."));if(!isNaN(a)&&!isNaN(b))setPos(a,b,true);});});
+function openDrawer(h){
+  lastFocus=document.activeElement;var isNew=!h;
+  h=h||{id:"",country:fCountry||impC||"CH",name:"",address:"",zip:"",city:"",region:"",website:"",lat:null,lng:null,premium:false,visible:true};
+  $("[data-d-title]").textContent=isNew?"Ajouter un hôtel":"Modifier l'hôtel";$("[data-delete]").hidden=isNew;
+  ["id","name","address","zip","city","website"].forEach(function(k){form.elements[k].value=h[k]||"";});
+  form.elements.country.value=h.country;form.elements.canton.value=h.country==="CH"?h.region:"";form.elements.region.value=h.country==="CH"?"":h.region;
+  form.elements.premium.checked=!!h.premium;form.elements.visible.checked=!!h.visible;countryUI();
+  drawer.hidden=false;document.body.style.overflow="hidden";
+  setTimeout(function(){
+    if(window.L&&!mini){mini=L.map($("[data-mini]")).setView([46.8,8.2],7);L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(mini);mini.on("click",function(e){setPos(e.latlng.lat,e.latlng.lng,false);});}
+    if(mini){mini.invalidateSize();if(pin){mini.removeLayer(pin);pin=null;}if(h.lat!==null){setPos(h.lat,h.lng,true);}else{setPos(null,null);mini.setView(h.country==="FR"?[46.6,2.4]:h.country==="DE"?[51.1,10.4]:[46.8,8.2],h.country==="CH"?7:5);}}else setPos(h.lat,h.lng);
+    form.elements.name.focus();
+  },50);
+}
+function closeDrawer(){if(drawer.hidden)return;drawer.hidden=true;document.body.style.overflow="";if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+$$("[data-close]",drawer).forEach(function(b){b.addEventListener("click",closeDrawer);});
+document.addEventListener("keydown",function(e){if(!drawer.hidden&&e.key==="Escape")closeDrawer();});
+$("[data-add]").addEventListener("click",function(){goTab("hotels");openDrawer(null);});
+$("[data-delete]").addEventListener("click",function(){var h=byId(form.elements.id.value);if(h)remove(h);});
+$("[data-locate]").addEventListener("click",function(){var b=this,f=form.elements;if(!f.address.value&&!f.city.value&&!f.zip.value){toast("Renseignez d'abord l'adresse, le code postal ou la ville.",true);return;}
+  b.disabled=true;b.textContent="Recherche…";
+  post("geocode",{preview:1,name:f.name.value,address:f.address.value,zip:f.zip.value,city:f.city.value,country:f.country.value}).then(function(p){setPos(p.lat,p.lng,true);toast("Adresse localisée. Vérifiez la position puis enregistrez.");}).catch(function(e){toast(e.message,true);}).finally(function(){b.disabled=false;b.textContent="Localiser depuis l'adresse";});});
+form.addEventListener("submit",function(e){e.preventDefault();var f=form.elements;
+  if(!f.name.value.trim()){toast("Le nom de l'hôtel est obligatoire.",true);f.name.focus();return;}
+  var h={id:f.id.value,country:f.country.value,name:f.name.value,address:f.address.value,zip:f.zip.value,city:f.city.value,region:f.country.value==="CH"?f.canton.value:f.region.value,website:f.website.value,premium:f.premium.checked?1:0,visible:f.visible.checked?1:0,lat:f.lat.value,lng:f.lng.value};
+  var b=$("[data-save]"),isNew=!h.id;busy(b,true);
+  post("save",{hotel:JSON.stringify(h)}).then(function(d){hotels=d.hotels;render();closeDrawer();toast(isNew?"Hôtel ajouté.":"Modifications enregistrées.");if(d.hotel.lat===null&&(d.hotel.address||d.hotel.city))geocodeIds([d.hotel.id]);}).catch(function(err){toast(err.message,true);}).finally(function(){busy(b,false);});
+});
+
+/* Localisation en série */
+var geoRun=false;
+function geocodeIds(ids){if(geoRun||!ids.length)return;geoRun=true;var box=$("[data-progress]"),bar=$("[data-progress-bar]"),n=$("[data-progress-n]"),done=0,fails=0,i=0;box.hidden=false;$("[data-progress-text]").textContent="Localisation des adresses…";
+  (function next(){if(i>=ids.length){geoRun=false;$("[data-progress-text]").textContent=fails?"Terminé : "+fails+" adresse(s) introuvable(s), à placer à la main dans la fiche de l'hôtel.":"Terminé : toutes les adresses sont localisées.";render();if(!fails)setTimeout(function(){box.hidden=true;},5000);return;}
+    var id=ids[i++],fast=false;n.textContent=done+" / "+ids.length;
+    post("geocode",{id:id}).then(function(d){fast=!!d.fast;for(var k=0;k<hotels.length;k++)if(hotels[k].id===id)hotels[k]=d.hotel;}).catch(function(){fails++;}).finally(function(){done++;bar.style.width=Math.round(done/ids.length*100)+"%";n.textContent=done+" / "+ids.length;if(done%10===0)render();setTimeout(next,fast?50:1100);});})();}
+$("[data-geo-all]").addEventListener("click",function(){goTab("import");geocodeIds(hotels.filter(function(h){return h.lat===null;}).map(function(h){return h.id;}));});
+
+/* Import par pays */
+var imp=$("[data-import]"),file=$("[data-file]"),drop=$("[data-drop]"),impBtn=$("[data-import-btn]"),result=$("[data-result]");
+function setImp(c){impC=c;var C=D.countries[c],L=C.labels,cols=D.settings.columns[c];
+  $$("[data-ic]").forEach(function(b){b.setAttribute("aria-selected",b.getAttribute("data-ic")===c?"true":"false");});
+  $("[data-ic-title]").textContent="Hôtels "+C.in;
+  $("[data-ic-sub]").textContent="Déposez le fichier Excel des hôtels "+C.in+". Les 3 cartes "+C.name+" (FR, DE, EN) sont mises à jour immédiatement.";
+  $("[data-mode-text]").textContent="Le fichier devient la liste complète des hôtels "+C.in+". Les hôtels "+C.in+" absents du fichier sont retirés.";
+  $("[data-cols]").innerHTML=FIELDS.map(function(k){return'<label class="sapo-col"><span>'+esc(L[k])+'</span><input name="col_'+k+'" maxlength="3" value="'+esc(cols[k]||"")+'" aria-label="Colonne : '+esc(L[k])+'"></label>';}).join("");
+  imp.elements.header.checked=!!+D.settings.header[c];
+  $$("[data-cols] input").forEach(function(i){i.addEventListener("input",function(){i.value=i.value.replace(/[^a-z]/gi,"").toUpperCase();doc();});});
+  $("[data-export]").href=D.export+"&country="+c;$("[data-export-text]").textContent="Exporter les hôtels "+C.in+" ("+count(c)+")";
+  result.hidden=true;doc();showFile();}
+function doc(){var L=D.countries[impC].labels;$("[data-doc]").innerHTML=FIELDS.map(function(k){var v=imp.elements["col_"+k].value;return'<tr><td><code>'+(v?esc(v):"-")+'</code></td><td>'+esc(L[k])+(k==="name"?" (obligatoire)":"")+'</td></tr>';}).join("");}
+$$("[data-ic]").forEach(function(b){b.addEventListener("click",function(){setImp(b.getAttribute("data-ic"));});});
+function showFile(){var f=file.files[0];drop.classList.toggle("has-file",!!f);$("[data-drop-text]").innerHTML=f?"<strong>"+esc(f.name)+"</strong> prêt à importer pour : "+esc(D.countries[impC].name):"Glissez le fichier Excel des hôtels "+esc(D.countries[impC].in)+" ici ou <u>parcourez</u>";impBtn.disabled=!f;}
+file.addEventListener("change",showFile);
+["dragenter","dragover"].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add("is-over");});});
+["dragleave","drop"].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove("is-over");});});
+drop.addEventListener("drop",function(e){var f=e.dataTransfer.files[0];if(!f)return;var dt=new DataTransfer();dt.items.add(f);file.files=dt.files;showFile();});
+imp.addEventListener("submit",function(e){e.preventDefault();var f=file.files[0],c=impC,C=D.countries[c];if(!f)return;
+  var mode=imp.elements.mode.value;
+  if(mode==="replace"&&count(c)&&!window.confirm("Remplacer les "+count(c)+" hôtels "+C.in+" par le contenu de « "+f.name+" » ?\n\nLes autres pays ne sont pas modifiés. Vous pourrez annuler cet import."))return;
+  var cols={};FIELDS.forEach(function(k){cols[k]=imp.elements["col_"+k].value;});
+  if(!cols.name){toast("Indiquez la colonne du nom de l'hôtel.",true);return;}
+  var fd=new FormData();fd.append("file",f);fd.append("country",c);fd.append("mode",mode);fd.append("columns",JSON.stringify(cols));fd.append("header",imp.elements.header.checked?"1":"0");
+  busy(impBtn,true);result.hidden=true;result.classList.remove("is-error");
+  post("import",fd).then(function(d){
+    hotels=d.hotels;D.settings=d.settings;D.imports=d.imports;D.backup=d.backup;restoreUI();render();setImp(c);file.value="";showFile();
+    var L=C.labels,prev=d.preview.length?'<p><strong>Premières lignes lues :</strong></p><div style="overflow:auto"><table class="sapo-preview"><tr>'+FIELDS.map(function(k){return"<th>"+esc(L[k])+"</th>";}).join("")+'</tr>'+d.preview.map(function(h){return"<tr>"+FIELDS.map(function(k){return"<td>"+esc((k==="name"&&h.premium?"✳️ ":"")+(h[k]||""))+"</td>";}).join("")+"</tr>";}).join("")+'</table></div>':'';
+    result.innerHTML='<h3>Import terminé : '+esc(C.name)+'</h3><div class="sapo-result__n"><span><b>'+d.total+'</b>hôtels '+esc(C.in)+'</span><span><b>'+d.added+'</b>ajoutés</span><span><b>'+d.updated+'</b>mis à jour</span>'+(mode==="replace"?'<span><b>'+d.removed+'</b>retirés</span>':'')+'<span><b>'+d.nogeo.length+'</b>à localiser</span></div>'+(d.warnings.length?'<ul>'+d.warnings.map(function(w){return"<li>"+esc(w)+"</li>";}).join("")+'</ul>':'')+prev;
+    result.hidden=false;toast("Import réussi : cartes "+C.name+" à jour.");
+    if(d.nogeo.length)geocodeIds(d.nogeo);
+  }).catch(function(err){result.className="sapo-result is-error";result.innerHTML="<h3>Import impossible</h3><p>"+esc(err.message)+"</p>";result.hidden=false;}).finally(function(){busy(impBtn,false);showFile();});
+});
+function restoreUI(){var b=$("[data-restore]");b.hidden=!D.backup;b.title=D.backup?"Revenir à la liste d'avant l'import du "+D.backup:"";}
+$("[data-restore]").addEventListener("click",function(){var b=this;if(!window.confirm("Revenir à la liste des hôtels d'avant le dernier import ("+D.backup+") ?"))return;busy(b,true);
+  post("restore",{}).then(function(d){hotels=d.hotels;D.backup="";restoreUI();render();setImp(impC);toast("Dernier import annulé.");}).catch(function(e){toast(e.message,true);}).finally(function(){busy(b,false);});});
+
+/* Shortcodes et réglages */
+var sc='<div></div><div class="sapo-sc__h">Français</div><div class="sapo-sc__h">Deutsch</div><div class="sapo-sc__h">English</div>';
+["CH","FR","DE"].forEach(function(c){var C=D.countries[c];sc+='<div class="sapo-sc__k">'+esc(C.name)+'</div>';["fr","de","en"].forEach(function(l){var code="[sapocycle_"+C.slug+"_"+l+"]";sc+='<button type="button" class="sapo-sc__b" data-copy="'+code+'">'+code+'<span aria-hidden="true">⧉</span></button>';});});
+$("[data-shortcodes]").innerHTML=sc;
+$$("[data-copy]").forEach(function(b){b.addEventListener("click",function(){var v=b.getAttribute("data-copy");(navigator.clipboard?navigator.clipboard.writeText(v):Promise.reject()).then(function(){toast("Copié : "+v);}).catch(function(){window.prompt("Copiez le shortcode :",v);});});});
+var sf=$("[data-settings]");
+function fillSettings(){var s=D.settings;sf.elements.height.value=s.height;sf.elements.tiles.value=s.tiles;sf.elements.cluster.checked=!!+s.cluster;Object.keys(s.legend).forEach(function(k){if(sf.elements[k])sf.elements[k].value=s.legend[k];});}
+sf.addEventListener("submit",function(e){e.preventDefault();var s={height:sf.elements.height.value,tiles:sf.elements.tiles.value,cluster:sf.elements.cluster.checked?1:0,legend:{}};["member","premium"].forEach(function(k){["fr","de","en"].forEach(function(l){s.legend[k+"_"+l]=sf.elements[k+"_"+l].value;});});
+  var b=sf.querySelector("[type=submit]");busy(b,true);post("settings",{settings:JSON.stringify(s)}).then(function(d){D.settings=d.settings;fillSettings();toast("Réglages enregistrés.");}).catch(function(err){toast(err.message,true);}).finally(function(){busy(b,false);});});
+
+fillSettings();restoreUI();render();setImp("CH");
+})();
+JS;
+		}
+
+		/* ------------------------------------------------------------------
+		 * AJAX (un seul point d'entrée)
+		 * ------------------------------------------------------------------ */
+
+		public static function ajax() {
+			if ( ! current_user_can( self::CAP ) || ! check_ajax_referer( self::NONCE, 'nonce', false ) ) {
+				wp_send_json_error( array( 'message' => 'Session expirée ou droits insuffisants. Rechargez la page.' ) );
+			}
+			$do = isset( $_POST['do'] ) ? sanitize_key( wp_unslash( $_POST['do'] ) ) : '';
+			try {
+				switch ( $do ) {
+					case 'save':
+						wp_send_json_success( self::ajax_save() );
+						break;
+					case 'delete':
+						$id = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : '';
+						self::store(
+							array_filter(
+								self::hotels(),
+								function ( $h ) use ( $id ) {
+									return $h['id'] !== $id;
+								}
+							)
+						);
+						wp_send_json_success( array( 'hotels' => self::hotels() ) );
+						break;
+					case 'geocode':
+						wp_send_json_success( self::ajax_geocode() );
+						break;
+					case 'import':
+						wp_send_json_success( self::ajax_import() );
+						break;
+					case 'restore':
+						$bak = get_option( self::OPT_BAK );
+						if ( ! is_array( $bak ) || ! isset( $bak['data'] ) ) {
+							throw new Exception( 'Aucune sauvegarde disponible.' );
+						}
+						self::store( (array) $bak['data'] );
+						delete_option( self::OPT_BAK );
+						wp_send_json_success( array( 'hotels' => self::hotels() ) );
+						break;
+					case 'settings':
+						$in  = json_decode( wp_unslash( isset( $_POST['settings'] ) ? $_POST['settings'] : '' ), true ); // phpcs:ignore
+						$cur = self::settings();
+						$cur['height']  = max( 320, min( 1200, absint( isset( $in['height'] ) ? $in['height'] : 620 ) ) );
+						$cur['tiles']   = ( isset( $in['tiles'] ) && 'osm' === $in['tiles'] ) ? 'osm' : 'soft';
+						$cur['cluster'] = empty( $in['cluster'] ) ? 0 : 1;
+						foreach ( array_keys( $cur['legend'] ) as $k ) {
+							if ( isset( $in['legend'][ $k ] ) ) {
+								$cur['legend'][ $k ] = sanitize_text_field( $in['legend'][ $k ] );
+							}
+						}
+						update_option( self::OPT_SET, $cur, false );
+						wp_send_json_success( array( 'settings' => self::settings() ) );
+						break;
+					default:
+						throw new Exception( 'Action inconnue.' );
+				}
+			} catch ( Exception $e ) {
+				wp_send_json_error( array( 'message' => $e->getMessage() ) );
+			}
+		}
+
+		private static function ajax_save() {
+			$raw = json_decode( wp_unslash( isset( $_POST['hotel'] ) ? $_POST['hotel'] : '' ), true ); // phpcs:ignore
+			if ( ! is_array( $raw ) || '' === trim( (string) ( isset( $raw['name'] ) ? $raw['name'] : '' ) ) ) {
+				throw new Exception( 'Le nom de l\'hôtel est obligatoire.' );
+			}
+			$list  = self::hotels();
+			$saved = null;
+			foreach ( $list as $i => $h ) {
+				if ( ! empty( $raw['id'] ) && $h['id'] === $raw['id'] ) {
+					$list[ $i ] = self::clean_hotel( $raw, $h );
+					$saved      = $list[ $i ];
+				}
+			}
+			if ( null === $saved ) {
+				unset( $raw['id'] );
+				$saved  = self::clean_hotel( $raw );
+				$list[] = $saved;
+			}
+			self::store( $list );
+			return array( 'hotel' => $saved, 'hotels' => self::hotels() );
+		}
+
+		/* ------------------------------------------------------------------
+		 * Localisation des adresses
+		 * ------------------------------------------------------------------ */
+
+		private static function ajax_geocode() {
+			if ( ! empty( $_POST['preview'] ) ) {
+				$h   = self::clean_hotel(
+					array(
+						'name'    => wp_unslash( isset( $_POST['name'] ) ? $_POST['name'] : '' ),       // phpcs:ignore
+						'address' => wp_unslash( isset( $_POST['address'] ) ? $_POST['address'] : '' ), // phpcs:ignore
+						'zip'     => wp_unslash( isset( $_POST['zip'] ) ? $_POST['zip'] : '' ),         // phpcs:ignore
+						'city'    => wp_unslash( isset( $_POST['city'] ) ? $_POST['city'] : '' ),       // phpcs:ignore
+						'country' => sanitize_text_field( wp_unslash( isset( $_POST['country'] ) ? $_POST['country'] : 'CH' ) ),
+					)
+				);
+				$pos = self::locate( $h );
+				if ( ! $pos ) {
+					throw new Exception( 'Adresse introuvable. Placez le smiley à la main sur la carte.' );
+				}
+				return $pos;
+			}
+			$id   = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : '';
+			$list = self::hotels();
+			foreach ( $list as $i => $h ) {
+				if ( $h['id'] !== $id ) {
+					continue;
+				}
+				$pos = self::locate( $h );
+				if ( ! $pos ) {
+					throw new Exception( 'Adresse introuvable : ' . $h['name'] );
+				}
+				$list[ $i ]['lat'] = $pos['lat'];
+				$list[ $i ]['lng'] = $pos['lng'];
+				self::store( $list );
+				return array( 'hotel' => $list[ $i ], 'fast' => ! empty( $pos['fast'] ) );
+			}
+			throw new Exception( 'Hôtel introuvable.' );
+		}
+
+		/** Position d'un hôtel : d'abord l'ancienne carte WP Store Locator, sinon OpenStreetMap. */
+		private static function locate( array $h ) {
+			$known = self::from_store_locator( $h );
+			if ( $known ) {
+				$known['fast'] = true;
+				return $known;
+			}
+			$queries = array();
+			if ( $h['address'] && ( $h['zip'] || $h['city'] ) ) {
+				$queries[] = array( 'street' => $h['address'], 'postalcode' => $h['zip'], 'city' => $h['city'] );
+				$queries[] = array( 'q' => trim( $h['address'] . ', ' . $h['zip'] . ' ' . $h['city'] ) );
+			}
+			if ( $h['name'] && $h['city'] ) {
+				$queries[] = array( 'q' => $h['name'] . ', ' . $h['city'] );
+			}
+			if ( $h['zip'] || $h['city'] ) {
+				$queries[] = array( 'q' => trim( $h['zip'] . ' ' . $h['city'] ) );
+			}
+			foreach ( $queries as $n => $q ) {
+				if ( $n > 0 ) {
+					usleep( 1100000 ); // OpenStreetMap : 1 requête par seconde au maximum.
+				}
+				$args = array_filter( $q );
+				$args['format']       = 'jsonv2';
+				$args['limit']        = 1;
+				$args['countrycodes'] = strtolower( $h['country'] );
+				$res = wp_remote_get(
+					add_query_arg( array_map( 'rawurlencode', $args ), 'https://nominatim.openstreetmap.org/search' ),
+					array(
+						'timeout'    => 12,
+						'user-agent' => 'SapoCycle-Hotels/' . self::VERSION . ' (' . home_url() . ')',
+					)
+				);
+				if ( is_wp_error( $res ) || 200 !== (int) wp_remote_retrieve_response_code( $res ) ) {
+					continue;
+				}
+				$body = json_decode( wp_remote_retrieve_body( $res ), true );
+				if ( ! empty( $body[0]['lat'] ) ) {
+					return array( 'lat' => round( (float) $body[0]['lat'], 6 ), 'lng' => round( (float) $body[0]['lon'], 6 ) );
+				}
+			}
+			return null;
+		}
+
+		private static function from_store_locator( array $h ) {
+			static $index = null;
+			if ( null === $index ) {
+				$index = array();
+				$ids   = get_posts( array( 'post_type' => 'wpsl_stores', 'numberposts' => -1, 'post_status' => 'any', 'fields' => 'ids', 'suppress_filters' => true ) );
+				foreach ( $ids as $id ) {
+					$lat = get_post_meta( $id, 'wpsl_lat', true );
+					$lng = get_post_meta( $id, 'wpsl_lng', true );
+					if ( ! is_numeric( $lat ) || ! is_numeric( $lng ) ) {
+						continue;
+					}
+					$title = html_entity_decode( get_the_title( $id ), ENT_QUOTES, 'UTF-8' );
+					$title = preg_replace( '/^\s*\x{2733}\x{FE0F}?\s*/u', '', $title );
+					$title = preg_replace( '/\s*\([A-Z]{2}[^)]*\)\s*$/u', '', $title );
+					$pos   = array( 'lat' => round( (float) $lat, 6 ), 'lng' => round( (float) $lng, 6 ) );
+					$index[ 'n:' . self::norm( $title ) ] = $pos;
+					$index[ 'a:' . self::norm( get_post_meta( $id, 'wpsl_address', true ) . ' ' . get_post_meta( $id, 'wpsl_city', true ) ) ] = $pos;
+				}
+			}
+			$n = 'n:' . self::norm( $h['name'] );
+			$a = 'a:' . self::norm( $h['address'] . ' ' . $h['city'] );
+			if ( isset( $index[ $n ] ) ) {
+				return $index[ $n ];
+			}
+			return ( 'a:' !== $a && isset( $index[ $a ] ) ) ? $index[ $a ] : null;
+		}
+
+		/* ------------------------------------------------------------------
+		 * Import Excel
+		 * ------------------------------------------------------------------ */
+
+		private static function ajax_import() {
+			$country = isset( $_POST['country'] ) ? sanitize_text_field( wp_unslash( $_POST['country'] ) ) : '';
+			if ( ! isset( self::COUNTRIES[ $country ] ) ) {
+				throw new Exception( 'Pays inconnu.' );
+			}
+			if ( empty( $_FILES['file']['tmp_name'] ) || ! is_uploaded_file( $_FILES['file']['tmp_name'] ) ) { // phpcs:ignore
+				throw new Exception( 'Aucun fichier reçu.' );
+			}
+			$set = self::settings();
+			$set['columns'][ $country ] = self::clean_columns( json_decode( wp_unslash( isset( $_POST['columns'] ) ? $_POST['columns'] : '' ), true ) ); // phpcs:ignore
+			$set['header'][ $country ]  = ( isset( $_POST['header'] ) && '1' === $_POST['header'] ) ? 1 : 0;
+			update_option( self::OPT_SET, $set, false );
+
+			$ext = strtolower( pathinfo( sanitize_file_name( wp_unslash( $_FILES['file']['name'] ) ), PATHINFO_EXTENSION ) ); // phpcs:ignore
+			if ( 'xlsx' === $ext ) {
+				$rows = self::read_xlsx( $_FILES['file']['tmp_name'] ); // phpcs:ignore
+			} elseif ( 'csv' === $ext ) {
+				$rows = self::read_csv( $_FILES['file']['tmp_name'] ); // phpcs:ignore
+			} elseif ( 'xls' === $ext ) {
+				throw new Exception( 'Le format .xls n\'est pas pris en charge. Dans Excel : Fichier › Enregistrer sous › Classeur Excel (.xlsx).' );
+			} else {
+				throw new Exception( 'Format non reconnu. Utilisez un fichier .xlsx ou .csv.' );
+			}
+
+			$mode   = ( isset( $_POST['mode'] ) && 'merge' === $_POST['mode'] ) ? 'merge' : 'replace';
+			$result = self::import_rows( $rows, $country, $mode, $set['columns'][ $country ], ! empty( $set['header'][ $country ] ) );
+
+			$log             = (array) get_option( self::OPT_LOG, array() );
+			$log[ $country ] = time();
+			update_option( self::OPT_LOG, $log, false );
+			$imports = array();
+			foreach ( $log as $c => $time ) {
+				$imports[ $c ] = wp_date( 'd.m.Y à H:i', $time );
+			}
+			$result['imports']  = $imports;
+			$result['settings'] = self::settings();
+			$result['backup']   = wp_date( 'd.m.Y à H:i' );
+			return $result;
+		}
+
+		public static function import_rows( array $rows, $country, $mode, array $columns, $header ) {
+			$cols = array();
+			foreach ( $columns as $field => $letter ) {
+				$i = self::col_index( $letter );
+				if ( null !== $i ) {
+					$cols[ $field ] = $i;
+				}
+			}
+			if ( ! isset( $cols['name'] ) ) {
+				throw new Exception( 'Indiquez la colonne du nom de l\'hôtel.' );
+			}
+			$first = 1;
+			if ( $header && $rows ) {
+				array_shift( $rows );
+				$first = 2;
+			}
+
+			$all    = self::hotels();
+			$others = array();
+			$old    = array();
+			foreach ( $all as $h ) {
+				if ( $h['country'] === $country ) {
+					$old[ self::key_of( $h ) ] = $h;
+				} else {
+					$others[] = $h;
+				}
+			}
+
+			$warnings = array();
+			$incoming = array();
+			foreach ( $rows as $i => $r ) {
+				$line = $i + $first;
+				$raw  = array( 'country' => $country );
+				foreach ( $cols as $field => $index ) {
+					$raw[ $field ] = isset( $r[ $index ] ) ? trim( (string) $r[ $index ] ) : '';
+				}
+				if ( '' === $raw['name'] ) {
+					if ( implode( '', array_map( 'trim', array_map( 'strval', $r ) ) ) !== '' ) {
+						$warnings[] = 'Ligne ' . $line . ' ignorée : nom de l\'hôtel vide.';
+					}
+					continue;
+				}
+				$h   = self::clean_hotel( $raw );
+				$key = self::key_of( $h );
+				if ( isset( $incoming[ $key ] ) ) {
+					$warnings[] = 'Ligne ' . $line . ' ignorée : « ' . $h['name'] . ' » est en double dans le fichier.';
+					continue;
+				}
+				$incoming[ $key ] = array( 'h' => $h, 'raw' => $raw );
+			}
+			if ( ! $incoming ) {
+				throw new Exception( 'Aucun hôtel trouvé dans la colonne ' . $columns['name'] . '. Vérifiez les lettres des colonnes et la case « ligne 1 ».' );
+			}
+
+			$added   = 0;
+			$updated = 0;
+			$result  = array();
+			foreach ( $incoming as $key => $item ) {
+				$h = $item['h'];
+				if ( isset( $old[ $key ] ) ) {
+					$o = $old[ $key ];
+					if ( 'merge' === $mode ) {
+						$h = self::clean_hotel(
+							array_filter(
+								$item['raw'],
+								function ( $v ) {
+									return '' !== $v;
+								}
+							),
+							$o
+						);
+						$h['premium'] = $item['h']['premium'] || $o['premium'];
+					} else {
+						$h['id']      = $o['id'];
+						$h['visible'] = $o['visible'];
+					}
+					if ( null === $h['lat'] && null !== $o['lat'] && self::norm( $o['address'] . $o['zip'] . $o['city'] ) === self::norm( $h['address'] . $h['zip'] . $h['city'] ) ) {
+						$h['lat'] = $o['lat'];
+						$h['lng'] = $o['lng'];
+					}
+					++$updated;
+				} else {
+					++$added;
+				}
+				$result[ $key ] = $h;
+			}
+			$removed = 0;
+			foreach ( $old as $key => $o ) {
+				if ( ! isset( $result[ $key ] ) ) {
+					if ( 'merge' === $mode ) {
+						$result[ $key ] = $o;
+					} else {
+						++$removed;
+					}
+				}
+			}
+
+			update_option( self::OPT_BAK, array( 'time' => time(), 'data' => $all ), false );
+			self::store( array_merge( $others, array_values( $result ) ) );
+
+			$nogeo = array();
+			$total = 0;
+			foreach ( self::hotels() as $h ) {
+				if ( $h['country'] === $country ) {
+					++$total;
+					if ( null === $h['lat'] ) {
+						$nogeo[] = $h['id'];
+					}
+				}
+			}
+			$preview = array();
+			foreach ( array_slice( array_values( $incoming ), 0, 3 ) as $item ) {
+				$preview[] = $item['h'];
+			}
+			return array(
+				'added'    => $added,
+				'updated'  => $updated,
+				'removed'  => $removed,
+				'total'    => $total,
+				'nogeo'    => $nogeo,
+				'warnings' => array_slice( $warnings, 0, 50 ),
+				'preview'  => $preview,
+				'hotels'   => self::hotels(),
+			);
+		}
+
+		/** Lit la première feuille d'un fichier .xlsx (sans bibliothèque externe). */
+		public static function read_xlsx( $path ) {
+			if ( ! class_exists( 'ZipArchive' ) ) {
+				throw new Exception( 'Le serveur ne sait pas lire les fichiers .xlsx (extension PHP Zip absente). Enregistrez le fichier en .csv et réessayez.' );
+			}
+			$zip = new ZipArchive();
+			if ( true !== $zip->open( $path ) ) {
+				throw new Exception( 'Impossible d\'ouvrir le fichier. Est-ce bien un fichier Excel .xlsx ?' );
+			}
+			$shared = array();
+			$xml    = $zip->getFromName( 'xl/sharedStrings.xml' );
+			if ( false !== $xml ) {
+				$sx = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
+				if ( $sx ) {
+					foreach ( $sx->si as $si ) {
+						$shared[] = self::xml_text( $si );
+					}
+				}
+			}
+			$sheet = 'xl/worksheets/sheet1.xml';
+			$wb    = $zip->getFromName( 'xl/workbook.xml' );
+			$rels  = $zip->getFromName( 'xl/_rels/workbook.xml.rels' );
+			if ( $wb && $rels ) {
+				$rid = '';
+				if ( preg_match( '/<sheet\b[^>]*\br:id="([^"]+)"/', $wb, $m ) ) {
+					$rid = $m[1];
+				}
+				if ( $rid && preg_match( '/<Relationship\b[^>]*\bId="' . preg_quote( $rid, '/' ) . '"[^>]*\bTarget="([^"]+)"/', $rels, $m ) ) {
+					$sheet = 0 === strpos( $m[1], '/' ) ? ltrim( $m[1], '/' ) : 'xl/' . $m[1];
+				} elseif ( $rid && preg_match( '/<Relationship\b[^>]*\bTarget="([^"]+)"[^>]*\bId="' . preg_quote( $rid, '/' ) . '"/', $rels, $m ) ) {
+					$sheet = 0 === strpos( $m[1], '/' ) ? ltrim( $m[1], '/' ) : 'xl/' . $m[1];
+				}
+			}
+			$xml = $zip->getFromName( $sheet );
+			$zip->close();
+			if ( false === $xml ) {
+				throw new Exception( 'Feuille de calcul introuvable dans le fichier.' );
+			}
+			$sx = simplexml_load_string( $xml, 'SimpleXMLElement', LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_PARSEHUGE );
+			if ( ! $sx || ! isset( $sx->sheetData ) ) {
+				throw new Exception( 'Feuille de calcul illisible.' );
+			}
+			$rows = array();
+			$next = 0;
+			foreach ( $sx->sheetData->row as $row ) {
+				$r     = isset( $row['r'] ) ? (int) $row['r'] - 1 : $next;
+				$next  = $r + 1;
+				$cells = array();
+				$col   = 0;
+				foreach ( $row->c as $c ) {
+					if ( isset( $c['r'] ) && preg_match( '/^([A-Z]+)/', (string) $c['r'], $m ) ) {
+						$col = self::col_index( $m[1] );
+					}
+					$type = (string) $c['t'];
+					if ( 's' === $type ) {
+						$v = isset( $shared[ (int) $c->v ] ) ? $shared[ (int) $c->v ] : '';
+					} elseif ( 'inlineStr' === $type ) {
+						$v = self::xml_text( $c->is );
+					} else {
+						$v = (string) $c->v;
+						if ( is_numeric( $v ) && false !== stripos( $v, 'e' ) ) {
+							$v = rtrim( rtrim( sprintf( '%.10F', (float) $v ), '0' ), '.' );
+						}
+					}
+					$cells[ $col ] = $v;
+					++$col;
+				}
+				if ( $cells ) {
+					$line = array_fill( 0, max( array_keys( $cells ) ) + 1, '' );
+					foreach ( $cells as $k => $v ) {
+						$line[ $k ] = $v;
+					}
+					$rows[ $r ] = $line;
+				}
+			}
+			ksort( $rows );
+			return array_values( $rows );
+		}
+
+		private static function xml_text( $node ) {
+			if ( ! $node ) {
+				return '';
+			}
+			if ( isset( $node->t ) ) {
+				return (string) $node->t;
+			}
+			$s = '';
+			foreach ( $node->r as $run ) {
+				$s .= (string) $run->t;
+			}
+			return $s;
+		}
+
+		public static function read_csv( $path ) {
+			$txt = (string) file_get_contents( $path ); // phpcs:ignore
+			$txt = preg_replace( '/^\xEF\xBB\xBF/', '', $txt );
+			if ( function_exists( 'mb_check_encoding' ) && ! mb_check_encoding( $txt, 'UTF-8' ) ) {
+				$txt = mb_convert_encoding( $txt, 'UTF-8', 'Windows-1252' );
+			}
+			$line  = strtok( $txt, "\n" );
+			$delim = substr_count( $line, ';' ) >= substr_count( $line, ',' ) ? ';' : ',';
+			$fh    = fopen( 'php://temp', 'r+' ); // phpcs:ignore
+			fwrite( $fh, $txt ); // phpcs:ignore
+			rewind( $fh );
+			$rows = array();
+			while ( false !== ( $r = fgetcsv( $fh, 0, $delim, '"', '\\' ) ) ) {
+				$rows[] = $r;
+			}
+			fclose( $fh ); // phpcs:ignore
+			return $rows;
+		}
+
+		/* ------------------------------------------------------------------
+		 * Export Excel (même disposition de colonnes que l'import)
+		 * ------------------------------------------------------------------ */
+
+		public static function export() {
+			if ( ! current_user_can( self::CAP ) || ! check_admin_referer( 'sapocycle_hotels_export' ) ) {
+				wp_die( 'Accès refusé.' );
+			}
+			$country = isset( $_GET['country'] ) ? sanitize_text_field( wp_unslash( $_GET['country'] ) ) : 'CH';
+			$country = isset( self::COUNTRIES[ $country ] ) ? $country : 'CH';
+			$set     = self::settings();
+			$map     = array();
+			foreach ( $set['columns'][ $country ] as $field => $letter ) {
+				$i = self::col_index( $letter );
+				if ( null !== $i ) {
+					$map[ $field ] = $i;
+				}
+			}
+			$width = max( $map ) + 1;
+			$rows  = array();
+			if ( ! empty( $set['header'][ $country ] ) ) {
+				$line = array_fill( 0, $width, '' );
+				foreach ( self::field_labels( $country ) as $field => $label ) {
+					if ( isset( $map[ $field ] ) ) {
+						$line[ $map[ $field ] ] = $label;
+					}
+				}
+				$rows[] = $line;
+			}
+			foreach ( self::hotels() as $h ) {
+				if ( $h['country'] !== $country ) {
+					continue;
+				}
+				$line = array_fill( 0, $width, '' );
+				foreach ( $map as $field => $i ) {
+					$line[ $i ] = ( 'name' === $field && ! empty( $h['premium'] ) ? "\u{2733}\u{FE0F} " : '' ) . $h[ $field ];
+				}
+				$rows[] = $line;
+			}
+			$file = self::write_xlsx( $rows, ! empty( $set['header'][ $country ] ) );
+			nocache_headers();
+			header( 'Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' );
+			header( 'Content-Disposition: attachment; filename="hotels-sapocycle-' . self::COUNTRIES[ $country ]['slug'] . '-' . wp_date( 'Y-m-d' ) . '.xlsx"' );
+			header( 'Content-Length: ' . filesize( $file ) );
+			readfile( $file ); // phpcs:ignore
+			unlink( $file ); // phpcs:ignore
+			exit;
+		}
+
+		public static function write_xlsx( array $rows, $bold_first ) {
+			if ( ! class_exists( 'ZipArchive' ) ) {
+				wp_die( 'Le serveur ne peut pas créer de fichier .xlsx (extension PHP Zip absente).' );
+			}
+			$cells = '';
+			foreach ( $rows as $r => $row ) {
+				$cells .= '<row r="' . ( $r + 1 ) . '">';
+				foreach ( $row as $c => $v ) {
+					if ( '' === (string) $v ) {
+						continue;
+					}
+					$ref = '';
+					for ( $n = $c + 1; $n > 0; $n = intdiv( $n - 1, 26 ) ) {
+						$ref = chr( 65 + ( $n - 1 ) % 26 ) . $ref;
+					}
+					$style  = ( 0 === $r && $bold_first ) ? ' s="1"' : '';
+					$cells .= '<c r="' . $ref . ( $r + 1 ) . '" t="inlineStr"' . $style . '><is><t xml:space="preserve">' . htmlspecialchars( (string) $v, ENT_XML1 | ENT_QUOTES, 'UTF-8' ) . '</t></is></c>';
+				}
+				$cells .= '</row>';
+			}
+			$head  = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+			$ns    = 'http://schemas.openxmlformats.org/';
+			$files = array(
+				'[Content_Types].xml'        => $head . '<Types xmlns="' . $ns . 'package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>',
+				'_rels/.rels'                => $head . '<Relationships xmlns="' . $ns . 'package/2006/relationships"><Relationship Id="rId1" Type="' . $ns . 'officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>',
+				'xl/workbook.xml'            => $head . '<workbook xmlns="' . $ns . 'spreadsheetml/2006/main" xmlns:r="' . $ns . 'officeDocument/2006/relationships"><sheets><sheet name="Hotels" sheetId="1" r:id="rId1"/></sheets></workbook>',
+				'xl/_rels/workbook.xml.rels' => $head . '<Relationships xmlns="' . $ns . 'package/2006/relationships"><Relationship Id="rId1" Type="' . $ns . 'officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="' . $ns . 'officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>',
+				'xl/styles.xml'              => $head . '<styleSheet xmlns="' . $ns . 'spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF0069B4"/></patternFill></fill></fills><borders count="1"><border/></borders><cellStyleXfs count="1"><xf/></cellStyleXfs><cellXfs count="2"><xf/><xf fontId="1" fillId="2" applyFont="1" applyFill="1"/></cellXfs></styleSheet>',
+				'xl/worksheets/sheet1.xml'   => $head . '<worksheet xmlns="' . $ns . 'spreadsheetml/2006/main"><sheetData>' . $cells . '</sheetData></worksheet>',
+			);
+			$tmp = wp_tempnam( 'sapocycle-hotels.xlsx' );
+			$zip = new ZipArchive();
+			$zip->open( $tmp, ZipArchive::CREATE | ZipArchive::OVERWRITE );
+			foreach ( $files as $name => $content ) {
+				$zip->addFromString( $name, $content );
+			}
+			$zip->close();
+			return $tmp;
+		}
+	}
+
+	SapoCycle_Hotels::boot();
+}
