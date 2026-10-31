@@ -1,14 +1,15 @@
-# SapoCycle : carte des hôtels (FR / DE / EN)
+# SapoCycle : carte des hôtels (Suisse, France, Allemagne × FR / DE / EN)
 
-Module WordPress qui remplace la carte WP Store Locator de la page Hôtels de sapocycle.org.
+Module WordPress qui remplace la carte WP Store Locator de sapocycle.org.
 
-* Une carte par pays (onglets automatiques dès qu'un 2e pays apparaît dans la liste)
-* Le smiley vert du site comme marqueur (plus de pin rouge), le ✳️ Premium devient une icône dédiée
-* Barre de recherche (nom, adresse, NPA, ville, canton) + filtre par canton
-* Fiche hôtel : nom, adresse, NPA, ville, canton, site internet
-* Traduction automatique FR / DE / EN via WPML
-* Menu **Carte des hôtels** dans l'administration : tableau, édition, import et export Excel
-* Aucune clé API : fond de carte OpenStreetMap, géolocalisation OpenStreetMap (Nominatim)
+* 3 pays gérés séparément : Suisse, France, Allemagne
+* 1 fichier Excel par pays, importé depuis l'administration
+* 9 shortcodes : 3 pays × 3 langues
+* Le smiley vert du site comme marqueur, le ✳️ Premium devient une icône dédiée
+* Barre de recherche (nom, adresse, code postal, ville, canton ou région) + filtre par canton ou région
+* Fiche hôtel : nom, adresse, code postal, ville, canton ou région, site internet
+* Menu **Carte des hôtels** dans l'administration : tableau, édition, import et export Excel par pays
+* Aucune clé API : fond de carte et géolocalisation OpenStreetMap
 
 ## Fichiers
 
@@ -17,65 +18,65 @@ Module WordPress qui remplace la carte WP Store Locator de la page Hôtels de sa
 | `sapocycle-hotels-map.php` | Le module complet (un seul fichier) |
 | `code-snippet-sans-balise-php.txt` | Le même code sans la ligne `<?php`, prêt à coller dans Code Snippets |
 | `sapocycle-hotels-map.zip` | Le même code en extension WordPress installable |
-| `hotels-sapocycle-import.xlsx` | Les 95 hôtels actuels du site, nettoyés, au format colonnes E, I, J, K, L, M |
+| `hotels-sapocycle-suisse.xlsx` | Les 95 hôtels suisses actuels du site, nettoyés, au format colonnes E, I, J, K, L, M |
 | `apercus/` | Captures de la carte et de l'administration |
 
 ## Installation
 
-### Option A : Code Snippets (demandé)
+### Option A : Code Snippets
 
-1. Extensions › Code Snippets › Ajouter.
+1. Extensions › Code Snippets › Ajouter (ou ouvrir le snippet existant).
 2. Type **PHP**, titre « Carte des hôtels SapoCycle ».
-3. Coller le contenu de `code-snippet-sans-balise-php.txt`.
-4. Choisir **Exécuter le snippet partout**, puis Enregistrer et activer.
+3. Coller le contenu de `code-snippet-sans-balise-php.txt` (remplace tout l'ancien code).
+4. **Exécuter le snippet partout**, puis Enregistrer et activer.
 
-### Option B : extension classique (plus robuste)
+### Option B : extension classique
 
 Extensions › Ajouter › Téléverser une extension › `sapocycle-hotels-map.zip` › Activer.
 
 N'utilisez qu'une seule des deux options à la fois.
 
-## Mise en route
+## Les 9 shortcodes
 
-1. Menu **Carte des hôtels** › onglet **Import Excel** › déposer `hotels-sapocycle-import.xlsx` › Importer.
-2. Dans la page Hôtels de chaque langue (FR, DE, EN), remplacer le module WP Store Locator par un module Texte ou Code Divi contenant :
+| Pays | Page FR | Page DE | Page EN |
+|---|---|---|---|
+| Suisse | `[sapocycle_suisse_fr]` | `[sapocycle_suisse_de]` | `[sapocycle_suisse_en]` |
+| France | `[sapocycle_france_fr]` | `[sapocycle_france_de]` | `[sapocycle_france_en]` |
+| Allemagne | `[sapocycle_allemagne_fr]` | `[sapocycle_allemagne_de]` | `[sapocycle_allemagne_en]` |
 
-   ```
-   [sapocycle_hotels]
-   ```
+Chaque shortcode affiche uniquement les hôtels de son pays, avec les textes dans sa langue (recherche, filtres, légende, bouton « Site internet »). Il se colle dans un module Texte ou Code de Divi. Options : `height="620"`, `search="no"`, `legend="no"`. Ils sont aussi copiables en un clic dans l'onglet **Intégration et réglages**.
 
-   Pour une seule carte de pays : `[sapocycle_hotels country="CH"]`.
-   Options : `height="620"`, `lang="fr"`, `search="no"`, `legend="no"`.
-3. Vider le cache (Divi, extension de cache, CDN) si la page ne change pas.
+## Importer les fichiers Excel
 
-## Mettre la carte à jour
+Menu **Carte des hôtels** › onglet **Import Excel** :
 
-1. **Exporter en Excel** (bouton en haut à droite) pour récupérer la liste actuelle.
-2. Modifier le fichier dans Excel.
-3. **Import Excel** › déposer le fichier › Importer. La carte des trois langues est à jour immédiatement.
+1. Choisir le pays en haut (Suisse, France ou Allemagne).
+2. Déposer le fichier Excel de ce pays.
+3. Importer. Les 3 cartes du pays (FR, DE, EN) sont à jour immédiatement.
 
-Mode **Remplacer** (par défaut) : le fichier devient la liste complète.
-Mode **Fusionner** : met à jour les hôtels existants (même nom + même NPA) et ajoute les nouveaux.
-Le bouton **Annuler le dernier import** restaure la liste précédente.
+Importer un pays ne touche jamais les hôtels des deux autres pays.
 
-Les hôtels sans latitude/longitude sont géolocalisés automatiquement à partir de l'adresse (environ 1 seconde par hôtel). Une adresse introuvable se place à la main dans la fiche de l'hôtel en faisant glisser le smiley.
+Mode **Remplacer** (par défaut) : le fichier devient la liste complète des hôtels de ce pays.
+Mode **Fusionner** : met à jour les hôtels existants (même nom + même code postal) et ajoute les nouveaux.
+**Annuler le dernier import** restaure la liste d'avant le dernier import.
+**Exporter les hôtels en…** télécharge la liste actuelle du pays au même format, prête à être modifiée puis réimportée.
 
 ### Colonnes lues
 
-L'import lit uniquement ces colonnes du fichier Excel (première feuille) :
+Par défaut, pour chacun des 3 fichiers :
 
 | Colonne | Contenu |
 |---|---|
 | **E** | Nom de l'hôtel (obligatoire). Un nom qui commence par ✳️ = hôtel Premium donateur |
 | **I** | Adresse |
-| **J** | NPA |
+| **J** | Code postal (NPA, PLZ) |
 | **K** | Ville |
-| **L** | Canton (ZH, VD… ou nom complet) |
+| **L** | Canton (Suisse : ZH, VD… ou nom complet), région (France), Land (Allemagne) |
 | **M** | Site internet |
 
-Toutes les autres colonnes sont ignorées. Les lettres se changent dans l'onglet Import Excel si le fichier évolue. Par défaut la ligne 1 est considérée comme une ligne de titres et ignorée (case à cocher).
+Les autres colonnes sont ignorées. Les lettres se règlent **pays par pays** dans l'onglet Import si un fichier est différent. La ligne 1 est considérée comme une ligne de titres et ignorée (case à cocher, réglable par pays).
 
-Coordonnées GPS : celles d'un hôtel déjà connu (même nom, NPA et adresse) sont conservées. Pour les autres, le module reprend d'abord les coordonnées de l'ancienne carte WP Store Locator si elle est encore installée (instantané), sinon il géolocalise l'adresse via OpenStreetMap (environ 1 seconde par hôtel). **Gardez donc WP Store Locator actif jusqu'au premier import.**
+Coordonnées GPS : celles d'un hôtel déjà connu (même nom, code postal et adresse) sont conservées. Pour les autres, le module reprend d'abord les coordonnées de l'ancienne carte WP Store Locator si elle est encore installée (instantané), sinon il géolocalise l'adresse via OpenStreetMap (environ 1 seconde par hôtel). **Gardez WP Store Locator actif jusqu'au premier import.** Une adresse introuvable se place à la main dans la fiche de l'hôtel en faisant glisser le smiley.
 
 La case « Visible sur la carte » réglée dans l'administration est conservée d'un import à l'autre.
 
@@ -83,7 +84,7 @@ Formats : `.xlsx` ou `.csv` (le vieux `.xls` doit être réenregistré en `.xlsx
 
 ## Points à vérifier dans les données actuelles
 
-Le fichier `hotels-sapocycle-import.xlsx` reprend les données du site avec ces corrections :
+Le fichier `hotels-sapocycle-suisse.xlsx` reprend les données du site avec ces corrections :
 
 * « (ZH) », « (VD) »… retirés des noms et placés dans la colonne Canton
 * Canton « TH » corrigé en « TG » (Thurgovie) pour 3 hôtels
