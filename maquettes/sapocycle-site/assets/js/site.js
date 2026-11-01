@@ -55,6 +55,8 @@
 
   /* ---------- Animations ---------- */
   function splitWords(el) {
+    if (el.dataset.splitDone) return $$('.w > span', el);
+    el.dataset.splitDone = '1';
     const walk = (node) => {
       Array.from(node.childNodes).forEach((ch) => {
         if (ch.nodeType === 3) {
@@ -74,21 +76,31 @@
     return $$('.w > span', el);
   }
 
-  if (MOTION) {
-    root.classList.add('js-anim');
+  if (MOTION) root.classList.add('js-anim');
+
+  // Animations d'une page. Rejouables : le fichier unique les relance à chaque changement de page.
+  function animate(scope) {
+    if (HAS_GSAP) {
+      const st = $('[data-story]', scope);
+      if (st && st._activate) $$('.story__step', st).forEach((s, i) => ScrollTrigger.create({ trigger: s, start: 'top 55%', end: 'bottom 55%', onToggle: (x) => { if (x.isActive) st._activate(i); } }));
+      const fm = $('#film', scope);
+      if (fm && fm._trigger) fm._trigger();
+    }
+    if (!MOTION) return;
     const vh = window.innerHeight;
 
     // Entrée de page
-    const ht = $('[data-hero-title]');
+    const ht = $('[data-hero-title]', scope);
     const intro = gsap.timeline({ defaults: { ease: 'expo.out' } });
     if (ht) intro.from(splitWords(ht), { yPercent: 110, duration: 1.3, stagger: 0.05 }, 0.1);
-    intro.from('[data-hero]', { y: 22, opacity: 0, duration: 1.1, stagger: 0.09 }, 0.3);
-    intro.from('[data-hero-img]', { clipPath: 'inset(18% 14% 18% 14% round 64px)', scale: 1.06, duration: 1.6, ease: 'expo.inOut', stagger: 0.15 }, 0.1);
-    intro.from('[data-hero-card]', { y: 30, opacity: 0, scale: 0.94, duration: 1.1, ease: 'back.out(1.4)' }, 0.9);
-    $$('[data-float]').forEach((b, i) => gsap.to(b, { y: -18 - i * 6, duration: 3 + i, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
+    const heroEls = $$('[data-hero]', scope), heroImgs = $$('[data-hero-img]', scope), heroCards = $$('[data-hero-card]', scope);
+    if (heroEls.length) intro.from(heroEls, { y: 22, opacity: 0, duration: 1.1, stagger: 0.09 }, 0.3);
+    if (heroImgs.length) intro.from(heroImgs, { clipPath: 'inset(18% 14% 18% 14% round 64px)', scale: 1.06, duration: 1.6, ease: 'expo.inOut', stagger: 0.15 }, 0.1);
+    if (heroCards.length) intro.from(heroCards, { y: 30, opacity: 0, scale: 0.94, duration: 1.1, ease: 'back.out(1.4)' }, 0.9);
+    $$('[data-float]', scope).forEach((b, i) => gsap.to(b, { y: -18 - i * 6, duration: 3 + i, ease: 'sine.inOut', yoyo: true, repeat: -1 }));
 
     // Titres de section : les mots montent
-    $$('.split').forEach((h) => {
+    $$('.split', scope).forEach((h) => {
       if (h === ht) return;
       const words = splitWords(h);
       if (h.getBoundingClientRect().top < vh) { gsap.from(words, { yPercent: 110, duration: 1.2, stagger: 0.04, ease: 'expo.out', delay: 0.15 }); return; }
@@ -96,7 +108,7 @@
     });
 
     // Apparitions en fondu
-    const rev = $$('[data-reveal]');
+    const rev = $$('[data-reveal]', scope);
     rev.filter((el) => el.getBoundingClientRect().top < vh).forEach((el, i) => gsap.to(el, { opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', delay: 0.2 + i * 0.06 }));
     ScrollTrigger.batch(rev.filter((el) => el.getBoundingClientRect().top >= vh), {
       start: 'top 90%',
@@ -104,26 +116,26 @@
     });
 
     // Photos qui s'ouvrent dans leur forme de savon
-    $$('[data-clip]').forEach((f) => {
+    $$('[data-clip]', scope).forEach((f) => {
       gsap.to(f, { clipPath: 'inset(0% 0% 0% 0% round 0px)', duration: 1.6, ease: 'expo.inOut', scrollTrigger: { trigger: f, start: 'top 85%' }, onComplete: () => { f.style.clipPath = 'none'; } });
     });
-    $$('[data-parallax]').forEach((img) => {
+    $$('[data-parallax]', scope).forEach((img) => {
       gsap.fromTo(img, { yPercent: -6, scale: 1.12 }, { yPercent: 6, scale: 1.12, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
     });
 
     // Compteurs
-    $$('[data-count]').forEach((el) => {
+    $$('[data-count]', scope).forEach((el) => {
       const end = Number(el.dataset.count);
       ScrollTrigger.create({ trigger: el, start: 'top 92%', once: true, onEnter: () => { const o = { v: 0 }; gsap.to(o, { v: end, duration: 2.2, ease: 'power3.out', onUpdate: () => { el.textContent = fmt(o.v); } }); } });
     });
 
     // Ligne qui relie les étapes
-    $$('[data-draw]').forEach((line) => {
+    $$('[data-draw]', scope).forEach((line) => {
       gsap.fromTo(line, { attr: { x2: 0 } }, { attr: { x2: 100 }, ease: 'none', scrollTrigger: { trigger: line.closest('[data-steps]'), start: 'top 75%', end: 'bottom 55%', scrub: 0.6 } });
     });
 
     // Frise de l'histoire
-    const tlFill = $('.timeline__fill');
+    const tlFill = $('.timeline__fill', scope);
     if (tlFill) gsap.to(tlFill, { height: () => tlFill.parentElement.offsetHeight - 16, ease: 'none', scrollTrigger: { trigger: tlFill.parentElement, start: 'top 70%', end: 'bottom 60%', scrub: 0.5, invalidateOnRefresh: true } });
   }
 
@@ -137,7 +149,7 @@
       if (badge) badge.textContent = steps[i].dataset.badge || '';
     };
     activate(0);
-    if (HAS_GSAP) steps.forEach((s, i) => ScrollTrigger.create({ trigger: s, start: 'top 55%', end: 'bottom 55%', onToggle: (st) => { if (st.isActive) activate(i); } }));
+    story._activate = activate;
   }
 
   /* ---------- Témoignages ---------- */
@@ -291,14 +303,19 @@
     toggle.addEventListener('click', () => { if (playing) pause(true); else { userPaused = false; start(); } });
     restart.addEventListener('click', () => { tl.time(0); userPaused = false; start(); });
     seek.addEventListener('input', () => { film.classList.add('is-started'); tl.time((seek.value / 1000) * END); sync(); });
-    if (!REDUCED) ScrollTrigger.create({
+    film._trigger = () => { if (!REDUCED) ScrollTrigger.create({
       trigger: film, start: 'top 60%', end: 'bottom 20%',
       onEnter: () => { if (userPaused) return; if (!film.classList.contains('is-started')) tl.time(0); if (tl.time() < END - 0.05) start(); },
       onEnterBack: () => { if (!userPaused && film.classList.contains('is-started') && tl.time() < END - 0.05) start(); },
       onLeave: () => { if (playing) pause(false); },
       onLeaveBack: () => { if (playing) pause(false); }
-    });
+    }); };
+    film._pause = () => { if (playing) pause(false); };
   }
+
+  // Site multipage : on anime la page courante. Fichier unique : le routeur s'en charge.
+  window.SapoCycle = { animate, lenis };
+  if (!window.SAPO_SPA) animate(document);
 
   if (HAS_GSAP) {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
