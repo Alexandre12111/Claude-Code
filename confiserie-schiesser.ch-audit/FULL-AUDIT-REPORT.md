@@ -120,3 +120,38 @@ Score : **76 / 100** (+1). Score estimé une fois l'import appliqué, le plan du
 | 38 liens français redirigés | présents | présents : **import du 1er novembre pas encore appliqué** |
 | Images de partage (og:image) | 0 / 21 | 0 / 21 : **import pas encore appliqué** |
 | Alt des grandes photos | 7 pages sans alt | 7 pages sans alt : **import pas encore appliqué** |
+
+## Suivi : 3e passage du 1er novembre 2026 (thème 0.23.3, import appliqué)
+
+**Score : 86 / 100** (75 au 1er passage, 76 au 2e).
+
+| Catégorie | 1er passage | 3e passage |
+|---|---|---|
+| Technique | 62 | **88** |
+| Contenu | 80 | 80 |
+| SEO de page | 82 | **93** |
+| Données structurées | 72 | **82** |
+| Performance (laboratoire) | 85 | **88** |
+| Recherche IA | 75 | **80** |
+| Images | 70 | **85** |
+
+**Corrigé :**
+* **robots.txt** sans `Crawl-delay`, avec la ligne `Sitemap:`.
+* **Plan du site** : `sitemap_index.xml` répond 200, avec 21 adresses (`page-sitemap.xml`).
+* **21 pages en 200**, aucune redirection interne, aucun lien vers une adresse redirigée. Les 38 liens français sont corrigés, et `/fr/` et `/en/` sont désormais les accueils eux-mêmes.
+* **Image de partage (og:image) sur 21 pages sur 21.**
+* **Textes alternatifs** : toutes les photos de contenu en ont un. Seule exception, l'image vide de la visionneuse d'archives, remplie au clic, ce qui est normal.
+* **Fiche établissement** : logo officiel, lien de plan correct. La page Tea Room passe de 775 à 267 Ko.
+
+**Mesures de laboratoire** (Chromium, mobile) : LCP de 1,3 à 1,6 s, CLS de 0, pages de 259 à 267 Ko, aucune ressource tierce. Sur ordinateur, l'accueil a mis 3,2 s au premier affichage, avec un TTFB de 1,2 s : page pas encore en cache après le vidage. Les autres pages sont entre 1,3 et 1,7 s.
+
+**Ce qui reste :**
+
+| Constat | Gravité | Action |
+|---|---|---|
+| Pas de `sameAs` (profils Google, Instagram, Facebook, TripAdvisor) dans la fiche établissement | Moyenne | Saisir les adresses dans Réglages maison → Fiche établissement |
+| Fiche Google Business Profile et annuaires locaux (local.ch, search.ch, TripAdvisor) non vérifiables d'ici | Moyenne | Voir le plan d'action, phase 3 |
+| Note Google non reliée (pas d'avis affichés, pas d'`aggregateRating`) | Basse | Clé Places API et identifiant du lieu dans Réglages maison |
+| Langue déclarée `de-DE` / `fr-FR` au lieu de `de-CH` / `fr-CH` | Basse | Polylang → Langues → locale |
+| En-têtes de sécurité (seul HSTS) | Basse | Demander à l'hébergeur |
+| Pas de données terrain (CrUX), PageSpeed Insights en quota dépassé | Info | Suivre les Core Web Vitals dans Search Console dès qu'il y aura assez de trafic |
