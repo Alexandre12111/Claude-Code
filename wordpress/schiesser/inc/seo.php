@@ -40,6 +40,17 @@ function schiesser_logo_maison() {
 	return SCHIESSER_URI . '/assets/images/logo/schiesser-logo.png';
 }
 
+/** Logo pour les données structurées : le logo officiel (carré, 800 px pour celui du thème). */
+function schiesser_schema_logo() {
+	$url  = schiesser_logo_maison();
+	$logo = array( '@type' => 'ImageObject', '@id' => home_url( '/#logo' ), 'url' => $url, 'contentUrl' => $url, 'caption' => schiesser_reglage( 'nom_etablissement' ) ?: get_bloginfo( 'name' ) );
+	if ( false !== strpos( $url, '/assets/images/logo/schiesser-logo.png' ) ) {
+		$logo['width']  = 800;
+		$logo['height'] = 800;
+	}
+	return $logo;
+}
+
 /** Image représentative de la maison : photo du Hero de l'accueil, sinon le logo. */
 function schiesser_image_maison() {
 	$accueil = (int) get_option( 'page_on_front' );
@@ -95,7 +106,9 @@ function schiesser_schema_etablissement() {
 		);
 	}
 	if ( $r['lien_maps'] ) {
-		$schema['hasMap'] = $r['lien_maps'];
+		// Rank Math réécrit « & » en « &amp; » dans le JSON-LD : un lien de recherche à un seul paramètre l'évite.
+		$schema['hasMap'] = false === strpos( $r['lien_maps'], '&' ) ? $r['lien_maps']
+			: 'https://maps.google.com/?q=' . rawurlencode( implode( ', ', array_filter( array( $r['nom_etablissement'] ?? '', $r['rue'] ?? '', trim( ( $r['code_postal'] ?? '' ) . ' ' . ( $r['ville'] ?? '' ) ) ) ) ) );
 	}
 
 	// Horaires : les jours aux mêmes heures sont regroupés.
@@ -547,10 +560,8 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 			continue;
 		}
 		if ( $entite['@id'] === $etab['@id'] ) {
-			// Rank Math garde son logo s'il en a un ; le thème apporte type, adresse, horaires, position.
-			if ( isset( $entite['logo'] ) ) {
-				unset( $etab['logo'] );
-			}
+			// Le logo officiel (droit) remplace celui de Rank Math, souvent l'icône du site ; le thème apporte aussi type, adresse, horaires, position.
+			$etab['logo'] = schiesser_schema_logo();
 			$data[ $cle ] = array_merge( $entite, $etab );
 			$fusionne     = true;
 		}
@@ -560,6 +571,11 @@ add_filter( 'rank_math/json_ld', function ( $data ) {
 	}
 	if ( ! $fusionne ) {
 		$data['schiesser_etablissement'] = $etab;
+	}
+	foreach ( $data as $cle => $entite ) {
+		if ( is_array( $entite ) && isset( $entite['@id'] ) && '#logo' === substr( (string) $entite['@id'], -5 ) ) {
+			$data[ $cle ] = schiesser_schema_logo(); // nœud « logo » séparé de Rank Math
+		}
 	}
 
 	// Pages et produits : Rank Math ajoute par défaut un « Article », qui ne décrit pas une page

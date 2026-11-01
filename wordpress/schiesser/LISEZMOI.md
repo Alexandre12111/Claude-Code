@@ -3,6 +3,12 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.23.2 : corrections de l'audit SEO
+
+* **Fiche établissement (données Google)** : le logo officiel droit (`schiesser-logo.png`, 800 × 800) remplace celui de Rank Math, qui était l'icône du site. Le lien vers le plan n'est plus mal encodé (`&amp;`).
+* **Tea Room** : la photo de banque d'images (Unsplash, 507 Ko) chargée en fond de la montée au Tea Room est retirée ; la page passe de 775 à environ 270 Ko.
+* Fichier d'import du 1er novembre : liens directs `/fr/…` dans les pages françaises (38 liens), textes alternatifs des grandes photos dans la langue de chaque page, image de partage (réseaux sociaux) sur les 21 pages et image de partage par défaut dans Rank Math.
+
 ## Version 0.23.1 : cartes sans effet au survol
 
 * Les cartes d'informations (« Gut zu wissen », « Für eine schnelle Offerte », cartes « principes ») ne changent plus de couleur au survol, sur fond clair comme sur fond vert (le survol donnait un vert grisé sur fond vert sapin).
