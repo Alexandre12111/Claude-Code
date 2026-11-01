@@ -208,6 +208,7 @@ function aurea_realisations_ecran() {
 			Ajouter une réalisation
 		</button>
 		<button type="button" class="aurea-btn" id="aurea-r-importer" hidden>Importer les projets du site actuel</button>
+		<a class="aurea-btn" href="<?php echo esc_url( admin_url( 'admin.php?page=aurea-transfert' ) ); ?>">Import / export</a>
 		<label class="aurea-filtre">Afficher
 			<select id="aurea-r-filtre">
 				<option value="">Toutes</option>
@@ -435,7 +436,7 @@ function aurea_real_captures_a_jour( $limite = 3 ) {
 			$cle = (string) get_post_meta( $r['image'], '_aurea_real_source', true );
 		}
 		$pc = AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . '.webp';
-		if ( ! $cle || ! file_exists( $pc ) ) {
+		if ( ! $cle || ! file_exists( $pc ) || get_post_meta( $r['id'], '_aurea_captures_import', true ) ) { // captures importées : gardées
 			continue;
 		}
 		$empreinte = md5_file( $pc ) . ( file_exists( AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . '-mobile.webp' ) ? md5_file( AUREA_STUDIO_DIR . 'assets/realisations/' . $cle . '-mobile.webp' ) : '' );

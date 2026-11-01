@@ -88,7 +88,7 @@ function aurea_carte_projet( $r, $meta = 'type', $classes = 'proj rv', $delai = 
 		esc_html( $action ),
 		esc_html( $r['titre'] ),
 		esc_html( $texte ),
-		esc_html( aurea_real_en( $r['accroche'] ) )
+		esc_html( 'en' === aurea_langue() && get_post_meta( $r['id'], '_real_accroche_en', true ) ? get_post_meta( $r['id'], '_real_accroche_en', true ) : aurea_real_en( $r['accroche'] ) )
 	);
 }
 
