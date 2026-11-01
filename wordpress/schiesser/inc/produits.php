@@ -75,13 +75,20 @@ add_action( 'init', function () {
 	) );
 } );
 
-/* Les nouvelles adresses /produits/… fonctionnent dès l'activation, sans passer par Réglages → Permaliens. */
-add_action( 'init', function () {
+/*
+ * Les nouvelles adresses /produits/… fonctionnent dès l'activation, sans passer par Réglages → Permaliens.
+ * Seulement sur une page du site, une fois toutes les extensions chargées : régénérées pendant une tâche
+ * planifiée ou une requête d'administration, les règles pourraient perdre celles du plan du site de Rank Math.
+ */
+add_action( 'wp_loaded', function () {
+	if ( is_admin() || wp_doing_cron() || wp_doing_ajax() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) ) {
+		return;
+	}
 	if ( get_option( 'schiesser_version_reecriture' ) !== SCHIESSER_VERSION ) {
 		flush_rewrite_rules( false );
 		update_option( 'schiesser_version_reecriture', SCHIESSER_VERSION );
 	}
-}, 99 );
+}, 98 );
 
 add_filter( 'enter_title_here', function ( $texte, $post ) {
 	return SCHIESSER_PRODUIT === $post->post_type ? 'Nom du produit' : $texte;

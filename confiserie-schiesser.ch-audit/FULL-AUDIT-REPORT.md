@@ -105,3 +105,18 @@ Type d'activité détecté : **commerce local** (confiserie et salon de thé ave
 * NAP identique partout : Marktplatz 19, 4051 Basel, +41 61 261 60 77.
 * Itinéraires, horaires en direct, carte et questions locales : très bon.
 * À vérifier hors site : fiche Google Business Profile (catégories « Confiserie » et « Salon de thé », photos, horaires des jours fériés, réponses aux avis) et cohérence sur local.ch, search.ch, TripAdvisor, Basel Tourismus.
+
+## Suivi : 2e passage du 1er novembre 2026 (thème 0.23.2 en ligne)
+
+Score : **76 / 100** (+1). Score estimé une fois l'import appliqué, le plan du site stable et le robots.txt corrigé : environ 88.
+
+| Point | 1er passage | 2e passage |
+|---|---|---|
+| Logo de la fiche établissement | icône du site (« ChatGPT-Image ») | **logo officiel droit** ✓ |
+| Lien vers le plan (`hasMap`) | `&amp;` mal encodé | **corrigé** ✓ |
+| Poids de la page Tea Room (mobile) | 775 Ko, photo Unsplash tierce | **267 Ko**, aucune ressource tierce ✓ |
+| Plan du site `sitemap_index.xml` | 404 | 404 (redevient indisponible après chaque enregistrement des permaliens) → **corrigé dans le thème 0.23.3** |
+| robots.txt | `Crawl-delay: 10`, pas de Sitemap | inchangé (fichier par défaut de l'hébergeur) → **bouton de création dans le thème 0.23.3** |
+| 38 liens français redirigés | présents | présents : **import du 1er novembre pas encore appliqué** |
+| Images de partage (og:image) | 0 / 21 | 0 / 21 : **import pas encore appliqué** |
+| Alt des grandes photos | 7 pages sans alt | 7 pages sans alt : **import pas encore appliqué** |

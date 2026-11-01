@@ -40,12 +40,18 @@ function schiesser_entretien_resultat() {
 		$texte = sprintf( 'Carte transférée : %d rubriques et %d produits. Le bloc « Carte du salon » de la page affiche maintenant ces produits.', (int) ( $_GET['r'] ?? 0 ), (int) ( $_GET['p'] ?? 0 ) ); // phpcs:ignore WordPress.Security.NonceVerification
 	} elseif ( 'carte-erreur' === $fait ) {
 		$texte = 'Aucune carte à transférer : elle est peut-être déjà dans « Produits Tea Room ».';
+	} elseif ( 'plan' === $fait ) {
+		$texte = 'Adresses du site régénérées et cache vidé : le plan du site est de nouveau disponible.';
+	} elseif ( 'robots' === $fait ) {
+		$texte = 'Fichier robots.txt écrit à la racine du site. Google et Bing le liront à leur prochain passage.';
+	} elseif ( 'robots-erreur' === $fait ) {
+		$texte = 'Le fichier robots.txt n’a pas pu être écrit à la racine du site. Déposez-le avec le gestionnaire de fichiers de l’hébergeur (contenu conseillé ci-dessous).';
 	} elseif ( 'carte-garder' === $fait ) {
 		$texte = 'C’est noté : la carte reste saisie dans la page.';
 	} else {
 		return;
 	}
-	$classe = in_array( $fait, array( 'langue-de-erreur', 'carte-erreur' ), true ) ? 'notice-error' : 'notice-success';
+	$classe = in_array( $fait, array( 'langue-de-erreur', 'carte-erreur', 'robots-erreur' ), true ) ? 'notice-error' : 'notice-success';
 	echo '<div class="notice ' . esc_attr( $classe ) . ' is-dismissible"><p>' . wp_kses_post( $texte ) . '</p></div>';
 }
 
@@ -66,6 +72,11 @@ function schiesser_page_entretien() {
 		<hr class="wp-header-end">
 		<?php
 		schiesser_entretien_resultat();
+
+		/* Plan du site et robots.txt (inc/technique-seo.php) */
+		if ( function_exists( 'schiesser_entretien_referencement' ) ) {
+			schiesser_entretien_referencement();
+		}
 
 		/* Langues des contenus (Polylang) */
 		schiesser_carte_debut( 'Langues des produits et des pages', 'Chaque produit, plat et page doit être rangé dans sa langue et relié à ses traductions.', 'translation' );

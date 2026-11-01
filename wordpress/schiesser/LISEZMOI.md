@@ -3,6 +3,11 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.23.3 : plan du site toujours disponible, robots.txt
+
+* **Plan du site** : il répondait 404 peu après chaque « Enregistrer » dans Réglages → Permaliens, quand les règles d'adresses étaient régénérées sans celles de Rank Math. Le thème vérifie maintenant ces règles et les remet tout seul (au plus une fois toutes les 10 minutes) ; sa propre régénération, à chaque nouvelle version, ne se fait plus que sur une page du site, extensions chargées.
+* **Réglages maison → Entretien → « Plan du site et robots.txt »** : état réel du plan du site et du robots.txt tels que Google les lit, bouton « Réparer le plan du site » (adresses régénérées, cache vidé) et bouton « Créer le fichier robots.txt » (sans Crawl-delay, avec l'adresse du plan du site). Sans fichier à la racine du site, l'hébergeur servait son robots.txt par défaut (« Crawl-delay: 10 »).
+
 ## Version 0.23.2 : corrections de l'audit SEO
 
 * **Fiche établissement (données Google)** : le logo officiel droit (`schiesser-logo.png`, 800 × 800) remplace celui de Rank Math, qui était l'icône du site. Le lien vers le plan n'est plus mal encodé (`&amp;`).
