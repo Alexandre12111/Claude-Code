@@ -1,0 +1,242 @@
+{
+  "summary": {
+    "health_score": 75,
+    "business_type": "Commerce local : confiserie et salon de thé (Bâle), site vitrine en trois langues",
+    "top_findings": [
+      "Plan du site (sitemap_index.xml) en 404",
+      "38 liens internes français passent par une redirection 301",
+      "Aucune image de partage (og:image) sur les 20 pages",
+      "Fiche établissement : logo = icône du site, pas de sameAs, hasMap mal encodé",
+      "robots.txt : Crawl-delay 10 et pas de ligne Sitemap"
+    ],
+    "quick_wins": [
+      "Réactiver le plan du site de Rank Math et enregistrer les permaliens",
+      "Retirer Crawl-delay et ajouter Sitemap au robots.txt",
+      "Corriger les liens français par un fichier d'import",
+      "Image OpenGraph par défaut dans Rank Math",
+      "Logo et profils sociaux dans la fiche établissement"
+    ]
+  },
+  "categories": [
+    {
+      "name": "Technique",
+      "score": 62,
+      "what_works": [
+        "HTTPS et redirections http/www propres",
+        "canonical correcte sur les 20 pages",
+        "hreflang DE/FR/EN réciproques",
+        "Rendu côté serveur, pages indexables"
+      ],
+      "findings": [
+        {
+          "title": "Plan du site introuvable",
+          "severity": "Critical",
+          "description": "/sitemap_index.xml répond 404 ; /sitemap.xml et /wp-sitemap.xml y redirigent.",
+          "recommendation": "Activer le module Plan du site de Rank Math, réenregistrer les permaliens, envoyer le sitemap à Search Console et Bing."
+        },
+        {
+          "title": "robots.txt incomplet",
+          "severity": "High",
+          "description": "Seulement « Crawl-delay: 10 », pas de ligne Sitemap. Bing respecte le délai.",
+          "recommendation": "Retirer Crawl-delay, ajouter « Sitemap: https://confiserie-schiesser.ch/sitemap_index.xml »."
+        },
+        {
+          "title": "Langue déclarée de-DE / fr-FR",
+          "severity": "Low",
+          "description": "Le site vise la Suisse (allemand de Suisse).",
+          "recommendation": "Locale de_CH et fr_CH dans Polylang."
+        },
+        {
+          "title": "En-têtes de sécurité",
+          "severity": "Low",
+          "description": "Seul HSTS est présent.",
+          "recommendation": "Ajouter X-Content-Type-Options, Referrer-Policy, X-Frame-Options chez l'hébergeur."
+        }
+      ]
+    },
+    {
+      "name": "Contenu",
+      "score": 80,
+      "what_works": [
+        "330 à 2 100 mots par page, contenu local précis",
+        "Histoire documentée par des archives (expérience, ancienneté)",
+        "Questions fréquentes sur chaque page"
+      ],
+      "findings": [
+        {
+          "title": "Peu de signaux d'autorité externes",
+          "severity": "Medium",
+          "description": "Pas d'avis affichés, pas de presse ni de distinctions citées.",
+          "recommendation": "Relier la note Google, citer presse et partenaires."
+        }
+      ]
+    },
+    {
+      "name": "SEO de page",
+      "score": 82,
+      "what_works": [
+        "Titres 48 à 60 caractères, descriptions 133 à 160",
+        "Un seul H1 par page, aucun titre en double"
+      ],
+      "findings": [
+        {
+          "title": "Liens internes redirigés",
+          "severity": "Medium",
+          "description": "38 liens des pages françaises pointent vers /boutique/, /salon-de-the/… (301 vers /fr/…).",
+          "recommendation": "Remplacer par les adresses /fr/… (fichier d'import)."
+        },
+        {
+          "title": "Pas d'image de partage",
+          "severity": "Medium",
+          "description": "Aucune balise og:image sur les 20 pages.",
+          "recommendation": "Image OpenGraph par défaut dans Rank Math, puis une par page."
+        }
+      ]
+    },
+    {
+      "name": "Données structurées",
+      "score": 72,
+      "what_works": [
+        "Bakery + CafeOrCoffeeShop avec adresse, GPS, horaires, carte",
+        "BreadcrumbList et AboutPage"
+      ],
+      "findings": [
+        {
+          "title": "Logo de la fiche = icône du site",
+          "severity": "Medium",
+          "description": "Le logo publié est cropped-ChatGPT-Image-Oct-1-2026….png.",
+          "recommendation": "Logo officiel dans Rank Math → SEO local."
+        },
+        {
+          "title": "Pas de sameAs",
+          "severity": "Medium",
+          "description": "Aucun profil lié (Google, Instagram, TripAdvisor).",
+          "recommendation": "Saisir les profils dans Réglages maison."
+        },
+        {
+          "title": "hasMap mal encodé",
+          "severity": "Low",
+          "description": "L'URL contient &amp; au lieu de &.",
+          "recommendation": "Décoder les entités dans le thème."
+        },
+        {
+          "title": "FAQPage",
+          "severity": "Info",
+          "description": "Google n'affiche plus de résultats FAQ.",
+          "recommendation": "Ne rien supprimer."
+        }
+      ]
+    },
+    {
+      "name": "Performance",
+      "score": 85,
+      "what_works": [
+        "LCP 1,3 à 2,2 s, CLS ≈ 0 (laboratoire)",
+        "260 à 360 Ko par page (hors Tea Room)"
+      ],
+      "findings": [
+        {
+          "title": "Photo Unsplash inutile sur le Tea Room",
+          "severity": "Medium",
+          "description": "Fond de la montée au Tea Room : 507 Ko téléchargés depuis images.unsplash.com, invisibles.",
+          "recommendation": "Retirer l'URL de la feuille de style du thème."
+        },
+        {
+          "title": "Photos PNG",
+          "severity": "Low",
+          "description": "5 photos des moments du Tea Room en PNG.",
+          "recommendation": "Les remplacer par du JPEG ou du WebP."
+        }
+      ]
+    },
+    {
+      "name": "Préparation à la recherche IA",
+      "score": 75,
+      "what_works": [
+        "Aucun robot IA bloqué",
+        "Contenu en questions et réponses, rendu côté serveur"
+      ],
+      "findings": [
+        {
+          "title": "Entité peu reliée",
+          "severity": "Medium",
+          "description": "Pas de sameAs ni de fiche Google liée.",
+          "recommendation": "Voir données structurées."
+        },
+        {
+          "title": "Pas de llms.txt",
+          "severity": "Info",
+          "description": "Facultatif.",
+          "recommendation": "Aucune action nécessaire."
+        }
+      ]
+    },
+    {
+      "name": "Images",
+      "score": 70,
+      "what_works": [
+        "Textes alternatifs sur les photos de contenu"
+      ],
+      "findings": [
+        {
+          "title": "Alt vide sur les grandes photos",
+          "severity": "Low",
+          "description": "Accueil, Firmengeschenke, contact FR.",
+          "recommendation": "Ajouter un alt descriptif."
+        },
+        {
+          "title": "Pas de WebP/AVIF",
+          "severity": "Low",
+          "description": "Toutes les photos en JPEG ou PNG.",
+          "recommendation": "Conversion WebP."
+        }
+      ]
+    }
+  ],
+  "action_plan": {
+    "phases": [
+      {
+        "name": "Phase 1 : corrections critiques",
+        "timeframe": "Semaine 1",
+        "items": [
+          "Réactiver le plan du site (Rank Math) et enregistrer les permaliens",
+          "Envoyer le sitemap à Search Console et Bing",
+          "robots.txt : retirer Crawl-delay, ajouter Sitemap"
+        ]
+      },
+      {
+        "name": "Phase 2 : fort impact",
+        "timeframe": "Semaines 2 et 3",
+        "items": [
+          "Corriger les 38 liens français (import)",
+          "Image OpenGraph par défaut",
+          "Logo officiel et sameAs dans la fiche établissement",
+          "Thème : retirer la photo Unsplash, décoder hasMap"
+        ]
+      },
+      {
+        "name": "Phase 3 : contenu et autorité",
+        "timeframe": "Mois 2",
+        "items": [
+          "Google Business Profile complet",
+          "Relier la note Google",
+          "Citations locales cohérentes",
+          "Alt des grandes photos, photos PNG en JPEG/WebP, locale de_CH"
+        ]
+      },
+      {
+        "name": "Phase 4 : suivi",
+        "timeframe": "En continu",
+        "items": [
+          "Search Console et Bing Webmaster Tools",
+          "Nouvel audit dans 2 mois",
+          "En-têtes de sécurité"
+        ]
+      }
+    ]
+  },
+  "artifacts": {
+    "findings_dir": "findings/",
+    "screenshots_dir": "screenshots/"
+  }
+}
