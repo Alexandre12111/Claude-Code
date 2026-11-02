@@ -1209,3 +1209,44 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
   .iv-grille--liste .iv-carte { grid-template-columns: 56px 1fr 44px; gap: 0 14px; padding: 14px 8px; }
   .iv-grille--liste .iv-carte__photo { width: 56px; height: 56px; }
 }
+
+/* =====================================================================
+   VERSION 5 : retours client (moins de défilement, aucun effet d'apparition)
+   ===================================================================== */
+:root { --sec: clamp(56px, 6.5vw, 88px); }
+.sec--compact { padding-block: clamp(44px, 5vw, 64px); }
+.sec--compact .tete-sec { margin-bottom: clamp(24px, 3vw, 36px); }
+.cartes--compactes .carte-b { padding: 22px 24px; gap: 10px; }
+.cartes--compactes .carte-b .h3 { font-size: 1.25rem; }
+.avantages--ligne li { padding: 22px 22px; gap: 8px; }
+.avantages--ligne h3 { font-size: 1.0625rem; }
+.avantages--ligne p { font-size: .875rem; }
+@media (min-width: 1100px) { .avantages--ligne { grid-template-columns: repeat(4, 1fr); } .avantages--ligne li.plein { grid-column: 1 / -1; flex-direction: row; align-items: baseline; gap: 24px; } .avantages--ligne li.plein h3 { flex: none; } }
+.sec--compact .maturite li { padding: 18px 22px; }
+.sec--compact .calendrier__etapes button { min-height: 92px; padding: 14px 16px; }
+.sec--compact .calendrier__panneau { padding: 22px 28px; }
+.sec--compact .chiffres--3 b { font-size: clamp(2rem, 3.4vw, 2.75rem); }
+.bande-cta { display: grid; gap: 24px; align-items: center; }
+@media (min-width: 960px) { .bande-cta { grid-template-columns: 1fr auto; gap: 48px; } }
+
+/* aucun effet d'apparition : le contenu est visible tout de suite */
+.js [data-reveal], .js [data-reveal].is-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+.js .lignes .l > span { transform: none !important; transition: none !important; }
+.js [data-volet] { clip-path: none !important; }
+.js [data-volet] img { transform: none !important; }
+.js .fx-trace .trace { stroke-dashoffset: 0; }
+.manifeste__titre .mot { color: inherit; }
+
+/* section vidéo de « L'événement » : simple bandeau, sans effet d'entrée dans la vidéo */
+.cinema--statique { height: auto; min-height: 0; aspect-ratio: 21 / 9; max-height: 640px; background: var(--nuit); }
+.cinema--statique .cinema__cadre { clip-path: none !important; }
+@media (max-width: 719px) { .cinema--statique { aspect-ratio: auto; height: 70svh; } }
+
+/* vidéo de la Terre des workshops : bien visible comme sur le site actuel */
+.phero--video .phero__fond img, .phero--video .phero__fond iframe { opacity: .8; }
+.phero--video::after { background: linear-gradient(90deg, rgba(4, 18, 38, .85) 0%, rgba(4, 18, 38, .45) 55%, rgba(4, 18, 38, .1) 100%), linear-gradient(0deg, var(--nuit) 0%, transparent 35%); }
+
+/* vidéos YouTube : visibles seulement une fois réellement en lecture (sinon l'image de couverture reste) */
+.phero__fond iframe, .lieu__visuel iframe { opacity: 0 !important; transition: opacity 1s; }
+.phero__fond iframe.is-lecture, .lieu__visuel iframe.is-lecture { opacity: 1 !important; }
+.phero--video .phero__fond iframe.is-lecture { opacity: .8 !important; }

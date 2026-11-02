@@ -99,3 +99,10 @@ Moteur : GSAP 3.12.5 et ScrollTrigger hébergés avec le site (`assets/vendor/`)
 * **Partenaires** : chaque logo ouvre une fiche (logo, catégorie, description reprise du site actuel), avec partenaire précédent et suivant.
 * **Intervenants** : en-tête avec mosaïque animée de portraits, trois prises de parole à ne pas manquer, barre collante (univers, recherche, grille ou liste), fiche par intervenant avec ses horaires de passage tirés du programme.
 * **Effets ajoutés** : faisceau lumineux sur le contour des blocs, reflet sur les boutons, icônes attirées par la souris et retracées au survol, titres qui apparaissent mot à mot avec un flou, galerie révélée par volets avec parallaxe.
+
+## Version 5 (retours client du document « Site_dualtech »)
+
+* **Moins de défilement** : accueil réduit de moitié (16 250 px à 7 760 px) et aligné sur l'ordre du site actuel (hero, organisateurs, filières, édition 2026, intérêt de la participation, intervenants, Campus Cyber, FAQ, inscription). Formats, temps forts, Prix et partenaires passent sur une nouvelle page « L'événement » (`/l-evenement/`). Marges de section réduites, page Prix compactée.
+* **Aucun effet d'apparition** : plus de fondus ni de glissements au défilement, plus d'écran de chargement, plus d'effet d'entrée dans la vidéo. Restent les survols, les compteurs et l'horizontale des temps forts.
+* **Vidéos YouTube** : affichées seulement quand YouTube confirme la lecture (sinon l'image de couverture reste) ; bouton du Campus Cyber vers YouTube dans un nouvel onglet.
+* **Intervenants** : catégories Innovation, Institutions, Industrie, Financement et marchés, Recherche (ONERA et INAS).

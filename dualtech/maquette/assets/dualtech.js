@@ -129,16 +129,29 @@
   }
 
   /* Vidéo d'arrière-plan des pages intérieures */
+  /* Vidéos YouTube d'arrière-plan : affichées seulement quand YouTube confirme la lecture.
+     Si la lecture est refusée (fichier ouvert en local, navigateur restrictif), l'image de couverture reste. */
+  const videoYouTube = (id, extra, titre) => {
+    const f = document.createElement('iframe');
+    const origine = /^https?:/.test(location.protocol) ? `&origin=${encodeURIComponent(location.origin)}` : '';
+    f.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&disablekb=1&fs=0&enablejsapi=1${extra}${origine}`;
+    f.title = titre; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.addEventListener('load', () => f.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: titre }), '*'));
+    addEventListener('message', (e) => {
+      if (e.source !== f.contentWindow) return;
+      let d; try { d = JSON.parse(e.data); } catch { return; }
+      const etat = d.event === 'onStateChange' ? d.info : d.info && d.info.playerState;
+      if (etat === 1) f.classList.add('is-lecture');
+    });
+    return f;
+  };
+  window.DT_videoYouTube = videoYouTube;
   $$('[data-video-fond]').forEach((cadre) => {
     if (calme) return;
     addEventListener('load', () => setTimeout(() => {
-      const f = document.createElement('iframe');
-      const id = cadre.dataset.videoFond, fin = cadre.dataset.fin ? `&end=${cadre.dataset.fin}` : '';
-      f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&disablekb=1&fs=0${fin}`;
-      f.title = 'Vidéo d’ambiance'; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
-      f.style.opacity = 0; f.style.transition = 'opacity 1.2s';
-      f.addEventListener('load', () => setTimeout(() => { f.style.opacity = ''; const img = $('img', cadre); if (img) img.style.opacity = 0; }, 900));
-      cadre.appendChild(f);
+      const fin = cadre.dataset.fin ? `&end=${cadre.dataset.fin}` : '';
+      cadre.appendChild(videoYouTube(cadre.dataset.videoFond, fin, 'Vidéo d’ambiance'));
     }, 400));
   });
 

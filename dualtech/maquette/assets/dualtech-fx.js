@@ -81,7 +81,6 @@
       cartes.forEach((c) => { const ok = (univers === 'tous' || c.dataset.univers === univers) && (!q || c.dataset.cherche.includes(q)); c.hidden = !ok; n += ok; });
       $('#iv-vide').hidden = n > 0;
       $('#iv-statut').textContent = `${n} intervenant${n > 1 ? 's' : ''}`;
-      if (window.gsap && !calme) gsap.fromTo(cartes.filter((c) => !c.hidden), { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .5, ease: 'expo.out', stagger: .025 });
     };
     $$('.iv-barre .filtres button').forEach((b) => b.addEventListener('click', () => {
       univers = b.dataset.univers;
@@ -94,7 +93,6 @@
       $$('.vues button').forEach((x) => x.setAttribute('aria-pressed', x === b));
       grille.classList.toggle('iv-grille--liste', b.dataset.vue === 'liste');
       grille.parentElement.classList.toggle('iv-liste-active', b.dataset.vue === 'liste');
-      if (window.gsap && !calme) gsap.fromTo(cartes.filter((c) => !c.hidden), { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .45, ease: 'expo.out', stagger: .02 });
     }));
     const fi = $('#fiche-iv'); let pos = 0;
     const visibles = () => cartes.filter((c) => !c.hidden);
@@ -126,10 +124,7 @@
   const ioY = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting || calme) return; ioY.unobserve(e.target);
     const cible = e.target.querySelector(':scope > [data-yt]') || e.target;
-    const id = cible.dataset.yt, f = document.createElement('iframe');
-    f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&start=10&playsinline=1&rel=0&modestbranding=1`;
-    f.title = 'Vidéo du Campus Cyber'; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
-    f.addEventListener('load', () => setTimeout(() => f.classList.add('is-pret'), 1200));
+    const f = window.DT_videoYouTube(cible.dataset.yt, '&start=10', 'Vidéo du Campus Cyber');
     cible.insertBefore(f, cible.querySelector('.lieu__etiquette'));
   }), { threshold: .3 });
   $$('[data-yt]').forEach((el) => ioY.observe(el.parentElement));
@@ -247,7 +242,6 @@
 
   if (!G || !window.ScrollTrigger) return;
   /* un élément animé par GSAP quitte l'apparition CSS pour éviter deux animations concurrentes */
-  const libre = (els) => { els.forEach((e) => { e.removeAttribute('data-reveal'); e.classList.add('is-in'); }); return els; };
 
   /* ---------- Intro de l'accueil (une fois par session) ---------- */
   const intro = $('.intro');
@@ -255,9 +249,6 @@
   try { dejaVu = sessionStorage.getItem('dt-intro') === '1'; sessionStorage.setItem('dt-intro', '1'); } catch (e) { /* stockage indisponible */ }
   const lancerHero = () => {
     const h1 = $('.hero h1'); if (!h1) return;
-    G.from($$('.hero .car'), { yPercent: 110, opacity: 0, rotateX: -60, duration: 1, ease: 'expo.out', stagger: .018 });
-    G.from(libre($$('.hero__meta, .hero__texte, .hero .actions, .hero__bas')), { y: 24, opacity: 0, duration: 1, ease: 'expo.out', stagger: .1, delay: .35 });
-    G.from($$('.hud i'), { scale: 0, opacity: 0, duration: .8, ease: 'expo.out', stagger: .08, delay: .2 });
   };
   /* découpe du H1 du hero en lettres (lecteurs d'écran : texte d'origine conservé) */
   const h1 = $('.hero h1');
@@ -312,13 +303,9 @@
   });
 
   /* ---------- Secteurs : apparition en vague ---------- */
-  if ($('.secteurs')) {
-    G.from('.secteur', { opacity: 0, y: 40, scale: .96, duration: .8, ease: 'expo.out', stagger: { each: .05, grid: 'auto', from: 'start' },
-      scrollTrigger: { trigger: '.secteurs', start: 'top 80%' } });
-  }
 
   /* ---------- Section cinéma : la vidéo s'ouvre en plein écran au défilement ---------- */
-  $$('.cinema').forEach((c) => {
+  $$('.cinema:not(.cinema--statique)').forEach((c) => {
     const tl = G.timeline({ scrollTrigger: { trigger: c, start: 'top top', end: '+=90%', pin: true, scrub: 1, refreshPriority: 2 } });
     tl.fromTo($('.cinema__cadre', c), { clipPath: 'inset(14% 12% 14% 12% round 6px)' }, { clipPath: 'inset(0% 0% 0% 0% round 0px)', ease: 'none' })
       .from($('.cinema__texte h2', c), { y: 80, opacity: 0, ease: 'none' }, .25)
@@ -351,12 +338,8 @@
   }
 
   /* ---------- Chiffres : léger zoom à l'entrée ---------- */
-  $$('.chiffres').forEach((l) => G.from(libre($$('li', l)), { y: 50, opacity: 0, duration: 1, ease: 'expo.out', stagger: .12, scrollTrigger: { trigger: l, start: 'top 85%' } }));
 
   /* ---------- Cartes : apparition échelonnée ---------- */
-  $$('.profils, .cartes, .orateurs, .etapes, .avantages, .grille-3').forEach((g) => {
-    G.from(libre([...g.children]), { y: 60, opacity: 0, duration: 1, ease: 'expo.out', stagger: .08, scrollTrigger: { trigger: g, start: 'top 85%' }, clearProps: 'opacity' });
-  });
 
   /* ---------- Lieu et visuels : parallaxe douce ---------- */
   $$('.lieu__visuel img').forEach((img) => G.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.parentElement, scrub: true } }));
@@ -371,13 +354,11 @@
   /* ---------- Programme : fondu des créneaux filtrés ---------- */
   const filtres = $('#programme-vide') && $('.filtres');
   if (filtres) filtres.addEventListener('click', () => requestAnimationFrame(() => {
-    G.fromTo($$('.creneau:not([hidden])'), { opacity: 0, x: 24 }, { opacity: 1, x: 0, duration: .5, ease: 'expo.out', stagger: .03 });
     ScrollTrigger.refresh();
   }));
 
   /* ---------- Galerie : parallaxe des photos et entrée en cascade ---------- */
   $$('[data-parallaxe-img]').forEach((img) => G.fromTo(img, { yPercent: -10 }, { yPercent: 2, ease: 'none', scrollTrigger: { trigger: img.parentElement, scrub: true } }));
-  $$('.experience').forEach((g) => G.from(g.children, { clipPath: 'inset(100% 0 0 0)', duration: 1.2, ease: 'expo.inOut', stagger: .1, scrollTrigger: { trigger: g, start: 'top 80%' } }));
 
   /* ---------- Icônes des secteurs : attirées par la souris ---------- */
   if (fin) $$('.secteur').forEach((c) => {
@@ -388,21 +369,15 @@
   });
 
   /* ---------- Titres de section : mots qui montent avec un léger flou ---------- */
-  $$('.sec h2.lignes .l > span').forEach((l) => {
-    l.innerHTML = l.innerHTML.split(' ').map((m) => `<span class="mot-titre">${m}</span>`).join(' ');
-  });
-  $$('.sec h2.lignes').forEach((h) => G.from($$('.mot-titre', h), { filter: 'blur(8px)', opacity: .2, duration: 1, ease: 'expo.out', stagger: .05, scrollTrigger: { trigger: h, start: 'top 85%' } }));
 
   /* ---------- Mosaïque de la page Intervenants : portraits qui s'allument ---------- */
   $$('.iv-mosaique').forEach((m) => {
     const imgs = $$('img', m);
-    G.from(imgs, { opacity: 0, scale: .6, duration: .8, ease: 'expo.out', stagger: { each: .025, from: 'random' } });
     setInterval(() => { imgs.forEach((i) => i.classList.remove('is-on')); for (let k = 0; k < 4; k++) imgs[(Math.random() * imgs.length) | 0].classList.add('is-on'); }, 1400);
     G.to(m, { yPercent: -8, ease: 'none', scrollTrigger: { trigger: m.closest('section'), start: 'top top', end: 'bottom top', scrub: true } });
   });
 
   /* ---------- Vedettes et cartes d'intervenants : entrée échelonnée ---------- */
-  $$('.iv-vedettes, .iv-grille').forEach((g) => G.from(libre([...g.children]).slice(0, 12), { y: 50, opacity: 0, duration: .9, ease: 'expo.out', stagger: .06, scrollTrigger: { trigger: g, start: 'top 85%' }, clearProps: 'opacity,transform' }));
 
   /* recalcul après chargement des images, polices et changements de vue (maquette autonome) */
   ScrollTrigger.sort();
