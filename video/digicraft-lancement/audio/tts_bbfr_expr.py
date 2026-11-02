@@ -2,7 +2,7 @@
 masculine française de synthèse). Chaque réplique a sa direction de jeu (ponctuation, expressivité, rythme). Pour chacune,
 plusieurs prises sont générées ; on garde, parmi celles qui sont bien prononcées (contrôle Whisper) et tiennent dans leur
 créneau, la plus mélodique (plus grande étendue de hauteur, en demi-tons). Sortie : vo_bbfr_expr_brut/ et meta.json.
-Usage : python3 tts_bbfr_expr.py (environnement avec chatterbox-tts et openai-whisper)"""
+Usage : python3 tts_bbfr_expr.py [n° de répliques à refaire] (environnement avec chatterbox-tts et openai-whisper)"""
 import json, os, re, sys, unicodedata
 import numpy as np, torch, torchaudio as ta, whisper
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
@@ -54,8 +54,11 @@ tts = ChatterboxMultilingualTTS.from_pretrained(device='cpu')
 asr = whisper.load_model('small')
 OUT = os.path.join(HERE, 'vo_bbfr_expr_brut'); os.makedirs(OUT, exist_ok=True)
 starts = [round(W.fwd(t), 3) for t in STARTS0]
-meta = []
+ONLY = [int(a) for a in sys.argv[1:]]
+meta = json.load(open(f'{OUT}/meta.json', encoding='utf-8')) if ONLY else []
 for i, (txt, ex, cfg) in enumerate(DIR):
+    if ONLY and i not in ONLY:
+        continue
     limit = (starts[i + 1] if i + 1 < len(starts) else W.END - 1.0) - starts[i] - 0.12
     takes = []
     for seed in (11, 23, 37, 51, 64):
@@ -69,13 +72,17 @@ for i, (txt, ex, cfg) in enumerate(DIR):
         heard = asr.transcribe(p, language='fr', fp16=False, initial_prompt='YouCraft')['text'].strip()
         miss = [m for m in norm(txt.replace('-', ' ')) if m not in set(norm(heard.replace('-', ' '))) and len(m) > 2 and m not in HOMO]
         d, mel = len(x) / tts.sr, melody(x, tts.sr)
-        ok = not miss and d <= limit
+        # Mots en trop : la prise a inventé une suite (hallucination).
+        extra = len(norm(heard.replace('-', ' '))) - len(norm(txt.replace('-', ' ')))
+        ok = not miss and extra <= 1 and d <= limit
         takes.append((ok, mel, seed, x, heard, d))
         print(i, 'graine', seed, f'{d:.2f}s / {limit:.2f}s', f'mélodie {mel:.1f} dt', 'OK' if ok else f'rejet {miss}', '|', heard, flush=True)
     good = [t for t in takes if t[0]] or sorted(takes, key=lambda t: t[5])[:1]
     ok, mel, seed, x, heard, d = max(good, key=lambda t: t[1])
     ta.save(f'{OUT}/l{i:02d}.wav', torch.from_numpy(x)[None], tts.sr)
-    meta.append({'text': txt, 'start': starts[i], 'dur': round(d, 2), 'seed': seed, 'melodie_dt': round(mel, 1), 'asr': heard})
-os.remove(f'{OUT}/tmp.wav')
+    entry = {'text': txt, 'start': starts[i], 'dur': round(d, 2), 'seed': seed, 'melodie_dt': round(mel, 1), 'asr': heard}
+    if ONLY: meta[i] = entry
+    else: meta.append(entry)
+if os.path.exists(f'{OUT}/tmp.wav'): os.remove(f'{OUT}/tmp.wav')
 json.dump(meta, open(f'{OUT}/meta.json', 'w'), ensure_ascii=False, indent=1)
 print('ok')
