@@ -121,7 +121,7 @@
 
   // ---------- 1. RH : onboarding des nouveaux arrivants ----------
   function people(parent) {
-    const s = shell(parent, { app: ['People Hub', 'users'], mark: UM, active: 2, crumbs: ['RH', 'Intégration', 'T4 2026'], title: 'Intégration des arrivants',
+    const s = shell(parent, { app: ['People Hub', 'users'], mark: UM, active: 2, crumbs: ['Ressources humaines', 'Intégration', '4e trimestre 2026'], title: 'Intégration des arrivants',
       nav: [['house', 'Accueil'], ['users', 'Collaborateurs'], ['user-plus', 'Intégration', '9'], ['target', 'Recrutement', '12'], ['calendar', 'Absences'], ['layers', 'Organigramme'], ['chart-column', 'Rapports'], ['settings', 'Paramètres']],
       sub: live('En direct') + `<span style="color:${TX3}">·</span>48 arrivées dans 6 départements`,
       actions: btn('1 oct. – 31 déc. 2026', false, 'calendar') + btn('Filtres', false, 'list-checks') + btn('Nouvelle arrivée', true, 'plus') });
@@ -136,22 +136,22 @@
     tabs(tc, 18, 50, ['Toutes <b>48</b>', 'Cette semaine <b>9</b>', 'Bloquées <b>3</b>', 'Terminées <b>21</b>']);
     const ROWS = [
       [0, 'Sarah Martin', 'Consultante', 'Conseil', 'lun. 3 nov.', 5, 'David Cohen', 0.92, '11/12', ['Dans les temps', 'ok']],
-      [3, 'Tom Becker', 'Data analyst', 'Data & IA', 'lun. 3 nov.', 4, 'Elena Rossi', 0.66, '8/12', ['PC en livraison', 'warn']],
+      [3, 'Tom Becker', 'Analyste de données', 'Données', 'lun. 3 nov.', 4, 'Elena Rossi', 0.66, '8/12', ['Ordinateur en livraison', 'warn']],
       [2, 'Inès Duval', 'Cheffe de projet', 'Opérations', 'mar. 4 nov.', 20, 'Paul Martin', 0.84, '10/12', ['Dans les temps', 'ok']],
       [7, 'Marc Petit', 'Fiscaliste', 'Finance', 'mer. 5 nov.', 5, 'David Cohen', 0.33, '4/12', ['Contrat non signé', 'bad']],
-      [9, 'Amara Okafor', 'HR partner', 'RH', 'lun. 10 nov.', 19, 'Claire Dubois', 1, '12/12', ['Prête', 'ok']],
+      [9, 'Amara Okafor', 'Chargée de recrutement', 'Ressources humaines', 'lun. 10 nov.', 19, 'Claire Dubois', 1, '12/12', ['Prête', 'ok']],
       [10, 'Lucas Moreau', 'Ingénieur', 'Ingénierie', 'lun. 10 nov.', 4, 'Elena Rossi', 0.58, '7/12', ['Accès en attente', 'warn']],
-      [6, 'Yuki Tanaka', 'Product designer', 'Produit', 'lun. 17 nov.', 20, 'Paul Martin', 0.75, '9/12', ['Dans les temps', 'ok']],
-      [16, 'Priya Nair', 'Analyste', 'Data & IA', 'lun. 17 nov.', 4, 'Elena Rossi', 0.5, '6/12', ['Dans les temps', 'ok']],
-      [15, 'Jonas Weber', 'Resp. opérations', 'Opérations', 'lun. 1 déc.', 20, 'Paul Martin', 0.25, '3/12', ['Pas commencé', 'neu']],
+      [6, 'Yuki Tanaka', 'Designer produit', 'Produit', 'lun. 17 nov.', 20, 'Paul Martin', 0.75, '9/12', ['Dans les temps', 'ok']],
+      [16, 'Priya Nair', 'Analyste', 'Données', 'lun. 17 nov.', 4, 'Elena Rossi', 0.5, '6/12', ['Dans les temps', 'ok']],
+      [15, 'Jonas Weber', 'Responsable opérations', 'Opérations', 'lun. 1 déc.', 20, 'Paul Martin', 0.25, '3/12', ['Pas commencé', 'neu']],
       [13, 'Sofia Alves', 'Acheteuse', 'Achats', 'lun. 1 déc.', 5, 'David Cohen', 0.17, '2/12', ['Pas commencé', 'neu']],
-      [1, 'Ryan Cole', 'Resp. commercial', 'Ventes', 'lun. 8 déc.', 19, 'Claire Dubois', 0.08, '1/12', ['Pas commencé', 'neu']],
+      [1, 'Ryan Cole', 'Commercial senior', 'Ventes', 'lun. 8 déc.', 19, 'Claire Dubois', 0.08, '1/12', ['Pas commencé', 'neu']],
     ];
     const T1 = table(tc, 0, 92, 900, [['COLLABORATEUR', 196], ['DÉPARTEMENT', 118], ['ARRIVÉE', 98], ['MANAGER', 152], ['INTÉGRATION', 148], ['STATUT', 160]],
       ROWS.map(([k, n, r, d, sd, mk, mn, v, tk, st]) => [who(k, n, r), d, sd, `${photo(mk, 22)}<span>${mn}</span>`, `${bar(v, v === 1 ? '#1C8C4E' : UM, 84)}<span style="color:${TX2};font-size:12px">${tk}</span>`, badge(st[0], st[1])]), 52);
     // Flux d'activité en direct.
     const fc = card(m, 944, 216, 404, 420, 'Activité en direct', `<span style="display:flex;align-items:center;gap:6px;color:#1C8C4E;font-weight:600">${live('')}En direct</span>`);
-    const FEED = [[22, '<b>IT</b> a expédié un PC à <b>Tom Becker</b>', 'à l’instant', 'smartphone'], [0, '<b>Sarah Martin</b> a fini la formation sécurité', 'il y a 2 min', 'graduation-cap'], [5, '<b>David Cohen</b> a validé les accès de <b>M. Petit</b>', 'il y a 6 min', 'shield-check'], [9, '<b>Amara Okafor</b> est prête pour le jour J', 'il y a 14 min', 'circle-check'], [20, '<b>Paul Martin</b> a réservé un déjeuner d’équipe', 'il y a 22 min', 'utensils'], [4, '<b>Elena Rossi</b> a choisi un parrain à <b>Lucas</b>', 'il y a 31 min', 'users']];
+    const FEED = [[22, '<b>Ordinateur</b> expédié à <b>Tom Becker</b>', 'à l’instant', 'smartphone'], [0, '<b>Sarah Martin</b> a fini la formation sécurité', 'il y a 2 min', 'graduation-cap'], [5, '<b>David Cohen</b> a validé les accès de <b>M. Petit</b>', 'il y a 6 min', 'shield-check'], [9, '<b>Amara Okafor</b> est prête pour le jour J', 'il y a 14 min', 'circle-check'], [20, '<b>Paul Martin</b> a réservé un déjeuner d’équipe', 'il y a 22 min', 'utensils'], [4, '<b>Elena Rossi</b> a choisi un parrain à <b>Lucas</b>', 'il y a 31 min', 'users']];
     const feed = el(fc, { left: '0', top: '48px', width: '404px', height: '372px', overflow: 'hidden' });
     const F = FEED.map(([k, t, ago, ic], j) => {
       const r = el(feed, { left: '0', top: j * 60 + 'px', width: '404px', height: '60px', borderTop: j ? '1px solid #F0EFEC' : 'none' });
@@ -161,7 +161,7 @@
       return r;
     });
     const dc = card(m, 944, 652, 404, 276, 'Arrivées par département');
-    const bars = barChart(dc, 12, 50, 380, 214, [11, 9, 8, 7, 6, 4, 3], ['Cons.', 'Data', 'Ops', 'Ing.', 'Fin.', 'Ventes', 'RH'], [UM, UM, UM, UM, UM, '#B7C2FF', '#B7C2FF'], 12, (v) => Math.round(v));
+    const bars = barChart(dc, 12, 50, 380, 214, [11, 9, 8, 7, 6, 4, 3], ['Conseil', 'Données', 'Opér.', 'Ingén.', 'Finance', 'Ventes', 'Pers.'], [UM, UM, UM, UM, UM, '#B7C2FF', '#B7C2FF'], 12, (v) => Math.round(v));
     const p3 = T1.R[3];
     return {
       root: s.root,
@@ -293,7 +293,7 @@
       kpi(m, 28, 92, 318, 'Score de santé', (v) => Math.round(v) + ' / 100', 62, '−21 pts', false, [88, 87, 86, 84, 83, 80, 76, 70, 62], 'gauge'),
       kpi(m, 362, 92, 318, 'Vibration (RMS)', (v) => v.toFixed(2).replace('.', ',') + ' mm/s', 7.84, '+38 %', false, [4.1, 4.3, 4.2, 4.6, 5.0, 5.6, 6.3, 7.1, 7.8], 'activity'),
       kpi(m, 696, 92, 318, 'Température huile', (v) => v.toFixed(1).replace('.', ',') + ' °C', 71.4, '+6,2 °C', false, [62, 63, 63, 64, 66, 67, 69, 70, 71], 'zap'),
-      kpi(m, 1030, 92, 318, 'TRS usine aujourd’hui', (v) => v.toFixed(1).replace('.', ',') + ' %', 87.4, '+2,1 pts', true, [82, 83, 85, 84, 86, 85, 87, 86, 87], 'trending-up'),
+      kpi(m, 1030, 92, 318, 'Rendement de l’usine', (v) => v.toFixed(1).replace('.', ',') + ' %', 87.4, '+2,1 pts', true, [82, 83, 85, 84, 86, 85, 87, 86, 87], 'trending-up'),
     ];
     const ch = card(m, 28, 216, 900, 400, 'Vibration · en direct', `<span style="display:flex;gap:14px"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:${UM}"></span>Axe X</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:#9AA6FF"></span>Axe Y</span></span>`);
     const r = seeded(9);
@@ -348,7 +348,7 @@
   function crm(parent) {
     const s = shell(parent, { app: ['Revenue Desk', 'target'], mark: INK, active: 1, crumbs: ['Ventes', 'Pipeline', 'EMEA'], title: 'Pipeline · EMEA', user: [4, 'Elena Rossi'],
       nav: [['layout-dashboard', 'Vue d’ensemble'], ['target', 'Pipeline'], ['building-2', 'Comptes'], ['users', 'Contacts'], ['calendar', 'Activités', '8'], ['chart-column', 'Prévisions'], ['settings', 'Paramètres']],
-      sub: `12,6 M€ en cours · 92 affaires · objectif T4 <b style="color:${TX}">4,2 M€</b>`, actions: btn('Responsable : tous', false, 'users') + btn('Clôture : T4', false, 'calendar') + btn('Nouvelle affaire', true, 'plus') });
+      sub: `12,6 M€ en cours · 92 affaires · objectif du trimestre <b style="color:${TX}">4,2 M€</b>`, actions: btn('Responsable : tous', false, 'users') + btn('Clôture : ce trimestre', false, 'calendar') + btn('Nouvelle affaire', true, 'plus') });
     const COL = [['Prospect', '3,1 M€', 42], ['Qualifié', '2,8 M€', 27], ['Proposition', '3,9 M€', 14], ['Négociation', '1,9 M€', 6], ['Gagné', '0,9 M€', 3]];
     const D = [[['Atlas Retail', '42 k€', 8, '12 déc.'], ['Vertex Industries', '18 k€', 3, '18 déc.'], ['Kappa Chemicals', '64 k€', 17, '9 janv.']], [['Helio Pharma', '96 k€', 4, '28 nov.'], ['Nordic Steel', '51 k€', 12, '4 déc.'], ['Rhine Logistics', '33 k€', 8, '15 déc.']],
       [['Orion Bank', '120 k€', 4, '21 nov.'], ['Bluebay Energy', '75 k€', 12, '30 nov.'], ['Alpha Plastics', '28 k€', 3, '2 déc.']], [['Northwind Foods', '210 k€', 8, '14 nov.'], ['Celta Telecom', '88 k€', 17, '19 nov.']], [['Iberia Motors', '140 k€', 12, '3 nov.'], ['Lumen Health', '62 k€', 4, '29 oct.']]];
@@ -376,15 +376,15 @@
   function stock(parent) {
     const s = shell(parent, { app: ['Stock Room', 'layers'], mark: UM, active: 1, crumbs: ['Entrepôts', 'Entrepôt de Lyon', 'Inventaire'], title: 'Inventaire · Entrepôt de Lyon', user: [12, 'Fatou Diallo'],
       nav: [['layout-dashboard', 'Vue d’ensemble'], ['layers', 'Inventaire'], ['inbox', 'Réceptions', '6'], ['send', 'Expéditions'], ['circle-alert', 'Réassorts', '!3'], ['building-2', 'Fournisseurs'], ['chart-column', 'Rapports']],
-      sub: live('Synchronisé avec l’ERP il y a 1 min') + `<span style="color:${TX3}">·</span>2 418 références`, actions: btn('Toutes catégories', false, 'list-checks') + btn('Créer une commande', true, 'plus') });
+      sub: live('Synchronisé avec la gestion il y a 1 min') + `<span style="color:${TX3}">·</span>2 418 références`, actions: btn('Toutes catégories', false, 'list-checks') + btn('Créer une commande', true, 'plus') });
     const m = s.main;
     kpi(m, 28, 92, 318, 'Valeur du stock', () => '8,42 M€', 0, '+1,8 %', true, [7.9, 8.0, 8.1, 8.0, 8.2, 8.3, 8.2, 8.4, 8.4], 'banknote');
     kpi(m, 362, 92, 318, 'Couverture', () => '23,6 jours', 0, '−1,2 jour', false, [27, 26, 26, 25, 25, 24, 24, 24, 23.6], 'clock');
     kpi(m, 696, 92, 318, 'Sous le seuil de réassort', () => '3 réf.', 0, '+2', false, [0, 1, 1, 0, 1, 1, 2, 2, 3], 'circle-alert');
     kpi(m, 1030, 92, 318, 'Fiabilité des commandes', () => '99,6 %', 0, '+0,2 pt', true, [99, 99.2, 99.1, 99.3, 99.4, 99.3, 99.5, 99.5, 99.6], 'circle-check');
     const tc = card(m, 28, 216, 1320, 712, 'Niveaux de stock');
-    const RW = [['SKU-10482', 'Flexible hydraulique 1/2" · 2 m', 'Pièces détachées', 0.18, '214', '420', ['Réassort', 'bad'], 'CMD-8812 · 6 nov.'], ['SKU-20915', 'Roulement 6205-2RS', 'Pièces détachées', 0.24, '388', '600', ['Réassort', 'bad'], '—'], ['SKU-33107', 'Gants de sécurité · T9', 'EPI', 0.31, '1 240', '1 500', ['Réassort', 'bad'], '—'],
-      ['SKU-11873', 'Film étirable 23 µm', 'Emballage', 0.56, '86 rouleaux', '60', ['OK', 'ok'], '—'], ['SKU-40221', 'Huile moteur 5W-30 · 20 L', 'Consommables', 0.72, '142', '80', ['OK', 'ok'], 'CMD-8790 · 12 nov.'], ['SKU-28644', 'Bande de convoyeur 800 mm', 'Pièces détachées', 0.44, '12', '10', ['Bas', 'warn'], 'CMD-8805 · 4 nov.'], ['SKU-50317', 'Étiquettes 100 × 150', 'Emballage', 0.88, '3 600', '1 200', ['OK', 'ok'], '—'], ['SKU-36118', 'Filtre à air F7', 'Pièces détachées', 0.62, '96', '50', ['OK', 'ok'], '—'], ['SKU-19904', 'Batterie de chariot 48 V', 'Équipement', 0.4, '6', '4', ['Bas', 'warn'], '—'], ['SKU-27460', 'Colliers de serrage 300 mm', 'Consommables', 0.93, '9 800', '2 000', ['OK', 'ok'], '—'], ['SKU-44012', 'Gilet haute visibilité · L', 'EPI', 0.52, '310', '200', ['OK', 'ok'], '—'], ['SKU-31775', 'Cartouche de graisse 400 g', 'Consommables', 0.67, '520', '300', ['OK', 'ok'], '—']];
+    const RW = [['SKU-10482', 'Flexible hydraulique 1/2" · 2 m', 'Pièces détachées', 0.18, '214', '420', ['Réassort', 'bad'], 'CMD-8812 · 6 nov.'], ['SKU-20915', 'Roulement 6205-2RS', 'Pièces détachées', 0.24, '388', '600', ['Réassort', 'bad'], '—'], ['SKU-33107', 'Gants de sécurité · T9', 'Protection', 0.31, '1 240', '1 500', ['Réassort', 'bad'], '—'],
+      ['SKU-11873', 'Film étirable 23 µm', 'Emballage', 0.56, '86 rouleaux', '60', ['OK', 'ok'], '—'], ['SKU-40221', 'Huile moteur 5W-30 · 20 L', 'Consommables', 0.72, '142', '80', ['OK', 'ok'], 'CMD-8790 · 12 nov.'], ['SKU-28644', 'Bande de convoyeur 800 mm', 'Pièces détachées', 0.44, '12', '10', ['Bas', 'warn'], 'CMD-8805 · 4 nov.'], ['SKU-50317', 'Étiquettes 100 × 150', 'Emballage', 0.88, '3 600', '1 200', ['OK', 'ok'], '—'], ['SKU-36118', 'Filtre à air F7', 'Pièces détachées', 0.62, '96', '50', ['OK', 'ok'], '—'], ['SKU-19904', 'Batterie de chariot 48 V', 'Équipement', 0.4, '6', '4', ['Bas', 'warn'], '—'], ['SKU-27460', 'Colliers de serrage 300 mm', 'Consommables', 0.93, '9 800', '2 000', ['OK', 'ok'], '—'], ['SKU-44012', 'Gilet haute visibilité · L', 'Protection', 0.52, '310', '200', ['OK', 'ok'], '—'], ['SKU-31775', 'Cartouche de graisse 400 g', 'Consommables', 0.67, '520', '300', ['OK', 'ok'], '—']];
     const TB2 = table(tc, 0, 50, 1320, [['RÉF.', 130], ['ARTICLE', 300], ['CATÉGORIE', 150], ['NIVEAU', 250], ['EN STOCK', 110, 'right'], ['SEUIL', 120, 'right'], ['STATUT', 110], ['À RECEVOIR', 130]],
       RW.map(([sk, n, c, v, oh, ra, st, inb]) => [`<b style="font-weight:600;color:${UM}">${sk}</b>`, n, c, bar(v, v < 0.35 ? '#CF3B3B' : v < 0.5 ? '#D9890F' : UM, 200, 7), oh, ra, badge(st[0], st[1]), `<span style="color:${TX2}">${inb}</span>`]), 52);
     return { root: s.root, update(T, t0) { TB2.R.forEach((r, j) => { const p = P(T, t0 + j * 0.03, 0.4); S(r, { o: p }); }); } };

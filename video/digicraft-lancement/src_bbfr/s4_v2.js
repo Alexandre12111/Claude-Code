@@ -22,9 +22,9 @@
         a.txt = el(root, { inset: '0', transformOrigin: '50% 50%', zIndex: '20000' });
         a.l1 = el(a.txt, { left: '0', width: '1920px', top: '360px', textAlign: 'center', fontFamily: 'Plus Jakarta Sans', fontWeight: '500', fontSize: '74px', color: '#0B0B0F' });
         a.w1 = 'Imaginez pouvoir créer'.split(' ').map((t) => { const s = h('span', '', a.l1, t); s.style.display = 'inline-block'; s.style.margin = '0 11px'; return s; });
-        a.l2 = el(a.txt, { left: '0', width: '1920px', top: '485px', textAlign: 'center', fontSize: '150px', lineHeight: '1.05' });
+        a.l2 = el(a.txt, { left: '0', width: '1920px', top: '500px', textAlign: 'center', fontSize: '96px', lineHeight: '1.05' });
         a.l2.className = 'abs nh';
-        a.c2 = E.chars(a.l2, 'n’importe quelle app');
+        a.c2 = E.chars(a.l2, 'n’importe quelle application');
         a.c2._c.forEach((c) => c.classList.add('dcgrad'));
         a.c2._c.forEach((c) => (c.style.padding = '0.1em 0.04em'));
         a.sweep = U.sweep(root);

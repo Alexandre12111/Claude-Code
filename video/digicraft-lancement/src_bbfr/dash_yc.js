@@ -126,7 +126,7 @@
     },
     // 3. Santé des lignes de production
     (t, d) => {
-      big(t, 14, 34, '87,4 %'); el(t, { left: '112px', top: '45px', fontSize: '12px', color: d ? '#B5B0A5' : MUTED }, 'TRS · toutes lignes');
+      big(t, 14, 34, '87,4 %'); el(t, { left: '112px', top: '45px', fontSize: '12px', color: d ? '#B5B0A5' : MUTED }, 'rendement global');
       const r = seeded(31);
       for (let row = 0; row < 3; row++) {
         el(t, { left: '14px', top: 88 + row * 31 + 'px', fontSize: '10.5px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, ['Presse', 'Soudure', 'Peinture'][row]);
@@ -196,15 +196,15 @@
     // 11. Audits de site
     (t, d) => {
       faceEl(t, 228, 8, 38, 2);
-      ['EPI vérifiés', 'Issues de secours dégagées', 'Formations à jour', 'Tri des déchets'].forEach((s, j) => {
+      ['Protections vérifiées', 'Issues de secours dégagées', 'Formations à jour', 'Tri des déchets'].forEach((s, j) => {
         const on = j < 3;
         el(t, { left: '14px', top: 48 + j * 34 + 'px', width: '252px', height: '28px', display: 'flex', alignItems: 'center', gap: '9px', fontSize: '12px', fontWeight: '600' },
           `<span style="width:20px;height:20px;border-radius:6px;flex:none;display:flex;align-items:center;justify-content:center;background:${on ? UM : 'transparent'};border:${on ? 'none' : `2px solid ${d ? '#55534E' : '#D3CEC3'}`}">${on ? icon('check', 13, 3, '#fff') : ''}</span>${s}`);
       });
     },
   ];
-  const MINI_META = [['RH · arrivées', 'users', UM], ['Flotte · en direct', 'map-pin', INK], ['Stock entrepôt', 'layers', UM], ['Santé des lignes', 'gauge', INK], ['Pipeline commercial', 'target', UM], ['Planning équipes', 'calendar', INK],
-    ['Livraisons à l’heure', 'clock', UM], ['Recrutement', 'user-plus', INK], ['CO₂ par site', 'activity', LIME], ['Tickets IT', 'ticket', UM], ['Notes de frais', 'receipt', LIME], ['Audits de site', 'clipboard-check', UM]];
+  const MINI_META = [['Nouvelles recrues', 'users', UM], ['Flotte · en direct', 'map-pin', INK], ['Stock entrepôt', 'layers', UM], ['Santé des lignes', 'gauge', INK], ['Pipeline commercial', 'target', UM], ['Planning équipes', 'calendar', INK],
+    ['Livraisons à l’heure', 'clock', UM], ['Recrutement', 'user-plus', INK], ['CO₂ par site', 'activity', LIME], ['Tickets informatiques', 'ticket', UM], ['Notes de frais', 'receipt', LIME], ['Audits de site', 'clipboard-check', UM]];
   U.dash = function (parent, i, dark = false) {
     const k = ((i % MINI.length) + MINI.length) % MINI.length;
     const [title, ic, ac] = MINI_META[k];

@@ -2,7 +2,7 @@
 (function () {
   const { h, S, P, Ease, lerp, clamp, spring, icon } = E;
   const el = C.el;
-  const PROMPT = 'Crée un portail d’onboarding client pour notre équipe conseil, avec dépôt de documents et validation du manager.';
+  const PROMPT = 'Crée un portail d’accueil client pour notre équipe conseil, avec dépôt de documents et validation du manager.';
   const PROMPT2 = 'Ajoute un tableau de bord manager par client.';
   const TYPED_ON_LAPTOP = 34;
 
@@ -19,7 +19,7 @@
     const txt = el(box, { left: '34px', top: '30px', right: '120px', fontSize: '26px', color: '#0B0B0F', lineHeight: '1.4' });
     el(box, { right: '24px', bottom: '22px', width: '60px', height: '60px', borderRadius: '30px', background: 'linear-gradient(135deg,#1E3BFF,#1E3BFF)', display: 'flex', alignItems: 'center', justifyContent: 'center' }, icon('arrow-up-right', 28, 2.6, '#fff'));
     const chips = el(v, { left: '0', width: '1600px', top: '650px', display: 'flex', justifyContent: 'center', gap: '14px' });
-    ['Notes de frais', 'Pipeline commercial', 'Audits fournisseurs', 'Onboarding RH'].forEach((t) => h('span', 'chip', chips, t));
+    ['Notes de frais', 'Pipeline commercial', 'Audits fournisseurs', 'Accueil des recrues'].forEach((t) => h('span', 'chip', chips, t));
     return { v, txt };
   }
 
@@ -117,7 +117,7 @@
         el(a.card, { left: '48px', bottom: '40px', display: 'flex', gap: '14px', fontSize: '18px', color: '#77746E', alignItems: 'center' }, `${icon('image', 22, 2, '#8F8C86')}${icon('file-plus', 22, 2, '#8F8C86')}<span>Joindre une procédure</span>`);
         a.tip = el(a.cam, { left: '0', width: '1920px', top: '676px', display: 'flex', justifyContent: 'center', gap: '14px', fontFamily: 'DM Sans' });
         h('span', '', a.tip, 'Besoin d’inspiration ?').style.cssText = 'font-size:18px;color:#55534E;align-self:center;margin-right:6px';
-        a.chips = ['Notes de frais', 'Pipeline commercial', 'Audits fournisseurs', 'Onboarding RH'].map((t) => h('span', 'chip', a.tip, t));
+        a.chips = ['Notes de frais', 'Pipeline commercial', 'Audits fournisseurs', 'Accueil des recrues'].map((t) => h('span', 'chip', a.tip, t));
       },
       update(T) {
         a.root.style.opacity = String(P(T, 18.3, 0.2, Ease.inOutSine));
@@ -146,7 +146,7 @@
       build(root) {
         a.f = U.scenery(root, 'b48/abstract_dark', { drift: 0.3, parts: false });
         a.cam = el(root, { inset: '0', transformOrigin: '0 0' });
-        const W = U.win(a.cam, 110, 70, 1700, 940, 'youcraft.leyton-cognitx.com/apps/client-portal');
+        const W = U.win(a.cam, 110, 70, 1700, 940, 'youcraft.leyton-cognitx.com/applications/portail-client');
         a.W = W;
         // Barre d'outils de l'éditeur.
         a.pub = el(W.bar, { right: '20px', top: '9px', height: '34px', padding: '0 18px', borderRadius: '11px', background: 'linear-gradient(90deg,#1E3BFF,#1E3BFF)', color: '#fff', fontSize: '15px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px' }, `${icon('rocket', 16, 2.2, '#fff')}Publier`);
@@ -157,7 +157,7 @@
         a.u1 = el(chat, { right: '24px', top: '26px', width: '380px', padding: '16px 18px', borderRadius: '18px 18px 4px 18px', background: '#EEF0FF', fontSize: '16px', lineHeight: '1.45', color: '#16161C' }, PROMPT);
         a.u1.style.position = 'absolute';
         a.as1 = el(chat, { left: '24px', top: '172px', width: '420px' });
-        a.as1.innerHTML = `<div style="display:flex;gap:10px;align-items:center;font-size:16px;font-weight:700;color:#0B0B0F">${window.dcIcon(26, 'ch', 'brand')}YouCraft</div><div style="margin-top:10px;font-size:16px;line-height:1.5;color:#3A3833">Bonne idée. Je crée votre portail d’onboarding client.</div>`;
+        a.as1.innerHTML = `<div style="display:flex;gap:10px;align-items:center;font-size:16px;font-weight:700;color:#0B0B0F">${window.dcIcon(26, 'ch', 'brand')}YouCraft</div><div style="margin-top:10px;font-size:16px;line-height:1.5;color:#3A3833">Bonne idée. Je crée votre portail d’accueil client.</div>`;
         a.steps = ['Création du modèle de données', 'Pages clients', 'Dépôt de documents', 'Validation par le manager', 'Charte de votre entreprise'].map((t, i) => {
           const r = el(chat, { left: '24px', top: 290 + i * 46 + 'px', display: 'flex', alignItems: 'center', gap: '12px', fontSize: '16px', color: '#55534E' });
           const ic = h('span', '', r); Object.assign(ic.style, { width: '24px', height: '24px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' });
@@ -178,7 +178,7 @@
         a.portal = U.APP.portal(a.pv, false);
         a.pk = (1700 - 480) / 1180;
         a.portal.v.style.transform = `scale(${a.pk})`;
-        a.toast = el(a.cam, { left: '660px', top: '880px', height: '64px', padding: '0 26px', borderRadius: '20px', background: '#0B0B0F', color: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'DM Sans', fontSize: '19px', fontWeight: '600', boxShadow: '0 20px 50px rgba(11,11,15,0.35)' }, `${icon('circle-check', 24, 2.4, '#3DD68C')}En ligne pour votre équipe · portail-client.youcraft.app`);
+        a.toast = el(a.cam, { left: '660px', top: '880px', height: '64px', padding: '0 26px', borderRadius: '20px', background: '#0B0B0F', color: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'DM Sans', fontSize: '19px', fontWeight: '600', boxShadow: '0 20px 50px rgba(11,11,15,0.35)' }, `${icon('circle-check', 24, 2.4, '#3DD68C')}En ligne pour votre équipe · portail-client.youcraft.fr`);
         a.cur = U.cursor(a.cam);
       },
       update(T) {

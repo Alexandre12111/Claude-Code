@@ -33,8 +33,8 @@ shutil.copy(os.path.join(HERE, 'bbfr', 'warp.js'), os.path.join(dst, 'warp.js'))
 
 edit('s4_v2.js', [
     ("'Imagine being able to build'.split(' ')", "'Imaginez pouvoir créer'.split(' ')"),
-    ("top: '470px', textAlign: 'center', fontSize: '210px'", "top: '485px', textAlign: 'center', fontSize: '150px'"),
-    ("E.chars(a.l2, 'any app')", "E.chars(a.l2, 'n’importe quelle app')"),
+    ("top: '470px', textAlign: 'center', fontSize: '210px'", "top: '500px', textAlign: 'center', fontSize: '96px'"),
+    ("E.chars(a.l2, 'any app')", "E.chars(a.l2, 'n’importe quelle application')"),
 ])
 edit('s1_intro.js', [("['Just', 'by', 'describing', 'it.']", "['Simplement', 'en', 'la', 'décrivant.']")])
 edit('s2_build.js', [
@@ -222,4 +222,23 @@ edit('dash_yc.js', [
     ("'12 to approve'", "'12 à valider'"), ("[[0, 'Client dinner', '€420'], [7, 'Train Lyon–Turin', '€186'], [9, 'Software licence', '€1,240']]", "[[0, 'Dîner client', '420 €'], [7, 'Train Lyon–Turin', '186 €'], [9, 'Licence logiciel', '1 240 €']]"),
     ("j ? 'Review' : 'Approve'", "j ? 'Revoir' : 'Valider'"), ("['Safety gear checked', 'Fire exits clear', 'Training up to date', 'Waste sorted']", "['EPI vérifiés', 'Issues de secours dégagées', 'Formations à jour', 'Tri des déchets']"),
 ])
+# Pas d'« app » à l'écran : adresses web en .fr et chemin « applications ».
+edit('s2_build.js', [("youcraft.leyton-cognitx.com/apps/client-portal", "youcraft.leyton-cognitx.com/applications/portail-client"), ("youcraft.app", "youcraft.fr")])
+edit('s9_app.js', [("youcraft.app", "youcraft.fr")])
+
+# Ni acronymes ni anglicismes à l'écran : mots complets.
+edit('s6_v4.js', [("'Sans ticket IT.'", "'Sans ticket informatique.'")])
+edit('s2_build.js', [("portail d’onboarding client", "portail d’accueil client"), ("'Onboarding RH'", "'Accueil des recrues'")])
+edit('s3_scale.js', [("'Reporting ESG pour tout le groupe'", "'Bilan carbone de tout le groupe'")])
+edit('s8_yc.js', [("'Onboarding RH'", "'Accueil des recrues'"), ("'Reporting ESG'", "'Bilan carbone'"), ("'Support IT'", "'Support informatique'")])
+edit('s9_app.js', [("'Onboarding RH', 'RH'", "'Accueil des recrues', 'Ressources humaines'"), ("'Tour de contrôle', 'Supply chain'", "'Tour de contrôle', 'Logistique'")])
+edit('app_yc.js', [
+    ("crumbs: ['RH', 'Intégration', 'T4 2026']", "crumbs: ['Ressources humaines', 'Intégration', '4e trimestre 2026']"),
+    ("'Data & IA'", "'Données'"), ("'Data analyst'", "'Analyste de données'"), ("'HR partner', 'RH'", "'Chargée de recrutement', 'Ressources humaines'"), ("'Product designer'", "'Designer produit'"),
+    ("'PC en livraison'", "'Ordinateur en livraison'"), ("'<b>IT</b> a expédié un PC à <b>Tom Becker</b>'", "'<b>Ordinateur</b> expédié à <b>Tom Becker</b>'"),
+    ("['Cons.', 'Data', 'Ops', 'Ing.', 'Fin.', 'Ventes', 'RH']", "['Conseil', 'Données', 'Opér.', 'Ingén.', 'Finance', 'Ventes', 'Pers.']"),
+    ("'TRS usine aujourd’hui'", "'Rendement de l’usine'"), ("Synchronisé avec l’ERP il y a 1 min", "Synchronisé avec la gestion il y a 1 min"), ("'EPI'", "'Protection'"),
+    ("'Resp. opérations'", "'Responsable opérations'"), ("'Resp. commercial'", "'Commercial senior'"), ("objectif T4", "objectif du trimestre"), ("btn('Clôture : T4'", "btn('Clôture : ce trimestre'"),
+])
+edit('dash_yc.js', [("'EPI vérifiés'", "'Protections vérifiées'"), ("'RH · arrivées'", "'Nouvelles recrues'"), ("'Tickets IT'", "'Tickets informatiques'"), ("'TRS · toutes lignes'", "'rendement global'")])
 print('version française :', dst)

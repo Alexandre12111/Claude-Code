@@ -218,7 +218,7 @@
   // ---------- Galaxie de dashboards métier qui forme le symbole ----------
   {
     const a = {};
-    const LABELS = ['Onboarding RH', 'Suivi de flotte', 'Stock entrepôt', 'Maintenance', 'Pipeline commercial', 'Planning des équipes', 'Suivi des livraisons', 'Recrutement', 'Reporting ESG', 'Support IT', 'Notes de frais', 'Audits de site', 'Portail client', 'Reporting direction'];
+    const LABELS = ['Accueil des recrues', 'Suivi de flotte', 'Stock entrepôt', 'Maintenance', 'Pipeline commercial', 'Planning des équipes', 'Suivi des livraisons', 'Recrutement', 'Bilan carbone', 'Support informatique', 'Notes de frais', 'Audits de site', 'Portail client', 'Reporting direction'];
     const SIZE = 880, K = SIZE / 248, X0 = 960 - SIZE / 2, Y0 = 540 - (247 * K) / 2;
     // Emplacements : grille de cases au format des dashboards, gardées si leur centre tombe dans le symbole.
     const SLOTS = [];

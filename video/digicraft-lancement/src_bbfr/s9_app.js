@@ -38,9 +38,9 @@
     replaceScene({
       id: 'cards',
       build(root) {
-        a.A = shot(root, 'b50/soft_skyline', 1, A.people, 'rh.northwind.youcraft.app/integration', [1150, 520]);
-        a.B = shot(root, 'b50/soft_citydusk', -1, A.fleet, 'tour-de-controle.northwind.youcraft.app/carte', [820, 430]);
-        a.Cc = shot(root, 'b50/soft_citynight', 1, A.plants, 'supervision.northwind.youcraft.app/capteurs/PR-LY-004', [900, 420]);
+        a.A = shot(root, 'b50/soft_skyline', 1, A.people, 'rh.northwind.youcraft.fr/integration', [1150, 520]);
+        a.B = shot(root, 'b50/soft_citydusk', -1, A.fleet, 'tour-de-controle.northwind.youcraft.fr/carte', [820, 430]);
+        a.Cc = shot(root, 'b50/soft_citynight', 1, A.plants, 'supervision.northwind.youcraft.fr/capteurs/PR-LY-004', [900, 420]);
         a.sweep = U.sweep(root);
       },
       update(T) {
@@ -67,7 +67,7 @@
   // ---------- Modèles : aperçus d'écrans réels ----------
   {
     const a = {};
-    const TPL = [['users', 'Onboarding RH', 'RH', A.people], ['map-pin', 'Tour de contrôle', 'Supply chain', A.fleet], ['gauge', 'Supervision machines', 'Opérations', A.plants], ['target', 'Pipeline commercial', 'Ventes', A.crm],
+    const TPL = [['users', 'Accueil des recrues', 'Ressources humaines', A.people], ['map-pin', 'Tour de contrôle', 'Logistique', A.fleet], ['gauge', 'Supervision machines', 'Opérations', A.plants], ['target', 'Pipeline commercial', 'Ventes', A.crm],
       ['layers', 'Inventaire entrepôt', 'Logistique', A.stock], ['calendar', 'Planning des équipes', 'Opérations', A.shifts], ['briefcase', 'Portail client', 'Conseil', null]];
     replaceScene({
       id: 'templates',

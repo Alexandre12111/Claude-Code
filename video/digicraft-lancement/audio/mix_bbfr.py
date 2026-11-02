@@ -9,14 +9,17 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 STEMS = os.path.join(HERE, 'stems')
 import warp_bbfr as W
 SR, END = 48000, W.END
+# Voix choisie (dossier de répliques) et suffixe des fichiers : VO=vo_bbfr_cb_homme TAG=_homme python3 mix_bbfr.py
+VO = os.environ.get('VO', 'vo_bbfr_cb_homme')
+TAG = os.environ.get('TAG', '')
 N = int((W.END + 1.5) * SR)
-STARTS = [m['start'] for m in json.load(open(os.path.join(HERE, 'vo_bbfr', 'meta.json'), encoding='utf-8'))]
+STARTS = [m['start'] for m in json.load(open(os.path.join(HERE, VO, 'meta.json'), encoding='utf-8'))]
 
 # Voix : traitement léger (passe-haut, chaleur, présence, compression douce).
 raw = os.path.join(STEMS, 'vo_bbfr_raw.wav')
 vo = np.zeros(N)
 for i, t in enumerate(STARTS):
-    x, sr = sf.read(os.path.join(HERE, 'vo_bbfr', f'l{i:02d}.wav'))
+    x, sr = sf.read(os.path.join(HERE, VO, f'l{i:02d}.wav'))
     x = resample_poly(x, SR, sr)
     a = int(t * SR); vo[a:a + len(x)] += x[: N - a]
 sf.write(raw, vo.astype(np.float32), SR)
@@ -51,7 +54,7 @@ fade = np.ones(len(mix)); fade[t > END - 1.0] = np.clip((END - t[t > END - 1.0])
 mix *= fade[:, None]
 tmp = os.path.join(STEMS, 'mix_bbfr_raw.wav')
 sf.write(tmp, (mix / np.max(np.abs(mix)) * 0.9).astype(np.float32), SR)
-subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, 'mix_bbfr.wav')], check=True)
+subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, f'mix_bbfr{TAG}.wav')], check=True)
 # Version sans voix (musique + effets).
 m2 = (music * 0.85 + sfx * 1.25)[: int(END * SR)] * fade[:, None]
 sf.write(tmp, (m2 / np.max(np.abs(m2)) * 0.9).astype(np.float32), SR)
