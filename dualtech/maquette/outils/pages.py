@@ -84,7 +84,7 @@ def bloc_lieu(titre_h2="Campus Cyber", texte=None, surtitre="Infos pratiques", c
     icos = ["pin", "train", "badge", "accessible"]
     infos = "".join(f'<li><span class="num">{ico(icos[n])}</span><h3>{t}</h3><p>{d}</p></li>' for n, (t, d) in enumerate(INFOS_LIEU))
     c = f"""<div class="carte" style="background-image:url(assets/img/skyline-la-defense.webp)">
-      <button class="carte__btn" type="button" data-carte="{CARTE}"><span class="pin">{ico('pin')}</span><strong>Afficher le plan d'accès</strong><small>La carte Google Maps se charge au clic.</small></button>
+      <button class="carte__btn" type="button" data-carte="{CARTE}"><span class="pin">{ico('pin')}</span><strong>Afficher le plan d'accès</strong><small>En l'affichant, vous acceptez les cookies de Google Maps.</small></button>
     </div>""" if carte else ""
     b = f'<div class="actions" style="margin-top:32px">{btn("Préparer sa venue", lien("infos"), "ghost")}</div>' if bouton else ""
     return f"""<div class="lieu">
@@ -1047,7 +1047,9 @@ def confidentialite():
     </ul>
     <h2>Cookies et contenus tiers</h2>
     <p>Le site n'utilise aucun cookie publicitaire ni outil de mesure d'audience. Les cookies techniques de WordPress ne sont déposés que pour les personnes connectées à l'administration du site.</p>
-    <p>Certaines pages intègrent des contenus hébergés par des services tiers : les vidéos de l'événement (YouTube, en mode de confidentialité renforcée « youtube-nocookie ») et la carte d'accès au Campus Cyber (Google Maps). En affichant ces contenus, ces services peuvent recevoir votre adresse IP et déposer leurs propres traceurs, selon leurs politiques de confidentialité : <a href="https://policies.google.com/privacy?hl=fr" target="_blank" rel="noopener">politique de confidentialité de Google</a>. Vous pouvez à tout moment configurer votre navigateur pour bloquer ces traceurs.</p>
+    <p>Certaines pages intègrent des contenus fournis par Google : les vidéos de l'événement (YouTube, en mode de confidentialité renforcée « youtube-nocookie ») et la carte d'accès au Campus Cyber (Google Maps). Ces services peuvent recevoir votre adresse IP et déposer leurs propres cookies, selon la <a href="https://policies.google.com/privacy?hl=fr" target="_blank" rel="noopener">politique de confidentialité de Google</a>.</p>
+    <p>C'est pourquoi ces contenus ne se chargent qu'avec votre accord. Lors de votre première visite, un bandeau vous permet de tout accepter, de tout refuser ou de choisir séparément les vidéos et la carte. Tant que vous n'avez pas accepté, une image fixe remplace les vidéos et la carte reste masquée ; refuser n'empêche pas de consulter le site. Afficher la carte d'accès en cliquant sur « Afficher le plan d'accès » vaut accord pour la carte seulement.</p>
+    <p>Votre choix est conservé 6 mois dans votre navigateur (stockage local, sans cookie), puis vous est à nouveau demandé. Vous pouvez le modifier à tout moment grâce au lien « Gérer les cookies » en bas de chaque page.</p>
     <h2>Sécurité</h2>
     <p>Le site est accessible exclusivement en connexion chiffrée (HTTPS). L'accès aux demandes reçues est protégé par identifiant et mot de passe et réservé aux personnes habilitées.</p>
     <h2>Vos droits</h2>

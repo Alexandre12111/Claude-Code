@@ -72,6 +72,12 @@ Les demandes sont **toujours enregistrées** dans DualTech → Demandes reçues.
 1. Installer **WP Mail SMTP** (gratuit) et le relier à la boîte d'envoi (Microsoft 365, Gmail, Brevo…).
 2. DualTech → Réglages : saisir l'adresse de réception, cliquer sur « Envoyer un e‑mail de test ».
 
+## Bandeau cookies
+
+Le thème intègre son propre bandeau de consentement, au design du site (aucune extension à installer). À la première visite, il propose « Tout refuser », « Personnaliser » ou « Tout accepter ». Tant que le visiteur n'a pas accepté, les vidéos YouTube restent des images fixes et la carte Google Maps reste masquée : aucune donnée n'est envoyée à Google. Le choix est gardé 6 mois, puis redemandé, et se modifie avec le lien « Gérer les cookies » du pied de page.
+
+N'installez pas en plus une extension de cookies (Complianz, CookieYes…) : deux bandeaux s'afficheraient. Si un outil de mesure d'audience est ajouté plus tard (Google Analytics…), il faudra l'ajouter au bandeau et à la politique de confidentialité.
+
 ## 7. Après la mise en ligne
 
 * **Elementor** n'est plus utilisé par ces pages : il peut être désactivé une fois le site vérifié (s'il ne sert pas ailleurs).

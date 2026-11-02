@@ -150,7 +150,7 @@ def pied():
       <div><h2>Participer</h2><ul><li><a href="{lien('programme')}">Programme 2026</a></li><li><a href="{lien('inscription')}">S'inscrire</a></li><li><a href="{lien('partenaires')}">Devenir partenaire</a></li><li><a href="{lien('workshops')}">Proposer un workshop</a></li></ul></div>
       <div><h2>S'informer</h2><ul><li><a href="{lien('infos')}">Infos pratiques</a></li><li><a href="{lien('contact')}">Contact</a></li><li><a href="{LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
     </div>
-    <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés · <a href="{lien('mentions')}">Mentions légales</a> · <a href="{lien('confidentialite')}">Politique de confidentialité</a></p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
+    <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés · <a href="{lien('mentions')}">Mentions légales</a> · <a href="{lien('confidentialite')}">Politique de confidentialité</a> · <button type="button" class="pied__cookies" data-cookies>Gérer les cookies</button></p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
 <dialog class="modale" id="film" aria-label="Lecture de la vidéo">

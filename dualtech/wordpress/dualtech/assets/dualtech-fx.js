@@ -130,7 +130,7 @@
     const f = window.DT_videoYouTube(cible.dataset.yt, '&start=10', 'Vidéo du Campus Cyber');
     cible.insertBefore(f, cible.querySelector('.lieu__etiquette'));
   }), { threshold: .3 });
-  $$('[data-yt]').forEach((el) => ioY.observe(el.parentElement));
+  (window.DT_avecAccord || ((t, fn) => fn()))('video', () => $$('[data-yt]').forEach((el) => ioY.observe(el.parentElement)));
 
   if (calme) { document.documentElement.classList.add('fx-calme'); return; }
 
