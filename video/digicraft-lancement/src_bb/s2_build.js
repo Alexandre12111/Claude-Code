@@ -175,7 +175,7 @@
         a.orb = el(a.load, { width: '120px', height: '120px', borderRadius: '50%', background: 'radial-gradient(circle at 35% 30%, #E8ECFF, #1E3BFF 45%, #1E3BFF 100%)', boxShadow: '0 0 80px rgba(30,59,255,0.55)', position: 'relative' });
         h('div', 'ui', a.load, 'Creating your app').style.cssText = 'font-size:26px;font-weight:700;color:#0B0B0F';
         a.loadSub = h('div', 'ui', a.load, ''); a.loadSub.style.cssText = 'font-size:17px;color:#77746E';
-        a.portal = portal(a.pv, false);
+        a.portal = U.APP.portal(a.pv, false);
         a.pk = (1700 - 480) / 1180;
         a.portal.v.style.transform = `scale(${a.pk})`;
         a.toast = el(a.cam, { left: '660px', top: '880px', height: '64px', padding: '0 26px', borderRadius: '20px', background: '#0B0B0F', color: '#fff', display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'DM Sans', fontSize: '19px', fontWeight: '600', boxShadow: '0 20px 50px rgba(11,11,15,0.35)' }, `${icon('circle-check', 24, 2.4, '#3DD68C')}Live for your team · client-portal.youcraft.app`);
@@ -248,7 +248,7 @@
         a.root = root;
         a.f = U.scenery(root, 'b50/dof_boardroom', { drift: 0.5, parts: false, tint: true });
         a.tb = U.tablet(root, 960, 560, 1240);
-        const p = portal(a.tb.screen, true);
+        const p = U.APP.portal(a.tb.screen, true);
         p.v.style.transform = `scale(${(1240 * 0.94) / 1180})`;
         a.p = p;
       },

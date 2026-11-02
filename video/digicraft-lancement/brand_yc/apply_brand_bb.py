@@ -61,6 +61,9 @@ for a, b in [
     (r"window\.dcIcon\(40, 'hm', 'brand'\) \+ '<span class=\"nh\"[^\n]*?Craft</span></span>'", "window.ycLogoSvg(40)"),
     (r"el\(cd, \{ left: '22px', top: '22px', width: '46px', height: '46px', borderRadius: '13px', background: col \+ '22', display: 'flex', alignItems: 'center', justifyContent: 'center' \}, icon\('landmark', 22, 2, col\)\);",
      "el(cd, { left: '22px', top: '22px', width: '46px', height: '46px', borderRadius: '23px', overflow: 'hidden' }, window.ycFace(46, i * 3 + 1));"),
+    # Le portail généré devient une vraie application (navigation, tableau des clients, KPI).
+    (r"a\.portal = portal\(a\.pv, false\);", "a.portal = U.APP.portal(a.pv, false);"),
+    (r"const p = portal\(a\.tb\.screen, true\);", "const p = U.APP.portal(a.tb.screen, true);"),
 ]:
     s, n = re.subn(a, b, s)
     assert n == 1, (a[:60], n)
@@ -72,12 +75,12 @@ s = open(p, encoding='utf-8').read()
 for a, b in [
     ('<link rel="stylesheet" href="b44.css">', '<link rel="stylesheet" href="b44.css">\n<link rel="stylesheet" href="../brand_yc/brand_yc.css">\n<link rel="stylesheet" href="bb.css">'),
     ('<script src="../src6/common.js"></script>', '<script src="../src6/common.js"></script>\n<script src="../brand_yc/yc_logo_data.js"></script>\n<script src="../brand_yc/brand_yc.js"></script>'),
-    ('<script src="s7_v5.js"></script>', '<script src="s7_v5.js"></script>\n<script src="dash_yc.js"></script>\n<script src="s8_yc.js"></script>'),
+    ('<script src="s7_v5.js"></script>', '<script src="s7_v5.js"></script>\n<script src="dash_yc.js"></script>\n<script src="app_yc.js"></script>\n<script src="s8_yc.js"></script>\n<script src="s9_app.js"></script>'),
     ('<title>DigiCraft Bring your ideas to life</title>', '<title>YouCraft Bring your ideas to life</title>'),
 ]:
     assert s.count(a) == 1, a
     s = s.replace(a, b)
 open(p, 'w', encoding='utf-8').write(s)
-for f in ('bb.css', 'dash_yc.js', 's8_yc.js'):
+for f in ('bb.css', 'dash_yc.js', 'app_yc.js', 's8_yc.js', 's9_app.js'):
     shutil.copy(os.path.join(HERE, 'bb', f), os.path.join(dst, f))
 print('charte YouCraft appliquée :', dst)

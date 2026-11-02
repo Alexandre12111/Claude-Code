@@ -60,9 +60,12 @@
       + `<circle cx="43.5" cy="45.5" r="1.9" fill="#2A211C"/><circle cx="56.5" cy="45.5" r="1.9" fill="#2A211C"/>`
       + `<path d="M45 55 Q50 59 55 55" fill="none" stroke="${shade(s, 0.62)}" stroke-width="1.9" stroke-linecap="round"/>${glasses}</g></svg>`;
   }
-  window.ycFace = face;
+  // Portraits photo (Unsplash, voir assets/img/people/CREDITS.txt) associés à la distribution.
+  const PH = [0, 3, 2, 7, 9, 10, 6, 22, 4, 5, 16, 15, 21, 20, 13, 1];
+  const img = (k) => `<img src="../assets/img/people/p${String(PH[((k % PH.length) + PH.length) % PH.length]).padStart(2, '0')}.jpg" style="width:100%;height:100%;object-fit:cover;display:block">`;
+  window.ycFace = (d, k) => `<div style="width:${d}px;height:${d}px;border-radius:50%;overflow:hidden">${img(k)}</div>`;
   const person = (k) => CAST[((k % CAST.length) + CAST.length) % CAST.length];
-  const faceEl = (p, x, y, d, k, ring = null) => el(p, { left: x + 'px', top: y + 'px', width: d + 'px', height: d + 'px', borderRadius: '50%', overflow: 'hidden', boxShadow: ring ? `0 0 0 ${Math.max(2, d * 0.06)}px ${ring}` : 'none' }, face(d, k));
+  const faceEl = (p, x, y, d, k, ring = null) => el(p, { left: x + 'px', top: y + 'px', width: d + 'px', height: d + 'px', borderRadius: '50%', overflow: 'hidden', boxShadow: ring ? `0 0 0 ${Math.max(2, d * 0.06)}px ${ring}` : 'none' }, img(k));
   // Les avatars à initiales du film deviennent des portraits (même emplacement, même taille).
   U.avatar = (p, x, y, d, ini) => faceEl(p, x, y, d, [...ini].reduce((a, c) => a + c.charCodeAt(0), 0));
 
@@ -88,11 +91,12 @@
 
   // ---------- Mini dashboards (280 × 190) ----------
   function base(parent, dark, title, ic, accent) {
-    const t = el(parent, { left: '0', top: '0', width: '280px', height: '190px', borderRadius: '16px', overflow: 'hidden', background: dark ? INK2 : PAPER, border: dark ? '1px solid rgba(245,242,234,0.10)' : `1px solid ${LINE}`, boxShadow: '0 18px 48px rgba(11,11,15,0.32)', transformOrigin: '0 0', fontFamily: 'DM Sans', color: dark ? STONE : INK });
-    el(t, { left: '14px', top: '12px', display: 'flex', alignItems: 'center', gap: '7px', fontSize: '12.5px', fontWeight: '700', color: dark ? '#B5B0A5' : MUTED }, `<span style="width:20px;height:20px;border-radius:6px;background:${accent || UM};display:flex;align-items:center;justify-content:center">${icon(ic, 12, 2.4, accent === LIME ? INK : '#fff')}</span>${title}`);
+    const t = el(parent, { left: '0', top: '0', width: '280px', height: '190px', borderRadius: '9px', overflow: 'hidden', background: dark ? INK2 : '#FFFFFF', border: dark ? '1px solid rgba(245,242,234,0.10)' : '1px solid #E7E6E2', boxShadow: '0 18px 48px rgba(11,11,15,0.30)', transformOrigin: '0 0', fontFamily: 'DM Sans', color: dark ? STONE : '#111113' });
+    el(t, { left: '14px', top: '12px', display: 'flex', alignItems: 'center', gap: '7px', fontSize: '12px', fontWeight: '600', color: dark ? STONE : '#111113' }, `${icon(ic, 13, 2, dark ? '#8F8C86' : '#9A9AA0')}${title}`);
+    el(t, { right: '12px', top: '10px' }, icon('ellipsis', 15, 2, '#9A9AA0'));
     return t;
   }
-  const big = (t, x, y, v, fs = 26) => el(t, { left: x + 'px', top: y + 'px', fontFamily: 'Plus Jakarta Sans', fontSize: fs + 'px', fontWeight: '800', letterSpacing: '-0.02em' }, v);
+  const big = (t, x, y, v, fs = 24) => el(t, { left: x + 'px', top: y + 3 + 'px', fontFamily: 'DM Sans', fontSize: fs + 'px', fontWeight: '700', letterSpacing: '-0.02em' }, v);
   const MINI = [
     // 0. Équipe : nouveaux arrivants en portraits
     (t, d) => {
@@ -110,7 +114,7 @@
       const [x, y] = along(R, 0.55);
       el(m, { left: x - 15 + 'px', top: y - 15 + 'px', width: '30px', height: '30px', borderRadius: '15px', background: '#fff', boxShadow: `0 0 0 4px ${BAD[1]}44`, display: 'flex', alignItems: 'center', justifyContent: 'center' }, truck(22, BAD[1]));
       el(m, { left: x + 18 + 'px', top: y - 30 + 'px', padding: '4px 7px', borderRadius: '7px', background: INK, color: STONE, fontSize: '10px', fontWeight: '700', whiteSpace: 'nowrap' }, `TR-2041 · <span style="color:#FF8A8D">+35 min</span>`);
-      el(t, { right: '14px', top: '13px', fontSize: '11px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, '38 trucks');
+      el(t, { right: '34px', top: '13px', fontSize: '11px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, '38 trucks');
     },
     // 2. Stock entrepôt : niveaux par référence et seuil de réassort
     (t, d) => {
@@ -156,7 +160,7 @@
     },
     // 7. Recrutement : candidats et étapes
     (t, d) => {
-      el(t, { right: '14px', top: '13px', fontSize: '11px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, '7 open roles');
+      el(t, { right: '34px', top: '13px', fontSize: '11px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, '7 open roles');
       [[10, 'Priya Nair', 'Offer', OK], [5, 'Lucas Moreau', 'Interview', INFO], [14, 'Sofia Alves', 'Screening', NEU]].forEach(([k, n, s, c], j) => {
         faceEl(t, 14, 44 + j * 47, 36, k);
         el(t, { left: '58px', top: 48 + j * 47 + 'px', fontSize: '12.5px', fontWeight: '700' }, n);
@@ -180,7 +184,7 @@
     },
     // 10. Notes de frais à valider
     (t, d) => {
-      el(t, { right: '14px', top: '13px', fontSize: '11px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, '12 to approve');
+      el(t, { right: '34px', top: '13px', fontSize: '11px', fontWeight: '700', color: d ? '#B5B0A5' : MUTED }, '12 to approve');
       [[0, 'Client dinner', '€420'], [7, 'Train Lyon–Turin', '€186'], [9, 'Software licence', '€1,240']].forEach(([k, n, v], j) => {
         const r = el(t, { left: '12px', top: 42 + j * 47 + 'px', width: '256px', height: '40px', borderRadius: '10px', background: d ? '#1E1E25' : '#F3F0E9' });
         faceEl(r, 7, 6, 28, k);
