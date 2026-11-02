@@ -315,9 +315,9 @@ def accueil():
 </section>"""
     # accueil : même ordre que le site actuel, plus les intervenants
     corps = "\n\n".join(blocs[k] for k in ("hero", "orga", "filieres", "chiffres", "profils", "orateurs", "lieu", "faq")) + "\n\n" + bloc_final()
-    graphe = BASE + [EVENEMENT, webpage("accueil", "DualTech 2026 : le rendez-vous de l'industrie duale", extra={"about": {"@id": f"{SITE}/#dualtech-2026"}, "primaryImageOfPage": f"{SITE}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"})]
+    graphe = BASE + [EVENEMENT, webpage("accueil", "DualTech 2026 : le rendez-vous incontournable de l'industrie duale", extra={"about": {"@id": f"{SITE}/#dualtech-2026"}, "primaryImageOfPage": f"{SITE}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"})]
     graphe[-1].pop("breadcrumb")
-    ecrire("accueil", "DualTech 2026 : salon de l'industrie duale | La Défense",
+    ecrire("accueil", "DualTech 2026 : rendez-vous incontournable de l'industrie duale",
            "Le 26 novembre 2026 au Campus Cyber, DualTech réunit décideurs publics, industriels et investisseurs de l'industrie duale. Demandez votre accréditation.",
            graphe, corps, POSTER)
 
@@ -957,7 +957,110 @@ def inscription():
            "Inscription gratuite à DualTech 2026 le 26 novembre au Campus Cyber : 400 places sur demande validée par l'organisation. Formulaire en ligne en 3 étapes.", graphe, corps)
 
 
+# ====================================================================
+# MENTIONS LÉGALES ET POLITIQUE DE CONFIDENTIALITÉ
+# ====================================================================
+EDITEUR = """l'Institut National des Affaires Stratégiques (INAS), association régie par la loi du 1<sup>er</sup> juillet 1901, dont le siège est situé 60 route des Gardes, 92190 Meudon"""
+MAIL = '<a href="mailto:contact@dualtech-event.eu">contact@dualtech-event.eu</a>'
+
+
+def page_texte(cle, ariane, surtitre, titre, lead, texte, seo_titre, seo_desc):
+    corps = phero([("accueil", "Accueil"), (None, ariane)], surtitre, titre, lead)
+    corps += f"""
+<section class="sec sec--blanc">
+  <div class="wrap prose">
+{texte}
+    <p class="prose__maj">Dernière mise à jour : 2 novembre 2026.</p>
+  </div>
+</section>"""
+    graphe = BASE + [webpage(cle, ariane), ariane_ld(cle, ariane)]
+    ecrire(cle, seo_titre, seo_desc, graphe, corps)
+
+
+def mentions():
+    texte = f"""    <h2>Éditeur du site</h2>
+    <p>Le site dualtech-event.eu est édité par {EDITEUR}.</p>
+    <ul>
+      <li>SIREN : 924 691 637</li>
+      <li>SIRET du siège : 924 691 637 00012</li>
+      <li>Numéro de TVA intracommunautaire : FR53924691637</li>
+      <li>Code APE : 6399Z (autres services d'information n.c.a.)</li>
+      <li>E-mail : {MAIL}</li>
+    </ul>
+    <h2>Directeur de la publication</h2>
+    <p>Clément Leprince, Président de l'Institut National des Affaires Stratégiques.</p>
+    <h2>Organisation de l'événement</h2>
+    <p>DualTech est organisé par l'Institut National des Affaires Stratégiques avec le soutien de <a href="https://www.parisouestladefense.fr/" target="_blank" rel="noopener">Paris Ouest La Défense</a>, établissement public territorial. L'édition 2026 se tient le jeudi 26 novembre 2026 au Campus Cyber, 5-7 rue Bellini, 92800 Puteaux.</p>
+    <h2>Conception et réalisation du site</h2>
+    <p><a href="https://aurea-media.fr/" target="_blank" rel="noopener">Aurea Media</a>, société par actions simplifiée unipersonnelle, immatriculée au RCS de Paris sous le numéro 992 693 473, dont le siège est situé 60 rue François I<sup>er</sup>, 75008 Paris.</p>
+    <h2>Hébergement</h2>
+    <p>IONOS SARL, 7 place de la Gare, BP 70109, 57201 Sarreguemines Cedex, France. Téléphone : 09 70 80 89 11. Site : <a href="https://www.ionos.fr/" target="_blank" rel="noopener">www.ionos.fr</a>.</p>
+    <h2>Propriété intellectuelle</h2>
+    <p>La structure du site, ses textes, sa charte graphique, le logo DualTech et les vidéos de l'événement sont la propriété de l'Institut National des Affaires Stratégiques, sauf mention contraire. Toute reproduction, représentation ou adaptation, totale ou partielle, sans autorisation écrite préalable est interdite.</p>
+    <p>Les logos des partenaires et des institutions citées restent la propriété de leurs titulaires respectifs et sont reproduits avec leur accord dans le cadre du partenariat. Les portraits des intervenants sont publiés avec l'accord des personnes concernées. Les photographies d'illustration proviennent de banques d'images libres de droits ou des éditions précédentes de DualTech.</p>
+    <p>Icônes : Phosphor Icons (licence MIT). Typographies : Archivo et Public Sans (licence SIL Open Font License), hébergées sur le serveur du site.</p>
+    <h2>Liens vers d'autres sites</h2>
+    <p>Le site contient des liens vers des sites tiers (partenaires, billetterie, plateformes de candidature, réseaux sociaux). L'INAS n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.</p>
+    <h2>Responsabilité</h2>
+    <p>Les informations publiées, notamment le programme et la liste des intervenants, sont données à titre indicatif et peuvent évoluer jusqu'à la date de l'événement. L'INAS s'efforce de les tenir à jour mais ne peut garantir leur exhaustivité. Pour signaler une erreur : {MAIL}.</p>
+    <h2>Données personnelles et cookies</h2>
+    <p>Le traitement des données transmises par les formulaires du site et l'usage des cookies sont décrits dans la <a href="{lien('confidentialite')}">politique de confidentialité</a>.</p>
+    <h2>Droit applicable</h2>
+    <p>Le présent site et ses mentions légales sont soumis au droit français. En cas de litige, et à défaut de résolution amiable, les tribunaux français sont seuls compétents.</p>"""
+    page_texte("mentions", "Mentions légales", "Informations légales", ["Mentions", "légales"],
+               "Éditeur, directeur de la publication, hébergeur et conditions d'utilisation du site DualTech.", texte,
+               "Mentions légales du site DualTech | INAS",
+               "Mentions légales de dualtech-event.eu : éditeur (Institut National des Affaires Stratégiques), directeur de la publication, hébergeur et propriété intellectuelle.")
+
+
+def confidentialite():
+    texte = f"""    <p>L'Institut National des Affaires Stratégiques attache une grande importance à la protection de vos données personnelles. Cette politique explique quelles données sont collectées sur dualtech-event.eu, pourquoi, combien de temps elles sont conservées et comment exercer vos droits, conformément au Règlement général sur la protection des données (RGPD) et à la loi Informatique et Libertés.</p>
+    <h2>Responsable du traitement</h2>
+    <p>Le responsable du traitement est {EDITEUR} (SIREN 924 691 637). Contact pour toute question relative à vos données : {MAIL}.</p>
+    <h2>Données collectées et finalités</h2>
+    <h3>Formulaires du site</h3>
+    <p>Les formulaires de contact, de demande de partenariat et de proposition de workshop recueillent les informations que vous saisissez : nom et prénom, adresse e-mail, organisation ou structure, téléphone, ainsi que le contenu de votre message ou de votre proposition. Ces données servent uniquement à traiter votre demande et à vous répondre.</p>
+    <p>Base légale : l'intérêt légitime de l'INAS à répondre aux sollicitations qu'il reçoit et, pour les demandes de partenariat ou de workshop, les mesures précontractuelles prises à votre demande.</p>
+    <p>Les demandes sont enregistrées dans l'espace d'administration du site, accessible aux seules personnes habilitées de l'équipe DualTech, et peuvent être transmises par e-mail à cette équipe.</p>
+    <h3>Inscription à l'événement</h3>
+    <p>Les demandes d'accréditation sont gérées sur la plateforme de billetterie <a href="https://luma.com/" target="_blank" rel="noopener">Luma</a>. Les informations demandées (identité, fonction, organisation, coordonnées) permettent d'examiner votre demande, de confirmer votre participation, d'organiser l'accueil le jour de l'événement et de vous transmettre les informations pratiques. Base légale : l'exécution de votre demande d'inscription.</p>
+    <h3>Candidatures au Prix de l'innovation duale</h3>
+    <p>Les candidatures sont déposées sur un formulaire <a href="https://www.jotform.com/" target="_blank" rel="noopener">Jotform</a>. Les informations transmises servent à l'instruction des dossiers par l'organisation et le jury. Base légale : l'exécution de votre demande de candidature.</p>
+    <h3>Photographies et vidéos pendant l'événement</h3>
+    <p>Des photographies et vidéos peuvent être réalisées pendant DualTech et publiées sur ce site et sur les réseaux sociaux de l'événement, afin d'en assurer la communication. Toute personne peut s'opposer à la diffusion de son image en le signalant au photographe sur place ou en écrivant à {MAIL}.</p>
+    <h3>Protection contre les envois abusifs</h3>
+    <p>Pour limiter les envois automatisés, le nombre de formulaires envoyés depuis une même connexion est compté pendant une heure, à partir d'une empreinte chiffrée de l'adresse IP. Cette empreinte n'est pas associée à votre demande et s'efface automatiquement au bout d'une heure.</p>
+    <h2>Destinataires et sous-traitants</h2>
+    <p>Vos données sont destinées à l'équipe d'organisation de DualTech au sein de l'INAS. Elles ne sont ni vendues, ni louées, ni cédées à des tiers à des fins commerciales. Elles sont traitées, pour le compte de l'INAS, par les prestataires suivants :</p>
+    <ul>
+      <li>IONOS SARL (France) : hébergement du site et des demandes envoyées par les formulaires, sur des serveurs situés dans l'Union européenne ;</li>
+      <li>Luma (Luma AI, Inc., États-Unis) : gestion des inscriptions ;</li>
+      <li>Jotform (Jotform Inc., États-Unis) : dépôt des candidatures au Prix de l'innovation duale.</li>
+    </ul>
+    <p>Lorsque des données sont transférées hors de l'Union européenne, ces transferts sont encadrés par les garanties prévues par le RGPD, notamment les clauses contractuelles types adoptées par la Commission européenne ou le cadre de protection des données UE‑États‑Unis lorsque le prestataire y adhère.</p>
+    <h2>Durées de conservation</h2>
+    <ul>
+      <li>Demandes envoyées par les formulaires : 3 ans à compter du dernier échange ;</li>
+      <li>Données d'inscription : jusqu'à la fin de l'édition concernée, puis 3 ans pour vous informer des éditions suivantes, sauf opposition de votre part ;</li>
+      <li>Candidatures au Prix : jusqu'à la fin de l'édition concernée, puis 1 an ;</li>
+      <li>Empreinte anti-abus de l'adresse IP : 1 heure.</li>
+    </ul>
+    <h2>Cookies et contenus tiers</h2>
+    <p>Le site n'utilise aucun cookie publicitaire ni outil de mesure d'audience. Les cookies techniques de WordPress ne sont déposés que pour les personnes connectées à l'administration du site.</p>
+    <p>Certaines pages intègrent des contenus hébergés par des services tiers : les vidéos de l'événement (YouTube, en mode de confidentialité renforcée « youtube-nocookie ») et la carte d'accès au Campus Cyber (Google Maps). En affichant ces contenus, ces services peuvent recevoir votre adresse IP et déposer leurs propres traceurs, selon leurs politiques de confidentialité : <a href="https://policies.google.com/privacy?hl=fr" target="_blank" rel="noopener">politique de confidentialité de Google</a>. Vous pouvez à tout moment configurer votre navigateur pour bloquer ces traceurs.</p>
+    <h2>Sécurité</h2>
+    <p>Le site est accessible exclusivement en connexion chiffrée (HTTPS). L'accès aux demandes reçues est protégé par identifiant et mot de passe et réservé aux personnes habilitées.</p>
+    <h2>Vos droits</h2>
+    <p>Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation et de portabilité de vos données, ainsi que d'un droit d'opposition à leur traitement. Vous pouvez également définir des directives relatives au sort de vos données après votre décès.</p>
+    <p>Pour exercer ces droits, écrivez à {MAIL} ou à l'adresse postale : Institut National des Affaires Stratégiques, 60 route des Gardes, 92190 Meudon. Une réponse vous sera apportée dans un délai d'un mois.</p>
+    <p>Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la Commission nationale de l'informatique et des libertés (CNIL), 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07, ou sur <a href="https://www.cnil.fr/" target="_blank" rel="noopener">www.cnil.fr</a>.</p>"""
+    page_texte("confidentialite", "Politique de confidentialité", "Données personnelles", ["Politique de", "confidentialité"],
+               "Quelles données DualTech collecte, pourquoi, combien de temps elles sont conservées et comment exercer vos droits.", texte,
+               "Politique de confidentialité DualTech | Données personnelles",
+               "Données collectées par DualTech via les formulaires, l'inscription et le Prix de l'innovation duale : finalités, conservation, cookies et droits RGPD.")
+
+
 if __name__ == "__main__":
-    for f in (accueil, programme, intervenants, workshops, partenaires, prix, infos, retrospective, contact, inscription):
+    for f in (accueil, programme, intervenants, workshops, partenaires, prix, infos, retrospective, contact, inscription, mentions, confidentialite):
         f()
     print(f"{len(PAGES)} pages générées")

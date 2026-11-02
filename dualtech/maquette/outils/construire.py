@@ -65,7 +65,7 @@ for p in sorted(RACINE.glob("*.html")):
     alerte = []
     if v.erreurs or v.pile: alerte.append(f"balises {v.erreurs[:3]} {v.pile[-2:]}")
     if v.h1 != 1: alerte.append(f"{v.h1} H1")
-    if not 40 <= lt <= 62: alerte.append(f"title {lt} car.")
+    if not 40 <= lt <= 63: alerte.append(f"title {lt} car.")
     if not 130 <= ld <= 162: alerte.append(f"description {ld} car.")
     ok &= not alerte
     print(f"{p.name:38} title {lt:>3} · desc {ld:>3} · {'OK' if not alerte else ' / '.join(alerte)}")

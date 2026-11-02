@@ -134,7 +134,7 @@
   const videoYouTube = (id, extra, titre) => {
     const f = document.createElement('iframe');
     const origine = /^https?:/.test(location.protocol) ? `&origin=${encodeURIComponent(location.origin)}` : '';
-    f.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&disablekb=1&fs=0&enablejsapi=1${extra}${origine}`;
+    f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&disablekb=1&fs=0&enablejsapi=1${extra}${origine}`;
     f.title = titre; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
     f.referrerPolicy = 'strict-origin-when-cross-origin';
     f.addEventListener('load', () => f.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: titre }), '*'));

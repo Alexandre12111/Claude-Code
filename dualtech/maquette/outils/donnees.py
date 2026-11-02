@@ -31,6 +31,8 @@ PAGES = {
     "retrospective": ("retrospective-fevrier-2026.html", "/retrospective-fevrier-2026/"),
     "contact": ("contact.html", "/contact/"),
     "inscription": ("inscription.html", "/inscription/"),
+    "mentions": ("mentions-legales.html", "/mentions-legales/"),
+    "confidentialite": ("politique-de-confidentialite.html", "/politique-de-confidentialite/"),
 }
 
 # Intervenants 2026 : [nom, fonction, organisation, portrait d'origine]

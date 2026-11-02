@@ -74,9 +74,35 @@ function dualtech_installer_page( $slug ) {
 	return ( $page ? 'Remplacée : ' : 'Créée : ' ) . $info['titre'];
 }
 
-/** Visuel de partage de la maquette, copié une fois dans la médiathèque (identifiant, ou 0). */
+/** Visuel de partage du thème, copié dans la médiathèque (identifiant, ou 0). Recopié si le thème en livre une nouvelle version. */
 function dualtech_image_partage() {
-	return function_exists( 'dts_image_locale' ) ? dts_image_locale( DUALTECH_DIR . '/assets/img/og-dualtech-2026.jpg', 'DualTech 2026, le rendez vous de l’industrie duale au Campus Cyber' ) : 0;
+	static $id = null;
+	if ( null !== $id ) {
+		return $id;
+	}
+	$fichier = DUALTECH_DIR . '/assets/img/og-dualtech-2026.jpg';
+	$empreinte = is_readable( $fichier ) ? md5_file( $fichier ) : '';
+	$actuel    = (int) get_option( 'dualtech_image_partage' );
+	if ( $actuel && get_post( $actuel ) && get_post_meta( $actuel, '_dt_empreinte', true ) === $empreinte ) {
+		return $id = $actuel;
+	}
+	if ( ! $empreinte ) {
+		return $id = 0;
+	}
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$copie = wp_tempnam( 'og-dualtech-2026.jpg' );
+	copy( $fichier, $copie );
+	$nouveau = media_handle_sideload( array( 'name' => 'og-dualtech-2026.jpg', 'tmp_name' => $copie ), 0, 'DualTech 2026, le rendez-vous incontournable de l’industrie duale' );
+	if ( is_wp_error( $nouveau ) ) {
+		@unlink( $copie ); // phpcs:ignore WordPress.PHP.NoSilencedErrors
+		return $id = $actuel;
+	}
+	update_post_meta( $nouveau, '_dt_empreinte', $empreinte );
+	update_post_meta( $nouveau, '_wp_attachment_image_alt', 'Logo DualTech : le rendez-vous incontournable de l’industrie duale, 26 novembre 2026, Campus Cyber, La Défense' );
+	update_option( 'dualtech_image_partage', $nouveau );
+	return $id = (int) $nouveau;
 }
 
 /** Étape 3 : réglages WordPress. */
@@ -85,6 +111,10 @@ function dualtech_installer_reglages() {
 	if ( $accueil ) {
 		update_option( 'show_on_front', 'page' );
 		update_option( 'page_on_front', $accueil->ID );
+	}
+	$confidentialite = dualtech_page_par_slug( 'politique-de-confidentialite' );
+	if ( $confidentialite ) {
+		update_option( 'wp_page_for_privacy_policy', $confidentialite->ID ); // page reconnue par WordPress (Réglages → Confidentialité)
 	}
 	update_option( 'blogname', 'DualTech' );
 	update_option( 'blogdescription', 'Le rendez vous de l’industrie duale' );
@@ -153,7 +183,7 @@ function dualtech_installer_rank_math() {
 		}
 	}
 	update_option( 'rank_math_modules', array_values( $modules ) );
-	return 'Titres, descriptions et mots clés des 11 pages en place, séparateur « | », plan du site actif.';
+	return 'Titres, descriptions et mots clés des ' . count( dualtech_pages() ) . ' pages en place, séparateur « | », plan du site actif.';
 }
 
 /* Étapes appelées par l'écran d'installation. */

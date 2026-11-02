@@ -2,9 +2,9 @@
  "accueil": {
   "fichier": "accueil.html",
   "titre": "Accueil",
-  "seo_titre": "DualTech 2026 : salon de l'industrie duale | La Défense",
+  "seo_titre": "DualTech 2026 : rendez-vous incontournable de l'industrie duale",
   "seo_description": "Le 26 novembre 2026 au Campus Cyber, DualTech réunit décideurs publics, industriels et investisseurs de l'industrie duale. Demandez votre accréditation.",
-  "mot_cle": "salon industrie duale",
+  "mot_cle": "industrie duale",
   "precharge": "assets/img/hero-poster.webp",
   "graphe": [
    {
@@ -391,7 +391,7 @@
     "@type": "WebPage",
     "@id": "{{site}}/#page",
     "url": "{{site}}/",
-    "name": "DualTech 2026 : le rendez-vous de l'industrie duale",
+    "name": "DualTech 2026 : le rendez-vous incontournable de l'industrie duale",
     "isPartOf": {
      "@id": "{{site}}/#site"
     },
@@ -2740,6 +2740,166 @@
      }
     ],
     "@id": "{{site}}/inscription/#ariane"
+   }
+  ]
+ },
+ "mentions-legales": {
+  "fichier": "mentions-legales.html",
+  "titre": "Mentions légales",
+  "seo_titre": "Mentions légales du site DualTech | INAS",
+  "seo_description": "Mentions légales de dualtech-event.eu : éditeur (Institut National des Affaires Stratégiques), directeur de la publication, hébergeur et propriété intellectuelle.",
+  "mot_cle": "mentions légales DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/mentions-legales/#page",
+    "url": "{{site}}/mentions-legales/",
+    "name": "Mentions légales",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/mentions-legales/#ariane"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Mentions légales",
+      "item": "{{site}}/mentions-legales/"
+     }
+    ],
+    "@id": "{{site}}/mentions-legales/#ariane"
+   }
+  ]
+ },
+ "politique-de-confidentialite": {
+  "fichier": "politique-de-confidentialite.html",
+  "titre": "Politique de confidentialité",
+  "seo_titre": "Politique de confidentialité DualTech | Données personnelles",
+  "seo_description": "Données collectées par DualTech via les formulaires, l'inscription et le Prix de l'innovation duale : finalités, conservation, cookies et droits RGPD.",
+  "mot_cle": "politique de confidentialité DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/politique-de-confidentialite/#page",
+    "url": "{{site}}/politique-de-confidentialite/",
+    "name": "Politique de confidentialité",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/politique-de-confidentialite/#ariane"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Politique de confidentialité",
+      "item": "{{site}}/politique-de-confidentialite/"
+     }
+    ],
+    "@id": "{{site}}/politique-de-confidentialite/#ariane"
    }
   ]
  }

@@ -1252,3 +1252,21 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
 .phero--video .phero__fond iframe.is-lecture { opacity: .8 !important; }
 
 .fiche__site { margin-top: 14px; }
+
+/* Pages de texte (mentions légales, politique de confidentialité) */
+.prose { max-width: 760px; margin-inline: auto; color: var(--encre); font-size: 1.0625rem; line-height: 1.75; }
+.prose > * + * { margin-top: 1.1em; }
+.prose h2 { font: 700 clamp(1.375rem, 2.4vw, 1.75rem)/1.2 var(--titre); margin-top: 2.2em; letter-spacing: -.01em; }
+.prose h2:first-child { margin-top: 0; }
+.prose h3 { font: 700 1.1875rem/1.3 var(--titre); margin-top: 1.6em; }
+.prose a { color: var(--bleu); text-decoration: underline; text-underline-offset: 3px; }
+.prose ul, .prose ol { padding-left: 1.4em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li + li { margin-top: .4em; }
+.prose img { max-width: 100%; height: auto; border-radius: 12px; }
+.prose table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.prose th, .prose td { border-bottom: 1px solid var(--filet); padding: 10px 8px; text-align: left; }
+.prose blockquote { border-left: 3px solid var(--filet); padding-left: 18px; }
+.prose sup { line-height: 0; }
+.prose__maj { margin-top: 3em !important; font-size: .875rem; opacity: .7; }

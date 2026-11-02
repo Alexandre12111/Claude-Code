@@ -32,7 +32,7 @@ import donnees as D  # noqa: E402
 SITE = D.SITE
 # fichier de la maquette : (slug WordPress, titre dans l'administration, mot clé principal Rank Math)
 PAGES = {
-    "index.html": ("accueil", "Accueil", "salon industrie duale"),
+    "index.html": ("accueil", "Accueil", "industrie duale"),
     "l-evenement.html": ("l-evenement", "L'événement", "événement DualTech"),
     "programme-2026.html": ("programme-2026", "Programme 2026", "programme DualTech 2026"),
     "intervenants-2026.html": ("intervenants-2026", "Intervenants 2026", "intervenants DualTech"),
@@ -43,6 +43,8 @@ PAGES = {
     "retrospective-fevrier-2026.html": ("retrospective-fevrier-2026", "Rétrospective février 2026", "rétrospective DualTech"),
     "contact.html": ("contact", "Contact", "contact DualTech"),
     "inscription.html": ("inscription", "Inscription", "inscription DualTech 2026"),
+    "mentions-legales.html": ("mentions-legales", "Mentions légales", "mentions légales DualTech"),
+    "politique-de-confidentialite.html": ("politique-de-confidentialite", "Politique de confidentialité", "politique de confidentialité DualTech"),
 }
 LIENS = {f: s for f, (s, _, _) in PAGES.items()}
 
@@ -213,7 +215,12 @@ def polices():
 
 # ---------------------------------------------------------------- export
 
+# Fichiers écrits à la main pour WordPress, gardés à chaque export
+PROPRES = ("assets/wp.css", "parts/page-texte.php")
+
+
 def main():
+    gardes = {f: (THEME / f).read_bytes() for f in PROPRES if (THEME / f).exists()}
     if THEME.exists():
         for sous in ("assets", "parts", "contenu"):
             shutil.rmtree(THEME / sous, ignore_errors=True)
@@ -226,6 +233,8 @@ def main():
     (THEME / "assets" / "polices.css").write_text("/* Polices de la charte DualTech, hébergées avec le thème (aucun appel à Google Fonts) */\n" + polices())
     for f in POLICES.glob("*.woff2"):
         shutil.copy(f, THEME / "assets" / "polices" / f.name)
+    for f, contenu in gardes.items():
+        (THEME / f).write_bytes(contenu)
 
     accueil = (MAQUETTE / "index.html").read_text()
     entete = accueil[accueil.index('<a class="skip"'):accueil.index('<main id="contenu">')]
