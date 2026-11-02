@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aurea Studio
  * Description:       Administration du site Aurea Media : réalisations, logos clients et avis Google, partagés par tout le site. Le contenu reste en place quand le thème change.
- * Version:           0.5.1
+ * Version:           0.6.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Aurea Media
@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AUREA_STUDIO_VERSION', '0.5.1' );
+define( 'AUREA_STUDIO_VERSION', '0.6.0' );
 define( 'AUREA_STUDIO_DIR', plugin_dir_path( __FILE__ ) );
 define( 'AUREA_STUDIO_URL', plugin_dir_url( __FILE__ ) );
 define( 'AUREA_STUDIO_MENU', 'aurea-studio' );
@@ -38,6 +38,7 @@ require AUREA_STUDIO_DIR . 'inc/realisations.php';
 require AUREA_STUDIO_DIR . 'inc/logos.php';
 require AUREA_STUDIO_DIR . 'inc/avis.php';
 require AUREA_STUDIO_DIR . 'inc/articles.php';
+require AUREA_STUDIO_DIR . 'inc/transfert.php';
 
 /* ------------------------------------------------------------------ */
 /* Menu « Aurea Studio » dans la colonne de gauche                     */
