@@ -172,6 +172,7 @@ function schiesser_adresses_pages() {
 		'contact'    => array( 'kontakt', 'contact', 'contact-us' ),
 		'entreprise' => array( 'firmengeschenke', 'cadeaux-entreprise', 'corporate-gifts' ),
 		'mentions'   => array( 'impressum', 'mentions-legales', 'legal-notice' ),
+		'datenschutz' => array( 'datenschutz', 'protection-des-donnees', 'privacy-policy', 'datenschutzerklaerung', 'politique-de-confidentialite' ),
 	);
 }
 
@@ -237,4 +238,25 @@ add_action( 'admin_post_schiesser_langue_de', function () {
 	$ok = wp_download_language_pack( SCHIESSER_LANGUE_SITE );
 	wp_safe_redirect( schiesser_url_entretien( array( 'fait' => $ok ? 'langue-de' : 'langue-de-erreur' ) ) );
 	exit;
+} );
+
+/*
+ * Page « Datenschutz » publiée : WordPress la reconnaît comme politique de confidentialité
+ * (Réglages → Confidentialité), si aucune autre page publiée n'y est déjà choisie.
+ */
+add_action( 'admin_init', function () {
+	$actuelle = (int) get_option( 'wp_page_for_privacy_policy' );
+	if ( $actuelle && 'publish' === get_post_status( $actuelle ) ) {
+		return;
+	}
+	foreach ( schiesser_adresses_pages()['datenschutz'] as $slug ) {
+		$p = get_page_by_path( $slug );
+		if ( $p && 'publish' === $p->post_status ) {
+			if ( function_exists( 'pll_get_post' ) && pll_default_language() ) {
+				$p = get_post( pll_get_post( $p->ID, pll_default_language() ) ?: $p->ID );
+			}
+			update_option( 'wp_page_for_privacy_policy', (int) $p->ID );
+			return;
+		}
+	}
 } );

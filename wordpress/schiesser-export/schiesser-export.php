@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Schiesser · Export et import du site
  * Description:       Exporte tout le contenu du site (pages, produits, carte du Tea Room, menus, réglages, médias) dans un fichier JSON, puis réimporte un fichier modifié avec un aperçu des changements et un retour en arrière possible.
- * Version:           1.1.1
+ * Version:           1.2.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Confiserie Schiesser
@@ -249,7 +249,7 @@ function schiesser_ex_mode_emploi() {
 		'IMAGES : un bloc montre une image par imageId (numéro du média), imageUrl et imageAlt. Utiliser un média de la liste « medias ». Une nouvelle photo ne peut pas venir de ce fichier : la personne l’ajoute d’abord dans la Médiathèque, puis donne son numéro ou son nom de fichier, ou refait un export.',
 		'APPARENCE SUR TOUT LE SITE (couleur, espacement, élément à cacher partout…) : utiliser le CSS personnalisé, dans options.schiesser_charte.css_perso. Renvoyer {"options":{"schiesser_charte":{"css_perso":"…"}}} avec le CSS existant suivi des ajouts : les autres réglages de la charte ne bougent pas. Les classes à viser se lisent dans apercu_html (page exportée seule). Couleurs de la charte en variables CSS : var(--vert) vert sapin #174633, var(--dark) chocolat #271B12, var(--mint) beige #E4D3B4, var(--paper) crème #F1EADE, var(--paper-deep) sable #E4D8C3, var(--ink) titres, var(--text) texte. Commenter chaque ajout (/* … */) en français.',
 		'RÉGLAGES : seuls les réglages dont le nom commence par schiesser, rank-math-options- et quelques réglages WordPress (nom du site, page d’accueil…) sont acceptés. Pour un réglage en tableau, ne donner que les clés à changer : elles sont fusionnées avec l’existant. Ne jamais modifier une valeur ***masqué*** (clé secrète) : elle est toujours conservée.',
-		'AUTRES OPÉRATIONS : supprimer un contenu : {"ID":123,"supprimer":true} (il va à la corbeille). Créer un contenu : sans ID, avec type, titre, statut, contenu, langue et traduction_de (ID de la version allemande). Une méta à null est supprimée. Référencement Rank Math : méta rank_math_title, rank_math_description, rank_math_focus_keyword (titre 50 à 60 caractères, description 140 à 160).',
+		'AUTRES OPÉRATIONS : supprimer un contenu : {"ID":123,"supprimer":true} (il va à la corbeille). Créer un contenu : sans ID, avec type, titre, statut, contenu, langue et traduction_de (ID de la version allemande, ou « @cle » si la version allemande est créée plus haut dans le même fichier avec "cle":"…"). Une méta à null est supprimée. Référencement Rank Math : méta rank_math_title, rank_math_description, rank_math_focus_keyword (titre 50 à 60 caractères, description 140 à 160).',
 		'LIMITES : ce fichier ne change pas le fonctionnement du thème (nouveau type de bloc, PHP, PDF de la carte du Tea Room, logo). Si la demande l’exige, le dire clairement : il faut une mise à jour du thème par le développeur.',
 		'POUR LA PERSONNE QUI IMPORTE : Outils → Export Schiesser → « Importer un fichier modifié » → vérifier l’aperçu → « Appliquer ». En cas de souci : « Annuler le dernier import ». Puis vider le cache (Réglages → WP Super Cache → Supprimer le cache).',
 		'AVANT DE RENDRE LE FICHIER : vérifier que le JSON est valide, que chaque bloc modifié s’ouvre et se ferme correctement, et que seuls les réglages voulus changent.',
@@ -799,14 +799,21 @@ function schiesser_ex_operation( array $op, array &$s ) {
 				return $id;
 			}
 			$s['crees'][] = $id;
+			if ( ! empty( $c['cle'] ) ) {
+				$s['cles'][ (string) $c['cle'] ] = $id; // repère pour relier les traductions créées par le même fichier
+			}
 			schiesser_ex_ecrire_metas( 'post', $id, $op['metas'] );
 			foreach ( (array) ( $c['termes'] ?? array() ) as $tax => $liste ) {
 				wp_set_object_terms( $id, schiesser_ex_ids_termes( $liste, $tax ), $tax );
 			}
 			if ( ! empty( $c['langue'] ) && function_exists( 'pll_set_post_language' ) ) {
 				pll_set_post_language( $id, $c['langue'] );
-				if ( ! empty( $c['traduction_de'] ) && function_exists( 'pll_save_post_translations' ) ) {
-					$tr                  = pll_get_post_translations( (int) $c['traduction_de'] );
+				$source = $c['traduction_de'] ?? 0;
+				if ( is_string( $source ) && 0 === strpos( $source, '@' ) ) {
+					$source = $s['cles'][ substr( $source, 1 ) ] ?? 0; // « @cle » : contenu créé plus haut dans le même fichier
+				}
+				if ( $source && function_exists( 'pll_save_post_translations' ) ) {
+					$tr                  = pll_get_post_translations( (int) $source );
 					$tr[ $c['langue'] ] = $id;
 					pll_save_post_translations( $tr );
 				}

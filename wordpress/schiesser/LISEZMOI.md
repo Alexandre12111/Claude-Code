@@ -3,6 +3,11 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.23.4 : Impressum, Datenschutz et Instagram
+
+* **Pied de page** : le lien « Datenschutz » mène à la page Datenschutzerklärung publiée (adresse `datenschutz`, `protection-des-donnees` ou `privacy-policy`) dans la langue affichée, même si Réglages → Confidentialité n'est pas renseigné. Une fois publiée, la page est aussi choisie automatiquement comme politique de confidentialité de WordPress.
+* Fichier d'import du 2 novembre (extension Export Schiesser 1.2) : Impressum complet (DE, FR, EN), nouvelle Datenschutzerklärung dans les trois langues, en brouillon à relire puis publier ; adresse Instagram dans Réglages maison (icône du pied de page et données Google `sameAs`).
+
 ## Version 0.23.3 : plan du site toujours disponible, robots.txt
 
 * **Plan du site** : il répondait 404 peu après chaque « Enregistrer » dans Réglages → Permaliens, quand les règles d'adresses étaient régénérées sans celles de Rank Math. Le thème vérifie maintenant ces règles et les remet tout seul (au plus une fois toutes les 10 minutes) ; sa propre régénération, à chaque nouvelle version, ne se fait plus que sur une page du site, extensions chargées.

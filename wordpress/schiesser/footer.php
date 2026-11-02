@@ -63,7 +63,12 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 			<span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> <?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
 			<span class="x-legal">
 				<?php if ( $mention && 'publish' === $mention->post_status ) : ?><a href="<?php echo esc_url( get_permalink( $mention ) ); ?>"><?php echo esc_html( get_the_title( $mention ) ); ?></a><?php endif; ?>
-				<?php if ( get_privacy_policy_url() ) : ?><a href="<?php echo esc_url( get_privacy_policy_url() ); ?>"><?php echo esc_html( schiesser_t( 'Datenschutz' ) ); ?></a><?php endif; ?>
+				<?php
+				// Datenschutz : la page choisie dans Réglages → Confidentialité, sinon la page « Datenschutz » publiée (dans la langue affichée).
+				$prive = schiesser_page( 'datenschutz' );
+				$prive = $prive ? get_permalink( $prive ) : get_privacy_policy_url();
+				?>
+				<?php if ( $prive ) : ?><a href="<?php echo esc_url( $prive ); ?>"><?php echo esc_html( schiesser_t( 'Datenschutz' ) ); ?></a><?php endif; ?>
 			</span>
 			<span><?php echo esc_html( implode( ' · ', array_filter( array( $rue, $ville ) ) ) ); ?></span>
 		</div>

@@ -23,7 +23,7 @@ Qui fait quoi :
 | 4 | ✓ **Corriger les 38 liens français** qui passent par une redirection (`/boutique/` → `/fr/boutique/`…). | Import | 5 min | Aucun lien vers une 301 dans les pages FR |
 | 5 | ✓ **Image de partage par défaut** : Rank Math → Titres & métas → Global → « Image OpenGraph » (photo de la façade ou de la vitrine, 1200 × 630). Idéalement une image par page (onglet Social de Rank Math). | Admin | 10 à 30 min | Aperçu d'un lien collé dans WhatsApp |
 | 6 | ✓ **Logo officiel dans la fiche établissement** : Rank Math → Titres & métas → SEO local → Logo : `schiesser-logo.png` (carré, logo droit). | Admin | 5 min | Test des résultats enrichis de Google : logo correct |
-| 7 | **À faire : profils liés (`sameAs`)** : saisir dans Réglages maison → Fiche établissement les adresses Google Business Profile, Instagram, Facebook, TripAdvisor. | Admin | 10 min | `sameAs` présent dans le code de l'accueil |
+| 7 | **En partie fait : profils liés (`sameAs`)** : Instagram ajouté par l’import du 2 novembre ; reste à saisir dans Réglages maison → Fiche établissement les adresses Google Business Profile, Instagram, Facebook, TripAdvisor. | Admin | 10 min | `sameAs` présent dans le code de l'accueil |
 | 8 | ✓ **Photo de banque d'images du Tea Room** (Unsplash, 507 Ko, chargée inutilement) : la retirer de la feuille de style. | Thème | 5 min | Page Tea Room sous 400 Ko |
 | 9 | ✓ **Lien de plan mal encodé** (`&amp;` dans `hasMap`) : le décoder dans le thème. | Thème | 5 min | `hasMap` contient `&query=` |
 
