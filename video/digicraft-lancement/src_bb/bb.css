@@ -1,0 +1,9 @@
+/* « Bring your ideas to life » à la charte YouCraft : compléments propres à ce film (src_bb). */
+.ui { color: #0B0B0F; }
+.dcgrad { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #1E3BFF; }
+.dcgrad-l { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #D7FF3F; }
+.glass { background: rgba(251,250,246,0.92); border-color: rgba(255,255,255,0.9); box-shadow: 0 30px 90px rgba(11,11,15,0.34); }
+.win { box-shadow: 0 40px 120px rgba(11,11,15,0.30), 0 8px 24px rgba(11,11,15,0.12); }
+.chip { color: #3A3833; border-color: #E3DED3; }
+.lbl { color: rgba(245,242,234,0.92); }
+.lbl::before { background: #D7FF3F; border-radius: 2px; }

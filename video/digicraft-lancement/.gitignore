@@ -113,3 +113,6 @@ out/stills_cmp_yc.jpg
 out/parts_yb_*/
 out/video_yb_*_silent.mp4
 out/render_yb*.log
+out/parts_bb/
+out/video_bb_silent.mp4
+out/render_bb.log
