@@ -116,3 +116,7 @@ out/render_yb*.log
 out/parts_bb/
 out/video_bb_silent.mp4
 out/render_bb.log
+out/parts_bbfr/
+out/video_bbfr_silent.mp4
+out/render_bbfr.log
+out/stills_bb*/
