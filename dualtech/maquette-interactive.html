@@ -1276,6 +1276,8 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
 .phero__fond iframe, .lieu__visuel iframe { opacity: 0 !important; transition: opacity 1s; }
 .phero__fond iframe.is-lecture, .lieu__visuel iframe.is-lecture { opacity: 1 !important; }
 .phero--video .phero__fond iframe.is-lecture { opacity: .8 !important; }
+
+.fiche__site { margin-top: 14px; }
 </style>
 </head>
 <body>
@@ -2336,6 +2338,7 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
     <p class="fiche__cat"></p>
     <h2 id="fiche-nom"></h2>
     <p class="fiche__desc"></p>
+    <p class="fiche__site" hidden><a class="lien-fleche" href="#" target="_blank" rel="noopener">Visiter le site<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M200 64v104a8 8 0 0 1-16 0V83.31L69.66 197.66a8 8 0 0 1-11.32-11.32L172.69 72H88a8 8 0 0 1 0-16h104a8 8 0 0 1 8 8Z"/></svg></a></p>
     <div class="fiche__nav"><button type="button" data-fiche-pas="-1">Partenaire précédent</button><button type="button" data-fiche-pas="1">Partenaire suivant</button></div>
   </div>
 </dialog>
@@ -2760,6 +2763,9 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
       $('.fiche__cat', fiche).textContent = b.dataset.cat;
       $('#fiche-nom', fiche).textContent = b.dataset.nom;
       $('.fiche__desc', fiche).textContent = b.dataset.desc || 'Partenaire de DualTech 2026.';
+      const site = $('.fiche__site', fiche);
+      site.hidden = !b.dataset.lien;
+      if (b.dataset.lien) $('a', site).href = b.dataset.lien;
     };
     document.addEventListener('click', (e) => {
       const b = e.target.closest('[data-fiche]'); if (!b) return;

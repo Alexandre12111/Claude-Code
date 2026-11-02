@@ -1250,3 +1250,5 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
 .phero__fond iframe, .lieu__visuel iframe { opacity: 0 !important; transition: opacity 1s; }
 .phero__fond iframe.is-lecture, .lieu__visuel iframe.is-lecture { opacity: 1 !important; }
 .phero--video .phero__fond iframe.is-lecture { opacity: .8 !important; }
+
+.fiche__site { margin-top: 14px; }

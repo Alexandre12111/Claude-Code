@@ -164,6 +164,7 @@ def pied():
     <p class="fiche__cat"></p>
     <h2 id="fiche-nom"></h2>
     <p class="fiche__desc"></p>
+    <p class="fiche__site" hidden><a class="lien-fleche" href="#" target="_blank" rel="noopener">Visiter le site{ico('sortie')}</a></p>
     <div class="fiche__nav"><button type="button" data-fiche-pas="-1">Partenaire précédent</button><button type="button" data-fiche-pas="1">Partenaire suivant</button></div>
   </div>
 </dialog>

@@ -56,6 +56,9 @@
       $('.fiche__cat', fiche).textContent = b.dataset.cat;
       $('#fiche-nom', fiche).textContent = b.dataset.nom;
       $('.fiche__desc', fiche).textContent = b.dataset.desc || 'Partenaire de DualTech 2026.';
+      const site = $('.fiche__site', fiche);
+      site.hidden = !b.dataset.lien;
+      if (b.dataset.lien) $('a', site).href = b.dataset.lien;
     };
     document.addEventListener('click', (e) => {
       const b = e.target.closest('[data-fiche]'); if (!b) return;
