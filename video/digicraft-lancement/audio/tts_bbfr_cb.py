@@ -1,8 +1,9 @@
 """Voix off française de « Donnez vie à vos idées » avec Chatterbox Multilingual (Resemble AI, licence MIT) :
 diction et intonation françaises naturelles. Le timbre vient d'une voix de synthèse de référence (aucune voix réelle clonée) :
-homme = voix Kokoro du film anglais (am_michael), femme = voix Kokoro ff_siwis (corpus SIWIS sous licence libre).
+pierre = voix Piper fr_FR-upmc « pierre » (voix masculine française native, corpus UPMC sous licence libre),
+femme = voix Kokoro ff_siwis (corpus SIWIS sous licence libre), homme = voix Kokoro du film anglais (écartée : accent anglais).
 Chaque réplique est vérifiée par reconnaissance vocale (Whisper) et régénérée si un mot manque.
-Usage : python3 tts_bbfr_cb.py homme|femme   (dans un environnement où chatterbox-tts et openai-whisper sont installés)"""
+Usage : python3 tts_bbfr_cb.py pierre|femme|homme   (dans un environnement où chatterbox-tts et openai-whisper sont installés)"""
 import json, os, re, sys, unicodedata
 import numpy as np, torch, torchaudio as ta, whisper
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
@@ -11,7 +12,7 @@ import warp_bbfr as W
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 VOICE = sys.argv[1]
-REF = os.path.join(HERE, 'vo_ref', {'homme': 'ref_homme_kokoro_am_michael.wav', 'femme': 'ref_femme_kokoro_ff_siwis.wav'}[VOICE])
+REF = os.path.join(HERE, 'vo_ref', {'pierre': 'ref_homme_piper_upmc_pierre.wav', 'homme': 'ref_homme_kokoro_am_michael.wav', 'femme': 'ref_femme_kokoro_ff_siwis.wav'}[VOICE])
 STARTS0 = [0.30, 3.30, 4.75, 6.35, 10.55, 12.6, 19.9, 23.6, 30.0, 34.7, 37.9, 41.0, 46.3, 48.4]
 LINES = [
     "Imaginez pouvoir créer n'importe quelle application,",
@@ -29,7 +30,10 @@ LINES = [
     "Vous l'imaginez ?",
     "Donnons-lui vie.",
 ]
-SAY = lambda t: t.replace('YouCraft', 'You Craft')
+# Avec la voix « pierre », le nom s'écrit tel quel : c'est la graphie qu'il prononce le mieux (testé sur plusieurs graines).
+SAY = (lambda t: t) if VOICE == 'pierre' else (lambda t: t.replace('YouCraft', 'You Craft'))
+# Homophones que la reconnaissance vocale écrit autrement sans erreur de prononciation.
+HOMO = {'aux', 'donnons'}
 OUT = os.path.join(HERE, f'vo_bbfr_cb_{VOICE}')
 os.makedirs(OUT, exist_ok=True)
 norm = lambda s: re.sub(r'[^a-z ]', ' ', unicodedata.normalize('NFKD', s.lower()).encode('ascii', 'ignore').decode()).split()
@@ -49,9 +53,9 @@ for i, line in enumerate(LINES):
         x = x[max(0, idx[0] - int(0.03 * tts.sr)): min(len(x), idx[-1] + int(0.2 * tts.sr))]
         path = f'{OUT}/l{i:02d}.wav'
         ta.save(path, torch.from_numpy(x)[None], tts.sr)
-        heard = asr.transcribe(path, language='fr', fp16=False)['text'].strip()
+        heard = asr.transcribe(path, language='fr', fp16=False, initial_prompt='YouCraft')['text'].strip()
         ref, got = norm(SAY(line).replace('-', ' ')), set(norm(heard.replace('-', ' ')))
-        miss = [m for m in ref if m not in got and len(m) > 2]
+        miss = [m for m in ref if m not in got and len(m) > 2 and m not in HOMO]
         dur = len(x) / tts.sr
         score = len(miss) + (5 if dur > nxt - starts[i] else 0)
         print(i, 'graine', seed, round(dur, 2), 's', 'mots manquants', miss, '|', heard, flush=True)

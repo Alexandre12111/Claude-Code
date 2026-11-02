@@ -10,7 +10,7 @@ STEMS = os.path.join(HERE, 'stems')
 import warp_bbfr as W
 SR, END = 48000, W.END
 # Voix choisie (dossier de répliques) et suffixe des fichiers : VO=vo_bbfr_cb_homme TAG=_homme python3 mix_bbfr.py
-VO = os.environ.get('VO', 'vo_bbfr_cb_homme')
+VO = os.environ.get('VO', 'vo_bbfr_cb_pierre')
 TAG = os.environ.get('TAG', '')
 N = int((W.END + 1.5) * SR)
 STARTS = [m['start'] for m in json.load(open(os.path.join(HERE, VO, 'meta.json'), encoding='utf-8'))]
