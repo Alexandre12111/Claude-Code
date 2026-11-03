@@ -71,7 +71,7 @@ def valid(d, line):
     miss = [m for m in ref if m not in set(got) and len(m) > 2 and m not in HOMO]
     ws = [nw(w['w']) for w in d['words']]
     anchor_ok = line['anchor'] is None or any(line['anchor'] in w for w in ws)
-    return not miss and len(got) - len(ref) <= 1 and anchor_ok
+    return not miss and len(got) - len(ref) <= 0 and anchor_ok  # aucun mot inventé
 
 
 def segments(line, d):

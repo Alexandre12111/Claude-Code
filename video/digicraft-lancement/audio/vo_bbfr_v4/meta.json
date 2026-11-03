@@ -99,9 +99,9 @@
  },
  {
   "text": "Partez d'une idée, ou d'un modèle.",
-  "start": 23.2,
+  "start": 25.7,
   "dur": 1.91,
-  "ecran": 23.2,
+  "ecran": 25.7,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 0.97,
@@ -113,9 +113,9 @@
  },
  {
   "text": "Décrivez votre besoin… et regardez-la prendre forme sous vos yeux.",
-  "start": 25.95,
+  "start": 28.45,
   "dur": 3.56,
-  "ecran": 25.95,
+  "ecran": 28.45,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.07,
@@ -126,24 +126,10 @@
   "asr": "Décrivez votre besoin et regardez la prendre forme sous vos yeux."
  },
  {
-  "text": "Créée en quelques minutes.",
-  "start": 29.95,
-  "dur": 1.3,
-  "ecran": 29.95,
-  "repere": null,
-  "mot_repere_a": null,
-  "tempo": 1.0,
-  "prises": [
-   77
-  ],
-  "vivacite": 15.7,
-  "asr": "Créé en quelques minutes"
- },
- {
   "text": "Ajustez, enrichissez, faites-la grandir.",
-  "start": 31.9,
+  "start": 34.4,
   "dur": 2.58,
-  "ecran": 31.9,
+  "ecran": 34.4,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.0,
@@ -154,40 +140,40 @@
   "asr": "Ajustez, enrichissez, faites-la grandir."
  },
  {
-  "text": "Une modification ? Demandez… c'est fait.",
-  "start": 36.21,
-  "dur": 2.46,
-  "ecran": 37.2,
-  "repere": "demandez",
-  "mot_repere_a": 37.2,
+  "text": "Une modification ? Elle est en ligne en quelques minutes.",
+  "start": 38.13,
+  "dur": 2.61,
+  "ecran": 39.7,
+  "repere": "ligne",
+  "mot_repere_a": 39.7,
   "tempo": 1.0,
   "prises": [
-   11
+   37
   ],
-  "vivacite": 11.2,
-  "asr": "une modification. Demandez, c'est fait !"
+  "vivacite": 11.1,
+  "asr": "Une modification. Elle est en ligne en quelques minutes."
  },
  {
   "text": "D'une équipe… à tout le groupe.",
-  "start": 40.7,
-  "dur": 2.36,
-  "ecran": 40.7,
+  "start": 43.2,
+  "dur": 1.72,
+  "ecran": 43.2,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.0,
   "prises": [
-   51
+   23
   ],
-  "vivacite": 13.2,
-  "asr": "d'une équipe à tout le groupe. Pourtant..."
+  "vivacite": 13.1,
+  "asr": "d'une équipe à tout le groupe."
  },
  {
   "text": "Des résultats rapides… avec une qualité de niveau entreprise.",
-  "start": 43.227,
+  "start": 45.727,
   "dur": 3.74,
-  "ecran": 45.9,
+  "ecran": 48.4,
   "repere": "niveau",
-  "mot_repere_a": 45.9,
+  "mot_repere_a": 48.4,
   "tempo": 1.07,
   "prises": [
    11
@@ -197,11 +183,11 @@
  },
  {
   "text": "Tout est intégré, sécurisé par conception, et prêt à être lancé.",
-  "start": 47.094,
+  "start": 49.594,
   "dur": 3.84,
-  "ecran": 48.15,
+  "ecran": 50.65,
   "repere": "securise",
-  "mot_repere_a": 48.15,
+  "mot_repere_a": 50.65,
   "tempo": 1.07,
   "prises": [
    77
@@ -211,9 +197,9 @@
  },
  {
   "text": "Une nouvelle façon de travailler… où vos équipes vont aussi loin que leurs idées.",
-  "start": 53.5,
+  "start": 56.0,
   "dur": 4.54,
-  "ecran": 53.5,
+  "ecran": 56.0,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.07,
@@ -225,9 +211,9 @@
  },
  {
   "text": "Vous l'imaginez ?",
-  "start": 58.85,
+  "start": 61.35,
   "dur": 1.05,
-  "ecran": 58.85,
+  "ecran": 61.35,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.0,
@@ -239,9 +225,9 @@
  },
  {
   "text": "Donnons-lui vie.",
-  "start": 60.95,
+  "start": 63.45,
   "dur": 1.04,
-  "ecran": 60.95,
+  "ecran": 63.45,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.0,
