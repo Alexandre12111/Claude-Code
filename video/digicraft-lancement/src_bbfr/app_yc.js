@@ -452,4 +452,6 @@
   }
 
   U.APP = { people, fleet, plants, crm, stock, shifts, portal, W, H };
+  // Briques réutilisées par les vidéos qui construisent leurs propres écrans (vidéo KMC).
+  U.APPK = { shell, card, kpi, table, badge, btn, bar, spark, lineChart, barChart, tabs, photo, who, live, ST, W, H, SB, TB, CW };
 })();
