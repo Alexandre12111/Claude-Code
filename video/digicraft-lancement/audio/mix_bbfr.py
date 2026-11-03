@@ -10,7 +10,7 @@ STEMS = os.path.join(HERE, 'stems')
 import warp_bbfr as W
 SR, END = 48000, W.END
 # Voix choisie (dossier de répliques) et suffixe des fichiers : VO=vo_bbfr_cb_homme TAG=_homme python3 mix_bbfr.py
-VO = os.environ.get('VO', 'vo_bbfr_sync')
+VO = os.environ.get('VO', 'vo_bbfr_v4')
 TAG = os.environ.get('TAG', '')
 N = int((W.END + 1.5) * SR)
 STARTS = [m['start'] for m in json.load(open(os.path.join(HERE, VO, 'meta.json'), encoding='utf-8'))]
@@ -25,8 +25,11 @@ for i, t in enumerate(STARTS):
 sf.write(raw, vo.astype(np.float32), SR)
 proc = os.path.join(STEMS, 'vo_bbfr.wav')
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', raw, '-af',
-                'highpass=f=75,equalizer=f=180:t=q:w=1:g=1.5,equalizer=f=3200:t=q:w=1.2:g=2,equalizer=f=9000:t=h:w=0.7:g=2,'
-                'acompressor=threshold=-20dB:ratio=2.5:attack=8:release=120:makeup=2,alimiter=limit=0.95',
+                # Traitement voix de publicité : chaleur, moins de « boîte », présence et air, de-esser, compression marquée,
+                # légère saturation douce, limiteur.
+                'highpass=f=80,equalizer=f=140:t=q:w=0.9:g=2.5,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=3500:t=q:w=1.0:g=3,'
+                'equalizer=f=10000:t=h:w=0.7:g=2.5,deesser=i=0.4:m=0.5:f=0.5,acompressor=threshold=-24dB:ratio=3.5:attack=4:release=90:makeup=3,'
+                'asoftclip=type=tanh:threshold=0.9,alimiter=limit=0.95',
                 '-ar', str(SR), '-ac', '1', proc], check=True)
 v, _ = sf.read(proc)
 v = np.pad(v[:N], (0, max(0, N - len(v))))
@@ -46,8 +49,8 @@ for i in range(0, N, 48):
     acc += (a_ if tgt > acc else r_) * 48 * (tgt - acc)
     acc = min(1, max(0, acc))
     k[i:i + 48] = acc
-duck = 1 - 0.5 * k
-mix = music * 0.85 * duck[:, None] + sfx * 1.25 * (1 - 0.25 * k)[:, None] + (v * 1.0)[:, None]
+duck = 1 - 0.65 * k   # musique plus en retrait sous la voix
+mix = music * 0.85 * duck[:, None] + sfx * 1.25 * (1 - 0.4 * k)[:, None] + (v * 1.0)[:, None]
 mix = mix[: int(END * SR)]
 t = np.arange(len(mix)) / SR
 fade = np.ones(len(mix)); fade[t > END - 1.0] = np.clip((END - t[t > END - 1.0]) / 1.0, 0, 1)
