@@ -1,7 +1,7 @@
 """Assemblage de la voix off de la vidéo consultants et calcul du minutage de toute la vidéo.
 - par réplique : prise valide (aucun mot manquant ni inventé, contrôle Whisper) la plus vivante ; pauses internes resserrées ;
   débit légèrement ajusté (au plus +5 %) ; contrôle final de la version traitée ;
-- minutage : répliques enchaînées (0,45 s entre deux répliques d'une même scène, 1,1 s à chaque changement de scène),
+- minutage : répliques enchaînées (0,6 s entre deux répliques d'une même scène, 1,5 s à chaque changement de scène),
   durées minimales pour les plans visuels ; créneaux de scènes écrits dans src_cons/cons_timeline.js ;
 - sous-titres : blocs de deux lignes au plus, calés mot à mot, dans cons_timeline.js et en .srt.
 Usage : python3 build_cons.py (environnement avec openai-whisper)"""
@@ -13,9 +13,10 @@ from script_cons import L
 
 TAKES, OUT = os.path.join(HERE, 'vo_cons_takes'), os.path.join(HERE, 'vo_cons')
 ROOT = os.path.join(HERE, '..')
-HOMO = {'aux', 'creee', 'faites', 'applications', 'professionnelles', 'courriels', 'ressaisies', 'deployees', 'hebergees'}
-MIN = {'logo': 3.0, 'produit': 7.0, 'cas_intro': 3.2, 'etape3': 6.5, 'preuves': 7.5, 'fin': 6.5, 'vendre': 4.0}
-LEAD, GAP, TAIL = 1.1, 0.45, 2.0
+HOMO = {'aux', 'creee', 'faites', 'applications', 'professionnelles', 'courriels', 'deployees', 'hebergees', 'besoin', 'suivis', 'publier', 'droits', 'roles', 'consultants', 'donnons', 'audits', 'donnees', 'recrue'}
+MIN = {'logo': 3.4, 'produit': 13.5, 'etape1': 9.5, 'etape2': 9.0, 'etape2b': 7.0, 'cas_intro': 3.6, 'etape3': 8.0, 'cas_rh': 15.0, 'cas_log': 14.0, 'cas_ind': 13.5,
+       'cas_autres': 12.5, 'preuves': 9.0, 'securite': 8.5, 'fin': 7.5, 'vendre': 4.5}
+LEAD, GAP, TAIL = 1.5, 0.6, 2.5
 norm = lambda s: re.sub(r'[^a-z0-9 ]', ' ', unicodedata.normalize('NFKD', s.lower()).encode('ascii', 'ignore').decode()).split()
 nw = lambda w: ''.join(norm(w))
 syll = lambda s: sum(len(re.findall(r'[aeiouy]+', w)) for w in norm(s))

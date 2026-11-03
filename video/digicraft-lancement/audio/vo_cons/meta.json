@@ -1,0 +1,2159 @@
+[
+ {
+  "text": "Vos clients ont tous des idées pour mieux travailler.",
+  "sub": "Vos clients ont tous des idées pour mieux travailler.",
+  "scene": "constat",
+  "start": 1.0,
+  "dur": 2.51,
+  "seed": 23,
+  "asr": "Vos clients ont tous des idées pour mieux travailler.",
+  "words": [
+   [
+    "vos",
+    0.0,
+    0.21
+   ],
+   [
+    "clients",
+    0.21,
+    0.476
+   ],
+   [
+    "ont",
+    0.476,
+    0.705
+   ],
+   [
+    "tous",
+    0.705,
+    0.933
+   ],
+   [
+    "des",
+    0.933,
+    1.143
+   ],
+   [
+    "idees",
+    1.143,
+    1.486
+   ],
+   [
+    "pour",
+    1.486,
+    1.638
+   ],
+   [
+    "mieux",
+    1.638,
+    1.829
+   ],
+   [
+    "travailler",
+    1.829,
+    2.21
+   ]
+  ]
+ },
+ {
+  "text": "Un outil pour suivre leurs équipes, piloter leurs livraisons, ou anticiper leurs pannes.",
+  "sub": "Un outil pour suivre leurs équipes, piloter leurs livraisons, ou anticiper leurs pannes.",
+  "scene": "constat",
+  "start": 4.11,
+  "dur": 4.72,
+  "seed": 51,
+  "asr": "Un outil pour suivre leurs équipes, piloter leurs livraisons ou anticiper leurs pannes.",
+  "words": [
+   [
+    "un",
+    0.0,
+    0.152
+   ],
+   [
+    "outil",
+    0.152,
+    0.476
+   ],
+   [
+    "pour",
+    0.476,
+    0.629
+   ],
+   [
+    "suivre",
+    0.629,
+    0.876
+   ],
+   [
+    "leurs",
+    0.876,
+    1.143
+   ],
+   [
+    "equipes",
+    1.143,
+    1.638
+   ],
+   [
+    "piloter",
+    1.867,
+    2.267
+   ],
+   [
+    "leurs",
+    2.267,
+    2.362
+   ],
+   [
+    "livraisons",
+    2.362,
+    3.162
+   ],
+   [
+    "ou",
+    3.162,
+    3.41
+   ],
+   [
+    "anticiper",
+    3.41,
+    3.962
+   ],
+   [
+    "leurs",
+    3.962,
+    4.095
+   ],
+   [
+    "pannes",
+    4.095,
+    4.476
+   ]
+  ]
+ },
+ {
+  "text": "Mais entre le manque de temps, les budgets informatiques, et des mois de développement… ces idées restent souvent dans un tableur.",
+  "sub": "Mais entre le manque de temps, les budgets informatiques, et des mois de développement… ces idées restent souvent dans un tableur.",
+  "scene": "constat",
+  "start": 9.43,
+  "dur": 6.91,
+  "seed": 37,
+  "asr": "Mais entre le manque de temps, les budgets informatiques et des mois de développement, ces idées restent souvent dans un tableur.",
+  "words": [
+   [
+    "mais",
+    0.0,
+    0.21
+   ],
+   [
+    "entre",
+    0.21,
+    0.59
+   ],
+   [
+    "le",
+    0.59,
+    0.781
+   ],
+   [
+    "manque",
+    0.781,
+    0.952
+   ],
+   [
+    "de",
+    0.952,
+    1.124
+   ],
+   [
+    "temps",
+    1.124,
+    1.39
+   ],
+   [
+    "les",
+    1.733,
+    1.81
+   ],
+   [
+    "budgets",
+    1.81,
+    2.0
+   ],
+   [
+    "informatiques",
+    2.0,
+    2.819
+   ],
+   [
+    "et",
+    2.819,
+    3.143
+   ],
+   [
+    "des",
+    3.143,
+    3.295
+   ],
+   [
+    "mois",
+    3.295,
+    3.467
+   ],
+   [
+    "de",
+    3.467,
+    3.6
+   ],
+   [
+    "developpement",
+    3.6,
+    4.152
+   ],
+   [
+    "ces",
+    4.61,
+    4.724
+   ],
+   [
+    "idees",
+    4.724,
+    5.124
+   ],
+   [
+    "restent",
+    5.124,
+    5.638
+   ],
+   [
+    "souvent",
+    5.638,
+    5.905
+   ],
+   [
+    "dans",
+    5.905,
+    6.076
+   ],
+   [
+    "un",
+    6.076,
+    6.229
+   ],
+   [
+    "tableur",
+    6.229,
+    6.648
+   ]
+  ]
+ },
+ {
+  "text": "YouCraft change la donne.",
+  "sub": "YouCraft change la donne.",
+  "scene": "logo",
+  "start": 17.835,
+  "dur": 1.48,
+  "seed": 11,
+  "asr": "YouCraft change la donne.",
+  "words": [
+   [
+    "youcraft",
+    0.0,
+    0.419
+   ],
+   [
+    "change",
+    0.419,
+    0.762
+   ],
+   [
+    "la",
+    0.762,
+    0.971
+   ],
+   [
+    "donne",
+    0.971,
+    1.181
+   ]
+  ]
+ },
+ {
+  "text": "YouCraft est une plateforme de création d'applications par l'intelligence artificielle, pensée pour les entreprises.",
+  "sub": "YouCraft est une plateforme de création d'applications par l'intelligence artificielle, pensée pour les entreprises.",
+  "scene": "produit",
+  "start": 21.235,
+  "dur": 5.77,
+  "seed": 23,
+  "asr": "YouCraft est une plateforme de création d'applications par l'intelligence artificielle, pensée pour les entreprises.",
+  "words": [
+   [
+    "youcraft",
+    0.0,
+    0.469
+   ],
+   [
+    "est",
+    0.469,
+    0.714
+   ],
+   [
+    "une",
+    0.714,
+    0.878
+   ],
+   [
+    "plateforme",
+    0.878,
+    1.408
+   ],
+   [
+    "de",
+    1.408,
+    1.551
+   ],
+   [
+    "creation",
+    1.551,
+    2.041
+   ],
+   [
+    "d",
+    2.041,
+    2.122
+   ],
+   [
+    "applications",
+    2.122,
+    2.653
+   ],
+   [
+    "par",
+    2.653,
+    2.878
+   ],
+   [
+    "l",
+    2.878,
+    3.02
+   ],
+   [
+    "intelligence",
+    3.02,
+    3.51
+   ],
+   [
+    "artificielle",
+    3.51,
+    4.347
+   ],
+   [
+    "pensee",
+    4.51,
+    4.837
+   ],
+   [
+    "pour",
+    4.837,
+    5.0
+   ],
+   [
+    "les",
+    5.0,
+    5.122
+   ],
+   [
+    "entreprises",
+    5.122,
+    5.469
+   ]
+  ]
+ },
+ {
+  "text": "Vos clients décrivent leur besoin avec leurs mots… et YouCraft construit l'application complète, en quelques minutes.",
+  "sub": "Vos clients décrivent leur besoin avec leurs mots… et YouCraft construit l'application complète, en quelques minutes.",
+  "scene": "produit",
+  "start": 27.604,
+  "dur": 5.48,
+  "seed": 11,
+  "asr": "Vos clients décrivent leurs besoins avec leurs mots et YouCraft construit l'application complète en quelques minutes.",
+  "words": [
+   [
+    "vos",
+    0.0,
+    0.21
+   ],
+   [
+    "clients",
+    0.21,
+    0.457
+   ],
+   [
+    "decrivent",
+    0.457,
+    1.01
+   ],
+   [
+    "leurs",
+    1.01,
+    1.124
+   ],
+   [
+    "besoins",
+    1.124,
+    1.486
+   ],
+   [
+    "avec",
+    1.486,
+    1.638
+   ],
+   [
+    "leurs",
+    1.638,
+    1.81
+   ],
+   [
+    "mots",
+    1.81,
+    2.019
+   ],
+   [
+    "et",
+    2.019,
+    2.419
+   ],
+   [
+    "youcraft",
+    2.419,
+    2.857
+   ],
+   [
+    "construit",
+    2.857,
+    3.371
+   ],
+   [
+    "l",
+    3.371,
+    3.448
+   ],
+   [
+    "application",
+    3.448,
+    3.848
+   ],
+   [
+    "complete",
+    3.848,
+    4.381
+   ],
+   [
+    "en",
+    4.381,
+    4.667
+   ],
+   [
+    "quelques",
+    4.667,
+    4.819
+   ],
+   [
+    "minutes",
+    4.819,
+    5.181
+   ]
+  ]
+ },
+ {
+  "text": "Première étape : décrire. Un processus, un tableau de bord, un portail client : il suffit de l'expliquer, comme à un collègue.",
+  "sub": "Première étape : décrire. Un processus, un tableau de bord, un portail client : il suffit de l'expliquer, comme à un collègue.",
+  "scene": "etape1",
+  "start": 34.735,
+  "dur": 6.91,
+  "seed": 51,
+  "asr": "Première étape, décrire. Un processus, un tableau de bord, un portail client, il suffit de l'expliquer comme un collègue.",
+  "words": [
+   [
+    "premiere",
+    0.0,
+    0.343
+   ],
+   [
+    "etape",
+    0.343,
+    0.762
+   ],
+   [
+    "decrire",
+    0.838,
+    1.181
+   ],
+   [
+    "un",
+    1.581,
+    1.714
+   ],
+   [
+    "processus",
+    1.714,
+    2.4
+   ],
+   [
+    "un",
+    2.533,
+    2.61
+   ],
+   [
+    "tableau",
+    2.61,
+    2.952
+   ],
+   [
+    "de",
+    2.952,
+    3.029
+   ],
+   [
+    "bord",
+    3.029,
+    3.257
+   ],
+   [
+    "un",
+    3.429,
+    3.486
+   ],
+   [
+    "portail",
+    3.486,
+    3.905
+   ],
+   [
+    "client",
+    3.905,
+    4.248
+   ],
+   [
+    "il",
+    4.724,
+    4.8
+   ],
+   [
+    "suffit",
+    4.8,
+    5.181
+   ],
+   [
+    "de",
+    5.181,
+    5.276
+   ],
+   [
+    "l",
+    5.276,
+    5.352
+   ],
+   [
+    "expliquer",
+    5.352,
+    5.829
+   ],
+   [
+    "comme",
+    5.829,
+    6.133
+   ],
+   [
+    "un",
+    6.133,
+    6.248
+   ],
+   [
+    "collegue",
+    6.248,
+    6.648
+   ]
+  ]
+ },
+ {
+  "text": "Deuxième étape : YouCraft construit tout. Les écrans, les données, les circuits de validation, et les droits d'accès.",
+  "sub": "Deuxième étape : YouCraft construit tout. Les écrans, les données, les circuits de validation, et les droits d'accès.",
+  "scene": "etape2",
+  "start": 44.235,
+  "dur": 6.54,
+  "seed": 51,
+  "asr": "Deuxième étape, YouCraft construit tout. Les écrans, les données, les circuits de validation et les droits d'accès.",
+  "words": [
+   [
+    "deuxieme",
+    0.0,
+    0.495
+   ],
+   [
+    "etape",
+    0.495,
+    0.971
+   ],
+   [
+    "youcraft",
+    1.238,
+    1.657
+   ],
+   [
+    "construit",
+    1.657,
+    2.171
+   ],
+   [
+    "tout",
+    2.171,
+    2.286
+   ],
+   [
+    "les",
+    2.552,
+    2.743
+   ],
+   [
+    "ecrans",
+    2.743,
+    3.219
+   ],
+   [
+    "les",
+    3.39,
+    3.448
+   ],
+   [
+    "donnees",
+    3.448,
+    3.733
+   ],
+   [
+    "les",
+    4.019,
+    4.095
+   ],
+   [
+    "circuits",
+    4.095,
+    4.381
+   ],
+   [
+    "de",
+    4.381,
+    4.59
+   ],
+   [
+    "validation",
+    4.59,
+    5.029
+   ],
+   [
+    "et",
+    5.029,
+    5.562
+   ],
+   [
+    "les",
+    5.562,
+    5.676
+   ],
+   [
+    "droits",
+    5.676,
+    5.943
+   ],
+   [
+    "d",
+    5.943,
+    6.019
+   ],
+   [
+    "acces",
+    6.019,
+    6.305
+   ]
+  ]
+ },
+ {
+  "text": "Chaque modification se fait en langage naturel : on demande, et l'application évolue.",
+  "sub": "Chaque modification se fait en langage naturel : on demande, et l'application évolue.",
+  "scene": "etape2b",
+  "start": 53.235,
+  "dur": 4.89,
+  "seed": 23,
+  "asr": "Chaque modification se fait en langage naturel. On demande et l'application évolue.",
+  "words": [
+   [
+    "chaque",
+    0.0,
+    0.319
+   ],
+   [
+    "modification",
+    0.319,
+    0.917
+   ],
+   [
+    "se",
+    0.917,
+    1.256
+   ],
+   [
+    "fait",
+    1.256,
+    1.416
+   ],
+   [
+    "en",
+    1.416,
+    1.595
+   ],
+   [
+    "langage",
+    1.595,
+    2.014
+   ],
+   [
+    "naturel",
+    2.014,
+    2.613
+   ],
+   [
+    "on",
+    2.772,
+    2.872
+   ],
+   [
+    "demande",
+    2.872,
+    3.271
+   ],
+   [
+    "et",
+    3.271,
+    3.61
+   ],
+   [
+    "l",
+    3.61,
+    3.689
+   ],
+   [
+    "application",
+    3.689,
+    4.168
+   ],
+   [
+    "evolue",
+    4.168,
+    4.667
+   ]
+  ]
+ },
+ {
+  "text": "Troisième étape : publier. En un clic, l'application est en ligne, sur ordinateur comme sur mobile.",
+  "sub": "Troisième étape : publier. En un clic, l'application est en ligne, sur ordinateur comme sur mobile.",
+  "scene": "etape3",
+  "start": 60.235,
+  "dur": 5.67,
+  "seed": 23,
+  "asr": "Troisième étape, publié. En un clic, l'application est en ligne sur ordinateur comme sur mobile.",
+  "words": [
+   [
+    "troisieme",
+    0.0,
+    0.457
+   ],
+   [
+    "etape",
+    0.457,
+    0.876
+   ],
+   [
+    "publie",
+    1.01,
+    1.486
+   ],
+   [
+    "en",
+    1.79,
+    1.943
+   ],
+   [
+    "un",
+    1.943,
+    2.095
+   ],
+   [
+    "clic",
+    2.095,
+    2.305
+   ],
+   [
+    "l",
+    2.571,
+    2.724
+   ],
+   [
+    "application",
+    2.724,
+    3.219
+   ],
+   [
+    "est",
+    3.219,
+    3.352
+   ],
+   [
+    "en",
+    3.352,
+    3.467
+   ],
+   [
+    "ligne",
+    3.467,
+    3.714
+   ],
+   [
+    "sur",
+    3.714,
+    4.076
+   ],
+   [
+    "ordinateur",
+    4.076,
+    4.781
+   ],
+   [
+    "comme",
+    4.781,
+    4.952
+   ],
+   [
+    "sur",
+    4.952,
+    5.124
+   ],
+   [
+    "mobile",
+    5.124,
+    5.371
+   ]
+  ]
+ },
+ {
+  "text": "Prenons quelques exemples concrets.",
+  "sub": "Prenons quelques exemples concrets.",
+  "scene": "cas_intro",
+  "start": 68.235,
+  "dur": 1.92,
+  "seed": 23,
+  "asr": "Prenons quelques exemples concrets.",
+  "words": [
+   [
+    "prenons",
+    0.0,
+    0.324
+   ],
+   [
+    "quelques",
+    0.324,
+    0.571
+   ],
+   [
+    "exemples",
+    0.571,
+    1.181
+   ],
+   [
+    "concrets",
+    1.181,
+    1.619
+   ]
+  ]
+ },
+ {
+  "text": "Pour une direction des ressources humaines : un portail d'accueil des nouveaux arrivants.",
+  "sub": "Pour une direction des ressources humaines : un portail d'accueil des nouveaux arrivants.",
+  "scene": "cas_rh",
+  "start": 71.835,
+  "dur": 4.23,
+  "seed": 37,
+  "asr": "Pour une direction des ressources humaines, un portail d'accueil des nouveaux arrivants.",
+  "words": [
+   [
+    "pour",
+    0.0,
+    0.12
+   ],
+   [
+    "une",
+    0.12,
+    0.26
+   ],
+   [
+    "direction",
+    0.26,
+    0.62
+   ],
+   [
+    "des",
+    0.62,
+    0.86
+   ],
+   [
+    "ressources",
+    0.86,
+    1.26
+   ],
+   [
+    "humaines",
+    1.26,
+    1.84
+   ],
+   [
+    "un",
+    2.02,
+    2.28
+   ],
+   [
+    "portail",
+    2.28,
+    2.7
+   ],
+   [
+    "d",
+    2.7,
+    2.82
+   ],
+   [
+    "accueil",
+    2.82,
+    3.18
+   ],
+   [
+    "des",
+    3.18,
+    3.32
+   ],
+   [
+    "nouveaux",
+    3.32,
+    3.54
+   ],
+   [
+    "arrivants",
+    3.54,
+    4.0
+   ]
+  ]
+ },
+ {
+  "text": "Chaque recrue a son parcours, ses tâches, et son parrain. Les managers voient en direct qui est prêt pour son premier jour.",
+  "sub": "Chaque recrue a son parcours, ses tâches, et son parrain. Les managers voient en direct qui est prêt pour son premier jour.",
+  "scene": "cas_rh",
+  "start": 76.662,
+  "dur": 5.88,
+  "seed": 23,
+  "asr": "Chaque recrue à son parcours, ses tâches et son parrain. Les managers voient en direct qui est prêt pour son premier jour.",
+  "words": [
+   [
+    "chaque",
+    0.0,
+    0.305
+   ],
+   [
+    "recrue",
+    0.305,
+    0.629
+   ],
+   [
+    "a",
+    0.629,
+    0.743
+   ],
+   [
+    "son",
+    0.743,
+    0.857
+   ],
+   [
+    "parcours",
+    0.857,
+    1.41
+   ],
+   [
+    "ses",
+    1.524,
+    1.6
+   ],
+   [
+    "taches",
+    1.6,
+    2.038
+   ],
+   [
+    "et",
+    2.038,
+    2.19
+   ],
+   [
+    "son",
+    2.19,
+    2.305
+   ],
+   [
+    "parrain",
+    2.305,
+    2.667
+   ],
+   [
+    "les",
+    2.971,
+    3.2
+   ],
+   [
+    "managers",
+    3.2,
+    3.467
+   ],
+   [
+    "voient",
+    3.467,
+    3.848
+   ],
+   [
+    "en",
+    3.848,
+    3.924
+   ],
+   [
+    "direct",
+    3.924,
+    4.171
+   ],
+   [
+    "qui",
+    4.171,
+    4.495
+   ],
+   [
+    "est",
+    4.495,
+    4.59
+   ],
+   [
+    "pret",
+    4.59,
+    4.8
+   ],
+   [
+    "pour",
+    4.8,
+    4.971
+   ],
+   [
+    "son",
+    4.971,
+    5.067
+   ],
+   [
+    "premier",
+    5.067,
+    5.352
+   ],
+   [
+    "jour",
+    5.352,
+    5.619
+   ]
+  ]
+ },
+ {
+  "text": "Pour une direction logistique : une tour de contrôle des livraisons.",
+  "sub": "Pour une direction logistique : une tour de contrôle des livraisons.",
+  "scene": "cas_log",
+  "start": 86.835,
+  "dur": 3.65,
+  "seed": 23,
+  "asr": "pour une direction logistique, une tour de contrôle des livraisons.",
+  "words": [
+   [
+    "pour",
+    0.0,
+    0.143
+   ],
+   [
+    "une",
+    0.143,
+    0.286
+   ],
+   [
+    "direction",
+    0.286,
+    0.653
+   ],
+   [
+    "logistique",
+    0.653,
+    1.551
+   ],
+   [
+    "une",
+    1.735,
+    1.878
+   ],
+   [
+    "tour",
+    1.878,
+    2.102
+   ],
+   [
+    "de",
+    2.102,
+    2.224
+   ],
+   [
+    "controle",
+    2.224,
+    2.673
+   ],
+   [
+    "des",
+    2.673,
+    2.857
+   ],
+   [
+    "livraisons",
+    2.857,
+    3.347
+   ]
+  ]
+ },
+ {
+  "text": "Les camions sont suivis en temps réel, les retards sont détectés, et le client est prévenu automatiquement.",
+  "sub": "Les camions sont suivis en temps réel, les retards sont détectés, et le client est prévenu automatiquement.",
+  "scene": "cas_log",
+  "start": 91.082,
+  "dur": 5.13,
+  "seed": 51,
+  "asr": "Les camions sont suivies en temps réel, les retards sont détectés et le client est prévenu automatiquement.",
+  "words": [
+   [
+    "les",
+    0.0,
+    0.12
+   ],
+   [
+    "camions",
+    0.12,
+    0.419
+   ],
+   [
+    "sont",
+    0.419,
+    0.579
+   ],
+   [
+    "suivies",
+    0.579,
+    0.939
+   ],
+   [
+    "en",
+    0.939,
+    1.059
+   ],
+   [
+    "temps",
+    1.059,
+    1.178
+   ],
+   [
+    "reel",
+    1.178,
+    1.638
+   ],
+   [
+    "les",
+    1.977,
+    2.057
+   ],
+   [
+    "retards",
+    2.057,
+    2.337
+   ],
+   [
+    "sont",
+    2.337,
+    2.497
+   ],
+   [
+    "detectes",
+    2.497,
+    3.315
+   ],
+   [
+    "et",
+    3.315,
+    3.435
+   ],
+   [
+    "le",
+    3.435,
+    3.535
+   ],
+   [
+    "client",
+    3.535,
+    3.775
+   ],
+   [
+    "est",
+    3.775,
+    3.935
+   ],
+   [
+    "prevenu",
+    3.935,
+    4.254
+   ],
+   [
+    "automatiquement",
+    4.254,
+    4.833
+   ]
+  ]
+ },
+ {
+  "text": "Pour un site industriel : la surveillance des machines.",
+  "sub": "Pour un site industriel : la surveillance des machines.",
+  "scene": "cas_ind",
+  "start": 100.835,
+  "dur": 3.04,
+  "seed": 11,
+  "asr": "pour un site industriel, la surveillance des machines.",
+  "words": [
+   [
+    "pour",
+    0.0,
+    0.133
+   ],
+   [
+    "un",
+    0.133,
+    0.248
+   ],
+   [
+    "site",
+    0.248,
+    0.514
+   ],
+   [
+    "industriel",
+    0.514,
+    1.295
+   ],
+   [
+    "la",
+    1.638,
+    1.771
+   ],
+   [
+    "surveillance",
+    1.771,
+    2.171
+   ],
+   [
+    "des",
+    2.171,
+    2.495
+   ],
+   [
+    "machines",
+    2.495,
+    2.743
+   ]
+  ]
+ },
+ {
+  "text": "Les capteurs alertent avant la panne, et l'ordre de travail est créé, puis assigné au bon technicien.",
+  "sub": "Les capteurs alertent avant la panne, et l'ordre de travail est créé, puis assigné au bon technicien.",
+  "scene": "cas_ind",
+  "start": 104.478,
+  "dur": 4.86,
+  "seed": 11,
+  "asr": "Les capteurs alertent avant la panne et l'ordre de travail est créé puis assigné au bon technicien.",
+  "words": [
+   [
+    "les",
+    0.0,
+    0.134
+   ],
+   [
+    "capteurs",
+    0.134,
+    0.516
+   ],
+   [
+    "alertent",
+    0.516,
+    0.975
+   ],
+   [
+    "avant",
+    0.975,
+    1.148
+   ],
+   [
+    "la",
+    1.148,
+    1.32
+   ],
+   [
+    "panne",
+    1.32,
+    1.893
+   ],
+   [
+    "et",
+    1.893,
+    1.97
+   ],
+   [
+    "l",
+    1.97,
+    2.085
+   ],
+   [
+    "ordre",
+    2.085,
+    2.238
+   ],
+   [
+    "de",
+    2.238,
+    2.372
+   ],
+   [
+    "travail",
+    2.372,
+    2.697
+   ],
+   [
+    "est",
+    2.697,
+    2.869
+   ],
+   [
+    "cree",
+    2.869,
+    3.385
+   ],
+   [
+    "puis",
+    3.385,
+    3.596
+   ],
+   [
+    "assigne",
+    3.596,
+    4.055
+   ],
+   [
+    "au",
+    4.055,
+    4.112
+   ],
+   [
+    "bon",
+    4.112,
+    4.227
+   ],
+   [
+    "technicien",
+    4.227,
+    4.667
+   ]
+  ]
+ },
+ {
+  "text": "Et la liste continue : pipeline commercial, gestion des stocks, planning des équipes, notes de frais, audits…",
+  "sub": "Et la liste continue : pipeline commercial, gestion des stocks, planning des équipes, notes de frais, audits…",
+  "scene": "cas_autres",
+  "start": 114.335,
+  "dur": 5.16,
+  "seed": 37,
+  "asr": "et la liste continue. Pipeline commercial gestion des stocks, planning des équipes, notes de frais, Audi.",
+  "words": [
+   [
+    "et",
+    0.0,
+    0.143
+   ],
+   [
+    "la",
+    0.143,
+    0.265
+   ],
+   [
+    "liste",
+    0.265,
+    0.592
+   ],
+   [
+    "continue",
+    0.592,
+    1.02
+   ],
+   [
+    "pipeline",
+    1.163,
+    1.49
+   ],
+   [
+    "commercial",
+    1.49,
+    1.918
+   ],
+   [
+    "gestion",
+    1.918,
+    2.408
+   ],
+   [
+    "des",
+    2.408,
+    2.551
+   ],
+   [
+    "stocks",
+    2.551,
+    2.837
+   ],
+   [
+    "planning",
+    2.959,
+    3.163
+   ],
+   [
+    "des",
+    3.163,
+    3.367
+   ],
+   [
+    "equipes",
+    3.367,
+    3.755
+   ],
+   [
+    "notes",
+    3.857,
+    3.98
+   ],
+   [
+    "de",
+    3.98,
+    4.163
+   ],
+   [
+    "frais",
+    4.163,
+    4.571
+   ],
+   [
+    "audi",
+    4.673,
+    4.857
+   ]
+  ]
+ },
+ {
+  "text": "Chaque métier peut avoir son propre outil, sans écrire une seule ligne de code.",
+  "sub": "Chaque métier peut avoir son propre outil, sans écrire une seule ligne de code.",
+  "scene": "cas_autres",
+  "start": 120.092,
+  "dur": 4.47,
+  "seed": 11,
+  "asr": "Chaque métier peut avoir son propre outil, sans écrire une seule ligne de code.",
+  "words": [
+   [
+    "chaque",
+    0.0,
+    0.337
+   ],
+   [
+    "metier",
+    0.337,
+    0.714
+   ],
+   [
+    "peut",
+    0.714,
+    0.873
+   ],
+   [
+    "avoir",
+    0.873,
+    1.111
+   ],
+   [
+    "son",
+    1.111,
+    1.369
+   ],
+   [
+    "propre",
+    1.369,
+    1.687
+   ],
+   [
+    "outil",
+    1.687,
+    2.123
+   ],
+   [
+    "sans",
+    2.282,
+    2.679
+   ],
+   [
+    "ecrire",
+    2.679,
+    3.056
+   ],
+   [
+    "une",
+    3.056,
+    3.393
+   ],
+   [
+    "seule",
+    3.393,
+    3.611
+   ],
+   [
+    "ligne",
+    3.611,
+    3.829
+   ],
+   [
+    "de",
+    3.829,
+    3.968
+   ],
+   [
+    "code",
+    3.968,
+    4.167
+   ]
+  ]
+ },
+ {
+  "text": "YouCraft a déjà fait ses preuves : plus de sept cent cinquante utilisateurs, et trois cent cinquante applications déployées.",
+  "sub": "YouCraft a déjà fait ses preuves : plus de 750 utilisateurs, et 350 applications déployées.",
+  "scene": "preuves",
+  "start": 126.835,
+  "dur": 6.25,
+  "seed": 11,
+  "asr": "YouCraft a déjà fait ses preuves, plus de 750 utilisateurs et 350 applications déployées.",
+  "words": [
+   [
+    "youcraft",
+    0.0,
+    0.457
+   ],
+   [
+    "a",
+    0.457,
+    0.705
+   ],
+   [
+    "deja",
+    0.705,
+    0.914
+   ],
+   [
+    "fait",
+    0.914,
+    1.124
+   ],
+   [
+    "ses",
+    1.124,
+    1.238
+   ],
+   [
+    "preuves",
+    1.238,
+    1.695
+   ],
+   [
+    "plus",
+    1.924,
+    2.152
+   ],
+   [
+    "de",
+    2.152,
+    2.362
+   ],
+   [
+    "750",
+    2.362,
+    2.838
+   ],
+   [
+    "utilisateurs",
+    2.838,
+    3.714
+   ],
+   [
+    "et",
+    3.714,
+    4.286
+   ],
+   [
+    "350",
+    4.286,
+    4.629
+   ],
+   [
+    "applications",
+    4.629,
+    5.41
+   ],
+   [
+    "deployees",
+    5.41,
+    6.038
+   ]
+  ]
+ },
+ {
+  "text": "Côté sécurité, tout est intégré : connexion sécurisée, rôles et droits d'accès, et données hébergées en Europe.",
+  "sub": "Côté sécurité, tout est intégré : connexion sécurisée, rôles et droits d'accès, et données hébergées en Europe.",
+  "scene": "securite",
+  "start": 135.835,
+  "dur": 6.89,
+  "seed": 51,
+  "asr": "Côté sécurité, tout est intégré, connexion sécurisée, rôle et droit d'accès est donnée hébergée en Europe.",
+  "words": [
+   [
+    "cote",
+    0.0,
+    0.267
+   ],
+   [
+    "securite",
+    0.267,
+    0.667
+   ],
+   [
+    "tout",
+    1.124,
+    1.2
+   ],
+   [
+    "est",
+    1.2,
+    1.352
+   ],
+   [
+    "integre",
+    1.352,
+    1.81
+   ],
+   [
+    "connexion",
+    2.152,
+    2.724
+   ],
+   [
+    "securisee",
+    2.724,
+    3.333
+   ],
+   [
+    "role",
+    3.6,
+    3.981
+   ],
+   [
+    "et",
+    3.981,
+    4.248
+   ],
+   [
+    "droit",
+    4.248,
+    4.495
+   ],
+   [
+    "d",
+    4.495,
+    4.648
+   ],
+   [
+    "acces",
+    4.648,
+    5.2
+   ],
+   [
+    "est",
+    5.2,
+    5.352
+   ],
+   [
+    "donnee",
+    5.352,
+    5.657
+   ],
+   [
+    "hebergee",
+    5.657,
+    6.19
+   ],
+   [
+    "en",
+    6.19,
+    6.362
+   ],
+   [
+    "europe",
+    6.362,
+    6.59
+   ]
+  ]
+ },
+ {
+  "text": "Pour vous, consultants, c'est une vraie opportunité.",
+  "sub": "Pour vous, consultants, c'est une vraie opportunité.",
+  "scene": "vendre",
+  "start": 144.335,
+  "dur": 2.63,
+  "seed": 11,
+  "asr": "Pour vous, consultant, c'est une vraie opportunité.",
+  "words": [
+   [
+    "pour",
+    0.0,
+    0.161
+   ],
+   [
+    "vous",
+    0.161,
+    0.342
+   ],
+   [
+    "consultant",
+    0.523,
+    0.925
+   ],
+   [
+    "c",
+    1.167,
+    1.267
+   ],
+   [
+    "est",
+    1.267,
+    1.328
+   ],
+   [
+    "une",
+    1.328,
+    1.468
+   ],
+   [
+    "vraie",
+    1.468,
+    1.75
+   ],
+   [
+    "opportunite",
+    1.75,
+    2.333
+   ]
+  ]
+ },
+ {
+  "text": "Repérez chez vos clients les processus qui reposent sur des tableurs, des courriels, ou des saisies en double.",
+  "sub": "Repérez chez vos clients les processus qui reposent sur des tableurs, des courriels, ou des saisies en double.",
+  "scene": "vendre1",
+  "start": 148.835,
+  "dur": 6.11,
+  "seed": 23,
+  "asr": "Repérez chez vos clients les processus qui reposent sur des tableurs, des courriels ou des saisis en double.",
+  "words": [
+   [
+    "reperez",
+    0.0,
+    0.476
+   ],
+   [
+    "chez",
+    0.476,
+    0.61
+   ],
+   [
+    "vos",
+    0.61,
+    0.762
+   ],
+   [
+    "clients",
+    0.762,
+    1.029
+   ],
+   [
+    "les",
+    1.029,
+    1.543
+   ],
+   [
+    "processus",
+    1.543,
+    2.152
+   ],
+   [
+    "qui",
+    2.152,
+    2.286
+   ],
+   [
+    "reposent",
+    2.286,
+    2.8
+   ],
+   [
+    "sur",
+    2.8,
+    2.971
+   ],
+   [
+    "des",
+    2.971,
+    3.143
+   ],
+   [
+    "tableurs",
+    3.143,
+    3.676
+   ],
+   [
+    "des",
+    3.867,
+    3.924
+   ],
+   [
+    "courriels",
+    3.924,
+    4.438
+   ],
+   [
+    "ou",
+    4.438,
+    4.838
+   ],
+   [
+    "des",
+    4.838,
+    4.971
+   ],
+   [
+    "saisis",
+    4.971,
+    5.41
+   ],
+   [
+    "en",
+    5.41,
+    5.562
+   ],
+   [
+    "double",
+    5.562,
+    5.81
+   ]
+  ]
+ },
+ {
+  "text": "Proposez un atelier : en une séance, vous construisez avec eux une première application, sur leur propre cas.",
+  "sub": "Proposez un atelier : en une séance, vous construisez avec eux une première application, sur leur propre cas.",
+  "scene": "vendre2",
+  "start": 156.444,
+  "dur": 5.76,
+  "seed": 51,
+  "asr": "Proposez un atelier en une séance, vous construisez avec eux une première application sur leur propre cas.",
+  "words": [
+   [
+    "proposez",
+    0.0,
+    0.488
+   ],
+   [
+    "un",
+    0.488,
+    0.566
+   ],
+   [
+    "atelier",
+    0.566,
+    1.034
+   ],
+   [
+    "en",
+    1.034,
+    1.326
+   ],
+   [
+    "une",
+    1.326,
+    1.463
+   ],
+   [
+    "seance",
+    1.463,
+    1.931
+   ],
+   [
+    "vous",
+    2.145,
+    2.399
+   ],
+   [
+    "construisez",
+    2.399,
+    3.023
+   ],
+   [
+    "avec",
+    3.023,
+    3.101
+   ],
+   [
+    "eux",
+    3.101,
+    3.374
+   ],
+   [
+    "une",
+    3.374,
+    3.53
+   ],
+   [
+    "premiere",
+    3.53,
+    3.803
+   ],
+   [
+    "application",
+    3.803,
+    4.349
+   ],
+   [
+    "sur",
+    4.349,
+    4.798
+   ],
+   [
+    "leur",
+    4.798,
+    4.954
+   ],
+   [
+    "propre",
+    4.954,
+    5.188
+   ],
+   [
+    "cas",
+    5.188,
+    5.5
+   ]
+  ]
+ },
+ {
+  "text": "Démarrez par un projet pilote, mesurez le temps gagné… puis étendez à d'autres équipes.",
+  "sub": "Démarrez par un projet pilote, mesurez le temps gagné… puis étendez à d'autres équipes.",
+  "scene": "vendre3",
+  "start": 163.703,
+  "dur": 4.82,
+  "seed": 51,
+  "asr": "Démarrez par un projet pilote, mesurez le temps gagné, puis étendez à d'autres équipes.",
+  "words": [
+   [
+    "demarrez",
+    0.0,
+    0.514
+   ],
+   [
+    "par",
+    0.514,
+    0.648
+   ],
+   [
+    "un",
+    0.648,
+    0.762
+   ],
+   [
+    "projet",
+    0.762,
+    1.029
+   ],
+   [
+    "pilote",
+    1.029,
+    1.524
+   ],
+   [
+    "mesurez",
+    1.733,
+    2.152
+   ],
+   [
+    "le",
+    2.152,
+    2.248
+   ],
+   [
+    "temps",
+    2.248,
+    2.438
+   ],
+   [
+    "gagne",
+    2.438,
+    3.105
+   ],
+   [
+    "puis",
+    3.238,
+    3.295
+   ],
+   [
+    "etendez",
+    3.295,
+    3.81
+   ],
+   [
+    "a",
+    3.81,
+    3.924
+   ],
+   [
+    "d",
+    3.924,
+    4.019
+   ],
+   [
+    "autres",
+    4.019,
+    4.152
+   ],
+   [
+    "equipes",
+    4.152,
+    4.629
+   ]
+  ]
+ },
+ {
+  "text": "YouCraft. Les idées de vos clients deviennent des applications.",
+  "sub": "YouCraft. Les idées de vos clients deviennent des applications.",
+  "scene": "fin",
+  "start": 170.025,
+  "dur": 3.29,
+  "seed": 51,
+  "asr": "YouCraft, les idées de vos clients deviennent des applications.",
+  "words": [
+   [
+    "youcraft",
+    0.0,
+    0.533
+   ],
+   [
+    "les",
+    0.762,
+    1.067
+   ],
+   [
+    "idees",
+    1.067,
+    1.39
+   ],
+   [
+    "de",
+    1.39,
+    1.505
+   ],
+   [
+    "vos",
+    1.505,
+    1.638
+   ],
+   [
+    "clients",
+    1.638,
+    1.924
+   ],
+   [
+    "deviennent",
+    1.924,
+    2.438
+   ],
+   [
+    "des",
+    2.438,
+    2.59
+   ],
+   [
+    "applications",
+    2.59,
+    2.99
+   ]
+  ]
+ },
+ {
+  "text": "Donnons-leur vie, ensemble.",
+  "sub": "Donnons-leur vie, ensemble.",
+  "scene": "fin",
+  "start": 173.915,
+  "dur": 2.36,
+  "seed": 37,
+  "asr": "Donons leur vie, ensemble !",
+  "words": [
+   [
+    "donons",
+    0.0,
+    0.362
+   ],
+   [
+    "leur",
+    0.362,
+    0.533
+   ],
+   [
+    "vie",
+    0.533,
+    0.819
+   ],
+   [
+    "ensemble",
+    1.086,
+    1.505
+   ],
+   [
+    "",
+    1.505,
+    2.057
+   ]
+  ]
+ }
+]

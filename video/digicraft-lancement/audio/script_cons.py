@@ -33,7 +33,7 @@ L = [
     dict(scene='securite', text="Côté sécurité, tout est intégré : connexion sécurisée, rôles et droits d'accès, et données hébergées en Europe."),
     # 6. Comment le vendre
     dict(scene='vendre', text="Pour vous, consultants, c'est une vraie opportunité.", ex=0.8),
-    dict(scene='vendre1', text="Repérez chez vos clients les processus qui reposent sur des tableurs, des courriels, ou des ressaisies."),
+    dict(scene='vendre1', text="Repérez chez vos clients les processus qui reposent sur des tableurs, des courriels, ou des saisies en double."),
     dict(scene='vendre2', text="Proposez un atelier : en une séance, vous construisez avec eux une première application, sur leur propre cas."),
     dict(scene='vendre3', text="Démarrez par un projet pilote, mesurez le temps gagné… puis étendez à d'autres équipes."),
     # 7. Signature
