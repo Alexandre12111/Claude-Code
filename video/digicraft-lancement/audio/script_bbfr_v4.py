@@ -10,7 +10,7 @@ L = [
     dict(text="et sans aucune limite.", t0=6.4, ex=0.8, cfg=0.38, rate=5.8, emph=['limite']),
     dict(text="Simplement… en la décrivant.", t0=7.82, anchor='simplement', ex=0.7, cfg=0.4, rate=5.2, emph=['simplement']),
     dict(text="Voici YouCraft.", t0=11.1, anchor='youcraft', ex=0.6, cfg=0.42, rate=None, emph=[]),
-    dict(text="La plateforme qui transforme vos idées en applications professionnelles, grâce à l'intelligence artificielle.", t0=12.65, ex=0.7, cfg=0.42, rate=6.4, emph=['idees', 'professionnelles']),
+    dict(text="La plateforme qui transforme vos idées en applications professionnelles.", t0=12.65, ex=0.75, cfg=0.4, rate=None, emph=['idees', 'professionnelles']),
     dict(text="Partez d'une idée, ou d'un modèle.", t0=16.95, ex=0.75, cfg=0.4, rate=6.0, emph=['idee']),
     dict(text="Décrivez votre besoin… et regardez-la prendre forme sous vos yeux.", t0=18.45, ex=0.75, cfg=0.4, rate=6.2, emph=['forme']),
     dict(text="Créée en quelques minutes.", t0=22.45, ex=0.8, cfg=0.38, rate=None, emph=['minutes']),

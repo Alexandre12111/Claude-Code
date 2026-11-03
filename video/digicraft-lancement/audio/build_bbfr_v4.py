@@ -16,7 +16,7 @@ import warp_bbfr as W
 from script_bbfr_v4 import L
 
 TAKES, OUT = os.path.join(HERE, 'vo_bbfr_takes'), os.path.join(HERE, 'vo_bbfr_v4')
-HOMO = {'aux', 'donnons', 'plateformes', 'pretes', 'creee', 'faites', 'planifiez', 'personnalisez'}
+HOMO = {'aux', 'donnons', 'plateformes', 'pretes', 'creee', 'faites', 'planifiez', 'personnalisez', 'applications', 'professionnelles', 'resultats', 'rapides', 'ajustez', 'enrichissez'}
 norm = lambda s: re.sub(r'[^a-z ]', ' ', unicodedata.normalize('NFKD', s.lower()).encode('ascii', 'ignore').decode()).split()
 nw = lambda w: ''.join(norm(w))
 syll = lambda s: sum(len(re.findall(r'[aeiouy]+', w)) for w in norm(s))

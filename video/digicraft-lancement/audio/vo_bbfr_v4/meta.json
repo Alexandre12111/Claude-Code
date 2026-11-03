@@ -14,46 +14,46 @@
   "asr": "Imaginez pouvoir créer n'importe quelle application."
  },
  {
-  "text": "Pour n'importe quelle équipe…",
+  "text": "sans écrire une seule ligne de code…",
   "start": 3.7,
-  "dur": 1.59,
+  "dur": 2.2,
   "ecran": 3.7,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 0.97,
   "prises": [
-   97
+   64
   ],
-  "vivacite": 14.6,
-  "asr": "Pour n'importe quelle équipe"
+  "vivacite": 13.5,
+  "asr": "Sans écrire, une seule ligne de code."
  },
  {
-  "text": "pour n'importe quel processus…",
+  "text": "sans attendre le service informatique…",
   "start": 6.5,
-  "dur": 2.2,
+  "dur": 2.16,
   "ecran": 6.5,
   "repere": null,
   "mot_repere_a": null,
-  "tempo": 1.07,
+  "tempo": 0.97,
   "prises": [
    11
   ],
-  "vivacite": 13.4,
-  "asr": "Pour n'importe quel processus"
+  "vivacite": 12.3,
+  "asr": "sans attendre le service informatique."
  },
  {
-  "text": "à n'importe quelle échelle !",
+  "text": "et sans aucune limite.",
   "start": 9.6,
-  "dur": 1.8,
+  "dur": 1.29,
   "ecran": 9.6,
   "repere": null,
   "mot_repere_a": null,
-  "tempo": 1.04,
+  "tempo": 0.97,
   "prises": [
-   23
+   51
   ],
-  "vivacite": 15.6,
-  "asr": "à n'importe quelle échelle."
+  "vivacite": 12.3,
+  "asr": "et sans aucune limite."
  },
  {
   "text": "Simplement… en la décrivant.",
@@ -70,165 +70,164 @@
   "asr": "simplement en la décrivant."
  },
  {
-  "text": "Voici… YouCraft !",
-  "start": 15.66,
-  "dur": 2.08,
+  "text": "Voici YouCraft.",
+  "start": 15.7,
+  "dur": 1.18,
   "ecran": 16.1,
   "repere": "youcraft",
   "mot_repere_a": 16.1,
   "tempo": 1.0,
   "prises": [
-   64
+   77
   ],
-  "vivacite": 14.6,
-  "asr": "Voici YouCraft"
+  "vivacite": 13.5,
+  "asr": "Voici YouCraft."
  },
  {
-  "text": "Une plateforme complète de création par l'intelligence artificielle, pensée pour les entreprises !",
+  "text": "La plateforme qui transforme vos idées en applications professionnelles.",
   "start": 17.65,
-  "dur": 5.0,
+  "dur": 3.81,
   "ecran": 17.65,
   "repere": null,
   "mot_repere_a": null,
-  "tempo": 1.06,
+  "tempo": 1.0,
   "prises": [
-   89
+   77
   ],
-  "vivacite": 12.8,
-  "asr": "Une plateforme complète de création par l'intelligence artificielle pensée pour les entreprises."
+  "vivacite": 13.5,
+  "asr": "La plateforme qui transforme vos idées en application professionnelle."
  },
  {
-  "text": "Partez d'une idée… ou d'un modèle.",
+  "text": "Partez d'une idée, ou d'un modèle.",
   "start": 23.2,
-  "dur": 2.03,
+  "dur": 1.91,
   "ecran": 23.2,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 0.97,
   "prises": [
-   23
+   37
   ],
-  "vivacite": 15.8,
-  "asr": "Partez d'une idée ou d'un modèle"
+  "vivacite": 13.1,
+  "asr": "Partez d'une idée ou d'un modèle."
  },
  {
-  "text": "Décrivez votre besoin… et regardez-le prendre forme !",
+  "text": "Décrivez votre besoin… et regardez-la prendre forme sous vos yeux.",
   "start": 25.95,
-  "dur": 3.4,
+  "dur": 3.56,
   "ecran": 25.95,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.07,
   "prises": [
-   64
+   51
   ],
-  "vivacite": 15.8,
-  "asr": "Décrivez votre besoin et regardez-le prendre forme."
+  "vivacite": 12.6,
+  "asr": "Décrivez votre besoin et regardez la prendre forme sous vos yeux."
  },
  {
-  "text": "Créée en quelques minutes !",
+  "text": "Créée en quelques minutes.",
   "start": 29.95,
-  "dur": 1.5,
+  "dur": 1.3,
   "ecran": 29.95,
   "repere": null,
   "mot_repere_a": null,
-  "tempo": 1.07,
+  "tempo": 1.0,
   "prises": [
-   11
+   77
   ],
-  "vivacite": 15.0,
+  "vivacite": 15.7,
   "asr": "Créé en quelques minutes"
  },
  {
-  "text": "Planifiez, personnalisez, faites-la évoluer… dans toutes les directions !",
-  "start": 31.226,
-  "dur": 3.55,
-  "ecran": 31.2,
+  "text": "Ajustez, enrichissez, faites-la grandir.",
+  "start": 31.9,
+  "dur": 2.58,
+  "ecran": 31.9,
   "repere": null,
   "mot_repere_a": null,
-  "tempo": 1.07,
+  "tempo": 1.0,
   "prises": [
-   64
+   11
   ],
-  "vivacite": 14.2,
-  "asr": "Planifié, personnalisé, faites-la évoluer dans toutes les directions."
+  "vivacite": 13.6,
+  "asr": "Ajustez, enrichissez, faites-la grandir."
  },
  {
-  "text": "Demandez… c'est prêt !",
-  "start": 37.2,
-  "dur": 1.58,
+  "text": "Une modification ? Demandez… c'est fait.",
+  "start": 36.21,
+  "dur": 2.46,
   "ecran": 37.2,
   "repere": "demandez",
   "mot_repere_a": 37.2,
   "tempo": 1.0,
   "prises": [
-   97,
-   97
+   11
   ],
-  "vivacite": 12.5,
-  "asr": "Demandez. C'est prêt."
+  "vivacite": 11.2,
+  "asr": "une modification. Demandez, c'est fait !"
  },
  {
-  "text": "Des outils conçus pour une équipe… jusqu'aux plateformes prêtes pour toute l'entreprise.",
-  "start": 44.3,
-  "dur": 4.45,
-  "ecran": 44.3,
+  "text": "D'une équipe… à tout le groupe.",
+  "start": 40.7,
+  "dur": 2.36,
+  "ecran": 40.7,
   "repere": null,
   "mot_repere_a": null,
-  "tempo": 1.001,
+  "tempo": 1.0,
   "prises": [
-   64
+   51
   ],
-  "vivacite": 13.4,
-  "asr": "Des outils conçus pour une équipe jusqu'aux plateformes prêtes pour toute entreprise."
+  "vivacite": 13.2,
+  "asr": "d'une équipe à tout le groupe. Pourtant..."
  },
  {
-  "text": "Des gains rapides… aux applications de niveau entreprise !",
-  "start": 53.988,
-  "dur": 3.22,
-  "ecran": 56.1,
+  "text": "Des résultats rapides… avec une qualité de niveau entreprise.",
+  "start": 43.227,
+  "dur": 3.74,
+  "ecran": 45.9,
   "repere": "niveau",
-  "mot_repere_a": 56.1,
+  "mot_repere_a": 45.9,
   "tempo": 1.07,
   "prises": [
-   23
+   11
   ],
-  "vivacite": 13.8,
-  "asr": "Des gains rapides aux applications de niveau entreprise."
+  "vivacite": 14.5,
+  "asr": "Des résultats rapides avec une qualité de niveau entreprise."
  },
  {
-  "text": "Tout est intégré, sécurisé par conception, et prêt à être lancé !",
-  "start": 59.404,
-  "dur": 4.6,
-  "ecran": 60.6,
+  "text": "Tout est intégré, sécurisé par conception, et prêt à être lancé.",
+  "start": 47.094,
+  "dur": 3.84,
+  "ecran": 48.15,
   "repere": "securise",
-  "mot_repere_a": 60.6,
+  "mot_repere_a": 48.15,
   "tempo": 1.07,
   "prises": [
    77
   ],
-  "vivacite": 17.9,
+  "vivacite": 14.1,
   "asr": "Tout est intégré, sécurisé par conception et prêt à être lancé."
  },
  {
-  "text": "C'est une nouvelle façon de travailler… où vos équipes vont aussi loin que leurs idées !",
-  "start": 66.0,
-  "dur": 4.28,
-  "ecran": 66.0,
+  "text": "Une nouvelle façon de travailler… où vos équipes vont aussi loin que leurs idées.",
+  "start": 53.5,
+  "dur": 4.54,
+  "ecran": 53.5,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.07,
   "prises": [
    23
   ],
-  "vivacite": 12.4,
-  "asr": "C'est une nouvelle façon de travailler où vos équipes vont aussi loin que leurs idées."
+  "vivacite": 12.8,
+  "asr": "Une nouvelle façon de travailler où vos équipes vont aussi loin que leurs idées."
  },
  {
   "text": "Vous l'imaginez ?",
-  "start": 71.35,
-  "dur": 1.55,
-  "ecran": 71.35,
+  "start": 58.85,
+  "dur": 1.05,
+  "ecran": 58.85,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.0,
@@ -239,31 +238,17 @@
   "asr": "Vous l'imaginez ?"
  },
  {
-  "text": "Donnons-lui vie !",
-  "start": 73.45,
-  "dur": 3.38,
-  "ecran": 73.45,
+  "text": "Donnons-lui vie.",
+  "start": 60.95,
+  "dur": 1.04,
+  "ecran": 60.95,
   "repere": null,
   "mot_repere_a": null,
   "tempo": 1.0,
   "prises": [
    77
   ],
-  "vivacite": 13.7,
+  "vivacite": 14.6,
   "asr": "Donons-lui vie."
- },
- {
-  "text": "Demandez votre démo.",
-  "start": 75.65,
-  "dur": 1.57,
-  "ecran": 75.65,
-  "repere": null,
-  "mot_repere_a": null,
-  "tempo": 1.07,
-  "prises": [
-   23
-  ],
-  "vivacite": 13.8,
-  "asr": "Demandez votre démo."
  }
 ]
