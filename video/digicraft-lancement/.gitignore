@@ -128,3 +128,6 @@ out/render_cons_alex.log
 out/video_cons_silent.mp4
 out/video_cons_alex_silent.mp4
 out/render_cons.log
+out/parts_kmc/
+out/render_kmc.log
+out/video_kmc_silent.mp4

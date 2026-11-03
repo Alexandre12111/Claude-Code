@@ -276,12 +276,12 @@
       const POS = [[cx, cy - R], [cx + R, cy], [cx, cy + R], [cx - R, cy]];
       a.nodes = ST.map(([ic, t, d], i) => {
         const [x, y] = POS[i];
-        const lx = i === 1 ? x - 40 : i === 3 ? x - 340 : x - 190;
-        const c = el(root, { left: lx + 'px', top: y - 56 + 'px', width: '380px', height: '112px', borderRadius: '24px', background: '#fff', border: '1px solid #E6E1D6', boxShadow: '0 24px 60px rgba(11,11,15,0.12)', fontFamily: 'DM Sans', color: INK });
+        const lx = i === 1 ? x - 40 : i === 3 ? x - 380 : x - 210;
+        const c = el(root, { left: lx + 'px', top: y - 56 + 'px', width: '420px', height: '112px', borderRadius: '24px', background: '#fff', border: '1px solid #E6E1D6', boxShadow: '0 24px 60px rgba(11,11,15,0.12)', fontFamily: 'DM Sans', color: INK });
         c._ic = el(c, { left: '20px', top: '20px', width: '72px', height: '72px', borderRadius: '20px', background: '#F1EEE7', display: 'flex', alignItems: 'center', justifyContent: 'center' }, icon(ic, 34, 2.2, UM));
         el(c, { left: '112px', top: '24px', fontFamily: 'Plus Jakarta Sans', fontWeight: '800', fontSize: '28px', letterSpacing: '-0.02em', whiteSpace: 'nowrap' }, t);
         el(c, { left: '112px', top: '64px', fontSize: '19px', color: '#6F6C66', whiteSpace: 'nowrap' }, d);
-        el(c, { right: '18px', top: '16px', width: '30px', height: '30px', borderRadius: '15px', background: INK, color: LIME, fontFamily: 'Plus Jakarta Sans', fontWeight: '800', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }, String(i + 1));
+        el(c, { right: '18px', bottom: '16px', width: '30px', height: '30px', borderRadius: '15px', background: INK, color: LIME, fontFamily: 'Plus Jakarta Sans', fontWeight: '800', fontSize: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center' }, String(i + 1));
         return c;
       });
       a.q = ['Où en est le moule M-12 ?', 'Quand peut-on démouler ?', 'Quelle température dans l’étuve ?'].map((t, i) => {
@@ -439,7 +439,7 @@
       const tn = wordAt('mobile', 'telephone', L('mobile', 0).start + 2) - 0.3;
       const np = spring(T - tn, 200, 16); const tOff = L('mobile', 1).start - 0.2;
       S(a.nt, { y: lerp(-110, 52, clamp(np)) - P(T, tOff, 0.4, Ease.inCubic) * 160, o: clamp(np * 2) });
-      const tTap = wordAt('mobile', 'geste', L('mobile', 1).start + 1.6) - 0.1;
+      const tTap = wordAt('mobile', 'instant', L('mobile', 1).start + 1.6) - 0.1;
       const fp = P(T, tTap - 0.6, 0.5, Ease.outCubic) * (1 - P(T, tTap + 0.5, 0.3));
       S(a.finger, { o: fp, s: T > tTap && T < tTap + 0.25 ? 0.85 : 1, y: (1 - P(T, tTap - 0.6, 0.5, Ease.outCubic)) * 120 });
       const rp = P(T, tTap, 0.6, Ease.outCubic); S(a.rip, { s: 1 + rp * 22, o: (1 - rp) * (T > tTap ? 0.9 : 0) });
