@@ -243,4 +243,16 @@ edit('app_yc.js', [
 edit('dash_yc.js', [("'EPI vérifiés'", "'Protections vérifiées'"), ("'RH · arrivées'", "'Nouvelles recrues'"), ("'Tickets IT'", "'Tickets informatiques'"), ("'TRS · toutes lignes'", "'rendement global'")])
 # Sans « par Leyton CognitX » sous le logo ni sur la signature finale.
 edit('s8_yc.js', [("        h('span', '', a.by, 'par');\n        C.leytonLogo(a.by, 92);\n", ''), ("        h('span', '', a.by, 'par');\n        C.leytonLogo(a.by, 80, true);\n", '')])
+
+# Modification en ligne en quelques minutes : la vignette reprend la phrase dite.
+edit('s6_v4.js', [("[26.45, 27.2, 'Demandez.', 1180, 860, 70]", "[26.45, 27.6, 'En ligne en quelques minutes.', 640, 860, 66]")])
+# Rafale de demandes : trois exemples affichés plus longtemps (2,15 s chacun) au lieu de cinq.
+edit('s3_scale.js', [
+    ("      ['Audits fournisseurs de nos 40 usines', ['#16161C', '#1E3BFF', '#DFE8F0']],\n      ['Bilan carbone de tout le groupe', ['#0B0B0F', '#4F6BFF', '#7F93FF']],\n", ""),
+    ("const T0 = 30.0, D = 1.43;", "const T0 = 30.7, D = 2.15;"),
+    ("['b49/blur_citynight', 'b49/blur_violet_flow', 'b50/blur_skyline', 'b49/blur_street', 'b49/blur_boardroom'][k]", "['b49/blur_citynight', 'b49/blur_violet_flow', 'b49/blur_boardroom'][k]"),
+])
+# Plan « portable » refait en plan héros premium (bbfr/s10_laptop.js).
+edit('index.html', [('<script src="s9_app.js"></script>', '<script src="s9_app.js"></script>\n<script src="s10_laptop.js"></script>')])
+shutil.copy(os.path.join(HERE, 'bbfr', 's10_laptop.js'), os.path.join(dst, 's10_laptop.js'))
 print('version française :', dst)

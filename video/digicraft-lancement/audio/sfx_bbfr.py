@@ -88,9 +88,9 @@ P(dry, 28.05, pop(640, 0.7), pan=0.1)
 P(dry, 28.4, whoosh(0.9, True, 0.3, -0.4, 0.4))
 P(dry, 29.85, whoosh(0.5, False, 0.5, -0.3, 0.3))
 # --- Rafale de demandes
-LIST = [45, 33, 36, 33, 34]
+LIST = [45, 33, 34]   # trois demandes de 2,15 s (version française)
 for k, n in enumerate(LIST):
-    t = 30.0 + k * 1.43
+    t = 30.7 + k * 2.15
     P(dry, t - 0.1, whoosh(0.45, True, 0.4, 0.5, -0.5))
     typing(t + 0.12, min(n, 40), 38, 0.6, 0.0)
     P(dry, t + 1.18, click(0.8))

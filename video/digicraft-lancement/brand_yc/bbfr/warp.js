@@ -1,7 +1,7 @@
 // Version française allongée : certaines mesures de 2,5 s du film d'origine sont jouées deux fois plus lentement
 // (plans métier, plateforme, démo de création, mosaïque) ; une mesure à 0 est coupée (tablette). Même table que audio/warp_bbfr.py.
 (function () {
-  const F = [1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 0, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1];
+  const F = [1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 0, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1];
   const OFF = 0.7, BAR = 2.5;
   const B = [OFF];
   F.forEach((f, j) => B.push(B[j] + BAR * f));

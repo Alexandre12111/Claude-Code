@@ -1,6 +1,6 @@
 """Table de ralenti de la version française allongée (même table que brand_yc/bbfr/warp.js).
 F[j] : facteur de la mesure j du film d'origine (2 = deux fois plus lente, 0 = mesure coupée : tablette)."""
-F = [1, 2, 2, 1, 1, 1, 2, 1, 1, 2, 2, 0, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1]
+F = [1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 0, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1]
 OFF, BAR, END0 = 0.7, 2.5, 54.0
 B = [OFF]
 for j, f in enumerate(F):

@@ -1,5 +1,5 @@
 """Texte et direction de jeu de la voix off française (partagés par tts_bbfr_takes.py et build_bbfr_v4.py).
-Version 5 : texte réécrit pour donner envie, sans écho ni effet, voix posée (pas de phrase criée), fin sur « Donnons-lui vie ».
+Version 6 : texte réécrit pour donner envie, sans écho ni effet, voix posée, « Une modification ? Elle est en ligne en quelques minutes. », fin sur « Donnons-lui vie ».
 t0 : instant d'apparition du texte à l'écran (film d'origine) ; anchor : mot calé sur cet instant (None = début) ;
 ex / cfg : expressivité et guidage Chatterbox ; rate : débit visé en syllabes par seconde (None = naturel) ; emph : mots appuyés."""
 REF = 'vo_ref/ref_homme_piper_upmc_pierre.wav'
@@ -13,9 +13,8 @@ L = [
     dict(text="La plateforme qui transforme vos idées en applications professionnelles.", t0=12.65, ex=0.75, cfg=0.4, rate=None, emph=['idees', 'professionnelles']),
     dict(text="Partez d'une idée, ou d'un modèle.", t0=16.95, ex=0.75, cfg=0.4, rate=6.0, emph=['idee']),
     dict(text="Décrivez votre besoin… et regardez-la prendre forme sous vos yeux.", t0=18.45, ex=0.75, cfg=0.4, rate=6.2, emph=['forme']),
-    dict(text="Créée en quelques minutes.", t0=22.45, ex=0.8, cfg=0.38, rate=None, emph=['minutes']),
     dict(text="Ajustez, enrichissez, faites-la grandir.", t0=23.8, ex=0.75, cfg=0.42, rate=None, emph=['grandir']),
-    dict(text="Une modification ? Demandez… c'est fait.", t0=26.45, anchor='demandez', ex=0.8, cfg=0.4, rate=None, emph=['fait']),
+    dict(text="Une modification ? Elle est en ligne en quelques minutes.", t0=26.45, anchor='ligne', ex=0.8, cfg=0.4, rate=None, emph=['minutes']),
     dict(text="D'une équipe… à tout le groupe.", t0=30.7, ex=0.75, cfg=0.4, rate=None, emph=['groupe']),
     dict(text="Des résultats rapides… avec une qualité de niveau entreprise.", t0=35.9, anchor='niveau', ex=0.8, cfg=0.4, rate=6.2, emph=['rapides', 'entreprise']),
     dict(text="Tout est intégré, sécurisé par conception, et prêt à être lancé.", t0=38.15, anchor='securise', ex=0.8, cfg=0.4, rate=6.2, emph=['lance']),

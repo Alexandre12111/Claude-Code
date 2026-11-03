@@ -5,7 +5,7 @@
   // [début, fin, texte, x, y, taille]
   const WORDS = [
     [3.45, 4.5, 'Sans code.', 110, 930, 76], [4.85, 6.05, 'Sans ticket informatique.', 110, 930, 76], [6.4, 7.6, 'Sans limites.', 110, 930, 76],
-    [22.45, 23.5, 'Créée en quelques minutes.', 110, 70, 70], [26.45, 27.2, 'Demandez.', 1180, 860, 70],
+    [22.45, 23.5, 'Créée en quelques minutes.', 110, 70, 70], [26.45, 27.6, 'En ligne en quelques minutes.', 640, 860, 66],
     [35.9, 37.0, 'Niveau entreprise.', 110, 930, 76], [38.15, 40.3, 'Sécurisée par conception.', 0, 22, 52],
   ];
   const a = {};

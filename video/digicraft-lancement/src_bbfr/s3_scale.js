@@ -9,11 +9,9 @@
     const LIST = [
       ['Validation des notes de frais pour la finance', ['#0B0B0F', '#1E3BFF', '#4F6BFF']],
       ['Suivi du pipeline commercial EMEA', ['#16161C', '#1E3BFF', '#E8ECFF']],
-      ['Audits fournisseurs de nos 40 usines', ['#16161C', '#1E3BFF', '#DFE8F0']],
-      ['Bilan carbone de tout le groupe', ['#0B0B0F', '#4F6BFF', '#7F93FF']],
       ['Planning de maintenance des usines', ['#16161C', '#4F6BFF', '#4F6BFF']],
     ];
-    const T0 = 30.0, D = 1.43;
+    const T0 = 30.7, D = 2.15;
     SCENES.push({
       id: 'prompts',
       build(root) {
@@ -21,7 +19,7 @@
         a.bgs = LIST.map(([, c], k) => {
           const g = el(root, { inset: '0', background: c[0], overflow: 'hidden' });
           const im = h('img', 'abs', g);
-          im.src = `../assets/img/${['b49/blur_citynight', 'b49/blur_violet_flow', 'b50/blur_skyline', 'b49/blur_street', 'b49/blur_boardroom'][k]}.jpg`;
+          im.src = `../assets/img/${['b49/blur_citynight', 'b49/blur_violet_flow', 'b49/blur_boardroom'][k]}.jpg`;
           Object.assign(im.style, { left: '0', top: '0', width: '2600px', height: '1462px', transformOrigin: '50% 50%' });
           g._b = [{ e: im, x: -340, y: -191, k: k * 1.7 }];
           return g;
