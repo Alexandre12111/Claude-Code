@@ -8,24 +8,25 @@ from scipy.signal import resample_poly
 HERE = os.path.dirname(os.path.abspath(__file__))
 STEMS = os.path.join(HERE, 'stems')
 import re as _re
-CTF = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src_cons', 'cons_timeline.js')
+SUF = os.environ.get('VOICE_SUF', '')  # '_alex' : version avec la voix clonée d'Alexandre
+CTF = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src_cons', f'cons_timeline{SUF}.js')
 END_CT = json.loads(_re.search(r'window\.CT = (\{.*\});', open(CTF, encoding='utf-8').read()).group(1))['END']
 SR, END = 48000, END_CT
 # Voix choisie (dossier de répliques) et suffixe des fichiers : VO=vo_bbfr_cb_homme TAG=_homme python3 mix_bbfr.py
-VO = os.environ.get('VO', 'vo_cons')
+VO = os.environ.get('VO', 'vo_cons' + SUF)
 TAG = os.environ.get('TAG', '')
 N = int((END_CT + 1.5) * SR)
 STARTS = [m['start'] for m in json.load(open(os.path.join(HERE, VO, 'meta.json'), encoding='utf-8'))]
 
 # Voix : traitement léger (passe-haut, chaleur, présence, compression douce).
-raw = os.path.join(STEMS, 'vo_cons_raw.wav')
+raw = os.path.join(STEMS, f'vo_cons_raw{SUF}.wav')
 vo = np.zeros(N)
 for i, t in enumerate(STARTS):
     x, sr = sf.read(os.path.join(HERE, VO, f'l{i:02d}.wav'))
     x = resample_poly(x, SR, sr)
     a = int(t * SR); vo[a:a + len(x)] += x[: N - a]
 sf.write(raw, vo.astype(np.float32), SR)
-proc = os.path.join(STEMS, 'vo_cons.wav')
+proc = os.path.join(STEMS, f'vo_cons{SUF}.wav')
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', raw, '-af',
                 # Traitement voix de publicité : chaleur, moins de « boîte », présence et air, de-esser, compression marquée,
                 # légère saturation douce, limiteur.
@@ -36,8 +37,8 @@ subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', raw, '-af',
 v, _ = sf.read(proc)
 v = np.pad(v[:N], (0, max(0, N - len(v))))
 
-music, _ = sf.read(os.path.join(STEMS, 'music_cons.wav'))
-sfx, _ = sf.read(os.path.join(STEMS, 'sfx_cons.wav'))
+music, _ = sf.read(os.path.join(STEMS, f'music_cons{SUF}.wav'))
+sfx, _ = sf.read(os.path.join(STEMS, f'sfx_cons{SUF}.wav'))
 pad = lambda x: np.pad(x[:N], ((0, max(0, N - len(x))), (0, 0)))
 music, sfx = pad(music), pad(sfx)
 
@@ -57,11 +58,11 @@ mix = mix[: int(END * SR)]
 t = np.arange(len(mix)) / SR
 fade = np.ones(len(mix)); fade[t > END - 1.0] = np.clip((END - t[t > END - 1.0]) / 1.0, 0, 1)
 mix *= fade[:, None]
-tmp = os.path.join(STEMS, 'mix_cons_raw.wav')
+tmp = os.path.join(STEMS, f'mix_cons_raw{SUF}.wav')
 sf.write(tmp, (mix / np.max(np.abs(mix)) * 0.9).astype(np.float32), SR)
-subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, f'mix_cons{TAG}.wav')], check=True)
+subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, f'mix_cons{TAG}{SUF}.wav')], check=True)
 # Version sans voix (musique + effets).
 m2 = (music * 0.85 + sfx * 1.25)[: int(END * SR)] * fade[:, None]
 sf.write(tmp, (m2 / np.max(np.abs(m2)) * 0.9).astype(np.float32), SR)
-subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, 'mix_cons_musique.wav')], check=True)
+subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, f'mix_cons_musique{SUF}.wav')], check=True)
 print('mix_cons ok')

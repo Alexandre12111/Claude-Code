@@ -4,16 +4,18 @@
 - minutage : répliques enchaînées (0,6 s entre deux répliques d'une même scène, 1,5 s à chaque changement de scène),
   durées minimales pour les plans visuels ; créneaux de scènes écrits dans src_cons/cons_timeline.js ;
 - sous-titres : blocs de deux lignes au plus, calés mot à mot, dans cons_timeline.js et en .srt.
-Usage : python3 build_cons.py (environnement avec openai-whisper)"""
-import glob, json, os, re, subprocess, sys, unicodedata
+Usage : python3 build_cons.py (environnement avec openai-whisper)
+Voix clonée d'Alexandre : VOICE_SUF=_alex python3 build_cons.py (script_cons_alex, prises choisies par similarité de timbre)"""
+import glob, importlib, json, os, re, subprocess, sys, unicodedata
 import numpy as np, soundfile as sf, whisper
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from script_cons import L
+SUF = os.environ.get('VOICE_SUF', '')  # '_alex' : version avec la voix clonée d'Alexandre
+L = importlib.import_module('script_cons' + SUF).L
 
-TAKES, OUT = os.path.join(HERE, 'vo_cons_takes'), os.path.join(HERE, 'vo_cons')
+TAKES, OUT = os.path.join(HERE, f'vo_cons{SUF}_takes'), os.path.join(HERE, f'vo_cons{SUF}')
 ROOT = os.path.join(HERE, '..')
-HOMO = {'aux', 'creee', 'faites', 'applications', 'professionnelles', 'courriels', 'deployees', 'hebergees', 'besoin', 'suivis', 'publier', 'droits', 'roles', 'consultants', 'donnons', 'audits', 'donnees', 'recrue'}
+HOMO = {'aux', 'creee', 'faites', 'applications', 'professionnelles', 'courriels', 'deployees', 'hebergees', 'besoin', 'suivis', 'publier', 'droits', 'roles', 'consultants', 'donnons', 'audits', 'donnees', 'recrue', 'paiplaine'}
 MIN = {'logo': 3.4, 'produit': 13.5, 'etape1': 9.5, 'etape2': 9.0, 'etape2b': 7.0, 'cas_intro': 3.6, 'etape3': 8.0, 'cas_rh': 15.0, 'cas_log': 14.0, 'cas_ind': 13.5,
        'cas_autres': 12.5, 'preuves': 9.0, 'securite': 8.5, 'fin': 7.5, 'vendre': 4.5}
 LEAD, GAP, TAIL = 1.5, 0.6, 2.5
@@ -92,7 +94,7 @@ for i, line in enumerate(L):
         if d['text'] != line['text']: continue
         x, sr = sf.read(j[:-5] + '.wav'); takes.append((d, x, sr))
     ok = [tk for tk in takes if valid(line['text'], tk[0]['heard'])] or takes
-    ok.sort(key=lambda tk: -liveliness(tk[1], tk[2]))
+    ok.sort(key=lambda tk: -tk[0]['sim'] if 'sim' in tk[0] else -liveliness(tk[1], tk[2]))
     for d, x, sr in ok:
         words = [(nw(w['w']), w['a'], w['b']) for w in d['words']]
         x2, w2 = squeeze(x, sr, words)
@@ -148,9 +150,9 @@ for k in range(len(subs) - 1):
     if subs[k + 1][0] - subs[k][1] < 0.35: subs[k][1] = subs[k + 1][0] - 0.04
 json.dump(meta, open(f'{OUT}/meta.json', 'w'), ensure_ascii=False, indent=1)
 CTd = {'END': END, 'scenes': scenes, 'lines': [{'scene': m['scene'], 'start': m['start'], 'dur': m['dur'], 'words': [[w, a] for w, a, b in m['words']]} for m in meta], 'subs': subs}
-open(os.path.join(ROOT, 'src_cons', 'cons_timeline.js'), 'w', encoding='utf-8').write('// Généré par audio/build_cons.py : minutage des scènes, des répliques et des sous-titres.\nwindow.CT = ' + json.dumps(CTd, ensure_ascii=False) + ';\n')
+open(os.path.join(ROOT, 'src_cons', f'cons_timeline{SUF}.js'), 'w', encoding='utf-8').write('// Généré par audio/build_cons.py : minutage des scènes, des répliques et des sous-titres.\nwindow.CT = ' + json.dumps(CTd, ensure_ascii=False) + ';\n')
 ts = lambda v: f'{int(v // 3600):02d}:{int(v % 3600 // 60):02d}:{int(v % 60):02d},{int(round(v % 1 * 1000)) % 1000:03d}'
-with open(os.path.join(ROOT, 'out', 'YouCraft_Consultants_FR_soustitres.srt'), 'w', encoding='utf-8') as f:
+with open(os.path.join(ROOT, 'out', f'YouCraft_Consultants_FR_soustitres{SUF}.srt'), 'w', encoding='utf-8') as f:
     for k, (a, b, html) in enumerate(subs, 1): f.write(f"{k}\n{ts(a)} --> {ts(b)}\n{html.replace('<br>', chr(10))}\n\n")
 print('scènes', {k: v for k, v in scenes.items()})
 print('durée totale', round(END, 1), 's')

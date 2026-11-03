@@ -3,11 +3,12 @@ sur les scènes de la vidéo (cons_timeline.js) : intro calme, démonstration pl
 Les impacts et roulements du film sont retirés : la musique reste un fond sous la voix."""
 import json, math, os, re
 HERE = os.path.dirname(os.path.abspath(__file__))
-CT = json.loads(re.search(r'window\.CT = (\{.*\});', open(os.path.join(HERE, '..', 'src_cons', 'cons_timeline.js'), encoding='utf-8').read()).group(1))
+SUF = os.environ.get('VOICE_SUF', '')  # '_alex' : version avec la voix clonée d'Alexandre
+CT = json.loads(re.search(r'window\.CT = (\{.*\});', open(os.path.join(HERE, '..', 'src_cons', f'cons_timeline{SUF}.js'), encoding='utf-8').read()).group(1))
 END = CT['END']
 src = open(os.path.join(HERE, 'music_b44.py'), encoding='utf-8').read()
 # Durée, sortie, et suppression des impacts calés sur l'image du film.
-src = src.replace('DUR = 55.5', f'DUR = {END + 1.5}').replace('END = 54.0', f'END = {END}').replace("'stems', 'music_b44.wav'", "'stems', 'music_cons.wav'").replace("print('music_b44 ok')", "print('music_cons ok')")
+src = src.replace('DUR = 55.5', f'DUR = {END + 1.5}').replace('END = 54.0', f'END = {END}').replace("'stems', 'music_b44.wav'", "'stems', 'music_cons" + SUF + ".wav'").replace("print('music_b44 ok')", "print('music_cons ok')")
 a, b = src.index('    # Roulements et impacts'), src.index('    sc = np.ones(N)')
 src = src[:a] + src[b:]
 # Grille d'accords : progression du film répétée, section de chaque mesure selon la scène en cours.
