@@ -195,8 +195,6 @@
         const k = a.L.k;
         a.sym.forEach((p) => (p.style.transformOrigin = `${124 * k}px ${123.5 * k}px`));
         a.by = el(a.z, { left: '0', width: '1920px', top: '680px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '22px', fontFamily: 'DM Sans', fontSize: '30px', fontWeight: '500', color: '#77746E' });
-        h('span', '', a.by, 'par');
-        C.leytonLogo(a.by, 92);
       },
       update(T) {
         const R = lerp(0, 1400, Ease.inOutCubic(clamp((T - 10.7) / 0.5)));
@@ -314,8 +312,6 @@
         a.q = el(root, { left: '0', width: '1920px', top: '800px', textAlign: 'center', fontFamily: 'Plus Jakarta Sans', fontSize: '58px', fontWeight: '700', letterSpacing: '-0.02em', color: STONE }, `Vous <span style="color:${UMD}">l’imaginez ?</span>`);
         a.tag = el(root, { left: '0', width: '1920px', top: '600px', textAlign: 'center', fontFamily: 'Plus Jakarta Sans', fontSize: '50px', fontWeight: '700', letterSpacing: '-0.02em', color: STONE }, `Donnons-lui <span style="color:${LIME}">vie.</span>`);
         a.by = el(root, { left: '0', width: '1920px', top: '730px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px', fontFamily: 'DM Sans', fontSize: '26px', fontWeight: '500', color: 'rgba(245,242,234,0.7)' });
-        h('span', '', a.by, 'par');
-        C.leytonLogo(a.by, 80, true);
         a.black = el(root, { inset: '0', background: '#000', opacity: '0' });
       },
       update(T) {

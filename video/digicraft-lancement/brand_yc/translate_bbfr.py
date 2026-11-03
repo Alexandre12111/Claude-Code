@@ -241,4 +241,6 @@ edit('app_yc.js', [
     ("'Resp. opérations'", "'Responsable opérations'"), ("'Resp. commercial'", "'Commercial senior'"), ("objectif T4", "objectif du trimestre"), ("btn('Clôture : T4'", "btn('Clôture : ce trimestre'"),
 ])
 edit('dash_yc.js', [("'EPI vérifiés'", "'Protections vérifiées'"), ("'RH · arrivées'", "'Nouvelles recrues'"), ("'Tickets IT'", "'Tickets informatiques'"), ("'TRS · toutes lignes'", "'rendement global'")])
+# Sans « par Leyton CognitX » sous le logo ni sur la signature finale.
+edit('s8_yc.js', [("        h('span', '', a.by, 'par');\n        C.leytonLogo(a.by, 92);\n", ''), ("        h('span', '', a.by, 'par');\n        C.leytonLogo(a.by, 80, true);\n", '')])
 print('version française :', dst)

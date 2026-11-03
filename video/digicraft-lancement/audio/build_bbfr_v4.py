@@ -4,7 +4,7 @@ Pour chaque réplique :
 2. meilleur segment : la réplique est coupée aux points de suspension « … » ; pour chaque segment on garde la prise la plus
    vivante (étendue de hauteur + variation d'intensité), raccord dans le silence de la pause, pause ramenée à 0,32 s ;
 3. pauses internes de plus de 0,35 s ramenées à 0,25 s ; débit ajusté vers le débit visé (syllabes par seconde) ;
-4. appuis sur les mots clés (+4 dB, présence), écho ou réverbération sur les phrases fortes ;
+4. appuis discrets sur les mots clés (+2 dB, un peu de présence), sans écho ni réverbération ;
 5. contrôle final : la réplique traitée (débit, effets) doit être comprise sans faute par Whisper, sinon prise suivante ;
 6. calage : le mot repère tombe à l'instant où son texte apparaît à l'écran.
 Sortie : vo_bbfr_v4/ (lNN.wav + meta.json lu par mix_bbfr.py). Usage : python3 build_bbfr_v4.py"""
@@ -60,6 +60,7 @@ def load(i):
     out = []
     for j in sorted(glob.glob(f'{TAKES}/l{i:02d}_s*.json')):
         d = json.load(open(j, encoding='utf-8'))
+        if d['text'] != L[i]['text']: continue   # prise d'une ancienne version du texte
         x, sr = sf.read(j[:-5] + '.wav')
         out.append((d, x, sr))
     return out
@@ -138,10 +139,10 @@ def effects(x, sr, words, emph, fx):
     for wd, a, b in words:
         if any(k in wd for k in emph):
             ia, ib = int(max(0, a - 0.03) * sr), int(min(len(x) / sr, b + 0.05) * sr)
-            gain[ia:ib] = 10 ** (4 / 20); pres[ia:ib] = 1
+            gain[ia:ib] = 10 ** (2 / 20); pres[ia:ib] = 1
     k = int(0.04 * sr); ker = np.ones(k) / k
     gain, pres = np.convolve(gain, ker, 'same'), np.convolve(pres, ker, 'same')
-    y = x * gain + 0.45 * fft_filter(x, sr, lambda f: ((f > 2000) & (f < 5000)).astype(float)) * pres
+    y = x * gain + 0.25 * fft_filter(x, sr, lambda f: ((f > 2000) & (f < 5000)).astype(float)) * pres
     if fx:
         y = np.concatenate([y, np.zeros(int((0.6 if fx == 'echo' else 0.5) * sr))])
         if fx == 'echo' and words:

@@ -13,7 +13,7 @@ N = int((W.END + 1.5) * SR)
 Mu.N = N
 dry = np.zeros((N, 2))
 wet = np.zeros((N, 2))
-P = lambda buf, t, x, g=1.0, pan=0.0: place(buf, W.fwd(t), x, g, pan)
+P = lambda buf, t, x, g=1.0, pan=0.0: place(buf, W.fwd(t), x, g, pan) if W.kept(t) else None  # effets d'une mesure coupée : supprimés
 
 # --- Ouverture
 P(wet, 0.3, sparkle(0.9, 0.4, n=6))
