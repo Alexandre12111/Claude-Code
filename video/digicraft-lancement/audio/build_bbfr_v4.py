@@ -5,10 +5,11 @@ Pour chaque réplique :
    vivante (étendue de hauteur + variation d'intensité), raccord dans le silence de la pause, pause ramenée à 0,32 s ;
 3. pauses internes de plus de 0,35 s ramenées à 0,25 s ; débit ajusté vers le débit visé (syllabes par seconde) ;
 4. appuis sur les mots clés (+4 dB, présence), écho ou réverbération sur les phrases fortes ;
-5. calage : le mot repère tombe à l'instant où son texte apparaît à l'écran.
+5. contrôle final : la réplique traitée (débit, effets) doit être comprise sans faute par Whisper, sinon prise suivante ;
+6. calage : le mot repère tombe à l'instant où son texte apparaît à l'écran.
 Sortie : vo_bbfr_v4/ (lNN.wav + meta.json lu par mix_bbfr.py). Usage : python3 build_bbfr_v4.py"""
 import glob, json, os, re, subprocess, sys, unicodedata
-import numpy as np, soundfile as sf
+import numpy as np, soundfile as sf, whisper
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import warp_bbfr as W
@@ -157,26 +158,32 @@ def effects(x, sr, words, emph, fx):
 
 
 os.makedirs(OUT, exist_ok=True)
+ASR = whisper.load_model('small')
 meta, prev_end = [], 0.0
 for i, line in enumerate(L):
     takes = [t for t in load(i) if valid(t[0], line)]
     if not takes:
         takes = load(i)[:1]; print(i, 'aucune prise valide, première prise gardée')
     sr = takes[0][2]
-    x, words, seeds = assemble(line, takes)
-    # Pauses : celles des « … » sont gardées (0,32 s), les autres resserrées.
-    keep = set()
-    n = 0
-    for p in line['text'].split('…')[:-1]:
-        n += len(norm(p.replace('-', ' '))); keep.add(n - 1)
-    x, words = squeeze(x, sr, words, keep)
-    # Débit vers la cible (accélération plafonnée à 12 %, jamais de ralenti au-delà de 4 %).
-    k = 1.0
-    if line['rate'] and words:
-        rate = syll(line['text']) / max(0.3, words[-1][2] - words[0][1])
-        k = float(np.clip(line['rate'] / rate, 0.96, 1.12))
-        x = tempo(x, sr, k); words = [(w, a / k, b / k) for w, a, b in words]
-    y = effects(x, sr, words, line['emph'], line['fx'])
+    takes.sort(key=lambda t: -liveliness(t[1], t[2]))
+    for attempt in range(len(takes)):
+        x, words, seeds = assemble(line, takes[attempt:attempt + 1] if attempt else takes)
+        # Pauses : celles des « … » sont gardées (0,32 s), les autres resserrées.
+        keep, n = set(), 0
+        for p in line['text'].split('…')[:-1]:
+            n += len(norm(p.replace('-', ' '))); keep.add(n - 1)
+        x, words = squeeze(x, sr, words, keep)
+        # Débit vers la cible.
+        k = 1.0
+        if line['rate'] and words:
+            rate = syll(line['text']) / max(0.3, words[-1][2] - words[0][1])
+            k = float(np.clip(line['rate'] / rate, 0.97, 1.07))  # au-delà de +7 %, la diction se brouille
+            x = tempo(x, sr, k); words = [(w, a / k, b / k) for w, a, b in words]
+        y = effects(x, sr, words, line['emph'], line['fx'])
+        chk = os.path.join(OUT, '_chk.wav'); sf.write(chk, x.astype(np.float32), sr)
+        heard = ASR.transcribe(chk, language='fr', fp16=False, initial_prompt='YouCraft')['text'].strip(); os.remove(chk)
+        if valid({'heard': heard, 'words': [{'w': w} for w, a, b in words]}, line): break
+        print(i, 'prise', seeds, 'mal comprise après traitement :', heard)
     off = next((a for w, a, b in words if line['anchor'] and line['anchor'] in w), words[0][1] if words else 0.0)
     if line['anchor'] is None: off = 0.0
     start = max(0.0, W.fwd(line['t0']) - off, prev_end + 0.08)
@@ -184,7 +191,7 @@ for i, line in enumerate(L):
     speech_end = start + (words[-1][2] if words else len(y) / sr)
     nxt = W.fwd(L[i + 1]['t0']) if i + 1 < len(L) else W.END
     meta.append({'text': line['text'], 'start': round(start, 3), 'dur': round(len(y) / sr, 2), 'ecran': round(W.fwd(line['t0']), 2), 'repere': line['anchor'],
-                 'mot_repere_a': round(start + off, 2) if line['anchor'] else None, 'tempo': round(k, 3), 'prises': seeds, 'vivacite': round(liveliness(x, sr), 1)})
+                 'mot_repere_a': round(start + off, 2) if line['anchor'] else None, 'tempo': round(k, 3), 'prises': seeds, 'vivacite': round(liveliness(x, sr), 1), 'asr': heard})
     print(f"{i:2d} début {start:6.2f} fin parole {speech_end:6.2f} (texte suivant {nxt:6.2f}) tempo {k:.2f} prises {seeds} vivacité {meta[-1]['vivacite']}")
     prev_end = speech_end
 json.dump(meta, open(f'{OUT}/meta.json', 'w'), ensure_ascii=False, indent=1)

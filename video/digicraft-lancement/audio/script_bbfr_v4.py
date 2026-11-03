@@ -22,7 +22,7 @@ L = [
     dict(text="C'est une nouvelle façon de travailler… où vos équipes vont aussi loin que leurs idées !", t0=41.0, ex=0.95, cfg=0.35, rate=6.4, emph=['nouvelle', 'loin', 'idees']),
     dict(text="Vous l'imaginez ?", t0=46.35, ex=1.0, cfg=0.32, rate=None, emph=['imaginez'], fx='verb'),
     dict(text="Donnons-lui vie !", t0=48.45, ex=1.15, cfg=0.3, rate=None, emph=['vie'], fx='echo'),
-    dict(text="Demandez votre démo.", t0=50.4, ex=0.85, cfg=0.35, rate=5.8, emph=['demo']),
+    dict(text="Demandez votre démo.", t0=50.65, ex=0.85, cfg=0.35, rate=5.8, emph=['demo']),
 ]
 for d in L:
     d.setdefault('anchor', None); d.setdefault('fx', None)
