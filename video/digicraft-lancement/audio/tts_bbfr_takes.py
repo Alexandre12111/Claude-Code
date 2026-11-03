@@ -1,15 +1,18 @@
 """Prises de voix off pour « Donnez vie à vos idées » (version française dynamique) : 6 prises par réplique avec
 Chatterbox Multilingual (timbre « pierre »), chacune enregistrée avec son horodatage mot à mot (Whisper), pour que
 l'assemblage (build_bbfr_v4.py) puisse être refait et réglé sans régénérer. Reprise possible : les prises existantes
-sont conservées. Usage : python3 tts_bbfr_takes.py (environnement avec chatterbox-tts et openai-whisper)"""
+sont conservées. Usage : python3 tts_bbfr_takes.py [module de texte] [dossier de sortie] [nombre de prises]
+(par défaut script_bbfr_v4, vo_bbfr_takes, 6 ; environnement avec chatterbox-tts et openai-whisper)"""
 import json, os, sys
 import numpy as np, soundfile as sf, torch, whisper
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-from script_bbfr_v4 import L, REF
-OUT = os.path.join(HERE, 'vo_bbfr_takes'); os.makedirs(OUT, exist_ok=True)
-SEEDS = (11, 23, 37, 51, 64, 77)
+import importlib
+MOD = importlib.import_module(sys.argv[1] if len(sys.argv) > 1 else 'script_bbfr_v4')
+L, REF = MOD.L, MOD.REF
+OUT = os.path.join(HERE, sys.argv[2] if len(sys.argv) > 2 else 'vo_bbfr_takes'); os.makedirs(OUT, exist_ok=True)
+SEEDS = (11, 23, 37, 51, 64, 77)[: int(sys.argv[3]) if len(sys.argv) > 3 else 6]
 tts = ChatterboxMultilingualTTS.from_pretrained(device='cpu')
 asr = whisper.load_model('small')
 for i, line in enumerate(L):

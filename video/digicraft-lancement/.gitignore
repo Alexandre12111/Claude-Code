@@ -121,3 +121,7 @@ out/video_bbfr_silent.mp4
 out/render_bbfr.log
 out/stills_bb*/
 audio/vo_bbfr_takes/
+audio/vo_cons_takes/
+out/parts_cons/
+out/video_cons_silent.mp4
+out/render_cons.log
