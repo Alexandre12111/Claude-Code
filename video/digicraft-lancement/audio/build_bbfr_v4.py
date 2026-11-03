@@ -7,15 +7,19 @@ Pour chaque réplique :
 4. appuis discrets sur les mots clés (+2 dB, un peu de présence), sans écho ni réverbération ;
 5. contrôle final : la réplique traitée (débit, effets) doit être comprise sans faute par Whisper, sinon prise suivante ;
 6. calage : le mot repère tombe à l'instant où son texte apparaît à l'écran.
-Sortie : vo_bbfr_v4/ (lNN.wav + meta.json lu par mix_bbfr.py). Usage : python3 build_bbfr_v4.py"""
-import glob, json, os, re, subprocess, sys, unicodedata
+Sortie : vo_bbfr_v4/ (lNN.wav + meta.json lu par mix_bbfr.py). Usage : python3 build_bbfr_v4.py
+Voix clonée d'Alexandre : VOICE_SUF=_alex python3 build_bbfr_v4.py (prises de vo_bbfr_alex_takes ; seules les prises
+les plus proches du timbre d'origine, à 0,03 près de la meilleure, sont départagées par la vivacité)."""
+import glob, importlib, json, os, re, subprocess, sys, unicodedata
 import numpy as np, soundfile as sf, whisper
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import warp_bbfr as W
-from script_bbfr_v4 import L
+SUF = os.environ.get('VOICE_SUF', '')
+L = importlib.import_module('script_bbfr_v4' + SUF).L
 
-TAKES, OUT = os.path.join(HERE, 'vo_bbfr_takes'), os.path.join(HERE, 'vo_bbfr_v4')
+TAKES = os.path.join(HERE, 'vo_bbfr_alex_takes' if SUF == '_alex' else 'vo_bbfr_takes')
+OUT = os.path.join(HERE, 'vo_bbfr_v4' + SUF)
 HOMO = {'aux', 'donnons', 'plateformes', 'pretes', 'creee', 'faites', 'planifiez', 'personnalisez', 'applications', 'professionnelles', 'resultats', 'rapides', 'ajustez', 'enrichissez'}
 norm = lambda s: re.sub(r'[^a-z ]', ' ', unicodedata.normalize('NFKD', s.lower()).encode('ascii', 'ignore').decode()).split()
 nw = lambda w: ''.join(norm(w))
@@ -166,6 +170,8 @@ for i, line in enumerate(L):
     if not takes:
         takes = load(i)[:1]; print(i, 'aucune prise valide, première prise gardée')
     sr = takes[0][2]
+    if all('sim' in t[0] for t in takes):
+        top = max(t[0]['sim'] for t in takes); takes = [t for t in takes if t[0]['sim'] >= top - 0.03]
     takes.sort(key=lambda t: -liveliness(t[1], t[2]))
     for attempt in range(len(takes)):
         x, words, seeds = assemble(line, takes[attempt:attempt + 1] if attempt else takes)

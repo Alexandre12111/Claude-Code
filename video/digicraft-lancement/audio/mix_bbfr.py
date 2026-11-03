@@ -16,14 +16,14 @@ N = int((W.END + 1.5) * SR)
 STARTS = [m['start'] for m in json.load(open(os.path.join(HERE, VO, 'meta.json'), encoding='utf-8'))]
 
 # Voix : traitement léger (passe-haut, chaleur, présence, compression douce).
-raw = os.path.join(STEMS, 'vo_bbfr_raw.wav')
+raw = os.path.join(STEMS, f'vo_bbfr_raw{TAG}.wav')
 vo = np.zeros(N)
 for i, t in enumerate(STARTS):
     x, sr = sf.read(os.path.join(HERE, VO, f'l{i:02d}.wav'))
     x = resample_poly(x, SR, sr)
     a = int(t * SR); vo[a:a + len(x)] += x[: N - a]
 sf.write(raw, vo.astype(np.float32), SR)
-proc = os.path.join(STEMS, 'vo_bbfr.wav')
+proc = os.path.join(STEMS, f'vo_bbfr{TAG}.wav')
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', raw, '-af',
                 # Traitement voix de publicité : chaleur, moins de « boîte », présence et air, de-esser, compression marquée,
                 # légère saturation douce, limiteur.
@@ -55,7 +55,7 @@ mix = mix[: int(END * SR)]
 t = np.arange(len(mix)) / SR
 fade = np.ones(len(mix)); fade[t > END - 1.0] = np.clip((END - t[t > END - 1.0]) / 1.0, 0, 1)
 mix *= fade[:, None]
-tmp = os.path.join(STEMS, 'mix_bbfr_raw.wav')
+tmp = os.path.join(STEMS, f'mix_bbfr_raw{TAG}.wav')
 sf.write(tmp, (mix / np.max(np.abs(mix)) * 0.9).astype(np.float32), SR)
 subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.2:LRA=9', '-ar', str(SR), os.path.join(STEMS, f'mix_bbfr{TAG}.wav')], check=True)
 # Version sans voix (musique + effets).

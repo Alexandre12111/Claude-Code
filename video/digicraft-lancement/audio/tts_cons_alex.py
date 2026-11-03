@@ -1,20 +1,24 @@
 """Prises de voix off de la vidéo consultants avec la voix clonée d'Alexandre (Chatterbox Multilingual).
 Pour chaque réplique : 2 extraits de référence x 2 graines ; chaque prise est enregistrée avec son horodatage mot à mot
 (Whisper) et sa similarité de timbre avec la voix source (encodeur vocal de Chatterbox), utilisée par build_cons.py.
-Usage : VOICE_REF_DIR=... python3 tts_cons_alex.py (environnement avec chatterbox-tts et openai-whisper)"""
+Usage : VOICE_REF_DIR=... python3 tts_cons_alex.py [module de texte] [dossier de sortie] [graines séparées par des virgules]
+(par défaut script_cons_alex, vo_cons_alex_takes, 11,23 ; film de 69 s : script_bbfr_v4_alex vo_bbfr_alex_takes 11,23,37)"""
 import json, os, sys
 import numpy as np, soundfile as sf, torch, whisper, librosa
 from chatterbox.mtl_tts import ChatterboxMultilingualTTS
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
-from script_cons_alex import L, REFS, REF_DIR
-OUT = os.path.join(HERE, 'vo_cons_alex_takes'); os.makedirs(OUT, exist_ok=True)
+import importlib
+MOD = importlib.import_module(sys.argv[1] if len(sys.argv) > 1 else 'script_cons_alex')
+L, REFS, REF_DIR = MOD.L, MOD.REFS, MOD.REF_DIR
+OUT = os.path.join(HERE, sys.argv[2] if len(sys.argv) > 2 else 'vo_cons_alex_takes'); os.makedirs(OUT, exist_ok=True)
+SEEDS = [int(v) for v in (sys.argv[3] if len(sys.argv) > 3 else '11,23').split(',')]
 tts = ChatterboxMultilingualTTS.from_pretrained(device='cpu'); asr = whisper.load_model('small')
 src, _ = librosa.load(os.path.join(REF_DIR, 'vocals_mono.wav'), sr=16000)
 E0 = tts.ve.embeds_from_wavs([src[:50 * 16000]], sample_rate=16000)[0]
 for i, line in enumerate(L):
     txt = line['text']
     for rk, ref in REFS.items():
-        for seed in (11, 23):
+        for seed in SEEDS:
             base = f'{OUT}/l{i:02d}_s{rk}{seed}'
             if os.path.exists(base + '.json') and json.load(open(base + '.json', encoding='utf-8'))['text'] == txt: continue
             torch.manual_seed(seed)
