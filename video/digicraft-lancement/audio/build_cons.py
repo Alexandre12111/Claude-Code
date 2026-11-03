@@ -15,7 +15,9 @@ L = importlib.import_module('script_cons' + SUF).L
 
 TAKES, OUT = os.path.join(HERE, f'vo_cons{SUF}_takes'), os.path.join(HERE, f'vo_cons{SUF}')
 ROOT = os.path.join(HERE, '..')
-HOMO = {'aux', 'creee', 'faites', 'applications', 'professionnelles', 'courriels', 'deployees', 'hebergees', 'besoin', 'suivis', 'publier', 'droits', 'roles', 'consultants', 'donnons', 'audits', 'donnees', 'recrue', 'paiplaine'}
+HOMO = {'aux', 'creee', 'faites', 'applications', 'professionnelles', 'courriels', 'deployees', 'hebergees', 'besoin', 'suivis', 'publier', 'droits', 'roles', 'consultants', 'donnons', 'audits', 'donnees', 'recrue', 'paiplaine',
+        # Whisper écrit les nombres et les ordinaux en chiffres, et confond quelques homophones.
+        'premiere', 'deuxieme', 'troisieme', 'sept', 'cent', 'cinquante', 'trois', 'proposez', 'decrire'}
 MIN = {'logo': 3.4, 'produit': 13.5, 'etape1': 9.5, 'etape2': 9.0, 'etape2b': 7.0, 'cas_intro': 3.6, 'etape3': 8.0, 'cas_rh': 15.0, 'cas_log': 14.0, 'cas_ind': 13.5,
        'cas_autres': 12.5, 'preuves': 9.0, 'securite': 8.5, 'fin': 7.5, 'vendre': 4.5}
 LEAD, GAP, TAIL = 1.5, 0.6, 2.5
@@ -37,10 +39,12 @@ def liveliness(x, sr):
     return float(np.percentile(st, 90) - np.percentile(st, 10)) + 0.5 * float(np.std(db))
 
 
-def valid(text, heard):
+def misses(text, heard):
     ref, got = norm(text.replace('-', ' ')), norm(heard.replace('-', ' '))
-    miss = [m for m in ref if m not in set(got) and len(m) > 2 and m not in HOMO]
-    return not miss and len(got) <= len(ref)
+    return len([m for m in ref if m not in set(got) and len(m) > 2 and m not in HOMO]) + max(0, len(got) - len(ref))
+
+
+valid = lambda text, heard: misses(text, heard) == 0
 
 
 def tempo(x, sr, k):
@@ -95,6 +99,7 @@ for i, line in enumerate(L):
         x, sr = sf.read(j[:-5] + '.wav'); takes.append((d, x, sr))
     ok = [tk for tk in takes if valid(line['text'], tk[0]['heard'])] or takes
     ok.sort(key=lambda tk: -tk[0]['sim'] if 'sim' in tk[0] else -liveliness(tk[1], tk[2]))
+    best = None
     for d, x, sr in ok:
         words = [(nw(w['w']), w['a'], w['b']) for w in d['words']]
         x2, w2 = squeeze(x, sr, words)
@@ -104,8 +109,10 @@ for i, line in enumerate(L):
         end = min(len(x2), int((w2[-1][2] + 0.3) * sr)); x2 = x2[:end].copy(); f = int(0.12 * sr); x2[-f:] *= np.linspace(1, 0, f)
         chk = os.path.join(OUT, '_chk.wav'); sf.write(chk, x2.astype(np.float32), sr)
         heard = ASR.transcribe(chk, language='fr', fp16=False, initial_prompt='YouCraft')['text'].strip(); os.remove(chk)
+        if best is None or misses(line['text'], heard) < best[0]: best = (misses(line['text'], heard), d, x2, w2, heard)
         if valid(line['text'], heard): break
         print(i, 'prise', d['seed'], 'mal comprise après traitement :', heard)
+    _, d, x2, w2, heard = best  # aucune prise parfaite : celle qui a le moins d'erreurs
     x2 = x2 / max(1e-9, np.max(np.abs(x2))) * 0.9
     sf.write(f'{OUT}/l{i:02d}.wav', x2.astype(np.float32), sr)
     if line['scene'] != prev_scene and i: t += LEAD - GAP

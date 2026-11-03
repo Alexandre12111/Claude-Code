@@ -123,5 +123,7 @@ out/stills_bb*/
 audio/vo_bbfr_takes/
 audio/vo_cons_takes/
 out/parts_cons/
+out/parts_cons_alex/
+out/render_cons_alex.log
 out/video_cons_silent.mp4
 out/render_cons.log

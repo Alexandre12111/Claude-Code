@@ -1,0 +1,209 @@
+1
+00:00:00,950 --> 00:00:03,307
+Vos clients ont tous des
+idées pour mieux travailler.
+
+2
+00:00:03,907 --> 00:00:07,086
+Un outil pour suivre leurs équipes,
+piloter leurs livraisons,
+
+3
+00:00:07,126 --> 00:00:08,817
+ou anticiper leurs pannes.
+
+4
+00:00:09,417 --> 00:00:11,479
+Mais entre le manque de temps,
+les budgets informatiques,
+
+5
+00:00:11,519 --> 00:00:14,860
+et des mois de développement…
+ces idées restent souvent dans un tableur.
+
+6
+00:00:16,359 --> 00:00:17,700
+YouCraft change la donne.
+
+7
+00:00:19,759 --> 00:00:23,229
+YouCraft est une plateforme de création
+d'applications par l'intelligence
+
+8
+00:00:23,269 --> 00:00:25,671
+artificielle, pensée pour les entreprises.
+
+9
+00:00:26,271 --> 00:00:28,155
+Vos clients décrivent leur
+besoin avec leurs mots…
+
+10
+00:00:28,195 --> 00:00:31,695
+et YouCraft construit l'application
+complète, en quelques minutes.
+
+11
+00:00:33,259 --> 00:00:37,543
+Première étape : décrire. Un processus,
+un tableau de bord, un portail client :
+
+12
+00:00:37,583 --> 00:00:40,340
+il suffit de l'expliquer,
+comme à un collègue.
+
+13
+00:00:42,759 --> 00:00:45,923
+Deuxième étape : YouCraft construit
+tout. Les écrans, les données,
+
+14
+00:00:45,963 --> 00:00:47,916
+les circuits de validation,
+et les droits d'accès.
+
+15
+00:00:51,759 --> 00:00:55,300
+Chaque modification se fait en
+langage naturel : on demande,
+
+16
+00:00:55,340 --> 00:00:56,726
+et l'application évolue.
+
+17
+00:00:58,759 --> 00:01:02,175
+Troisième étape : publier. En un clic,
+l'application est en ligne,
+
+18
+00:01:02,215 --> 00:01:04,059
+sur ordinateur comme sur mobile.
+
+19
+00:01:06,759 --> 00:01:08,508
+Prenons quelques exemples concrets.
+
+20
+00:01:10,359 --> 00:01:12,380
+Pour une direction des ressources humaines :
+
+21
+00:01:12,420 --> 00:01:14,537
+un portail d'accueil des nouveaux arrivants.
+
+22
+00:01:15,137 --> 00:01:18,411
+Chaque recrue a son parcours,
+ses tâches, et son parrain.
+
+23
+00:01:18,451 --> 00:01:21,247
+Les managers voient en direct qui
+est prêt pour son premier jour.
+
+24
+00:01:25,359 --> 00:01:28,516
+Pour une direction logistique :
+une tour de contrôle des livraisons.
+
+25
+00:01:29,116 --> 00:01:32,018
+Les camions sont suivis en temps
+réel, les retards sont détectés,
+
+26
+00:01:32,058 --> 00:01:34,249
+et le client est prévenu automatiquement.
+
+27
+00:01:39,359 --> 00:01:42,345
+Pour un site industriel :
+la surveillance des machines.
+
+28
+00:01:42,945 --> 00:01:45,844
+Les capteurs alertent avant la panne,
+et l'ordre de travail est créé,
+
+29
+00:01:45,884 --> 00:01:47,653
+puis assigné au bon technicien.
+
+30
+00:01:52,859 --> 00:01:56,752
+Et la liste continue : pipeline
+commercial, gestion des stocks,
+
+31
+00:01:56,792 --> 00:01:59,902
+planning des équipes,
+notes de frais, audits…
+
+32
+00:02:00,501 --> 00:02:04,658
+Chaque métier peut avoir son propre outil,
+sans écrire une seule ligne de code.
+
+33
+00:02:06,159 --> 00:02:09,616
+YouCraft a déjà fait ses preuves :
+plus de 750 utilisateurs,
+
+34
+00:02:09,656 --> 00:02:11,704
+et 350 applications déployées.
+
+35
+00:02:15,159 --> 00:02:20,109
+Côté sécurité, tout est intégré :
+connexion sécurisée, rôles et droits d'accès,
+
+36
+00:02:20,149 --> 00:02:21,592
+et données hébergées en Europe.
+
+37
+00:02:23,659 --> 00:02:26,569
+Pour vous, consultants,
+c'est une vraie opportunité.
+
+38
+00:02:28,159 --> 00:02:32,671
+Repérez chez vos clients les processus qui
+reposent sur des tableurs, des courriels,
+
+39
+00:02:32,711 --> 00:02:34,097
+ou des saisies en double.
+
+40
+00:02:35,597 --> 00:02:37,843
+Proposez un atelier : en une séance,
+
+41
+00:02:37,883 --> 00:02:42,011
+vous construisez avec eux une première
+application, sur leur propre cas.
+
+42
+00:02:43,511 --> 00:02:46,369
+Démarrez par un projet pilote,
+mesurez le temps gagné…
+
+43
+00:02:46,409 --> 00:02:47,893
+puis étendez à d'autres équipes.
+
+44
+00:02:49,393 --> 00:02:52,360
+YouCraft. Les idées de vos clients
+deviennent des applications.
+
+45
+00:02:52,959 --> 00:02:54,440
+Donnons-leur vie, ensemble.
+
