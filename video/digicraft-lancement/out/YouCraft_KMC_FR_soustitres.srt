@@ -61,145 +61,145 @@ avec les temps de séchage et
 les températures de chauffe.
 
 14
-00:00:47,615 --> 00:00:51,956
-YouCraft construit alors l'application
+00:00:48,237 --> 00:00:52,228
+Et YouCraft construit alors l'application
 complète : les écrans, les données,
 
 15
-00:00:51,996 --> 00:00:53,763
+00:00:52,268 --> 00:00:53,370
 les alertes, et les droits d'accès.
 
 16
-00:00:55,167 --> 00:00:58,529
+00:00:54,761 --> 00:00:58,123
 Voici le résultat. Chaque moule
 apparaît avec son étape en cours,
 
 17
-00:00:58,569 --> 00:01:00,967
+00:00:58,163 --> 00:01:00,561
 et le temps restant avant le démoulage.
 
 18
-00:01:01,567 --> 00:01:03,262
+00:01:01,161 --> 00:01:02,856
 Les températures de chauffe
 sont suivies en direct,
 
 19
-00:01:03,302 --> 00:01:06,030
+00:01:02,896 --> 00:01:05,624
 et chaque cycle est
 enregistré automatiquement.
 
 20
-00:01:09,167 --> 00:01:11,964
+00:01:08,761 --> 00:01:11,558
 En un clic, vous ouvrez la fiche
 d'un moule : son historique,
 
 21
-00:01:12,004 --> 00:01:14,569
+00:01:11,598 --> 00:01:14,163
 sa courbe de température,
 et le contrôle de lubrification.
 
 22
-00:01:19,167 --> 00:01:20,208
+00:01:18,761 --> 00:01:19,802
 Dans l'atelier,
 
 23
-00:01:20,248 --> 00:01:24,634
+00:01:19,842 --> 00:01:24,228
 les opérateurs sont prévenus sur leur
 téléphone dès qu'une pièce peut être démoulée.
 
 24
-00:01:25,131 --> 00:01:26,601
-Ils valident l'étape en un geste,
+00:01:24,724 --> 00:01:26,277
+Ils valident l'étape en un instant,
 
 25
-00:01:26,641 --> 00:01:28,860
+00:01:26,317 --> 00:01:29,357
 et le tableau de bord se met
 à jour pour tout le monde.
 
 26
-00:01:31,167 --> 00:01:34,964
+00:01:30,857 --> 00:01:34,654
 Une nouvelle idée ? Une alerte si l'étuve
 dépasse sa température ? Vous la demandez…
 
 27
-00:01:35,004 --> 00:01:36,936
+00:01:34,694 --> 00:01:36,626
 et elle est en ligne en quelques minutes.
 
 28
-00:01:42,167 --> 00:01:43,630
+00:01:41,857 --> 00:01:43,320
 Et vous ne repartez pas de zéro.
 
 29
-00:01:44,140 --> 00:01:46,916
+00:01:43,830 --> 00:01:46,606
 YouCraft peut compléter l'outil
 que vous avez déjà commencé,
 
 30
-00:01:46,956 --> 00:01:49,277
+00:01:46,646 --> 00:01:48,967
 en se connectant à vos données existantes.
 
 31
-00:01:49,877 --> 00:01:52,143
+00:01:49,567 --> 00:01:51,833
 Ce qui demande des mois de développement
 se construit en quelques jours,
 
 32
-00:01:52,183 --> 00:01:54,544
+00:01:51,873 --> 00:01:54,234
 et vos équipes restent
 concentrées sur la production.
 
 33
-00:01:58,167 --> 00:02:00,773
-YouCraft ne s'arrête pas
-au suivi de production.
+00:01:57,857 --> 00:02:00,647
+Mais YouCraft ne s'arrête
+pas au suivi de production.
 
 34
-00:02:01,373 --> 00:02:05,485
+00:02:01,247 --> 00:02:05,359
 Vos présentations commerciales aussi :
 en quelques minutes, une présentation claire,
 
 35
-00:02:05,525 --> 00:02:07,368
+00:02:05,399 --> 00:02:07,242
 moderne, et dynamique.
 
 36
-00:02:09,167 --> 00:02:12,137
+00:02:08,857 --> 00:02:11,827
 Et pourquoi pas votre site
 internet ? Une vitrine moderne,
 
 37
-00:02:12,177 --> 00:02:15,353
+00:02:11,867 --> 00:02:15,043
 pour présenter vos chambres télécom
 et vos boîtes de branchement.
 
 38
-00:02:19,167 --> 00:02:24,022
+00:02:18,857 --> 00:02:23,712
 Le tout sur une plateforme sécurisée :
 connexion protégée, droits d'accès par rôle,
 
 39
-00:02:24,062 --> 00:02:25,905
+00:02:23,752 --> 00:02:25,595
 et données hébergées en Europe.
 
 40
-00:02:26,496 --> 00:02:29,887
+00:02:26,186 --> 00:02:29,577
 YouCraft est déjà utilisé
 par plus de 750 personnes,
 
 41
-00:02:29,927 --> 00:02:32,339
+00:02:29,617 --> 00:02:32,029
 avec 350 applications déployées.
 
 42
-00:02:33,839 --> 00:02:37,399
+00:02:33,529 --> 00:02:37,089
 Votre suivi de production,
 vos présentations, votre site :
 
 43
-00:02:37,439 --> 00:02:39,110
+00:02:37,129 --> 00:02:38,800
 tout commence par une simple description.
 
 44
-00:02:40,383 --> 00:02:42,051
-YouCraft. Donnons vie à vos idées.
+00:02:39,400 --> 00:02:41,548
+Avec YouCraft, donnons vie à vos idées.
 
