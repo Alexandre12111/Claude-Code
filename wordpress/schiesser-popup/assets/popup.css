@@ -1,0 +1,32 @@
+/* Schiesser · Fenêtre des horaires. Couleurs et polices du thème Schiesser (avec replis). */
+.spop{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px}
+.spop[hidden]{display:none}
+.spop-fond{position:absolute;inset:0;background:color-mix(in srgb,var(--dark,#271B12) 58%,transparent);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;transition:opacity .35s ease}
+.spop-boite{position:relative;width:min(420px,100%);max-height:calc(100dvh - 40px);overflow:auto;padding:38px 34px 30px;background:var(--paper,#F1EADE);color:var(--text,#3A2818);border-radius:var(--r-l,24px);box-shadow:0 40px 80px -30px rgba(39,27,18,.55);font-family:var(--sans,'Inter',system-ui,sans-serif);opacity:0;transform:translateY(14px) scale(.98);transition:opacity .35s ease,transform .45s var(--ease-out,cubic-bezier(.16,1,.3,1))}
+.spop-boite:focus{outline:none}
+.spop.is-ouvert .spop-fond,.spop.is-ouvert .spop-boite{opacity:1;transform:none}
+.spop-x{position:absolute;top:12px;right:12px;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink,#2A1C12);cursor:pointer;transition:background-color .2s}
+.spop-x:hover{background:color-mix(in srgb,var(--ink,#2A1C12) 8%,transparent)}
+.spop-x:focus-visible,.spop-ok:focus-visible{outline:2px solid var(--vert,#174633);outline-offset:3px}
+.spop-titre{margin:0 40px 6px 0;font-family:var(--serif,'Bodoni Moda',Didot,serif);font-size:clamp(26px,6vw,32px);font-weight:500;line-height:1.1;color:var(--ink,#2A1C12)}
+.spop-texte{margin:8px 0 0;font-size:15px;line-height:1.55;color:var(--ink-soft,#6B5A47)}
+.spop-horaires{margin-top:20px}
+.spop-liste,.spop-libre{margin:0;padding:0;list-style:none;border-top:1px solid var(--ink,#2A1C12)}
+.spop-j,.spop-libre li{display:flex;justify-content:space-between;gap:16px;padding:10px 4px;border-bottom:1px solid color-mix(in srgb,var(--text,#3A2818) 14%,transparent);font-size:15px}
+.spop-j dt,.spop-libre li span:first-child{margin:0;font-family:var(--serif,'Bodoni Moda',serif);font-size:16.5px;color:var(--ink,#2A1C12)}
+.spop-j dd,.spop-libre li span:last-child{margin:0;color:var(--ink-soft,#6B5A47);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.spop-libre li span:only-child{font-family:var(--sans,'Inter',sans-serif);font-size:15px;white-space:normal;text-align:left}
+.spop-auj{display:none;margin-left:10px;padding:3px 7px;vertical-align:middle;background:var(--vert,#174633);color:#fff;font:600 9.5px var(--sans,'Inter',sans-serif);letter-spacing:.16em;text-transform:uppercase;border-radius:4px}
+.spop-j.is-auj{background:color-mix(in srgb,var(--vert,#174633) 7%,transparent);box-shadow:inset 2px 0 0 var(--vert,#174633);padding-left:12px}
+.spop-j.is-auj .spop-auj{display:inline-block}
+.spop-j.is-auj dd{color:var(--ink,#2A1C12);font-weight:600}
+.spop .h-particuliers{margin-top:16px;font-size:14px}
+.spop .h-particuliers ul{margin:6px 0 0;padding:0;list-style:none}
+.spop .h-particuliers li{display:flex;justify-content:space-between;gap:12px;padding:4px 0}
+.spop .h-part-titre{margin:0;font-weight:600;color:var(--ink,#2A1C12)}
+.spop-note{margin:14px 0 0;font-size:13.5px;line-height:1.5;color:var(--ink-soft,#6B5A47)}
+.spop-ok{display:block;width:100%;min-height:48px;margin-top:24px;padding:12px 20px;border:0;border-radius:999px;background:var(--vert,#174633);color:#fff;font:600 15px var(--sans,'Inter',sans-serif);letter-spacing:.02em;cursor:pointer;transition:background-color .2s}
+.spop-ok:hover{background:var(--vert-deep,#10321f)}
+html.spop-bloque{overflow:hidden}
+@media (max-width:480px){.spop{align-items:end;padding:12px}.spop-boite{padding:32px 22px 22px;border-radius:20px}}
+@media (prefers-reduced-motion:reduce){.spop-fond,.spop-boite{transition:none}}
