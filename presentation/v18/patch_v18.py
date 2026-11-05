@@ -48,9 +48,14 @@ src = src[:a] + ('<div class="pr-h"><h2 class="title rise">Simple, transparent p
                  '    <div class="plans2">\n' + '\n'.join(cards) + '\n    </div>\n'
                  '    <div class="fine">All prices excl. VAT. Quarterly commitment for Starter, Business and Sovereign. Beyond €12K per year, Enterprise applies.</div>\n  </div>\n') + src[b:]
 
-# 4. Dernière diapositive (« Let's build what's next ») retirée.
-a = src.index('<section class="slide" id="s13">'); b = src.index('</section>', a) + len('</section>')
-src = src[:a] + src[b:]
+# 4. Version FR de travail : dernière diapositive (« Let's build what's next ») retirée.
+#    Version EN (EN=1) : dernière diapositive conservée, ouverture toujours en anglais.
+EN = os.environ.get('EN') == '1'
+if not EN:
+    a = src.index('<section class="slide" id="s13">'); b = src.index('</section>', a) + len('</section>')
+    src = src[:a] + src[b:]
+else:
+    rep('    var saved = localStorage.getItem(KEY);\n    if (saved && DICTS[saved]) lang = saved;\n', '    /* Version anglaise : la présentation s\'ouvre toujours en anglais (le sélecteur reste disponible). */\n')
 
 CSS = '''
 /* v1.8 */
@@ -125,6 +130,6 @@ add['en'] = {}
 rep('<script>\n/* language layer (inlined) */',
     '<script>\n/* v1.8 : corrections */\n(function(){var A=' + json.dumps(add, ensure_ascii=False) + ';for(var l in A){window.__YC_DICTS__[l]=window.__YC_DICTS__[l]||{};for(var k in A[l])window.__YC_DICTS__[l][k]=A[l][k];}})();\n</script>\n<script>\n/* language layer (inlined) */')
 
-out = os.path.join(HERE, '..', 'youcraft-presentation_1_8.html')
+out = os.path.join(HERE, '..', 'youcraft-presentation_1_8_EN.html' if EN else 'youcraft-presentation_1_8.html')
 open(out, 'w', encoding='utf-8').write(src)
 print(os.path.abspath(out), round(len(src) / 1024), 'Ko')
