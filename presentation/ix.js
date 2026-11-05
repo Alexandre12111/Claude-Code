@@ -9,6 +9,7 @@
   var LOC = { en: 'en-GB', fr: 'fr-FR', es: 'es-ES', sv: 'sv-SE', de: 'de-DE' };
   function nf(v, dec) { return new Intl.NumberFormat(LOC[L()], { minimumFractionDigits: dec || 0, maximumFractionDigits: dec || 0 }).format(v); }
   function eur(v, dec, unit) { var n = nf(v, dec); var u = unit ? tr(unit) : ''; if (L() === 'en') return '€' + n + u; return n + ' ' + (u ? u + (u.length > 1 ? ' ' : '') : '') + '€'; }
+  window.__ycTr = tr; window.__ycNf = nf; window.__ycEur = eur;
   function icon(id, cls) { return '<svg class="ic ' + (cls || '') + '"><use href="#' + id + '"/></svg>'; }
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -169,7 +170,7 @@
   function render() {
     var d = series(), v = S.view, html = '';
     html += '<div class="db-h"><h4>' + tr(VIEWS[v]) + '</h4><div class="seg">' + [[12, '12 months'], [6, '6 months'], [3, '3 months']].map(function (p) { return '<button data-per="' + p[0] + '" class="' + (S.per === p[0] ? 'on' : '') + '">' + tr(p[1]) + '</button>'; }).join('') + '</div>' +
-      '<div class="db-sel"><button class="rg">' + tr(REG[S.reg][0]) + '</button><div class="menu">' + Object.keys(REG).map(function (r) { return '<button data-reg="' + r + '" class="' + (S.reg === r ? 'on' : '') + '">' + tr(REG[r][0]) + '</button>'; }).join('') + '</div></div></div>';
+      '<div class="db-sel"><button class="rg">' + tr(REG[S.reg][0]) + '</button><div class="menu">' + Object.keys(REG).map(function (r) { return '<button data-reg="' + r + '" class="' + (S.reg === r ? 'on' : '') + '">' + tr(REG[r][0]) + '</button>'; }).join('') + '</div></div><button class="db-ask"><svg class="ic"><use href="#i-spark"/></svg>' + tr('Ask your data') + '</button></div>';
     html += '<div class="db-k">' + kpis(d) + '</div><div class="db-g">';
     if (v === 'overview') html += '<div class="dc"><div class="ch"><b>' + tr('Revenue vs target') + ' (' + tr('€M') + ')</b><div class="lg"><span><i style="background:#1E3BFF"></i>' + tr('Revenue') + '</span><span><i style="background:#B5B0A5"></i>' + tr('Target') + '</span></div></div>' + lineChart(d) + '</div><div class="dc"><div class="ch"><b>' + tr('Revenue by business line') + '</b></div>' + donut() + '</div>';
     if (v === 'sales') html += '<div class="dc"><div class="ch"><b>' + tr('Pipeline by stage') + '</b></div>' + funnel() + '</div><div class="dc"><div class="ch"><b>' + tr('Top deals') + '</b><span style="font-size:15px;color:#8F8C86">' + tr('Click a column to sort') + '</span></div>' + dealsTable() + '</div>';
@@ -180,6 +181,7 @@
   }
   function wire(d) {
     var tipE = $('.db-tip', main);
+    var ask = $('.db-ask', main); if (ask) ask.onclick = function () { if (window.__ycAskOpen) window.__ycAskOpen(); };
     function show(e, h) { var p = local(e, main); tipE.innerHTML = h; tipE.classList.add('on'); var w = tipE.offsetWidth; tipE.style.left = Math.min(main.offsetWidth - w - 10, p.x + 16) + 'px'; tipE.style.top = (p.y - 50) + 'px'; }
     function hide() { tipE.classList.remove('on'); }
     $$('[data-per]', main).forEach(function (b) { b.onclick = function () { S.per = +b.dataset.per; render(); }; });
@@ -212,5 +214,6 @@
   db.addEventListener('click', function (e) { var s = $('.db-sel', main); if (s && !s.contains(e.target)) s.classList.remove('open'); });
   document.addEventListener('yc-lang', render);
   window.__ycDashEnter = function () { render(); };
+  window.__ycDash = { S: S, series: series, REG: REG, DEP: DEP, DEALS: DEALS, render: render };
   render();
 })();
