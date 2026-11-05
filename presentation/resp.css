@@ -1,0 +1,104 @@
+/* ===== v1.7 : mode lecture pour téléphones et tablettes en portrait =====
+   La scène 1920 x 1080 laisse place à une colonne de 760 px (zoomée à la largeur de l'écran) ; les diapositives
+   s'empilent et se lisent en défilant. Les visuels de taille fixe sont réduits avec zoom. */
+html.ycflow,html.ycflow body{height:auto;overflow-x:hidden;overflow-y:auto}
+html.ycflow #frame{position:static;padding:0}
+html.ycflow #stage{position:relative;left:0;top:0;width:760px;height:auto;overflow:visible;transform:none !important}
+html.ycflow #ui,html.ycflow #bar,html.ycflow .orb,html.ycflow #bg{display:none}
+html.ycflow .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;transition:none;padding:110px 40px 80px;border-bottom:1px solid rgba(245,242,234,.12)}
+html.ycflow .slide .brand{left:40px;top:34px;width:180px;height:40px}
+html.ycflow .slide .pg{right:40px;top:44px;font-size:20px}
+html.ycflow .content{position:relative;left:auto;right:auto;top:auto;bottom:auto;inset:auto}
+html.ycflow .title{font-size:60px}
+html.ycflow .lead{font-size:28px}
+html.ycflow .rise{animation:none !important}
+html.ycflow .ix-hint{position:relative !important;left:auto !important;right:auto !important;top:auto !important;margin:18px 0 0;display:inline-flex}
+/* 1 couverture */
+html.ycflow #s1{padding-top:80px}
+html.ycflow .cover-l{position:relative;left:auto;top:auto;width:auto}
+html.ycflow .logo-xl{width:480px;height:108px}
+html.ycflow .tag{font-size:50px;margin-top:40px}
+html.ycflow .chips{position:relative;left:auto;bottom:auto;margin-top:36px;flex-wrap:wrap}
+html.ycflow .hero-v{position:relative;right:auto;top:auto;margin:40px 0 0 -10px;zoom:.92}
+/* 2 chiffres clés */
+html.ycflow .figs{grid-template-columns:1fr 1fr;gap:18px}
+html.ycflow .fig .n{font-size:84px}
+html.ycflow .tl{margin-top:50px}
+html.ycflow .tl .line{display:none}
+html.ycflow .tl .pts{flex-direction:column;gap:26px}
+html.ycflow .pt{width:auto;flex-direction:row;align-items:flex-start;gap:20px}
+html.ycflow .pt .dot{flex:none}
+/* 3 constat */
+html.ycflow .row{flex-direction:column;gap:22px}
+/* 4 builder */
+html.ycflow #s3 .content{top:auto;bottom:auto}
+html.ycflow .b4-h{flex-direction:column;align-items:flex-start;gap:20px}
+html.ycflow .b4-h .title{white-space:normal;font-size:60px}
+html.ycflow .bld{position:relative;inset:auto;margin-top:30px;height:auto}
+html.ycflow .bld-top{flex-wrap:wrap;height:auto;padding:12px 16px;gap:10px}
+html.ycflow .bld-share{display:none}
+html.ycflow .bld-b{flex-direction:column}
+html.ycflow .bld-chat{width:auto;border-right:0;border-bottom:1px solid #E7E6E2}
+html.ycflow .bld-msgs{height:420px;flex:none}
+html.ycflow .bld-pv{flex:none;height:520px}
+html.ycflow .bld-tpl{grid-template-columns:1fr;gap:10px}
+html.ycflow .bld-empty h5{font-size:32px;padding:0 20px}
+/* 5 mosaïque */
+html.ycflow #s4 .content{top:auto;bottom:auto}
+html.ycflow .b5-h{flex-direction:column;align-items:flex-start;gap:20px}
+html.ycflow .bento{position:relative;inset:auto;margin-top:36px;display:flex;flex-direction:column;gap:18px}
+html.ycflow .bt{min-height:300px}
+html.ycflow .bt-agents{min-height:430px}
+html.ycflow .bt.wide p{max-width:none}
+html.ycflow .bt.wide{padding-bottom:250px}
+html.ycflow .vz-tbl,html.ycflow .vz-dash{left:28px;right:28px;width:auto}
+/* 6 comment ça marche */
+html.ycflow .track{display:none}
+html.ycflow .steps{flex-direction:column;margin-top:0;gap:22px}
+html.ycflow #s5 .content>div{margin-top:40px !important}
+/* 7 démo notes de frais */
+html.ycflow #s6 .title{font-size:52px !important}
+html.ycflow #s6 .content>div{position:relative !important;inset:auto !important;top:auto !important;margin-top:30px}
+html.ycflow .chat{position:relative;width:auto;left:auto;top:auto}
+html.ycflow .app{position:relative;right:auto;top:auto;margin-top:26px;zoom:.66}
+html.ycflow .note{position:relative;left:auto;bottom:auto;margin-top:16px}
+html.ycflow .ix-replay{position:relative;left:auto;bottom:auto;margin-top:16px}
+html.ycflow .app-inner{opacity:1 !important;filter:none !important}
+/* 8 espace applications */
+html.ycflow #s6b .content{top:auto;bottom:auto}
+html.ycflow .ws-h{flex-direction:column;align-items:flex-start}
+html.ycflow .ws{position:relative;inset:auto;margin-top:26px;flex-direction:column;gap:18px}
+html.ycflow .ws-dock{width:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+html.ycflow .ws-dock .ws-note{grid-column:span 2}
+html.ycflow .ws-fr{flex:none;height:466px}
+/* 9 cas d'usage */
+html.ycflow .grid3{grid-template-columns:1fr;gap:18px}
+html.ycflow .pop[role=dialog] .pw{width:720px;padding:34px 30px;max-height:none}
+html.ycflow .ucp-g{grid-template-columns:1fr}
+html.ycflow .pop[role=dialog]{position:fixed;overflow:auto;align-items:flex-start;padding:20px 0}
+/* 10 sécurité */
+html.ycflow .shield-wrap{position:relative;left:auto;top:auto;width:auto;height:420px;zoom:.8}
+html.ycflow .assure{position:relative;left:auto;right:auto;top:auto}
+html.ycflow .tiers{position:relative;left:auto;right:auto;bottom:auto;margin-top:22px;flex-direction:column}
+html.ycflow #s8 .content>div{position:relative !important;inset:auto !important;top:auto !important;margin-top:20px}
+/* 11 comparatif */
+html.ycflow .cmp{grid-template-columns:1fr;font-size:24px}
+html.ycflow .cmp .h:not(.yc){display:none}
+html.ycflow .cmp .lab{background:rgba(10,10,14,.7);font-size:26px}
+/* 12 bénéfices */
+html.ycflow .layers{display:none}
+html.ycflow .bens{position:relative;right:auto;top:auto !important;width:auto}
+/* 13 tarifs */
+html.ycflow .plans{grid-template-columns:1fr;gap:28px}
+html.ycflow .plan.pop{transform:none}
+html.ycflow .fine{position:relative;left:auto;bottom:auto;margin-top:24px}
+/* 14 conclusion */
+html.ycflow #s13 .content{top:auto !important}
+html.ycflow .path{flex-wrap:wrap;gap:20px}
+html.ycflow .parrow{display:none}
+html.ycflow .pnode{width:300px}
+html.ycflow .big{font-size:100px}
+html.ycflow .cta{flex-direction:column;align-items:center}
+html.ycflow .fig .n.w{font-size:46px}
+html.ycflow .active .num,html.ycflow .active .step .box,html.ycflow .active .pt,html.ycflow .active .cmp>div,html.ycflow .active .tl .line i,html.ycflow .active .track .fill{animation:none !important}
+html.ycflow .ws-h .title{white-space:normal}
