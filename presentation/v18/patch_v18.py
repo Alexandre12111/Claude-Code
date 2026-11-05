@@ -48,6 +48,10 @@ src = src[:a] + ('<div class="pr-h"><h2 class="title rise">Simple, transparent p
                  '    <div class="plans2">\n' + '\n'.join(cards) + '\n    </div>\n'
                  '    <div class="fine">All prices excl. VAT. Quarterly commitment for Starter, Business and Sovereign. Beyond €12K per year, Enterprise applies.</div>\n  </div>\n') + src[b:]
 
+# 4. Dernière diapositive (« Let's build what's next ») retirée.
+a = src.index('<section class="slide" id="s13">'); b = src.index('</section>', a) + len('</section>')
+src = src[:a] + src[b:]
+
 CSS = '''
 /* v1.8 */
 .kf-ad{position:relative;z-index:1;margin-top:26px;padding-top:22px;border-top:1px solid rgba(245,242,234,.22)}
