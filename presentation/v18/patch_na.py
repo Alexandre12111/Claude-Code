@@ -34,6 +34,10 @@ closing = re.sub(r'data:[a-z/+.-]+;base64,[A-Za-z0-9+/=]+', stash, up[a:b])
 i = src.rindex('</section>', 0, src.index('<nav id="ui"')) + len('</section>')
 src = src[:i] + '\n\n<!-- CLOSING -->\n' + closing + src[i:]
 
+# Diapositive 13 (« Prochaines étapes », essai de 7 jours) retirée des versions nord-américaines.
+a = src.index('<!-- 13 NEXT STEPS -->'); b = src.index('</section>', a) + len('</section>')
+src = src[:a] + src[b:]
+
 # 2. Ouverture en anglais, langues proposées : anglais seul (US) ou anglais et français (Canada).
 rep('  var lang = "fr";\n', '  var lang = "en";\n')
 rep('    var saved = localStorage.getItem(KEY);\n    if (saved && DICTS[saved]) lang = saved;\n', '    /* Version nord-américaine : ouverture toujours en anglais. */\n')
