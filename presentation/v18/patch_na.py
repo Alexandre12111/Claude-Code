@@ -109,6 +109,9 @@ if not US:
     rep('<script>\n/* language layer (inlined) */',
         '<script>\n/* Canada : textes français */\n(function(){var A=' + json.dumps(add, ensure_ascii=False) + ';for(var l in A){window.__YC_DICTS__[l]=window.__YC_DICTS__[l]||{};for(var k in A[l])window.__YC_DICTS__[l][k]=A[l][k];}})();\n</script>\n<script>\n/* language layer (inlined) */')
 
+# Lien de prise de rendez-vous propre aux marchés nord-américains.
+rep('https://calendly.com/youcraft/30min', 'https://calendly.com/gcollin/15min?month=2026-11')
+
 src = re.sub(r'@@B64_(\d+)@@', lambda m: B64[int(m.group(1))], src)
 out = os.path.join(HERE, '..', f'youcraft-presentation_1_9_{"US" if US else "Canada"}.html')
 open(out, 'w', encoding='utf-8').write(src)
