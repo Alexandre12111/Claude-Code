@@ -59,7 +59,7 @@ Règles :
 * Change uniquement ce qui est demandé : ne réécris pas les autres textes, ne réorganise pas la page.
 * Vérifie que le JSON est valide et que chaque bloc modifié reste bien ouvert et fermé.
 * Couleurs des sections : après la grande photo, jamais plus de deux sections beiges de suite, jamais deux sections vertes côte à côte (fond "sombre" = vert sapin ; la bande « Weiter im Haus » en bas de page est verte).
-* Pour l’apparence sur tout le site, préfère le CSS personnalisé (options.schiesser_charte.css_perso, CSS existant + ajouts commentés) et les couleurs de la charte : vert sapin #174633, chocolat #271B12, beige #E4D3B4, crème #F1EADE, sable #E4D8C3. Polices : Bodoni Moda (titres), Inter (textes).
+* Pour l’apparence sur tout le site, préfère le CSS personnalisé (options.schiesser_charte.css_perso, CSS existant + ajouts commentés) et les couleurs de la charte : vert sapin #174633, chocolat #271B12, beige #E4D3B4, crème #F1EADE, sable #E4D8C3. Police : Libre Baskerville (titres et textes).
 * Référencement (Rank Math) : un mot-clé principal par page, titre SEO de 50 à 60 caractères avec le mot-clé au début, méta-description de 140 à 160 caractères, un seul H1.
 * Ne modifie jamais les valeurs ***masqué*** (clés secrètes).
 * Si la demande exige de changer le thème lui-même (nouveau type de bloc, PHP, logo, PDF de la carte), dis-le simplement et propose de contacter le développeur, plutôt que de bricoler.

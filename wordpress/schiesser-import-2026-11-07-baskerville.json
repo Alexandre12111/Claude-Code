@@ -1,0 +1,59 @@
+{
+ "format": "schiesser-export",
+ "version": 1,
+ "genere_le": "2026-11-07 18:00:00",
+ "site": {
+  "nom": "Confiserie Schiesser",
+  "adresse": "https://confiserie-schiesser.ch/",
+  "wordpress": "7.1.4",
+  "php": "8.4.27",
+  "theme": "Schiesser 0.23.4",
+  "extensions": [
+   "CMP - Coming Soon & Maintenance Plugin 4.1.22",
+   "Code Snippets 4.1.0",
+   "Easy HTTPS (SSL) Redirection 2.0.2",
+   "Easy Updates Manager 9.0.22",
+   "Independent Analytics 2.16.2",
+   "Instant Images 7.2.0",
+   "Polylang 3.9.1",
+   "Rank Math SEO 1.0.281",
+   "Schiesser · Export et import du site 1.2.0",
+   "Schiesser · Fenêtre des horaires 1.0.0",
+   "Wordfence Security 9.0.2",
+   "WordPress Importer 0.9.7",
+   "WP Armour - Honeypot Anti Spam 2.4.02",
+   "WP Mail SMTP 4.10.3",
+   "WP Super Cache 3.1.5",
+   "Yoast Duplicate Post 4.7"
+  ],
+  "langues": [
+   {
+    "slug": "fr",
+    "locale": "fr_FR",
+    "nom": "Français",
+    "defaut": false
+   },
+   {
+    "slug": "en",
+    "locale": "en_GB",
+    "nom": "English",
+    "defaut": false
+   },
+   {
+    "slug": "de",
+    "locale": "de_DE",
+    "nom": "Deutsch",
+    "defaut": true
+   }
+  ]
+ },
+ "lisez_moi": "Police Libre Baskerville pour les titres et les textes (thème 0.24.0 requis : installez-le avant cet import).",
+ "options": {
+  "schiesser_charte": {
+   "titres": "libre-baskerville",
+   "texte": "libre-baskerville"
+  }
+ },
+ "contenus": [],
+ "medias": []
+}

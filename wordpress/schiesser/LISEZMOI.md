@@ -1,7 +1,14 @@
-# Thème Schiesser 0.23
+# Thème Schiesser 0.24
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.24.0 : police Baskerville
+
+* **Nouvelle police proposée : Libre Baskerville** (Réglages maison → Charte), pour les titres et pour les textes, hébergée sur le site (aucune connexion à Google Fonts), licence libre OFL. C'est la police de la carte de visite.
+* Textes en Baskerville : tailles ramenées à la même hauteur d'œil qu'Inter, petites capitales (menu, boutons, petits titres) plus espacées. Titres animés : le masque laisse passer les jambages des lettres (p, g).
+* **Carte imprimable du Tea Room** : elle suit maintenant les polices choisies dans la charte ; les trois PDF (DE, FR, EN) sont régénérés en Baskerville.
+* Fichier d'import du 7 novembre : Baskerville pour les titres et les textes.
 
 ## Version 0.23.4 : Impressum, Datenschutz et Instagram
 

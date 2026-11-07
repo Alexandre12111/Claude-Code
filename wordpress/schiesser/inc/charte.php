@@ -39,6 +39,7 @@ function schiesser_couleurs_charte() {
 function schiesser_polices() {
 	return array(
 		'titres' => array(
+			'libre-baskerville'  => array( 'Libre Baskerville', 'Libre+Baskerville:ital,wght@0,400..700;1,400..700', "Baskerville,Georgia,serif", 'Baskerville classique, celle de la carte de visite', true ),
 			'bodoni-moda'        => array( 'Bodoni Moda', 'Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..600', "Didot,'Times New Roman',serif", 'Didone à fort contraste (charte d\'origine)', true ),
 			'playfair-display'   => array( 'Playfair Display', 'Playfair+Display:ital,wght@0,400..600;1,400..600', "Georgia,'Times New Roman',serif", 'Élégante et lisible, très polyvalente', false ),
 			'cormorant-garamond' => array( 'Cormorant Garamond', 'Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500', "Garamond,Georgia,serif", 'Classique et raffinée, très fine', false ),
@@ -47,6 +48,7 @@ function schiesser_polices() {
 			'dm-serif-display'   => array( 'DM Serif Display', 'DM+Serif+Display:ital@0;1', "Georgia,serif", 'Affichage contrasté, plus compact', false ),
 		),
 		'texte'  => array(
+			'libre-baskerville' => array( 'Libre Baskerville', 'Libre+Baskerville:ital,wght@0,400..700;1,400..700', "Baskerville,Georgia,serif", 'Serif partout, comme la carte de visite', true ),
 			'inter'         => array( 'Inter', 'Inter:wght@400..600', "system-ui,-apple-system,'Segoe UI',sans-serif", 'Neutre et très lisible (charte d\'origine)', true ),
 			'dm-sans'       => array( 'DM Sans', 'DM+Sans:ital,opsz,wght@0,9..40,400..600;1,9..40,400..600', "system-ui,sans-serif", 'Géométrique douce', false ),
 			'work-sans'     => array( 'Work Sans', 'Work+Sans:wght@400..600', "system-ui,sans-serif", 'Légèrement plus large', false ),
@@ -233,7 +235,26 @@ function schiesser_css_charte() {
 	if ( '1' !== (string) $c['echelle'] ) {
 		$vars[] = '--echelle-titres:' . $c['echelle'];
 	}
-	return $vars ? ':root{' . implode( ';', $vars ) . '}' : '';
+	$css = $vars ? ':root{' . implode( ';', $vars ) . '}' : '';
+	if ( 'libre-baskerville' === $c['titres'] ) {
+		// Lettres plus longues qu'en Bodoni : le masque des titres animés laisse passer les jambages (p, g).
+		$css .= '.ts .w{padding-bottom:.2em;margin-bottom:-.2em}:is(h1,h2,h3,h4){letter-spacing:-.01em}';
+	}
+	if ( 'libre-baskerville' === $c['texte'] ) {
+		$css .= schiesser_css_texte_baskerville();
+	}
+	return $css;
+}
+
+/**
+ * Textes en Baskerville : la police est plus large et plus haute qu'Inter. Les tailles restent
+ * celles de la maquette, ramenées à la même hauteur d'œil, et les petites capitales sont espacées
+ * comme sur la carte de visite.
+ */
+function schiesser_css_texte_baskerville() {
+	return 'body{font-size-adjust:.47}'
+		. ':is(.eyebrow,.meta,.lang button,.btn,.button,.wp-element-button,.sty-petit-label){letter-spacing:.14em}'
+		. 'nav.main a{letter-spacing:.06em}';
 }
 
 /* Les styles sont enregistrés dans setup.php ; on y ajoute la charte (site + éditeur). */

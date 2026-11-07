@@ -83,6 +83,14 @@ function schiesser_carte_druck_html() {
 	}
 	$pied = '<div class="pied">' . esc_html( trim( $nom . ' · ' . $adr . ( $tel ? ' · ' . $tel : '' ), ' ·' ) ) . '<span>' . esc_html( schiesser_t( 'Alle Preise in CHF inkl. MwSt. · Auskunft zu Allergenen erhalten Sie gerne bei unserem Team.' ) ) . '</span></div>';
 
+	// Polices de la charte (Réglages maison) : la carte imprimée suit le site.
+	$charte  = schiesser_charte();
+	$polices = schiesser_polices();
+	$pt      = $polices['titres'][ $charte['titres'] ] ?? $polices['titres']['bodoni-moda'];
+	$px      = $polices['texte'][ $charte['texte'] ] ?? $polices['texte']['inter'];
+	$f_titre = "'" . $pt[0] . "'," . $pt[2];
+	$f_texte = "'" . $px[0] . "'," . $px[2];
+
 	ob_start();
 	?>
 <!DOCTYPE html>
@@ -93,14 +101,16 @@ function schiesser_carte_druck_html() {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?php echo esc_html( schiesser_t( 'Karte Tea Room' ) ); ?> · <?php echo esc_html( $nom ); ?></title>
 <style>
+@font-face{font-family:'Libre Baskerville';font-style:normal;font-weight:400 700;src:url(<?php echo esc_url( $f . 'libre-baskerville.woff2' ); ?>) format('woff2')}
+@font-face{font-family:'Libre Baskerville';font-style:italic;font-weight:400 700;src:url(<?php echo esc_url( $f . 'libre-baskerville-italic.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda-italic.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Inter';font-weight:100 900;src:url(<?php echo esc_url( $f . 'inter.woff2' ); ?>) format('woff2')}
 @page{size:A4;margin:0}
-:root{--paper:#F4EEE3;--ink:#2A1C12;--soft:#6B5A47;--vert:#174633;--gold:#174633;--mint:#E4D3B4;--dark:#271B12;--line:rgba(58,40,24,.18)}
+:root{--f-titre:<?php echo $f_titre; // phpcs:ignore WordPress.Security.EscapeOutput -- noms de police du thème ?>;--f-texte:<?php echo $f_texte; // phpcs:ignore WordPress.Security.EscapeOutput ?>;--paper:#F4EEE3;--ink:#2A1C12;--soft:#6B5A47;--vert:#174633;--gold:#174633;--mint:#E4D3B4;--dark:#271B12;--line:rgba(58,40,24,.18)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{background:#8a7a68}
-body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:var(--f-texte);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{width:210mm;height:297mm;overflow:hidden;margin:0 auto;background:var(--paper);position:relative;padding:20mm 20mm 26mm;display:flex;flex-direction:column;page-break-after:always;break-after:page}
 .page:last-child{page-break-after:auto;break-after:auto}
 @media screen{.page{margin:10mm auto;box-shadow:0 20px 60px rgba(0,0,0,.35)}.aide{max-width:210mm;margin:8mm auto 0;font:13px/1.5 Inter,sans-serif;color:#fff;text-align:center}.aide button{font:inherit;margin-left:8px;padding:6px 14px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer}}
@@ -112,8 +122,8 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 .couv::before{border-color:rgba(140,197,166,.6)}.couv::after{border-color:rgba(140,197,166,.3)}
 .couv .logo{width:92mm;height:auto;color:var(--mint);margin-bottom:12mm}
 .couv .k{font-size:8pt;letter-spacing:.42em;text-transform:uppercase;color:var(--mint);font-weight:600}
-.couv h1{font-family:'Bodoni Moda',serif;font-style:italic;font-weight:400;font-size:34pt;line-height:1.05;letter-spacing:-.005em;margin:7mm 0 4mm;color:#E9DFCC}
-.couv .sous{font-family:'Bodoni Moda',serif;font-style:italic;font-size:14pt;color:#D9CDB6}
+.couv h1{font-family:var(--f-titre);font-style:italic;font-weight:400;font-size:34pt;line-height:1.05;letter-spacing:-.005em;margin:7mm 0 4mm;color:#E9DFCC}
+.couv .sous{font-family:var(--f-titre);font-style:italic;font-size:14pt;color:#D9CDB6}
 .couv .orn{margin:10mm 0;color:var(--mint)}
 .couv .bas{position:absolute;left:0;right:0;bottom:22mm;font-size:7.5pt;letter-spacing:.3em;text-transform:uppercase;color:rgba(244,238,227,.7)}
 .orn{display:flex;align-items:center;justify-content:center;gap:3mm;color:var(--gold)}
@@ -123,22 +133,22 @@ body{font-family:'Inter',sans-serif;color:var(--ink);-webkit-print-color-adjust:
 .contenu{flex:1;display:flex;flex-direction:column;justify-content:center;gap:10mm}
 .rub{break-inside:avoid}
 .rub header{text-align:center;margin-bottom:5mm}
-.rub .no{display:block;font-family:'Bodoni Moda',serif;font-style:italic;font-size:10pt;color:var(--soft)}
-.rub h2{font-family:'Bodoni Moda',serif;font-weight:500;font-size:24pt;letter-spacing:.01em;line-height:1.1;margin:1mm 0 2.5mm}
+.rub .no{display:block;font-family:var(--f-titre);font-style:italic;font-size:10pt;color:var(--soft)}
+.rub h2{font-family:var(--f-titre);font-weight:500;font-size:24pt;letter-spacing:.01em;line-height:1.1;margin:1mm 0 2.5mm}
 .plats{max-width:150mm;margin:0 auto}
 .plat{break-inside:avoid;padding:2.1mm 0;border-bottom:.3pt solid var(--line)}
 .plat:last-child{border-bottom:0}
 .plat .l{display:flex;align-items:baseline;gap:2.5mm}
-.plat .n{font-family:'Bodoni Moda',serif;font-weight:500;font-size:11.5pt}
+.plat .n{font-family:var(--f-titre);font-weight:500;font-size:11.5pt}
 .plat .m{font-size:6pt;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:var(--vert);border:.4pt solid var(--vert);padding:.5mm 1.4mm;white-space:nowrap}
 .plat .d{flex:1;border-bottom:.5pt dotted rgba(23,70,51,.45);transform:translateY(-1mm);min-width:6mm}
-.plat .p{font-family:'Bodoni Moda',serif;font-size:11pt;color:var(--vert);white-space:nowrap;font-variant-numeric:tabular-nums}
-.plat p{font-family:'Bodoni Moda',serif;font-style:italic;font-size:8.6pt;line-height:1.4;color:var(--soft);margin-top:.8mm;max-width:128mm}
+.plat .p{font-family:var(--f-titre);font-size:11pt;color:var(--vert);white-space:nowrap;font-variant-numeric:tabular-nums}
+.plat p{font-family:var(--f-titre);font-style:italic;font-size:8.6pt;line-height:1.4;color:var(--soft);margin-top:.8mm;max-width:128mm}
 .entete{display:flex;justify-content:space-between;align-items:baseline;font-size:6.8pt;letter-spacing:.3em;text-transform:uppercase;color:var(--soft);margin-bottom:6mm;padding-bottom:3mm;border-bottom:.4pt solid var(--line)}
 .entete{align-items:center}
 .entete .logo{display:block;width:24mm;height:auto;color:var(--vert)}
 .pied{position:absolute;left:20mm;right:20mm;bottom:13mm;text-align:center;font-size:6.6pt;letter-spacing:.14em;text-transform:uppercase;color:var(--soft)}
-.pied span{display:block;margin-top:1mm;text-transform:none;letter-spacing:.04em;font-style:italic;font-family:'Bodoni Moda',serif;font-size:8pt}
+.pied span{display:block;margin-top:1mm;text-transform:none;letter-spacing:.04em;font-style:italic;font-family:var(--f-titre);font-size:8pt}
 </style>
 </head>
 <body>

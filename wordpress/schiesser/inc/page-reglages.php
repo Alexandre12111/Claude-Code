@@ -41,7 +41,7 @@ add_action( 'admin_enqueue_scripts', function ( $hook ) {
 				$familles[] = 'family=' . $p[1];
 			}
 		}
-		wp_enqueue_style( 'schiesser-apercu-polices', 'https://fonts.googleapis.com/css2?' . implode( '&', $familles ) . '&display=swap', array(), null );
+		wp_enqueue_style( 'schiesser-apercu-polices', 'https://fonts.googleapis.com/css2?' . implode( '&', array_unique( $familles ) ) . '&display=swap', array(), null );
 	}
 } );
 

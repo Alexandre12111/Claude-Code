@@ -68,6 +68,9 @@ add_action( 'wp_head', function () {
 	if ( 'bodoni-moda' === $c['titres'] ) {
 		echo '<link rel="preload" href="' . esc_url( SCHIESSER_URI . '/assets/fonts/bodoni-moda.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 	}
+	if ( 'libre-baskerville' === $c['titres'] || 'libre-baskerville' === $c['texte'] ) {
+		echo '<link rel="preload" href="' . esc_url( SCHIESSER_URI . '/assets/fonts/libre-baskerville.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+	}
 	if ( 'inter' === $c['texte'] ) {
 		echo '<link rel="preload" href="' . esc_url( SCHIESSER_URI . '/assets/fonts/inter.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 	}
