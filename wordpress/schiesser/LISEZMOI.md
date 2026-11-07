@@ -3,6 +3,10 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.24.1 : titres à la bonne taille
+
+* Avec Baskerville, les titres paraissaient environ 11 % plus petits : le réglage qui ramène les textes à la taille d'Inter s'appliquait aussi aux titres. Il ne concerne plus que le texte courant (paragraphes, listes, boutons, champs).
+
 ## Version 0.24.0 : police Baskerville
 
 * **Nouvelle police proposée : Libre Baskerville** (Réglages maison → Charte), pour les titres et pour les textes, hébergée sur le site (aucune connexion à Google Fonts), licence libre OFL. C'est la police de la carte de visite.

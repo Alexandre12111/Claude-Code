@@ -252,7 +252,8 @@ function schiesser_css_charte() {
  * comme sur la carte de visite.
  */
 function schiesser_css_texte_baskerville() {
-	return 'body{font-size-adjust:.47}'
+	// Seulement le texte courant : les titres gardent leur taille de maquette.
+	return ':is(p,li,dd,dt,td,th,blockquote,figcaption,label,input,textarea,select,button,.btn,.button):not(:is(h1,h2,h3,h4,h5,h6) *){font-size-adjust:.47}'
 		. ':is(.eyebrow,.meta,.lang button,.btn,.button,.wp-element-button,.sty-petit-label){letter-spacing:.14em}'
 		. 'nav.main a{letter-spacing:.06em}';
 }
