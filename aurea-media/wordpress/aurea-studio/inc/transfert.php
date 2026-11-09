@@ -44,6 +44,7 @@ function aurea_transfert_fiche( $post ) {
 		'une'         => $r['une'],
 		'mur'         => $r['mur'],
 		'visible'     => $r['visible'],
+		'liste'       => $r['liste'],
 		'ordre'       => (int) get_post_field( 'menu_order', $r['id'] ),
 		'extrait'     => (string) get_post_field( 'post_excerpt', $r['id'] ),
 		'etude_html'  => (string) get_post_field( 'post_content', $r['id'] ),
@@ -173,7 +174,7 @@ function aurea_transfert_importer( $dossier, $simuler ) {
 
 		// Ce qui change, champ par champ (seuls les champs présents dans le fichier comptent)
 		$changes = array();
-		foreach ( array( 'titre', 'url', 'lieu', 'accroche', 'accroche_en', 'type', 'secteur', 'une', 'mur', 'visible', 'ordre', 'extrait', 'etude_html', 'slug' ) as $champ ) {
+		foreach ( array( 'titre', 'url', 'lieu', 'accroche', 'accroche_en', 'type', 'secteur', 'une', 'mur', 'liste', 'visible', 'ordre', 'extrait', 'etude_html', 'slug' ) as $champ ) {
 			if ( array_key_exists( $champ, $f ) && ( ! $id || (string) $f[ $champ ] !== (string) ( $avant[ $champ ] ?? '' ) ) ) {
 				$changes[] = $champ;
 			}
@@ -256,7 +257,7 @@ function aurea_transfert_importer( $dossier, $simuler ) {
 				update_post_meta( $id, $meta, 'url' === $champ ? esc_url_raw( $f[ $champ ] ) : sanitize_textarea_field( $f[ $champ ] ) );
 			}
 		}
-		foreach ( array( 'une', 'mur' ) as $champ ) {
+		foreach ( array( 'une', 'mur', 'liste' ) as $champ ) {
 			if ( array_key_exists( $champ, $f ) ) {
 				update_post_meta( $id, '_real_' . $champ, $f[ $champ ] ? '1' : '0' );
 			}
@@ -366,7 +367,7 @@ function aurea_transfert_ecran() {
 	</div>
 	<details class="aurea-aide" style="max-width:1000px;margin-top:20px">
 		<summary>Format du fichier</summary>
-		<p><code>realisations.json</code> contient une liste <code>realisations</code>. Chaque réalisation : <code>cle</code> (nom des captures), <code>titre</code>, <code>url</code>, <code>lieu</code>, <code>accroche</code>, <code>accroche_en</code>, <code>type</code> (site-vitrine, site-ecommerce…), <code>secteur</code> (avocat, sante…), <code>une</code>, <code>mur</code>, <code>visible</code>, <code>ordre</code>, <code>extrait</code>, <code>etude_html</code> (texte de l’étude de cas), <code>seo</code> (titre, description, mot_cle), <code>image</code> et <code>mobile</code> (chemins des captures dans le zip, par exemple <code>images/mon-client.webp</code>).</p>
+		<p><code>realisations.json</code> contient une liste <code>realisations</code>. Chaque réalisation : <code>cle</code> (nom des captures), <code>titre</code>, <code>url</code>, <code>lieu</code>, <code>accroche</code>, <code>accroche_en</code>, <code>type</code> (site-vitrine, site-ecommerce…), <code>secteur</code> (avocat, sante…), <code>une</code>, <code>mur</code>, <code>liste</code> (page Réalisations), <code>visible</code>, <code>ordre</code>, <code>extrait</code>, <code>etude_html</code> (texte de l’étude de cas), <code>seo</code> (titre, description, mot_cle), <code>image</code> et <code>mobile</code> (chemins des captures dans le zip, par exemple <code>images/mon-client.webp</code>).</p>
 		<p>Une étude de cas importée n’est plus remplacée par les mises à jour du thème. Des captures importées ne sont plus remplacées par celles livrées avec l’extension.</p>
 	</details>
 	<?php

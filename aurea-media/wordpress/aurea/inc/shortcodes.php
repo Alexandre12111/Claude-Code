@@ -138,7 +138,7 @@ add_shortcode( 'aurea_portfolio', function () {
 		}
 		$html            .= aurea_carte_projet( $r, 'type', 'proj' );
 	}
-	$total = count( aurea_realisations() );
+	$total = count( aurea_realisations( array( 'liste' => true ) ) );
 	$fin   = $total > 10 ? sprintf( aurea_t( 'Et %d autres projets à découvrir.' ), $total - count( aurea_realisations( array( 'une' => true ) ) ) ) : aurea_t( 'Découvrez tous nos projets.' );
 	$html .= '<div class="work-end"><h3>' . esc_html( $fin ) . '</h3><a class="btn" href="' . esc_url( aurea_url( 'realisations' ) ) . '">' . esc_html( aurea_t( 'Toutes les réalisations' ) ) . ' <svg><use href="#i-arrow"/></svg></a></div>';
 	return $html;
@@ -165,7 +165,8 @@ add_shortcode( 'aurea_projets', function ( $atts ) {
 			}
 		}
 	} else {
-		$reals = aurea_realisations( array( 'type' => $a['type'], 'secteur' => $a['secteur'], 'nombre' => (int) $a['nombre'] ) );
+		// filtre="1" : la grille de la page Réalisations, sans les projets retirés de cette page
+		$reals = aurea_realisations( array( 'type' => $a['type'], 'secteur' => $a['secteur'], 'nombre' => (int) $a['nombre'], 'liste' => (bool) $a['filtre'] ) );
 	}
 	if ( ! $reals ) {
 		return '';

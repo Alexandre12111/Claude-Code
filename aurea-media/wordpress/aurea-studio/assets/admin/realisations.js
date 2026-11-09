@@ -21,7 +21,7 @@
         <span class="aurea-poignee" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
         <span class="aurea-nav"><i></i><i></i><i></i><b>${esc(domaine(r.url) || 'site-du-client.fr')}</b></span>
         ${r.image_url ? `<img src="${esc(r.image_url)}" alt="">` : '<span class="aurea-sans">Pas encore de capture</span>'}
-        <span class="aurea-pastilles">${r.une ? '<span class="aurea-pastille is-or">À la une</span>' : ''}${r.mur ? '<span class="aurea-pastille">Mur</span>' : ''}${r.visible ? '' : '<span class="aurea-pastille">Masquée</span>'}</span>
+        <span class="aurea-pastilles">${r.une ? '<span class="aurea-pastille is-or">À la une</span>' : ''}${r.mur ? '<span class="aurea-pastille">Mur</span>' : ''}${r.visible ? '' : '<span class="aurea-pastille">Masquée</span>'}${r.visible && !r.liste ? '<span class="aurea-pastille">Hors page Réalisations</span>' : ''}</span>
       </div>
       <div class="aurea-carte-champs">
         <label>Nom du projet<input type="text" data-champ="titre" value="${esc(r.titre)}"></label>
@@ -32,7 +32,7 @@
         </div>
         <label>Lieu<input type="text" data-champ="lieu" value="${esc(r.lieu)}" placeholder="Paris, Genève…"></label>
         <label>Accroche (une phrase)<textarea data-champ="accroche" rows="2">${esc(r.accroche)}</textarea></label>
-        <div class="aurea-options">${inter('visible', 'Visible', r.visible)}${inter('une', 'À la une', r.une)}${inter('mur', 'Mur du hero', r.mur)}</div>
+        <div class="aurea-options">${inter('visible', 'Visible', r.visible)}${inter('une', 'À la une', r.une)}${inter('mur', 'Mur du hero', r.mur)}${inter('liste', 'Page Réalisations', r.liste)}</div>
       </div>
       <div class="aurea-carte-actions is-col">
         <div><button type="button" class="aurea-lien" data-action="capture">Changer la capture</button>
@@ -42,12 +42,12 @@
       </div>
     </li>`;
 
-  const garder = r => !filtre || (filtre === 'masque' ? !r.visible : r[filtre]);
+  const garder = r => !filtre || (filtre === 'masque' ? !r.visible : filtre === 'hors-liste' ? r.visible && !r.liste : r[filtre]);
   const rendre = () => {
     $grille.html(items.filter(garder).map(carte).join(''));
     $('#aurea-r-vide').prop('hidden', items.length > 0);
-    const v = items.filter(r => r.visible).length, u = items.filter(r => r.visible && r.une).length, m = items.filter(r => r.visible && r.mur).length;
-    $('#aurea-r-compteur').text(`${v} visibles · ${u} à la une · ${m} dans le mur`);
+    const v = items.filter(r => r.visible).length, u = items.filter(r => r.visible && r.une).length, m = items.filter(r => r.visible && r.mur).length, l = items.filter(r => r.visible && r.liste).length;
+    $('#aurea-r-compteur').text(`${v} visibles · ${l} sur la page Réalisations · ${u} à la une · ${m} dans le mur`);
     $grille.sortable(filtre ? 'disable' : 'enable');
   };
   const trouver = el => items.find(r => String(cle(r)) === String($(el).closest('.aurea-carte').data('cle')));
@@ -78,7 +78,7 @@
   const urlImage = m => (m.sizes && (m.sizes.large || m.sizes.medium) ? (m.sizes.large || m.sizes.medium).url : m.url);
 
   $('#aurea-r-ajouter').on('click', () => choisir('Capture d’écran du site', m => {
-    items.unshift({ id: 0, tmp: 'n' + Date.now(), titre: (m.title || '').replace(/^(Capture|Screenshot)[\s-]*/i, '') || 'Nouvelle réalisation', url: '', type: 'site-vitrine', secteur: '', lieu: '', accroche: '', image: m.id, image_url: urlImage(m), mobile: 0, une: false, mur: true, visible: true });
+    items.unshift({ id: 0, tmp: 'n' + Date.now(), titre: (m.title || '').replace(/^(Capture|Screenshot)[\s-]*/i, '') || 'Nouvelle réalisation', url: '', type: 'site-vitrine', secteur: '', lieu: '', accroche: '', image: m.id, image_url: urlImage(m), mobile: 0, une: false, mur: true, visible: true, liste: true });
     filtre = ''; $('#aurea-r-filtre').val(''); rendre(); marquer();
     $grille.find('.aurea-carte').first().find('[data-champ=titre]').trigger('focus').select();
   }));
@@ -103,7 +103,7 @@
     $enregistrer.prop('disabled', true); etat('Enregistrement…', 'attente');
     $.post(cfg.ajax, {
       action: 'aurea_realisations_enregistrer', _ajax_nonce: cfg.nonce,
-      items: JSON.stringify(items.map(({ id, titre, url, type, secteur, lieu, accroche, image, mobile, une, mur, visible }) => ({ id, titre, url, type, secteur, lieu, accroche, image, mobile, une, mur, visible }))),
+      items: JSON.stringify(items.map(({ id, titre, url, type, secteur, lieu, accroche, image, mobile, une, mur, visible, liste }) => ({ id, titre, url, type, secteur, lieu, accroche, image, mobile, une, mur, visible, liste }))),
       supprimes: JSON.stringify(supprimes),
     }).done(r => {
       if (!r.success) throw new Error(r.data);

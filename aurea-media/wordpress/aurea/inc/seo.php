@@ -210,7 +210,7 @@ function aurea_schemas_page() {
 
 	if ( is_post_type_archive( 'aurea_realisation' ) && function_exists( 'aurea_realisations' ) ) {
 		$items = array();
-		foreach ( aurea_realisations() as $i => $r ) {
+		foreach ( aurea_realisations( array( 'liste' => true ) ) as $i => $r ) {
 			$items[] = array( '@type' => 'ListItem', 'position' => $i + 1, 'name' => $r['titre'], 'url' => aurea_a_etude( $r ) || ! $r['url'] ? $r['fiche'] : $r['url'] );
 		}
 		$sort['liste'] = array( '@type' => 'ItemList', '@id' => $url . '#liste', 'itemListElement' => $items );

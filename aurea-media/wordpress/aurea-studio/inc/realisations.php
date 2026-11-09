@@ -58,7 +58,7 @@ function aurea_real_enregistrer() {
 	foreach ( array( '_real_url', '_real_lieu', '_real_accroche' ) as $cle ) {
 		register_post_meta( AUREA_REAL, $cle, array( 'type' => 'string', 'single' => true, 'show_in_rest' => true, 'auth_callback' => function () { return current_user_can( 'edit_pages' ); } ) );
 	}
-	foreach ( array( '_real_une', '_real_mur' ) as $cle ) {
+	foreach ( array( '_real_une', '_real_mur', '_real_liste' ) as $cle ) {
 		register_post_meta( AUREA_REAL, $cle, array( 'type' => 'boolean', 'single' => true, 'show_in_rest' => true, 'auth_callback' => function () { return current_user_can( 'edit_pages' ); } ) );
 	}
 	register_post_meta( AUREA_REAL, '_real_mobile', array( 'type' => 'integer', 'single' => true, 'show_in_rest' => true, 'auth_callback' => function () { return current_user_can( 'edit_pages' ); } ) );
@@ -119,7 +119,7 @@ function aurea_real_creer_termes() {
  * }
  */
 function aurea_realisations( $args = array() ) {
-	$args  = wp_parse_args( $args, array( 'une' => false, 'mur' => false, 'type' => '', 'secteur' => '', 'nombre' => -1, 'tout' => false ) );
+	$args  = wp_parse_args( $args, array( 'une' => false, 'mur' => false, 'liste' => false, 'type' => '', 'secteur' => '', 'nombre' => -1, 'tout' => false ) );
 	$query = array(
 		'post_type'      => AUREA_REAL,
 		'post_status'    => $args['tout'] ? array( 'publish', 'draft', 'pending' ) : 'publish',
@@ -132,6 +132,9 @@ function aurea_realisations( $args = array() ) {
 		if ( $args[ $drapeau ] ) {
 			$query['meta_query'][] = array( 'key' => '_real_' . $drapeau, 'value' => '1' );
 		}
+	}
+	if ( $args['liste'] ) { // page Réalisations : sans celles qui en sont retirées
+		$query['meta_query'][] = array( 'relation' => 'OR', array( 'key' => '_real_liste', 'compare' => 'NOT EXISTS' ), array( 'key' => '_real_liste', 'value' => '0', 'compare' => '!=' ) );
 	}
 	if ( $args['type'] ) {
 		$query['tax_query'][] = array( 'taxonomy' => AUREA_REAL_TYPE, 'field' => 'slug', 'terms' => $args['type'] );
@@ -170,6 +173,7 @@ function aurea_realisation( $post ) {
 		'une'      => '1' === (string) get_post_meta( $post->ID, '_real_une', true ),
 		'mur'      => '1' === (string) get_post_meta( $post->ID, '_real_mur', true ),
 		'visible'  => 'publish' === $post->post_status,
+		'liste'    => '0' !== (string) get_post_meta( $post->ID, '_real_liste', true ), // affichée sur la page Réalisations (par défaut : oui)
 	);
 }
 
@@ -214,6 +218,7 @@ function aurea_realisations_ecran() {
 				<option value="">Toutes</option>
 				<option value="une">À la une</option>
 				<option value="mur">Dans le mur du hero</option>
+				<option value="hors-liste">Retirées de la page Réalisations</option>
 				<option value="masque">Masquées</option>
 			</select>
 		</label>
@@ -226,7 +231,7 @@ function aurea_realisations_ecran() {
 	<details class="aurea-aide">
 		<summary>Comment ça marche ?</summary>
 		<p><strong>Capture</strong> : une image de la page d’accueil du site client, 1600 × 1000 px environ (le haut de l’image est montré en priorité). <strong>Capture mobile</strong> (facultative) : utilisée dans les maquettes de téléphone.</p>
-		<p><strong>À la une</strong> : apparaît dans le portfolio défilant de l’accueil. <strong>Mur du hero</strong> : apparaît dans le mur de captures en haut de l’accueil. <strong>Visible</strong> : décocher retire la réalisation de tout le site sans la supprimer.</p>
+		<p><strong>À la une</strong> : apparaît dans le portfolio défilant de l’accueil. <strong>Mur du hero</strong> : apparaît dans le mur de captures en haut de l’accueil. <strong>Visible</strong> : décocher retire la réalisation de tout le site sans la supprimer. <strong>Page Réalisations</strong> : décocher la retire seulement de la page Réalisations ; elle reste dans le mur du haut de l’accueil, le portfolio et les pages services si elle y figure.</p>
 		<p><strong>Type</strong> et <strong>secteur</strong> rangent le projet dans les galeries des pages services (Site vitrine, E-commerce…) et des pages secteurs (Avocats, Santé…).</p>
 		<p>« Fiche complète » ouvre l’éditeur WordPress pour écrire l’étude de cas et régler le référencement dans Rank Math.</p>
 	</details>
@@ -287,6 +292,7 @@ add_action( 'wp_ajax_aurea_realisations_enregistrer', function () {
 		update_post_meta( $id, '_real_accroche', sanitize_textarea_field( $r['accroche'] ?? '' ) );
 		update_post_meta( $id, '_real_une', empty( $r['une'] ) ? '0' : '1' );
 		update_post_meta( $id, '_real_mur', empty( $r['mur'] ) ? '0' : '1' );
+		update_post_meta( $id, '_real_liste', ! array_key_exists( 'liste', $r ) || ! empty( $r['liste'] ) ? '1' : '0' );
 		foreach ( array( 'type' => AUREA_REAL_TYPE, 'secteur' => AUREA_REAL_SECTEUR ) as $cle => $tax ) {
 			$slug = sanitize_title( $r[ $cle ] ?? '' );
 			wp_set_object_terms( $id, $slug ? array( $slug ) : array(), $tax );
