@@ -103,6 +103,8 @@ function schiesser_carte_druck_html() {
 <style>
 @font-face{font-family:'Libre Baskerville';font-style:normal;font-weight:400 700;src:url(<?php echo esc_url( $f . 'libre-baskerville.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Libre Baskerville';font-style:italic;font-weight:400 700;src:url(<?php echo esc_url( $f . 'libre-baskerville-italic.woff2' ); ?>) format('woff2')}
+@font-face{font-family:'EB Garamond';font-style:normal;font-weight:400 800;src:url(<?php echo esc_url( $f . 'eb-garamond.woff2' ); ?>) format('woff2')}
+@font-face{font-family:'EB Garamond';font-style:italic;font-weight:400 800;src:url(<?php echo esc_url( $f . 'eb-garamond-italic.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Bodoni Moda';font-style:normal;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Bodoni Moda';font-style:italic;font-weight:400 900;src:url(<?php echo esc_url( $f . 'bodoni-moda-italic.woff2' ); ?>) format('woff2')}
 @font-face{font-family:'Inter';font-weight:100 900;src:url(<?php echo esc_url( $f . 'inter.woff2' ); ?>) format('woff2')}

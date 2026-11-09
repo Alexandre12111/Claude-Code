@@ -71,6 +71,9 @@ add_action( 'wp_head', function () {
 	if ( 'libre-baskerville' === $c['titres'] || 'libre-baskerville' === $c['texte'] ) {
 		echo '<link rel="preload" href="' . esc_url( SCHIESSER_URI . '/assets/fonts/libre-baskerville.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 	}
+	if ( 'eb-garamond' === $c['titres'] || 'eb-garamond' === $c['texte'] ) {
+		echo '<link rel="preload" href="' . esc_url( SCHIESSER_URI . '/assets/fonts/eb-garamond.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
+	}
 	if ( 'inter' === $c['texte'] ) {
 		echo '<link rel="preload" href="' . esc_url( SCHIESSER_URI . '/assets/fonts/inter.woff2' ) . '" as="font" type="font/woff2" crossorigin>' . "\n";
 	}

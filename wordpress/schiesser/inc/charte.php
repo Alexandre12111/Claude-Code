@@ -44,11 +44,12 @@ function schiesser_polices() {
 			'playfair-display'   => array( 'Playfair Display', 'Playfair+Display:ital,wght@0,400..600;1,400..600', "Georgia,'Times New Roman',serif", 'Élégante et lisible, très polyvalente', false ),
 			'cormorant-garamond' => array( 'Cormorant Garamond', 'Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500', "Garamond,Georgia,serif", 'Classique et raffinée, très fine', false ),
 			'fraunces'           => array( 'Fraunces', 'Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600', "Georgia,serif", 'Chaleureuse, un peu gourmande', false ),
-			'eb-garamond'        => array( 'EB Garamond', 'EB+Garamond:ital,wght@0,400..600;1,400..600', "Garamond,Georgia,serif", 'Garamond traditionnel, sobre', false ),
+			'eb-garamond'        => array( 'EB Garamond', 'EB+Garamond:ital,wght@0,400..800;1,400..800', "Garamond,Georgia,serif", 'Garamond traditionnel, fin et raffiné', true ),
 			'dm-serif-display'   => array( 'DM Serif Display', 'DM+Serif+Display:ital@0;1', "Georgia,serif", 'Affichage contrasté, plus compact', false ),
 		),
 		'texte'  => array(
 			'libre-baskerville' => array( 'Libre Baskerville', 'Libre+Baskerville:ital,wght@0,400..700;1,400..700', "Baskerville,Georgia,serif", 'Serif partout, comme la carte de visite', true ),
+			'eb-garamond'       => array( 'EB Garamond', 'EB+Garamond:ital,wght@0,400..800;1,400..800', "Garamond,Georgia,serif", 'Serif partout, plus fine et raffinée', true ),
 			'inter'         => array( 'Inter', 'Inter:wght@400..600', "system-ui,-apple-system,'Segoe UI',sans-serif", 'Neutre et très lisible (charte d\'origine)', true ),
 			'dm-sans'       => array( 'DM Sans', 'DM+Sans:ital,opsz,wght@0,9..40,400..600;1,9..40,400..600', "system-ui,sans-serif", 'Géométrique douce', false ),
 			'work-sans'     => array( 'Work Sans', 'Work+Sans:wght@400..600', "system-ui,sans-serif", 'Légèrement plus large', false ),
@@ -236,22 +237,32 @@ function schiesser_css_charte() {
 		$vars[] = '--echelle-titres:' . $c['echelle'];
 	}
 	$css = $vars ? ':root{' . implode( ';', $vars ) . '}' : '';
-	if ( 'libre-baskerville' === $c['titres'] ) {
+	$serifs = array( 'libre-baskerville', 'eb-garamond' );
+	$titres = ':is(h1,h2,h3,h4,h5,h6,.mn-titre,.ml-titre)';
+	if ( in_array( $c['titres'], $serifs, true ) ) {
 		// Lettres plus longues qu'en Bodoni : le masque des titres animés laisse passer les jambages (p, g).
 		$css .= '.ts .w{padding-bottom:.2em;margin-bottom:-.2em}:is(h1,h2,h3,h4){letter-spacing:-.01em}';
 	}
-	if ( 'libre-baskerville' === $c['texte'] ) {
-		$css .= schiesser_css_texte_baskerville();
+	if ( 'eb-garamond' === $c['texte'] ) {
+		// Garamond a de petites minuscules : tout le texte est ramené à une taille confortable.
+		$css .= 'html{font-size-adjust:.47}';
+	}
+	if ( 'eb-garamond' === $c['titres'] ) {
+		$css .= $titres . '{font-size-adjust:.46}'; // titres à la taille de la maquette (hauteur d'œil du Bodoni)
+	} elseif ( 'eb-garamond' === $c['texte'] ) {
+		$css .= $titres . '{font-size-adjust:none}'; // les titres gardent leur propre police à sa taille
+	}
+	if ( in_array( $c['texte'], $serifs, true ) ) {
+		$css .= schiesser_css_texte_serif();
 	}
 	return $css;
 }
 
 /**
- * Textes en Baskerville : la police est plus large et plus haute qu'Inter. Les tailles restent
- * celles de la maquette, ramenées à la même hauteur d'œil, et les petites capitales sont espacées
- * comme sur la carte de visite.
+ * Textes en serif (Baskerville, Garamond) : les tailles de la maquette sont ramenées à la même
+ * hauteur d'œil, et les petites capitales sont espacées comme sur la carte de visite.
  */
-function schiesser_css_texte_baskerville() {
+function schiesser_css_texte_serif() {
 	// Seulement le texte courant : les titres gardent leur taille de maquette.
 	return ':is(p,li,dd,dt,td,th,blockquote,figcaption,label,input,textarea,select,button,.btn,.button):not(:is(h1,h2,h3,h4,h5,h6) *){font-size-adjust:.47}'
 		. ':is(.eyebrow,.meta,.lang button,.btn,.button,.wp-element-button,.sty-petit-label){letter-spacing:.14em}'
