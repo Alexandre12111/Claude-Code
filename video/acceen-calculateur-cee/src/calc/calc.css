@@ -1,0 +1,76 @@
+/* ------------------------------------------------------------------
+   Reproduction du calculateur CEE de acceen.com
+   Styles repris du plugin "acceen-calculator" (view.css) et du
+   formulaire Contact Form 7 du site, variables WordPress résolues.
+   ------------------------------------------------------------------ */
+.acceen-calc {
+  --acceen-bg: #ffffff;
+  --acceen-panel: #fff7de;
+  --acceen-ink: #190329;
+  --acceen-primary: #391267;
+  --acceen-line: #391267;
+  --acceen-radius: 2rem;
+  color: var(--acceen-ink);
+  font-family: Fustat, sans-serif;
+  font-weight: 400;
+  font-size: 18.4px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  position: relative;
+}
+.acceen-calc *, .acceen-calc :after, .acceen-calc :before { box-sizing: border-box; }
+.acceen-calc h2 {
+  color: #391267;
+  font-family: "Baloo 2", sans-serif;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.acceen-calc__panel { background: var(--acceen-panel); border-radius: var(--acceen-radius) var(--acceen-radius) 0 0; padding: 2rem; }
+.acceen-calc__panel--alone { border-radius: var(--acceen-radius); }
+.acceen-calc__title { font-size: 1.75rem; margin: 0; }
+.acceen-calc__section-sub, .acceen-calc__sub { margin: .5rem 0 1.5rem; }
+.acceen-calc__grid { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.acceen-calc__grid--cat { display: flex; flex-direction: column; }
+.acceen-calc__card { align-items: center; background: var(--acceen-bg); border: 0; border-radius: calc(var(--acceen-radius) * .5); color: inherit; display: flex; font: inherit; font-size: 1rem; gap: 1rem; padding: 1rem; text-align: left; }
+.acceen-calc__card.is-hover { background: #f9da72; }
+.acceen-calc__code { align-items: center; background: var(--acceen-primary); border-radius: calc(var(--acceen-radius) * .25); color: var(--acceen-bg); display: flex; flex: 0 0 auto; font-weight: 700; height: 2rem; justify-content: center; overflow: hidden; width: 2rem; }
+.acceen-calc__code img { display: block; height: 75%; object-fit: cover; width: 75%; }
+.acceen-calc__header { align-items: center; display: flex; gap: 1rem; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1.5rem; }
+.acceen-calc__header > div { align-items: center; display: flex; gap: .75rem; }
+.acceen-calc__ghost { background: #f9da72; border: 0; border-radius: .5rem; color: #000; flex-shrink: 0; font: inherit; font-size: .875rem; padding: .5rem 1rem; }
+.acceen-calc__fields { display: grid; gap: 1.25rem; }
+.acceen-calc__fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.acceen-calc__label { display: block; font-size: 1rem; line-height: 24px; margin-bottom: .25rem; padding: 0 2px; }
+.acceen-calc__options { display: flex; flex-direction: column; gap: .5rem; }
+.acceen-calc__options--compact { flex-direction: row; flex-wrap: wrap; }
+.acceen-calc__option { align-items: center; background: var(--acceen-bg); border-radius: .5rem; display: flex; flex: 1 1 auto; font-size: 1rem; line-height: 24px; gap: .5rem; padding: .5rem .75rem; width: 100%; }
+.acceen-calc__option.is-hover { outline: 2px solid #391267; }
+.acceen-calc__radio { align-items: center; border: 1px solid var(--acceen-primary); border-radius: 50%; display: flex; flex: 0 0 auto; height: 1.25rem; justify-content: center; width: 1.25rem; }
+.acceen-calc__radio i { background: var(--acceen-primary); border-radius: 50%; display: block; height: .75rem; width: .75rem; }
+.acceen-calc__input { align-items: center; background: var(--acceen-bg); border: 1px solid var(--acceen-line); border-radius: .5rem; color: #000; display: flex; font-size: 1rem; height: 3rem; padding: .5rem .75rem; width: 100%; white-space: pre; }
+.acceen-calc__input.is-focus { outline: 2px solid var(--acceen-primary); outline-offset: 1px; }
+.acceen-calc__caret { background: currentColor; display: inline-block; height: 1.15em; margin-left: 1px; width: 1.5px; }
+.acceen-calc__contact { background: var(--acceen-panel); border-radius: 0 0 var(--acceen-radius) var(--acceen-radius); padding: 1.25rem 2rem 2rem; }
+.acceen-calc__section-title { font-size: 1.5rem; margin: 0 0 .25rem; }
+
+/* Formulaire Contact Form 7 */
+.wpcf7-form { display: flex; flex-wrap: wrap; margin: 0 -0.5rem; }
+.wpcf7-form > p { box-sizing: border-box; margin: 0 0 17px; padding: 0 .5rem; width: 100%; }
+.wpcf7-form > p.col-2 { width: 50%; }
+.wpcf7-form label { display: block; font-size: 1rem; line-height: 24px; }
+.wpcf7-form .acceen-calc__input { color: #391267; font-family: Montserrat, sans-serif; margin-top: 9px; padding: 14.4px 12px; }
+.wpcf7-accept { align-items: center; display: flex; font-size: 1rem; gap: 10px; line-height: 24px; }
+.wpcf7-check { align-items: center; border: 1px solid #767676; border-radius: 3px; display: flex; height: 20px; justify-content: center; width: 20px; background: #fff; }
+.wpcf7-check.is-on { background: #391267; border-color: #391267; }
+.wpcf7-accept a { color: #391267; text-decoration: underline; text-underline-offset: 3px; }
+.wpcf7-submit { background: #391267; border: 1px solid #391267; border-radius: 8px; color: #fff; display: inline-flex; align-items: center; font-family: Montserrat, sans-serif; font-size: 16px; height: 48px; margin-top: .5rem; padding: 0 13px; }
+.wpcf7-submit.is-disabled { opacity: .5; }
+.wpcf7-submit.is-hover { background: #190329; }
+
+/* Bloc résultat */
+.acceen-calc__result { background: var(--acceen-primary); border-radius: var(--acceen-radius); color: var(--acceen-bg); padding: 1.5rem 2rem 2rem; }
+.acceen-calc__hero { text-align: center; }
+.acceen-calc__eyebrow { margin-bottom: 1rem; }
+.acceen-calc__value { font-weight: 700; line-height: 1; }
+.acceen-calc__unit { font-size: .45em; font-weight: 600; margin-left: .5rem; }
+.acceen-calc__note { font-size: .875rem; margin: 1rem auto 0; max-width: 480px; }
