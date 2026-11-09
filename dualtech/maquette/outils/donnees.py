@@ -21,6 +21,7 @@ def slug(s):
 # Pages : fichier de la maquette et adresse WordPress (adresses actuelles conservées, aucune redirection nécessaire)
 PAGES = {
     "accueil": ("index.html", "/"),
+    "evenement": ("l-evenement.html", "/l-evenement/"),
     "programme": ("programme-2026.html", "/programme-2026/"),
     "intervenants": ("intervenants-2026.html", "/intervenants-2026/"),
     "workshops": ("ateliers-workshops.html", "/ateliers-workshops/"),
@@ -30,6 +31,8 @@ PAGES = {
     "retrospective": ("retrospective-fevrier-2026.html", "/retrospective-fevrier-2026/"),
     "contact": ("contact.html", "/contact/"),
     "inscription": ("inscription.html", "/inscription/"),
+    "mentions": ("mentions-legales.html", "/mentions-legales/"),
+    "confidentialite": ("politique-de-confidentialite.html", "/politique-de-confidentialite/"),
 }
 
 # Intervenants 2026 : [nom, fonction, organisation, portrait d'origine]
@@ -231,12 +234,13 @@ PHOTOS_FILIERES = {
 }
 
 # Univers des intervenants (filtres de la page Intervenants)
-UNIVERS = [("tous", "Tous"), ("institutions", "Institutions et territoires"), ("industrie", "Industrie et technologies"), ("finance", "Financement et marchés"), ("inas", "Organisateur (INAS)")]
+UNIVERS = [("tous", "Tous"), ("innovation", "Innovation"), ("institutions", "Institutions"), ("industrie", "Industrie"), ("finance", "Financement et marchés"), ("recherche", "Recherche")]
 def univers(orga):
     o = orga.lower()
-    if "inas" in o or "affaires stratégiques" in o: return "inas"
+    if any(k in o for k in ("onera", "inas", "affaires stratégiques")): return "recherche"
     if any(k in o for k in ("euronext", "eurazeo", "expansion", "rothschild")): return "finance"
-    if any(k in o for k in ("onera", "eismea", "ministère", "mairie", "paris ouest", "french tech")): return "institutions"
+    if any(k in o for k in ("eismea", "ministère", "mairie", "paris ouest")): return "institutions"
+    if any(k in o for k in ("wandercraft", "aldoria", "npco", "french tech", "starair", "ascendance")): return "innovation"
     return "industrie"
 for _i in INTERVENANTS:
     _i["univers"] = univers(_i["orga"])

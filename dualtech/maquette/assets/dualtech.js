@@ -5,6 +5,75 @@
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 
+  /* ---------- Consentement (RGPD / CNIL) ----------
+     Les vidéos YouTube et la carte Google Maps ne se chargent qu'avec l'accord du visiteur.
+     Choix gardé 6 mois dans le navigateur (localStorage, aucun cookie), modifiable via « Gérer les cookies ». */
+  const CLE = 'dt-consentement', DUREE = 182 * 864e5;
+  const lire = () => { try { const c = JSON.parse(localStorage.getItem(CLE)); return c && Date.now() - c.date < DUREE ? c : null; } catch { return null; } };
+  let choix = lire();
+  const consentement = {
+    a: (type) => !!(choix && choix[type]),
+    enregistrer(video, carte) {
+      choix = { video: !!video, carte: !!carte, date: Date.now() };
+      try { localStorage.setItem(CLE, JSON.stringify(choix)); } catch {}
+      fermerBandeau();
+      dispatchEvent(new CustomEvent('dt:consentement', { detail: choix }));
+    },
+    ouvrir: () => ouvrirBandeau(),
+  };
+  window.DT_consentement = consentement;
+  const lienPolitique = () => { const a = $('.pied__bas a[href*="confidentialite"]'); return a ? a.getAttribute('href') : '#'; };
+  let bandeau = null;
+  const fermerBandeau = () => { if (bandeau) { bandeau.classList.remove('is-ouvert'); setTimeout(() => { if (bandeau && !bandeau.classList.contains('is-ouvert')) bandeau.hidden = true; }, 300); } };
+  const ouvrirBandeau = (perso = false) => {
+    if (!bandeau) {
+      bandeau = document.createElement('section');
+      bandeau.className = 'consent';
+      bandeau.setAttribute('aria-labelledby', 'consent-titre');
+      bandeau.innerHTML = `<p class="consent__titre" id="consent-titre">Vos préférences de confidentialité</p>
+<p class="consent__texte">DualTech n’utilise aucun cookie publicitaire ni outil de mesure d’audience. Les vidéos de l’événement (YouTube) et la carte d’accès (Google Maps) sont fournies par Google, qui peut déposer des cookies lorsqu’elles s’affichent. <a href="${lienPolitique()}">En savoir plus</a></p>
+<div class="consent__choix" hidden>
+  <label class="consent__option"><input type="checkbox" checked disabled><span><b>Fonctionnement du site</b>Indispensable, sans cookie de suivi.</span></label>
+  <label class="consent__option"><input type="checkbox" data-type="video"><span><b>Vidéos YouTube</b>Film d’ouverture et vidéos d’ambiance.</span></label>
+  <label class="consent__option"><input type="checkbox" data-type="carte"><span><b>Carte Google Maps</b>Plan d’accès au Campus Cyber.</span></label>
+</div>
+<div class="consent__actions">
+  <button type="button" class="btn btn--petit btn--ghost" data-c="refuser">Tout refuser</button>
+  <button type="button" class="btn btn--petit btn--ghost" data-c="perso">Personnaliser</button>
+  <button type="button" class="btn btn--petit btn--primaire" data-c="accepter">Tout accepter</button>
+</div>`;
+      document.body.appendChild(bandeau);
+      const zone = $('.consent__choix', bandeau), perso = $('[data-c="perso"]', bandeau);
+      bandeau.addEventListener('click', (e) => {
+        const b = e.target.closest('[data-c]'); if (!b) return;
+        if (b.dataset.c === 'refuser') consentement.enregistrer(false, false);
+        if (b.dataset.c === 'accepter') consentement.enregistrer(true, true);
+        if (b.dataset.c === 'perso') {
+          if (zone.hidden) { zone.hidden = false; perso.textContent = 'Enregistrer mes choix'; }
+          else consentement.enregistrer($('[data-type="video"]', zone).checked, $('[data-type="carte"]', zone).checked);
+        }
+      });
+    }
+    const zone = $('.consent__choix', bandeau);
+    $('[data-type="video"]', zone).checked = consentement.a('video');
+    $('[data-type="carte"]', zone).checked = consentement.a('carte');
+    zone.hidden = !perso;
+    $('[data-c="perso"]', bandeau).textContent = perso ? 'Enregistrer mes choix' : 'Personnaliser';
+    bandeau.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => bandeau.classList.add('is-ouvert')));
+  };
+  if (!choix) {
+    if (document.readyState === 'loading') addEventListener('DOMContentLoaded', () => ouvrirBandeau()); else ouvrirBandeau();
+  }
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-cookies]')) { e.preventDefault(); ouvrirBandeau(true); } });
+  /* lance fn tout de suite si le type est accepté, sinon dès qu'il l'est */
+  const avecAccord = (type, fn) => {
+    if (consentement.a(type)) return fn();
+    const ecoute = (e) => { if (e.detail[type]) { removeEventListener('dt:consentement', ecoute); fn(); } };
+    addEventListener('dt:consentement', ecoute);
+  };
+  window.DT_avecAccord = avecAccord;
+
   /* En-tête : fond au défilement, masqué en descente, barre de progression */
   const nav = $('.nav');
   const barre = $('.nav__progression');
@@ -103,9 +172,12 @@
       $('.hero__media', hero).appendChild(lecteur);
     };
     if (!calme) {
-      addEventListener('load', () => ('requestIdleCallback' in window ? requestIdleCallback(charger, { timeout: 1500 }) : setTimeout(charger, 600)));
+      const differer = () => ('requestIdleCallback' in window ? requestIdleCallback(charger, { timeout: 1500 }) : setTimeout(charger, 600));
+      if (document.readyState === 'complete') avecAccord('video', differer);
+      else addEventListener('load', () => avecAccord('video', differer));
     }
     if (ctrlSon) ctrlSon.addEventListener('click', () => {
+      if (!consentement.a('video')) return ouvrirBandeau(true);
       charger();
       const actif = ctrlSon.dataset.etat === 'son-on';
       commande(actif ? 'mute' : 'unMute');
@@ -116,6 +188,7 @@
     });
     if (ctrlLecture) ctrlLecture.addEventListener('click', () => {
       const enPause = ctrlLecture.dataset.etat === 'pause';
+      if (enPause && !consentement.a('video')) return ouvrirBandeau(true);
       if (enPause) { charger(); commande('playVideo'); hero.classList.add('is-video'); } else commande('pauseVideo');
       ctrlLecture.dataset.etat = enPause ? 'lecture' : 'pause';
       ctrlLecture.setAttribute('aria-label', enPause ? 'Mettre la vidéo en pause' : 'Lire la vidéo');
@@ -129,25 +202,48 @@
   }
 
   /* Vidéo d'arrière-plan des pages intérieures */
+  /* Vidéos YouTube d'arrière-plan : affichées seulement quand YouTube confirme la lecture.
+     Si la lecture est refusée (fichier ouvert en local, navigateur restrictif), l'image de couverture reste. */
+  const videoYouTube = (id, extra, titre) => {
+    const f = document.createElement('iframe');
+    const origine = /^https?:/.test(location.protocol) ? `&origin=${encodeURIComponent(location.origin)}` : '';
+    f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&disablekb=1&fs=0&enablejsapi=1${extra}${origine}`;
+    f.title = titre; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
+    f.referrerPolicy = 'strict-origin-when-cross-origin';
+    f.addEventListener('load', () => f.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: titre }), '*'));
+    addEventListener('message', (e) => {
+      if (e.source !== f.contentWindow) return;
+      let d; try { d = JSON.parse(e.data); } catch { return; }
+      const etat = d.event === 'onStateChange' ? d.info : d.info && d.info.playerState;
+      if (etat === 1) f.classList.add('is-lecture');
+    });
+    return f;
+  };
+  window.DT_videoYouTube = videoYouTube;
   $$('[data-video-fond]').forEach((cadre) => {
     if (calme) return;
-    addEventListener('load', () => setTimeout(() => {
-      const f = document.createElement('iframe');
-      const id = cadre.dataset.videoFond, fin = cadre.dataset.fin ? `&end=${cadre.dataset.fin}` : '';
-      f.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&controls=0&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&disablekb=1&fs=0${fin}`;
-      f.title = 'Vidéo d’ambiance'; f.setAttribute('aria-hidden', 'true'); f.setAttribute('tabindex', '-1'); f.allow = 'autoplay; encrypted-media';
-      f.style.opacity = 0; f.style.transition = 'opacity 1.2s';
-      f.addEventListener('load', () => setTimeout(() => { f.style.opacity = ''; const img = $('img', cadre); if (img) img.style.opacity = 0; }, 900));
-      cadre.appendChild(f);
-    }, 400));
+    const lancer = () => {
+      if (cadre.querySelector('iframe')) return;
+      const fin = cadre.dataset.fin ? `&end=${cadre.dataset.fin}` : '';
+      cadre.appendChild(videoYouTube(cadre.dataset.videoFond, fin, 'Vidéo d’ambiance'));
+    };
+    addEventListener('load', () => setTimeout(() => avecAccord('video', lancer), 400));
   });
 
   /* Fenêtre « Voir le film » */
   const modale = $('#film');
   if (modale) {
     const cadre = $('.modale__cadre', modale);
-    $$('[data-film]').forEach((b) => b.addEventListener('click', () => {
+    const lire = (id) => {
       cadre.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.film}?autoplay=1&rel=0&modestbranding=1" title="Film de présentation DualTech" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+    };
+    $$('[data-film]').forEach((b) => b.addEventListener('click', () => {
+      const id = b.dataset.film;
+      if (consentement.a('video')) lire(id);
+      else {
+        cadre.innerHTML = `<div class="modale__accord"><p><b>Cette vidéo est hébergée par YouTube.</b> En la lisant, vous acceptez que Google dépose des cookies sur votre appareil.</p><div class="actions"><button type="button" class="btn btn--primaire">Accepter et lire la vidéo</button><a class="btn btn--ghost" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener">Voir sur YouTube</a></div></div>`;
+        $('button', cadre).addEventListener('click', () => { consentement.enregistrer(true, consentement.a('carte')); lire(id); });
+      }
       commande('pauseVideo');
       modale.showModal();
     }));
@@ -191,11 +287,17 @@
   }
 
   /* Carte Google chargée au clic seulement */
-  $$('[data-carte]').forEach((b) => b.addEventListener('click', () => {
+  const afficherCarte = (b) => {
+    if (!b.isConnected) return;
     const f = document.createElement('iframe');
     f.src = b.dataset.carte; f.title = 'Plan d’accès au Campus Cyber'; f.loading = 'lazy'; f.referrerPolicy = 'no-referrer-when-downgrade';
     b.replaceWith(f);
-  }));
+  };
+  $$('[data-carte]').forEach((b) => {
+    /* le clic sur « Afficher le plan d'accès » vaut accord pour la carte (texte affiché sur le bouton) */
+    b.addEventListener('click', () => { if (!consentement.a('carte')) consentement.enregistrer(consentement.a('video'), true); afficherCarte(b); });
+    if (consentement.a('carte')) afficherCarte(b);
+  });
 
   /* Programme : filtres par format et fil de temps */
   const filtres = $('#programme-vide') && $('.filtres');

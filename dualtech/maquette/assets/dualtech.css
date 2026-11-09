@@ -1209,3 +1209,85 @@ li:hover > button.logo-btn::after, button.logo-btn:focus-visible::after { opacit
   .iv-grille--liste .iv-carte { grid-template-columns: 56px 1fr 44px; gap: 0 14px; padding: 14px 8px; }
   .iv-grille--liste .iv-carte__photo { width: 56px; height: 56px; }
 }
+
+/* =====================================================================
+   VERSION 5 : retours client (moins de défilement, aucun effet d'apparition)
+   ===================================================================== */
+:root { --sec: clamp(56px, 6.5vw, 88px); }
+.sec--compact { padding-block: clamp(44px, 5vw, 64px); }
+.sec--compact .tete-sec { margin-bottom: clamp(24px, 3vw, 36px); }
+.cartes--compactes .carte-b { padding: 22px 24px; gap: 10px; }
+.cartes--compactes .carte-b .h3 { font-size: 1.25rem; }
+.avantages--ligne li { padding: 22px 22px; gap: 8px; }
+.avantages--ligne h3 { font-size: 1.0625rem; }
+.avantages--ligne p { font-size: .875rem; }
+@media (min-width: 1100px) { .avantages--ligne { grid-template-columns: repeat(4, 1fr); } .avantages--ligne li.plein { grid-column: 1 / -1; flex-direction: row; align-items: baseline; gap: 24px; } .avantages--ligne li.plein h3 { flex: none; } }
+.sec--compact .maturite li { padding: 18px 22px; }
+.sec--compact .calendrier__etapes button { min-height: 92px; padding: 14px 16px; }
+.sec--compact .calendrier__panneau { padding: 22px 28px; }
+.sec--compact .chiffres--3 b { font-size: clamp(2rem, 3.4vw, 2.75rem); }
+.bande-cta { display: grid; gap: 24px; align-items: center; }
+@media (min-width: 960px) { .bande-cta { grid-template-columns: 1fr auto; gap: 48px; } }
+
+/* aucun effet d'apparition : le contenu est visible tout de suite */
+.js [data-reveal], .js [data-reveal].is-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+.js .lignes .l > span { transform: none !important; transition: none !important; }
+.js [data-volet] { clip-path: none !important; }
+.js [data-volet] img { transform: none !important; }
+.js .fx-trace .trace { stroke-dashoffset: 0; }
+.manifeste__titre .mot { color: inherit; }
+
+/* section vidéo de « L'événement » : simple bandeau, sans effet d'entrée dans la vidéo */
+.cinema--statique { height: auto; min-height: 0; aspect-ratio: 21 / 9; max-height: 640px; background: var(--nuit); }
+.cinema--statique .cinema__cadre { clip-path: none !important; }
+@media (max-width: 719px) { .cinema--statique { aspect-ratio: auto; height: 70svh; } }
+
+/* vidéo de la Terre des workshops : bien visible comme sur le site actuel */
+.phero--video .phero__fond img, .phero--video .phero__fond iframe { opacity: .8; }
+.phero--video::after { background: linear-gradient(90deg, rgba(4, 18, 38, .85) 0%, rgba(4, 18, 38, .45) 55%, rgba(4, 18, 38, .1) 100%), linear-gradient(0deg, var(--nuit) 0%, transparent 35%); }
+
+/* vidéos YouTube : visibles seulement une fois réellement en lecture (sinon l'image de couverture reste) */
+.phero__fond iframe, .lieu__visuel iframe { opacity: 0 !important; transition: opacity 1s; }
+.phero__fond iframe.is-lecture, .lieu__visuel iframe.is-lecture { opacity: 1 !important; }
+.phero--video .phero__fond iframe.is-lecture { opacity: .8 !important; }
+
+.fiche__site { margin-top: 14px; }
+
+/* Pages de texte (mentions légales, politique de confidentialité) */
+.prose { max-width: 760px; margin-inline: auto; color: var(--encre); font-size: 1.0625rem; line-height: 1.75; }
+.prose > * + * { margin-top: 1.1em; }
+.prose h2 { font: 700 clamp(1.375rem, 2.4vw, 1.75rem)/1.2 var(--titre); margin-top: 2.2em; letter-spacing: -.01em; }
+.prose h2:first-child { margin-top: 0; }
+.prose h3 { font: 700 1.1875rem/1.3 var(--titre); margin-top: 1.6em; }
+.prose a { color: var(--bleu); text-decoration: underline; text-underline-offset: 3px; }
+.prose ul, .prose ol { padding-left: 1.4em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li + li { margin-top: .4em; }
+.prose img { max-width: 100%; height: auto; border-radius: 12px; }
+.prose table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+.prose th, .prose td { border-bottom: 1px solid var(--filet); padding: 10px 8px; text-align: left; }
+.prose blockquote { border-left: 3px solid var(--filet); padding-left: 18px; }
+.prose sup { line-height: 0; }
+.prose__maj { margin-top: 3em !important; font-size: .875rem; opacity: .7; }
+
+/* Bandeau de consentement (vidéos YouTube, carte Google Maps) */
+.consent { position: fixed; left: 20px; bottom: 20px; z-index: 250; width: min(460px, calc(100vw - 40px)); padding: 24px; background: rgba(4, 18, 38, .97); color: var(--brume); border: 1px solid var(--ligne-sombre); border-top: 2px solid var(--signal); box-shadow: 0 24px 60px rgba(0, 0, 0, .45); backdrop-filter: blur(12px); opacity: 0; transform: translateY(16px); transition: opacity .3s var(--ease), transform .3s var(--ease); }
+.consent.is-ouvert { opacity: 1; transform: none; }
+.consent__titre { margin: 0 0 8px; font: 700 1.0625rem/1.3 var(--titre); color: var(--blanc); }
+.consent__texte { margin: 0; font-size: .875rem; line-height: 1.6; color: var(--acier); }
+.consent__texte a { color: var(--blanc); text-decoration: underline; text-underline-offset: 3px; }
+.consent__choix[hidden] { display: none; }
+.consent__choix { display: grid; gap: 10px; margin-top: 16px; }
+.consent__option { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--ligne-sombre); cursor: pointer; font-size: .8125rem; line-height: 1.45; color: var(--acier); }
+.consent__option b { display: block; color: var(--blanc); font-size: .875rem; }
+.consent__option input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--bleu); flex: none; }
+.consent__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.consent__actions .btn { flex: 1 1 auto; width: auto; }
+.pied__cookies { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.pied__cookies:hover { color: var(--blanc); }
+.modale__accord { position: absolute; inset: 0; display: grid; place-content: center; gap: 22px; padding: 32px; text-align: center; background: var(--nuit); color: var(--acier); }
+.modale__accord p { max-width: 520px; margin: 0 auto; line-height: 1.6; }
+.modale__accord b { display: block; margin-bottom: 4px; color: var(--blanc); font: 700 1.25rem/1.3 var(--titre); }
+.modale__accord .actions { justify-content: center; }
+@media (max-width: 600px) { .consent { left: 12px; right: 12px; bottom: 12px; width: auto; padding: 20px; } }

@@ -1,0 +1,1027 @@
+{
+ "partenaires": [
+  {
+   "cle": "european-innovation-council-eic-eic",
+   "nom": "European Innovation Council (EIC)",
+   "logo": "partenaires/eic.webp",
+   "description": "Le Conseil européen de l’innovation soutient les innovations de rupture et le développement des entreprises innovantes en Europe.",
+   "lien": "",
+   "rubriques": [
+    "institutions"
+   ],
+   "ordre": 0
+  },
+  {
+   "cle": "paris-ouest-la-defense-pold-horizontal",
+   "nom": "Paris Ouest La Défense",
+   "logo": "partenaires/pold-horizontal.webp",
+   "description": "Paris Ouest La Défense est l’établissement public territorial partenaire de DualTech.",
+   "lien": "",
+   "rubriques": [
+    "institutions"
+   ],
+   "ordre": 1
+  },
+  {
+   "cle": "bpifrance-bpifrance",
+   "nom": "Bpifrance",
+   "logo": "partenaires/bpifrance.webp",
+   "description": "Bpifrance est la banque publique d'investissement chargée d'accompagner les entreprises, startups, PME et ETI à chaque étape de leur développement, à travers le financement, l'innovation, les fonds propres, la garantie et l'accompagnement stratégique.",
+   "lien": "",
+   "rubriques": [
+    "financement"
+   ],
+   "ordre": 2
+  },
+  {
+   "cle": "euronext-euronext",
+   "nom": "Euronext",
+   "logo": "partenaires/euronext.webp",
+   "description": "Euronext est la principale place boursière paneuropéenne. Elle joue un rôle central dans l'accès des entreprises au financement via les marchés de capitaux.",
+   "lien": "",
+   "rubriques": [
+    "financement"
+   ],
+   "ordre": 3
+  },
+  {
+   "cle": "defense-angels-defense-angels",
+   "nom": "Défense Angels",
+   "logo": "partenaires/defense-angels.webp",
+   "description": "Défense Angels est un réseau de business angels dédié aux technologies de défense, de sécurité et duales. Le réseau finance et accompagne des startups développant des solutions stratégiques.",
+   "lien": "",
+   "rubriques": [
+    "financement"
+   ],
+   "ordre": 4
+  },
+  {
+   "cle": "expansion-expansion",
+   "nom": "Expansion",
+   "logo": "partenaires/expansion.webp",
+   "description": "Expansion accompagne le financement des technologies stratégiques.",
+   "lien": "",
+   "rubriques": [
+    "financement"
+   ],
+   "ordre": 5
+  },
+  {
+   "cle": "gifas-gifas",
+   "nom": "GIFAS",
+   "logo": "partenaires/gifas.webp",
+   "description": "Groupement des Industries Françaises Aéronautiques et Spatiales.",
+   "lien": "",
+   "rubriques": [
+    "ecosystemes"
+   ],
+   "ordre": 6
+  },
+  {
+   "cle": "france-deeptech-france-deeptech",
+   "nom": "France Deeptech",
+   "logo": "partenaires/france-deeptech.webp",
+   "description": "France Deeptech fédère les acteurs de l’écosystème deeptech français.",
+   "lien": "",
+   "rubriques": [
+    "ecosystemes"
+   ],
+   "ordre": 7
+  },
+  {
+   "cle": "la-place-strategique-la-place-strategique",
+   "nom": "La Place Stratégique",
+   "logo": "partenaires/la-place-strategique.webp",
+   "description": "La Place Stratégique est un média et une plateforme spécialisée dans les enjeux de souveraineté, de défense, d'industrie et de stratégie.",
+   "lien": "",
+   "rubriques": [
+    "ecosystemes"
+   ],
+   "ordre": 8
+  },
+  {
+   "cle": "nsi-group-nsi-group",
+   "nom": "NSI Group",
+   "logo": "partenaires/nsi-group.webp",
+   "description": "L'agence globale d'influence stratégique du groupe ADIT, pour accompagner dirigeants, entreprises et États.",
+   "lien": "",
+   "rubriques": [
+    "medias"
+   ],
+   "ordre": 9
+  },
+  {
+   "cle": "decideurs-innovation-decideurs",
+   "nom": "Décideurs Innovation",
+   "logo": "partenaires/decideurs.webp",
+   "description": "Décideurs Innovation est un média consacré à l’innovation et à ses acteurs.",
+   "lien": "",
+   "rubriques": [
+    "medias"
+   ],
+   "ordre": 10
+  },
+  {
+   "cle": "inas-inas",
+   "nom": "INAS",
+   "logo": "partenaires/inas.webp",
+   "description": "L'Institut National des Affaires Stratégiques organise DualTech et s'associe au Prix de l'innovation duale.",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 11
+  },
+  {
+   "cle": "la-place-strategique-la-place-strategique-2",
+   "nom": "La Place Stratégique",
+   "logo": "partenaires/la-place-strategique-2.webp",
+   "description": "La Place Stratégique est un média et une plateforme spécialisée dans les enjeux de souveraineté, de défense, d'industrie et de stratégie.",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 12
+  },
+  {
+   "cle": "paris-ouest-la-defense-pold",
+   "nom": "Paris Ouest La Défense",
+   "logo": "partenaires/pold.webp",
+   "description": "Paris Ouest La Défense est l’établissement public territorial partenaire de DualTech.",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 13
+  },
+  {
+   "cle": "defence-angels-defence-angels",
+   "nom": "Defence Angels",
+   "logo": "partenaires/defence-angels.webp",
+   "description": "Défense Angels est un réseau de business angels dédié aux technologies de défense, de sécurité et duales. Le réseau finance et accompagne des startups développant des solutions stratégiques.",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 14
+  },
+  {
+   "cle": "generate-generate",
+   "nom": "Generate",
+   "logo": "partenaires/generate.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 15
+  },
+  {
+   "cle": "robotic-valley-robotic-valley",
+   "nom": "Robotic Valley",
+   "logo": "partenaires/robotic-valley.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 16
+  },
+  {
+   "cle": "cluster-eden-cluster-eden",
+   "nom": "Cluster EDEN",
+   "logo": "partenaires/cluster-eden.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 17
+  },
+  {
+   "cle": "le-village-by-ca-village-by-ca",
+   "nom": "Le Village by CA",
+   "logo": "partenaires/village-by-ca.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 18
+  },
+  {
+   "cle": "le-catalyseur-par-paris-ouest-la-defense-catalyseur",
+   "nom": "Le Catalyseur par Paris Ouest La Défense",
+   "logo": "partenaires/catalyseur.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 19
+  },
+  {
+   "cle": "startair-by-gifas-starair",
+   "nom": "StartAir by GIFAS",
+   "logo": "partenaires/starair.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 20
+  },
+  {
+   "cle": "defence-angels-european-network-eban",
+   "nom": "Defence Angels European Network",
+   "logo": "partenaires/eban.webp",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 21
+  },
+  {
+   "cle": "wind-capital-texte",
+   "nom": "Wind Capital",
+   "logo": "",
+   "description": "",
+   "lien": "",
+   "rubriques": [
+    "prix"
+   ],
+   "ordre": 22
+  },
+  {
+   "cle": "agence-de-l-innovation-de-defense-aid-2025",
+   "nom": "Agence de l'Innovation de Défense (AID)",
+   "logo": "partenaires/aid.webp",
+   "description": "Pilote, coordonne et soutient l'innovation au sein du ministère des Armées. Identifie les ruptures technologiques critiques, finance les projets innovants et accélère leur passage en capacité opérationnelle.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 23
+  },
+  {
+   "cle": "bpifrance-2025",
+   "nom": "Bpifrance",
+   "logo": "partenaires/bpifrance.webp",
+   "description": "Banque publique d'investissement chargée d'accompagner entreprises, startups et PME à chaque étape de leur croissance : financement, innovation, fonds propres, garantie et accompagnement stratégique.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 24
+  },
+  {
+   "cle": "euronext-2025",
+   "nom": "Euronext",
+   "logo": "partenaires/euronext.webp",
+   "description": "Principale place boursière paneuropéenne, opérant les marchés de Paris, Amsterdam, Bruxelles, Lisbonne, Oslo, Dublin et Milan. Joue un rôle fondamental dans l'accès des entreprises au financement via les marchés.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 25
+  },
+  {
+   "cle": "gicat-generate-2025",
+   "nom": "GICAT / GENERATE",
+   "logo": "partenaires/gicat.webp",
+   "description": "Groupement des industries françaises de défense et de sécurité terrestres et aéroterrestres. Le programme GENERATE accompagne les startups duales et les intègre aux écosystèmes industriels et opérationnels.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 26
+  },
+  {
+   "cle": "nsi-group-2025",
+   "nom": "NSI Group",
+   "logo": "partenaires/nsi-group.webp",
+   "description": "Acteur industriel spécialisé dans la conception, la protection et l'intégration de solutions hautement sécurisées pour les environnements sensibles : défense, sûreté et infrastructures critiques.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 27
+  },
+  {
+   "cle": "starburst-2025",
+   "nom": "Starburst",
+   "logo": "partenaires/starburst.webp",
+   "description": "Accélérateur mondial dédié aux secteurs de l'aérospatial, de la défense et des technologies duales. Accompagne les entreprises en phase d'amorçage ou de croissance.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 28
+  },
+  {
+   "cle": "quandela-2025",
+   "nom": "Quandela",
+   "logo": "partenaires/quandela.webp",
+   "description": "Leader européen des technologies quantiques photoniques. Développe des calculateurs quantiques, des solutions de cybersécurité quantique et des briques technologiques essentielles au computing quantique.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 29
+  },
+  {
+   "cle": "start-industrie-2025",
+   "nom": "Start Industrie",
+   "logo": "partenaires/start-industrie.webp",
+   "description": "Accompagne les startups industrielles dans leur passage à l'échelle, leur structuration et leur industrialisation, notamment dans les secteurs stratégiques.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 30
+  },
+  {
+   "cle": "la-french-fab-2025",
+   "nom": "La French Fab",
+   "logo": "partenaires/french-fab.webp",
+   "description": "Étendard de l'industrie française. Fédère les entreprises industrielles engagées dans la modernisation, la transformation numérique et la transition vers une industrie durable et souveraine.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 31
+  },
+  {
+   "cle": "defense-angels-2025",
+   "nom": "Défense Angels",
+   "logo": "partenaires/defense-angels.webp",
+   "description": "Premier réseau de business angels dédié aux technologies de défense, de sécurité et duales. Finance et accompagne des startups développant des solutions clés pour la souveraineté technologique.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 32
+  },
+  {
+   "cle": "la-place-strategique-2025",
+   "nom": "La Place Stratégique",
+   "logo": "partenaires/la-place-strategique.webp",
+   "description": "Média et plateforme spécialisée dans les enjeux de souveraineté, de défense, d'industrie et de stratégie.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 33
+  },
+  {
+   "cle": "estrads-certification-2025",
+   "nom": "ESTRADS Certification",
+   "logo": "partenaires/estrads.webp",
+   "description": "Accompagne les acteurs industriels, institutionnels et technologiques dans la certification, la qualification et l'évaluation de systèmes critiques.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 34
+  },
+  {
+   "cle": "the-sov-company-2025",
+   "nom": "The Sov Company",
+   "logo": "partenaires/the-sov-company.webp",
+   "description": "Développe des solutions et services dédiés à la souveraineté technologique et informative. Analyse stratégique et sécurisation des infrastructures critiques.",
+   "lien": "",
+   "rubriques": [
+    "edition-2025"
+   ],
+   "ordre": 35
+  }
+ ],
+ "intervenants": [
+  {
+   "cle": "stephane-boujnah",
+   "nom": "Stéphane Boujnah",
+   "fonction": "CEO et Chairman of the Managing Board",
+   "orga": "Euronext",
+   "univers": "finance",
+   "photo": "intervenants/stephane-boujnah.webp"
+  },
+  {
+   "cle": "emmanuel-chiva",
+   "nom": "Emmanuel Chiva",
+   "fonction": "Président-directeur général",
+   "orga": "Office National d’Études et de Recherches Aérospatiales (ONERA)",
+   "univers": "recherche",
+   "photo": "intervenants/emmanuel-chiva.webp"
+  },
+  {
+   "cle": "stephane-ouaki",
+   "nom": "Stéphane Ouaki",
+   "fonction": "Head of Department",
+   "orga": "European Innovation Council and SMEs Executive Agency (EISMEA)",
+   "univers": "institutions",
+   "photo": "intervenants/stephane-ouaki.webp"
+  },
+  {
+   "cle": "benoist-grossmann",
+   "nom": "Benoist Grossmann",
+   "fonction": "Chairman",
+   "orga": "Eurazeo Tech",
+   "univers": "finance",
+   "photo": "intervenants/benoist-grossmann.webp"
+  },
+  {
+   "cle": "alexandra-andre",
+   "nom": "Alexandra André",
+   "fonction": "Directrice",
+   "orga": "French Tech Grand Paris",
+   "univers": "innovation",
+   "photo": "intervenants/alexandra-andre.webp"
+  },
+  {
+   "cle": "clement-leprince",
+   "nom": "Clément Leprince",
+   "fonction": "Président",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/clement-leprince.webp"
+  },
+  {
+   "cle": "alexandre-papaemmanuel",
+   "nom": "Alexandre Papaemmanuel",
+   "fonction": "Senior Vice President, Business Strategy & Future Portfolios",
+   "orga": "MBDA",
+   "univers": "industrie",
+   "photo": "intervenants/alexandre-papaemmanuel.webp"
+  },
+  {
+   "cle": "charles-beigbeder",
+   "nom": "Charles Beigbeder",
+   "fonction": "Founding Partner",
+   "orga": "Expansion Ventures",
+   "univers": "finance",
+   "photo": "intervenants/charles-beigbeder.webp"
+  },
+  {
+   "cle": "jacques-kossowski",
+   "nom": "Jacques Kossowski",
+   "fonction": "Vice-président délégué au développement économique",
+   "orga": "Paris Ouest La Défense",
+   "univers": "institutions",
+   "photo": "intervenants/jacques-kossowski.webp"
+  },
+  {
+   "cle": "alexis-toustou",
+   "nom": "Alexis Toustou",
+   "fonction": "Directeur général",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/alexis-toustou.webp"
+  },
+  {
+   "cle": "francois-carlot",
+   "nom": "François Carlot",
+   "fonction": "Associé gérant",
+   "orga": "Rothschild & Co",
+   "univers": "finance",
+   "photo": "intervenants/francois-carlot.webp"
+  },
+  {
+   "cle": "jean-christophe-fromantin",
+   "nom": "Jean-Christophe Fromantin",
+   "fonction": "Maire",
+   "orga": "Mairie de Neuilly-sur-Seine",
+   "univers": "institutions",
+   "photo": "intervenants/jean-christophe-fromantin.webp"
+  },
+  {
+   "cle": "mathieu-fossat",
+   "nom": "Mathieu Fossat",
+   "fonction": "Sous-directeur, chef du service des biens à double usage",
+   "orga": "Ministère de l’Économie et des Finances",
+   "univers": "institutions",
+   "photo": "intervenants/mathieu-fossat.webp"
+  },
+  {
+   "cle": "marine-le-chatelier",
+   "nom": "Marine Le Châtelier",
+   "fonction": "Directrice du pôle industrie de défense",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/marine-le-chatelier.webp"
+  },
+  {
+   "cle": "jean-louis-constanza",
+   "nom": "Jean-Louis Constanza",
+   "fonction": "Co-founder, EVP Development",
+   "orga": "Wandercraft",
+   "univers": "innovation",
+   "photo": "intervenants/jean-louis-constanza.webp"
+  },
+  {
+   "cle": "jean-christophe-lambert",
+   "nom": "Jean-Christophe Lambert",
+   "fonction": "Président du Club StarAir by GIFAS et CEO d’Ascendance",
+   "orga": "StarAir by GIFAS · Ascendance",
+   "univers": "innovation",
+   "photo": "intervenants/jean-christophe-lambert.webp"
+  },
+  {
+   "cle": "amelie-cindea",
+   "nom": "Amélie Cindea",
+   "fonction": "Directrice des opérations",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/amelie-cindea.webp"
+  },
+  {
+   "cle": "alexandre-medvedowsky",
+   "nom": "Alexandre Medvedowsky",
+   "fonction": "Président",
+   "orga": "ESL & NSI Group",
+   "univers": "industrie",
+   "photo": "intervenants/alexandre-medvedowsky.webp"
+  },
+  {
+   "cle": "eric-ottou",
+   "nom": "Eric Ottou",
+   "fonction": "Directeur Technology Intelligence, Assessment, Insertion",
+   "orga": "Thales",
+   "univers": "industrie",
+   "photo": "intervenants/eric-ottou.webp"
+  },
+  {
+   "cle": "jeanne-tricot",
+   "nom": "Jeanne Tricot",
+   "fonction": "Directrice des programmes",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/jeanne-tricot.webp"
+  },
+  {
+   "cle": "pascal-saubion",
+   "nom": "Pascal Saubion",
+   "fonction": "Directeur commercial de la division défense et sécurité",
+   "orga": "Orange Business",
+   "univers": "industrie",
+   "photo": "intervenants/pascal-saubion.webp"
+  },
+  {
+   "cle": "xavier-desmaison",
+   "nom": "Xavier Desmaison",
+   "fonction": "Directeur général / CEO",
+   "orga": "NSI Group",
+   "univers": "industrie",
+   "photo": "intervenants/xavier-desmaison.webp"
+  },
+  {
+   "cle": "michael-bollet",
+   "nom": "Michael Bollet",
+   "fonction": "Directeur des études adjoint",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/michael-bollet.webp"
+  },
+  {
+   "cle": "hubert-raymond",
+   "nom": "Hubert Raymond",
+   "fonction": "Directeur de l’innovation et de GENERATE",
+   "orga": "GICAT",
+   "univers": "industrie",
+   "photo": "intervenants/hubert-raymond.webp"
+  },
+  {
+   "cle": "romain-lucken",
+   "nom": "Romain Lucken",
+   "fonction": "CEO et cofondateur",
+   "orga": "Aldoria",
+   "univers": "innovation",
+   "photo": "intervenants/romain-lucken.webp"
+  },
+  {
+   "cle": "leonie-meister",
+   "nom": "Léonie Meister",
+   "fonction": "Directrice des études",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/leonie-meister.webp"
+  },
+  {
+   "cle": "marc-antoine",
+   "nom": "Marc Antoine",
+   "fonction": "Directeur des affaires institutionnelles",
+   "orga": "Safran AI",
+   "univers": "industrie",
+   "photo": "intervenants/marc-antoine.webp"
+  },
+  {
+   "cle": "emmanuel-ankri",
+   "nom": "Emmanuel Ankri",
+   "fonction": "Directeur stratégique",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/emmanuel-ankri.webp"
+  },
+  {
+   "cle": "benoit-vedel",
+   "nom": "Benoit Vedel",
+   "fonction": "Directeur adjoint",
+   "orga": "GICAT",
+   "univers": "industrie",
+   "photo": "intervenants/benoit-vedel.webp"
+  },
+  {
+   "cle": "paul-brun",
+   "nom": "Paul Brun",
+   "fonction": "Président de la Commission du financement de l’industrie de défense (CFID)",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/paul-brun.webp"
+  },
+  {
+   "cle": "emmanuel-menier",
+   "nom": "Emmanuel Menier",
+   "fonction": "Co-founder and Chief Executive Officer",
+   "orga": "NPco",
+   "univers": "innovation",
+   "photo": "intervenants/emmanuel-menier.webp"
+  },
+  {
+   "cle": "eliot-bernard",
+   "nom": "Eliot Bernard",
+   "fonction": "Directeur stratégique adjoint",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/eliot-bernard.webp"
+  },
+  {
+   "cle": "jean-prevost",
+   "nom": "Jean Prévost",
+   "fonction": "Adjoint au Maire délégué au Développement économique et à l’Emploi",
+   "orga": "Mairie de Suresnes",
+   "univers": "institutions",
+   "photo": "intervenants/jean-prevost.webp"
+  },
+  {
+   "cle": "arthur-binetti",
+   "nom": "Arthur Binetti",
+   "fonction": "Directeur adjoint des programmes",
+   "orga": "Institut National des Affaires Stratégiques (INAS)",
+   "univers": "recherche",
+   "photo": "intervenants/arthur-binetti.webp"
+  }
+ ],
+ "seances": [
+  {
+   "cle": "seance-01",
+   "titre": "Accueil des participants",
+   "debut": "08:30",
+   "fin": "09:00",
+   "type": "networking",
+   "note": "Petit-déjeuner networking",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-02",
+   "titre": "Mot d'accueil de l'organisateur",
+   "debut": "09:00",
+   "fin": "09:05",
+   "type": "autres",
+   "note": "",
+   "intervenants": [
+    "clement-leprince"
+   ],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-03",
+   "titre": "Mot d'accueil du partenaire territorial",
+   "debut": "09:05",
+   "fin": "09:10",
+   "type": "autres",
+   "note": "",
+   "intervenants": [
+    "jacques-kossowski"
+   ],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-04",
+   "titre": "Allocution d'ouverture",
+   "debut": "09:10",
+   "fin": "09:20",
+   "type": "autres",
+   "note": "",
+   "intervenants": [
+    "stephane-boujnah"
+   ],
+   "moderateurs": [],
+   "temps_fort": true,
+   "resume": "Stéphane Boujnah, CEO et Chairman of the Managing Board d'Euronext"
+  },
+  {
+   "cle": "seance-05",
+   "titre": "Ouverture ministérielle",
+   "debut": "09:20",
+   "fin": "09:30",
+   "type": "autres",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-06",
+   "titre": "Table ronde : « Industrie de défense, quelles innovations pour préparer les conflits de demain ? »",
+   "debut": "09:30",
+   "fin": "10:15",
+   "type": "table",
+   "note": "",
+   "intervenants": [
+    "eric-ottou",
+    "alexandre-papaemmanuel",
+    "marc-antoine",
+    "hubert-raymond"
+   ],
+   "moderateurs": [
+    "amelie-cindea",
+    "marine-le-chatelier"
+   ],
+   "temps_fort": true,
+   "resume": "Thales, MBDA, Safran AI et GICAT autour de la table"
+  },
+  {
+   "cle": "seance-07",
+   "titre": "Keynote : « La robotisation du champ de bataille : préparer les armées à la guerre de demain »",
+   "debut": "10:15",
+   "fin": "10:30",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-08",
+   "titre": "Pause networking",
+   "debut": "10:30",
+   "fin": "11:00",
+   "type": "networking",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-09",
+   "titre": "Keynote : « Recherche, investissement et commande : quel nouveau modèle pour l'innovation de défense ? »",
+   "debut": "11:00",
+   "fin": "11:15",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [
+    "emmanuel-chiva"
+   ],
+   "moderateurs": [],
+   "temps_fort": true,
+   "resume": "Emmanuel Chiva, Président-directeur général de l'ONERA"
+  },
+  {
+   "cle": "seance-10",
+   "titre": "Table ronde : « Du civil au militaire : réussir la bascule duale »",
+   "debut": "11:15",
+   "fin": "12:00",
+   "type": "table",
+   "note": "",
+   "intervenants": [
+    "jean-louis-constanza",
+    "pascal-saubion",
+    "alexandre-medvedowsky"
+   ],
+   "moderateurs": [
+    "michael-bollet",
+    "eliot-bernard"
+   ],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-11",
+   "titre": "Keynote : « Défense européenne : quel rôle pour les banques publiques de développement ? »",
+   "debut": "12:00",
+   "fin": "12:15",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-12",
+   "titre": "Déjeuner",
+   "debut": "12:15",
+   "fin": "14:00",
+   "type": "networking",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-13",
+   "titre": "Keynote : « Scale up : comment financer le passage à l'échelle des startups stratégiques ? »",
+   "debut": "14:00",
+   "fin": "14:15",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [
+    "jean-christophe-lambert"
+   ],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-14",
+   "titre": "Table ronde : « Investir dans la New defence : effet de mode ou tendance de fond ? »",
+   "debut": "14:15",
+   "fin": "15:00",
+   "type": "table",
+   "note": "En parallèle, visite du Catalyseur Santé",
+   "intervenants": [
+    "charles-beigbeder",
+    "benoist-grossmann",
+    "romain-lucken",
+    "francois-carlot"
+   ],
+   "moderateurs": [
+    "jeanne-tricot",
+    "paul-brun"
+   ],
+   "temps_fort": true,
+   "resume": "Expansion, Eurazeo Tech, Aldoria et Rothschild & Co"
+  },
+  {
+   "cle": "seance-15",
+   "titre": "Workshops & Ateliers au Campus Cyber",
+   "debut": "15:00",
+   "fin": "15:45",
+   "type": "atelier",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-16",
+   "titre": "Keynote : « Biens à double usage : comment concilier contrôle des exportations et développement industriel ? »",
+   "debut": "15:45",
+   "fin": "16:00",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [
+    "mathieu-fossat"
+   ],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-17",
+   "titre": "Pause networking",
+   "debut": "16:00",
+   "fin": "16:15",
+   "type": "networking",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-18",
+   "titre": "Keynote : « Le territoire comme accélérateur d'innovation duale »",
+   "debut": "16:15",
+   "fin": "16:30",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [
+    "jean-christophe-fromantin"
+   ],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-19",
+   "titre": "Table ronde : « Produire plus, plus vite : territoires, filières et deeptech au cœur de la réindustrialisation »",
+   "debut": "16:30",
+   "fin": "17:15",
+   "type": "table",
+   "note": "",
+   "intervenants": [
+    "benoit-vedel",
+    "xavier-desmaison",
+    "emmanuel-menier",
+    "jean-prevost"
+   ],
+   "moderateurs": [
+    "leonie-meister",
+    "arthur-binetti"
+   ],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-20",
+   "titre": "Remise du Prix de l'Innovation Duale",
+   "debut": "17:15",
+   "fin": "18:00",
+   "type": "temps-fort",
+   "note": "",
+   "intervenants": [
+    "alexandra-andre"
+   ],
+   "moderateurs": [],
+   "temps_fort": true,
+   "resume": "Trois lauréats en Robotique, Santé et Deeptech"
+  },
+  {
+   "cle": "seance-21",
+   "titre": "Pause networking",
+   "debut": "18:00",
+   "fin": "18:15",
+   "type": "networking",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-22",
+   "titre": "Keynote : « Souveraineté technologique : le Dual-use au cœur de la nouvelle stratégie européenne d'innovation »",
+   "debut": "18:15",
+   "fin": "18:30",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [
+    "stephane-ouaki"
+   ],
+   "moderateurs": [],
+   "temps_fort": true,
+   "resume": "Stéphane Ouaki, European Innovation Council and SMEs Executive Agency (EISMEA)"
+  },
+  {
+   "cle": "seance-23",
+   "titre": "Keynote : « Combattre demain : préparer et transformer nos forces armées »",
+   "debut": "18:30",
+   "fin": "18:45",
+   "type": "keynote",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-24",
+   "titre": "Mot de clôture de l'organisateur",
+   "debut": "18:45",
+   "fin": "18:50",
+   "type": "autres",
+   "note": "",
+   "intervenants": [
+    "alexis-toustou"
+   ],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  },
+  {
+   "cle": "seance-25",
+   "titre": "Allocution ministérielle de clôture",
+   "debut": "18:50",
+   "fin": "19:00",
+   "type": "autres",
+   "note": "",
+   "intervenants": [],
+   "moderateurs": [],
+   "temps_fort": false,
+   "resume": ""
+  }
+ ]
+}

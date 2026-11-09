@@ -48,8 +48,8 @@ def lignes(*ls, tag="h2", cls="h2", attrs=""):
     return f'<{tag} class="{cls} lignes"{attrs}>{inner}</{tag}>'
 
 
-NAV = [("programme", "Programme"), ("intervenants", "Intervenants"), ("partenaires", "Partenaires"), ("workshops", "Workshops"), ("infos", "Infos pratiques"), ("contact", "Contact")]
-TIROIR = [("accueil", "Accueil"), ("programme", "Programme 2026"), ("intervenants", "Intervenants"), ("partenaires", "Devenir partenaire"), ("workshops", "Ateliers & Workshops"),
+NAV = [("evenement", "L'événement"), ("programme", "Programme"), ("intervenants", "Intervenants"), ("partenaires", "Partenaires"), ("workshops", "Workshops"), ("infos", "Infos pratiques"), ("contact", "Contact")]
+TIROIR = [("accueil", "Accueil"), ("evenement", "L'événement"), ("programme", "Programme 2026"), ("intervenants", "Intervenants"), ("partenaires", "Devenir partenaire"), ("workshops", "Ateliers & Workshops"),
           ("prix", "Prix de l'innovation duale"), ("infos", "Infos pratiques"), ("retrospective", "Rétrospective 2026"), ("contact", "Contact")]
 
 # ---------- Données structurées partagées ----------
@@ -146,11 +146,11 @@ def pied():
           <a href="https://www.parisouestladefense.fr/" target="_blank" rel="noopener"><img src="assets/partenaires/pold-blanc.webp" alt="Paris Ouest La Défense" width="88" height="44" loading="lazy"></a>
         </div>
       </div>
-      <div><h2>L'événement</h2><ul><li><a href="{lien('accueil')}">Accueil</a></li><li><a href="{lien('retrospective')}">Rétrospective première édition</a></li><li><a href="{lien('intervenants')}">Intervenants</a></li><li><a href="{lien('prix')}">Prix de l'innovation duale</a></li></ul></div>
+      <div><h2>L'événement</h2><ul><li><a href="{lien('accueil')}">Accueil</a></li><li><a href="{lien('evenement')}">L'événement</a></li><li><a href="{lien('retrospective')}">Rétrospective première édition</a></li><li><a href="{lien('intervenants')}">Intervenants</a></li><li><a href="{lien('prix')}">Prix de l'innovation duale</a></li></ul></div>
       <div><h2>Participer</h2><ul><li><a href="{lien('programme')}">Programme 2026</a></li><li><a href="{lien('inscription')}">S'inscrire</a></li><li><a href="{lien('partenaires')}">Devenir partenaire</a></li><li><a href="{lien('workshops')}">Proposer un workshop</a></li></ul></div>
       <div><h2>S'informer</h2><ul><li><a href="{lien('infos')}">Infos pratiques</a></li><li><a href="{lien('contact')}">Contact</a></li><li><a href="{LINKEDIN}" target="_blank" rel="noopener">LinkedIn</a></li></ul></div>
     </div>
-    <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés</p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
+    <div class="pied__bas"><p>© 2026 DualTech · Tous droits réservés · <a href="{lien('mentions')}">Mentions légales</a> · <a href="{lien('confidentialite')}">Politique de confidentialité</a> · <button type="button" class="pied__cookies" data-cookies>Gérer les cookies</button></p><p>Jeudi 26 novembre 2026 · Campus Cyber · La Défense</p></div>
   </div>
 </footer>
 <dialog class="modale" id="film" aria-label="Lecture de la vidéo">
@@ -164,6 +164,7 @@ def pied():
     <p class="fiche__cat"></p>
     <h2 id="fiche-nom"></h2>
     <p class="fiche__desc"></p>
+    <p class="fiche__site" hidden><a class="lien-fleche" href="#" target="_blank" rel="noopener">Visiter le site{ico('sortie')}</a></p>
     <div class="fiche__nav"><button type="button" data-fiche-pas="-1">Partenaire précédent</button><button type="button" data-fiche-pas="1">Partenaire suivant</button></div>
   </div>
 </dialog>
