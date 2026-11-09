@@ -19,9 +19,6 @@ export const HookScene: React.FC = () => {
   });
   return (
     <AbsoluteFill style={{ background: BRAND.white, opacity: 1 - out }}>
-      {/* Cartes décoratives (lavande, 32 %) */}
-      <div style={{ position: "absolute", right: -120, top: 120, width: 420, height: 420, borderRadius: 64, background: "rgba(174,165,217,0.32)", border: `1px solid ${BRAND.white}`, transform: "rotate(14deg)" }} />
-      <div style={{ position: "absolute", left: -140, bottom: 300, width: 360, height: 360, borderRadius: 64, background: "rgba(57,18,103,0.08)", transform: "rotate(-10deg)" }} />
 
       <AbsoluteFill
         style={{

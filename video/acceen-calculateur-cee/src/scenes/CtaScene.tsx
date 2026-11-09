@@ -12,7 +12,6 @@ export const CtaScene: React.FC = () => {
   const arrow = interpolate(t, [14, 60], [0, 10], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ background: BRAND.white }}>
-      <div style={{ position: "absolute", left: -120, top: 140, width: 380, height: 380, borderRadius: 64, background: "rgba(174,165,217,0.32)", border: `1px solid ${BRAND.white}`, transform: "rotate(-12deg)" }} />
       <AbsoluteFill style={{ alignItems: "center", justifyContent: "center", paddingBottom: 140 }}>
         <div
           style={{
