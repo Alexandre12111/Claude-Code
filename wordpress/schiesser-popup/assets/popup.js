@@ -39,6 +39,9 @@
   }
 
   if (!aMontrer()) return;
+  // La fenêtre passe avant le bandeau cookies : il attend qu'elle soit fermée.
+  var html = document.documentElement;
+  html.classList.add('horaires-attente');
 
   var boite = el.querySelector('.spop-boite');
   var avant = null;
@@ -66,6 +69,10 @@
     if (!apercu) ecrire(r.freq === 'session' ? 'sessionStorage' : 'localStorage');
   }
   function fermer() {
+    if (html.classList.contains('horaires-attente')) {
+      html.classList.remove('horaires-attente');
+      document.dispatchEvent(new CustomEvent('schiesser:horaires'));
+    }
     el.classList.remove('is-ouvert');
     document.removeEventListener('keydown', clavier);
     document.documentElement.classList.remove('spop-bloque');
@@ -75,8 +82,5 @@
   }
   Array.prototype.forEach.call(el.querySelectorAll('[data-fermer]'), function (b) { b.addEventListener('click', fermer); });
 
-  function programmer() { setTimeout(ouvrir, Math.max(0, (r.delai || 0) * 1000)); }
-  // Bandeau cookies affiché : la fenêtre attend que le visiteur ait fait son choix.
-  if (document.documentElement.classList.contains('cookies-attente')) document.addEventListener('schiesser:cookies', programmer, { once: true });
-  else programmer();
+  setTimeout(ouvrir, Math.max(0, (r.delai || 0) * 1000));
 })();

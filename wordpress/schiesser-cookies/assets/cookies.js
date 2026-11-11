@@ -59,7 +59,12 @@
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !el.hidden && S.choix) fermer(); });
 
-  if (!S.choix) ouvrir(false);
+  // Les scripts différés s'exécutent tous avant DOMContentLoaded : la fenêtre des horaires a eu le temps de s'annoncer.
+  document.addEventListener('DOMContentLoaded', function () {
+    if (S.choix) return;
+    if (html.classList.contains('horaires-attente')) document.addEventListener('schiesser:horaires', function () { ouvrir(false); }, { once: true });
+    else ouvrir(false);
+  });
 
   // Clics utiles pour Google Ads : envoyés au dataLayer, lus par Google Tag Manager seulement après accord.
   if (C.evt) {

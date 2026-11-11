@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Schiesser · Cookies et Google Tag Manager
  * Description:       Bandeau de consentement aux cookies (allemand, français, anglais), Google Tag Manager et Consent Mode v2 de Google. Les balises marketing (Google Ads) attendent l'accord du visiteur. Réglages : Réglages maison → Cookies et suivi.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Confiserie Schiesser
@@ -23,7 +23,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const SCHIESSER_COOKIES_VERSION = '1.0.0';
+const SCHIESSER_COOKIES_VERSION = '1.1.0';
 const SCHIESSER_COOKIES_OPTION  = 'schiesser_cookies';
 
 /* ------------------------------------------------------------------ */
@@ -38,7 +38,7 @@ function schiesser_cookies_langues() {
 function schiesser_cookies_champs_textes() {
 	return array(
 		'titre'      => array( 'Titre', 'Cookies auf dieser Website', 'Cookies sur ce site', 'Cookies on this website', 'input' ),
-		'texte'      => array( 'Texte', 'Wir verwenden notwendige Cookies, damit die Website funktioniert. Mit Ihrer Einwilligung nutzen wir zusätzlich Cookies von Google, um unsere Werbung zu messen und zu verbessern. Sie können Ihre Wahl jederzeit unter «Cookie-Einstellungen» am Seitenende ändern.', 'Nous utilisons des cookies nécessaires au fonctionnement du site. Avec votre accord, nous utilisons aussi des cookies de Google pour mesurer et améliorer nos annonces. Vous pouvez modifier votre choix à tout moment via « Paramètres des cookies » en bas de page.', 'We use necessary cookies to make this website work. With your consent, we also use cookies from Google to measure and improve our advertising. You can change your choice at any time via “Cookie settings” at the bottom of the page.', 'textarea' ),
+		'texte'      => array( 'Texte', 'Mit Ihrer Einwilligung nutzen wir Cookies von Google, um unsere Werbung zu messen. Ihre Wahl können Sie jederzeit am Seitenende ändern.', 'Avec votre accord, nous utilisons des cookies de Google pour mesurer nos annonces. Vous pouvez changer d’avis à tout moment en bas de page.', 'With your consent, we use cookies from Google to measure our advertising. You can change your choice at any time at the bottom of the page.', 'textarea' ),
 		'accepter'   => array( 'Bouton « tout accepter »', 'Alle akzeptieren', 'Tout accepter', 'Accept all', 'input' ),
 		'refuser'    => array( 'Bouton « refuser »', 'Nur notwendige', 'Nécessaires uniquement', 'Necessary only', 'input' ),
 		'choisir'    => array( 'Bouton « personnaliser »', 'Einstellungen', 'Personnaliser', 'Customise', 'input' ),
