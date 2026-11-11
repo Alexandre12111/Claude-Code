@@ -75,5 +75,8 @@
   }
   Array.prototype.forEach.call(el.querySelectorAll('[data-fermer]'), function (b) { b.addEventListener('click', fermer); });
 
-  setTimeout(ouvrir, Math.max(0, (r.delai || 0) * 1000));
+  function programmer() { setTimeout(ouvrir, Math.max(0, (r.delai || 0) * 1000)); }
+  // Bandeau cookies affiché : la fenêtre attend que le visiteur ait fait son choix.
+  if (document.documentElement.classList.contains('cookies-attente')) document.addEventListener('schiesser:cookies', programmer, { once: true });
+  else programmer();
 })();

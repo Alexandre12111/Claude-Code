@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Schiesser · Fenêtre des horaires
  * Description:       Petite fenêtre qui affiche les heures d'ouverture de la confiserie à l'arrivée sur le site. Titre, texte, fréquence d'apparition, délai et période se règlent dans Réglages maison → Fenêtre des horaires.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Confiserie Schiesser
@@ -19,7 +19,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const SCHIESSER_POPUP_VERSION = '1.0.0';
+const SCHIESSER_POPUP_VERSION = '1.1.0';
 const SCHIESSER_POPUP_OPTION  = 'schiesser_popup';
 
 /* ------------------------------------------------------------------ */

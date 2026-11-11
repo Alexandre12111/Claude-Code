@@ -69,6 +69,7 @@ $ancres  = count( $ancres ) >= 2 ? $ancres : array();
 				$prive = $prive ? get_permalink( $prive ) : get_privacy_policy_url();
 				?>
 				<?php if ( $prive ) : ?><a href="<?php echo esc_url( $prive ); ?>"><?php echo esc_html( schiesser_t( 'Datenschutz' ) ); ?></a><?php endif; ?>
+				<?php do_action( 'schiesser_liens_legaux' ); // lien « Cookie-Einstellungen » de l'extension Cookies ?>
 			</span>
 			<span><?php echo esc_html( implode( ' · ', array_filter( array( $rue, $ville ) ) ) ); ?></span>
 		</div>

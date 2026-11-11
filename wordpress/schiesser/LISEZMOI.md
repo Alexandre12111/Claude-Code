@@ -3,6 +3,10 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.25.1 : lien « Cookie-Einstellungen »
+
+* Pied de page : emplacement `schiesser_liens_legaux` après « Datenschutz », utilisé par l'extension « Schiesser · Cookies et Google Tag Manager » pour le lien « Cookie-Einstellungen » (rouvrir le bandeau et changer son choix).
+
 ## Version 0.25.0 : EB Garamond hébergée
 
 * **EB Garamond** (fichiers fournis par le client, licence OFL) est maintenant hébergée sur le site et proposée pour les titres et pour le texte (Réglages maison → Charte → Typographie). Aucune connexion à Google Fonts.
