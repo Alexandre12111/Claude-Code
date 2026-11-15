@@ -156,7 +156,7 @@ function schiesser_mq_blocs() {
 		'chiffre'        => array( 'Chiffre', 'Un chiffre et son libellé.', 'editor-ol', array( 'schiesser/chiffres', 'schiesser/encart' ),
 			array( 'valeur' => '', 'libelle' => '' ) ),
 		'etage'          => array( 'Étage', 'Carte photo avec grand chiffre, titre, texte et lien.', 'building', array( 'schiesser/etages' ),
-			$i() + array( 'numero' => '0', 'surtitre' => '', 'titre' => '', 'texte' => '', 'lienTexte' => '', 'lienUrl' => '' ) ),
+			$i() + array( 'numero' => '0', 'surtitre' => '', 'titre' => '', 'texte' => '', 'lienTexte' => '', 'lienUrl' => '', 'ouvrirTexte' => '' ) ),
 		'geste'          => array( 'Étape du savoir-faire', 'Titre, texte et photo d’une étape.', 'yes', array( 'schiesser/savoir-faire' ),
 			$i() + array( 'titre' => '', 'texte' => '' ) ),
 		'date'           => array( 'Date', 'Une année, un titre, un texte, une photo.', 'calendar', array( 'schiesser/frise' ),
@@ -177,7 +177,7 @@ function schiesser_mq_blocs() {
 			$i() + array( 'titre' => '', 'texte' => '' ) ),
 		'moment'         => array( 'Moment', 'Heure, libellé, photo, titre, sous-titre, texte et conseil.', 'clock', array( 'schiesser/moments' ),
 			$i() + array( 'heure' => '', 'libelle' => '', 'titre' => '', 'sousTitre' => '', 'texte' => '', 'conseil' => '' ) ),
-		'ligne'          => array( 'Ligne d’information', 'Libellé et valeur (adresse, horaires, téléphone… automatiques si vous le souhaitez).', 'editor-justify', array( 'schiesser/venir', 'schiesser/formulaire', 'schiesser/fiche-contact', 'schiesser/adresse' ),
+		'ligne'          => array( 'Ligne d’information', 'Libellé et valeur (adresse, horaires, téléphone… automatiques si vous le souhaitez).', 'editor-justify', array( 'schiesser/venir', 'schiesser/formulaire', 'schiesser/fiche-contact', 'schiesser/adresse', 'schiesser/etage' ),
 			array( 'libelle' => '', 'valeur' => '', 'detail' => '', 'lien' => '', 'auto' => '' ) ),
 		'exergue'        => array( 'Citation en exergue', 'Citation en italique avec son auteur.', 'format-quote', array( 'schiesser/origine' ),
 			array( 'texte' => '', 'auteur' => '' ) ),
@@ -915,22 +915,75 @@ function schiesser_mq_rendu_catalogue( $a ) {
 }
 
 function schiesser_mq_rendu_etages( $a, $content, $block ) {
-	$cartes = '';
+	static $n = 0;
+	$cartes   = '';
+	$fenetres = '';
 	foreach ( schiesser_mq_enfants( $block ) as $c ) {
-		$e     = $c->attributes;
-		$lien  = trim( (string) $e['lienUrl'] );
-		$tag   = $lien ? 'a' : 'div';
-		$cartes .= '<' . $tag . ' class="x-floor"' . ( $lien ? ' href="' . esc_url( $lien ) . '"' : '' ) . '>'
-			. schiesser_mq_image( $e, 'image', 'large', array( 'sizes' => '(min-width: 820px) 50vw, 100vw' ) )
-			. '<span class="x-num" aria-hidden="true">' . esc_html( schiesser_mq_brut( $e['numero'] ) ) . '</span>'
-			. '<span class="x-fc">'
-			. ( '' !== trim( $e['surtitre'] ) ? '<span class="x-lv">' . schiesser_mq_riche( $e['surtitre'] ) . '</span>' : '' )
+		$e       = $c->attributes;
+		$lien    = trim( (string) $e['lienUrl'] );
+		$fenetre = schiesser_mq_fenetre_contenu( $c );
+		$fc      = ( '' !== trim( $e['surtitre'] ) ? '<span class="x-lv">' . schiesser_mq_riche( $e['surtitre'] ) . '</span>' : '' )
 			. '<span class="x-ft">' . schiesser_mq_riche( $e['titre'] ) . '</span>'
-			. ( '' !== trim( $e['texte'] ) ? '<span class="x-fd">' . schiesser_mq_riche( $e['texte'] ) . '</span>' : '' )
+			. ( '' !== trim( $e['texte'] ) ? '<span class="x-fd">' . schiesser_mq_riche( $e['texte'] ) . '</span>' : '' );
+		$image   = schiesser_mq_image( $e, 'image', 'large', array( 'sizes' => '(min-width: 820px) 50vw, 100vw' ) );
+		$num     = '<span class="x-num" aria-hidden="true">' . esc_html( schiesser_mq_brut( $e['numero'] ) ) . '</span>';
+		if ( '' !== $fenetre ) {
+			// Carte avec fenêtre : un clic ouvre les informations détaillées, le lien devient le bouton de la fenêtre.
+			$id       = 'x-fen-' . ( ++$n );
+			$ouvrir   = trim( wp_strip_all_tags( (string) $e['ouvrirTexte'] ) ) ? schiesser_mq_riche( $e['ouvrirTexte'] ) : esc_html( schiesser_t( 'Mehr erfahren' ) );
+			$cartes  .= '<button type="button" class="x-floor x-floor--fen js-fenetre" aria-haspopup="dialog" aria-controls="' . esc_attr( $id ) . '">'
+				. $image . $num . '<span class="x-fc">' . $fc . '<span class="x-fb"><span>' . $ouvrir . '</span> <span aria-hidden="true">+</span></span></span></button>';
+			$fenetres .= '<dialog class="x-fen" id="' . esc_attr( $id ) . '" aria-labelledby="' . esc_attr( $id ) . '-t">'
+				. '<div class="x-fen-boite">'
+				. '<button type="button" class="x-fen-x js-fenetre-fermer" aria-label="' . esc_attr( schiesser_t( 'Schliessen' ) ) . '"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></button>'
+				. '<div class="x-fen-im">' . schiesser_mq_image( $e, 'image', 'large', array( 'sizes' => '(min-width: 900px) 460px, 100vw', 'loading' => 'lazy' ) ) . '</div>'
+				. '<div class="x-fen-tx">'
+				. ( '' !== trim( $e['surtitre'] ) ? '<p class="x-fen-k">' . schiesser_mq_riche( $e['surtitre'] ) . '</p>' : '' )
+				. '<h3 class="x-fen-t" id="' . esc_attr( $id ) . '-t">' . schiesser_mq_riche( $e['titre'] ) . '</h3>'
+				. '<div class="x-fen-corps">' . $fenetre . '</div>'
+				. ( '' !== trim( (string) $e['lienTexte'] ) && $lien ? '<div class="x-fen-cta">' . schiesser_mq_bouton( $e['lienTexte'], $lien, 'btn-kir', true ) . '</div>' : '' )
+				. '</div></div></dialog>';
+			continue;
+		}
+		$tag     = $lien ? 'a' : 'div';
+		$cartes .= '<' . $tag . ' class="x-floor"' . ( $lien ? ' href="' . esc_url( $lien ) . '"' : '' ) . '>'
+			. $image . $num . '<span class="x-fc">' . $fc
 			. ( '' !== trim( $e['lienTexte'] ) ? '<span class="x-fb"><span>' . schiesser_mq_riche( $e['lienTexte'] ) . '</span> <span aria-hidden="true">→</span></span>' : '' )
 			. '</span></' . $tag . '>';
 	}
-	return schiesser_mq_section( $a, '<div class="x-floors rv">' . $cartes . '</div>' );
+	return schiesser_mq_section( $a, '<div class="x-floors rv">' . $cartes . '</div>' . $fenetres );
+}
+
+/**
+ * Contenu de la fenêtre d'une carte « étage » : les blocs ajoutés sous la carte dans l'éditeur
+ * (paragraphes, intertitres, listes, lignes d'information). Vide : la carte reste un simple lien.
+ */
+function schiesser_mq_fenetre_contenu( $carte ) {
+	$html   = '';
+	$lignes = '';
+	foreach ( schiesser_mq_enfants( $carte ) as $b ) {
+		if ( 'schiesser/ligne' === $b->name ) {
+			$l = $b->attributes;
+			if ( ! schiesser_bloc_visible( $l ) ) {
+				continue;
+			}
+			list( $v, $d ) = schiesser_mq_ligne_valeurs( $l, 'vn' );
+			$lignes .= '<div class="vn-row"><span class="k">' . schiesser_mq_riche( $l['libelle'] ) . '</span><span class="v">' . $v . ( $d ? '<small>' . $d . '</small>' : '' ) . '</span></div>';
+			continue;
+		}
+		if ( $lignes ) {
+			$html  .= '<div class="vn-rows">' . $lignes . '</div>';
+			$lignes = '';
+		}
+		$rendu = $b->render();
+		if ( '' !== trim( wp_strip_all_tags( $rendu ) ) ) {
+			$html .= $rendu; // un paragraphe laissé vide n'ouvre pas de fenêtre
+		}
+	}
+	if ( $lignes ) {
+		$html .= '<div class="vn-rows">' . $lignes . '</div>';
+	}
+	return trim( $html );
 }
 
 function schiesser_mq_rendu_savoir_faire( $a, $content, $block ) {

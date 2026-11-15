@@ -2648,3 +2648,42 @@ p,.x-fd,.note{text-wrap:pretty}
 :is(.pcell,.pc,.val):hover{background:var(--paper-3);box-shadow:inset 0 0 0 1px var(--line-2)}
 .bg-soft :is(.pcell,.pc,.val):hover{background:var(--paper)}
 .prac .pcell:hover{background:var(--paper-3);box-shadow:none}
+
+/* ---------- 0.26 · Cartes photo avec fenêtre d'informations ---------- */
+.x-floor--fen{width:100%;margin:0;padding:0;border:0;font:inherit;text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none}
+.x-floor--fen:focus-visible{outline:2px solid var(--vert);outline-offset:4px}
+dialog.x-fen{width:min(1000px,calc(100vw - 32px));max-width:none;max-height:calc(100dvh - 32px);margin:auto;padding:0;border:0;background:transparent;color:var(--text);overflow:visible}
+.x-fen::backdrop{background:color-mix(in srgb,var(--dark) 62%,transparent);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.x-fen-boite{position:relative;display:grid;grid-template-columns:1fr;max-height:calc(100dvh - 32px);overflow:auto;background:var(--paper);border-radius:var(--r-l,24px);box-shadow:0 50px 100px -40px rgba(39,27,18,.6)}
+dialog.x-fen[open] .x-fen-boite{animation:x-fen-entre .5s var(--ease-out) both}
+@keyframes x-fen-entre{from{opacity:0;transform:translateY(18px) scale(.985)}}
+.x-fen-im{position:relative;height:clamp(200px,34vh,320px);background:var(--paper-deep)}
+.x-fen-im img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.x-fen-tx{padding:clamp(26px,4vw,52px)}
+@media(min-width:900px){
+  .x-fen-boite{grid-template-columns:42% 1fr;overflow:hidden}
+  .x-fen-im{height:auto;min-height:100%}
+  .x-fen-tx{max-height:calc(100dvh - 32px);overflow:auto}
+}
+.x-fen-x{position:absolute;top:14px;right:14px;z-index:3;display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;border-radius:50%;background:color-mix(in srgb,var(--paper) 88%,transparent);color:var(--ink);cursor:pointer;box-shadow:0 6px 18px -8px rgba(39,27,18,.5);transition:background-color .2s}
+.x-fen-x:hover{background:var(--paper)}
+.x-fen-x:focus-visible{outline:2px solid var(--vert);outline-offset:2px}
+.x-fen-k{margin:0 0 10px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--vert)}
+.x-fen-t{margin:0 48px 18px 0;font-family:var(--serif);font-weight:500;font-size:clamp(27px,3vw,38px);line-height:1.08;color:var(--ink)}
+.x-fen-corps{color:var(--ink-soft);font-size:15.5px;line-height:1.65}
+.x-fen-corps>*{margin:0 0 14px}
+.x-fen-corps>*:last-child{margin-bottom:0}
+.x-fen-corps :is(h2,h3,h4){margin:22px 0 8px;font-family:var(--serif);font-weight:500;font-size:20px;line-height:1.25;color:var(--ink)}
+.x-fen-corps ul,.x-fen-corps ol{padding-left:1.2em}
+.x-fen-corps li{margin:4px 0}
+.x-fen-corps li::marker{color:var(--vert)}
+.x-fen-corps strong{color:var(--ink);font-weight:600}
+.x-fen-corps a{color:var(--vert);text-decoration:underline;text-underline-offset:3px}
+.x-fen-corps .vn-rows{margin:20px 0 0}
+.x-fen-corps .vn-row{grid-template-columns:130px 1fr}
+@media(max-width:480px){.x-fen-corps .vn-row{grid-template-columns:1fr;gap:4px}}
+.x-fen-cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:28px}
+.x-fen-modifier{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:4px;background:#1e1e1e;color:#fff;font:600 12px/1.2 system-ui,sans-serif;text-decoration:none}
+.x-fen-modifier:hover{background:var(--vert);color:#fff}
+html:has(dialog.x-fen[open]){overflow:hidden}
+@media(prefers-reduced-motion:reduce){dialog.x-fen[open] .x-fen-boite{animation:none}}

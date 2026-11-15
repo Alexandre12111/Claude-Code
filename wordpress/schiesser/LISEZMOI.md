@@ -1,7 +1,14 @@
-# Thème Schiesser 0.25
+# Thème Schiesser 0.26
 
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
+
+## Version 0.26.0 : cartes photo avec fenêtre d'informations
+
+* **Bloc « Deux étages (cartes photo) »** : chaque carte peut ouvrir une fenêtre avec plus d'informations (photo, titre, paragraphes, intertitres, listes, lignes d'information et bouton). Dans l'éditeur, sous chaque carte : « Fenêtre au clic » ; laissé vide, la carte reste un simple lien (accueil inchangé).
+* La fenêtre se ferme avec la croix, la touche Échap ou un clic à côté ; accessible au clavier (fenêtre native du navigateur).
+* Connecté, un bouton « Modifier ce texte » dans la fenêtre ouvre l'éditeur sur cette section.
+* Fichier d'import du 15 novembre : section « Private Anlässe & Firmenevents » de la page Tea Room avec deux cartes et leurs fenêtres (DE, FR, EN).
 
 ## Version 0.25.1 : lien « Cookie-Einstellungen »
 

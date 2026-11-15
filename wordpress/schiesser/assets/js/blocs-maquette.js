@@ -423,19 +423,40 @@
   }, true);
 
   enregistrer('etage', function (props) {
-    var bp = be.useBlockProps({ className: 'x-floor' });
+    var bp = be.useBlockProps({ className: 'sch-ed-etage' });
+    var aFenetre = useSelect(function (sel) { return sel('core/block-editor').getBlockCount(props.clientId) > 0; }, [props.clientId]);
+    var ouvert = useState(aFenetre), montrer = ouvert[0], setMontrer = ouvert[1];
+    var fenetre = be.useInnerBlocksProps({ className: 'sch-ed-fenetre-corps' }, {
+      allowedBlocks: ['core/paragraph', 'core/heading', 'core/list', 'schiesser/ligne'],
+      templateLock: false,
+      renderAppender: be.InnerBlocks.ButtonBlockAppender // pas de modèle : une carte sans fenêtre reste un simple lien
+    });
     return el(Fragment, null,
       barrePhoto(props, 'image'),
-      el(be.InspectorControls, null, panneauPhoto(props, 'image'), el(c.PanelBody, { title: 'Lien', initialOpen: true }, champLien(props, 'lienUrl', 'Page ouverte au clic'))),
+      el(be.InspectorControls, null, panneauPhoto(props, 'image'),
+        el(c.PanelBody, { title: 'Lien', initialOpen: true },
+          champLien(props, 'lienUrl', aFenetre ? 'Lien du bouton de la fenêtre' : 'Page ouverte au clic'),
+          aFenetre ? aide('La carte ouvre la fenêtre ; ce lien devient le bouton en bas de la fenêtre (par exemple mailto:info@… pour une demande).') : null)),
       el('div', bp,
-        photo(props, 'image', ''),
-        P(props, 'numero', 'span', 'x-num', '0'),
-        el('span', { className: 'x-fc' },
-          T(props, 'surtitre', 'span', 'x-lv', 'Rez-de-chaussée'),
-          T(props, 'titre', 'span', 'x-ft', 'Titre'),
-          T(props, 'texte', 'span', 'x-fd', 'Texte'),
-          el('span', { className: 'x-fb' }, T(props, 'lienTexte', 'span', '', 'Texte du lien'), el('span', null, ' →')))));
-  });
+        el('div', { className: 'x-floor' },
+          photo(props, 'image', ''),
+          P(props, 'numero', 'span', 'x-num', '0'),
+          el('span', { className: 'x-fc' },
+            T(props, 'surtitre', 'span', 'x-lv', 'Rez-de-chaussée'),
+            T(props, 'titre', 'span', 'x-ft', 'Titre'),
+            T(props, 'texte', 'span', 'x-fd', 'Texte'),
+            aFenetre
+              ? el('span', { className: 'x-fb' }, T(props, 'ouvrirTexte', 'span', '', 'Mehr erfahren'), el('span', null, ' +'))
+              : el('span', { className: 'x-fb' }, T(props, 'lienTexte', 'span', '', 'Texte du lien'), el('span', null, ' →')))),
+        el('div', { className: 'sch-ed-fenetre' + (montrer || aFenetre ? ' is-ouverte' : '') },
+          el('button', { type: 'button', className: 'sch-ed-fenetre-titre', onClick: function () { setMontrer(!montrer); } },
+            (montrer || aFenetre ? '▾ ' : '▸ ') + 'Fenêtre au clic' + (aFenetre ? '' : ' (facultatif)')),
+          (montrer || aFenetre) ? el('div', null,
+            aide('Ce qui s’affiche quand on clique sur la carte : paragraphes, intertitres, listes et lignes d’information. Laissez vide pour une carte qui mène simplement à une page.'),
+            el('div', fenetre),
+            aFenetre ? el('div', { className: 'sch-ed-fenetre-bouton' }, el('span', null, 'Bouton en bas de la fenêtre : '), T(props, 'lienTexte', 'strong', '', 'Texte du bouton')) : null
+          ) : null)));
+  }, true);
 
   enregistrer('savoir-faire', function (props) {
     return Section(props, {}, el(Fragment, null,

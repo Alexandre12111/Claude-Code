@@ -267,6 +267,8 @@ function schiesser_traductions_base() {
 		'Früher und heute vergleichen'               => array( 'Comparer hier et aujourd’hui', 'Compare then and now' ),
 		'Backstube'                                  => array( 'Atelier', 'Bakehouse' ),
 		'Schliessen'                                 => array( 'Fermer', 'Close' ),
+		'Mehr erfahren'                              => array( 'En savoir plus', 'Learn more' ),
+		'Diesen Text bearbeiten'                     => array( 'Modifier ce texte', 'Edit this text' ),
 		'Vorschau'                                   => array( 'Aperçu', 'Preview' ),
 		'Ansehen'                                    => array( 'Voir', 'View' ),
 		'Ziehen'                                     => array( 'Glisser', 'Drag' ),

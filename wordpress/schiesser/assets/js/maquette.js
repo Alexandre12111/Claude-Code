@@ -528,3 +528,29 @@
     window.addEventListener('blur', cacher);
   }
 })();
+
+/* ---------- cartes photo avec fenêtre d'informations (0.26) ---------- */
+(function () {
+  'use strict';
+  document.addEventListener('click', function (e) {
+    var carte = e.target.closest && e.target.closest('.js-fenetre');
+    if (carte) {
+      var d = document.getElementById(carte.getAttribute('aria-controls'));
+      if (!d || typeof d.showModal !== 'function') return;
+      // Connecté : « Modifier ce texte » ouvre l'éditeur sur cette section (même lien que « Modifier cette section »).
+      var lien = carte.closest('[data-sch-section]');
+      lien = lien && lien.querySelector(':scope > .sch-modifier');
+      if (lien && !d.querySelector('.x-fen-modifier')) {
+        var a = document.createElement('a');
+        a.className = 'x-fen-modifier'; a.href = lien.href; a.textContent = '✎ Modifier ce texte';
+        var cta = d.querySelector('.x-fen-cta') || d.querySelector('.x-fen-tx').appendChild(Object.assign(document.createElement('div'), { className: 'x-fen-cta' }));
+        cta.appendChild(a);
+      }
+      d.showModal();
+      return;
+    }
+    if (e.target.closest && e.target.closest('.js-fenetre-fermer')) { e.target.closest('dialog').close(); return; }
+    // clic sur le fond assombri (en dehors de la boîte)
+    if (e.target.matches && e.target.matches('dialog.x-fen')) e.target.close();
+  });
+})();
