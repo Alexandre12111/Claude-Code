@@ -3,6 +3,12 @@
 Thème WordPress sur mesure pour la Confiserie Schiesser, sans constructeur de pages ni extension payante.
 Le design de la maquette v3 est reproduit à l'identique dans le code ; tout le contenu se modifie depuis l'administration, sans écrire une ligne de code.
 
+## Version 0.26.1 : fenêtre sans défilement, photo verticale
+
+* **Fenêtre des cartes photo** : sur ordinateur, tout tient à l'écran sans défiler (photo à gauche, texte plus large, listes sur deux colonnes, lignes d'information sur trois colonnes), vérifié de 1280 × 720 à 1920 × 1080. Toujours claire et lisible, même ouverte depuis une section verte.
+* **Photo de la fenêtre indépendante** de celle de la carte (format vertical conseillé) : dans l'éditeur, sous la carte, « Photo de la fenêtre (verticale) ». Sans photo choisie, la fenêtre reprend celle de la carte.
+* Fichier d'import du 15 novembre : section des événements placée avant la montée à l'étage, sur fond vert, et « Bis bald am Marktplatz » sur fond sable pour alterner les fonds.
+
 ## Version 0.26.0 : cartes photo avec fenêtre d'informations
 
 * **Bloc « Deux étages (cartes photo) »** : chaque carte peut ouvrir une fenêtre avec plus d'informations (photo, titre, paragraphes, intertitres, listes, lignes d'information et bouton). Dans l'éditeur, sous chaque carte : « Fenêtre au clic » ; laissé vide, la carte reste un simple lien (accueil inchangé).

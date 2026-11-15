@@ -80,3 +80,11 @@
 .sch-ed-fenetre-corps>*{margin:0 0 12px}
 .sch-ed-fenetre-corps :is(h2,h3,h4){margin-top:18px;font-family:var(--serif,serif);font-weight:500;font-size:19px}
 .sch-ed-fenetre-corps ul{padding-left:1.2em}
+.sch-ed-fenetre-grille{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
+.sch-ed-fenetre-photo{display:flex;flex-direction:column;gap:6px}
+.sch-ed-fenetre-photo img,.sch-ed-fenetre-photo .sch-ed-photo-vide{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:8px}
+.sch-ed-fenetre-legende{font:12px/1.3 system-ui,sans-serif;color:var(--ink-soft,#6B5A47)}
+/* zone toujours claire, même dans une section verte */
+.sch-ed-fenetre{--on-dark:var(--ink,#2A1C12);--on-dark-2:var(--ink-soft,#6B5A47);--line-dark:var(--line);--mint:var(--vert,#174633)}
+.sch-ed-fenetre :is(p,li,.sch-ed-aide){color:var(--ink-soft,#6B5A47)}
+.sch-ed-fenetre :is(h2,h3,h4,strong,.vn-row .v,.vn-row .k){color:var(--ink,#2A1C12)}

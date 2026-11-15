@@ -156,7 +156,7 @@ function schiesser_mq_blocs() {
 		'chiffre'        => array( 'Chiffre', 'Un chiffre et son libellé.', 'editor-ol', array( 'schiesser/chiffres', 'schiesser/encart' ),
 			array( 'valeur' => '', 'libelle' => '' ) ),
 		'etage'          => array( 'Étage', 'Carte photo avec grand chiffre, titre, texte et lien.', 'building', array( 'schiesser/etages' ),
-			$i() + array( 'numero' => '0', 'surtitre' => '', 'titre' => '', 'texte' => '', 'lienTexte' => '', 'lienUrl' => '', 'ouvrirTexte' => '' ) ),
+			$i() + $i( 'fenetre' ) + array( 'numero' => '0', 'surtitre' => '', 'titre' => '', 'texte' => '', 'lienTexte' => '', 'lienUrl' => '', 'ouvrirTexte' => '' ) ),
 		'geste'          => array( 'Étape du savoir-faire', 'Titre, texte et photo d’une étape.', 'yes', array( 'schiesser/savoir-faire' ),
 			$i() + array( 'titre' => '', 'texte' => '' ) ),
 		'date'           => array( 'Date', 'Une année, un titre, un texte, une photo.', 'calendar', array( 'schiesser/frise' ),
@@ -936,7 +936,8 @@ function schiesser_mq_rendu_etages( $a, $content, $block ) {
 			$fenetres .= '<dialog class="x-fen" id="' . esc_attr( $id ) . '" aria-labelledby="' . esc_attr( $id ) . '-t">'
 				. '<div class="x-fen-boite">'
 				. '<button type="button" class="x-fen-x js-fenetre-fermer" aria-label="' . esc_attr( schiesser_t( 'Schliessen' ) ) . '"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg></button>'
-				. '<div class="x-fen-im">' . schiesser_mq_image( $e, 'image', 'large', array( 'sizes' => '(min-width: 900px) 460px, 100vw', 'loading' => 'lazy' ) ) . '</div>'
+				// Photo de la fenêtre (verticale de préférence) ; sans elle, celle de la carte.
+				. '<div class="x-fen-im">' . schiesser_mq_image( $e, ( ! empty( $e['fenetreId'] ) || '' !== trim( (string) $e['fenetreUrl'] ) ) ? 'fenetre' : 'image', 'large', array( 'sizes' => '(min-width: 900px) 420px, 100vw', 'loading' => 'lazy' ) ) . '</div>'
 				. '<div class="x-fen-tx">'
 				. ( '' !== trim( $e['surtitre'] ) ? '<p class="x-fen-k">' . schiesser_mq_riche( $e['surtitre'] ) . '</p>' : '' )
 				. '<h3 class="x-fen-t" id="' . esc_attr( $id ) . '-t">' . schiesser_mq_riche( $e['titre'] ) . '</h3>'

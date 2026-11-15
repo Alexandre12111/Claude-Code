@@ -433,7 +433,8 @@
     });
     return el(Fragment, null,
       barrePhoto(props, 'image'),
-      el(be.InspectorControls, null, panneauPhoto(props, 'image'),
+      el(be.InspectorControls, null, panneauPhoto(props, 'image', 'Photo de la carte'),
+        aFenetre ? panneauPhoto(props, 'fenetre', 'Photo de la fenêtre (verticale)') : null,
         el(c.PanelBody, { title: 'Lien', initialOpen: true },
           champLien(props, 'lienUrl', aFenetre ? 'Lien du bouton de la fenêtre' : 'Page ouverte au clic'),
           aFenetre ? aide('La carte ouvre la fenêtre ; ce lien devient le bouton en bas de la fenêtre (par exemple mailto:info@… pour une demande).') : null)),
@@ -453,7 +454,12 @@
             (montrer || aFenetre ? '▾ ' : '▸ ') + 'Fenêtre au clic' + (aFenetre ? '' : ' (facultatif)')),
           (montrer || aFenetre) ? el('div', null,
             aide('Ce qui s’affiche quand on clique sur la carte : paragraphes, intertitres, listes et lignes d’information. Laissez vide pour une carte qui mène simplement à une page.'),
-            el('div', fenetre),
+            el('div', { className: 'sch-ed-fenetre-grille' },
+              el('div', { className: 'sch-ed-fenetre-photo' },
+                el('span', { className: 'sch-ed-fenetre-legende' }, 'Photo de la fenêtre (verticale)'),
+                photo(props, 'fenetre', ''),
+                props.attributes.fenetreUrl ? null : el('span', { className: 'sch-ed-fenetre-legende' }, 'Sans photo ici : celle de la carte.')),
+              el('div', fenetre)),
             aFenetre ? el('div', { className: 'sch-ed-fenetre-bouton' }, el('span', null, 'Bouton en bas de la fenêtre : '), T(props, 'lienTexte', 'strong', '', 'Texte du bouton')) : null
           ) : null)));
   }, true);
