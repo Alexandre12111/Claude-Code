@@ -47,7 +47,7 @@ body{{display:flex;align-items:center;justify-content:center;font-family:'DM San
 .tag{{font:700 18px/1 'DM Sans';letter-spacing:.2em;color:var(--lime);padding:11px 18px;border:1px solid rgba(215,255,63,.4);border-radius:30px}}
 .hd{{position:absolute;left:110px;right:110px;top:150px;display:flex;align-items:flex-end;justify-content:space-between;gap:60px}}
 h1{{font:800 72px/1.04 'Plus Jakarta Sans';letter-spacing:-.035em}}
-h1 span{{color:var(--lime)}}
+h1 span{{background:linear-gradient(100deg,#D7FF3F,#4F6BFF);-webkit-background-clip:text;background-clip:text;color:transparent}}
 .q{{max-width:560px;padding-left:24px;border-left:4px solid var(--lime);font:500 24px/1.45 'DM Sans';color:#D6D3CC}}
 .q b{{display:block;font:700 14px/1 'DM Sans';letter-spacing:.2em;color:var(--lime);margin-bottom:10px}}
 .g{{position:absolute;left:110px;right:110px;top:350px;bottom:84px;display:grid;grid-template-columns:1.05fr 1fr;gap:28px}}
