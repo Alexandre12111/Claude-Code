@@ -92,11 +92,11 @@ h1 span{{background:linear-gradient(100deg,#D7FF3F,#4F6BFF);-webkit-background-c
 <body><div id="s">
   <div class="top">{logo(40)}<span class="tag">PRÉSENTATION CLIENT</span></div>
   <div class="hd"><h1>Intertek, leader mondial<br>de <span>l’assurance qualité</span></h1>
-    <p class="q"><b>RAISON D’ÊTRE</b>Donner vie à la qualité et à la sécurité, durablement, pour devenir le partenaire le plus fiable au monde en assurance qualité.</p></div>
+    <p class="q"><b>RAISON D’ÊTRE</b>Donner vie à la qualité et à la sécurité, durablement</p></div>
   <div class="g">
     <div class="l">
       <div class="c"><div class="ch">Dans le monde</div><div class="kp">{kpis}</div></div>
-      <div class="c"><div class="ch">Approche ATIC</div><div class="ats">{atic}</div><p>Une approche systémique de la qualité et de la sécurité, de la R&amp;D au service client.</p></div>
+      <div class="c"><div class="ch">Approche ATIC</div><div class="ats">{atic}</div><p>Une approche systémique de la qualité et de la sécurité</p></div>
     </div>
     <div class="r">
       <div class="c fr"><div class="ch">En France</div>
