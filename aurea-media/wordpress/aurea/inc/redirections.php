@@ -55,12 +55,23 @@ function aurea_redirections() {
 		'site-vitrine-chauffagiste-pac'                        => 'site-internet-artisan-btp',
 		'site-vitrine-serrurier'                               => 'site-internet-artisan-btp',
 		'site-vitrine-artisan'                                 => 'site-internet-artisan-btp',
-		'site-internet-artisan'                                => 'site-internet-artisan-btp',
 		'pourquoi-site-internet-artisan'                       => 'site-internet-artisan-btp',
 		'site-vitrine-coach-consultant'                        => 'site-internet-coach-consultant',
 		'site-internet-coach-therapeute'                       => 'site-internet-coach-consultant',
 		'prix-site-vitrine-paris'                              => 'tarifs',
-		'creation-site-vitrine-tpe-paris'                      => 'tarifs',
+		'creation-site-vitrine-tpe-paris'                      => 'creation-site-vitrine',
+		// Anciennes pages vues dans la Search Console (novembre 2026)
+		'refonte-identite-visuelle-entreprise'                 => 'logo-identite-visuelle',
+		'refonte-identite-visuelle'                            => 'logo-identite-visuelle',
+		'logo-et-charte-graphique'                             => 'logo-identite-visuelle',
+		'nos-conseils-web'                                     => 'conseils',
+		'deleguer-sa-presence-linkedin'                        => 'conseils',
+		'creation-google-my-business'                          => 'article:fiche-google-business-profile',
+		'optimiser-sa-fiche-google-my-business'                => 'article:fiche-google-business-profile',
+		'optimiser-fiche-google-my-business-coach'             => 'article:fiche-google-business-profile',
+		'google-my-business-artisans-tpe'                      => 'article:fiche-google-business-profile',
+		'combien-coute-un-site-e-commerce'                     => 'article:prix-boutique-en-ligne',
+		'creer-un-site-vitrine-soi-meme-ou-en-agence'          => 'article:choisir-agence-web',
 		'prix-site-vitrine-2025'                               => 'article:prix-site-vitrine',
 		'shopify-vs-woocommerce'                               => 'article:woocommerce-ou-shopify',
 		'structure-homepage-site-web'                          => 'article:pages-indispensables-site-vitrine',
@@ -213,7 +224,7 @@ function aurea_reparer_redirections() {
 		$vivante = false;
 		foreach ( $r['sources'] as $s ) {
 			$chemin = trim( (string) ( $s['pattern'] ?? '' ), '/' );
-			if ( 'exact' === ( $s['comparison'] ?? '' ) && $chemin && ( get_page_by_path( $chemin ) || ( function_exists( 'aurea_slugs_gardes' ) && in_array( $chemin, aurea_slugs_gardes(), true ) ) || 'realisations' === $chemin ) ) {
+			if ( 'exact' === ( $s['comparison'] ?? '' ) && $chemin && ( aurea_contenu_publie( $chemin ) || ( function_exists( 'aurea_slugs_gardes' ) && in_array( $chemin, aurea_slugs_gardes(), true ) ) || 'realisations' === $chemin ) ) {
 				$vivante = true;
 			}
 		}
@@ -287,6 +298,48 @@ function aurea_reparer_redirections() {
 		$compte['chaines'], $s( $compte['chaines'] ), $s( $compte['chaines'] )
 	);
 }
+
+/** Une page, un article ou une étude de cas publiés existent ils à ce chemin ? */
+function aurea_contenu_publie( $chemin ) {
+	$chemin = trim( (string) $chemin, '/' );
+	$slug   = basename( $chemin );
+	foreach ( array( array( $chemin, 'page' ), array( $slug, 'post' ), array( $slug, 'aurea_realisation' ) ) as list( $c, $type ) ) {
+		$p = $c ? get_page_by_path( $c, OBJECT, $type ) : null;
+		if ( $p && 'publish' === $p->post_status && trim( aurea_chemin( get_permalink( $p ) ), '/' ) === $chemin ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * À la publication d'une page ou d'un article : une redirection Rank Math qui partirait de son adresse
+ * est désactivée (sinon le nouveau contenu serait inaccessible, comme un article programmé dont le
+ * slug reprenait celui d'une ancienne page).
+ */
+add_action( 'transition_post_status', function ( $nouveau, $ancien, $post ) {
+	if ( 'publish' !== $nouveau || ! in_array( $post->post_type, array( 'post', 'page', 'aurea_realisation' ), true ) || ! function_exists( 'aurea_chemin' ) ) {
+		return;
+	}
+	global $wpdb;
+	$table = $wpdb->prefix . 'rank_math_redirections';
+	if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		return;
+	}
+	$chemin = trim( aurea_chemin( get_permalink( $post ) ), '/' );
+	$touche = false;
+	foreach ( $wpdb->get_results( "SELECT id, sources FROM {$table} WHERE status = 'active'", ARRAY_A ) as $r ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+		foreach ( (array) maybe_unserialize( $r['sources'] ) as $s ) {
+			if ( 'exact' === ( $s['comparison'] ?? '' ) && trim( (string) ( $s['pattern'] ?? '' ), '/' ) === $chemin ) {
+				$wpdb->update( $table, array( 'status' => 'inactive' ), array( 'id' => $r['id'] ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$touche = true;
+			}
+		}
+	}
+	if ( $touche ) {
+		$wpdb->query( "DELETE FROM {$wpdb->prefix}rank_math_redirections_cache" ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery, WordPress.DB.PreparedSQL
+	}
+}, 10, 3 );
 
 /* Après chaque mise à jour du thème : réparation automatique (une seule fois par version). */
 add_action( 'admin_init', function () {

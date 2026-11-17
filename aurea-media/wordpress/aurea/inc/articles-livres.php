@@ -130,3 +130,26 @@ add_action( 'admin_notices', function () {
 		echo '<div class="notice notice-success is-dismissible"><p><strong>Aurea Media</strong> : ' . esc_html( $message ) . '</p></div>';
 	}
 } );
+
+/*
+ * Articles programmés « manqués » : sans visite au bon moment (cache de page, site peu fréquenté),
+ * WordPress oublie de publier un article programmé. Toutes les 10 minutes au plus, à la première visite,
+ * les articles dont la date est passée sont publiés.
+ */
+add_action( 'init', function () {
+	if ( wp_doing_ajax() || get_transient( 'aurea_programmes_verifies' ) ) {
+		return;
+	}
+	set_transient( 'aurea_programmes_verifies', 1, 10 * MINUTE_IN_SECONDS );
+	$retard = get_posts( array(
+		'post_type'        => array( 'post', 'page' ),
+		'post_status'      => 'future',
+		'numberposts'      => 10,
+		'fields'           => 'ids',
+		'suppress_filters' => true,
+		'date_query'       => array( array( 'column' => 'post_date_gmt', 'before' => gmdate( 'Y-m-d H:i:s' ), 'inclusive' => true ) ),
+	) );
+	foreach ( $retard as $id ) {
+		wp_publish_post( $id );
+	}
+}, 20 );
