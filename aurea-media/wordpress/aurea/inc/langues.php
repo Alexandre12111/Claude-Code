@@ -106,6 +106,9 @@ function aurea_t( $fr ) {
 			'Fondateur, développeur et designer web'      => 'Founder, web developer and designer',
 			'Création de site e-commerce'                 => 'E-commerce website design',
 			'Référencement naturel'                       => 'Search engine optimisation',
+			'Développement WordPress'                     => 'WordPress development',
+			'Webdesign'                                   => 'Web design',
+			'Accessibilité numérique'                     => 'Digital accessibility',
 			'Identité visuelle'                           => 'Brand identity',
 			'Motion design'                               => 'Motion design',
 		);

@@ -92,6 +92,7 @@ function aurea_schema_fondateur() {
 		'jobTitle' => aurea_t( 'Fondateur, développeur et designer web' ),
 		'image'    => AUREA_URI . '/assets/alexandre-coury.webp',
 		'worksFor' => array( '@id' => aurea_id( 'organization' ) ),
+		'knowsAbout' => array_map( 'aurea_t', array( 'Développement WordPress', 'WooCommerce', 'Webdesign', 'Référencement naturel', 'Accessibilité numérique', 'Identité visuelle', 'Motion design' ) ),
 		'sameAs'   => array_values( array_filter( array( $c['linkedin_moi'] ) ) ),
 	);
 }

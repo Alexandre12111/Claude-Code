@@ -1,79 +1,86 @@
 # Analyse GEO (moteurs de réponse IA) : aurea-media.fr
 
-Date : 27 octobre 2026 · Méthode : robots.txt, llms.txt, rendu serveur, 77 pages analysées, données structurées, recherche de mentions de la marque.
+Date : 17 novembre 2026 (deuxième passage) · Thème en ligne : Aurea 3.2.0 · Correctifs livrés : Aurea 3.2.1
+Méthode : robots.txt, llms.txt, rendu serveur, données structurées et blocs citables sur 6 pages clés, recherche des mentions de la marque.
 
 Rappel de Google (guide d'optimisation IA, mai 2026) : optimiser pour les réponses IA reste du SEO. Les AI Overviews et le mode IA s'appuient sur l'index de Googlebot ; le fichier llms.txt n'aide ni ne pénalise dans Google.
 
-## Score de préparation GEO : 81/100
+## Score de préparation GEO : 82/100 (81 le 27 octobre)
 
-| Critère | Poids | Score |
-|---|---|---|
-| Citabilité des passages | 25 % | 88 |
-| Structure et lisibilité | 20 % | 90 |
-| Contenus multimédias | 15 % | 85 |
-| Autorité et mentions de la marque | 20 % | 45 |
-| Accessibilité technique | 20 % | 95 |
+| Critère | Poids | 27 oct. | 17 nov. |
+|---|---|---|---|
+| Citabilité des passages | 25 % | 88 | 90 |
+| Structure et lisibilité | 20 % | 90 | 92 |
+| Contenus multimédias | 15 % | 85 | 85 |
+| Autorité et mentions de la marque | 20 % | 45 | 45 |
+| Accessibilité technique | 20 % | 95 | 96 |
+
+Le site lui même est presque au maximum de ce qu'il peut faire. Le point faible reste l'extérieur : la marque est quasi absente des sources tierces que les IA consultent.
 
 ## Par plateforme
-| Plateforme | Score | Ce qui compte |
+| Plateforme | Score | Lecture |
 |---|---|---|
-| Google AI Overviews et mode IA | 80 | Positions Google classiques, passages clairs, fraîcheur : le site est prêt, il manque l'ancienneté et l'autorité du domaine |
-| ChatGPT Search | 60 | Index Bing et mentions de la marque sur des sites tiers : quasi absentes aujourd'hui |
-| Perplexity | 55 | Discussions communautaires (Reddit, forums) et sources tierces : absentes |
+| Google AI Overviews et mode IA | 82 | Passages clairs, données structurées, fraîcheur : prêt. Limité par les positions Google encore moyennes (environ 35) |
+| ChatGPT Search | 60 | Accès autorisé ; dépend de l'index Bing et des mentions tierces, rares |
+| Perplexity | 55 | Accès autorisé ; s'appuie beaucoup sur Reddit et les forums : aucune présence |
 | Claude (recherche) | 65 | Accès autorisé, contenu clair ; dépend aussi des sources tierces |
 
-## Accès des robots
-| Robot | Rôle | Statut |
+## Accès des robots (robots.txt en ligne)
+| Robot | Ce qu'il commande | Statut |
 |---|---|---|
-| Googlebot | Google Search, AI Overviews, mode IA | Autorisé (règle générale), réponse 200 |
-| OAI-SearchBot | Citations dans ChatGPT Search | Autorisé explicitement, réponse 200 |
-| Claude-SearchBot | Citations dans la recherche de Claude | Autorisé explicitement, réponse 200 |
-| PerplexityBot | Perplexity | Autorisé explicitement, réponse 200 |
-| GPTBot | Entraînement des modèles OpenAI (pas la recherche) | Autorisé (règle générale) |
-| ClaudeBot | Entraînement des modèles Anthropic (pas la recherche) | Autorisé (règle générale) |
-| Google-Extended | Entraînement et ancrage Gemini (pas Google Search) | Autorisé (règle générale) |
-| Applebot-Extended | Entraînement Apple Intelligence (pas Siri ni Spotlight) | Autorisé (règle générale) |
+| Googlebot | Google Search, AI Overviews, mode IA | Autorisé (règle générale) |
+| OAI-SearchBot | Citations dans ChatGPT Search | Autorisé explicitement |
+| Claude-SearchBot | Citations dans la recherche de Claude | Autorisé explicitement |
+| PerplexityBot | Recherche Perplexity | Autorisé explicitement |
+| GPTBot | Entraînement des modèles OpenAI (pas ChatGPT Search) | Autorisé (règle générale) |
+| ClaudeBot | Entraînement des modèles Anthropic (pas la recherche de Claude) | Autorisé (règle générale) |
+| Google-Extended | Entraînement et ancrage Gemini, Vertex (pas Google Search) | Autorisé (règle générale) |
+| CCBot, Applebot-Extended | Entraînement (Common Crawl, Apple Intelligence) | Autorisés (règle générale) |
 
-Aucun blocage. Les robots d'entraînement sont autorisés : c'est un choix de licence, sans effet sur la visibilité dans les recherches.
+Les robots d'entraînement relèvent d'un choix de licence, pas de visibilité : les laisser ouverts est cohérent pour une agence qui cherche à être connue.
 
 ## llms.txt
-Présent et complet : présentation, services, secteurs, preuves, 6 guides, version anglaise (19 pages), contact. Utile pour certains assistants hors Google ; aucun poids dans Google.
+Présent (200, 65 lignes) : présentation, services, secteurs dont la nouvelle page collectivités, zones, articles. Aucun poids dans Google ; utile au mieux pour d'autres assistants. Rien à changer.
 
-## Rendu côté serveur
-Pages WordPress générées sur le serveur : tout le texte (titres, blocs « En bref », FAQ, prix) est présent dans le HTML sans JavaScript. Les animations ne font que révéler un contenu déjà présent.
+## Rendu serveur
+WordPress rend tout le contenu côté serveur : textes, blocs « En bref », FAQ et données structurées sont lisibles sans JavaScript. Les animations ne masquent aucun texte au chargement.
 
-## Citabilité des passages
-- 32 pages ont un bloc « En bref » placé juste sous le premier écran, donc dans le premier tiers de la page.
-- Pages françaises : 144 à 158 mots, dans la zone idéale de 134 à 167 mots.
-- Pages anglaises : 126 à 142 mots ; 6 sont un peu courtes (126 à 132 mots).
-- Les articles et les 23 études de cas ont aussi leur bloc « En bref ».
-- Faits chiffrés et vérifiables : prix (dès 1 000 € HT, 1 650 € HT), délais (4 semaines, 6 à 8 semaines), fondation (2021), note Google.
-- Sans bloc de réponse : l'agence (/agence/, /en/about/), le contact, la page des réalisations.
+## Passages citables (6 pages analysées en ligne)
+| Page | Bloc « En bref » | H2 en question | Tableaux | Données structurées |
+|---|---|---|---|---|
+| Accueil | oui | 1 | 0 | ProfessionalService, Person, WebSite, WebPage |
+| /site-internet-collectivites/ | oui (159 mots) | 1 | 1 | + Service, BreadcrumbList |
+| /creation-site-vitrine/ | oui | 3 | 1 | + Service, BreadcrumbList |
+| /agence/ | oui (147 mots, nouveau) | 1 | 0 | AboutPage, Person |
+| /tarifs/ | oui | 1 | 0 → 1 en 3.2.1 | WebPage, BreadcrumbList |
+| /prix-site-vitrine/ (article) | encart « En bref » | 2 | 2 | BlogPosting |
 
-## Mentions de la marque
-- Recherche web : aucune page tierce trouvée qui cite « Aurea Media » ou aurea-media.fr.
-- Le nom est ambigu : AUREA (groupe industriel), Aurea Productions, AURA média… Les IA risquent de confondre les entités.
-- Profil Malt d'Alexandre Coury trouvé, mais il ne mentionne pas Aurea Media.
-- Présent : page LinkedIn de l'entreprise et profil d'Alexandre (reliés dans les données structurées), fiche Google avec 43 avis.
-- Absent : YouTube, Reddit, Wikipédia, annuaires d'agences, articles de presse.
+Les blocs « En bref » font tous 134 à 167 mots, sont placés juste après le haut de page (le premier tiers, d'où viennent la majorité des citations) et sont datés et signés.
 
-## Les 5 changements les plus utiles
-1. Relier les profils existants au site : Malt (mentionner Aurea Media et le lien), LinkedIn (site, description identique), fiche Google. Même nom, même description partout.
-2. Obtenir des mentions tierces : lien « site réalisé par Aurea Media » chez les clients, annuaires d'agences (Sortlist, La Fabrique du Net, Codeur), Bing Places.
-3. Ajouter un bloc « En bref » sur la page L'agence : qui est Alexandre Coury, depuis quand, combien de sites, où.
-4. Publier des vidéos courtes sur YouTube (études de cas, film de marque) : la plateforme la plus liée aux citations IA.
-5. Garder les contenus frais : mettre à jour les dates et les chiffres des pages clés chaque trimestre ; les contenus de moins de 3 mois sont nettement plus cités.
+## Mentions de la marque (recherche du 17 novembre)
+- Aucune page tierce ne cite « Aurea Media » ni aurea-media.fr dans les résultats.
+- Le nom est en concurrence avec des homonymes : Aurea Studio (vidéo IA), Aurea Productions (production), le groupe coté AUREA. Les IA risquent de confondre les entités tant que la marque n'est pas citée ailleurs.
+- Un profil Malt « Alexandre Coury, développeur web à Paris » apparaît, sans lien vers Aurea Media.
+- Présences confirmées : fiche Google (identifiant Knowledge Graph dans sameAs), pages LinkedIn de l'entreprise et du fondateur.
 
-## Données structurées
-- Déjà en place : agence (ProfessionalService) avec adresse, SIREN, fondateur ; fondateur (Person) ; services avec prix ; études de cas (CreativeWork) ; articles (BlogPosting) avec auteur ; fil d'Ariane.
-- À ajouter : les autres profils de la marque dans sameAs (Malt, Bing Places, annuaires) dès qu'ils mentionnent Aurea Media ; et dans le profil du fondateur, son profil Malt.
+## Corrections faites (thème 3.2.1)
+1. Page Tarifs : tableau comparatif des offres (prix, délai, public). Un tableau est le format le plus facilement repris par les IA pour une question de prix.
+2. Schéma du fondateur : compétences ajoutées (développement WordPress, WooCommerce, webdesign, référencement, accessibilité numérique, identité visuelle, motion design), en français et en anglais.
+3. Déjà livré en 3.2.0 : blocs « En bref » sur la page collectivités et « L'agence », maillage pages piliers vers guides.
 
-## Passages à retravailler
-- /agence/ et /en/about/ : ajouter un bloc de 140 à 160 mots, « Qui est Aurea Media ? », avec la date de création, le fondateur, le nombre de sites livrés, la zone et les spécialités.
-- Pages anglaises à 126 à 132 mots (website-design, brand-identity-design, architect, ecommerce) : ajouter une phrase factuelle pour atteindre 135 à 150 mots.
-- Page des réalisations : un court paragraphe chiffré en tête (nombre de projets, secteurs, pays).
+## Les 5 changements au plus fort impact (à faire hors du site)
+1. **Profil Malt** : nommer Aurea Media, mettre le lien du site et le même texte de présentation. Ensuite, ajouter son adresse dans le sameAs du fondateur (à me transmettre).
+2. **Liens « site réalisé par Aurea Media »** dans le pied de page des sites clients (Dual Tech, INAS, Xpert Medical, etc.), avec leur accord : la mention tierce la plus naturelle et la plus crédible.
+3. **Annuaires d'agences** : La Fabrique du Net, Sortlist, Codeur, Pages Jaunes, avec exactement le même nom, la même adresse et la même description.
+4. **LinkedIn** : un post par article publié (pack 2 en décembre), avec le lien. Les publications LinkedIn sont indexées et associent le nom du fondateur à la marque.
+5. **Une donnée originale** : par exemple « délai et prix moyen de nos 45 projets » ou l'évolution de la Search Console après la refonte, publiée en article. Les contenus avec des chiffres propres sont ceux que les IA citent en priorité.
 
-Sources de la recherche de mentions :
-- https://www.malt.com/profile/alexandrecoury
-- https://hellodarwin.com/fr/agences/aura-media
-- https://models.com/agency/aurea-productions/info
+## Recommandations de schéma
+- Rien de bloquant. Le graphe est complet (organisation, fondateur, site, pages, services, fil d'Ariane, articles).
+- Ajouter au sameAs de l'organisation et du fondateur chaque nouveau profil créé (Malt, annuaires), seulement une fois les profils à jour.
+- Pas de FAQPage à ajouter : Google ne l'affiche plus en résultat enrichi depuis mai 2026.
+
+## Reformulations suggérées
+- Accueil : un seul H2 en question. Garder les titres actuels (ils servent la conversion) ; les questions sont déjà portées par le bloc « En bref » et la FAQ.
+- Articles du pack 1 et 2 : déjà construits avec réponse directe en tête de section, tableaux et sources. À conserver comme standard.
+- Mettre à jour la date et les chiffres du guide de prix chaque année (« en 2027 ») : la fraîcheur pèse fortement dans le mode IA.

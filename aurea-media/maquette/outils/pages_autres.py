@@ -172,7 +172,18 @@ def tarifs():
   </div>
 </section>
 <section class="sec paper" style="padding-top:110px">
-  <div class="wrap">{PRIX}</div>
+  <div class="wrap">{PRIX}
+    <div class="tableau rv" style="margin-top:48px"><table>
+      <caption class="vh">Comparatif des offres Aurea Media</caption>
+      <thead><tr><th>Offre</th><th>Prix</th><th>Délai moyen</th><th>Pour qui</th></tr></thead>
+      <tbody>
+        <tr><td>Site vitrine sur mesure</td><td>dès 1 000 € HT</td><td>4 semaines</td><td>Indépendants, professions libérales, TPE et PME</td></tr>
+        <tr><td>Site e-commerce WooCommerce</td><td>dès 1 650 € HT</td><td>selon le catalogue</td><td>Commerçants, artisans et marques qui vendent en ligne</td></tr>
+        <tr><td>Refonte de site internet</td><td>dès 1 000 € HT</td><td>4 semaines pour un site vitrine</td><td>Entreprises dont le site est daté, lent ou difficile à modifier</td></tr>
+        <tr><td>Identité visuelle, motion design, présentations</td><td>sur devis</td><td>selon le périmètre</td><td>Entreprises qui lancent ou modernisent leur marque</td></tr>
+      </tbody>
+    </table></div>
+  </div>
 </section>
 <section class="sec">
   <div class="wrap">

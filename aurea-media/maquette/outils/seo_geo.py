@@ -31,7 +31,8 @@ ORGA = {
     "knowsAbout": ["Création de site vitrine", "Création de site e-commerce", "WordPress", "WooCommerce", "Référencement naturel", "Identité visuelle", "Motion design"],
 }
 PERSONNE = {"@type": "Person", "@id": f"{SITE}/#alexandre-coury", "name": "Alexandre Coury", "jobTitle": "Fondateur, développeur et designer web",
-            "worksFor": {"@id": f"{SITE}/#organisation"}, "sameAs": ["https://www.linkedin.com/in/alexandre-coury/"]}
+            "worksFor": {"@id": f"{SITE}/#organisation"}, "knowsAbout": ["Développement WordPress", "WooCommerce", "Webdesign", "Référencement naturel", "Accessibilité numérique", "Identité visuelle", "Motion design"],
+            "sameAs": ["https://www.linkedin.com/in/alexandre-coury/"]}
 SITEWEB = {"@type": "WebSite", "@id": f"{SITE}/#site", "url": f"{SITE}/", "name": "Aurea Media", "inLanguage": "fr-FR", "publisher": {"@id": f"{SITE}/#organisation"}}
 
 # fichier : (url, type, nom de service ou titre, prix « dès », fil d'Ariane)
