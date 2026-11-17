@@ -236,6 +236,24 @@
   ]
  },
  {
+  "slug": "site-internet-collectivites",
+  "type": "secteur",
+  "focus_keyword": "site internet collectivité,création site internet mairie,agence web collectivités,site internet mairie RGAA",
+  "title": "Site internet collectivité et mairie : création RGAA | Aurea",
+  "description": "Site internet pour collectivités et mairies : accessible RGAA, mis à jour par vos agents, démarches claires. Rendez vous en mairie dans les Hauts de Seine.",
+  "h1": "Création de site internet pour les collectivités et les mairies.",
+  "schema": "Service + BreadcrumbList",
+  "liens_internes": [
+   "agence-web-hauts-de-seine",
+   "realisations",
+   "contact"
+  ],
+  "robots": [
+   "index",
+   "follow"
+  ]
+ },
+ {
   "slug": "agence-web-paris",
   "type": "local",
   "focus_keyword": "agence web Paris,création site internet Paris,site vitrine Paris",

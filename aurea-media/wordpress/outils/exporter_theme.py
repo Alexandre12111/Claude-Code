@@ -46,6 +46,7 @@ PAGES = {
     "site-internet-restaurant.html": ("site-internet-restaurant", "Site internet restaurant"),
     "site-internet-artisan-btp.html": ("site-internet-artisan-btp", "Site internet artisan et BTP"),
     "site-internet-coach-consultant.html": ("site-internet-coach-consultant", "Site internet coach et consultant"),
+    "site-internet-collectivites.html": ("site-internet-collectivites", "Site internet collectivités et mairies"),
     "agence-web-paris.html": ("agence-web-paris", "Agence web Paris"),
     "agence-web-hauts-de-seine.html": ("agence-web-hauts-de-seine", "Agence web Hauts de Seine"),
     "tarifs.html": ("tarifs", "Tarifs"),

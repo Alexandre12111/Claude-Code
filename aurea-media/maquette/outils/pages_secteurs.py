@@ -183,6 +183,86 @@ def hauts_de_seine():
          "Agence web pour les entreprises des Hauts de Seine : sites vitrines et e-commerce sur mesure, rendez vous à Boulogne, Issy, Neuilly ou en visio. Devis sous 24h.", corps)
 
 
+def collectivites():
+    """Page secteur collectivités : mairies, intercommunalités, établissements publics (Hauts de Seine en priorité).
+
+    Faits réglementaires vérifiés sur les sources officielles citées en bas de page. Références : Dual Tech, INAS et
+    Changer d'Air à Massy, présentées pour ce qu'elles sont (institutions et vie publique), sans les faire passer pour des mairies.
+    """
+    fichier = "site-internet-collectivites.html"
+    visuel = f"""<div class="vis-secteur">
+      {navigateur("dual-tech", lazy=False)}
+      {puce("shield", "Déclaration d'accessibilité", "RGAA 4.1, publiée en pied de page", "top:-14px;left:-10px", ok=True)}
+      {puce("calendar", "Agenda et démarches", "mis à jour par vos services", "bottom:6px;right:0")}
+    </div>"""
+    corps = hero([("Secteurs", "creation-site-vitrine.html"), ("Collectivités", "")], "Site internet pour collectivités et mairies",
+                 'Création de site internet pour les <span class="gold">collectivités</span> et les mairies.',
+                 "Mairies, intercommunalités, syndicats et établissements publics : un site accessible au RGAA, simple à mettre à jour par vos agents et pensé pour les démarches de vos habitants. Studio basé à Paris, rendez vous en mairie dans les Hauts de Seine et en Île de France.",
+                 visuel, [("Demander un devis", "contact.html", True), ("Voir les références", "#references", False)])
+    corps += avantages("Pensé pour les habitants", 'Ce qu\'un habitant cherche sur le site de sa <span class="gold">commune</span>.',
+                       "Un horaire, une démarche, un compte rendu du conseil municipal, une alerte travaux : le site d'une collectivité est un service public. Chaque contenu doit être trouvé en deux clics, sur mobile comme sur ordinateur.",
+                       [("window", "Démarches en ligne", "État civil, urbanisme, inscriptions scolaires, réservation de salles : une page claire par démarche, avec les liens vers Service Public et vos téléservices."),
+                        ("calendar", "Actualités et agenda", "Événements, conseils municipaux, travaux et fermetures exceptionnelles, publiés en quelques minutes par vos services."),
+                        ("pen", "Publications légales", "Délibérations, arrêtés, comptes rendus et bulletin municipal en PDF accessibles, classés et faciles à retrouver."),
+                        ("lightning", "Alertes et infos pratiques", "Bandeau d'alerte (météo, coupure, circulation), horaires de la mairie et des équipements, plan d'accès."),
+                        ("user", "Annuaire et services", "Élus, services municipaux, écoles, associations et équipements, avec coordonnées et horaires à jour."),
+                        ("search", "Moteur de recherche interne", "Un habitant tape « carte d'identité » ou « cantine » et arrive directement sur la bonne page.")])
+    obligations = [("shield", "Accessibilité RGAA", "Le site doit respecter le référentiel général d'amélioration de l'accessibilité (RGAA 4.1) : contrastes, navigation au clavier, textes alternatifs, formulaires et documents lisibles."),
+                   ("check", "Mention de conformité", "Chaque page d'accueil affiche le niveau de conformité : totalement, partiellement ou non conforme."),
+                   ("pen", "Déclaration d'accessibilité", "Une page publique détaille les résultats de l'audit, les contenus non accessibles et le moyen de signaler un défaut."),
+                   ("calendar", "Schéma pluriannuel", "Un plan sur trois ans, décliné en plans d'action annuels, décrit la politique d'accessibilité numérique de la collectivité."),
+                   ("seal", "Données personnelles", "Formulaires minimaux, mentions RGPD, registre des traitements et mesure d'audience sans cookie publicitaire."),
+                   ("globe", "Publicité des actes", "Depuis le 1er juillet 2022, la publication électronique des actes est la règle : le site doit les présenter de façon lisible et durable.")]
+    cartes = "".join(f'<article class="incl rv" style="--d:{i % 3 * .06}s"><span class="incl-ico">{ico(ic)}</span><b>{t}</b><span>{d}</span></article>' for i, (ic, t, d) in enumerate(obligations))
+    corps += section(entete("Obligations légales", 'Les obligations du site internet d\'une <span class="gold">collectivité</span>.',
+                            "L'article 47 de la loi du 11 février 2005 impose aux collectivités territoriales l'accessibilité de leurs services numériques. Depuis l'ordonnance du 6 septembre 2023, l'Arcom contrôle ces obligations et peut, après mise en demeure, prononcer une sanction allant jusqu'à 50 000 €.")
+                     + f'\n<div class="inclus inclus--3">{cartes}</div>', ident="obligations")
+    tableau = """<div class="tableau rv"><table>
+<thead><tr><th>Élément</th><th>Ce que nous livrons</th></tr></thead>
+<tbody>
+<tr><td>Audit d'accessibilité</td><td>Contrôle des critères RGAA sur un échantillon de pages représentatif, avant la mise en ligne</td></tr>
+<tr><td>Déclaration d'accessibilité</td><td>Page rédigée à partir de l'audit, avec contact et voie de recours</td></tr>
+<tr><td>Gabarits accessibles</td><td>Titres hiérarchisés, contrastes vérifiés, navigation clavier, liens d'évitement</td></tr>
+<tr><td>Formation des agents</td><td>Publier une actualité ou un PDF accessible, remplir un texte alternatif</td></tr>
+<tr><td>Propriété</td><td>Site, contenus, nom de domaine et accès au nom de la collectivité, sans abonnement imposé</td></tr>
+</tbody></table></div>"""
+    corps += section(entete("Commande publique", 'Un projet simple à <span class="gold">commander</span>.',
+                            "Depuis le 1er avril 2026 (décret n° 2025-1386), un marché de services de moins de 60 000 € HT peut être conclu sans publicité ni mise en concurrence préalables, à condition de choisir une offre pertinente, de faire une bonne utilisation des deniers publics et de ne pas contracter systématiquement avec le même prestataire. Un site de collectivité se situe le plus souvent bien en dessous de ce seuil.")
+                     + "\n" + tableau
+                     + '\n<p class="lead rv" style="margin-top:22px">Nous transmettons un devis détaillé ligne par ligne, utilisable comme pièce de votre dossier d\'achat, et répondons aussi aux consultations et marchés à procédure adaptée.</p>', papier=True)
+    corps += section(entete("Références", 'Des sites pour des <span class="gold">institutions</span> et la vie publique.',
+                            "Un salon européen soutenu par des acteurs institutionnels, un think tank consacré à la souveraineté et une plateforme de campagne municipale : trois projets où la clarté de l'information et la confiance comptent autant que le design.")
+                     + f'\n<div class="gal">{"".join(carte_projet(c, REAL[c][3]) for c in ["dual-tech", "inas", "massy"])}</div>', ident="references")
+    corps += methode('Votre site en ligne en <span class="nw"><span class="gold">quelques semaines</span>.</span>',
+                     "Un rendez vous de cadrage en mairie, une maquette validée par vos élus et vos services, puis le développement, l'audit d'accessibilité et la formation de vos agents.")
+    villes = ["Boulogne-Billancourt", "Nanterre", "Courbevoie", "Colombes", "Rueil-Malmaison", "Issy-les-Moulineaux", "Levallois-Perret", "Neuilly-sur-Seine", "Clichy", "Antony", "Clamart", "Montrouge", "Meudon", "Puteaux", "Suresnes", "Sèvres"]
+    corps += section(entete("Île de France", 'Une agence proche des collectivités des <span class="gold">Hauts de Seine</span>.',
+                            "Basés à Paris, nous venons en mairie pour le rendez vous de lancement et la présentation des maquettes, partout dans le 92 et en Île de France. Le reste du projet avance en visio, avec un interlocuteur unique.")
+                     + f'\n<ul class="liste-or rv" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">{"".join("<li>" + ico("check") + v + "</li>" for v in villes)}</ul>'
+                     + '\n<p class="rv" style="margin-top:18px">Vous êtes une entreprise du département ? Voir notre page <a href="agence-web-hauts-de-seine.html">agence web dans les Hauts de Seine</a>.</p>', papier=True)
+    corps += faq('Les questions des <span class="gold">collectivités</span>.', [
+        ("Le site d'une mairie doit il être accessible ?", "Oui. L'article 47 de la loi du 11 février 2005 impose aux collectivités territoriales, quelle que soit leur taille, l'accessibilité de leurs sites internet. Elles doivent afficher une mention de conformité, publier une déclaration d'accessibilité et adopter un schéma pluriannuel."),
+        ("Quelles sanctions en cas de site non accessible ?", "Depuis l'ordonnance du 6 septembre 2023, l'Arcom peut mettre en demeure la collectivité, puis prononcer une sanction allant jusqu'à 50 000 €, renouvelable si le manquement persiste plus de six mois. L'absence de déclaration d'accessibilité ou de schéma pluriannuel est passible à elle seule de 25 000 €."),
+        ("Faut il passer un marché public pour créer le site ?", "Pas forcément. Depuis le 1er avril 2026, un marché de services de moins de 60 000 € HT peut être conclu sans publicité ni mise en concurrence préalables, dans le respect des règles de bonne utilisation des deniers publics. Votre service achats reste seul juge de la procédure."),
+        ("Combien coûte le site internet d'une collectivité ?", "Le prix dépend du nombre de rubriques, des démarches à présenter et des contenus à reprendre. Un site vitrine commence à 1 000 € HT ; un site communal complet, avec agenda, publications légales et audit d'accessibilité, fait l'objet d'un devis détaillé gratuit."),
+        ("Nos agents pourront ils mettre à jour le site seuls ?", "Oui. Le site est construit sous WordPress avec des gabarits verrouillés : vos agents publient actualités, événements et documents sans risquer de casser la mise en page ni l'accessibilité. Une formation est incluse."),
+        ("Pouvez vous reprendre le contenu de notre ancien site ?", "Oui. Nous faisons l'inventaire des pages et des documents, reprenons ceux qui sont utiles et mettons en place des redirections pour que les liens existants et le référencement ne soient pas perdus."),
+        ("Où le site est il hébergé ?", "Chez un hébergeur situé dans l'Union européenne, au nom de la collectivité. Vous restez propriétaire du site, du nom de domaine et des contenus, sans abonnement imposé."),
+        ("Travaillez vous uniquement dans les Hauts de Seine ?", "Non. Nous intervenons en priorité dans les Hauts de Seine et à Paris, où nous pouvons venir en mairie, et partout en France à distance.")])
+    sources = """<ul class="liste-or rv">
+<li>""" + ico("out") + """<a href="https://www.collectivites-locales.gouv.fr/accessibilite" target="_blank" rel="noopener">Accessibilité des sites des collectivités, collectivites-locales.gouv.fr</a></li>
+<li>""" + ico("out") + """<a href="https://accessibilite.numerique.gouv.fr/" target="_blank" rel="noopener">Référentiel RGAA 4.1, accessibilite.numerique.gouv.fr</a></li>
+<li>""" + ico("out") + """<a href="https://www.vie-publique.fr/loi/290899-ordonnance-6-septembre-2023-accessibilite-sites-web-publics-renforcee" target="_blank" rel="noopener">Ordonnance du 6 septembre 2023 sur l'accessibilité des sites publics, vie-publique.fr</a></li>
+<li>""" + ico("out") + """<a href="https://www.banquedesterritoires.fr/commande-publique-les-decrets-de-simplification-sont-parus" target="_blank" rel="noopener">Décret n° 2025-1386 du 29 décembre 2025 sur les seuils, Banque des Territoires</a></li>
+</ul>"""
+    corps += section(entete("Sources", 'Textes et référentiels <span class="gold">officiels</span>.', "Les obligations décrites sur cette page s'appuient sur ces sources publiques.") + "\n" + sources, papier=True)
+    corps += autres_secteurs(fichier)
+    corps += appel("Votre projet", 'Un site public <span class="gold">clair</span> et accessible.',
+                   "Présentez nous votre collectivité et vos besoins : proposition détaillée sous 24h et rendez vous en mairie si vous le souhaitez.", "Demander mon devis", ("inas", "dual-tech"))
+    page(fichier, "Site internet collectivité et mairie : création RGAA | Aurea",
+         "Site internet pour collectivités et mairies : accessible RGAA, mis à jour par vos agents, démarches claires. Rendez vous en mairie dans les Hauts de Seine.", corps)
+
+
 def page_texte(fichier, ariane, titre_page, chapo, contenu, titre, desc):
     """Page de texte simple (mentions légales, confidentialité, plan du site)."""
     corps = f"""<header class="phero phero--court">
@@ -253,3 +333,4 @@ if __name__ == "__main__":
     for f, c in PAGES.items():
         secteur(f, c)
     hauts_de_seine()
+    collectivites()

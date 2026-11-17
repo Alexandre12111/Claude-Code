@@ -231,6 +231,10 @@ def agence():
     <div class="outils rv">{"".join(f"<span>{o}</span>" for o in outils)}</div>
   </div>
 </section>"""
+    secteurs = "".join(f'<li>{ico("check")}<span><a href="{f}">{n}</a><br><small>{d}</small></span></li>' for f, n, d, _ in SECTEURS)
+    corps += section(entete("Nos domaines", 'Des sites pour des métiers <span class="gold">très différents</span>.', "Avocats, praticiens de santé, architectes, restaurants, artisans, consultants, collectivités : chaque secteur a ses règles, ses clients et ses parcours. Nous les intégrons dès la maquette.")
+                     + f'\n<ul class="liste-or rv" style="grid-template-columns:repeat(auto-fill,minmax(300px,1fr))">{secteurs}</ul>'
+                     + '\n<p class="rv" style="margin-top:18px">Basés à Paris, nous accompagnons aussi les entreprises en Île de France : voir nos pages <a href="agence-web-paris.html">agence web à Paris</a> et <a href="agence-web-hauts-de-seine.html">agence web dans les Hauts de Seine</a>.</p>', papier=True)
     corps += LOGOS
     corps += appel("Travaillons ensemble", 'Faisons <span class="gold">connaissance</span>.', "Un premier échange de 20 minutes pour comprendre votre projet, sans engagement.", "Prendre contact")
     page("agence.html", "Aurea Media, agence web indépendante fondée par A. Coury",

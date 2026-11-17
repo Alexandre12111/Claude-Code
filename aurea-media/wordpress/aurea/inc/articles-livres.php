@@ -153,3 +153,28 @@ add_action( 'init', function () {
 		wp_publish_post( $id );
 	}
 }, 20 );
+
+/**
+ * Un article d'un pack peut citer un article programmé plus tard : le lien est alors posé en « ?p=ID ».
+ * Le jour où l'article cité est publié, ces liens sont remplacés par son adresse définitive (pas de redirection).
+ */
+add_action( 'transition_post_status', function ( $nouveau, $ancien, $post ) {
+	if ( 'publish' !== $nouveau || 'publish' === $ancien || 'post' !== $post->post_type ) {
+		return;
+	}
+	global $wpdb;
+	$motif = '?p=' . (int) $post->ID . '"';
+	$ids   = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM {$wpdb->posts} WHERE post_type IN ('post','page') AND post_content LIKE %s", '%' . $wpdb->esc_like( $motif ) . '%' ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+	if ( ! $ids ) {
+		return;
+	}
+	$lien = get_permalink( $post->ID );
+	foreach ( $ids as $id ) {
+		$contenu = (string) get_post_field( 'post_content', $id );
+		$nouveau_contenu = preg_replace( '#href="[^"]*\?p=' . (int) $post->ID . '"#', 'href="' . esc_url( $lien ) . '"', $contenu );
+		if ( $nouveau_contenu !== $contenu ) {
+			$wpdb->update( $wpdb->posts, array( 'post_content' => $nouveau_contenu ), array( 'ID' => $id ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			clean_post_cache( $id );
+		}
+	}
+}, 20, 3 );

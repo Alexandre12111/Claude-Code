@@ -17,6 +17,7 @@ Généré par `construire-plan.py`. Le thème applique ces réglages à l'import
 | /site-internet-restaurant/ | site internet restaurant | Création site internet restaurant avec réservation \| Aurea (58) | 144 car. | Service + BreadcrumbList |
 | /site-internet-artisan-btp/ | site internet artisan | Site internet artisan et BTP : plus de devis \| Aurea (52) | 137 car. | Service + BreadcrumbList |
 | /site-internet-coach-consultant/ | site internet coach | Création site internet coach et consultant \| Aurea Media (56) | 147 car. | Service + BreadcrumbList |
+| /site-internet-collectivites/ | site internet collectivité | Site internet collectivité et mairie : création RGAA \| Aurea (60) | 155 car. | Service + BreadcrumbList |
 | /agence-web-paris/ | agence web Paris | Agence web Paris : création de site internet sur mesure (55) | 144 car. | ProfessionalService + BreadcrumbList |
 | /agence-web-hauts-de-seine/ | agence web Hauts de Seine | Agence web Hauts de Seine (92) : création de site \| Aurea (57) | 141 car. | ProfessionalService + BreadcrumbList |
 | /agence-web-boulogne-billancourt/ | agence web Boulogne-Billancourt | Agence web Boulogne-Billancourt : création de site \| Aurea (58) | 145 car. | ProfessionalService + BreadcrumbList |
@@ -37,9 +38,3 @@ Généré par `construire-plan.py`. Le thème applique ces réglages à l'import
 * Schema adapté au contenu ; pas de HowTo ; pas d'AggregateRating auto déclaré ; FAQ affichée en contenu, sans balisage FAQPage.
 * Fil d'Ariane Rank Math activé, sitemap Rank Math actif, pages /tag/ et archives d'auteur en noindex.
 * Fiches réalisations : title « Site [Client] : étude de cas [type] | Aurea Media », mot clé « site [type] [secteur] », schema CreativeWork.
-
-## Mise à jour du 25 octobre 2026 : thème WordPress
-
-* Les 22 pages du plan sont créées par le thème (Apparence → Installation Aurea) avec leur titre, leur description et leur mot clé Rank Math, sauf Boulogne-Billancourt et Clamart : ces deux adresses sont redirigées (301) vers la page Hauts de Seine, qui cite les deux villes, pour éviter des pages locales quasi identiques.
-* Les pages secteur santé, architecte, restaurant, artisan BTP et coach consultant existent désormais dans la maquette, avec de vraies références clients.
-* `llms.txt` est généré par le thème à partir des pages et des articles publiés (toujours à jour) : le fichier `seo/llms.txt` sert de modèle.

@@ -189,7 +189,8 @@ SECTEURS = [("site-internet-avocat.html", "Avocats", "Crédibilité et prise de 
             ("site-internet-architecte.html", "Architectes", "Portfolio et projets", "portugal-expert"),
             ("site-internet-restaurant.html", "Restaurants et lieux", "Carte, réservation, événements", "villa-moniris"),
             ("site-internet-artisan-btp.html", "Artisans et BTP", "Devis et chantiers", "novexia"),
-            ("site-internet-coach-consultant.html", "Coachs et consultants", "Expertise et rendez vous", "sultan")]
+            ("site-internet-coach-consultant.html", "Coachs et consultants", "Expertise et rendez vous", "sultan"),
+            ("site-internet-collectivites.html", "Collectivités et mairies", "Accessibilité RGAA et démarches", "inas")]
 
 
 def autres_secteurs(courant):

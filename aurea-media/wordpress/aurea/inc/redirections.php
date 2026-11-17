@@ -30,7 +30,7 @@ function aurea_redirections() {
 		'chosir-agence-web-paris'                              => 'agence-web-paris',
 		'site-internet-boulogne-billancourt'                   => 'agence-web-hauts-de-seine',
 		'creation-de-site-e-commerce-boulogne'                 => 'agence-web-hauts-de-seine',
-		'agence-web-collectivites-boulogne-billancourt'        => 'agence-web-hauts-de-seine',
+		'agence-web-collectivites-boulogne-billancourt'        => 'site-internet-collectivites',
 		'agence-web-boulogne-billancourt'                      => 'agence-web-hauts-de-seine',
 		'creation-site-internet-clamart'                       => 'agence-web-hauts-de-seine',
 		'agence-seo-clamart'                                   => 'agence-web-hauts-de-seine',
@@ -62,7 +62,6 @@ function aurea_redirections() {
 		'creation-site-vitrine-tpe-paris'                      => 'creation-site-vitrine',
 		// Anciennes pages vues dans la Search Console (novembre 2026)
 		'refonte-identite-visuelle-entreprise'                 => 'logo-identite-visuelle',
-		'refonte-identite-visuelle'                            => 'logo-identite-visuelle',
 		'logo-et-charte-graphique'                             => 'logo-identite-visuelle',
 		'nos-conseils-web'                                     => 'conseils',
 		'deleguer-sa-presence-linkedin'                        => 'conseils',

@@ -697,8 +697,55 @@ add_action( 'admin_init', function () {
 	update_option( 'aurea_pages_auto_version', AUREA_VERSION );
 	// 3.0.2 : l'accueil reprend le design du thème même s'il a été réenregistré dans l'éditeur
 	$forcer = version_compare( $avant, '3.0.2', '<' ) ? array( 'accueil' ) : array();
-	set_transient( 'aurea_pages_auto_message', aurea_maj_pages_auto( $forcer ), 300 );
+	$msg = aurea_maj_pages_auto( $forcer );
+	$nouvelles = aurea_creer_pages_nouvelles();
+	if ( $nouvelles ) {
+		$msg .= ' Nouvelles pages ajoutées : ' . implode( ', ', $nouvelles ) . '.';
+	}
+	set_transient( 'aurea_pages_auto_message', $msg, 300 );
 } );
+
+/**
+ * Après une mise à jour : crée les pages ajoutées au thème depuis l'installation (ex. « Site internet
+ * collectivités » en 3.2.0). Une page existante, même créée à la main avec le même slug, n'est jamais touchée.
+ */
+function aurea_creer_pages_nouvelles() {
+	$crees = array();
+	if ( ! get_option( 'aurea_installe_le' ) ) {
+		return $crees;
+	}
+	kses_remove_filters();
+	foreach ( aurea_pages_a_creer() as $slug => $p ) {
+		if ( aurea_page_par_slug( $slug ) || get_page_by_path( $slug, OBJECT, 'page' ) ) {
+			continue;
+		}
+		$id = wp_insert_post(
+			wp_slash(
+				array(
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => $p['titre'],
+					'post_name'    => $slug,
+					'post_content' => aurea_contenu_livre( basename( $p['fichier'], '.html' ), false ),
+					'post_excerpt' => $p['extrait'] ?? '',
+				)
+			),
+			true
+		);
+		if ( is_wp_error( $id ) ) {
+			continue;
+		}
+		if ( function_exists( 'pll_set_post_language' ) ) {
+			pll_set_post_language( $id, 'fr' );
+		}
+		aurea_seo_meta( $id, $p, true );
+		update_post_meta( $id, '_aurea_version', AUREA_VERSION );
+		update_post_meta( $id, '_aurea_contenu_md5', md5( (string) get_post_field( 'post_content', $id ) ) );
+		$crees[] = $p['titre'];
+	}
+	kses_init_filters();
+	return $crees;
+}
 add_action( 'admin_notices', function () {
 	$m = get_transient( 'aurea_pages_auto_message' );
 	if ( $m ) {

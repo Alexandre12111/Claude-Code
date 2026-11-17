@@ -3,24 +3,25 @@
   "health_score": 91,
   "business_type": "Agence web (services B2B, France et Europe, ancrage local Paris)",
   "top_findings": [
-   "Temps de blocage variable des articles sur mobile (à surveiller)",
-   "4 avis seulement dans le carrousel",
-   "Blog jeune (pack programmé)",
-   "Peu de mentions externes de la marque",
-   "Points du carrousel et contraste du lien auteur (corrigés en 3.1.6)"
+   "Les pages piliers ne renvoyaient vers aucun article (corrigé en 3.2.0)",
+   "Pas de page pour la demande collectivités et mairies du 92 (créée en 3.2.0)",
+   "Les nouvelles pages du thème n'étaient pas créées à la mise à jour (corrigé en 3.2.0)",
+   "Article artisan bloqué par une redirection et article fiche Google non publié (corrigé en 3.1.10)",
+   "Page L'agence courte pour une page de confiance (enrichie en 3.2.0)"
   ],
   "quick_wins": [
-   "Installer le thème 3.1.4",
-   "Renvoyer le sitemap à la Search Console",
-   "Publier le pack 1 d'articles",
-   "Demander des avis Google",
-   "Inscrire l'agence dans des annuaires"
-  ]
+   "Installer le thème 3.2.0",
+   "Demander l'indexation de /site-internet-collectivites/",
+   "Importer le pack 2 d'articles",
+   "Contacter des mairies du 92 avec la nouvelle page",
+   "Envoyer un export Search Console fin décembre"
+  ],
+  "score_attendu_apres_3_2_0": 92
  },
  "categories": [
   {
    "name": "Technical SEO",
-   "score": 94,
+   "score": 93,
    "what_works": [
     "78 URLs en 200",
     "HTTPS + HSTS et en-têtes de sécurité",

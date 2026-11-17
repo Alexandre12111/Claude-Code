@@ -276,6 +276,28 @@
    ]
   ]
  },
+ "site-internet-collectivites": {
+  "titre": "Site internet collectivités et mairies",
+  "h1": "Création de site internet pour les collectivités et les mairies.",
+  "fichier": "site-internet-collectivites.html",
+  "texte": false,
+  "seo_titre": "Site internet collectivité et mairie : création RGAA | Aurea",
+  "seo_description": "Site internet pour collectivités et mairies : accessible RGAA, mis à jour par vos agents, démarches claires. Rendez vous en mairie dans les Hauts de Seine.",
+  "mot_cle": "site internet collectivité,création site internet mairie,agence web collectivités,site internet mairie RGAA",
+  "type": "service",
+  "service": "Création de site internet pour collectivités et mairies",
+  "prix": "1000",
+  "fil": [
+   [
+    "Secteurs",
+    "/creation-site-vitrine/"
+   ],
+   [
+    "Collectivités",
+    null
+   ]
+  ]
+ },
  "agence-web-paris": {
   "titre": "Agence web Paris",
   "h1": "Agence web à Paris, un studio indépendant.",

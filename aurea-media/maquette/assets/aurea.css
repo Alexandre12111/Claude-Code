@@ -1626,3 +1626,5 @@ h2{font-size:clamp(1.95rem,3.5vw,3.3rem)}
 .reviews--defile.is-snap{scroll-snap-type:x mandatory}
 /* Même précaution pour toutes les zones qui défilent à l'horizontale (mobile) : magnétisme activé après le chargement */
 html:not(.snap-ok) *{scroll-snap-type:none!important}
+@media (min-width:1081px){.inclus--3{grid-template-columns:repeat(3,1fr)}}
+.sec.paper .liste-or a,.sec.paper .wrap>p a{color:#7d5f27;text-decoration:underline;text-underline-offset:3px}.sec.paper .liste-or small{color:var(--paper-mute,#6b6457);font-size:.88rem}

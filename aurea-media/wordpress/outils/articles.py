@@ -22,9 +22,10 @@ from etudes import e, liens, p, h, ul, bref  # noqa: E402
 from articles_lot1 import LOT1  # noqa: E402
 from articles_lot2 import LOT2  # noqa: E402
 from articles_pack1 import PACK1  # noqa: E402
+from articles_pack2 import PACK2  # noqa: E402
 
 ARTICLES = LOT1 + LOT2      # livrés avec le thème
-PACKS = PACK1               # livrés en packs programmés
+PACKS = PACK1 + PACK2       # livrés en packs programmés
 THEME = os.path.join(ICI, '..', 'aurea')
 
 

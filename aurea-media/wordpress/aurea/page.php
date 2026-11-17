@@ -10,7 +10,9 @@ while ( have_posts() ) {
 	the_post();
 	if ( aurea_a_son_hero() ) {
 		echo '<main id="contenu">';
+		ob_start();
 		the_content();
+		echo aurea_inserer_guides( ob_get_clean() ); // phpcs:ignore WordPress.Security.EscapeOutput
 		echo '</main>';
 	} else {
 		get_template_part( 'parts/page-texte' );
