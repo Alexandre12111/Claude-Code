@@ -351,7 +351,7 @@ def page(V):
     </div>
     <div class="qr">{qr(RDV, 100)}<span>Scannez pour prendre rendez‑vous</span></div></div>
 </section>
-<footer class="foot"><b>YouCraft · Leyton CognitX</b><span>youcraft.build</span></footer>
+<footer class="foot"><b>YouCraft · Leyton CognitX</b><span>youcraft.tech</span></footer>
 </main></body></html>"""
 
 
@@ -378,8 +378,8 @@ SL_CSS = """
 
 
 def slides(V):
-    foot = '<footer class="sft"><b>YouCraft · Leyton CognitX</b><span>youcraft.build</span></footer>'
-    foot2 = f'<footer class="sft" style="padding-top:2.4mm">{logo(14, False)}<span>youcraft.build</span></footer>'
+    foot = '<footer class="sft"><b>YouCraft · Leyton CognitX</b><span>youcraft.tech</span></footer>'
+    foot2 = f'<footer class="sft" style="padding-top:2.4mm">{logo(14, False)}<span>youcraft.tech</span></footer>'
     head = lambda t: f'<div class="shd">{logo(20, False)}<span>{t}</span></div>'
     return f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">

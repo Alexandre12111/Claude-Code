@@ -8,7 +8,7 @@ import soundfile as sf
 
 SR = 48000
 MODE, OUT = sys.argv[1], sys.argv[2]
-DUR = {'intro': 7.2, 'outro': 10.0}[MODE]
+DUR = {'intro': 7.6, 'outro': 10.0}[MODE]
 N = int(DUR * SR)
 rng = np.random.default_rng(5)
 mix = np.zeros((N, 2))
@@ -155,17 +155,18 @@ def music(start, end, prog, beat_from, g=1.0, fade_out=None):
 
 
 if MODE == 'intro':
-    music(0.0, 6.45, ['F', 'C', 'Am', 'G'], beat_from=1.25, g=0.55)
+    music(0.0, 6.85, ['F', 'C', 'Am', 'G'], beat_from=1.25, g=0.55)
     add(whoosh(0.5, True), 0.05, 0.25)
     for k, tk in enumerate((0.35, 0.47, 0.59)): add(pop(700 + 180 * k), tk, 0.22, pan=[-0.3, 0.3, 0][k])
     add(impact(), 0.6, 0.55); add(chime(76), 0.6, 0.18); add(chime(83), 0.62, 0.1)
     for i in range(8): add(pop(1400 + 60 * i, 0.4), 1.3 + i * 0.045, 0.07, pan=-0.5 + i / 7)
-    add(whoosh(0.7, True), 2.0, 0.12)
-    for i in range(5): add(pop(1000 + 90 * i), 3.25 + i * 0.12, 0.16, pan=-0.6 + 0.3 * i)
-    add(riser(1.2), 5.3, 0.3)
-    add(impact(1.0), 6.5, 0.7); add(chime(77), 6.5, 0.15)
-    add(whoosh(0.45, False), 6.58, 0.28)
-    fade = np.ones(N); fade[int(6.75 * SR):] = np.linspace(1, 0, N - int(6.75 * SR)) ** 2
+    add(whoosh(0.9, True), 1.8, 0.10)
+    add(whoosh(0.7, True), 2.1, 0.12)
+    for i in range(5): add(whoosh(0.35, True), 3.1 + i * 0.11, 0.05); add(pop(1000 + 90 * i), 3.2 + i * 0.11, 0.15, pan=-0.6 + 0.3 * i)
+    add(riser(1.2), 5.7, 0.3)
+    add(impact(1.0), 6.9, 0.7); add(chime(77), 6.9, 0.15)
+    add(whoosh(0.45, False), 6.98, 0.28)
+    fade = np.ones(N); fade[int(7.15 * SR):] = np.linspace(1, 0, N - int(7.15 * SR)) ** 2
 else:
     add(whoosh(0.6, False), 0.0, 0.3)
     add(chime(72), 0.35, 0.12)
@@ -173,7 +174,7 @@ else:
     add(whoosh(0.5, True), 2.25, 0.16)
     for k, tk in enumerate((2.75, 2.87, 2.99)): add(pop(700 + 180 * k), tk, 0.2, pan=[-0.3, 0.3, 0][k])
     add(impact(0.8), 3.0, 0.45); add(chime(76), 3.0, 0.15)
-    add(pop(900), 4.7, 0.2); add(chime(84), 4.75, 0.1)
+    add(pop(900), 4.7, 0.2); add(chime(84), 4.75, 0.1); add(chime(88), 4.2, 0.06)
     for i in range(3): add(pop(1200 + 150 * i, 0.7), 5.5 + 0.15 * i, 0.12, pan=-0.4 + 0.4 * i)
     add(chime(79), 8.6, 0.12)
     fade = np.ones(N); fade[int(8.9 * SR):] = np.linspace(1, 0, N - int(8.9 * SR)) ** 1.5

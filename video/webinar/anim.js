@@ -34,13 +34,107 @@
   const parts = Array.from({ length: 42 }, () => ({ x: rnd() * W, y: rnd() * H, r: 1.5 + rnd() * 3, sp: 8 + rnd() * 26, ph: rnd() * 6.28, lime: rnd() < 0.3,
     e: $('div', { position: 'absolute', left: '0', top: '0', borderRadius: '50%' }) }));
   parts.forEach((p) => Object.assign(p.e.style, { width: p.r * 2 + 'px', height: p.r * 2 + 'px', background: p.lime ? '#D7FF3F' : '#8FA2FF' }));
-  const vign = $('div', { position: 'absolute', inset: '0', background: 'radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%)' });
-  const bgUpdate = (t, k = 1, gx = 960, gy = 470) => {
-    S(glowA, { x: gx + 60 * Math.sin(t * 0.5), y: gy + 30 * Math.cos(t * 0.4), s: lerp(0.6, 1, k) + 0.04 * Math.sin(t * 1.3), o: k });
-    S(glowB, { x: gx + 260 * Math.cos(t * 0.35), y: gy - 120 + 80 * Math.sin(t * 0.45), o: 0.9 * k });
-    grid.style.transform = `rotateX(72deg) translateY(${(t * 60) % 96}px)`; grid.style.opacity = 0.9 * k;
-    parts.forEach((p) => { const y = ((p.y - t * p.sp) % H + H) % H; S(p.e, { x: p.x + 14 * Math.sin(t * 0.6 + p.ph), y, o: k * (0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 1.7 + p.ph))) }); });
+  const aur = [['rgba(30,59,255,0.42)', 1300], ['rgba(111,134,255,0.28)', 1000], ['rgba(215,255,63,0.10)', 800]].map(([c, d]) =>
+    $('div', { position: 'absolute', left: '0', top: '0', width: d + 'px', height: d * 0.62 + 'px', marginLeft: -d / 2 + 'px', marginTop: -d * 0.31 + 'px', borderRadius: '50%', background: `radial-gradient(closest-side, ${c}, rgba(0,0,0,0))`, filter: 'blur(30px)' }));
+  const horizon = $('div', { position: 'absolute', left: '160px', width: '1600px', top: '0', height: '2px', background: 'linear-gradient(90deg, rgba(143,162,255,0), rgba(190,202,255,0.75), rgba(143,162,255,0))', boxShadow: '0 0 40px 8px rgba(79,107,255,0.35)' });
+  const vign = $('div', { position: 'absolute', inset: '0', background: 'radial-gradient(ellipse at 50% 42%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.7) 100%)' });
+  const grainC = $('canvas', { position: 'absolute', inset: '0', width: '1920px', height: '1080px', opacity: '0.07', mixBlendMode: 'overlay', pointerEvents: 'none' });
+  grainC.width = 480; grainC.height = 270; const gctx = grainC.getContext('2d'); const gimg = gctx.createImageData(480, 270);
+  grid.style.opacity = '0.5';
+  const bgUpdate = (t, k = 1, gx = 960, gy = 470, hy = 640) => {
+    S(glowA, { x: gx + 60 * Math.sin(t * 0.5), y: gy + 30 * Math.cos(t * 0.4), s: lerp(0.6, 1, k) + 0.04 * Math.sin(t * 1.3), o: k * 0.85 });
+    S(glowB, { x: gx + 260 * Math.cos(t * 0.35), y: gy - 120 + 80 * Math.sin(t * 0.45), o: 0.7 * k });
+    S(aur[0], { x: 560 + 140 * Math.sin(t * 0.32), y: 260 + 60 * Math.cos(t * 0.27), r: 8 * Math.sin(t * 0.2), o: k });
+    S(aur[1], { x: 1400 + 120 * Math.cos(t * 0.29), y: 330 + 70 * Math.sin(t * 0.33), r: -10 + 6 * Math.sin(t * 0.25), o: k });
+    S(aur[2], { x: 1180 + 200 * Math.sin(t * 0.21), y: 860 + 40 * Math.cos(t * 0.3), o: k });
+    S(horizon, { y: hy, o: k * (0.55 + 0.1 * Math.sin(t * 1.1)) });
+    grid.style.transform = `rotateX(74deg) translateY(${(t * 40) % 96}px)`; grid.style.opacity = 0.45 * k;
+    parts.forEach((p, i) => { const y = ((p.y - t * p.sp * 0.6) % H + H) % H; S(p.e, { x: p.x + 14 * Math.sin(t * 0.6 + p.ph), y, o: i % 2 ? 0 : k * (0.15 + 0.3 * (0.5 + 0.5 * Math.sin(t * 1.7 + p.ph))) }); });
+    let sd = Math.floor(t * 60) * 9301 + 49297; const d = gimg.data;
+    for (let i = 0; i < d.length; i += 4) { sd = (sd * 1103515245 + 12345) & 0x7fffffff; const v = sd & 255; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255; }
+    gctx.putImageData(gimg, 0, 0);
   };
+
+  /* ---------- cartes en verre avec mini interface animée ---------- */
+  const LIME = '#D7FF3F', UM = '#4F6BFF', ST = 'rgba(245,242,234,';
+  function vis(kind, p) {
+    const q = (a, d = 0.35) => E.outCubic(clamp((p - a) / d));
+    let g = '';
+    if (kind === 'crm') {
+      [['Lead', 1.0, UM], ['Qualified', 0.74, UM], ['Proposal', 0.5, '#8FA2FF'], ['Won', 0.3, LIME]].forEach(([l, w, c], i) => {
+        const y = 4 + i * 19, k = q(0.1 + i * 0.12);
+        g += `<text x="0" y="${y + 11}" font-size="11" fill="${ST}0.55)" font-family="DM Sans">${l}</text><rect x="72" y="${y + 2}" width="${158 * w * k}" height="11" rx="5.5" fill="${c}" opacity="${i === 3 ? 1 : 0.85}"/>`;
+      });
+    } else if (kind === 'dash') {
+      const pts = [52, 46, 49, 38, 41, 30, 33, 22, 25, 12], n = pts.length, xs = (i) => 4 + i * (222 / (n - 1));
+      const m = Math.max(1, Math.floor(q(0.05, 0.75) * (n - 1) * 100) / 100), full = Math.floor(m);
+      let d = `M${xs(0)} ${pts[0]}`; for (let i = 1; i <= full; i++) d += ` L${xs(i)} ${pts[i]}`;
+      const fr = m - full; let ex = xs(full), ey = pts[full];
+      if (full < n - 1 && fr > 0) { ex = lerp(xs(full), xs(full + 1), fr); ey = lerp(pts[full], pts[full + 1], fr); d += ` L${ex} ${ey}`; }
+      [18, 36, 54].forEach((y) => (g += `<line x1="0" x2="230" y1="${y}" y2="${y}" stroke="${ST}0.08)" stroke-width="1"/>`));
+      g += `<defs><linearGradient id="ar" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${UM}" stop-opacity="0.5"/><stop offset="1" stop-color="${UM}" stop-opacity="0"/></linearGradient></defs>`;
+      g += `<path d="${d} L${ex} 72 L4 72 Z" fill="url(#ar)"/><path d="${d}" fill="none" stroke="#8FA2FF" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+      g += `<circle cx="${ex}" cy="${ey}" r="4.5" fill="${LIME}"/><circle cx="${ex}" cy="${ey}" r="${9 + 3 * Math.sin(p * 20)}" fill="${LIME}" opacity="0.25"/>`;
+    } else if (kind === 'flow') {
+      const X = [20, 115, 210];
+      g += `<line x1="20" x2="${20 + 190 * q(0.1, 0.8)}" y1="36" y2="36" stroke="${UM}" stroke-width="2.5" stroke-dasharray="5 5"/>`;
+      X.forEach((x, i) => { const k = spring((p - 0.15 - i * 0.22) * 1.6, 220, 14), done = p > 0.35 + i * 0.22;
+        g += `<g transform="translate(${x} 36) scale(${Math.max(0.001, k)})"><circle r="17" fill="${done ? (i === 2 ? LIME : UM) : '#1A1D2B'}" stroke="${ST}0.25)" stroke-width="1.5"/>` +
+          (done ? `<path d="M-6 0 L-1.5 4.5 L6.5 -4" fill="none" stroke="${i === 2 ? '#0B0B0F' : '#fff'}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>` : '') + '</g>';
+        g += `<text x="${x}" y="70" text-anchor="middle" font-size="10.5" fill="${ST}0.55)" font-family="DM Sans">${['Request', 'Review', 'Approved'][i]}</text>`; });
+    } else if (kind === 'kanban') {
+      [0, 1, 2].forEach((c) => { const x = c * 78;
+        g += `<rect x="${x}" y="0" width="70" height="74" rx="7" fill="${ST}0.04)"/><rect x="${x + 8}" y="7" width="${[26, 34, 22][c]}" height="5" rx="2.5" fill="${ST}0.35)"/>`;
+        const cards = [[1, 1, 1], [1, 1, 0], [1, 0, 0]][c];
+        cards.forEach((on, r) => { if (!on) return; const k = E.outQuint(clamp((p - 0.1 - (c * 2 + r) * 0.07) / 0.4));
+          g += `<g opacity="${k}" transform="translate(0 ${(1 - k) * 10})"><rect x="${x + 6}" y="${18 + r * 18}" width="58" height="14" rx="4" fill="${c === 2 ? 'rgba(215,255,63,0.9)' : 'rgba(79,107,255,0.55)'}"/></g>`; });
+      });
+    } else if (kind === 'portal') {
+      [['Contract.pdf', 'Signed'], ['Report Q3.pdf', 'Shared'], ['Invoice 214.pdf', 'Paid']].forEach(([f, st], i) => { const k = E.outQuint(clamp((p - 0.1 - i * 0.14) / 0.4)), y = i * 25;
+        g += `<g opacity="${k}" transform="translate(${(1 - k) * 18} 0)"><rect x="0" y="${y}" width="230" height="20" rx="6" fill="${ST}0.05)"/><rect x="7" y="${y + 4}" width="9" height="12" rx="2" fill="#8FA2FF"/>` +
+          `<text x="24" y="${y + 14}" font-size="10.5" fill="${ST}0.8)" font-family="DM Sans">${f}</text><rect x="168" y="${y + 4}" width="54" height="12" rx="6" fill="${i === 0 ? 'rgba(215,255,63,0.18)' : 'rgba(79,107,255,0.25)'}"/>` +
+          `<text x="195" y="${y + 13.2}" text-anchor="middle" font-size="9" font-weight="700" fill="${i === 0 ? LIME : '#AFC0FF'}" font-family="DM Sans">${st}</text></g>`; });
+    }
+    return `<svg width="230" height="76" viewBox="0 0 230 76" overflow="visible">${g}</svg>`;
+  }
+  function makeCards(parent, top) {
+    const CARDS = [['users', 'CRM', 'crm'], ['layout-dashboard', 'Dashboards', 'dash'], ['list-checks', 'Workflows', 'flow'], ['folder-kanban', 'Project tracking', 'kanban'], ['globe', 'Client portals', 'portal']];
+    const row = $('div', { position: 'absolute', left: '0', width: W + 'px', top: top + 'px', display: 'flex', justifyContent: 'center', gap: '26px', perspective: '1400px' }, parent);
+    return CARDS.map(([ic, title, kind], i) => {
+      const c = $('div', { position: 'relative', width: '278px', height: '186px', boxSizing: 'border-box', padding: '20px 22px', borderRadius: '26px', overflow: 'hidden',
+        background: 'linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.025) 60%)', border: '1px solid rgba(255,255,255,0.13)',
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 30px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.2)', backdropFilter: 'blur(14px)', transformOrigin: '50% 100%' }, row);
+      const ico = i === 4 ? 'linear-gradient(140deg,#E9FF7A,#C5F000)' : 'linear-gradient(140deg,#5D78FF,#1E3BFF)';
+      $('div', { display: 'flex', alignItems: 'center', gap: '14px' }, c,
+        `<span style="display:flex;width:46px;height:46px;border-radius:14px;background:${ico};align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.45),0 8px 18px ${i === 4 ? 'rgba(215,255,63,0.25)' : 'rgba(30,59,255,0.45)'}">${icon(ic, 24, i === 4 ? '#0B0B0F' : '#fff', 2.1)}</span>` +
+        `<span style="font:700 25px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;color:#F5F2EA;white-space:nowrap">${title}</span>`);
+      const v = $('div', { marginTop: '18px', height: '76px' }, c);
+      const sheen = $('div', { position: 'absolute', top: '-40px', left: '0', width: '120px', height: '280px', background: 'linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,0.16), rgba(255,255,255,0))', transform: 'translateX(-200px) rotate(18deg)' }, c);
+      return { c, v, kind, sheen };
+    });
+  }
+  const animCards = (cards, t, t0) => cards.forEach((k, i) => {
+    const ts = t0 + i * 0.11, p = spring(t - ts, 160, 17), o = clamp((t - ts) * 4);
+    k.c.style.transform = `translateY(${(1 - p) * 90}px) rotateX(${(1 - p) * 38}deg) scale(${lerp(0.9, 1, clamp(p))})`; k.c.style.opacity = o;
+    k.v.innerHTML = vis(k.kind, clamp((t - ts - 0.25) / 1.6));
+    const sp = (t - (t0 + 1.3 + i * 0.09)) / 0.9;
+    k.sheen.style.transform = `translateX(${sp > 0 && sp < 1 ? lerp(-200, 420, E.inOutSine(sp)) : -200}px) rotate(18deg)`;
+  });
+  /* Reflet lumineux qui balaie le mot YouCraft. */
+  function logoShine(lo, t, t0) {
+    if (!lo.shine) {
+      const svg = lo.wrap.querySelector('svg'), id = 'sh' + lo.h;
+      const defs = svg.querySelector('defs');
+      const gr = svgEl('linearGradient', { id, x1: 0, y1: 0, x2: 1, y2: 0, gradientUnits: 'userSpaceOnUse' }, defs);
+      [[0, 0], [0.45, 0], [0.5, 0.85], [0.55, 0], [1, 0]].forEach(([o, a]) => svgEl('stop', { offset: o, 'stop-color': '#fff', 'stop-opacity': a }, gr));
+      lo.shine = svgEl('g', {}, svg);
+      L.glyphs.forEach((d) => svgEl('path', { d, fill: `url(#${id})`, transform: `translate(${L.tx} ${L.ty})` }, lo.shine));
+      lo.shineGrad = gr;
+    }
+    const sp = clamp((t - t0) / 1.1), x = lerp(-300, L.w + 300, E.inOutSine(sp));
+    lo.shineGrad.setAttribute('x1', x - 250); lo.shineGrad.setAttribute('x2', x + 250);
+    lo.shine.setAttribute('opacity', sp > 0 && sp < 1 ? 1 : 0);
+  }
 
   /* ---------- logo vectoriel en pièces ---------- */
   function makeLogo(parent, height) {
@@ -86,26 +180,23 @@
 
   /* ================================================================= INTRO (7,2 s) */
   if (MODE === 'intro') {
-    window.DURATION = 7.2;
-    const camera = $('div', { position: 'absolute', inset: '0', transformOrigin: '960px 440px' }, scene);
-    const lo = makeLogo(camera, 190);
-    const LX = 960 - lo.w / 2, LY = 420 - lo.h / 2;
+    window.DURATION = 7.6;
+    const camera = $('div', { position: 'absolute', inset: '0', transformOrigin: '960px 400px' }, scene);
+    const lo = makeLogo(camera, 176);
+    const LX = 960 - lo.w / 2, LY = 360 - lo.h / 2;
     lo.wrap.style.left = LX + 'px'; lo.wrap.style.top = LY + 'px';
-    const tag = words(camera, 'Build the apps your teams need. *No* *code.*', { top: '630px', fontSize: '64px' });
-    const CH = [['users', 'CRM'], ['layout-dashboard', 'Dashboards'], ['list-checks', 'Workflows'], ['folder-kanban', 'Project tracking'], ['globe', 'Client portals']];
-    const row = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '770px', display: 'flex', justifyContent: 'center', gap: '22px' }, camera);
-    const chips = CH.map(([i, t]) => $('div', { display: 'flex', alignItems: 'center', gap: '14px', padding: '16px 28px 16px 20px', borderRadius: '40px', background: 'rgba(245,242,234,0.06)', border: '1.5px solid rgba(245,242,234,0.16)',
-      fontFamily: "'DM Sans', sans-serif", fontWeight: '500', fontSize: '30px', color: '#F5F2EA', backdropFilter: 'blur(6px)' }, row,
-      `<span style="display:flex;width:44px;height:44px;border-radius:50%;background:#1E3BFF;align-items:center;justify-content:center">${icon(i, 24, '#fff', 2.2)}</span>${t}`));
-    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '548px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '24px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.55)' }, camera, 'by Leyton CognitX');
+    const tag = words(camera, 'Build the apps your teams need.', { top: '588px', fontSize: '66px' });
+    const tag2 = words(camera, '*With* *zero* *code.*', { top: '664px', fontSize: '66px' });
+    const cards = makeCards(camera, 790);
+    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '480px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.55)' }, camera, 'by Leyton CognitX');
     // Rideau de sortie : le bloc citron du logo envahit l'écran, puis l'écran passe au noir.
     const wipe = $('div', { position: 'absolute', left: '0', top: '0', width: '100px', height: '100px', background: '#D7FF3F', transformOrigin: '50% 50%' }, scene);
     const wipe2 = $('div', { position: 'absolute', inset: '0', background: '#0B0B0F' }, scene);
     const flash = $('div', { position: 'absolute', inset: '0', background: 'radial-gradient(circle at 50% 44%, rgba(255,255,255,0.55), rgba(255,255,255,0) 45%)' }, scene);
-    flash.style.background = 'radial-gradient(circle at 50% 39%, rgba(255,255,255,0.55), rgba(255,255,255,0) 45%)';
+    flash.style.background = 'radial-gradient(circle at 50% 33%, rgba(255,255,255,0.55), rgba(255,255,255,0) 45%)'; flash.style.backgroundPosition = '0 0';
 
     window.render = (t) => {
-      bgUpdate(t, E.outCubic(P(t, 0, 1.0)), 960, 430);
+      bgUpdate(t, E.outCubic(P(t, 0, 1.0)), 960, 400, 1040);
       // Le symbole naît plus grand, au centre, puis le mot se dévoile et la composition se cale.
       const lt = t - 0.35;
       animLogo(lo, lt, 0.95);
@@ -113,19 +204,21 @@
       S(lo.wrap, { s: lerp(1.25, 1, settle), x: lerp(lo.w * 0.36, 0, settle) * (1 - 0) });
       S(flash, { o: Math.max(0, 1 - Math.abs(t - 0.62) / 0.25) * 0.6 });
       by.style.opacity = E.outCubic(P(t, 1.9, 0.6)); S(by, { y: (1 - E.outCubic(P(t, 1.9, 0.6))) * 20, o: E.outCubic(P(t, 1.9, 0.6)) * 0.9 });
-      riseWords(tag, t, 2.3, 0.07);
-      chips.forEach((c, i) => { const p = spring(t - (3.25 + i * 0.12), 200, 16); S(c, { y: (1 - p) * 60, s: lerp(0.85, 1, clamp(p)), o: clamp((t - (3.25 + i * 0.12)) * 5) }); });
+      riseWords(tag, t, 2.2, 0.06);
+      riseWords(tag2, t, 2.62, 0.09);
+      animCards(cards, t, 3.15);
+      logoShine(lo, t, 1.85);
       // Légère poussée de caméra pendant toute la séquence, puis plongée vers le bloc citron.
-      const push = 1 + 0.035 * E.inOutSine(P(t, 0.5, 5.5));
+      const push = 1 + 0.035 * E.inOutSine(P(t, 0.5, 6.0));
       S(camera, { s: push });
       // Sortie
       const [bx, by0, bw, bh] = lo.sym; const k = lo.h / L.h;
       const cx = LX + (bx + bw / 2) * k, cy = LY + (by0 + bh / 2) * k;
-      const wp = E.inExpo(P(t, 5.95, 0.55));
+      const wp = E.inExpo(P(t, 6.35, 0.55));
       wipe.style.left = cx - 50 + 'px'; wipe.style.top = cy - 50 + 'px';
-      S(wipe, { s: lerp(bw * k / 100 * push, 32, wp), r: lerp(0, 45, wp), o: t > 5.95 ? 1 : 0 });
-      const w2 = E.inOutCubic(P(t, 6.6, 0.4));
-      wipe2.style.clipPath = `inset(0 0 0 ${(1 - w2) * 100}%)`; wipe2.style.opacity = t > 6.6 ? 1 : 0;
+      S(wipe, { s: lerp(bw * k / 100 * push, 32, wp), r: lerp(0, 45, wp), o: t > 6.35 ? 1 : 0 });
+      const w2 = E.inOutCubic(P(t, 7.0, 0.4));
+      wipe2.style.clipPath = `inset(0 0 0 ${(1 - w2) * 100}%)`; wipe2.style.opacity = t > 7.0 ? 1 : 0;
     };
   }
 
@@ -137,20 +230,22 @@
     const lo = makeLogo(camera, 150);
     const LX = 960 - lo.w / 2, LY = 300 - lo.h / 2;
     lo.wrap.style.left = LX + 'px'; lo.wrap.style.top = LY + 'px';
-    const sub = words(camera, 'Build the apps your teams need. *No* *code.*', { top: '480px', fontSize: '56px' });
+    const sub = words(camera, 'Build the apps your teams need. *With* *zero* *code.*', { top: '470px', fontSize: '54px' });
     const cta = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '620px', display: 'flex', justifyContent: 'center' }, camera,
-      `<div style="position:relative;overflow:hidden;height:104px;padding:0 18px 0 48px;border-radius:52px;background:#D7FF3F;color:#0B0B0F;display:flex;align-items:center;gap:30px;font:800 42px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;box-shadow:0 24px 60px rgba(215,255,63,0.25)">Start building on youcraft.build<span style="display:flex;width:72px;height:72px;border-radius:50%;background:#0B0B0F;align-items:center;justify-content:center">${icon('arrow-up-right', 36, '#D7FF3F', 2.6)}</span><i style="position:absolute;top:-20px;left:0;width:130px;height:150px;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,0.6),rgba(255,255,255,0))"></i></div>`);
+      `<div style="position:relative;overflow:hidden;height:104px;padding:0 18px 0 48px;border-radius:52px;background:#D7FF3F;color:#0B0B0F;display:flex;align-items:center;gap:30px;font:800 42px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;box-shadow:0 24px 60px rgba(215,255,63,0.25)">Start building on youcraft.tech<span style="display:flex;width:72px;height:72px;border-radius:50%;background:#0B0B0F;align-items:center;justify-content:center">${icon('arrow-up-right', 36, '#D7FF3F', 2.6)}</span><i style="position:absolute;top:-20px;left:0;width:130px;height:150px;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,0.6),rgba(255,255,255,0))"></i></div>`);
     const btn = cta.firstChild, sheen = btn.querySelector('i');
     const ST = [['1,300+', 'users across the Leyton group'], ['500+', 'apps already deployed'], ['0', 'lines of code to write']];
-    const stats = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '800px', display: 'flex', justifyContent: 'center', gap: '0' }, camera);
-    const sts = ST.map(([n, l], i) => $('div', { padding: '0 54px', borderLeft: i ? '1.5px solid rgba(245,242,234,0.16)' : 'none', textAlign: 'left' }, stats,
+    const stats = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '770px', display: 'flex', justifyContent: 'center', gap: '0' }, camera);
+    stats.style.gap = '24px';
+    const sts = ST.map(([n, l], i) => $('div', { padding: '22px 34px', minWidth: '300px', boxSizing: 'border-box', borderRadius: '24px', textAlign: 'left', background: 'linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 60%)', border: '1px solid rgba(255,255,255,0.13)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.16), 0 24px 50px rgba(0,0,0,0.4)' }, stats,
       `<div style="font:800 54px 'Plus Jakarta Sans',sans-serif;color:#D7FF3F;letter-spacing:-0.03em">${n}</div><div style="font:400 24px 'DM Sans',sans-serif;color:rgba(245,242,234,0.7);margin-top:4px">${l}</div>`));
-    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '980px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.5)' }, camera, 'by Leyton CognitX');
+    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '985px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.5)' }, camera, 'by Leyton CognitX');
     const intro = $('div', { position: 'absolute', inset: '0', background: '#D7FF3F' }, scene);
     const black = $('div', { position: 'absolute', inset: '0', background: '#0B0B0F' }, scene);
 
     window.render = (t) => {
-      bgUpdate(t, 1, 960, 420);
+      bgUpdate(t, 1, 960, 380, 1060);
+      logoShine(lo, t, 4.0);
       // Entrée : rideau citron qui se retire (symétrique de la sortie de l'intro).
       const ip = E.inOutCubic(P(t, 0.0, 0.55));
       intro.style.clipPath = `inset(0 ${ip * 100}% 0 0)`; intro.style.opacity = ip < 1 ? 1 : 0;

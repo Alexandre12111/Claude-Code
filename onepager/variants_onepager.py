@@ -7,7 +7,7 @@ CIR = dict(
     h1=f'Votre dossier CIR vous a demandé <span>des efforts de suivi</span>{NB}?',
     lead=f'Temps passés, procédés, essais, justificatifs{NB}: et si ce suivi se faisait naturellement, toute l’année{NB}? Avec <b>YouCraft</b>, vos équipes décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.',
     dash=dict(
-        url='suivi-rd.northwind.youcraft.build', app='Suivi R&amp;D', icon='activity', user=(19, 'Claire D.', 'Direction R&amp;D'), badge_nav='Justificatifs',
+        url='suivi-rd.northwind.youcraft.tech', app='Suivi R&amp;D', icon='activity', user=(19, 'Claire D.', 'Direction R&amp;D'), badge_nav='Justificatifs',
         nav=[('layout-dashboard', 'Synthèse'), ('timer', 'Temps passés'), ('activity', 'Essais'), ('folder', 'Justificatifs'), ('chart-column', 'Rapports')],
         h='Vue d’ensemble R&amp;D', sub='Exercice 2026 · 8 projets · mis à jour il y a 2 min', btn='Export CIR',
         kpi=[('timer', 'Heures R&amp;D', '1 284', 'h', '+12 %', [40, 44, 43, 50, 54, 58, 63], 'u'),
@@ -37,7 +37,7 @@ IPBOX = dict(
     h1=f'Votre dossier IP Box vous a demandé <span>un suivi précis</span>{NB}?',
     lead=f'Actifs, revenus de licences, dépenses de R&amp;D, ratio nexus{NB}: et si ce suivi se faisait naturellement, toute l’année{NB}? Avec <b>YouCraft</b>, vos équipes décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.',
     dash=dict(
-        url='ip-box.northwind.youcraft.build', app='IP Box', icon='badge-check', user=(21, 'Nadia H.', 'Direction financière'), badge_nav='Documentation',
+        url='ip-box.northwind.youcraft.tech', app='IP Box', icon='badge-check', user=(21, 'Nadia H.', 'Direction financière'), badge_nav='Documentation',
         nav=[('layout-dashboard', 'Synthèse'), ('badge-check', 'Actifs'), ('trending-up', 'Revenus'), ('wallet', 'Dépenses R&amp;D'), ('folder', 'Documentation')],
         h='Propriété intellectuelle', sub='Exercice 2026 · 12 actifs · mis à jour il y a 5 min', btn='Export IP Box',
         kpi=[('trending-up', 'Revenus', '2,4', 'M€', '+18 %', [1.2, 1.4, 1.5, 1.7, 1.9, 2.1, 2.4], 'u'),
@@ -65,7 +65,7 @@ GEN = dict(
     h1=f'Et si chaque équipe avait <span>son propre outil</span>{NB}?',
     lead=f'Tableurs partagés, relances par courriel, doubles saisies{NB}: vos équipes perdent du temps avec des outils qui ne sont pas faits pour elles. Avec <b>YouCraft</b>, elles décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.',
     dash=dict(
-        url='pilotage.northwind.youcraft.build', app='Pilotage', icon='chart-pie', user=(19, 'Claire D.', 'Direction générale'), badge_nav='Relances',
+        url='pilotage.northwind.youcraft.tech', app='Pilotage', icon='chart-pie', user=(19, 'Claire D.', 'Direction générale'), badge_nav='Relances',
         nav=[('layout-dashboard', 'Synthèse'), ('trending-up', 'Affaires'), ('building-2', 'Comptes'), ('bell', 'Relances'), ('chart-column', 'Rapports')],
         h='Pilotage commercial', sub='4e trimestre 2026 · toutes régions · mis à jour il y a 1 min', btn='Partager',
         kpi=[('wallet', 'Pipeline', '1,2', 'M€', '+9 %', [.8, .85, .9, .95, 1.0, 1.1, 1.2], 'u'),
