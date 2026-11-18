@@ -30,7 +30,7 @@
     var tx = $('.tx', hv), aw = $('.aw', hv), k = 0, tm = [];
     function later(f, ms) { tm.push(setTimeout(f, ms)); }
     function show(a) {
-      $('.u span', aw).textContent = a[4] + '.acme.youcraft.build';
+      $('.u span', aw).textContent = a[4] + '.acme.youcraft.tech';
       $('h6', aw).textContent = tr(a[1]);
       $$('.k3 div', aw).forEach(function (d, i) { d.querySelector('small').textContent = tr(a[2][i][0]); d.querySelector('b').textContent = a[2][i][1](); });
       $$('.cb i', aw).forEach(function (b, i) { b.style.height = a[3][i] + '%'; });
@@ -70,7 +70,7 @@
     $('.sub3', ucp).textContent = tr('Example application, built from one prompt');
     $('.ucp-l .q', ucp).innerHTML = '<small>' + esc(tr('The prompt')) + '</small>“' + esc(tr(u[2])) + '”';
     $('.ucp-l .feat', ucp).innerHTML = u[5].map(function (f) { return '<span>' + esc(tr(f)) + '</span>'; }).join('');
-    $('.ucp-a .u span', ucp).textContent = u[1].toLowerCase().replace(/[^a-z]+/g, '-').replace(/-$/, '') + '.acme.youcraft.build';
+    $('.ucp-a .u span', ucp).textContent = u[1].toLowerCase().replace(/[^a-z]+/g, '-').replace(/-$/, '') + '.acme.youcraft.tech';
     $('.ucp-a h6', ucp).textContent = tr(u[1]);
     $('.ucp-a .k3', ucp).innerHTML = u[3].map(function (k) { return '<div><small>' + esc(tr(k[0])) + '</small><b>' + esc(num(k[1])) + '</b></div>'; }).join('');
     $('.ucp-a .rows', ucp).innerHTML = u[4].map(function (r) { return '<div><span>' + esc(rowTxt(r[0])) + '</span><span class="st" style="' + st[r[2]] + '">' + esc(tr(r[1])) + '</span></div>'; }).join('');

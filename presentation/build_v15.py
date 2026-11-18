@@ -86,8 +86,8 @@ src = rep(src, '<div class="badge" style="right:-10px;top:-20px;animation-delay:
 src = rep(src, '    <div style="width:760px">\n      <h2 class="title rise">Your ideas.', '    <div style="width:690px">\n      <h2 class="title rise">Your ideas.')
 
 # 4. Application de notes de frais (diapositive « From a prompt to a live app »).
-src = rep(src, '<div class="note">Illustrative example with sample data, from youcraft.build</div>',
-          '<div class="note">Illustrative example with sample data, from youcraft.build</div>\n      <button class="ix-btn gh ix-replay">↻ Replay</button>\n      <div class="ix-hint" style="right:10px;top:-62px">Click a request to approve or reject it</div>')
+src = rep(src, '<div class="note">Illustrative example with sample data, from youcraft.tech</div>',
+          '<div class="note">Illustrative example with sample data, from youcraft.tech</div>\n      <button class="ix-btn gh ix-replay">↻ Replay</button>\n      <div class="ix-hint" style="right:10px;top:-62px">Click a request to approve or reject it</div>')
 
 # 5. Nouvelle diapositive : tableau de bord en direct.
 DASH = '''
@@ -98,7 +98,7 @@ DASH = '''
     <h2 class="title rise" style="font-size:64px">Explore a live dashboard</h2>
     <div class="ix-hint" style="right:0;top:18px">Interactive · click, filter, hover</div>
     <div class="db ix rise" style="--d:.15s">
-      <div class="url"><span class="dots"><b></b><b></b><b></b></span><svg class="ic"><use href="#i-lock"/></svg>ceo-dashboard.acme.youcraft.build<span class="live">Live</span><span style="margin-left:18px;color:#8F8C86">Sample data</span></div>
+      <div class="url"><span class="dots"><b></b><b></b><b></b></span><svg class="ic"><use href="#i-lock"/></svg>ceo-dashboard.acme.youcraft.tech<span class="live">Live</span><span style="margin-left:18px;color:#8F8C86">Sample data</span></div>
       <div class="db-b">
         <div class="db-nav">
           <div class="db-app"><i><svg class="ic"><use href="#i-chart"/></svg></i>CEO Dashboard</div>

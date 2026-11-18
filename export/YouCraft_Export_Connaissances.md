@@ -3,7 +3,7 @@
 Document de contexte à transmettre à une nouvelle discussion Claude, pour travailler sur YouCraft sans repartir de zéro.
 Établi le 5 novembre 2026 à partir de quatre sources, indiquées pour chaque section :
 
-- **[Site]** le site public youcraft.build, consulté le 4 novembre 2026 ;
+- **[Site]** le site public youcraft.tech, consulté le 4 novembre 2026 ;
 - **[Interne]** le one‑pager interne « YouCraft en une page » (v0.4, usage interne, ne pas partager avec les clients) ;
 - **[Deck]** la présentation commerciale anglaise v1.4 (« YouCraft – AI App Builder for Business Teams ») ;
 - **[Validé]** les textes déjà validés pour les vidéos YouCraft (chiffres d'adoption, hébergement).
@@ -27,7 +27,7 @@ Accroches utilisées :
 - **Chiffres CognitX [Deck]** : plus de 200 talents tech, plus de 50 experts IA et data, plus de 19 pays, « des milliers d'utilisateurs ».
 - **Historique [Deck]** : 2014 innovation IA au cœur de l'activité ; 2018 extension de la plateforme tech ; 2021 plus de 100 salariés ; 2022 cas d'usage d'IA générative à grande échelle ; 2024 lancement de YouCraft pour les clients.
 - **Adoption [Validé]** : plus de 750 utilisateurs et 350 applications déployées.
-- **Domaines** : youcraft.build (site), youcraft.tech (applications publiées, par exemple expenses.acme.youcraft.tech). Prise de rendez‑vous sur le deck : calendly.com/youcraft/30min.
+- **Domaines** : youcraft.tech (site), youcraft.tech (applications publiées, par exemple expenses.acme.youcraft.tech). Prise de rendez‑vous sur le deck : calendly.com/youcraft/30min.
 - **Charte visuelle** :
   - couleurs : Ink #0B0B0F, Ultramarine #1E3BFF, bleu clair #4F6BFF, Lime #D7FF3F, pierre #F5F2EA ;
   - polices : Plus Jakarta Sans (titres, 800) et DM Sans (texte) ;
@@ -189,4 +189,4 @@ Les prestations (développements, accompagnement) et l'auto‑hébergement sont 
 - **« Connecter YouCraft à un outil existant »** : le site parle de connecteurs (plus de 1 000) et d'import, mais pas explicitement de compléter une application déjà développée par le client.
 - **Présentations et sites internet** : générer des présentations commerciales ou un site vitrine n'apparaît pas dans les cas d'usage officiels. C'est mentionné dans la vidéo KMC, à confirmer.
 - **Chiffres d'adoption** : 750 utilisateurs et 350 applications (textes validés) d'un côté, « des milliers d'utilisateurs » (deck) de l'autre. Utiliser les chiffres validés.
-- **Tarifs** : ceux du site et du one‑pager concordent à la date de l'export. Les revérifier sur youcraft.build avant tout devis.
+- **Tarifs** : ceux du site et du one‑pager concordent à la date de l'export. Les revérifier sur youcraft.tech avant tout devis.

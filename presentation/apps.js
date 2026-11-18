@@ -426,7 +426,7 @@
   }
 
   /* ---------- public API ---------- */
-  var DEF = { people: [people, 'People Hub', 'users', UM, 'people-hub.northwind.youcraft.build/onboarding'], tower: [tower, 'Control Tower', 'map-pin', INK, 'control-tower.northwind.youcraft.build/live-map'], assets: [assets, 'Asset Monitor', 'gauge', UM, 'asset-monitor.northwind.youcraft.build/sensors/PR-LY-004'], portal: [portal, 'Client Portal', 'building-2', UM, 'client-portal.northwind.youcraft.build/clients'] };
+  var DEF = { people: [people, 'People Hub', 'users', UM, 'people-hub.northwind.youcraft.tech/onboarding'], tower: [tower, 'Control Tower', 'map-pin', INK, 'control-tower.northwind.youcraft.tech/live-map'], assets: [assets, 'Asset Monitor', 'gauge', UM, 'asset-monitor.northwind.youcraft.tech/sensors/PR-LY-004'], portal: [portal, 'Client Portal', 'building-2', UM, 'client-portal.northwind.youcraft.tech/clients'] };
   var LIVE = [];
   function create(name, host) {
     var d = DEF[name], root = D(host, 'ya'), app = { name: name, root: root, host: host, label: d[1], icon: d[2], mark: d[3], url: d[4], running: false, state: null };
