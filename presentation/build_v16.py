@@ -25,7 +25,7 @@ HERO = '''  <div class="hero-v rise" style="--d:.4s" tabindex="0" role="button" 
     <div class="glowc"></div>
     <div class="hv">
       <div class="pc"><span class="av"><svg class="ic"><use href="#i-spark"/></svg></span><span class="tx"></span></div>
-      <div class="aw"><div class="u"><svg class="ic"><use href="#i-lock"/></svg><span>ceo-dashboard.acme.youcraft.tech</span><span class="live">Live</span></div>
+      <div class="aw"><div class="u"><svg class="ic"><use href="#i-lock"/></svg><span>ceo-dashboard.acme.youcraft.build</span><span class="live">Live</span></div>
         <div class="bd"><h6></h6><div class="k3"><div><small></small><b></b></div><div><small></small><b></b></div><div><small></small><b></b></div></div>
           <div class="cb"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="shim2"></div></div>
       <div class="chip2" style="right:-60px;top:290px;animation-delay:-1.5s">Live in one click</div>
