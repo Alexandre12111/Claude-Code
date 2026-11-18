@@ -41,23 +41,19 @@ def spark(vals, c, w=34, h=10):
 
 
 # ---------------------------------------------------------------- tableau de bord du bandeau
-def dashboard():
-    nav = [('layout-dashboard', 'Synthèse', 1), ('timer', 'Temps passés', 0), ('activity', 'Essais', 0), ('folder', 'Justificatifs', 0), ('chart-column', 'Rapports', 0)]
-    navh = ''.join(f'<div class="dn{" on" if on else ""}">{ic(i, 7, "#0B0B0F" if on else "#A9A6A0")}<span>{t}</span>' + ('<em>3</em>' if t == 'Justificatifs' else '') + '</div>' for i, t, on in nav)
-    kp = [('timer', 'Heures R&amp;D', '1 284', 'h', '+12 %', [40, 44, 43, 50, 54, 58, 63], 'u'),
-          ('target', 'Projets éligibles', '6', '/ 8', '+2', [3, 4, 4, 5, 5, 6, 6], 'g'),
-          ('folder', 'Justificatifs', '94', '%', 'complets', [60, 70, 78, 84, 88, 92, 94], 'l')]
+def dashboard(D):
+    nav = [(a, b, k == 0) for k, (a, b) in enumerate(D['nav'])]
+    navh = ''.join(f'<div class="dn{" on" if on else ""}">{ic(i, 7, "#0B0B0F" if on else "#A9A6A0")}<span>{t}</span>' + ('<em>3</em>' if t == D['badge_nav'] else '') + '</div>' for i, t, on in nav)
+    kp = D['kpi']
     CK = {'u': ('#EEF0FF', '#1E3BFF'), 'g': ('#E7F6EC', '#1C8C4E'), 'l': ('#F3FAD0', '#5A6608')}
     kph = ''.join(f'<div class="dk"><div class="dkt"><span class="dki" style="background:{CK[c][0]}">{ic(i, 7, CK[c][1], 2.2)}</span><small>{l}</small></div>'
                   f'<div class="dkv"><b>{v}<u>{u}</u></b><em style="background:{CK[c][0]};color:{CK[c][1]}">{d}</em>{spark(sp, CK[c][1], 30, 10)}</div></div>' for i, l, v, u, d, sp, c in kp)
     # courbe : heures R&D par mois et objectif
-    H = [96, 104, 118, 112, 131, 140, 152, 147, 163]
-    T = [100, 106, 112, 118, 124, 130, 136, 142, 148]
+    ctitle, l1, l2, H, T, mx, tip, _ = D['chart']
     W, Hh, pl, pb = 120, 46, 11, 8
-    mx = 180
     X = lambda i: pl + i / (len(H) - 1) * (W - pl - 3)
     Y = lambda v: 4 + (1 - v / mx) * (Hh - pb - 4)
-    grid = ''.join(f'<line x1="{pl}" x2="{W - 3}" y1="{Y(v):.1f}" y2="{Y(v):.1f}" stroke="#EFEDE7" stroke-width=".5"/><text x="{pl - 2}" y="{Y(v) + 1.3:.1f}" text-anchor="end" font-size="3.3" fill="#A9A6A0">{v}</text>' for v in (0, 60, 120, 180))
+    grid = ''.join(f'<line x1="{pl}" x2="{W - 3}" y1="{Y(v):.1f}" y2="{Y(v):.1f}" stroke="#EFEDE7" stroke-width=".5"/><text x="{pl - 2}" y="{Y(v) + 1.3:.1f}" text-anchor="end" font-size="3.3" fill="#A9A6A0">{v}</text>' for v in (0, mx // 3, 2 * mx // 3, mx))
     mo = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S']
     xl = ''.join(f'<text x="{X(i):.1f}" y="{Hh - 1.5}" text-anchor="middle" font-size="3.3" fill="#A9A6A0">{m}</text>' for i, m in enumerate(mo))
     p = ' '.join(f'{X(i):.1f},{Y(v):.1f}' for i, v in enumerate(H)); t = ' '.join(f'{X(i):.1f},{Y(v):.1f}' for i, v in enumerate(T))
@@ -68,9 +64,10 @@ def dashboard():
              f'<line x1="{lx:.1f}" x2="{lx:.1f}" y1="{Y(mx):.1f}" y2="{Y(0):.1f}" stroke="#1E3BFF" stroke-opacity=".25" stroke-width=".5"/>'
              f'<polyline points="{p}" fill="none" stroke="#1E3BFF" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"/>'
              f'<circle cx="{lx:.1f}" cy="{ly:.1f}" r="2.6" fill="#1E3BFF" fill-opacity=".18"/><circle cx="{lx:.1f}" cy="{ly:.1f}" r="1.4" fill="#fff" stroke="#1E3BFF" stroke-width=".9"/>'
-             f'<g transform="translate({lx - 28:.1f} {ly - 2:.1f})"><rect width="24" height="10" rx="2" fill="#0B0B0F"/><text x="3" y="4.2" font-size="2.9" fill="#A9A6A0">Septembre</text><text x="3" y="8.2" font-size="3.6" font-weight="700" fill="#fff">163 h</text><text x="21" y="8.2" text-anchor="end" font-size="2.9" font-weight="700" fill="#D7FF3F">+10 %</text></g></svg>')
+             f'<g transform="translate({lx - 30:.1f} {ly - 2:.1f})"><rect width="26" height="10" rx="2" fill="#0B0B0F"/><text x="3" y="4.2" font-size="2.9" fill="#A9A6A0">{tip[0]}</text><text x="23.5" y="4.2" text-anchor="end" font-size="2.9" font-weight="700" fill="#D7FF3F">{tip[2]}</text><text x="3" y="8.4" font-size="3.6" font-weight="700" fill="#fff">{tip[1]}</text></g></svg>')
     # anneau : répartition des heures par projet
-    seg = [('Atlas', 412, '#1E3BFF'), ('Nova', 326, '#6F86FF'), ('Helios', 218, '#B9C4FF'), ('Autres', 328, '#D7FF3F')]
+    dtitle, dseg, dval, dlab = D['donut']
+    seg = [(n, v, c) for (n, v), c in zip(dseg, ('#1E3BFF', '#6F86FF', '#B9C4FF', '#D7FF3F'))]
     tot = sum(v for _, v, _ in seg); R, r0, cx = 15, 10, 18
     import math
     a0, arcs = -math.pi / 2, ''
@@ -79,29 +76,30 @@ def dashboard():
         P = lambda a, rr: f'{cx + rr * math.cos(a):.2f} {cx + rr * math.sin(a):.2f}'
         arcs += f'<path d="M{P(a0, R)} A{R} {R} 0 {lg} 1 {P(a1 - .03, R)} L{P(a1 - .03, r0)} A{r0} {r0} 0 {lg} 0 {P(a0, r0)} Z" fill="{c}"/>'
         a0 = a1
-    donut = (f'<svg viewBox="0 0 36 36" class="dnut">{arcs}<text x="18" y="17.6" text-anchor="middle" font-size="5.2" font-weight="800" fill="#0B0B0F">1 284</text>'
-             f'<text x="18" y="22" text-anchor="middle" font-size="2.9" fill="#8A8780">heures</text></svg>')
+    donut = (f'<svg viewBox="0 0 36 36" class="dnut">{arcs}<text x="18" y="17.6" text-anchor="middle" font-size="5.2" font-weight="800" fill="#0B0B0F">{dval}</text>'
+             f'<text x="18" y="22" text-anchor="middle" font-size="2.9" fill="#8A8780">{dlab}</text></svg>')
     leg = ''.join(f'<div><i style="background:{c}"></i>{n}<b>{round(v / tot * 100)} %</b></div>' for n, v, c in seg)
-    rows = [(0, 'Atlas', 'Capteur nouvelle génération', '412 h', 0.92, ('Éligible', 'ok')), (3, 'Nova', 'Procédé de recyclage', '326 h', 0.74, ('Éligible', 'ok')), (2, 'Helios', 'Algorithme de prévision', '218 h', 0.48, ('À qualifier', 'wa'))]
-    tr = ''.join(f'<div class="dr">{av(k)}<div class="dp"><b>{n}</b><span>{d}</span></div><b class="dh">{h}</b><span class="pb"><i style="width:{int(v * 100)}%"></i></span>{badge(*b)}</div>' for k, n, d, h, v, b in rows)
+    rows = D['rows']
+    lead = lambda k: av(k) if isinstance(k, int) else f'<span class="rico">{ic(k, 7, "#1E3BFF")}</span>'
+    tr = ''.join(f'<div class="dr">{lead(k)}<div class="dp"><b>{n}</b><span>{d}</span></div><b class="dh">{h}</b><span class="pb"><i style="width:{int(v * 100)}%"></i></span>{badge(*b)}</div>' for k, n, d, h, v, b in rows)
     team = ''.join(av(k, 'tav') for k in (19, 0, 3, 2))
     return f'''<div class="dwrap">
 <div class="dash">
-  <div class="db"><span class="dots"><b></b><b></b><b></b></span><span class="url">{ic("lock", 6, "#9A9790")}suivi-rd.northwind.youcraft.build</span><em><i></i>En ligne</em></div>
+  <div class="db"><span class="dots"><b></b><b></b><b></b></span><span class="url">{ic("lock", 6, "#9A9790")}{D['url']}</span><em><i></i>En ligne</em></div>
   <div class="dbody">
-    <aside class="dside"><div class="dl"><span>{ic("activity", 7, "#0B0B0F", 2.4)}</span><b>Suivi R&amp;D<small>Northwind</small></b></div>{navh}
-      <div class="dme">{av(19)}<span>Claire D.<small>Direction R&amp;D</small></span></div></aside>
+    <aside class="dside"><div class="dl"><span>{ic(D['icon'], 7, "#0B0B0F", 2.4)}</span><b>{D['app']}<small>Northwind</small></b></div>{navh}
+      <div class="dme">{av(D['user'][0])}<span>{D['user'][1]}<small>{D['user'][2]}</small></span></div></aside>
     <div class="dmain">
-      <div class="dhd"><div><b>Vue d’ensemble R&amp;D</b><small>Exercice 2026 · 8 projets · mis à jour il y a 2 min</small></div><span class="team">{team}</span><span class="chip p">{ic("download", 6, "#fff")}Export CIR</span></div>
+      <div class="dhd"><div><b>{D['h']}</b><small>{D['sub']}</small></div><span class="team">{team}</span><span class="chip p">{ic("download", 6, "#fff")}{D['btn']}</span></div>
       <div class="dks">{kph}</div>
-      <div class="drow"><div class="dc"><div class="dct"><b>Heures par mois</b><span><i class="l1"></i>Réalisé<i class="l2"></i>Objectif</span></div>{chart}</div>
-        <div class="dc dd"><div class="dct"><b>Par projet</b></div><div class="ddi">{donut}<div class="dlg">{leg}</div></div></div></div>
-      <div class="dc dt"><div class="dth"><span>Projet</span><span>Heures</span><span>Avancement</span><span>Statut</span></div>{tr}</div>
+      <div class="drow"><div class="dc"><div class="dct"><b>{ctitle}</b><span><i class="l1"></i>{l1}<i class="l2"></i>{l2}</span></div>{chart}</div>
+        <div class="dc dd"><div class="dct"><b>{dtitle}</b></div><div class="ddi">{donut}<div class="dlg">{leg}</div></div></div></div>
+      <div class="dc dt"><div class="dth">{''.join(f'<span>{c}</span>' for c in D['cols'])}</div>{tr}</div>
     </div>
   </div>
 </div>
-<div class="fl f1"><span>{ic("check", 7, "#0B0B0F", 3)}</span><div><b>Dossier CIR 2026</b><small>Export prêt · 128 pièces</small></div></div>
-<div class="fl f2">{av(0)}<div><b>Camille L. · +7 h</b><small>Projet Atlas · à l’instant</small></div></div>
+<div class="fl f1"><span>{ic("check", 7, "#0B0B0F", 3)}</span><div><b>{D['f1'][0]}</b><small>{D['f1'][1]}</small></div></div>
+<div class="fl f2">{av(D['f2'][0])}<div><b>{D['f2'][1]}</b><small>{D['f2'][2]}</small></div></div>
 </div>'''
 
 
@@ -131,19 +129,19 @@ WHY = [('shield-check', 'Vos données restent protégées', 'Hébergées en Euro
 TRIAL = [('J0 · 1 h', 'Nous créons ensemble votre première application'), ('J0 à J7', 'Vos équipes l’utilisent et l’améliorent'), ('J7', 'Bilan et suite, sans engagement')]
 
 
-def cir_cards():
+def cir_cards(cards):
     out = []
-    for icn, t, d, rows in CIR:
+    for icn, t, d, rows in cards:
         r = ''
-        for k, a, b, h, st, lab in rows:
-            lead = av(k, 'mav') if k is not None else f'<span class="mdot">{ic("file-pen-line" if icn == "folder" else "activity", 7, "#1E3BFF")}</span>'
-            r += f'<div class="mr">{lead}<div class="mrt"><b>{a}</b><span>{b}{(" · " + h) if h else ""}</span></div>{badge(lab, st)}</div>'
+        for k, a, b, st, lab in rows:
+            lead = av(k, 'mav') if isinstance(k, int) else f'<span class="mdot">{ic(k, 7, "#1E3BFF")}</span>'
+            r += f'<div class="mr">{lead}<div class="mrt"><b>{a}</b><span>{b}</span></div>{badge(lab, st)}</div>'
         out.append(f'<div class="cc"><div class="cch"><span class="tl">{ic(icn, 13, "#fff", 2.2)}</span><h4>{t}</h4></div><p>{d}</p><div class="mini">{r}</div></div>')
     return ''.join(out)
 
 
-def more():
-    return ''.join(f'<div class="mo"><span class="tl s">{ic(i, 12, "#1E3BFF")}</span><div><b>{t}</b><span>{d}</span></div></div>' for i, t, d in MORE)
+def more(items):
+    return ''.join(f'<div class="mo"><span class="tl s">{ic(i, 12, "#1E3BFF")}</span><div><b>{t}</b><span>{d}</span></div></div>' for i, t, d in items)
 
 
 def steps():
@@ -176,7 +174,7 @@ h1,h2,h3,h4,b,strong{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 .hero .glow{position:absolute;right:-20mm;top:-10mm;width:130mm;height:110mm;border-radius:50%;background:radial-gradient(closest-side,rgba(30,59,255,.6),rgba(30,59,255,0))}
 .top{display:flex;justify-content:space-between;align-items:center;position:relative}
 .tag{font-size:6.6pt;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);font-weight:700;border:1px solid rgba(215,255,63,.35);padding:1mm 2.4mm;border-radius:10mm}
-.hg{display:grid;grid-template-columns:84mm 1fr;gap:8mm;margin-top:3.4mm;position:relative;align-items:center}
+.hg{display:grid;grid-template-columns:84mm minmax(0,1fr);gap:8mm;margin-top:3.4mm;position:relative;align-items:center}
 .k1{display:inline-flex;align-items:center;gap:1.6mm;font:700 6.8pt/1 'DM Sans';letter-spacing:.16em;color:var(--lime);text-transform:uppercase}
 .k1::before{content:"";width:5mm;height:.5mm;background:var(--lime)}
 .hero h1{margin-top:2.2mm;font-size:19.5pt;line-height:1.06;letter-spacing:-.035em;font-weight:800}
@@ -190,7 +188,7 @@ h1,h2,h3,h4,b,strong{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 .stat:last-child strong{color:var(--stone)}
 .stat span{display:block;font-size:6.6pt;line-height:1.3;color:#A39F95;margin-top:1mm}
 /* tableau de bord */
-.dwrap{position:relative}
+.dwrap{position:relative;min-width:0}
 .dash{background:#F6F5F1;color:var(--ink);border-radius:3mm;overflow:hidden;box-shadow:0 28px 60px rgba(0,0,0,.6),0 0 0 .3mm rgba(255,255,255,.12),0 0 90px rgba(79,107,255,.35);font-size:5.2pt}
 .db{height:5mm;background:#fff;border-bottom:1px solid #ECEAE4;display:flex;align-items:center;gap:2mm;padding:0 2.4mm}
 .db .dots{display:flex;gap:.9mm}.db .dots b{width:1.4mm;height:1.4mm;border-radius:50%;background:#E2DED4}
@@ -218,17 +216,17 @@ h1,h2,h3,h4,b,strong{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 .tav{width:4mm;height:4mm;border-radius:50%;object-fit:cover;border:.4mm solid #F6F5F1;margin-left:-1.2mm}
 .chip{display:flex;align-items:center;gap:.8mm;padding:.9mm 1.8mm;border-radius:1.2mm;font:700 4.8pt 'DM Sans';white-space:nowrap}
 .chip.p{background:#1E3BFF;color:#fff;box-shadow:0 2px 6px rgba(30,59,255,.35)}
-.dks{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4mm}
-.dk{background:#fff;border-radius:1.6mm;padding:1.5mm 1.7mm;box-shadow:0 1px 2px rgba(11,11,15,.05),0 0 0 .2mm #ECEAE4;position:relative}
+.dks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.4mm}
+.dk{background:#fff;border-radius:1.6mm;padding:1.5mm 1.7mm;box-shadow:0 1px 2px rgba(11,11,15,.05),0 0 0 .2mm #ECEAE4;position:relative;min-width:0;overflow:hidden}
 .dkt{display:flex;align-items:center;gap:1mm}
 .dki{width:3.6mm;height:3.6mm;border-radius:1mm;display:flex;align-items:center;justify-content:center}
 .dk small{color:#77746E;font-size:4.6pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:13mm}
 .dkv{display:flex;align-items:center;gap:1.2mm;margin-top:.9mm}
 .dk b{font-size:9.6pt;letter-spacing:-.03em;line-height:1;white-space:nowrap}
 .dk b u{text-decoration:none;font-size:5.4pt;color:#8A8780;margin-left:.4mm;letter-spacing:0}
-.dkv>svg{margin-left:auto;width:6.4mm;height:2.6mm;flex:none}
+.dkv>svg{margin-left:auto;width:5.2mm;height:2.6mm;flex:none}
 .dk em{font-style:normal;font:700 4.2pt 'DM Sans';padding:.3mm 1mm;border-radius:2mm;white-space:nowrap}
-.drow{display:grid;grid-template-columns:1fr 26mm;gap:1.4mm}
+.drow{display:grid;grid-template-columns:minmax(0,1fr) 26mm;gap:1.4mm}
 .dc{background:#fff;border-radius:1.6mm;padding:1.5mm 1.8mm;box-shadow:0 1px 2px rgba(11,11,15,.05),0 0 0 .2mm #ECEAE4}
 .dct{display:flex;align-items:center;justify-content:space-between;margin-bottom:.4mm}
 .dct b{font-size:5.6pt}
@@ -246,6 +244,7 @@ h1,h2,h3,h4,b,strong{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 .dr{display:grid;grid-template-columns:4.4mm 1fr 8mm 11mm 12mm;gap:1.4mm;align-items:center;padding:.7mm 0;border-top:1px solid #F4F2EE}
 .dth+.dr{border-top:0}
 .dp{min-width:0}
+.rico{width:4.4mm;height:4.4mm;border-radius:1.2mm;background:#EEF0FF;display:flex;align-items:center;justify-content:center}
 .dp b{display:block;font-size:5.3pt}
 .dp span{display:block;color:#8A8780;font-size:4.4pt;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dh{font-size:5.3pt;font-variant-numeric:tabular-nums}
@@ -322,25 +321,26 @@ h1,h2,h3,h4,b,strong{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 @media screen and (max-width:820px){.page{transform-origin:top left;transform:scale(calc(100vw / 220mm));margin:0}}
 """
 
-HTML = f"""<!doctype html>
+def page(V):
+    return f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>YouCraft · Pour les équipes qui innovent</title>
+<title>{V['title']}</title>
 <style>{FONTS}{CSS}</style></head>
 <body><main class="page">
 <header class="hero">{mark(250)}<div class="glow"></div>
-  <div class="top">{logo(22)}<span class="tag">Pour les équipes qui innovent</span></div>
+  <div class="top">{logo(22)}<span class="tag">{V['tag']}</span></div>
   <div class="hg"><div>
-    <div class="k1">Après votre dossier CIR</div>
-    <h1>Votre dossier CIR vous a demandé <span>des efforts de suivi</span>{NB}?</h1>
-    <p class="lead">Temps passés, procédés, essais, justificatifs{NB}: et si ce suivi se faisait naturellement, toute l’année{NB}? Avec <b>YouCraft</b>, vos équipes décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.</p>
+    <div class="k1">{V['kicker']}</div>
+    <h1>{V['h1']}</h1>
+    <p class="lead">{V['lead']}</p>
     <div class="stats"><div class="stat"><strong>1{NB}300+</strong><span>utilisateurs dans le groupe Leyton</span></div><div class="stat"><strong>500+</strong><span>applications déjà déployées</span></div>
       <div class="stat"><strong>0</strong><span>ligne de code à écrire</span></div></div>
-  </div>{dashboard()}</div>
+  </div>{dashboard(V['dash'])}</div>
 </header>
 <section class="body">
-  <div><div class="sh"><span class="no">01</span><h2>Un suivi R&amp;D qui se fait <span>au fil de l’eau</span></h2><small>Exemples d’applications créées avec YouCraft</small></div><div class="cir">{cir_cards()}</div></div>
-  <div class="beyond"><div class="sh"><span class="no">02</span><h2>Et <span>bien au‑delà</span> du CIR</h2><small>Une plateforme pour toutes vos équipes</small></div>
-    <p class="intro"><b>YouCraft n’est pas qu’un outil de suivi CIR</b>{NB}: chaque équipe y crée l’outil qu’elle attend depuis longtemps.</p><div class="mos">{more()}</div></div>
+  <div><div class="sh"><span class="no">01</span><h2>{V['s1'][0]}</h2><small>{V['s1'][1]}</small></div><div class="cir">{cir_cards(V['cards'])}</div></div>
+  <div class="beyond"><div class="sh"><span class="no">02</span><h2>{V['s2'][0]}</h2><small>Une plateforme pour toutes vos équipes</small></div>
+    <p class="intro">{V['s2'][1]}</p><div class="mos">{more(V['more'])}</div></div>
   <div class="hw"><div><div class="sh"><span class="no">03</span><h2>Simple comme <span>une conversation</span></h2></div><div class="how">{steps()}</div></div>
     <div class="why">{why()}</div></div>
   <div class="cta"><div>
@@ -354,6 +354,9 @@ HTML = f"""<!doctype html>
 <footer class="foot"><b>YouCraft · Leyton CognitX</b><span>youcraft.build</span></footer>
 </main></body></html>"""
 
-out = os.path.join(HERE, 'YouCraft_OnePager_Client_CIR.html')
-open(out, 'w', encoding='utf-8').write(HTML)
-print(out)
+from variants_onepager import VARIANTS  # noqa: E402
+for key in (sys.argv[1:] or VARIANTS):
+    V = VARIANTS[key]
+    out = os.path.join(HERE, V['file'] + '.html')
+    open(out, 'w', encoding='utf-8').write(page(V))
+    print(out)

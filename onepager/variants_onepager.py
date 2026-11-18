@@ -1,0 +1,93 @@
+"""Contenus des trois déclinaisons du one-pager client YouCraft : CIR, IP Box et généraliste.
+Chiffres des tableaux de bord : données fictives."""
+NB = ' '
+
+CIR = dict(
+    file='YouCraft_OnePager_Client_CIR', title='YouCraft · Suivi CIR', tag='Pour les équipes qui innovent', kicker='Après votre dossier CIR',
+    h1=f'Votre dossier CIR vous a demandé <span>des efforts de suivi</span>{NB}?',
+    lead=f'Temps passés, procédés, essais, justificatifs{NB}: et si ce suivi se faisait naturellement, toute l’année{NB}? Avec <b>YouCraft</b>, vos équipes décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.',
+    dash=dict(
+        url='suivi-rd.northwind.youcraft.build', app='Suivi R&amp;D', icon='activity', user=(19, 'Claire D.', 'Direction R&amp;D'), badge_nav='Justificatifs',
+        nav=[('layout-dashboard', 'Synthèse'), ('timer', 'Temps passés'), ('activity', 'Essais'), ('folder', 'Justificatifs'), ('chart-column', 'Rapports')],
+        h='Vue d’ensemble R&amp;D', sub='Exercice 2026 · 8 projets · mis à jour il y a 2 min', btn='Export CIR',
+        kpi=[('timer', 'Heures R&amp;D', '1 284', 'h', '+12 %', [40, 44, 43, 50, 54, 58, 63], 'u'),
+             ('target', 'Projets éligibles', '6', '/ 8', '+2', [3, 4, 4, 5, 5, 6, 6], 'g'),
+             ('folder', 'Justificatifs', '94', '%', 'complets', [60, 70, 78, 84, 88, 92, 94], 'l')],
+        chart=('Heures par mois', 'Réalisé', 'Objectif', [96, 104, 118, 112, 131, 140, 152, 147, 163], [100, 106, 112, 118, 124, 130, 136, 142, 148], 180, ('Sept.', '163 h', '+10 %'), ''),
+        donut=('Par projet', [('Atlas', 412), ('Nova', 326), ('Helios', 218), ('Autres', 328)], '1 284', 'heures'),
+        cols=('Projet', 'Heures', 'Avancement', 'Statut'),
+        rows=[(0, 'Atlas', 'Capteur nouvelle génération', '412 h', 0.92, ('Éligible', 'ok')), (3, 'Nova', 'Procédé de recyclage', '326 h', 0.74, ('Éligible', 'ok')),
+              (2, 'Helios', 'Algorithme de prévision', '218 h', 0.48, ('À qualifier', 'wa'))],
+        f1=('Dossier CIR 2026', 'Export prêt · 128 pièces'), f2=(0, 'Camille L. · +7 h', 'Projet Atlas · à l’instant')),
+    s1=('Un suivi R&amp;D qui se fait <span>au fil de l’eau</span>', 'Exemples d’applications créées avec YouCraft'),
+    cards=[('timer', 'Temps passés', 'Chaque chercheur saisit ses heures par projet. Les managers valident, le total est toujours à jour.',
+            [(0, 'Camille L.', 'Projet Atlas · 38 h', 'ok', 'Validé'), (3, 'Hugo M.', 'Projet Nova · 24 h', 'in', 'À valider')]),
+           ('activity', 'Procédés et essais', 'Hypothèses, protocoles et résultats consignés au fil des essais, datés et rattachés au bon projet.',
+            [('activity', 'Essai n° 14', 'Formulation B', 'ok', 'Concluant'), ('activity', 'Essai n° 15', 'Prototype v2', 'wa', 'À relancer')]),
+           ('folder', 'Justificatifs', 'Toutes les pièces au même endroit, les manques signalés, l’export prêt pour votre dossier.',
+            [('file-pen-line', 'Comptes rendus', '42 pièces', 'ok', 'Complet'), ('file-pen-line', 'Diplômes', '5 sur 6', 'ba', 'Manquant')])],
+    s2=('Et <span>bien au‑delà</span> du CIR', f'<b>YouCraft n’est pas qu’un outil de suivi CIR</b>{NB}: chaque équipe y crée l’outil qu’elle attend depuis longtemps.'),
+    more=[('trending-up', 'CRM commercial', 'Prospects, opportunités, relances'), ('folder-kanban', 'Gestion de projet', 'Tâches, jalons, charge des équipes'),
+          ('users', 'Tableau de bord RH', 'Effectifs, recrutements, intégrations'), ('gauge', 'Suivi de production', 'Cadences, incidents, maintenance'),
+          ('clipboard-check', 'Circuits de validation', 'Achats, notes de frais, congés'), ('building-2', 'Portail client', 'Documents partagés, suivi des dossiers')],
+)
+
+IPBOX = dict(
+    file='YouCraft_OnePager_Client_IPBox', title='YouCraft · Suivi IP Box', tag='Pour les entreprises qui innovent', kicker='Après votre dossier IP Box',
+    h1=f'Votre dossier IP Box vous a demandé <span>un suivi précis</span>{NB}?',
+    lead=f'Actifs, revenus de licences, dépenses de R&amp;D, ratio nexus{NB}: et si ce suivi se faisait naturellement, toute l’année{NB}? Avec <b>YouCraft</b>, vos équipes décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.',
+    dash=dict(
+        url='ip-box.northwind.youcraft.build', app='IP Box', icon='badge-check', user=(21, 'Nadia H.', 'Direction financière'), badge_nav='Documentation',
+        nav=[('layout-dashboard', 'Synthèse'), ('badge-check', 'Actifs'), ('trending-up', 'Revenus'), ('wallet', 'Dépenses R&amp;D'), ('folder', 'Documentation')],
+        h='Propriété intellectuelle', sub='Exercice 2026 · 12 actifs · mis à jour il y a 5 min', btn='Export IP Box',
+        kpi=[('trending-up', 'Revenus', '2,4', 'M€', '+18 %', [1.2, 1.4, 1.5, 1.7, 1.9, 2.1, 2.4], 'u'),
+             ('badge-check', 'Actifs suivis', '12', 'actifs', '+3', [7, 8, 8, 9, 10, 11, 12], 'g'),
+             ('target', 'Ratio nexus', '0,86', '', 'moyen', [.71, .74, .77, .79, .82, .84, .86], 'l')],
+        chart=('Revenus (k€)', 'Réalisé', 'Prévision', [180, 196, 214, 205, 238, 252, 271, 266, 294], [190, 200, 210, 220, 230, 240, 250, 260, 270], 320, ('Sept.', '294 k€', '+9 %'), ''),
+        donut=('Par actif', [('Atlas', 1100), ('FR‑231', 640), ('EP‑118', 410), ('Autres', 250)], '2,4 M€', 'revenus'),
+        cols=('Actif', 'Revenus', 'Ratio nexus', 'Statut'),
+        rows=[('code-xml', 'Logiciel Atlas', 'Droit d’auteur · licences', '1,1 M€', 0.92, ('Éligible', 'ok')), ('badge-check', 'Brevet FR‑231', 'Procédé de traitement', '640 k€', 0.81, ('Éligible', 'ok')),
+              ('badge-check', 'Brevet EP‑118', 'Capteur connecté', '410 k€', 0.64, ('À documenter', 'wa'))],
+        f1=('Dossier IP Box 2026', 'Export prêt · 12 actifs'), f2=(9, 'Thomas R. · +120 k€', 'Licence Atlas · à l’instant')),
+    s1=('Un suivi IP Box qui se fait <span>au fil de l’eau</span>', 'Exemples d’applications créées avec YouCraft'),
+    cards=[('badge-check', 'Actifs de propriété intellectuelle', 'Brevets et logiciels recensés, avec leurs dates, statuts et responsables.',
+            [('code-xml', 'Logiciel Atlas', 'Droit d’auteur', 'ok', 'Éligible'), ('badge-check', 'Brevet FR‑231', 'Délivré en 2024', 'ok', 'Éligible')]),
+           ('trending-up', 'Revenus et dépenses', 'Revenus de licences et dépenses de R&amp;D rattachés à chaque actif, pour suivre le ratio nexus en continu.',
+            [('trending-up', 'Licence Northwind', '120 k€', 'in', 'Facturé'), ('wallet', 'Sous‑traitance R&amp;D', '48 k€', 'wa', 'À affecter')]),
+           ('folder', 'Documentation', 'Contrats, factures et preuves au même endroit, les manques signalés, l’export prêt pour votre dossier.',
+            [('file-pen-line', 'Contrats de licence', '14 pièces', 'ok', 'Complet'), ('file-pen-line', 'Traçabilité R&amp;D', '3 sur 5', 'ba', 'Manquant')])],
+    s2=('Et <span>bien au‑delà</span> de l’IP Box', f'<b>YouCraft n’est pas qu’un outil de suivi IP Box</b>{NB}: chaque équipe y crée l’outil qu’elle attend depuis longtemps.'),
+    more=CIR['more'],
+)
+
+GEN = dict(
+    file='YouCraft_OnePager_Client_General', title='YouCraft · Vos équipes, leurs applications', tag='Pour toutes vos équipes', kicker='Fini les tableurs qui débordent',
+    h1=f'Et si chaque équipe avait <span>son propre outil</span>{NB}?',
+    lead=f'Tableurs partagés, relances par courriel, doubles saisies{NB}: vos équipes perdent du temps avec des outils qui ne sont pas faits pour elles. Avec <b>YouCraft</b>, elles décrivent leur besoin et obtiennent leur propre application <b>en quelques heures</b>.',
+    dash=dict(
+        url='pilotage.northwind.youcraft.build', app='Pilotage', icon='chart-pie', user=(19, 'Claire D.', 'Direction générale'), badge_nav='Relances',
+        nav=[('layout-dashboard', 'Synthèse'), ('trending-up', 'Affaires'), ('building-2', 'Comptes'), ('bell', 'Relances'), ('chart-column', 'Rapports')],
+        h='Pilotage commercial', sub='4e trimestre 2026 · toutes régions · mis à jour il y a 1 min', btn='Partager',
+        kpi=[('wallet', 'Pipeline', '1,2', 'M€', '+9 %', [.8, .85, .9, .95, 1.0, 1.1, 1.2], 'u'),
+             ('target', 'Transformation', '32', '%', '+4 pts', [24, 25, 27, 28, 29, 30, 32], 'g'),
+             ('users', 'Nouveaux leads', '48', '', '+11', [30, 33, 35, 38, 41, 44, 48], 'l')],
+        chart=('CA signé (k€)', 'Réalisé', 'Objectif', [210, 232, 248, 239, 266, 281, 302, 296, 328], [220, 230, 240, 250, 260, 270, 280, 290, 300], 360, ('Sept.', '328 k€', '+11 %'), ''),
+        donut=('Pipeline par étape', [('Prospection', 420), ('Offre', 360), ('Négociation', 280), ('Gagné', 140)], '1,2 M€', 'pipeline'),
+        cols=('Affaire', 'Montant', 'Probabilité', 'Étape'),
+        rows=[(5, 'Atlas Group', 'Renouvellement annuel', '84 k€', 0.8, ('Négociation', 'in')), (6, 'Orion Retail', 'Nouvelle licence', '36 k€', 1.0, ('Gagné', 'ok')),
+              (13, 'Helix Labs', 'Projet pilote', '22 k€', 0.4, ('Proposition', 'wa'))],
+        f1=('Relance automatique', '12 clients prévenus ce matin'), f2=(0, 'Sarah M. · affaire gagnée', 'Orion Retail · 36 k€')),
+    s1=('Des tableurs aux <span>vraies applications</span>', 'Exemples d’applications créées avec YouCraft'),
+    cards=[('trending-up', 'Commercial', 'Un CRM à votre image{NB}: prospects, opportunités et relances automatiques.'.replace('{NB}', NB),
+            [(5, 'Atlas Group', '84 k€ · renouvellement', 'in', 'Négociation'), (6, 'Orion Retail', '36 k€ · licence', 'ok', 'Gagné')]),
+           ('users', 'Ressources humaines', 'Intégration des nouveaux arrivants, congés et entretiens, suivis au même endroit.',
+            [(0, 'Sarah Martin', 'Arrivée lun. 3 nov.', 'ok', 'Prête'), (3, 'Tom Becker', 'Arrivée lun. 10 nov.', 'wa', 'Ordinateur en route')]),
+           ('gauge', 'Opérations', 'Projets, tâches et incidents suivis en direct, avec une alerte dès que quelque chose bloque.',
+            [('gauge', 'Ligne 3', 'Maintenance préventive', 'in', 'En cours'), ('bell', 'Livraison 2321', 'Nantes', 'ba', 'Retard 20 min')])],
+    s2=('Une application <span>pour chaque métier</span>', f'<b>Un besoin, une application</b>{NB}: chaque équipe crée l’outil qu’elle attend depuis longtemps, sans écrire une ligne de code.'),
+    more=[('wallet', 'Finance', 'Budgets, notes de frais, clôtures'), ('building-2', 'Achats', 'Fournisseurs, commandes, contrats'),
+          ('shield-check', 'Juridique', 'Contrats, échéances, conformité'), ('clipboard-check', 'Qualité', 'Audits, non‑conformités, actions'),
+          ('activity', 'R&amp;D', 'Temps passés, essais, justificatifs'), ('message-square', 'Service client', 'Demandes, délais, satisfaction')],
+)
+
+VARIANTS = {'cir': CIR, 'ipbox': IPBOX, 'general': GEN}
