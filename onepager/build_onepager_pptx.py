@@ -1,7 +1,7 @@
-"""Versions PowerPoint (A4 portrait) des one-pagers client YouCraft.
+"""Versions PowerPoint des one-pagers client YouCraft : 3 diapositives 16:9 par déclinaison (ou A4 portrait avec --a4).
 Fond et visuels en image, chaque ligne de texte en zone de texte PowerPoint modifiable, aux positions mesurées
 sur la page HTML (pptx_measure.cjs). Polices : Plus Jakarta Sans et DM Sans (Google Fonts).
-Usage : python3 build_onepager_pptx.py [CIR IPBox General]"""
+Usage : python3 build_onepager_pptx.py [--a4] [CIR IPBox General]"""
 import json, os, re, subprocess, sys
 from pptx import Presentation
 from pptx.util import Emu, Pt
@@ -33,15 +33,26 @@ def merge(lines):
     return out
 
 
-def build(name):
-    html = os.path.join(HERE, f'YouCraft_OnePager_Client_{name}.html')
-    d = os.path.join(TMP, name)
-    subprocess.run(['node', os.path.join(HERE, 'pptx_measure.cjs'), html, d], check=True,
+def build(name, wide=True):
+    """wide=True : diapositives 16:9 (fichier _Slides.html) ; sinon une page A4 portrait."""
+    html = os.path.join(HERE, f'YouCraft_OnePager_Client_{name}{"_Slides" if wide else ""}.html')
+    d = os.path.join(TMP, name + ('_w' if wide else ''))
+    subprocess.run(['node', os.path.join(HERE, 'pptx_measure.cjs'), html, d, '.sl' if wide else '.page'], check=True,
                    env={**os.environ, 'NODE_PATH': '/opt/node22/lib/node_modules'})
-    lines = json.load(open(os.path.join(d, 'lines.json')))
-    prs = Presentation(); prs.slide_width = Emu(7560000); prs.slide_height = Emu(10692000)  # A4 portrait
-    s = prs.slides.add_slide(prs.slide_layouts[6])
-    s.shapes.add_picture(os.path.join(d, 'bg.png'), 0, 0, prs.slide_width, prs.slide_height)
+    prs = Presentation()
+    if wide: prs.slide_width, prs.slide_height = Emu(12192000), Emu(6858000)  # 16:9, 13,33 × 7,5 pouces
+    else: prs.slide_width, prs.slide_height = Emu(7560000), Emu(10692000)  # A4 portrait
+    k = 0
+    while os.path.exists(os.path.join(d, f'lines_{k}.json')):
+        lines = json.load(open(os.path.join(d, f'lines_{k}.json')))
+        s = prs.slides.add_slide(prs.slide_layouts[6])
+        s.shapes.add_picture(os.path.join(d, f'bg_{k}.png'), 0, 0, prs.slide_width, prs.slide_height)
+        add_text(s, lines); k += 1
+    out = os.path.join(HERE, f'YouCraft_OnePager_Client_{name}{"" if wide else "_A4"}.pptx')
+    prs.save(out); print(out, k, 'diapositives')
+
+
+def add_text(s, lines):
     for g in merge(lines):
         w = g['r'] - g['x']
         tb = s.shapes.add_textbox(E(g['x']), E(g['y']), E(w * 1.12 + 4), E(g['h']))
@@ -60,9 +71,8 @@ def build(name):
             ls = L['ls']
             if ls not in ('normal', '0px'):
                 rPr.set('spc', str(int(round(float(ls.rstrip('px')) * 0.75 * 100))))
-    out = os.path.join(HERE, f'YouCraft_OnePager_Client_{name}.pptx')
-    prs.save(out); print(out, len(lines), 'lignes')
 
 
-for n in sys.argv[1:] or ['CIR', 'IPBox', 'General']:
-    build(n)
+A = [a for a in sys.argv[1:] if a != '--a4']
+for n in A or ['CIR', 'IPBox', 'General']:
+    build(n, '--a4' not in sys.argv)

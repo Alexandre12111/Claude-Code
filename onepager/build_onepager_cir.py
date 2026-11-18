@@ -354,9 +354,71 @@ def page(V):
 <footer class="foot"><b>YouCraft · Leyton CognitX</b><span>youcraft.build</span></footer>
 </main></body></html>"""
 
+
+# ---------------------------------------------------------------- version diapositives (16:9)
+SL_CSS = """
+.deck{display:flex;flex-direction:column;gap:10mm;padding:10mm 0;align-items:center}
+.sl{width:338.67mm;height:190.5mm;position:relative;overflow:hidden;background:var(--paper);box-shadow:0 20px 60px rgba(11,11,15,.18);display:flex;flex-direction:column}
+.sl.dk1{background:var(--ink)}
+.sl .z{zoom:var(--z);width:var(--w)}
+.sl .hero{padding:9mm 12mm 0;flex:1;overflow:visible}
+.sl .hero .glow{right:-10mm;top:0}
+.sl .hero .hg{margin-top:9mm;grid-template-columns:88mm minmax(0,1fr);gap:12mm}
+.sl .sb{flex:1;display:flex;flex-direction:column;justify-content:center;gap:4.2mm;padding:0 0 0}
+.sl .shd{display:flex;justify-content:space-between;align-items:center;padding:7mm 12mm 0;flex:none}
+.sl .shd span{font:700 7.6pt 'DM Sans';letter-spacing:.16em;text-transform:uppercase;color:var(--um)}
+.sl .sft{flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 12mm 6mm;font-size:8pt;color:var(--muted)}
+.sl .sft b{color:var(--ink)}
+.sl.dk1 .sft{color:#8A8780}.sl.dk1 .sft b{color:var(--stone)}
+@media print{.deck{padding:0;gap:0}.sl{box-shadow:none;break-after:page}}
+"""
+
+
+def slides(V):
+    foot = '<footer class="sft"><b>YouCraft · Leyton CognitX</b><span>youcraft.build</span></footer>'
+    head = lambda t: f'<div class="shd">{logo(20, False)}<span>{t}</span></div>'
+    return f"""<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{V['title']}</title>
+<style>{FONTS}{CSS}{SL_CSS}@page{{size:338.67mm 190.5mm;margin:0}}</style></head>
+<body><div class="deck">
+<section class="sl dk1"><div class="z" style="--z:1.5;--w:225.8mm;height:calc(190.5mm / 1.5);display:flex;flex-direction:column">
+<header class="hero">{mark(250)}<div class="glow"></div>
+  <div class="top">{logo(22)}<span class="tag">{V['tag']}</span></div>
+  <div class="hg"><div>
+    <div class="k1">{V['kicker']}</div>
+    <h1>{V['h1']}</h1>
+    <p class="lead">{V['lead']}</p>
+    <div class="stats"><div class="stat"><strong>1{NB}300+</strong><span>utilisateurs dans le groupe Leyton</span></div><div class="stat"><strong>500+</strong><span>applications déjà déployées</span></div>
+      <div class="stat"><strong>0</strong><span>ligne de code à écrire</span></div></div>
+  </div>{dashboard(V['dash'])}</div>
+</header>{foot}</div></section>
+<section class="sl"><div class="z" style="--z:1.45;--w:233.6mm;height:calc(190.5mm / 1.45);display:flex;flex-direction:column">
+{head(V['kicker'])}
+<div class="body sb" style="padding:0 12mm">
+  <div><div class="sh"><span class="no">01</span><h2>{V['s1'][0]}</h2><small>{V['s1'][1]}</small></div><div class="cir">{cir_cards(V['cards'])}</div></div>
+  <div class="beyond"><div class="sh"><span class="no">02</span><h2>{V['s2'][0]}</h2><small>Une plateforme pour toutes vos équipes</small></div>
+    <p class="intro">{V['s2'][1]}</p><div class="mos">{more(V['more'])}</div></div>
+</div>{foot}</div></section>
+<section class="sl"><div class="z" style="--z:1.45;--w:233.6mm;height:calc(190.5mm / 1.45);display:flex;flex-direction:column">
+{head(V['kicker'])}
+<div class="body sb" style="padding:0 12mm">
+  <div class="hw"><div><div class="sh"><span class="no">03</span><h2>Simple comme <span>une conversation</span></h2></div><div class="how">{steps()}</div></div>
+    <div class="why">{why()}</div></div>
+  <div class="cta"><div>
+      <span class="of">{ic("sparkles", 10, "#0B0B0F", 2.4)}Offre réservée aux clients Leyton</span>
+      <h3>Testez YouCraft sur votre propre cas, <span>7 jours offerts</span></h3>
+      <div class="trs">{trial()}</div>
+      <div class="ct"><span>Votre consultant Leyton :</span><span>Contact :</span></div>
+    </div>
+    <div class="qr">{qr(RDV, 100)}<span>Scannez pour prendre rendez‑vous</span></div></div>
+</div>{foot}</div></section>
+</div></body></html>"""
+
 from variants_onepager import VARIANTS  # noqa: E402
 for key in (sys.argv[1:] or VARIANTS):
     V = VARIANTS[key]
     out = os.path.join(HERE, V['file'] + '.html')
     open(out, 'w', encoding='utf-8').write(page(V))
+    open(out.replace('.html', '_Slides.html'), 'w', encoding='utf-8').write(slides(V))
     print(out)
