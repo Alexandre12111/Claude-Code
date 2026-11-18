@@ -370,12 +370,16 @@ SL_CSS = """
 .sl .sft{flex:none;display:flex;justify-content:space-between;align-items:center;padding:0 12mm 6mm;font-size:8pt;color:var(--muted)}
 .sl .sft b{color:var(--ink)}
 .sl.dk1 .sft{color:#8A8780}.sl.dk1 .sft b{color:var(--stone)}
+.s2{gap:3.2mm}.s2 .r2{display:grid;grid-template-columns:1.32fr 1fr;gap:4mm;align-items:stretch}.s2 .r3{display:grid;grid-template-columns:1fr 70mm;gap:4mm;align-items:stretch}
+.s2 .hw1{display:flex;flex-direction:column;justify-content:center;background:#fff;border-radius:3.4mm;padding:3mm 3.6mm;box-shadow:0 0 0 .25mm var(--line)}
+.s2 .hw1 .how{margin-top:3mm}
 @media print{.deck{padding:0;gap:0}.sl{box-shadow:none;break-after:page}}
 """
 
 
 def slides(V):
     foot = '<footer class="sft"><b>YouCraft · Leyton CognitX</b><span>youcraft.build</span></footer>'
+    foot2 = f'<footer class="sft" style="padding-top:2.4mm">{logo(14, False)}<span>youcraft.build</span></footer>'
     head = lambda t: f'<div class="shd">{logo(20, False)}<span>{t}</span></div>'
     return f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -393,26 +397,21 @@ def slides(V):
       <div class="stat"><strong>0</strong><span>ligne de code à écrire</span></div></div>
   </div>{dashboard(V['dash'])}</div>
 </header>{foot}</div></section>
-<section class="sl"><div class="z" style="--z:1.45;--w:233.6mm;height:calc(190.5mm / 1.45);display:flex;flex-direction:column">
-{head(V['kicker'])}
-<div class="body sb" style="padding:0 12mm">
+<section class="sl"><div class="z" style="--z:1.12;--w:302.4mm;height:calc(190.5mm / 1.12);display:flex;flex-direction:column">
+<div class="body sb s2" style="padding:6mm 12mm 0">
   <div><div class="sh"><span class="no">01</span><h2>{V['s1'][0]}</h2><small>{V['s1'][1]}</small></div><div class="cir">{cir_cards(V['cards'])}</div></div>
-  <div class="beyond"><div class="sh"><span class="no">02</span><h2>{V['s2'][0]}</h2><small>Une plateforme pour toutes vos équipes</small></div>
+  <div class="r2"><div class="beyond"><div class="sh"><span class="no">02</span><h2>{V['s2'][0]}</h2></div>
     <p class="intro">{V['s2'][1]}</p><div class="mos">{more(V['more'])}</div></div>
-</div>{foot}</div></section>
-<section class="sl"><div class="z" style="--z:1.45;--w:233.6mm;height:calc(190.5mm / 1.45);display:flex;flex-direction:column">
-{head(V['kicker'])}
-<div class="body sb" style="padding:0 12mm">
-  <div class="hw"><div><div class="sh"><span class="no">03</span><h2>Simple comme <span>une conversation</span></h2></div><div class="how">{steps()}</div></div>
-    <div class="why">{why()}</div></div>
-  <div class="cta"><div>
+    <div class="hw1"><div class="sh"><span class="no">03</span><h2>Simple comme <span>une conversation</span></h2></div><div class="how">{steps()}</div></div></div>
+  <div class="r3"><div class="cta"><div>
       <span class="of">{ic("sparkles", 10, "#0B0B0F", 2.4)}Offre réservée aux clients Leyton</span>
       <h3>Testez YouCraft sur votre propre cas, <span>7 jours offerts</span></h3>
       <div class="trs">{trial()}</div>
       <div class="ct"><span>Votre consultant Leyton :</span><span>Contact :</span></div>
     </div>
     <div class="qr">{qr(RDV, 100)}<span>Scannez pour prendre rendez‑vous</span></div></div>
-</div>{foot}</div></section>
+    <div class="why">{why()}</div></div>
+</div>{foot2}</div></section>
 </div></body></html>"""
 
 from variants_onepager import VARIANTS  # noqa: E402
