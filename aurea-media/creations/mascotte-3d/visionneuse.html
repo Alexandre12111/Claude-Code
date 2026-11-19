@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gaspard 3D</title>
+<style>
+:root{--fond:#f3ead9;--encre:#15181e;--doux:#6d655a;--carte:#fffaf0;--bord:#e3d6bf;--accent:#e8b84a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--fond:#1b1712;--encre:#f3ead9;--doux:#b8ac98;--carte:#26211a;--bord:#3a3228}}
+:root[data-theme="dark"]{--fond:#1b1712;--encre:#f3ead9;--doux:#b8ac98;--carte:#26211a;--bord:#3a3228}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--fond);color:var(--encre);font:14px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+#app{display:grid;grid-template-columns:1fr 320px;height:100%}
+#vue{position:relative;min-height:0}#vue canvas{display:block;width:100%;height:100%}
+#panneau{overflow:auto;padding:16px;border-left:1px solid var(--bord);background:var(--carte)}
+h1{font-size:18px;margin:0 0 4px}p.sous{margin:0 0 14px;color:var(--doux);font-size:13px}
+h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--doux);margin:18px 0 8px}
+.boutons{display:flex;flex-wrap:wrap;gap:6px}
+button,select{font:inherit;color:var(--encre);background:var(--fond);border:1px solid var(--bord);border-radius:10px;padding:6px 10px;cursor:pointer}
+button.actif{background:var(--accent);border-color:var(--accent);color:#15181e}
+label{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:8px;margin:4px 0;font-size:13px}
+input[type=range]{width:100%}
+.ligne{display:flex;gap:6px;align-items:center}
+#aide{position:absolute;left:12px;bottom:12px;color:var(--doux);font-size:12px;background:color-mix(in srgb,var(--carte) 80%,transparent);padding:6px 10px;border-radius:10px}
+@media (max-width:760px){#app{grid-template-columns:1fr;grid-template-rows:58vh auto}#panneau{border-left:0;border-top:1px solid var(--bord)}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+</head><body>
+<div id="app">
+  <div id="vue"><div id="aide">Glisser pour tourner · molette pour zoomer · clic droit pour déplacer</div></div>
+  <aside id="panneau">
+    <h1>Gaspard, le castor bâtisseur</h1>
+    <p class="sous">Modèle 3D articulé de référence. Chaque réglage correspond à un paramètre de <code>poser()</code>.</p>
+    <h2>Poses de référence</h2><div class="boutons" id="poses"></div>
+    <h2>Visage</h2>
+    <label>Bouche<select id="bouche"></select></label>
+    <label>Paupières<input id="paupieres" type="range" min="0" max="1" step=".01" value=".08"></label>
+    <label>Sourcils<input id="sourcils" type="range" min="-1" max="1.5" step=".01" value="0"></label>
+    <label>Froncer<input id="froncer" type="range" min="-1" max="1" step=".01" value="0"></label>
+    <label>Regard X<input id="regardX" type="range" min="-1" max="1" step=".01" value="0"></label>
+    <label>Regard Y<input id="regardY" type="range" min="-1" max="1" step=".01" value="0"></label>
+    <label>Taille des yeux<input id="oeil" type="range" min=".8" max="1.4" step=".01" value="1"></label>
+    <h2>Main droite (écran)</h2>
+    <label>Forme<select id="formeD"></select></label>
+    <label>Fermeture<input id="fermD" type="range" min="0" max="1" step=".01" value="0"></label>
+    <label>Objet<select id="objetD"><option value="">aucun</option><option>tel</option><option>tasse</option><option>truelle</option></select></label>
+    <label>Main X<input id="mDx" type="range" min="0" max="3" step=".01" value="2.05"></label>
+    <label>Main Y<input id="mDy" type="range" min=".4" max="5.4" step=".01" value="1.2"></label>
+    <label>Main Z<input id="mDz" type="range" min="-1" max="2" step=".01" value=".25"></label>
+    <h2>Main gauche (écran)</h2>
+    <label>Forme<select id="formeG"></select></label>
+    <label>Fermeture<input id="fermG" type="range" min="0" max="1" step=".01" value="0"></label>
+    <label>Main X<input id="mGx" type="range" min="-3" max="0" step=".01" value="-2.05"></label>
+    <label>Main Y<input id="mGy" type="range" min=".4" max="5.4" step=".01" value="1.2"></label>
+    <label>Main Z<input id="mGz" type="range" min="-1" max="2" step=".01" value=".25"></label>
+    <h2>Corps</h2>
+    <label>Pencher<input id="penche" type="range" min="-.3" max=".3" step=".01" value="0"></label>
+    <label>Queue<input id="queue" type="range" min="-.8" max=".8" step=".01" value="0"></label>
+    <label>Casque<input id="casque" type="range" min="0" max=".5" step=".01" value="0"></label>
+    <h2>Fichiers</h2>
+    <div class="boutons"><button id="glb">Exporter gaspard.glb</button><button id="code">Copier la pose (JSON)</button></div>
+  </aside>
+</div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+import { creerGaspard, POSES } from './gaspard3d.js';
+
+const vue = document.getElementById('vue');
+const r = new THREE.WebGLRenderer({ antialias: true }); r.setPixelRatio(Math.min(2, devicePixelRatio)); r.outputColorSpace = THREE.SRGBColorSpace; vue.appendChild(r.domElement);
+const scene = new THREE.Scene();
+scene.add(new THREE.HemisphereLight(0xfff4e0, 0x6b5440, 1.1));
+const soleil = new THREE.DirectionalLight(0xffffff, 1.6); soleil.position.set(3, 6, 6); scene.add(soleil);
+const g = creerGaspard(THREE); scene.add(g.racine);
+const sol = new THREE.Mesh(new THREE.CircleGeometry(2.6, 48), new THREE.MeshBasicMaterial({ color: 0x2a1a10, transparent: true, opacity: .14 })); sol.rotation.x = -Math.PI / 2; sol.position.y = .005; scene.add(sol);
+const cam = new THREE.PerspectiveCamera(30, 1, .1, 200); cam.position.set(5, 4.2, 18);
+const ctrl = new OrbitControls(cam, r.domElement); ctrl.target.set(0, 2.9, 0); ctrl.enableDamping = true; ctrl.update();
+const fond = () => { const c = getComputedStyle(document.documentElement).getPropertyValue('--fond').trim(); r.setClearColor(c || '#f3ead9'); };
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', fond); fond();
+function taille() { const w = vue.clientWidth, h = vue.clientHeight; r.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+new ResizeObserver(taille).observe(vue); taille();
+
+const $ = id => document.getElementById(id);
+for (const b of Object.keys(g.variantes)) $('bouche').add(new Option(b, b));
+for (const s of ['formeD', 'formeG']) for (const f of ['ouverte', 'salut', 'poing', 'tient', 'pointe', 'pouce']) $(s).add(new Option(f, f));
+let base = {};
+function lire() {
+  const n = id => +$(id).value;
+  return Object.assign({}, base, {
+    visage: { bouche: $('bouche').value, paupieres: n('paupieres'), sourcils: n('sourcils'), froncer: n('froncer'), regardX: n('regardX'), regardY: n('regardY'), oeil: n('oeil') },
+    brasD: { main: [n('mDx'), n('mDy'), n('mDz')], coude: base.brasD?.coude ?? 1 }, brasG: { main: [n('mGx'), n('mGy'), n('mGz')], coude: base.brasG?.coude ?? 1 },
+    mainD: { forme: $('formeD').value, fermeture: n('fermD'), objet: $('objetD').value || undefined, rotation: base.mainD?.rotation },
+    mainG: { forme: $('formeG').value, fermeture: n('fermG'), objet: base.mainG?.objet },
+    penche: n('penche'), queue: n('queue'), casque: n('casque'),
+  });
+}
+function ecrire(p) {
+  base = p; const v = p.visage || {};
+  $('bouche').value = v.bouche || 'sourire'; $('paupieres').value = v.paupieres ?? .08; $('sourcils').value = v.sourcils ?? 0; $('froncer').value = v.froncer ?? 0;
+  $('regardX').value = v.regardX ?? 0; $('regardY').value = v.regardY ?? 0; $('oeil').value = v.oeil ?? 1;
+  const mD = p.brasD?.main || [2.05, 1.2, .25], mG = p.brasG?.main || [-2.05, 1.2, .25];
+  [$('mDx').value, $('mDy').value, $('mDz').value] = mD; [$('mGx').value, $('mGy').value, $('mGz').value] = mG;
+  const fD = p.mainD?.forme || 'ouverte', fG = p.mainG?.forme || 'ouverte';
+  $('formeD').value = fD; $('formeG').value = fG; $('objetD').value = p.mainD?.objet || '';
+  const fer = f => ({ poing: 1, tient: .85, pointe: 1, pouce: 1 }[f] ?? 0);
+  $('fermD').value = p.mainD?.fermeture ?? fer(fD); $('fermG').value = p.mainG?.fermeture ?? fer(fG);
+  $('penche').value = p.penche ?? 0; $('queue').value = p.queue ?? 0; $('casque').value = p.casque ?? 0;
+  g.poser(lire());
+}
+for (const [nom, p] of Object.entries(POSES)) { const b = document.createElement('button'); b.textContent = nom; b.onclick = () => { document.querySelectorAll('#poses button').forEach(x => x.classList.remove('actif')); b.classList.add('actif'); ecrire(JSON.parse(JSON.stringify(p))); }; $('poses').appendChild(b); }
+document.querySelectorAll('#panneau input, #panneau select').forEach(el => el.addEventListener('input', () => g.poser(lire())));
+['formeD', 'formeG'].forEach(id => $(id).addEventListener('change', () => { const f = $(id).value; $(id === 'formeD' ? 'fermD' : 'fermG').value = ({ poing: 1, tient: .85, pointe: 1, pouce: 1 }[f] ?? 0); g.poser(lire()); }));
+ecrire({}); document.querySelector('#poses button').classList.add('actif');
+
+$('code').onclick = async () => { const t = JSON.stringify(lire(), null, 1); try { await navigator.clipboard.writeText(t); $('code').textContent = 'Pose copiée ✓'; } catch (e) { prompt('Pose :', t); } setTimeout(() => $('code').textContent = 'Copier la pose (JSON)', 1600); };
+$('glb').onclick = () => exporterGLB().then(buf => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([buf], { type: 'model/gltf-binary' })); a.download = 'gaspard.glb'; a.click(); });
+// export : sans les coques de contour (effet de rendu propre à la visionneuse)
+window.exporterGLB = () => new Promise((ok, ko) => {
+  const caches = []; g.racine.traverse(o => { if (o.userData.contour && o.visible) { o.visible = false; caches.push(o); } });
+  new GLTFExporter().parse(g.racine, res => { caches.forEach(o => o.visible = true); ok(res); }, e => { caches.forEach(o => o.visible = true); ko(e); }, { binary: true, onlyVisible: true });
+});
+window.G = g; window.pret = true;
+(function boucle() { ctrl.update(); r.render(scene, cam); requestAnimationFrame(boucle); })();
+</script>
+</body></html>
