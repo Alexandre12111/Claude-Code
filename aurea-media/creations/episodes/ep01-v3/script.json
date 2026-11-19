@@ -1,96 +1,211 @@
 {
- "titre": "Épisode 1, V3 : Gaspard et les quatorze appels",
+ "titre": "Épisode 1, V4 : Gaspard et les quatorze appels",
  "phrases": [
   {
    "id": "l00",
    "texte": "Quatorze appels. Et il n'est que neuf heures du matin.",
    "fort": true,
    "sous_titre": "*14 appels.* Et il n'est que *9 h* du matin.",
-   "debut_prevu": 0.1
+   "debut_prevu": 0.1,
+   "source": [
+    "sortie_ep01",
+    0
+   ]
   },
   {
    "id": "l01",
    "texte": "Et toi, t'es perché tout en haut de ton échafaudage.",
    "fort": false,
    "sous_titre": "Et toi, t'es perché tout en haut de ton *échafaudage*.",
-   "debut_prevu": 3.0
+   "debut_prevu": 3.0,
+   "source": [
+    "sortie_ep01",
+    1
+   ]
   },
   {
    "id": "l02",
-   "texte": "Alors tu décroches, avec les mains pleines d'enduit.",
+   "texte": "Alors… tu décroches. Avec les mains pleines d'enduit !",
    "fort": false,
-   "sous_titre": "Alors tu décroches, avec les mains pleines *d'enduit*.",
-   "debut_prevu": 5.82
+   "sous_titre": "Alors… tu décroches. Avec les mains pleines *d'enduit !*",
+   "debut_prevu": 5.82,
+   "source": [
+    "sortie_v4",
+    0
+   ]
+  },
+  {
+   "id": "q1",
+   "texte": "Vous êtes disponibles quand ?",
+   "fort": false,
+   "sous_titre": "Vous êtes disponibles quand ?",
+   "voix": "tel",
+   "st": false,
+   "source": [
+    "tel",
+    0
+   ],
+   "debut_prevu": 0
+  },
+  {
+   "id": "q2",
+   "texte": "Vous intervenez dans ma ville ?",
+   "fort": false,
+   "sous_titre": "Vous intervenez dans ma ville ?",
+   "voix": "tel",
+   "st": false,
+   "source": [
+    "tel",
+    1
+   ],
+   "debut_prevu": 0
+  },
+  {
+   "id": "q3",
+   "texte": "Vous pouvez me donner une idée du tarif ?",
+   "fort": false,
+   "sous_titre": "Vous pouvez me donner une idée du tarif ?",
+   "voix": "tel",
+   "st": false,
+   "source": [
+    "tel",
+    2
+   ],
+   "debut_prevu": 0
+  },
+  {
+   "id": "q4",
+   "texte": "Vous proposez quels types de prestations ?",
+   "fort": false,
+   "sous_titre": "Vous proposez quels types de prestations ?",
+   "voix": "tel",
+   "st": false,
+   "source": [
+    "tel",
+    3
+   ],
+   "debut_prevu": 0
   },
   {
    "id": "l03",
    "texte": "Pour répondre encore une fois aux mêmes questions.",
    "fort": false,
    "sous_titre": "Pour répondre encore une fois aux *mêmes questions*.",
-   "debut_prevu": 8.63
+   "debut_prevu": 8.63,
+   "source": [
+    "sortie_ep01",
+    3
+   ]
   },
   {
    "id": "l04",
    "texte": "Pendant ce temps, ton chantier, lui, il n'avance pas.",
    "fort": false,
    "sous_titre": "Pendant ce temps, ton chantier, lui, il *n'avance pas*.",
-   "debut_prevu": 11.35
+   "debut_prevu": 11.35,
+   "source": [
+    "sortie_ep01",
+    4
+   ]
   },
   {
    "id": "l05",
    "texte": "Et le client que tu rates ? Il appelle le suivant.",
    "fort": false,
    "sous_titre": "Et le client que tu rates ? Il appelle *le suivant*.",
-   "debut_prevu": 14.21
+   "debut_prevu": 14.21,
+   "source": [
+    "sortie_ep01",
+    5
+   ]
   },
   {
    "id": "l06",
    "texte": "Le soir, épuisé, tu rappelles tout le monde.",
    "fort": false,
    "sous_titre": "Le soir, épuisé, tu *rappelles tout le monde*.",
-   "debut_prevu": 16.94
+   "debut_prevu": 16.94,
+   "source": [
+    "sortie_ep01",
+    6
+   ]
   },
   {
    "id": "l07",
-   "texte": "Et si quelqu'un répondait à ta place ?",
+   "texte": "Et si ton prospect trouvait directement toutes ces informations sur ton site internet,",
    "fort": true,
-   "sous_titre": "Et si quelqu'un répondait *à ta place ?*",
-   "debut_prevu": 19.94
+   "sous_titre": "Et si ton prospect trouvait directement *toutes ces informations* sur ton *site internet,*",
+   "debut_prevu": 19.94,
+   "source": [
+    "sortie_v4",
+    1
+   ]
+  },
+  {
+   "id": "l07b",
+   "texte": "sans avoir besoin de t'appeler pour les demander ?",
+   "fort": false,
+   "sous_titre": "sans avoir besoin de *t'appeler* pour les demander ?",
+   "source": [
+    "sortie_v4",
+    2
+   ],
+   "debut_prevu": 0
   },
   {
    "id": "l08",
    "texte": "Ton site montre ta zone, tes chantiers en photos et tes délais.",
    "fort": false,
    "sous_titre": "Ton site montre ta *zone*, tes *chantiers en photos* et tes *délais*.",
-   "debut_prevu": 22.11
+   "debut_prevu": 22.11,
+   "source": [
+    "sortie_ep01",
+    8
+   ]
   },
   {
    "id": "l09",
    "texte": "Ton futur client est convaincu : il demande son devis en deux minutes.",
    "fort": false,
    "sous_titre": "Ton futur client est convaincu : il demande son *devis en 2 minutes*.",
-   "debut_prevu": 25.43
+   "debut_prevu": 25.43,
+   "source": [
+    "sortie_ep01",
+    9
+   ]
   },
   {
    "id": "l10",
    "texte": "Et toi, tu ne rappelles plus que les vrais chantiers.",
    "fort": false,
    "sous_titre": "Et toi, tu ne rappelles plus que *les vrais chantiers*.",
-   "debut_prevu": 29.06
+   "debut_prevu": 29.06,
+   "source": [
+    "sortie_ep01",
+    10
+   ]
   },
   {
    "id": "l11",
    "texte": "Un site internet, c'est un collègue qui répond pendant que tu bosses.",
    "fort": true,
    "sous_titre": "Un site internet, c'est *un collègue* qui répond pendant que *tu bosses*.",
-   "debut_prevu": 32.47
+   "debut_prevu": 32.47,
+   "source": [
+    "sortie_ep01",
+    11
+   ]
   },
   {
    "id": "l12",
    "texte": "Et lui, il ne prend jamais de pause café.",
    "fort": false,
    "sous_titre": "Et lui, il ne prend *jamais de pause café.*",
-   "debut_prevu": 36.05
+   "debut_prevu": 36.05,
+   "source": [
+    "sortie_ep01",
+    12
+   ]
   }
  ],
  "fin": {

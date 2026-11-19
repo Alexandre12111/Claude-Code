@@ -1,0 +1,11 @@
+<!doctype html><html><head><meta charset="utf-8"><style>body{margin:0;background:#fff}</style></head><body>
+<svg id="s" width="2000" height="1100" viewBox="0 0 2000 1100"><g id="c"></g></svg>
+<script src="anim.js"></script><script src="gaspard.js"></script>
+<script>
+const G=new Gaspard('t'),c=document.getElementById('c');let h='';
+const cas=[['ouverte',null,0],['salut',null,0],['poing',null,1],['pointe',null,1],['pouce',null,1],['tient','tasse',1],
+['tient','tel',0],['tient','tel',.35],['tient','tel',.65],['tient','tel',1],['tient','truelle',1],['ouverte',null,.5]];
+cas.forEach(([f,o,k],i)=>{const x=170+(i%6)*320,y=260+Math.floor(i/6)*520;
+ h+=`<g transform="translate(${x},${y}) scale(2.6)">${G.main({x:0,y:0},(i%3-1)*25,f,i%2?'G':'D',o,k)}</g><text x="${x-120}" y="${y+230}" font-size="26">${f} ${o||''} ${k}</text>`;});
+c.innerHTML=h;window.pret=true;window.rendre=()=>{};
+</script></body></html>

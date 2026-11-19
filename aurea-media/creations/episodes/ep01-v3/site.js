@@ -1,4 +1,4 @@
-// Site vitrine de l'artisan (fictif) « Atelier Morel », affiché dans le téléphone. Conçu à 390 px de large (mobile).
+// Site vitrine de l'artisan (fictif) « Gaspard Rénovation » (V4 : même marque que la mascotte), affiché dans le téléphone. Conçu à 390 px de large (mobile).
 // Direction artistique : pierre claire, encre, laiton. Photos réelles (Unsplash). Animable via siteEtat().
 const SITE_CSS = `
 #site{position:relative;width:390px;height:844px;overflow:hidden;background:#f5f0e8;font-family:"Geist",sans-serif;color:#15181e;-webkit-font-smoothing:antialiased}
@@ -96,7 +96,7 @@ const SITE_HTML = `
 <div id="site">
   <div class="barre"><span>9:41</span><span><i style="width:3px;height:6px"></i><i style="width:3px;height:8px"></i><i style="width:3px;height:10px"></i><i style="width:3px;height:12px"></i><i style="width:24px;height:11px;border-radius:3px;margin-left:8px"></i></span></div>
   <div class="defile" id="siteDefile">
-    <div class="tete"><div class="logo"><div class="mono">M</div><div><b>Atelier Morel</b><small>Rénovation · Ouest parisien</small></div></div><div class="burger"><span></span></div></div>
+    <div class="tete"><div class="logo"><div class="mono">G</div><div><b>Gaspard Rénovation</b><small>Rénovation · Ouest parisien</small></div></div><div class="burger"><span></span></div></div>
     <div class="hero"><img src="photos/hero.webp" alt="">
       <div class="note"><em>★★★★★</em> 4,9 · 87 avis Google</div>
       <div class="txt"><div class="eyebrow">Salles de bain · Boulogne et 92</div><h1>Votre salle de bain, refaite en 3 semaines.</h1><p>Rénovation clé en main, un seul interlocuteur, un chantier propre du premier au dernier jour.</p>
@@ -126,11 +126,11 @@ const SITE_HTML = `
       <div class="label">Ville</div><div class="champ2" id="sVille"><span id="sVilleTxt">Boulogne-Billancourt</span><i id="sCurseur" style="display:inline-block;width:2px;height:22px;background:#d6ad62;margin-left:2px"></i></div>
       <div class="label">Photos de votre salle de bain</div><div class="photos">${['avant', 'real4', 'real5', 'real2'].map((p, i) => `<div class="ph" id="sPh${i}"><img src="photos/${p}.webp" alt=""></div>`).join('')}<div class="plus">+</div></div>
       <div class="envoyer" id="sEnvoyer"><span id="sEnvTxt">Recevoir mon devis ${ico.fleche}</span><svg id="sEnvOk" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#15181e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div></div></section>
-    <div class="pied">© Atelier Morel · Site réalisé par <b>Aurea Media</b></div>
+    <div class="pied">© Gaspard Rénovation · Site réalisé par <b>Aurea Media</b></div>
   </div>
   <div class="collant" id="sCollant"><span>${ico.tel} Appeler</span><span class="or">Devis gratuit</span></div>
-  <div class="url"><div class="champ">${ico.cadenas} ateliermorel.fr</div><div class="ligne"></div></div>
-  <div class="ok" id="sOk"><div><i><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><b>Demande envoyée !</b><span>Atelier Morel vous rappelle sous 48 h avec votre devis.</span></div></div>
+  <div class="url"><div class="champ">${ico.cadenas} gaspard-renovation.fr</div><div class="ligne"></div></div>
+  <div class="ok" id="sOk"><div><i><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i><b>Demande envoyée !</b><span>Gaspard Rénovation vous rappelle sous 48 h avec votre devis.</span></div></div>
 </div>`;
 
 // Position des sections (en px de défilement) : mesurées au chargement

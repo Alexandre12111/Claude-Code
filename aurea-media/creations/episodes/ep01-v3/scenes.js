@@ -175,7 +175,7 @@ function construireScenes() {
       ${Array.from({ length: 14 }, (_, i) => etoile4(40 + (i * 53) % 320, 50 + (i * 37) % 220, 6 + (i % 3) * 3, '#fff8d6')).join('')}
       <path d="M20,420 L80,380 L80,330 L140,330 L140,380 L200,350 L260,390 L260,320 L330,320 L330,370 L380,350 L380,540 L20,540 Z" fill="#232c5a"/>
       ${[[60, 430], [110, 470], [180, 440], [290, 420], [320, 480]].map(([x, y]) => `<rect x="${x}" y="${y}" width="22" height="26" rx="4" fill="#ffd36b"/>`).join('')}<path d="M200,20 V540 M20,280 H380" stroke="#1d2550" stroke-width="16"/></g>
-    <g transform="translate(60,520)"><rect width="300" height="150" rx="24" fill="#141a3d"/><text id="so-heure" x="150" y="104" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="76" fill="#ff9d3c">22:47</text></g>
+    <g transform="translate(60,520)"><rect width="300" height="150" rx="24" fill="#141a3d"/><text id="so-heure" x="150" y="104" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="76" fill="#ff9d3c">20:47</text></g>
     <g id="so-lampe"><path d="M440,-400 L440,280" stroke="#141a3d" stroke-width="7"/><path d="M340,340 C350,260 530,260 540,340 Z" fill="#e8b84a"/><path d="M340,340 L540,340 L960,1290 L-80,1290 Z" fill="url(#gLampe)"/><ellipse cx="440" cy="340" rx="100" ry="14" fill="#fff4cf"/></g>
     <g id="so-ga"></g>
     <rect x="-500" y="1250" width="2100" height="70" fill="#a8693c"/><rect x="-500" y="1250" width="2100" height="16" fill="#c9844f"/><rect x="-500" y="1320" width="2100" height="800" fill="#1d2550"/>
@@ -200,6 +200,30 @@ function construireScenes() {
     <g id="ba-fx"></g>
   </g>${lumiere('#ffd08a', '#3a1a06', .4)}`);
   PERS.gb = new Gaspard('gb'); $('ba-ga').innerHTML = PERS.gb.svg();
+
+  // ---------------- V4 · 8a. LE PLAN : Gaspard construit le site brique par brique ----------------
+  calque('plan', `<g id="pl-cam">
+    <pattern id="plG1" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M60,0 H0 V60" fill="none" stroke="#fff" stroke-opacity=".07" stroke-width="2"/></pattern>
+    <pattern id="plG2" width="300" height="300" patternUnits="userSpaceOnUse"><path d="M300,0 H0 V300" fill="none" stroke="#fff" stroke-opacity=".13" stroke-width="3"/></pattern>
+    <rect x="-700" y="-700" width="2500" height="3300" fill="#1d4b84"/><rect x="-700" y="-700" width="2500" height="3300" fill="url(#plG1)"/><rect x="-700" y="-700" width="2500" height="3300" fill="url(#plG2)"/>
+    <circle cx="540" cy="700" r="760" fill="#3f7fc4" opacity=".35"/>
+    <g opacity=".5" font-family="Geist" font-size="22" fill="#cfe3ff"><text x="80" y="1250">PLAN N° 01 · SITE INTERNET</text><text x="80" y="1282">Échelle 1:1 · Gaspard Rénovation</text></g>
+    <g id="pl-cotes"></g><g id="pl-tel"></g><g id="pl-ga"></g><g id="pl-fx"></g>
+  </g>${lumiere('#d8ecff', '#081a38', .28)}`);
+  PERS.gp = new Gaspard('gp'); $('pl-ga').innerHTML = PERS.gp.svg();
+
+  // ---------------- V4 · 10. LE PLANNING : seuls les vrais chantiers arrivent ----------------
+  calque('tableau', `<g id="tb-cam">
+    <rect x="-700" y="-700" width="2500" height="3300" fill="#ecd3ad"/><rect x="-700" y="1180" width="2500" height="1400" fill="#b98557"/><rect x="-700" y="1180" width="2500" height="16" fill="#8d5f3a"/>
+    <g transform="translate(110,250)">
+      <rect x="-22" y="-22" width="904" height="904" rx="26" fill="#7a4a2a"/><rect width="860" height="860" rx="12" fill="#c99761"/>
+      ${Array.from({ length: 140 }, (_, i) => `<circle cx="${(i * 97) % 860}" cy="${(i * 61) % 860}" r="${2 + (i % 3)}" fill="#a87543" opacity=".55"/>`).join('')}
+      <rect x="30" y="26" width="800" height="76" rx="14" fill="#15181e"/><text x="430" y="78" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="40" fill="#ffc21a" letter-spacing="2">PLANNING DES CHANTIERS</text>
+      ${['LUN', 'MAR', 'MER', 'JEU', 'VEN'].map((j, i) => `<text x="${86 + i * 172}" y="150" text-anchor="middle" font-family="Geist" font-weight="700" font-size="26" fill="#5a3418">${j}</text><path d="M${172 + i * 172},128 V830" stroke="#a87543" stroke-width="3" stroke-dasharray="10 10"/>`).join('')}
+    </g>
+    <g id="tb-cartes"></g><g id="tb-ga"></g><g id="tb-fx"></g>
+  </g>${lumiere('#ffe2b0', '#3a1a06', .32)}`);
+  PERS.gt = new Gaspard('gt'); $('tb-ga').innerHTML = PERS.gt.svg();
 
   // ---------------- 9. FOND DU SITE et 10. CANAPÉ (le prospect) ----------------
   calque('siteFond', `<rect width="1080" height="1920" fill="#f3ead9"/><circle cx="540" cy="760" r="640" fill="url(#gHalo)" opacity=".7"/>
@@ -233,7 +257,7 @@ function construireScenes() {
   // ---------------- Interface plein écran ----------------
   calque('ui', `<g id="ui-bulles"></g>
     <g id="notif"><rect x="40" y="0" width="1000" height="190" rx="44" fill="#fff" stroke="#1b1f2a" stroke-width="6"/><rect x="74" y="34" width="122" height="122" rx="30" fill="#15181e"/><text x="135" y="118" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="62" fill="#e8b84a">G</text>
-      <text x="224" y="70" font-family="Geist" font-weight="600" font-size="26" fill="#8a8478">gaspard-btp.fr · maintenant</text><text id="notifTitre" x="224" y="116" font-family="Bricolage" font-weight="800" font-size="42" fill="#15181e">Nouvelle demande de devis</text><text id="notifTxt" x="224" y="160" font-family="Geist" font-size="30" fill="#4b463e">Salle de bain · Boulogne · 4 photos</text></g>
+      <text x="224" y="70" font-family="Geist" font-weight="600" font-size="26" fill="#8a8478">gaspard-renovation.fr · maintenant</text><text id="notifTitre" x="224" y="116" font-family="Bricolage" font-weight="800" font-size="42" fill="#15181e">Nouvelle demande de devis</text><text id="notifTxt" x="224" y="160" font-family="Geist" font-size="30" fill="#4b463e">Salle de bain · Boulogne · 4 photos</text></g>
     <g id="ui-fx"></g>`);
   for (const id of ['hook', 'ext', 'chantier', 'prospect', 'soir', 'barrage', 'siteFond', 'canape', 'vol', 'fin', 'ui']) $('svg').appendChild(L[id]);
   // l'avatar de Gaspard dans l'écran d'appel
@@ -259,7 +283,7 @@ function collegue(p) {
 const T = {};
 function reperes() {
   T.whip = P('l01') - .12; T.ch = P('l04') - .14; T.pr = P('l05') - .14; T.so = P('l06') - .2; T.dec = P('l07');
-  T.ba = M('l07', 5) + .35; T.si = P('l08') + .2; T.cn = P('l09') - .2; T.vol = M('l09', 9) + .1; T.ret = T.vol + .75;
+  T.ba = M('l07', 4) - .05; T.si = P('l08') + .2; T.cn = P('l09') - .2; T.vol = M('l09', 9) + .1; T.ret = T.vol + .75;
   T.fil = P('l10') - .1; T.co = P('l11') - .2; T.fin = CAL.finTexte;
 }
 function rendre(t) {
@@ -268,30 +292,31 @@ function rendre(t) {
   vis(L.ui, true);
   $('flash').style.opacity = 0; $('fondu').style.opacity = 0;
   for (const id in L) { L[id].removeAttribute('filter'); L[id].removeAttribute('clip-path'); tr(L[id], ''); op(L[id], 1); }
-  $('tel').style.display = 'none'; $('svgHaut').innerHTML = '';
+  $('tel').style.display = 'none'; $('svgHaut').innerHTML = ''; concEtat({ site: 0, appel: 0, etat: '' });
   let fx = '';
   const flash = v => { $('flash').style.opacity = Math.max(+$('flash').style.opacity, v); };
   const fondu = v => { $('fondu').style.opacity = Math.max(+$('fondu').style.opacity, v); };
 
   if (t < T.whip + .25) { vis(L.hook, true); rHook(t); }
-  const extA = t >= T.whip && t < T.ch + .4, extB = t >= T.ret && t < T.ret + 1.0, extC = t >= T.co;
-  if (extA || extB || extC) { vis(L.ext, true); rExt(t, extA ? 'a' : extB ? 'b' : 'c'); }
+  const extA = t >= T.whip && t < T.ch, extB = t >= T.ret && t < T.ret + 1.0, extC = t >= T.co;
+  if (extA || extB || extC) { vis(L.ext, true); rExt(t, extA ? 'a' : extB ? 'b' : 'c'); if (extC && t < T.co + .3) tr(L.ext, `translate(${(1 - E.out(clamp((t - T.co + .05) / .35))) * 1080},0)`); }
   if (t >= T.whip && t < T.whip + .25) tr(L.hook, `translate(0,${E.in((t - T.whip) / .25) * 1920})`);
   if (t >= T.whip && t < T.whip + .3) tr(L.ext, `translate(0,${(E.out((t - T.whip) / .3) - 1) * 1920})`);
   fx += lignesVitesse(t, T.whip - .05, .45, 540, 960, '#fff', .8);
-  if (t >= T.ch && t < T.pr + .45) { vis(L.chantier, true); rChantier(t); const r = E.in(clamp((t - T.ch) / .38)) * 1500; if (r < 1499) { attr('irisC', 'r', r); L.chantier.setAttribute('clip-path', 'url(#clipIris)'); } }
+  if (t >= T.ch && t < T.pr + .45) { vis(L.chantier, true); rChantier(t); }
+  flash(.9 * (1 - Math.abs(t - T.ch) / .09));   // raccord : l'écran du téléphone devient le cadran de l'horloge
   if (t >= T.pr && t < T.so + .1) { vis(L.prospect, true); rProspect(t); const k = E.expoIo(clamp((t - T.pr) / .4)); tr(L.prospect, `translate(${(1 - k) * 1080},0) rotate(${(1 - k) * 6})`); if (t < T.pr + .4) tr(L.chantier, `translate(${-k * 1080},0) rotate(${-k * 6})`); }
   if (t >= T.so && t < T.ba + .3) { vis(L.soir, true); rSoir(t); }
   fondu(1 - Math.abs(t - (T.so + .03)) / .18);
-  if (t >= T.ba && t < T.si + .4) { vis(L.barrage, true); rBarrage(t, 'a'); }
-  if (t >= T.fil && t < T.co + .35) { vis(L.barrage, true); rBarrage(t, 'b'); }
-  flash(.8 * (1 - Math.abs(t - T.ba) / .1));
+  if (t >= T.ba && t < T.si) { vis(L.plan, true); rPlan(t); }
+  if (t >= T.fil && t < T.co + .35) { vis(L.tableau, true); rTableau(t); }
+  flash(.75 * (1 - Math.abs(t - T.ba) / .1)); flash(.7 * (1 - Math.abs(t - T.si) / .09));
   if (t >= T.si && t < T.cn + .3) { vis(L.siteFond, true); rSite(t); }
   if (t >= T.cn && t < T.vol + .15) { vis(L.canape, true); rCanape(t); }
   if (t >= T.vol && t < T.ret + .1) { vis(L.vol, true); rVol(t); }
   if (t >= T.fin) { vis(L.fin, true); rFin(t); }
   fondu(1 - Math.abs(t - T.fin) / .2); fondu(clamp((t - CAL.duree + .3) / .3));
-  fx += rUI(t);
+  fx += rUI(t) + (extA && window.bullesUI ? window.bullesUI : '');
   $('ui-fx').innerHTML = fx;
   rendreSousTitres(t);
   $('st').style.opacity = t >= T.fin - .05 ? 0 : 1;
@@ -332,7 +357,7 @@ function rExt(t, phase) {
   if (phase === 'a') {
     const tToi = M('l01', 1), tRing = tToi + .55, tDec = P('l02'), tOr = M('l02', 3), tQ = P('l03');
     cam = piste(t, [[T.whip, { x: 560, y: 760, z: 2.0 }], [tToi, { x: 560, y: 780, z: 1.95 }], [tToi + .6, { x: 560, y: 1700, z: .5 }, E.expoIo], [tDec - .35, { x: 560, y: 1500, z: .6 }, E.sine],
-      [tDec - .05, { x: 560, y: 880, z: 1.7 }, E.expoIo], [tQ - .05, { x: 560, y: 860, z: 1.8 }, E.sine], [P('l04'), { x: 560, y: 820, z: 2.2 }, E.sine]]);
+      [tDec - .05, { x: 560, y: 960, z: 1.45 }, E.expoIo], [M('l02', 5), { x: 610, y: 920, z: 1.5 }, E.sine], [M('l02', 7), { x: 590, y: 880, z: 1.65 }, E.io], [CAL.phrases.q1 ? P('q1') - .1 : tQ, { x: 560, y: 880, z: 1.75 }], [CAL.phrases.q1 ? P('q1') + .45 : tQ + .4, { x: 560, y: 600, z: 1.0 }, E.expoIo], [T.ch - .42, { x: 560, y: 610, z: 1.04 }, E.sine], [T.ch, { x: 770, y: 760, z: 7 }, E.in]]);
     // il lisse l'enduit avec sa queue en sifflotant
     const lisse = t < tRing;
     p.queue = lisse ? -40 + Math.sin(t * 7) * 28 : 0; p.bouche = lisse ? 'o' : 'sourire'; p.paup = .25; p.regardX = -.6; p.mainG = { x: -200, y: -150 }; p.mainD = { x: 210, y: -160 };
@@ -344,37 +369,77 @@ function rExt(t, phase) {
       p.mainG = { x: -190, y: -520 }; p.mainD = { x: 190, y: -520 }; p.coudeG = 1; p.coudeD = -1; p.formeG = 'salut'; p.formeD = 'salut'; }
     if (t > tRing - .05 && t < tRing + .5) fx += onomatopee(560, 330, '!', t, tRing, .5, '#ff4d4f', 190, 0);
     fx += vibrations(560 + 122, 1180, t, t > tToi && t < tDec + .2, 70, '#3a1a06');
-    // il décroche : jonglage avec le téléphone (mains pleines d'enduit), SPLAT, puis à l'oreille
+    // V4 : il décroche pour de vrai. Hésitation (« Alors… »), la main descend vers la ceinture, doigts ouverts,
+    // contact, les doigts se referment autour du téléphone, levée en arc jusqu'à l'oreille. Puis regard caméra, pince sans rire.
+    p.enduit = 1;
     if (t > tDec - .1) {
-      p.telCeinture = false;
-      if (t < tOr) {
-        const j = clamp((t - tDec) / (tOr - tDec)), ph = Math.floor(j * 4), u = (j * 4) % 1;
-        const tel = { x: ph % 2 ? 90 : -90, y: -560 - Math.sin(u * Math.PI) * 170 };
-        p.mainG = { x: -110, y: -430 }; p.mainD = { x: 110, y: -430 }; p.coudeG = 1; p.coudeD = -1; p.formeG = 'salut'; p.formeD = 'salut';
-        p.bouche = 'grimace'; p.oeil = 1.2; p.regardY = -1; p.regardX = tel.x / 120; p.sourcils = 1.1; p.queue = Math.sin(t * 20) * 12;
-        fx += `<g transform="translate(${560 + tel.x * 1.22},${1300 + tel.y * 1.22}) rotate(${j * 900})"><rect x="-36" y="-66" width="72" height="132" rx="18" fill="#15181e"/><rect x="-30" y="-60" width="60" height="120" rx="12" fill="#3b5c8f"/><circle cx="8" cy="-10" r="18" fill="#f4efe6"/><circle cx="-12" cy="22" r="10" fill="#f4efe6"/></g>`;
-        if (u < .1 && t > tDec) fx += poussiere(560 + tel.x * 1.22, 1300 + tel.y * 1.22 + 70, t, t - .02, 4, .4, '#f4efe6', .25);
+      // retour en douceur de la pose de sursaut (bras levés) vers une pose posée, avant le geste
+      const rv = E.io(clamp((t - tDec + .1) / .4));
+      Object.assign(p, { mainG: { x: mix(-190, -205, rv), y: mix(-520, -125, rv) }, coudeG: rv < .5 ? 1 : -1, formeG: 'ouverte', mainD: { x: mix(190, 215, rv), y: mix(-520, -140, rv) }, coudeD: 1, formeD: 'ouverte',
+        casque: 0, oeil: mix(p.oeil, 1, rv), sourcils: mix(1.3, 0, rv), queue: 0, y: 1300, sx: 1, sy: 1, regardY: 0, bouche: 'sourire' });
+      const tA = M('l02', 1) - .2, tC = M('l02', 2) + .02, tF = tC + .16, tO = tC + .62, tMains = M('l02', 5), tEnd = M('l02', 7);
+      const repos = { x: 215, y: -140 }, contact = { x: 106, y: -136 }, oreille = { x: 165, y: -405 };
+      if (t < tA) {   // « Alors… » : il fixe sa ceinture, la main s'avance à peine
+        const h = E.io(clamp((t - tDec + .1) / .5));
+        Object.assign(p, { regardX: .35 * h, regardY: .85 * h, sourcils: .6 * h, bouche: 'moue', paup: .15, mainD: { x: mix(repos.x, 185, h), y: mix(repos.y, -150, h) }, fermeD: .15 * h, pench: 2 * h });
+      } else if (t < tC) {   // approche : trajectoire courbe, doigts qui s'ouvrent en éventail
+        const u = E.io(clamp((t - tA) / (tC - tA)));
+        const ctrl = { x: 175, y: -175 };
+        const q = { x: (1 - u) * (1 - u) * 185 + 2 * u * (1 - u) * ctrl.x + u * u * contact.x, y: (1 - u) * (1 - u) * -150 + 2 * u * (1 - u) * ctrl.y + u * u * contact.y };
+        Object.assign(p, { regardX: .35, regardY: .9, sourcils: .5, bouche: 'moue', mainD: q, fermeD: .15 * (1 - Math.sin(Math.PI * u)), pench: 2 + 3 * u });
       } else {
-        Object.assign(p, { mainD: { x: 165, y: -405 }, coudeD: 1, objetD: 'tel', formeD: 'tient', mainG: { x: -200, y: -160 }, regardX: .6, regardY: -.2, sourcils: .7, froncer: .7, paup: .05,
-          bouche: t < tQ ? (t < tOr + .45 ? 'rire' : 'sourire') : ['ouvert', 'o', 'plat', 'ouvert'][Math.floor(t * 9) % 4] });
+        p.telCeinture = false; p.objetD = 'tel'; p.formeD = 'tient';
+        const f = clamp((t - tC) / (tF - tC)), l = clamp((t - tF + .04) / (tO - tF + .04));
+        p.fermeD = f;
+        const u = E.backS ? E.back(l) : l, ctrl = { x: 270, y: -200 };
+        const v = clamp(u, 0, 1.08);
+        const q = { x: (1 - v) * (1 - v) * contact.x + 2 * v * (1 - v) * ctrl.x + v * v * oreille.x, y: (1 - v) * (1 - v) * contact.y + 2 * v * (1 - v) * ctrl.y + v * v * oreille.y };
+        p.mainD = q; p.telK = mix(.64, 1, E.out(l)); p.pench = 5 * (1 - l) - 3 * E.out(l);
+        p.regardX = mix(.35, .6, l); p.regardY = mix(.9, -.2, l); p.sourcils = mix(.5, .7, l); p.bouche = l < .6 ? 'o' : 'sourire'; p.paup = .05;
+        if (t > tMains - .1) {   // « mains pleines d'enduit » : il écarte le téléphone, le regarde, puis fixe la caméra
+          const k = E.io(clamp((t - tMains + .1) / .3));
+          p.mainD = { x: mix(oreille.x, 215, k), y: mix(oreille.y, -385, k) }; p.telEnduit = k;
+          p.regardX = mix(.6, 1, k); p.regardY = mix(-.2, -.1, k); p.sourcils = mix(.7, 1.1, k); p.bouche = 'o'; p.oeil = 1 + .1 * k;
+          if (t > tEnd - .12) { const d = E.out(clamp((t - tEnd + .12) / .22)); Object.assign(p, { regardX: mix(1, 0, d), regardY: 0, paup: mix(.05, .45, d), sourcils: mix(1.1, -.25, d), bouche: 'plat', oeil: 1, froncer: .25 * d, queue: 0 }); }
+          // goutte d'enduit qui tombe du téléphone (ploc), sans effet appuyé
+          const g = clamp((t - tMains - .25) / .55);
+          if (g > 0 && g < 1) fx += `<ellipse cx="${560 + 222 * 1.22}" cy="${1300 + (-320 + g * g * 320) * 1.22}" rx="${9 - g * 2}" ry="${12 + g * 4}" fill="#fbf7ee" stroke="#cfc6b4" stroke-width="2"/>`;
+          if (g >= 1 && t < tMains + 1.1) fx += `<ellipse cx="${560 + 222 * 1.22}" cy="1302" rx="${22 * E.out(clamp((t - tMains - .8) / .2))}" ry="6" fill="#fbf7ee"/>`;
+        }
       }
-      if (t > tOr - .05 && t < tOr + .5) fx += onomatopee(380, 520, 'SPLAT', t, tOr - .05, .5, '#fff', 96, -12) + poussiere(760, 780, t, tOr - .05, 5, .7, '#f4efe6', .4);
     }
-    // les questions déferlent comme une rivière : le niveau monte jusqu'au menton
-    if (t > tQ - .1) {
-      p.sueur = 1; p.oeil = 1.15; p.sourcils = 1.2; p.froncer = 1; p.regardX = Math.sin(t * 9) * .8;
-      p.dents = 1; p.casque = Math.sin(t * 40) * 3;
-      const niveau = E.io(clamp((t - tQ) / (P('l04') - tQ - .1)));
-      const yEau = 1300 - niveau * 420;
-      fx += `<path d="M-200,${yEau} ${Array.from({ length: 14 }, (_, i) => `Q${-150 + i * 100},${yEau - 26 * Math.sin(t * 6 + i)} ${-100 + i * 100},${yEau}`).join(' ')} L1300,1500 L-200,1500 Z" fill="#5fc3e8" opacity=".9"/>`;
-      const qs = ['Boulogne ?', 'Combien ?', 'Des photos ?', 'Dispo quand ?', 'Salle de bain ?', 'Un devis ?', 'Le prix ?', 'Vous venez ?'];
-      for (let i = 0; i < 8; i++) {
-        const t0 = tQ + i * .2, u = clamp((t - t0) / 1.4);
-        if (u <= 0) continue;
-        const x = -100 + ((i * 197) % 1100) + Math.sin(t * 3 + i) * 20, y = yEau - 30 - Math.sin(u * Math.PI) * 60;
-        fx += `<g transform="translate(${mix(x - 500, x, E.out(clamp(u * 2.5)))},${y}) rotate(${Math.sin(t * 2 + i) * 8})"><rect x="-120" y="-44" width="240" height="88" rx="40" fill="#fff" stroke="#1b1f2a" stroke-width="5"/><text y="12" text-anchor="middle" font-family="Geist" font-weight="700" font-size="32" fill="#1b1f2a">${qs[i]}</text></g>`;
-      }
-      sh = tremble(t, tQ + Math.floor((t - tQ) / .4) * .4, 8, .2);
+    // V4 : les quatre questions au téléphone, en bulles (approche de la V2), chacune calée sur la voix de la prospecte
+    window.bullesUI = '';
+    const QS = ['q1', 'q2', 'q3', 'q4'].filter(id => CAL.phrases[id]);
+    if (QS.length && t > P(QS[0]) - .15) {
+      const txt = ['Vous êtes disponibles quand ?', 'Vous intervenez dans ma ville ?', 'Vous pouvez me donner une idée du tarif ?', 'Vous proposez quels types de prestations ?'];
+      const pos = [{ x: 470, y: 200, r: -2 }, { x: 610, y: 400, r: 2 }, { x: 470, y: 610, r: -1.5 }, { x: 610, y: 820, r: 1.5 }];
+      const tL3 = P('l03'), fin = T.ch;
+      let b = '';
+      QS.forEach((id, i) => {
+        const t0 = P(id) - .12; if (t < t0) return;
+        const a = clamp((t - t0) / .32), sc = a < 1 ? E.backS(a) : 1, parle = t > P(id) && t < F(id);
+        const flot = Math.sin((t - t0) * 2.2 + i) * 6, sortie = E.in(clamp((t - (fin - .42 + i * .04)) / .3));
+        const coupe = txt[i].length > 26 ? txt[i].lastIndexOf(' ', 24) : -1;
+        const lignes = coupe > 0 ? [txt[i].slice(0, coupe), txt[i].slice(coupe + 1)] : [txt[i]];
+        const w = Math.min(980, Math.max(...lignes.map(l => l.length)) * 21 + 150), h = lignes.length > 1 ? 150 : 104, cote = i % 2 ? -1 : 1;
+        const Q = { x: mix(pos[i].x, 753, sortie), y: mix(pos[i].y, 1143, sortie), r: pos[i].r };
+        b += `<g transform="translate(${Q.x},${Q.y + flot * (1 - sortie)}) rotate(${Q.r + (parle ? Math.sin(t * 18) * .8 : 0)}) scale(${sc * (1 - sortie * .92)})" opacity="${t > tL3 + .2 && !parle ? .95 : 1}">
+          <path d="M${-w / 2 + 40},${-h / 2} h${w - 80} a40,40 0 0 1 40,40 v${h - 80} a40,40 0 0 1 -40,40 h${cote > 0 ? -(w - 160) : -40} l${-cote * 34},38 l${-cote * 4},-38 h${cote > 0 ? -40 : -(w - 160)} a40,40 0 0 1 -40,-40 v${-(h - 80)} a40,40 0 0 1 40,-40 z" fill="#fff" stroke="#15181e" stroke-width="6" stroke-linejoin="round"/>
+          <circle cx="${-w / 2 + 50}" cy="${-h / 2 + 8}" r="22" fill="#2f6df6"/><path d="M${-w / 2 + 41},${-h / 2 + 4} q9,-10 18,0 v8 h-18 z" fill="#fff"/>
+          ${lignes.map((l, k) => `<text x="${-w / 2 + 92}" y="${(k - (lignes.length - 1) / 2) * 50 + 15}" font-family="Bricolage" font-weight="800" font-size="40" fill="#15181e">${l}</text>`).join('')}</g>`;
+        if (parle) b += `<g transform="translate(${Q.x - cote * (w / 2 + 30)},${Q.y - 30})" opacity=".8">${[0, 1, 2].map(k => `<path d="M${cote * k * 12},${-k * 4} a${14 + k * 10},${14 + k * 10} 0 0 ${cote > 0 ? 0 : 1} 0,${28 + k * 20}" stroke="#2f6df6" stroke-width="5" fill="none" stroke-linecap="round" opacity="${.4 + .6 * Math.max(0, Math.sin(t * 10 - k))}"/>`).join('')}</g>`;
+      });
+      window.bullesUI = b;
+      // réactions de Gaspard, une par question, de la politesse à la saturation
+      const n = QS.filter(id => t > P(id)).length;
+      Object.assign(p, { mainD: { x: 165, y: -405 }, objetD: 'tel', formeD: 'tient', fermeD: 1, telCeinture: false, telEnduit: 1, paup: .05, froncer: 0 });
+      if (n === 1) Object.assign(p, { bouche: 'sourire', regardX: .5, regardY: -.3, sourcils: .5 });
+      if (n === 2) Object.assign(p, { bouche: 'ouvert', regardX: .8, regardY: -.4, sourcils: .9, oeil: 1.1 });
+      if (n === 3) Object.assign(p, { bouche: 'moue', regardX: -.4, regardY: -.6, sourcils: 1.1, froncer: .6, sueur: .6, oeil: 1.15 });
+      if (n >= 4) Object.assign(p, { bouche: 'grimace', regardX: Math.sin(t * 7) * .7, regardY: -.3, sourcils: 1.3, froncer: 1, sueur: 1, oeil: 1.2, casque: Math.sin(t * 30) * 2 });
+      if (t > tL3) { const k = E.io(clamp((t - tL3) / .4)); Object.assign(p, { bouche: 'plat', paup: mix(.05, .5, k), sourcils: mix(1.3, -.3, k), froncer: .3, regardX: 0, regardY: 0, sueur: 1 - k * .5, oeil: 1, casque: 0, pench: -3 * k }); }
+      p.queue = n >= 4 ? Math.sin(t * 12) * 10 : 0;
     }
     for (let i = 0; i < 7; i++) { const u = ((t * .25 + i / 7) % 1); fx += `<circle cx="${200 + (i * 151) % 700 + Math.sin(u * 6 + i) * 30}" cy="${700 + u * 700}" r="${4 + i % 3 * 2}" fill="#fff" opacity="${Math.sin(Math.PI * u) * .6}"/>`; }
   } else if (phase === 'b') {
@@ -431,7 +496,7 @@ function carteDevis(s = 1) {
 // ---------------------------------- 4. CHANTIER ----------------------------------
 function rChantier(t) {
   const u = t - T.ch;
-  const cam = piste(u, [[0, { x: 300, y: 380, z: 2.3 }], [.45, { x: 330, y: 390, z: 2.1 }], [1.1, { x: 560, y: 980, z: 1.0 }, E.expoIo], [2.8, { x: 590, y: 1000, z: 1.08 }, E.sine]]);
+  const cam = piste(u, [[0, { x: 300, y: 380, z: 4.2 }], [.4, { x: 320, y: 388, z: 2.15 }, E.out], [1.1, { x: 560, y: 980, z: 1.0 }, E.expoIo], [2.8, { x: 590, y: 1000, z: 1.08 }, E.sine]]);
   tr('ch-m', `rotate(${u * 1600})`); tr('ch-h', `rotate(${u * 140 + 60})`);
   $('ch-jour').textContent = 12 + Math.floor(clamp((u - .9) / 1.4) * 9);
   let pages = '';
@@ -452,27 +517,31 @@ function rChantier(t) {
 
 // ---------------------------------- 5. LE CLIENT RATÉ ----------------------------------
 function rProspect(t) {
-  const tRate = M('l05', 5), tSuiv = M('l05', 9) - .05, u = t - T.pr;
+  // V4 : vrai téléphone (HTML, cadre titane, verre, reflet) : appel sans réponse, puis le site premium du concurrent, puis l'appel au suivant
+  const tRate = M('l05', 5), tSuiv = M('l05', 9) - .05, u = t - T.pr, rac = tRate + .12;
   camera('pr-cam', 540, 960, mix(1.02, 1.08, clamp(u / 2.5)));
-  for (let i = 0; i < 3; i++) op('pr-pt' + i, ((t * 3 - i * .33) % 1) < .5 ? 1 : .25);
-  $('pr-etat').textContent = t < tRate ? 'Appel en cours…' : 'Pas de réponse';
-  attr('pr-etat', 'fill', t < tRate ? '#aab3c5' : '#ff6b6d');
-  const rac = tRate + .15, k = E.io(clamp((t - rac) / .3));
-  op('pr-appel', 1 - k); tr('pr-liste', `translate(0,${(1 - k) * 90})`);
-  op('pr-c1', t > rac + .2 ? .5 : 1); op('pr-sansRep', clamp((t - rac - .2) / .2));
-  const pt = piste(t, [[T.pr, { x: 700, y: 1500 }], [rac + .2, { x: 700, y: 1450 }], [tSuiv - .15, { x: 420, y: 1060 }, E.io], [tSuiv, { x: 410, y: 1080 }, E.out], [tSuiv + .5, { x: 420, y: 1070 }]]);
-  tr('pr-pouce', `translate(${pt.x},${pt.y}) rotate(-28)`);
-  tr('pr-btnSite', t > tSuiv && t < tSuiv + .2 ? 'translate(139,197) scale(.9) translate(-139,-197)' : '');
-  const sq = squashImpact(t, tSuiv, .06, .3);
-  tr('pr-tel', `translate(540,880) rotate(${-3 + Math.sin(t * 1.4)}) scale(${sq.sx},${sq.sy})`);
-  let fx = '';
-  const ta = tSuiv + .15, ka = clamp((t - ta) / .9);
-  if (ka > 0 && ka < 1) {
-    const x = 420 + ka * 800, y = 1060 - ka * 900 + Math.sin(ka * 9) * 50;
-    fx += `<path d="M420,1060 Q${420 + ka * 400},${1060 - ka * 700} ${x},${y}" stroke="#15181e" stroke-width="5" stroke-dasharray="14 12" fill="none" opacity=".5"/><g transform="translate(${x},${y}) rotate(${-40 + Math.sin(ka * 9) * 15}) scale(1.3)"><path d="M-60,0 L60,-30 L-10,30 Z" fill="#fff" stroke="#15181e" stroke-width="5" stroke-linejoin="round"/><path d="M-10,30 L0,6 L60,-30" fill="none" stroke="#15181e" stroke-width="5" stroke-linejoin="round"/><text x="0" y="-36" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="30" fill="#15181e">DEVIS</text></g>`;
-  }
-  fx += impact(410, 1080, t, tSuiv, .5, '#e8b84a', .25) + onomatopee(780, 340, 'BIP… BIP…', t, T.pr + .25, Math.max(.3, tRate - T.pr - .3), '#fff', 60, 0) + onomatopee(800, 1300, 'BYE !', t, ta + .3, .6, '#ffd23f', 80, -8);
-  $('pr-fx').innerHTML = fx;
+  $('pr-tel').style.display = 'none'; $('pr-pouce').style.display = 'none';
+  $('tel').style.display = 'block';
+  const glisse = E.io(clamp((t - rac) / .34)), retour = E.io(clamp((t - tSuiv - .16) / .3));
+  const appui = clamp(1 - Math.abs(t - tSuiv - .04) / .1);
+  let etat = 'Appel en cours…', coul = '#aeb8cc', ondes = 1, qui = 'gaspard';
+  if (t > tRate) { etat = 'Pas de réponse'; coul = '#ff6b62'; ondes = 1 - clamp((t - tRate) / .2); }
+  if (t > tSuiv + .1) { qui = 'renov'; ondes = 1; coul = '#7ee0a0'; etat = t > tSuiv + .75 ? 'Connecté · 00:0' + Math.min(9, 1 + Math.floor((t - tSuiv - .75) / 1)) : 'Appel en cours…'; }
+  concEtat({ appel: (glisse < 1 || retour > 0) ? 1 : 0, appelX: retour > 0 ? 1 - retour : -glisse, site: glisse > 0 && retour < 1 ? 1 : 0, siteX: retour > 0 ? -retour * .3 : 1 - glisse,
+    defile: 46 * E.io(clamp((t - rac - .2) / .8)), appui, qui, etat, etatCoul: coul, ondes, t });
+  // le téléphone flotte avec une perspective constante (même point de fuite), l'éclairage chaud vient du haut à gauche
+  const flotte = Math.sin(t * 1.5) * 7, ry = -7 + Math.sin(t * .8) * 2.5, rx = 5 + Math.sin(t * .6) * 1.5;
+  const tape = appui * 10, ent = E.expoIo(clamp(u / .4));
+  $('tel').style.transform = `translate(-50%,-50%) translate(${540 + (1 - ent) * 1080}px,${812 + flotte + tape * .4}px) perspective(2400px) rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${-2 + (1 - ent) * 6}deg) scale(1.45)`;
+  $('telReflet').style.transform = `translateX(${-420 + clamp(u / 2.6) * 900}px) rotate(18deg)`;
+  // pouce de la prospecte : arrive, appuie sur « Appeler », repart
+  const pt = piste(t, [[T.pr, { x: 900, y: 1900 }], [rac + .25, { x: 860, y: 1800 }], [tSuiv - .12, { x: 432, y: 946 }, E.io], [tSuiv + .04, { x: 424, y: 962 }, E.out], [tSuiv + .5, { x: 760, y: 1700 }, E.in]]);
+  const pouce = `<g transform="translate(${pt.x},${pt.y}) rotate(-32)"><path d="M-46,10 C-50,-60 -30,-104 4,-106 C40,-108 52,-64 50,4 L60,320 L-70,320 Z" fill="#e7b18c" stroke="#b47a56" stroke-width="3"/><path d="M-26,-60 C-24,-90 -6,-98 10,-97 C28,-96 34,-80 32,-58 C30,-42 -24,-40 -26,-60 Z" fill="#f6d6c2" stroke="#d6a487" stroke-width="2"/><path d="M-44,40 C-20,52 24,52 48,40" stroke="#c98f6c" stroke-width="3" fill="none" opacity=".6"/></g>`;
+  let s = pouce;
+  if (appui > 0) s += `<circle cx="424" cy="912" r="${30 + (1 - appui) * 50}" fill="none" stroke="#fff" stroke-width="5" opacity="${appui * .8}"/>`;
+  s += onomatopee(840, 150, 'BIP… BIP…', t, T.pr + .2, Math.max(.3, tRate - T.pr - .3), '#fff', 56, 0);
+  $('svgHaut').innerHTML = s;
+  $('pr-fx').innerHTML = '';
 }
 
 // ---------------------------------- 6-7. SOIR, DÉCLIC ----------------------------------
@@ -483,7 +552,7 @@ function rSoir(t) {
   if (t > dec - .02 && t < dec + .3) { L.soir.setAttribute('filter', 'url(#desature)'); attr('desatM', 'values', mix(.05, 1, clamp((t - dec - .1) / .2))); }
   op('so-halo', clamp((t - dec - .15) / .5) * .5);
   tr('so-lampe', `rotate(${Math.sin(t * 2.2) * 2} 440 -400)`);
-  $('so-heure').textContent = t < T.so + 1.0 ? '22:47' : '22:48';
+  $('so-heure').textContent = t < T.so + 1.0 ? '20:47' : '20:48';
   let tasses = ''; const n = Math.min(4, 1 + Math.floor(u / .45));
   for (let i = 0; i < n; i++) { const a = apparition(t, T.so + i * .45, .25); tasses += `<g transform="translate(${840 - i * 8},${1236 - i * 64}) scale(${a})"><path d="M-40,-60 L40,-60 L34,0 C32,8 -32,8 -34,0 Z" fill="#fff" stroke="#1b1f2a" stroke-width="5"/><path d="M40,-46 C64,-46 64,-14 36,-14" stroke="#1b1f2a" stroke-width="5" fill="none"/></g>`; }
   $('so-tasses').innerHTML = tasses;
@@ -502,6 +571,136 @@ function rSoir(t) {
   }
   PERS.gs.poser(p);
   $('so-fx').innerHTML = fx;
+}
+
+// ---------------------------------- V4 · 8a. LE PLAN ----------------------------------
+const BRIQUES = [['zone', 'Zone d’intervention', 'Boulogne · Issy · Clamart'], ['dispo', 'Disponibilités', 'Prochain créneau : 3 juin'],
+  ['prix', 'Tarifs indicatifs', 'Salle de bain dès 4 900 €'], ['outil', 'Prestations', 'Bain · Cuisine · Peinture']];
+const QUESTIONS = ['Vous êtes disponibles quand ?', 'Vous intervenez dans ma ville ?', 'Une idée du tarif ?', 'Quels types de prestations ?'];
+function icone(type, c = '#15181e') {
+  if (type === 'zone') return `<path d="M0,-20 C-12,-20 -18,-11 -18,-4 C-18,8 0,22 0,22 C0,22 18,8 18,-4 C18,-11 12,-20 0,-20 Z" fill="${c}"/><circle cy="-5" r="6" fill="#fff"/>`;
+  if (type === 'dispo') return `<rect x="-18" y="-16" width="36" height="34" rx="7" fill="none" stroke="${c}" stroke-width="5"/><path d="M-18,-5 H18 M-9,-22 V-12 M9,-22 V-12" stroke="${c}" stroke-width="5" stroke-linecap="round"/>`;
+  if (type === 'prix') return `<text y="13" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="40" fill="${c}">€</text>`;
+  return `<path d="M-14,16 L6,-4 M2,-8 a12,12 0 1 1 8,8" stroke="${c}" stroke-width="6" stroke-linecap="round" fill="none"/>`;
+}
+function brique(i, coche = 0) {
+  const [ic, titre, detail] = BRIQUES[i];
+  return `<rect x="-200" y="-56" width="400" height="112" rx="22" fill="#fff" stroke="#e6dccb" stroke-width="3"/><rect x="-200" y="-56" width="400" height="112" rx="22" fill="none" stroke="#15181e" stroke-opacity=".06" stroke-width="8"/>
+    <circle cx="-142" cy="0" r="36" fill="#fff4cf"/><g transform="translate(-142,0)">${icone(ic)}</g>
+    <text x="-90" y="-8" font-family="Bricolage" font-weight="800" font-size="30" fill="#15181e">${titre}</text><text x="-90" y="28" font-family="Geist" font-weight="500" font-size="22" fill="#6b6357">${detail}</text>
+    ${coche > 0 ? `<g transform="translate(176,-40) scale(${E.backS(coche)})"><circle r="24" fill="#22a05a" stroke="#fff" stroke-width="5"/><path d="M-10,0 l7,7 l13,-14" stroke="#fff" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>` : ''}`;
+}
+function rPlan(t) {
+  const u = t - T.ba, X = 540, Y = 700, W = 470, H = 860, ys = [492, 622, 752, 882];
+  const tb = [M('l07', 6) - .12, M('l07', 8) - .05, M('l07', 11) - .1, F('l07') - .1], tq = [0, 1, 2, 3].map(i => P('l07b') + .05 + i * .3);
+  const cam = piste(t, [[T.ba, { x: 560, y: 720, z: 1.32 }], [T.ba + .9, { x: 580, y: 710, z: 1.12 }, E.expoOut], [T.si - .4, { x: 570, y: 700, z: 1.17 }, E.sine], [T.si, { x: 540, y: 640, z: 2.6 }, E.in]]);
+  camera('pl-cam', cam.x + bruit(t, 21) * 2, cam.y + bruit(t, 22) * 2, cam.z);
+  // cotes et contour pointillé (le plan se trace), puis le téléphone se « coule » dans le plan
+  const tr0 = clamp(u / .55), corps = E.backS(clamp((u - .3) / .45));
+  const per = 2 * (W + H);
+  $('pl-cotes').innerHTML = `<rect x="${X - W / 2 - 24}" y="${Y - H / 2 - 24}" width="${W + 48}" height="${H + 48}" rx="88" fill="none" stroke="#cfe3ff" stroke-width="3" stroke-dasharray="16 12" stroke-dashoffset="${(1 - tr0) * per}" opacity=".8"/>
+    <g opacity="${tr0}" stroke="#cfe3ff" stroke-width="2.5" fill="#cfe3ff" font-family="Geist" font-size="22"><path d="M${X - W / 2},${Y - H / 2 - 64} H${X + W / 2} M${X - W / 2},${Y - H / 2 - 76} v24 M${X + W / 2},${Y - H / 2 - 76} v24"/><text x="${X}" y="${Y - H / 2 - 76}" text-anchor="middle" stroke="none">71,6 mm</text></g>`;
+  let tel = `<g transform="translate(${X},${Y}) scale(${.9 + .1 * corps})" opacity="${clamp(corps * 1.5)}">
+    <rect x="${-W / 2 + 10}" y="${-H / 2 + 26}" width="${W}" height="${H}" rx="72" fill="#0b1e3a" opacity=".35"/>
+    <rect x="${-W / 2}" y="${-H / 2}" width="${W}" height="${H}" rx="72" fill="#15181e" stroke="#9aa3ae" stroke-width="4"/>
+    <rect x="${-W / 2 + 16}" y="${-H / 2 + 16}" width="${W - 32}" height="${H - 32}" rx="58" fill="#f5f0e8"/>
+    <rect x="-56" y="${-H / 2 + 30}" width="112" height="30" rx="15" fill="#000"/>
+    <g transform="translate(${-W / 2 + 46},${-H / 2 + 108})"><circle r="24" fill="#15181e"/><text y="9" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="26" fill="#ffc21a">G</text>
+      <text x="38" y="-2" font-family="Bricolage" font-weight="800" font-size="25" fill="#15181e">Gaspard Rénovation</text><text x="38" y="24" font-family="Geist" font-size="17" fill="#7a7166">Salles de bain · Hauts-de-Seine</text></g>
+    <path d="M${-W / 2 + 46},${-H / 2 + 154} H${W / 2 - 46}" stroke="#e3d9c8" stroke-width="2"/></g>`;
+  // emplacements vides (gabarits pointillés) puis briques posées
+  ys.forEach((y, i) => { if (corps > .6 && t < tb[i] + .38) tel += `<rect x="${X - 200}" y="${y - 56}" width="400" height="112" rx="22" fill="none" stroke="#c9bfae" stroke-width="3" stroke-dasharray="10 9" opacity="${clamp((corps - .6) * 3)}"/>`; });
+  let fx = '';
+  const truelle = { x: 830, y: 1010 };
+  ys.forEach((y, i) => {
+    const k = clamp((t - tb[i]) / .38);
+    if (k <= 0) return;
+    const coche = clamp((t - tq[i] - .42) / .3);
+    if (k < 1) {   // vol en arc depuis la truelle, rotation qui se stabilise
+      const x = mix(truelle.x, X, E.out(k)), yy = mix(truelle.y, y, E.io(k)) - Math.sin(Math.PI * k) * 170;
+      tel += `<g transform="translate(${x},${yy}) rotate(${(1 - E.out(k)) * 24}) scale(${.55 + .45 * E.out(k)})">${brique(i)}</g>`;
+    } else {
+      const sq = squashImpact(t, tb[i] + .38, .1, .3);
+      tel += `<g transform="translate(${X},${y}) scale(${sq.sx},${sq.sy})">${brique(i, coche)}</g>`;
+      if (t < tb[i] + .7) fx += poussiere(X, y + 56, t, tb[i] + .38, 5, .5, '#f5f0e8', .5);
+    }
+  });
+  // bouton doré qui se pose en dernier
+  const cta = E.backS(clamp((t - tb[3] - .5) / .35));
+  if (cta > 0) tel += `<g transform="translate(${X},1002) scale(${cta})"><rect x="-200" y="-40" width="400" height="80" rx="40" fill="#e8b84a"/><text y="11" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="30" fill="#15181e">Demander un devis</text></g>`;
+  $('pl-tel').innerHTML = tel;
+  // « sans avoir besoin de t'appeler » : les questions reviennent et trouvent chacune leur réponse
+  const qMap = [1, 0, 2, 3];   // question → brique (dispo, zone, prix, prestations)
+  QUESTIONS.forEach((q, i) => {
+    const b = qMap[i], k = clamp((t - tq[i]) / .45); if (k <= 0) return;
+    const y = ys[b];
+    if (k < 1) {
+      const x = mix(-260, X - 120, E.io(k)), yy = mix(220 + i * 70, y, E.io(k)) - Math.sin(Math.PI * k) * 60, w = q.length * 17 + 70;
+      fx += `<g transform="translate(${x},${yy}) rotate(${(1 - k) * -8}) scale(${1 - .25 * k})"><rect x="${-w / 2}" y="-34" width="${w}" height="68" rx="34" fill="#fff" stroke="#15181e" stroke-width="5"/><text y="10" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="30" fill="#15181e">${q}</text></g>`;
+    } else if (t < tq[i] + .8) {
+      const p = clamp((t - tq[i] - .45) / .3);
+      fx += [0, 1, 2, 3, 4, 5].map(j => { const a = j * Math.PI / 3; return `<circle cx="${X - 120 + Math.cos(a) * 40 * (1 + p * 1.5)}" cy="${y + Math.sin(a) * 30 * (1 + p * 1.5)}" r="${10 * (1 - p)}" fill="#fff"/>`; }).join('');
+    }
+  });
+  // Gaspard : lance les briques à la truelle (anticipation, lancer, suivi), puis regard complice à la caméra
+  const p = { x: 862, y: 1290, s: .62, cligne: clignementG(t, 13), objetD: 'truelle', formeD: 'tient', fermeD: 1, coudeD: 1, mainG: { x: -200, y: -140 }, coudeG: -1,
+    bouche: 'sourire', regardX: -.8, regardY: -.2, sourcils: .4, queue: Math.sin(t * 3) * 6, ombre: .18, telCeinture: true };
+  let dernier = -1; tb.forEach((x, i) => { if (t > x - .3) dernier = i; });
+  const w = dernier >= 0 ? t - tb[dernier] : -1;
+  if (w > -.3 && w < -.04) { const a = E.io((w + .3) / .26); Object.assign(p, { mainD: { x: mix(220, 250, a), y: mix(-200, -330, a) }, pench: -3 * a, bouche: 'moue', sourcils: .8 }); }
+  else if (w >= -.04 && w < .35) { const a = E.out(clamp((w + .04) / .14)); Object.assign(p, { mainD: { x: mix(250, 40, a), y: mix(-330, -250, a) }, pench: 5 * a, bouche: 'ouvert', regardX: -1, queue: -30 * Math.sin(Math.PI * clamp(w / .3)) }); }
+  else p.mainD = { x: 220, y: -200 };
+  if (t > P('l07b') - .1) {
+    const k = E.io(clamp((t - P('l07b') + .1) / .35));
+    Object.assign(p, { objetD: null, formeD: 'pouce', mainD: { x: 240, y: -330 }, regardX: mix(-.8, 0, k), regardY: 0, bouche: 'sourire', sourcils: .9 * k, paup: .18 * k, pench: 0, queue: Math.sin(t * 6) * 12 });
+    if (t > tq[3] + .8) Object.assign(p, { mainG: { x: -230, y: -330 }, formeG: 'ouverte', coudeG: 1, sourcils: 1, bouche: 'rire' });
+  }
+  PERS.gp.poser(p);
+  $('pl-fx').innerHTML = fx;
+}
+
+// ---------------------------------- V4 · 10. LE PLANNING ----------------------------------
+function carteChantier(titre, ville, prix, k = 1) {
+  return `<rect x="-130" y="-92" width="260" height="184" rx="18" fill="#fffaf0" stroke="#e8b84a" stroke-width="5"/><rect x="-130" y="-92" width="260" height="46" rx="18" fill="#e8b84a"/><rect x="-130" y="-60" width="260" height="14" fill="#e8b84a"/>
+    <text x="-110" y="-60" font-family="Geist" font-weight="700" font-size="19" fill="#15181e">DEVIS · VRAI CHANTIER</text>
+    <text x="-110" y="-10" font-family="Bricolage" font-weight="800" font-size="27" fill="#15181e">${titre}</text><text x="-110" y="22" font-family="Geist" font-size="20" fill="#6b6357">${ville}</text>
+    <text x="-110" y="66" font-family="Bricolage" font-weight="800" font-size="30" fill="#1f8f5a">${prix}</text>`;
+}
+function rTableau(t) {
+  const u = t - T.fil, tc = [M('l10', 1) - .1, M('l10', 4) - .1, M('l10', 8) - .15], tAppel = M('l10', 9) - .05;
+  const cam = piste(t, [[T.fil, { x: 540, y: 760, z: 1.08 }], [T.fil + 1.2, { x: 540, y: 750, z: 1.0 }, E.sine], [T.co - .3, { x: 520, y: 800, z: 1.06 }, E.sine]]);
+  camera('tb-cam', cam.x + bruit(t, 31) * 2, cam.y + bruit(t, 32) * 2, cam.z);
+  const cartes = [['Salle de bain', 'Boulogne · 6 m²', '8 500 €', 262, 500, -4], ['Douche italienne', 'Issy · photos jointes', '4 900 €', 600, 700, 3], ['Cuisine', 'Clamart · avant l’été', '12 000 €', 820, 470, -2]];
+  let c = '', fx = '';
+  cartes.forEach(([ti, vi, pr, x, y, r], i) => {
+    const k = clamp((t - tc[i]) / .42); if (k <= 0) return;
+    const xx = mix(-260, x, E.out(k)), yy = mix(200, y, E.io(k)) - Math.sin(Math.PI * k) * 120, sq = squashImpact(t, tc[i] + .42, .08, .3);
+    c += `<g transform="translate(${xx},${yy}) rotate(${mix(-25, r, E.out(k))}) scale(${1.12 * (k < 1 ? .8 + .2 * k : sq.sx)},${1.12 * (k < 1 ? .8 + .2 * k : sq.sy)})">${carteChantier(ti, vi, pr)}`;
+    const pin = E.backS(clamp((t - tc[i] - .4) / .2));
+    if (pin > 0) c += `<g transform="translate(0,${-100 - (1 - pin) * 60})"><circle r="15" fill="#e2483d"/><circle cx="-4" cy="-4" r="5" fill="#ff9a8f"/></g>`;
+    // tampon « Rappelé ✓ » quand Gaspard appelle
+    const tam = clamp((t - tAppel - .15 - i * .18) / .18);
+    if (tam > 0) c += `<g transform="translate(60,10) rotate(-12) scale(${mix(1.8, 1, E.out(tam))})" opacity="${clamp(tam * 2)}"><rect x="-86" y="-26" width="172" height="52" rx="10" fill="none" stroke="#1f8f5a" stroke-width="5"/><text y="11" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="28" fill="#1f8f5a">RAPPELÉ ✓</text></g>`;
+    c += `</g>`;
+    if (k >= 1 && t < tc[i] + .75) fx += etincelles(x, y, t, tc[i] + .42, 6, 150, '#e8b84a', .5);
+  });
+  $('tb-cartes').innerHTML = c;
+  // Gaspard : salue chaque devis, puis décroche, détendu, pour ne rappeler que ceux-là
+  const p = { x: 250, y: 1330, s: .8, cligne: clignementG(t, 17), regardX: .6, regardY: -.5, bouche: 'sourire', sourcils: .5, paup: .1, queue: Math.sin(t * 4) * 10, ombre: .2,
+    mainG: { x: -200, y: -140 }, coudeG: -1, mainD: { x: 210, y: -150 }, coudeD: 1 };
+  let n = 0; tc.forEach(x => { if (t > x + .42) n++; });
+  if (n >= 1 && t < tAppel - .3) { const b = Math.sin(Math.PI * clamp((t - tc[n - 1] - .42) / .35)); Object.assign(p, { mainD: { x: 230, y: -300 - b * 40 }, formeD: 'pouce', bouche: b > .3 ? 'rire' : 'sourire', sourcils: .6 + .5 * b, y: 1300 - b * 14 }); }
+  if (t > tAppel - .35) {
+    const tC = tAppel - .35, f = clamp((t - tC - .3) / .14), l = E.out(clamp((t - tC - .36) / .4));
+    const reach = E.io(clamp((t - tC) / .3));
+    if (t < tC + .3) Object.assign(p, { mainD: { x: mix(210, 106, reach), y: mix(-150, -136, reach) }, fermeD: 0, regardY: .6, regardX: .3 });
+    else Object.assign(p, { telCeinture: false, objetD: 'tel', formeD: 'tient', fermeD: f, telK: mix(.64, 1, l), mainD: { x: mix(106, 165, l), y: mix(-136, -405, l) }, regardX: .5, regardY: -.2, bouche: 'ouvert', sourcils: .8, paup: .05 });
+  }
+  PERS.gt.poser(p);
+  // fin du plan : filé vers la droite, le collègue arrive dans le plan suivant
+  const sortie = E.in(clamp((t - T.co + .05) / .35));
+  if (sortie > 0) { tr(L.tableau, `translate(${-sortie * 1080},0)`); fx += lignesVitesse(t, T.co - .1, .5, 540, 960, '#fff', .7); }
+  $('tb-fx').innerHTML = fx;
 }
 
 // ---------------------------------- 8 et 10. LE BARRAGE ----------------------------------
@@ -579,7 +778,7 @@ function rSite(t) {
   let s = '';
   lab.forEach(([txt, sx], i) => {
     const a = apparition(t, mots[i] - .05, .35); if (a <= 0) return;
-    const w = txt.length * 20 + 110, x = sx > 0 ? 1050 - w : 30, y = ys[i];
+    const w = txt.length * 20 + 110, x = sx > 0 ? 1030 - w : 56, y = ys[i];
     s += `<g transform="translate(${x + w / 2},${y}) rotate(${(1 - a) * sx * 14 + sx * -3}) scale(${a}) translate(${-w / 2},0)"><rect x="0" y="-42" width="${w}" height="84" rx="42" fill="#15181e" stroke="#fff" stroke-width="5"/><circle cx="42" cy="0" r="26" fill="#e8b84a"/><path d="M30,0 l9,9 l16,-18" stroke="#15181e" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="84" y="12" font-family="Bricolage" font-weight="800" font-size="34" fill="#fff">${txt}</text></g>` + etincelles(x + w / 2, y, t, mots[i], 6, 150, '#e8b84a', .6);
   });
   $('svgHaut').innerHTML = s;
@@ -638,7 +837,7 @@ function rFin(t) {
 // ---------------------------------- INTERFACE ----------------------------------
 function rUI(t) {
   const n0 = T.ret + .05;
-  const a = apparition(t, n0, .4), b = clamp((t - (T.ret + 1.0)) / .3);
+  const a = apparition(t, n0, .4), b = clamp((t - Math.min(T.ret + 1.0, T.fil - .3)) / .25);
   vis('notif', t > n0 && b < 1);
   tr('notif', `translate(0,${mix(-260, 110, a) - E.in(b) * 400})`);
   return '';

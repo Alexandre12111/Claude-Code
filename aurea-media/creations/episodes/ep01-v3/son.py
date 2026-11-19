@@ -1,4 +1,4 @@
-"""Bande son V3 (Gaspard) (48 kHz stéréo) : musique cartoon originale + bruitages synchronisés + voix (prioritaire).
+"""Bande son V4 (Gaspard) (48 kHz stéréo) : musique cartoon originale + bruitages synchronisés + voix (prioritaire).
 
 Musique (synthèse) en quatre parties :
   A. Accroche : pizzicati pressés en la mineur, bloc de bois, tension qui monte.
@@ -19,7 +19,7 @@ PH = CAL["phrases"]; DUREE = CAL["duree"]; N = int(DUREE * SR)
 rng = np.random.default_rng(2026)
 P = lambda i: PH[i]["debut"]; F = lambda i: PH[i]["fin"]
 def Mo(i, k): m = PH[i]["mots"]; return m[min(k, len(m) - 1)]["debut"]
-T = dict(whip=P("l01") - .12, ch=P("l04") - .14, pr=P("l05") - .14, so=P("l06") - .2, dec=P("l07"), ba=Mo("l07", 5) + .35, si=P("l08") + .2, cn=P("l09") - .2,
+T = dict(whip=P("l01") - .12, ch=P("l04") - .14, pr=P("l05") - .14, so=P("l06") - .2, dec=P("l07"), ba=Mo("l07", 4) - .05, si=P("l08") + .2, cn=P("l09") - .2,
          vol=Mo("l09", 9) + .1, fil=P("l10") - .1, co=P("l11") - .2, fin=CAL["finTexte"] if "finTexte" in CAL else F("l12") + .4)
 T["ret"] = T["vol"] + .75
 
@@ -34,8 +34,8 @@ def ajoute(sig, debut, g=1., pan=0., mus=False):
 
 def X(d): return np.arange(int(d * SR)) / SR
 def env(n, a=.004, r=.15, c=4.):
-    x = np.arange(n) / SR
-    return np.minimum(1, x / max(a, 1e-4)) * np.exp(-c * np.maximum(0, x - a) / max(r, 1e-4))
+    x = np.arange(n) / SR; a = max(a, .002)
+    return np.minimum(1, x / a) * np.exp(-c * np.maximum(0, x - a) / max(r, 1e-4))
 def bruit(d): return rng.standard_normal(int(d * SR))
 def pb(x, fc):
     a = np.exp(-2 * np.pi * fc / SR); y = np.empty_like(x); s = 0.
@@ -138,9 +138,9 @@ def scratch(g=1.):
     return (osc(f, .35) * .4 + bp(bruit(.35), 1600, 1.5)) * env(len(x), .003, .25, 3) * g
 def battement_ailes(d=.8, g=1.):
     x = X(d); return bp(bruit(d), 700, 1.2) * (np.sin(2 * np.pi * 14 * x) > .3) * np.exp(-x * 2) * g * 1.5
-def tic(g=1.): return bp(bruit(.03), 3800, 4) * env(int(.03 * SR), .0005, .01) * 3 * g
+def tic(g=1.): return bp(bruit(.04), 2600, 3) * env(int(.04 * SR), .002, .012) * 2 * g
 def page(g=1.): return whoosh(.18, 2000, 5000, .5) * g
-def clic(g=1.): return bp(bruit(.03), 2500, 3) * env(int(.03 * SR), .0005, .008) * 4 * g
+def clic(g=1.): return bp(bruit(.04), 2200, 3) * env(int(.04 * SR), .002, .01) * 3 * g
 def tinte(g=1.):
     x = X(.6); return (np.sin(2 * np.pi * 2900 * x) + .5 * np.sin(2 * np.pi * 4200 * x)) * np.exp(-x * 9) * g
 
@@ -209,29 +209,47 @@ for i in range(6): ajoute(clic(.5), t9 + .05 + i * .07, pan=.3)   # dents qui cl
 ajoute(whoosh(.35, 200, 4000, 1.), T["whip"] - .2)
 tToi = Mo("l01", 1); tRing = tToi + .55
 ajoute(boing(260, .55, .5), tRing); ajoute(vibreur(.5, .3), tToi + .5); ajoute(battement_ailes(.9, .5), tToi + .6, pan=.5)
-tD, tOr = P("l02"), Mo("l02", 3)
-for k in range(4): ajoute(boing(300 + 60 * k, .3, .3), tD + k * (tOr - tD) / 4, pan=(-.3 if k % 2 else .3))
-ajoute(splat(.7), tOr - .05)
-tQ = P("l03")
-ajoute(whoosh(1.6, 300, 900, .35), tQ - .1)          # la rivière de questions
-for i in range(8): ajoute(pop(900 + 80 * i, .3), tQ + i * .2, pan=(i % 3 - 1) * .4)
-ajoute(whoosh(.4, 3500, 400, .6), T["ch"])
-u = T["ch"] + .1
-while u < T["pr"]: ajoute(tic(.4), u, pan=-.4); u += .09
-for i in range(9): ajoute(page(.6), T["ch"] + .9 + i * 1.4 / 9, pan=.2)
-u = T["ch"] + .9
-while u < T["pr"]: ajoute(toc(.35), u, pan=.4); u += .29
-ajoute(whoosh(.45, 400, 2500, .8), T["pr"])
-tRate = Mo("l05", 5); rac = tRate + .15; tSuiv = Mo("l05", 9) - .05
+# V4 · il décroche : main qui descend, prise du téléphone, levée, regard caméra (ploc d'enduit)
+tA, tC = Mo("l02", 1) - .2, Mo("l02", 2) + .02; tF = tC + .16; tMains, tEnd = Mo("l02", 5), Mo("l02", 7)
+ajoute(whoosh(.3, 250, 900, .25), tA)
+ajoute(somme(bloc(.35, 650), bp(bruit(.05), 900, 2) * env(int(.05 * SR), .002, .02) * .6), tC + .06)   # « tac » de la prise
+ajoute(whoosh(.4, 300, 1800, .35), tF - .05, pan=.3)
+ajoute(pop(380, .35), tMains + .8)                                                       # ploc de l'enduit
+ajoute(marimba(67, .25), tEnd - .05, mus=True); ajoute(marimba(60, .22), tEnd + .12, mus=True)   # temps mort comique
+# V4 · les quatre questions : une bulle par question, la voix au téléphone vient de voix-tel.wav
+for i in range(4):
+    q = f"q{i + 1}"
+    if q in PH: ajoute(pop(820 + 110 * i, .32), P(q) - .12, pan=(-.25 if i % 2 == 0 else .25))
+# V4 · raccord vers le chantier : souffle montant pendant la plongée dans l'écran, puis l'horloge
+ajoute(whoosh(.45, 300, 2600, .45), T["ch"] - .42)
+ajoute(glock(84, .25), T["ch"] + .02)
+u, k = T["ch"] + .5, 0
+while u < T["pr"] - .1: ajoute(bloc(.16, 1150 if k % 2 == 0 else 900), u, pan=-.3); u += .5; k += 1   # tic-tac doux
+for i in range(9): ajoute(page(.3), T["ch"] + .9 + i * 1.4 / 9, pan=.2)
+ajoute(whoosh(.45, 400, 2500, .6), T["pr"])
+# V4 · le client raté : sonnerie, pas de réponse, il appelle le suivant
+tRate = Mo("l05", 5); rac = tRate + .12; tSuiv = Mo("l05", 9) - .05
 u = T["pr"] + .3
 while u < tRate - .15: ajoute(osc(440, .5) * env(int(.5 * SR), .01, .45, .4) * .1, u); u += .9
-for k in range(3): ajoute(osc(480, .12) * env(int(.12 * SR), .005, .1, .5) * .13, rac - .1 + k * .16)
-ajoute(clic(1.), tSuiv); ajoute(whoosh(.9, 800, 3000, .5), tSuiv + .15, pan=.6); ajoute(trombone_triste(.3), tSuiv + .3)
+for k in range(3): ajoute(osc(480, .12) * env(int(.12 * SR), .005, .1, .5) * .12, tRate + k * .16)
+ajoute(whoosh(.35, 600, 2000, .25), rac)
+ajoute(bloc(.3, 1800), tSuiv + .04)                                                    # appui sur « Appeler »
+for k in range(2): ajoute(osc(425, .35) * env(int(.35 * SR), .01, .3, .5) * .09, tSuiv + .25 + k * .45)
 ajoute(pb(bruit(max(.5, T["dec"] - T["so"])), 250) * .06, T["so"])
 for i in range(4): ajoute(tinte(.25), T["so"] + i * .45, pan=.5)
-ajoute(impact(.9), T["ba"] - .2); ajoute(claque(.8), T["ba"] - .2)
-for i in range(12): ajoute(somme(grosse(.35), toc(.4)), T["ba"] + i * .08 + .28, pan=(i % 4 - 1.5) * .3)
-ajoute(boing(200, .5, .5), T["ba"] + .3)
+# V4 · le plan : tracé, téléphone coulé, briques lancées à la truelle, questions qui trouvent leur réponse
+ajoute(impact(.5), T["ba"] - .2); ajoute(claque(.5), T["ba"] - .2)
+ajoute(bp(bruit(.55), 3200, 1.2) * env(int(.55 * SR), .02, .4, 2) * .25, T["ba"], pan=-.2)   # crayon sur le calque
+ajoute(boing(200, .3, .4), T["ba"] + .35)
+tb = [Mo("l07", 6) - .12, Mo("l07", 8) - .05, Mo("l07", 11) - .1, F("l07") - .1]
+for i, x in enumerate(tb):
+    ajoute(whoosh(.3, 500, 1600, .3), x, pan=.4 - i * .1)
+    ajoute(somme(bloc(.4, 520 + 40 * i), grosse(.15)), x + .38)
+ajoute(pop(1300, .3), tb[3] + .55)
+tq = [P("l07b") + .05 + i * .3 for i in range(4)]
+for i, x in enumerate(tq):
+    ajoute(pop(1000 + 90 * i, .28), x + .45, pan=-.3)
+    ajoute(glock(84 + [0, 2, 4, 7][i], .22), x + .5, mus=True)
 ajoute(whoosh(.5, 300, 5000, .8), T["si"] - .05)
 for k in (4, 6, 10): ajoute(pop(1100 + k * 30, .55), Mo("l08", k) - .05, pan=-.3 if k != 6 else .3)
 ajoute(whoosh(.6, 1200, 2200, .3), Mo("l08", 6) + .3)
@@ -244,9 +262,13 @@ ajoute(clic(1.), tEnv); ajoute(carillon([79, 84, 88], .45), tEnv + .25)
 for i in range(6): ajoute(pop(1800 + 150 * i, .18), tEnv + .3 + i * .05, pan=(i - 3) * .2)
 ajoute(whoosh(.8, 400, 3000, .9), T["vol"] - .1)
 ajoute(carillon([88, 91], .5), T["ret"] + .05); ajoute(impact(.4), T["ret"] + .25); ajoute(claque(.6), T["ret"] + .25)
-for i in range(3): ajoute(whoosh(.5, 800, 2600, .3), T["fil"] + .4 + i * .65)
-for i in range(6): ajoute(pop(1200 + 60 * i, .2), T["fil"] + .3 + i * .35, pan=-.3)
-ajoute(carillon([84, 91], .35), Mo("l10", 7))
+# V4 · le planning : trois devis épinglés, il décroche, tampons « Rappelé », filé vers le collègue
+tcs = [Mo("l10", 1) - .1, Mo("l10", 4) - .1, Mo("l10", 8) - .15]; tAppel = Mo("l10", 9) - .05
+for i, x in enumerate(tcs):
+    ajoute(whoosh(.4, 500, 2000, .3), x, pan=-.4); ajoute(bloc(.3, 1900), x + .42); ajoute(glock(79 + 3 * i, .18), x + .45, mus=True)
+ajoute(somme(bloc(.3, 650), bp(bruit(.05), 900, 2) * env(int(.05 * SR), .002, .02) * .5), tAppel - .05)
+for i in range(3): ajoute(somme(grosse(.25), bloc(.25, 480)), tAppel + .15 + i * .18, pan=(i - 1) * .3)
+ajoute(whoosh(.4, 600, 3500, .55), T["co"] - .1)
 tc = Mo("l11", 4) - .2
 ajoute(whoosh(.3, 4000, 600, .5), tc); ajoute(boing(150, .7, .6), tc + .3); ajoute(impact(.4), tc + .3)
 ajoute(claque(1.3), Mo("l11", 7)); ajoute(impact(.4), Mo("l11", 7))
@@ -261,18 +283,24 @@ with wave.open(str(ICI / "voix-mix.wav")) as w:
     sr0 = w.getframerate(); v = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768
     if w.getnchannels() == 2: v = v.reshape(-1, 2).mean(1)
 v = np.pad(v, (0, max(0, N - len(v))))[:N]
-# voix déjà traitée par le kit (EQ, désesseur, compresseur, -16 LUFS) : pas de retraitement
+vt = np.zeros(N)
+if (ICI / "voix-tel.wav").exists():
+    with wave.open(str(ICI / "voix-tel.wav")) as w:
+        t2 = np.frombuffer(w.readframes(w.getnframes()), np.int16).astype(np.float32) / 32768
+        if w.getnchannels() == 2: t2 = t2.reshape(-1, 2).mean(1)
+    vt = np.pad(t2, (0, max(0, N - len(t2))))[:N] * .95
+# voix déjà traitée par calage.py (chaîne douce anti grésillements, -16 LUFS) : pas de retraitement
 blk = SR // 100
-e = np.array([np.abs(v[i:i + blk]).mean() for i in range(0, N, blk)])
+e = np.array([np.abs(v[i:i + blk] + vt[i:i + blk]).mean() for i in range(0, N, blk)])
 parle = (e > .015).astype(float); lis = np.zeros_like(parle); s = 0.
 for i, p in enumerate(parle):   # attaque 60 ms, relâche 350 ms
     s = min(1., s + p / 6) if p else s * np.exp(-1 / 35); lis[i] = s
 duck = np.repeat(1 - .9 * lis, blk)[:N]   # environ -20 dB sous la voix
 duckS = np.repeat(1 - .45 * lis, blk)[:N]  # bruitages un peu atténués sous la voix
-L = ML * .55 * duck + SL * .5 * duckS + v
-R = MR * .55 * duck + SR_ * .5 * duckS + v
+L = ML * .55 * duck + SL * .5 * duckS + v + vt * .92
+R = MR * .55 * duck + SR_ * .5 * duckS + v + vt * 1.0
 fade = np.minimum(1, (DUREE - np.arange(N) / SR) / .3); L *= fade; R *= fade
-c = max(np.abs(L).max(), np.abs(R).max()); L, R = L / c * .95, R / c * .95
+c = max(np.abs(L).max(), np.abs(R).max()); L, R = L / c * .89, R / c * .89
 with wave.open(str(ICI / "son.wav"), "wb") as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes((np.stack([L, R], 1) * 32767).astype(np.int16).tobytes())
 print("son.wav", round(DUREE, 2), "s")

@@ -3,6 +3,7 @@ let GROUPES = [];
 function construireSousTitres(script, cal) {
   GROUPES = [];
   for (const ph of script.phrases) {
+    if (ph.st === false) continue;
     const temps = cal.phrases[ph.id].mots;
     const jet = []; let cle = false;
     const bruts = []; for (const b of ph.sous_titre.split(/\s+/)) { if (/^[?!:;.,…]+\*?$/.test(b) && bruts.length) bruts[bruts.length - 1] += ' ' + b; else if (b) bruts.push(b); }

@@ -110,19 +110,94 @@ class Gaspard {
     const a = (L1 * L1 - L2 * L2 + D * D) / (2 * D), h = Math.sqrt(Math.max(0, L1 * L1 - a * a));
     return { x: A.x + dx / n * a - dy / n * h * sens, y: A.y + dy / n * a + dx / n * h * sens };
   }
-  // Main de cartoon à quatre doigts : formes 'ouverte', 'poing', 'pouce', 'tient', 'pointe', 'salut'
-  main(P, ang, forme, cote, objet) {
+  // Bras V4 : forme pleine effilée (épaule 50, coude 40, avant-bras 42, poignet 30), coude arrondi, contour unique.
+  // Renvoie { svg, W (poignet), ang (axe de la main) }.
+  bras(S, Mn, sens, c) {
+    const L1 = 88, L2 = 84, dx = Mn.x - S.x, dy = Mn.y - S.y, n = Math.hypot(dx, dy) || 1;
+    // étirement doux (cartoon) au lieu d'un verrouillage sec quand le bras est presque tendu
+    const k = Math.min(1.08, Math.max(1, n / ((L1 + L2) * .97)));
+    const l1 = L1 * k, l2 = L2 * k, porte = Math.min(n, l1 + l2 - 2);
+    const W = { x: S.x + dx / n * porte, y: S.y + dy / n * porte };
+    const E = this.articulation(S, W, l1, l2, sens);
+    // ligne médiane : segment épaule→coude, coin arrondi (Bézier quadratique), segment coude→poignet
+    const u1 = { x: (E.x - S.x) / l1, y: (E.y - S.y) / l1 }, u2 = { x: (W.x - E.x) / l2, y: (W.y - E.y) / l2 };
+    const r = 30, A1 = { x: E.x - u1.x * r, y: E.y - u1.y * r }, B1 = { x: E.x + u2.x * r, y: E.y + u2.y * r };
+    const pts = [], N = 22;
+    const lerp = (P, Q, t) => ({ x: P.x + (Q.x - P.x) * t, y: P.y + (Q.y - P.y) * t });
+    for (let i = 0; i <= N; i++) {
+      const t = i / N; let P;
+      const t1 = (l1 - r) / (l1 + l2), t2 = (l1 + r) / (l1 + l2);
+      if (t < t1) P = lerp(S, A1, t / t1);
+      else if (t < t2) { const v = (t - t1) / (t2 - t1); P = lerp(lerp(A1, E, v), lerp(E, B1, v), v); }
+      else P = lerp(B1, W, (t - t2) / (1 - t2));
+      // profil de largeur : épaule ronde, biceps, coude plus fin, avant-bras galbé, poignet fin
+      const w = t < .5 ? 50 - 10 * Math.pow(t / .5, 1.3) + 3 * Math.sin(t / .5 * Math.PI) : 40 + 4 * Math.sin((t - .5) / .5 * Math.PI) - 10 * Math.pow((t - .5) / .5, 2.2);
+      pts.push({ ...P, w: w / 2 });
+    }
+    const G = [], D = [];
+    for (let i = 0; i < pts.length; i++) {
+      const P = pts[i], Q = pts[Math.min(i + 1, pts.length - 1)], O = pts[Math.max(i - 1, 0)];
+      let tx = Q.x - O.x, ty = Q.y - O.y; const m = Math.hypot(tx, ty) || 1; tx /= m; ty /= m;
+      G.push({ x: P.x - ty * P.w, y: P.y + tx * P.w }); D.push({ x: P.x + ty * P.w, y: P.y - tx * P.w });
+    }
+    const f = q => `${q.x.toFixed(1)},${q.y.toFixed(1)}`;
+    const corps = `M${f(G[0])} L${G.slice(1).map(f).join(' L')} L${D.slice().reverse().map(f).join(' L')} Z`;
+    const ombre = `M${D.slice(4, -3).map(f).join(' L')}`;
+    const forme = (fill, stroke) => `<circle cx="${S.x.toFixed(1)}" cy="${S.y.toFixed(1)}" r="25" fill="${fill}" ${stroke}/><path d="${corps}" fill="${fill}" stroke-linejoin="round" ${stroke}/>`;
+    const svg = forme(c.trait, `stroke="${c.trait}" stroke-width="8"`) + forme(c.poil, '')
+      + `<path d="${ombre}" stroke="${c.poilOmbre}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".55"/>`;
+    const ang = Math.atan2(W.y - E.y, W.x - E.x) * 180 / Math.PI - 90;
+    return { svg, W, ang };
+  }
+  // Main V4 : paume ronde, quatre doigts en capsules et pouce opposable. ferme (0 ouverte … 1 refermée) est continu, ce qui
+  // permet d'animer la prise. Avec un objet tenu, les doigts passent DEVANT l'objet et s'enroulent sur son bord (pas de fusion).
+  // formes : 'ouverte', 'salut', 'poing', 'tient', 'pointe', 'pouce'
+  main(P, ang, forme, cote, objet, fermeP) {
     const c = G_COUL, s = cote === 'G' ? -1 : 1;
+    const ferme = fermeP ?? ({ poing: 1, tient: 1, pointe: 1, pouce: 1 }[forme] ?? (objet ? 1 : 0));
+    const e = ferme * ferme * (3 - 2 * ferme);
+    const L = (a, b) => a + (b - a) * e, LP = (A, B) => ({ x: L(A.x, B.x), y: L(A.y, B.y) });
+    const seg = (A, B) => `M${A.x.toFixed(1)},${A.y.toFixed(1)} L${B.x.toFixed(1)},${B.y.toFixed(1)}`;
+    // un groupe = contours d'abord, remplissages ensuite : les doigts se fondent en une seule silhouette de patte
+    const groupe = (elems, sep) => elems.map(q => q.contour).join('') + elems.map(q => q.fond).join('') + (sep || '');
+    const doigt = (A, B, w) => ({ contour: `<path d="${seg(A, B)}" stroke="${c.trait}" stroke-width="${w + 8}" stroke-linecap="round"/>`, fond: `<path d="${seg(A, B)}" stroke="${c.poil}" stroke-width="${w}" stroke-linecap="round"/>`, A, B, w });
+    const paume = { contour: `<ellipse rx="29" ry="27" fill="${c.trait}"/>`, fond: `<ellipse rx="25" ry="23" fill="${c.poil}"/>` };
+    const reflet = `<path d="M-12,-14 C-4,-19 8,-18 14,-12" stroke="${c.poilClair}" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>`;
     let h = `<g transform="translate(${P.x.toFixed(1)},${P.y.toFixed(1)}) rotate(${ang.toFixed(1)})">`;
-    if (objet === 'tel') h += `<g transform="translate(${-6 * s},30) rotate(${10 * s})"><rect x="-30" y="-58" width="60" height="116" rx="15" fill="#15181e"/><rect x="-24" y="-52" width="48" height="104" rx="10" fill="#3b5c8f"/><rect x="-24" y="-52" width="48" height="40" rx="10" fill="#6d8fc4" opacity=".6"/></g>`;
-    if (objet === 'tasse') h += `<g transform="translate(0,40)"><path d="M-34,-30 L34,-30 L30,40 C28,50 -28,50 -30,40 Z" fill="#fff" stroke="#3a2a22" stroke-width="6"/><path d="M34,-14 C60,-14 60,22 30,22" stroke="#3a2a22" stroke-width="6" fill="none"/><ellipse cx="0" cy="-28" rx="34" ry="8" fill="#6b3b20"/></g>`;
-    if (objet === 'truelle') h += `<g transform="translate(0,18)"><rect x="-8" y="0" width="16" height="44" rx="6" fill="#8a5432"/><path d="M-50,44 L50,44 L0,130 Z" fill="#cfd6de" stroke="#8a96a5" stroke-width="4" stroke-linejoin="round"/></g>`;
-    const doigts = forme === 'poing' ? '' : forme === 'pointe' ? `<rect x="-9" y="12" width="18" height="50" rx="9" fill="${c.poil}" stroke="${c.trait}" stroke-width="4"/>`
-      : [-18, -6, 6, 18].map((x, i) => `<ellipse cx="${x}" cy="${26 + (i === 0 || i === 3 ? -4 : 0)}" rx="10" ry="${forme === 'salut' ? 22 : 16}" fill="${c.poil}" stroke="${c.trait}" stroke-width="4"/>`).join('');
-    h += doigts + `<circle r="30" fill="${c.trait}"/><circle r="26" fill="${c.poil}"/>`;
-    if (forme === 'pouce') h += `<rect x="-9" y="-62" width="18" height="44" rx="9" fill="${c.poil}" stroke="${c.trait}" stroke-width="4" transform="rotate(${-10 * s})"/>`;
-    else if (forme !== 'poing') h += `<ellipse cx="${24 * s}" cy="-8" rx="11" ry="15" fill="${c.poil}" stroke="${c.trait}" stroke-width="4"/>`;
-    else h += `<path d="M-16,8 h32 M-14,-6 h28" stroke="${c.trait}" stroke-width="4" stroke-linecap="round"/>`;
+    let obj = '';
+    const o = this._o || { telK: 1, telEnduit: 0, enduit: 0 };
+    if (objet === 'tel') obj = `<g transform="translate(${-1 * s},${36 * o.telK}) scale(${o.telK})"><rect x="-26" y="-54" width="52" height="106" rx="13" fill="#101319" stroke="#05070a" stroke-width="3"/><rect x="-21" y="-48" width="42" height="94" rx="9" fill="#2f4f86"/><rect x="-21" y="-48" width="42" height="34" rx="9" fill="#7fa3d9" opacity=".55"/><path d="M-17,-44 L5,-44 L-17,0 Z" fill="#fff" opacity=".18"/>${o.telEnduit > 0 ? `<g opacity="${o.telEnduit.toFixed(2)}" fill="#fbf7ee" stroke="#d8cfbd" stroke-width="2"><path d="M-14,-6 c6,-14 22,-12 26,0 c6,4 4,16 -4,18 c-4,10 -18,8 -20,-2 c-8,-2 -8,-12 -2,-16 z"/><circle cx="12" cy="26" r="5"/><path d="M-6,30 v10" stroke-width="5" stroke="#fbf7ee"/></g>` : ""}</g>`;
+    if (objet === 'tasse') obj = `<g transform="translate(${12 * s},44) scale(1.05)"><path d="M-34,-30 L34,-30 L30,40 C28,50 -28,50 -30,40 Z" fill="#fff" stroke="#3a2a22" stroke-width="6"/><path d="M${34 * s},-14 C${60 * s},-14 ${60 * s},22 ${30 * s},22" stroke="#3a2a22" stroke-width="6" fill="none"/><ellipse cx="0" cy="-28" rx="34" ry="8" fill="#6b3b20"/></g>`;
+    if (objet === 'truelle') obj = `<g transform="translate(0,6)"><rect x="-8" y="-4" width="16" height="50" rx="6" fill="#8a5432" stroke="#5a3218" stroke-width="3"/><path d="M-50,48 L50,48 L0,134 Z" fill="#cfd6de" stroke="#8a96a5" stroke-width="4" stroke-linejoin="round"/></g>`;
+    // doigts : éventail ouvert ↔ configuration refermée propre à l'objet
+    const k = forme === 'salut' ? 1.22 : 1;
+    const ouv = [-30, -10, 10, 30].map((deg, i) => { const r = deg * k * Math.PI / 180, l = [20, 25, 24, 18][i] * (forme === 'salut' ? 1.12 : 1);
+      return [{ x: Math.sin(r) * 15, y: Math.cos(r) * 15 }, { x: Math.sin(r) * (15 + l), y: Math.cos(r) * (15 + l) }]; });
+    let fer;
+    if (objet === 'tel') fer = [0, 1, 2, 3].map(i => [{ x: -s * 26, y: 12 + i * 13 }, { x: -s * (13 + (i === 3 ? 3 : 0)), y: 15 + i * 13 }]);
+    else if (objet) fer = [0, 1, 2, 3].map(i => [{ x: -s * 16, y: 12 + i * 11 }, { x: s * 2, y: 14 + i * 11 }]);
+    else fer = [-14, -5, 4, 13].map(x => [{ x: x, y: 13 }, { x: x * .95, y: 22 }]);
+    // l'index est le doigt voisin du pouce (côté +s) : jamais le majeur
+    const iIndex = s > 0 ? 3 : 0;
+    const doigts = ouv.map((o, i) => (forme === 'pointe' && i === iIndex) ? doigt({ x: s * 13, y: 12 }, { x: s * 22, y: 62 }, 15) : doigt(LP(o[0], fer[i][0]), LP(o[1], fer[i][1]), i === 3 ? 12 : 14));
+    // pouce : ouvert en biais vers l'avant ; « pouce » : toujours dirigé vers le haut de l'écran
+    let pouce;
+    if (forme === 'pouce') { const ra = ang * Math.PI / 180, dx = -Math.sin(ra), dy = -Math.cos(ra), b0 = { x: s * 10 + dx * 10, y: dy * 10 };
+      pouce = doigt(b0, { x: b0.x + dx * 34, y: b0.y + dy * 34 }, 16); }
+    else {
+      const pO = [{ x: s * 18, y: 6 }, { x: s * 29, y: 22 }];
+      const pF = objet === 'tel' ? [{ x: s * 26, y: 12 }, { x: s * 16, y: 26 }] : objet ? [{ x: s * 14, y: 6 }, { x: 0, y: 14 }] : [{ x: s * 15, y: 4 }, { x: s * 3, y: 14 }];
+      pouce = forme === 'pointe' ? doigt({ x: s * 16, y: 2 }, { x: -s * 6, y: 18 }, 15) : doigt(LP(pO[0], pF[0]), LP(pO[1], pF[1]), 15);
+    }
+    // fines séparations entre doigts refermés
+    const sep = e > .5 ? doigts.slice(0, 3).map((d, i) => { const n = doigts[i + 1], m = (d.A.x + n.A.x) / 2, q = (d.A.y + n.A.y) / 2, m2 = (d.B.x + n.B.x) / 2, q2 = (d.B.y + n.B.y) / 2;
+      return `<path d="M${m.toFixed(1)},${q.toFixed(1)} L${(m + (m2 - m) * .8).toFixed(1)},${(q + (q2 - q) * .8).toFixed(1)}" stroke="${c.trait}" stroke-width="3" stroke-linecap="round" opacity="${((e - .5) * 2 * .8).toFixed(2)}"/>`; }).join('') : '';
+    // ordre : main ouverte → une seule silhouette (paume, doigts, pouce) ; refermée → paume, objet, puis doigts et pouce devant
+    if (e < .5 && forme !== 'pointe' && forme !== 'pouce') h += obj + groupe([...doigts, pouce, paume]) + reflet;
+    else if (objet) h += groupe([paume]) + reflet + obj + groupe([...doigts, pouce], sep);
+    else if (forme === 'pointe') h += groupe([paume, ...doigts], sep) + reflet + groupe([pouce]);
+    else h += groupe([paume, ...doigts, pouce], sep) + reflet;
+    if (o.enduit > 0) h += `<g fill="#fbf7ee" stroke="#d8cfbd" stroke-width="2" opacity="${o.enduit}"><path d="M-14,-10 c4,-8 16,-8 18,0 c6,2 4,12 -4,12 c-4,6 -14,2 -12,-4 c-6,-2 -6,-8 -2,-8 z"/><circle cx="${doigts[1].B.x.toFixed(1)}" cy="${doigts[1].B.y.toFixed(1)}" r="5"/><circle cx="${doigts[3].B.x.toFixed(1)}" cy="${doigts[3].B.y.toFixed(1)}" r="4"/></g>`;
     return h + `</g>`;
   }
 
@@ -171,14 +246,12 @@ class Gaspard {
     $(g('jambes')).innerHTML = j;
     // bras (tubes) : épaules sur les flancs du haricot
     let av = '', arr = '';
+    this._o = { telK: p.telK ?? 1, telEnduit: p.telEnduit || 0, enduit: p.enduit || 0 };
     for (const [cote, s] of [['G', -1], ['D', 1]]) {
       const S = { x: s * 150 + p.pench * 2.2, y: -250 };
       const Mn = p['main' + cote];
-      const E = this.articulation(S, Mn, 100, 96, p['coude' + cote] * s);
-      let b = this.tube(S, E, Mn, 46, c.poil, c.trait);
-      const pr = this.surTube(S, E, Mn, .88);
-      const ang = Math.atan2(Mn.y - pr.y, Mn.x - pr.x) * 180 / Math.PI - 90;
-      b += this.main(Mn, ang, p['forme' + cote], cote, p['objet' + cote]);
+      const B = this.bras(S, Mn, p['coude' + cote] * s, c);
+      let b = B.svg + this.main(B.W, B.ang + (p['rotMain' + cote] || 0), p['forme' + cote], cote, p['objet' + cote], p['ferme' + cote]);
       if (p['derriere' + cote]) arr += b; else av += b;
     }
     $(g('brasAv')).innerHTML = av; $(g('brasArr')).innerHTML = arr;
