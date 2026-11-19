@@ -1,6 +1,7 @@
 /* Intro et outro YouCraft pour les replays de webinaire (1920 × 1080). Rendu image par image : window.render(t). */
 (function () {
   const W = 1920, H = 1080, MODE = window.MODE;
+  const FR = window.LANG === 'fr', tr = (en, fr) => (FR ? fr : en);  // version française : window.LANG = 'fr'
   const L = window.YC_LOGO;
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
   const lerp = (a, b, t) => a + (b - a) * t;
@@ -61,7 +62,7 @@
     const q = (a, d = 0.35) => E.outCubic(clamp((p - a) / d));
     let g = '';
     if (kind === 'crm') {
-      [['Lead', 1.0, UM], ['Qualified', 0.74, UM], ['Proposal', 0.5, '#8FA2FF'], ['Won', 0.3, LIME]].forEach(([l, w, c], i) => {
+      [[tr('Lead', 'Prospect'), 1.0, UM], [tr('Qualified', 'Qualifié'), 0.74, UM], [tr('Proposal', 'Proposition'), 0.5, '#8FA2FF'], [tr('Won', 'Gagné'), 0.3, LIME]].forEach(([l, w, c], i) => {
         const y = 4 + i * 19, k = q(0.1 + i * 0.12);
         g += `<text x="0" y="${y + 11}" font-size="11" fill="${ST}0.55)" font-family="DM Sans">${l}</text><rect x="72" y="${y + 2}" width="${158 * w * k}" height="11" rx="5.5" fill="${c}" opacity="${i === 3 ? 1 : 0.85}"/>`;
       });
@@ -81,7 +82,7 @@
       X.forEach((x, i) => { const k = spring((p - 0.15 - i * 0.22) * 1.6, 220, 14), done = p > 0.35 + i * 0.22;
         g += `<g transform="translate(${x} 36) scale(${Math.max(0.001, k)})"><circle r="17" fill="${done ? (i === 2 ? LIME : UM) : '#1A1D2B'}" stroke="${ST}0.25)" stroke-width="1.5"/>` +
           (done ? `<path d="M-6 0 L-1.5 4.5 L6.5 -4" fill="none" stroke="${i === 2 ? '#0B0B0F' : '#fff'}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>` : '') + '</g>';
-        g += `<text x="${x}" y="70" text-anchor="middle" font-size="10.5" fill="${ST}0.55)" font-family="DM Sans">${['Request', 'Review', 'Approved'][i]}</text>`; });
+        g += `<text x="${x}" y="70" text-anchor="middle" font-size="10.5" fill="${ST}0.55)" font-family="DM Sans">${tr(['Request', 'Review', 'Approved'], ['Demande', 'Revue', 'Validé'])[i]}</text>`; });
     } else if (kind === 'kanban') {
       [0, 1, 2].forEach((c) => { const x = c * 78;
         g += `<rect x="${x}" y="0" width="70" height="74" rx="7" fill="${ST}0.04)"/><rect x="${x + 8}" y="7" width="${[26, 34, 22][c]}" height="5" rx="2.5" fill="${ST}0.35)"/>`;
@@ -90,7 +91,7 @@
           g += `<g opacity="${k}" transform="translate(0 ${(1 - k) * 10})"><rect x="${x + 6}" y="${18 + r * 18}" width="58" height="14" rx="4" fill="${c === 2 ? 'rgba(215,255,63,0.9)' : 'rgba(79,107,255,0.55)'}"/></g>`; });
       });
     } else if (kind === 'portal') {
-      [['Contract.pdf', 'Signed'], ['Report Q3.pdf', 'Shared'], ['Invoice 214.pdf', 'Paid']].forEach(([f, st], i) => { const k = E.outQuint(clamp((p - 0.1 - i * 0.14) / 0.4)), y = i * 25;
+      tr([['Contract.pdf', 'Signed'], ['Report Q3.pdf', 'Shared'], ['Invoice 214.pdf', 'Paid']], [['Contrat.pdf', 'Signé'], ['Rapport T3.pdf', 'Partagé'], ['Facture 214.pdf', 'Payée']]).forEach(([f, st], i) => { const k = E.outQuint(clamp((p - 0.1 - i * 0.14) / 0.4)), y = i * 25;
         g += `<g opacity="${k}" transform="translate(${(1 - k) * 18} 0)"><rect x="0" y="${y}" width="230" height="20" rx="6" fill="${ST}0.05)"/><rect x="7" y="${y + 4}" width="9" height="12" rx="2" fill="#8FA2FF"/>` +
           `<text x="24" y="${y + 14}" font-size="10.5" fill="${ST}0.8)" font-family="DM Sans">${f}</text><rect x="168" y="${y + 4}" width="54" height="12" rx="6" fill="${i === 0 ? 'rgba(215,255,63,0.18)' : 'rgba(79,107,255,0.25)'}"/>` +
           `<text x="195" y="${y + 13.2}" text-anchor="middle" font-size="9" font-weight="700" fill="${i === 0 ? LIME : '#AFC0FF'}" font-family="DM Sans">${st}</text></g>`; });
@@ -98,16 +99,16 @@
     return `<svg width="230" height="76" viewBox="0 0 230 76" overflow="visible">${g}</svg>`;
   }
   function makeCards(parent, top) {
-    const CARDS = [['users', 'CRM', 'crm'], ['layout-dashboard', 'Dashboards', 'dash'], ['list-checks', 'Workflows', 'flow'], ['folder-kanban', 'Project tracking', 'kanban'], ['globe', 'Client portals', 'portal']];
-    const row = $('div', { position: 'absolute', left: '0', width: W + 'px', top: top + 'px', display: 'flex', justifyContent: 'center', gap: '26px', perspective: '1400px' }, parent);
+    const CARDS = [['users', 'CRM', 'crm'], ['layout-dashboard', tr('Dashboards', 'Tableaux de bord'), 'dash'], ['list-checks', tr('Workflows', 'Validations'), 'flow'], ['folder-kanban', tr('Project tracking', 'Suivi de projet'), 'kanban'], ['globe', tr('Client portals', 'Portails clients'), 'portal']];
+    const row = $('div', { position: 'absolute', left: '0', width: W + 'px', top: top + 'px', display: 'flex', justifyContent: 'center', gap: tr('26px', '20px'), perspective: '1400px' }, parent);
     return CARDS.map(([ic, title, kind], i) => {
-      const c = $('div', { position: 'relative', width: '278px', height: '186px', boxSizing: 'border-box', padding: '20px 22px', borderRadius: '26px', overflow: 'hidden',
+      const c = $('div', { position: 'relative', width: tr('278px', '296px'), height: '186px', boxSizing: 'border-box', padding: '20px 22px', borderRadius: '26px', overflow: 'hidden',
         background: 'linear-gradient(160deg, rgba(255,255,255,0.11), rgba(255,255,255,0.025) 60%)', border: '1px solid rgba(255,255,255,0.13)',
         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.18), 0 30px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.2)', backdropFilter: 'blur(14px)', transformOrigin: '50% 100%' }, row);
       const ico = i === 4 ? 'linear-gradient(140deg,#E9FF7A,#C5F000)' : 'linear-gradient(140deg,#5D78FF,#1E3BFF)';
       $('div', { display: 'flex', alignItems: 'center', gap: '14px' }, c,
         `<span style="display:flex;width:46px;height:46px;border-radius:14px;background:${ico};align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.45),0 8px 18px ${i === 4 ? 'rgba(215,255,63,0.25)' : 'rgba(30,59,255,0.45)'}">${icon(ic, 24, i === 4 ? '#0B0B0F' : '#fff', 2.1)}</span>` +
-        `<span style="font:700 25px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;color:#F5F2EA;white-space:nowrap">${title}</span>`);
+        `<span style="font:700 ${tr(25, 23)}px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;color:#F5F2EA;white-space:nowrap">${title}</span>`);
       const v = $('div', { marginTop: '18px', height: '76px' }, c);
       const sheen = $('div', { position: 'absolute', top: '-40px', left: '0', width: '120px', height: '280px', background: 'linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,0.16), rgba(255,255,255,0))', transform: 'translateX(-200px) rotate(18deg)' }, c);
       return { c, v, kind, sheen };
@@ -185,10 +186,10 @@
     const lo = makeLogo(camera, 176);
     const LX = 960 - lo.w / 2, LY = 360 - lo.h / 2;
     lo.wrap.style.left = LX + 'px'; lo.wrap.style.top = LY + 'px';
-    const tag = words(camera, 'Build the apps your teams need.', { top: '588px', fontSize: '66px' });
-    const tag2 = words(camera, '*With* *zero* *code.*', { top: '664px', fontSize: '66px' });
+    const tag = words(camera, tr('Build the apps your teams need.', 'Créez les applications dont vos équipes ont besoin.'), { top: '588px', fontSize: tr('66px', '60px') });
+    const tag2 = words(camera, tr('*With* *zero* *code.*', '*Sans* *écrire* *une* *ligne* *de* *code.*'), { top: tr('664px', '660px'), fontSize: tr('66px', '60px') });
     const cards = makeCards(camera, 790);
-    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '480px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.55)' }, camera, 'by Leyton CognitX');
+    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '480px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.55)' }, camera, tr('by Leyton CognitX', 'par Leyton CognitX'));
     // Rideau de sortie : le bloc citron du logo envahit l'écran, puis l'écran passe au noir.
     const wipe = $('div', { position: 'absolute', left: '0', top: '0', width: '100px', height: '100px', background: '#D7FF3F', transformOrigin: '50% 50%' }, scene);
     const wipe2 = $('div', { position: 'absolute', inset: '0', background: '#0B0B0F' }, scene);
@@ -225,21 +226,23 @@
   /* ================================================================= OUTRO (10 s) */
   if (MODE === 'outro') {
     window.DURATION = 10.0;
-    const head = words(scene, 'Thank you for *watching.*', { top: '400px', fontSize: '110px' });
+    const head = words(scene, tr('Thank you for *watching.*', 'Merci pour votre *attention.*'), { top: '400px', fontSize: '110px' });
     const camera = $('div', { position: 'absolute', inset: '0', transformOrigin: '960px 420px' }, scene);
     const lo = makeLogo(camera, 150);
     const LX = 960 - lo.w / 2, LY = 300 - lo.h / 2;
     lo.wrap.style.left = LX + 'px'; lo.wrap.style.top = LY + 'px';
-    const sub = words(camera, 'Build the apps your teams need. *With* *zero* *code.*', { top: '470px', fontSize: '54px' });
+    const sub = words(camera, tr('Build the apps your teams need. *With* *zero* *code.*', 'Créez les applications dont vos équipes ont besoin.'), { top: tr('470px', '440px'), fontSize: tr('54px', '50px') });
+    const sub2 = FR ? words(camera, '*Sans* *écrire* *une* *ligne* *de* *code.*', { top: '506px', fontSize: '50px' }) : null;
     const cta = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '620px', display: 'flex', justifyContent: 'center' }, camera,
-      `<div style="position:relative;overflow:hidden;height:104px;padding:0 18px 0 48px;border-radius:52px;background:#D7FF3F;color:#0B0B0F;display:flex;align-items:center;gap:30px;font:800 42px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;box-shadow:0 24px 60px rgba(215,255,63,0.25)">Start building on youcraft.tech<span style="display:flex;width:72px;height:72px;border-radius:50%;background:#0B0B0F;align-items:center;justify-content:center">${icon('arrow-up-right', 36, '#D7FF3F', 2.6)}</span><i style="position:absolute;top:-20px;left:0;width:130px;height:150px;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,0.6),rgba(255,255,255,0))"></i></div>`);
+      `<div style="position:relative;overflow:hidden;height:104px;padding:0 18px 0 48px;border-radius:52px;background:#D7FF3F;color:#0B0B0F;display:flex;align-items:center;gap:30px;font:800 42px 'Plus Jakarta Sans',sans-serif;letter-spacing:-0.02em;box-shadow:0 24px 60px rgba(215,255,63,0.25)">${tr('Start building on youcraft.tech', 'Créez vos applications sur youcraft.tech')}<span style="display:flex;width:72px;height:72px;border-radius:50%;background:#0B0B0F;align-items:center;justify-content:center">${icon('arrow-up-right', 36, '#D7FF3F', 2.6)}</span><i style="position:absolute;top:-20px;left:0;width:130px;height:150px;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,0.6),rgba(255,255,255,0))"></i></div>`);
     const btn = cta.firstChild, sheen = btn.querySelector('i');
-    const ST = [['1,300+', 'users across the Leyton group'], ['500+', 'apps already deployed'], ['0', 'lines of code to write']];
+    const ST = tr([['1,300+', 'users across the Leyton group'], ['500+', 'apps already deployed'], ['0', 'lines of code to write']],
+      [['1 300+', 'utilisateurs dans le groupe Leyton'], ['500+', 'applications déjà déployées'], ['0', 'ligne de code à écrire']]);
     const stats = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '770px', display: 'flex', justifyContent: 'center', gap: '0' }, camera);
     stats.style.gap = '24px';
     const sts = ST.map(([n, l], i) => $('div', { padding: '22px 34px', minWidth: '300px', boxSizing: 'border-box', borderRadius: '24px', textAlign: 'left', background: 'linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 60%)', border: '1px solid rgba(255,255,255,0.13)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.16), 0 24px 50px rgba(0,0,0,0.4)' }, stats,
       `<div style="font:800 54px 'Plus Jakarta Sans',sans-serif;color:#D7FF3F;letter-spacing:-0.03em">${n}</div><div style="font:400 24px 'DM Sans',sans-serif;color:rgba(245,242,234,0.7);margin-top:4px">${l}</div>`));
-    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '985px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.5)' }, camera, 'by Leyton CognitX');
+    const by = $('div', { position: 'absolute', left: '0', width: W + 'px', top: '985px', textAlign: 'center', fontFamily: "'DM Sans', sans-serif", fontWeight: '700', fontSize: '22px', letterSpacing: '0.32em', textTransform: 'uppercase', color: 'rgba(245,242,234,0.5)' }, camera, tr('by Leyton CognitX', 'par Leyton CognitX'));
     const intro = $('div', { position: 'absolute', inset: '0', background: '#D7FF3F' }, scene);
     const black = $('div', { position: 'absolute', inset: '0', background: '#0B0B0F' }, scene);
 
@@ -258,6 +261,7 @@
       const settle = E.inOutCubic(P(t, 3.35, 0.8));
       S(lo.wrap, { s: lerp(1.2, 1, settle), x: lerp(lo.w * 0.36, 0, settle) });
       riseWords(sub, t, 3.9, 0.07);
+      if (sub2) riseWords(sub2, t, 4.3, 0.07);
       const cp = spring(t - 4.7, 190, 15);
       S(cta, { y: (1 - cp) * 70, o: clamp((t - 4.7) * 5) });
       S(btn, { s: 1 + 0.025 * Math.max(0, Math.sin((t - 5.6) * 3.2)) * (t > 5.6 ? 1 : 0) });
