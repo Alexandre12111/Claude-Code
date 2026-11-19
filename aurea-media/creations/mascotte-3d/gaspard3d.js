@@ -120,15 +120,19 @@ export function creerGaspard(THREE, options = {}) {
     const { p, n } = surface(s * DIM.yeux.x, DIM.yeux.y, -.06);
     const pivot = os_('oeil' + cote, bTorse, p.x, p.y - 1.6, p.z);
     orienter(pivot, n);
-    const blanc = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 28), mats.oeil); blanc.scale.set(DIM.yeux.rx, DIM.yeux.ry, .2); blanc.name = 'oeil' + cote + '_blanc'; avecContour(blanc, .7); pivot.add(blanc);
-    const pupille = new THREE.Group(); pupille.name = 'pupille' + cote; pivot.add(pupille);
-    const pu = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 20), mats.pupille); pu.scale.set(.19, .22, .06); pu.position.z = .17; pupille.add(pu);
-    const r1 = new THREE.Mesh(new THREE.SphereGeometry(.075, 16, 12), mats.reflet); r1.position.set(.07, .09, .23); pupille.add(r1);
-    const r2 = new THREE.Mesh(new THREE.SphereGeometry(.03, 12, 8), mats.reflet); r2.position.set(-.06, -.08, .23); pupille.add(r2);
-    // paupières : calottes de fourrure qui pivotent autour de l'axe horizontal de l'œil
-    const calotte = (haut) => { const g = new THREE.SphereGeometry(1.08, 40, 20, 0, Math.PI * 2, 0, Math.PI / 2); g.rotateX(haut ? Math.PI / 2 : -Math.PI / 2);   // pôle vers l'avant (haut) ou l'arrière (bas)
-      const m = new THREE.Mesh(g, mats.poil); m.scale.set(DIM.yeux.rx, DIM.yeux.ry, .22);
-      const piv = new THREE.Group(); piv.add(m); avecContour(m, .6); pivot.add(piv); return piv; };
+    // L'œil vit dans un repère étiré (rx, ry, rz) où tout est une sphère de rayon 1 : pupille et paupières glissent
+    // exactement sur sa surface sans jamais la traverser, quelle que soit leur rotation.
+    const etire = new THREE.Group(); etire.name = 'oeil' + cote + '_ellipsoide'; etire.scale.set(DIM.yeux.rx, DIM.yeux.ry, .2); pivot.add(etire);
+    const blanc = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 32), mats.oeil); blanc.name = 'oeil' + cote + '_blanc'; avecContour(blanc, .7); etire.add(blanc);
+    const cap = (r, ang, mat, nom) => { const g = new THREE.SphereGeometry(r, 40, 12, 0, Math.PI * 2, 0, ang); g.rotateX(Math.PI / 2); const m = new THREE.Mesh(g, mat); m.name = nom; return m; };
+    const pupille = new THREE.Group(); pupille.name = 'pupille' + cote; etire.add(pupille);
+    pupille.add(cap(1.004, .5, mats.pupille, 'pupille'));
+    const ref1 = new THREE.Group(); ref1.rotation.set(-.24, .2, 0); ref1.add(cap(1.008, .17, mats.reflet, 'reflet')); pupille.add(ref1);
+    const ref2 = new THREE.Group(); ref2.rotation.set(.2, -.16, 0); ref2.add(cap(1.008, .07, mats.reflet, 'reflet')); pupille.add(ref2);
+    // paupières : demi-sphères de fourrure (rayon 1,03) qui pivotent autour de l'axe horizontal de l'œil
+    const calotte = (haut) => { const g = new THREE.SphereGeometry(1.03, 48, 20, 0, Math.PI * 2, 0, Math.PI / 2); g.rotateX(haut ? Math.PI / 2 : -Math.PI / 2);
+      const m = new THREE.Mesh(g, mats.poil); m.material = mats.poil.clone(); m.material.side = THREE.DoubleSide;
+      const piv = new THREE.Group(); piv.add(m); etire.add(piv); return piv; };
     const paupH = calotte(true), paupB = calotte(false); paupH.name = 'paupiereHaut' + cote; paupB.name = 'paupiereBas' + cote;
     // sourcil : bande épaisse courbe
     const courbe = new THREE.QuadraticBezierCurve3(new THREE.Vector3(-.34, -.06, 0), new THREE.Vector3(0, .12, .05), new THREE.Vector3(.34, -.04, 0));
@@ -145,8 +149,9 @@ export function creerGaspard(THREE, options = {}) {
   const zMus = (x, y) => { const q = 1 - (x / DIM.museau.rx) ** 2 - ((y - DIM.museau.y) / DIM.museau.ry) ** 2; return Math.max(q > 0 ? museauZ - .12 + .5 * Math.sqrt(q) : -9, surface(x, y).p.z); };
   const nez = maillage(new THREE.SphereGeometry(1, 32, 24), mats.nez, 'nez'); nez.scale.set(.36, .23, .2); surTorse(nez, 0, 3.08, zMus(0, 3.08) + .02);
   const refletNez = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 10), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .45 })); refletNez.scale.set(.11, .06, .04); surTorse(refletNez, -.12, 3.17, zMus(-.12, 3.17) + .19);
-  const dents = new THREE.Group(); dents.name = 'dents'; surTorse(dents, 0, 2.46, zMus(0, 2.6) - .02);
-  for (const x of [-.155, .155]) { const d = maillage(new THREE.CapsuleGeometry(.12, .3, 6, 16), new THREE.MeshBasicMaterial({ color: C.dents }), 'dent'); d.scale.set(1.15, 1, .45); d.position.set(x, 0, 0); dents.add(d); }
+  // dents : groupe accroché par le haut (y 2,73) ; poserVisage les cale sur le bord haut de la bouche choisie
+  const dents = new THREE.Group(); dents.name = 'dents'; surTorse(dents, 0, 2.73, zMus(0, 2.6) - .02);
+  for (const x of [-.155, .155]) { const d = maillage(new THREE.CapsuleGeometry(.12, .3, 6, 16), new THREE.MeshBasicMaterial({ color: C.dents }), 'dent'); d.scale.set(1.15, 1, .45); d.position.set(x, -.27, 0); dents.add(d); }
   // bouches : formes plaquées sur le museau, une seule visible à la fois (mêmes variantes que la 2D)
   const bouches = new THREE.Group(); bouches.name = 'bouches'; bTorse.add(bouches);
   const plaque = (shape, mat, dz = .035) => { const g = new THREE.ShapeGeometry(shape, 24); const pos = g.attributes.position;
@@ -311,7 +316,7 @@ export function creerGaspard(THREE, options = {}) {
   const v3 = (a) => new THREE.Vector3(...a);
   // résout l'IK à deux segments dans le repère du parent de l'épaule ; cible en coordonnées monde du personnage
   // IK à deux segments : le coude est placé dans le plan (épaule, cible, pôle), puis chaque os oriente son -y vers l'articulation suivante
-  function ik2(o1, o2, o3, l1, l2, cible, pole, etirement = 1.06) {
+  function ik2(o1, o2, o3, l1, l2, cible, pole, etirement = 1.06, collision = null) {
     racine.updateMatrixWorld(true);
     const inv = new THREE.Matrix4().copy(o1.parent.matrixWorld).invert();
     const T = v3(cible).applyMatrix4(racine.matrixWorld).applyMatrix4(inv);
@@ -320,7 +325,19 @@ export function creerGaspard(THREE, options = {}) {
     const k = Math.min(etirement, Math.max(1, n / ((l1 + l2) * .985))), L1 = l1 * k, L2 = l2 * k;
     o2.position.y = -L1; if (o3) o3.position.y = -L2;
     const D = Math.min(n, L1 + L2 - 1e-4), a = (L1 * L1 - L2 * L2 + D * D) / (2 * D), h = Math.sqrt(Math.max(0, L1 * L1 - a * a));
-    const perp = P.clone().addScaledVector(dir, -P.dot(dir)); if (perp.lengthSq() < 1e-8) perp.set(0, 0, 1); perp.normalize();
+    let perp = P.clone().addScaledVector(dir, -P.dot(dir)); if (perp.lengthSq() < 1e-8) perp.set(0, 0, 1); perp.normalize();
+    // collision : si le coude ou les segments entrent dans le corps, on fait tourner le plan du coude autour de l'axe
+    // épaule → main jusqu'à trouver l'orientation libre la plus proche de celle demandée
+    if (collision) {
+      let meilleur = null;
+      for (const ang of [0, .26, -.26, .52, -.52, .79, -.79, 1.05, -1.05, 1.31, -1.31, 1.57, -1.57, 1.83, -1.83, 2.1, -2.1, 2.36, -2.36, 2.62, -2.62, 2.88, -2.88, Math.PI]) {
+        const pr = perp.clone().applyAxisAngle(dir, ang), E2 = S.clone().addScaledVector(dir, a).addScaledVector(pr, h);
+        const pen = collision(S, E2, S.clone().addScaledVector(dir, D));
+        if (!meilleur || pen < meilleur.pen - 1e-4) meilleur = { pen, pr };
+        if (pen <= 1e-4) break;
+      }
+      perp = meilleur.pr;
+    }
     const E = S.clone().addScaledVector(dir, a).addScaledVector(perp, h);
     const Wp = S.clone().addScaledVector(dir, D);
     o1.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), E.clone().sub(S).normalize());
@@ -331,11 +348,43 @@ export function creerGaspard(THREE, options = {}) {
     o1.quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(yAxe, ang));
     const dLoc = Wp.clone().sub(E).normalize().applyQuaternion(o1.quaternion.clone().invert());
     o2.quaternion.setFromUnitVectors(new THREE.Vector3(0, -1, 0), dLoc);
+    return collision ? collision(S, E, Wp) : 0;
   }
+  // volume du corps dans le repère du torse (le torse est à y 1,6) : distance signée approchée à la surface du haricot
+  const RBRAS = .16, RMAIN = .26;   // marges : rayon visible du bras (contact toléré contre le flanc) et de la main
+  const horsCorps = (P, marge) => { const y = P.y + 1.6, r = rayon(Math.min(H - .01, Math.max(.01, y))); if (r < .05) return 1;
+    const q = Math.hypot(P.x / r, P.z / (PZ * r)); return (q - 1) * r - marge; };   // > 0 : dehors
+  // repousse un point (repère du torse) hors du corps, le long de la normale horizontale de l'ellipse
+  const repousser = (P, marge) => { const d = horsCorps(P, marge); if (d >= 0) return P; const y = P.y + 1.6, r = rayon(Math.min(H - .01, Math.max(.01, y)));
+    let nx = P.x / r, nz = P.z / (PZ * r); const n = Math.hypot(nx, nz) || 1; if (n < 1e-3) { nx = 1; nz = 0; }
+    const k = (r + marge + .02) / r; return new THREE.Vector3(nx / n * r * k, P.y, nz / n * PZ * r * k); };
   function ikBras(cote, cible, coude = 1) {
-    const s = cote === 'D' ? 1 : -1;
+    const s = cote === 'D' ? 1 : -1, ep = os['epaule' + cote];
     const pole = coude >= 0 ? new THREE.Vector3(s, -.35, -.35) : new THREE.Vector3(s * .35, -1, -.25);
-    ik2(os['epaule' + cote], os['coude' + cote], os['poignet' + cote], DIM.bras.haut, DIM.bras.avant, cible, pole);
+    // la main ne peut pas être à l'intérieur du corps : la cible est repoussée à la surface (repère du torse)
+    racine.updateMatrixWorld(true);
+    const invT = new THREE.Matrix4().copy(bTorse.matrixWorld).invert();
+    let Tt = v3(cible).applyMatrix4(racine.matrixWorld).applyMatrix4(invT);
+    // la main ne traverse pas le corps : elle ne dépasse pas le milieu du ventre vers l'autre côté, et passe devant lui
+    Tt.x = s > 0 ? Math.max(Tt.x, -.45) : Math.min(Tt.x, .45);
+    { const r = rayon(Math.min(H - .01, Math.max(.01, Tt.y + 1.6))), av = PZ * Math.sqrt(Math.max(0, r * r - Math.min(Tt.x * Tt.x, r * r * .98)));
+      if (Math.abs(Tt.x) < r + RMAIN && Tt.z < av + RMAIN && Tt.y + 1.6 < H - .3) Tt.z = av + RMAIN + .06; }
+    Tt = repousser(Tt, RMAIN);
+    const enPerso = v => v.clone().applyMatrix4(bTorse.matrixWorld).applyMatrix4(new THREE.Matrix4().copy(racine.matrixWorld).invert()).toArray();
+    // pénétration d'un bras (épaule S, coude E, poignet W) : échantillons le long des deux segments, hors racine de l'épaule
+    const col = (S, E, Wp) => { let pen = 0;
+      for (let i = 4; i <= 6; i++) { const P = S.clone().lerp(E, i / 6); pen += Math.max(0, -horsCorps(P, RBRAS)); }   // la racine de l épaule est ancrée dans le flanc
+      for (let i = 1; i <= 6; i++) { const P = E.clone().lerp(Wp, i / 6); pen += Math.max(0, -horsCorps(P, RBRAS)); }
+      return pen; };
+    // si aucun plan de coude n'est libre, la cible avance pas à pas vers l'avant et l'extérieur jusqu'à libérer le bras
+    let pen = 0;
+    for (let essai = 0; essai < 12; essai++) {
+      pen = ik2(ep, os['coude' + cote], os['poignet' + cote], DIM.bras.haut, DIM.bras.avant, enPerso(Tt), pole, 1.06, col);
+      if (pen <= .01) break;
+      // glisse la cible vers un point sûr sur le côté, à la même hauteur (au plus haut au niveau du casque)
+      const sur = new THREE.Vector3(s * 2.9, Math.max(-.6, Math.min(Tt.y, 1.4)), .6);   // bras écarté du flanc, à portée
+      Tt.lerp(sur, .25); Tt = repousser(Tt, RMAIN);
+    }
   }
   function ikJambe(cote, cible) {
     const ha = os['hanche' + cote], ge = os['genou' + cote], ch = os['cheville' + cote];
@@ -358,23 +407,52 @@ export function creerGaspard(THREE, options = {}) {
     M.pouceHaut = forme === 'pouce';
     if (M.pouceHaut) { M.pouce[1].rotation.set(0, 0, 0); M.pouce[2].rotation.set(0, 0, 0); }
     for (const [k, o] of Object.entries(M.objets)) o.visible = m.objet === k;
-    if (m.rotation) M.main.rotation.set(...m.rotation);
+    M.reglage = { forme, objet: m.objet, flexion: m.flexion ?? 0, inclinaison: m.inclinaison ?? 0, torsion: m.torsion ?? 0, doigtsVers: m.doigtsVers, paumeVers: m.paumeVers };
+  }
+  // Orientation naturelle de la main pour chaque forme (repère du personnage, main droite ; miroir en x pour la gauche) :
+  // [direction des doigts, direction de la paume]
+  const ORIENT = {
+    ouverte: [[0, -1, .2], [-1, 0, .25]], salut: [[.12, 1, .05], [0, .05, 1]], poing: [[0, -1, .35], [-1, 0, 0]], pointe: [[.05, 1, .15], [-.25, 0, 1]],
+    pouce: [[-.15, 0, 1], [-1, 0, -.1]], tient: [[0, -1, .4], [-1, 0, 0]], tel: [[0, 1, -.1], [-1, 0, .05]], tasse: [[-.25, 0, 1], [-1, 0, -.15]], truelle: [[0, -.4, 1], [-1, 0, 0]],
+  };
+  // Le poignet : oriente l'os « main » vers l'orientation voulue, puis applique flexion, inclinaison et torsion,
+  // en limitant l'angle avec l'avant-bras (flexion 80°, inclinaison 35°) pour qu'il ne se casse jamais.
+  function poserPoignet(cote) {
+    const M = mains[cote], s = M.s, R = M.reglage || { forme: 'ouverte' };
+    const o = ORIENT[R.objet] || ORIENT[R.forme] || ORIENT.ouverte;
+    const dv = v3(R.doigtsVers || [o[0][0] * s, o[0][1], o[0][2]]).normalize(), pv = v3(R.paumeVers || [o[1][0] * s, o[1][1], o[1][2]]).normalize();
+    racine.updateMatrixWorld(true);
+    const qPar = M.main.parent.getWorldQuaternion(new THREE.Quaternion()), qRac = racine.getWorldQuaternion(new THREE.Quaternion());
+    const versLocal = v => v.clone().applyQuaternion(qRac).applyQuaternion(qPar.clone().invert());
+    let doigts = versLocal(dv), paume = versLocal(pv);
+    // limite d'angle entre les doigts et l'avant-bras (axe -y du parent)
+    const avant = new THREE.Vector3(0, -1, 0), ang = doigts.angleTo(avant), MAX = 1.4;
+    if (ang > MAX) { const axe = new THREE.Vector3().crossVectors(avant, doigts).normalize(); if (axe.lengthSq() > 1e-6) doigts = avant.clone().applyAxisAngle(axe, MAX); }
+    // base orthonormée : -y = doigts, +z = paume (orthogonalisée)
+    const yL = doigts.clone().negate().normalize(), zL = paume.clone().addScaledVector(yL, -paume.dot(yL));
+    if (zL.lengthSq() < 1e-6) zL.set(0, 0, 1); zL.normalize(); const xL = new THREE.Vector3().crossVectors(yL, zL).normalize();
+    M.main.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(xL, yL, zL));
+    // réglages fins : flexion (paume vers l'avant-bras), inclinaison (côté pouce / auriculaire), torsion (autour des doigts)
+    const fl = Math.max(-1.2, Math.min(1.2, R.flexion)), inc = Math.max(-.6, Math.min(.6, R.inclinaison)), tor = Math.max(-1.6, Math.min(1.6, R.torsion));
+    M.main.quaternion.multiply(new THREE.Quaternion().setFromEuler(new THREE.Euler(fl, tor, inc * s, 'YXZ')));
   }
   function poserVisage(v = {}) {
     for (const cote of ['G', 'D']) {
       const Y = yeux[cote], gx = v.regardX ?? 0, gy = v.regardY ?? 0, taille = v.oeil ?? 1;
-      Y.pupille.position.set(gx * .16, gy * .18, 0); Y.pivot.scale.setScalar(taille);
+      Y.pupille.rotation.set(-gy * .42, gx * .42, 0); Y.pivot.scale.setScalar(taille);
       const ferme = Math.max(v.paupieres ?? .08, v.cligne ?? 0);
       // calotte haute : derrière l'œil (ouvert) → devant (fermé) ; calotte basse : remonte un peu au clignement complet
-      Y.pupille.visible = ferme < .85;
       Y.paupH.rotation.x = -Math.PI * (1 - Math.min(1, ferme)) * .98; Y.paupB.rotation.x = -Math.max(0, (v.cligne ?? 0) - .5) * Math.PI * .5 - .05;
       const sc = cote === 'D' ? -1 : 1;
       Y.sourcil.position.y = Y.sy + (v.sourcils ?? 0) * .2 + (taille - 1) * .4;
       Y.sourcil.children[0].rotation.z = (v.froncer ?? 0) * .24 * sc;
     }
     for (const [k, g] of Object.entries(variantes)) g.visible = (v.bouche ?? 'sourire') === k;
-    dents.scale.y = v.dents ?? 1;
-    const dy = { ouvert: .02, rire: .04, cri: .06, baille: .06 }[v.bouche] ?? 0; dents.position.y = 2.46 - 1.6 - dy;
+    // bord haut de l'ouverture (y), longueur (sy) et largeur (sx) des dents pour chaque bouche : la langue apparaît dessous
+    const D = { sourire: [2.73, 1, 1], moue: [2.73, .82, 1], plat: [2.73, .86, 1], ouvert: [2.74, .72, 1], rire: [2.75, .66, 1.04],
+      o: [2.7, .5, .78], cri: [2.75, .58, 1], grimace: [2.75, .5, 1.08], baille: [2.79, .56, .9] }[v.bouche ?? 'sourire'] || [2.73, 1, 1];
+    dents.position.y = D[0] - 1.6; dents.scale.set(D[2], D[1] * (v.dents ?? 1), 1);
+    dents.position.z = zMus(0, D[0] - .2) - .03;
   }
   // pose complète. Cibles des mains et des pieds en coordonnées du personnage (unités).
   const REPOS = { mainG: [-2.05, 1.2, .25], mainD: [2.05, 1.2, .25] };
@@ -386,7 +464,7 @@ export function creerGaspard(THREE, options = {}) {
     ikBras('G', p.brasG?.main || REPOS.mainG, p.brasG?.coude ?? 1);
     ikBras('D', p.brasD?.main || REPOS.mainD, p.brasD?.coude ?? 1);
     ikJambe('G', p.piedG || [-.8, .02, 0]); ikJambe('D', p.piedD || [.8, .02, 0]);
-    poserMain('G', p.mainG); poserMain('D', p.mainD);
+    poserMain('G', p.mainG); poserMain('D', p.mainD); poserPoignet('G'); poserPoignet('D');
     if (os.telCeinture) os.telCeinture.visible = p.telCeinture ?? !(p.mainG?.objet === 'tel' || p.mainD?.objet === 'tel');
     poserVisage(p.visage);
     racine.updateMatrixWorld(true);
@@ -410,7 +488,7 @@ export function creerGaspard(THREE, options = {}) {
     racine.updateMatrixWorld(true);
   }
   poser({});
-  return { racine, os, mats, mains, yeux, variantes, poser, poserMain, poserVisage, ikBras, rayon, surface, DIM };
+  return { racine, os, mats, mains, yeux, variantes, poser, poserMain, poserVisage, poserPoignet, ikBras, rayon, surface, DIM };
 }
 
 // Poses de référence (reprennent la planche 2D)
@@ -420,6 +498,6 @@ export const POSES = {
   epuise: { visage: { bouche: 'baille', paupieres: .62, sourcils: -.4, froncer: .6 }, penche: -.05, pencheAvant: .08, brasG: { main: [-2.0, 1.05, .3] }, brasD: { main: [2.0, 1.05, .3] } },
   declic: { visage: { bouche: 'o', oeil: 1.2, paupieres: 0, sourcils: 1.3 }, brasD: { main: [2.0, 4.6, .5] }, mainD: { forme: 'pointe' }, casque: .12 },
   joie: { visage: { bouche: 'rire', paupieres: 0, sourcils: 1 }, brasG: { main: [-2.2, 5.0, .4], coude: -1 }, brasD: { main: [2.2, 5.0, .4], coude: -1 }, mainG: { forme: 'poing' }, mainD: { forme: 'poing' }, etire: 1.04 },
-  telephone: { visage: { bouche: 'ouvert', sourcils: .6, froncer: .8, regardX: .6, regardY: .2 }, brasD: { main: [1.55, 3.95, .9] }, mainD: { forme: 'tient', objet: 'tel', rotation: [0, 0, 0] } },
+  telephone: { visage: { bouche: 'ouvert', sourcils: .6, froncer: .8, regardX: .6, regardY: .2 }, brasD: { main: [1.55, 3.95, .9] }, mainD: { forme: 'tient', objet: 'tel' } },
   pouce: { visage: { bouche: 'sourire' }, brasD: { main: [2.4, 3.2, .7] }, mainD: { forme: 'pouce' }, brasG: { main: [-1.9, 1.5, .8] }, mainG: { forme: 'tient', objet: 'tasse' } },
 };

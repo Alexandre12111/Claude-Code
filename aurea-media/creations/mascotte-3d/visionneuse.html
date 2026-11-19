@@ -40,12 +40,18 @@ input[type=range]{width:100%}
     <label>Forme<select id="formeD"></select></label>
     <label>Fermeture<input id="fermD" type="range" min="0" max="1" step=".01" value="0"></label>
     <label>Objet<select id="objetD"><option value="">aucun</option><option>tel</option><option>tasse</option><option>truelle</option></select></label>
+    <label>Poignet flexion<input id="flD" type="range" min="-1.2" max="1.2" step=".01" value="0"></label>
+    <label>Poignet inclinaison<input id="inD" type="range" min="-.6" max=".6" step=".01" value="0"></label>
+    <label>Poignet torsion<input id="toD" type="range" min="-1.6" max="1.6" step=".01" value="0"></label>
     <label>Main X<input id="mDx" type="range" min="0" max="3" step=".01" value="2.05"></label>
     <label>Main Y<input id="mDy" type="range" min=".4" max="5.4" step=".01" value="1.2"></label>
     <label>Main Z<input id="mDz" type="range" min="-1" max="2" step=".01" value=".25"></label>
     <h2>Main gauche (écran)</h2>
     <label>Forme<select id="formeG"></select></label>
     <label>Fermeture<input id="fermG" type="range" min="0" max="1" step=".01" value="0"></label>
+    <label>Poignet flexion<input id="flG" type="range" min="-1.2" max="1.2" step=".01" value="0"></label>
+    <label>Poignet inclinaison<input id="inG" type="range" min="-.6" max=".6" step=".01" value="0"></label>
+    <label>Poignet torsion<input id="toG" type="range" min="-1.6" max="1.6" step=".01" value="0"></label>
     <label>Main X<input id="mGx" type="range" min="-3" max="0" step=".01" value="-2.05"></label>
     <label>Main Y<input id="mGy" type="range" min=".4" max="5.4" step=".01" value="1.2"></label>
     <label>Main Z<input id="mGz" type="range" min="-1" max="2" step=".01" value=".25"></label>
@@ -86,8 +92,8 @@ function lire() {
   return Object.assign({}, base, {
     visage: { bouche: $('bouche').value, paupieres: n('paupieres'), sourcils: n('sourcils'), froncer: n('froncer'), regardX: n('regardX'), regardY: n('regardY'), oeil: n('oeil') },
     brasD: { main: [n('mDx'), n('mDy'), n('mDz')], coude: base.brasD?.coude ?? 1 }, brasG: { main: [n('mGx'), n('mGy'), n('mGz')], coude: base.brasG?.coude ?? 1 },
-    mainD: { forme: $('formeD').value, fermeture: n('fermD'), objet: $('objetD').value || undefined, rotation: base.mainD?.rotation },
-    mainG: { forme: $('formeG').value, fermeture: n('fermG'), objet: base.mainG?.objet },
+    mainD: { forme: $('formeD').value, fermeture: n('fermD'), objet: $('objetD').value || undefined, flexion: n('flD'), inclinaison: n('inD'), torsion: n('toD') },
+    mainG: { forme: $('formeG').value, fermeture: n('fermG'), objet: base.mainG?.objet, flexion: n('flG'), inclinaison: n('inG'), torsion: n('toG') },
     penche: n('penche'), queue: n('queue'), casque: n('casque'),
   });
 }
@@ -101,6 +107,7 @@ function ecrire(p) {
   $('formeD').value = fD; $('formeG').value = fG; $('objetD').value = p.mainD?.objet || '';
   const fer = f => ({ poing: 1, tient: .85, pointe: 1, pouce: 1 }[f] ?? 0);
   $('fermD').value = p.mainD?.fermeture ?? fer(fD); $('fermG').value = p.mainG?.fermeture ?? fer(fG);
+  for (const c of ['D', 'G']) { const mm = p['main' + c] || {}; $('fl' + c).value = mm.flexion ?? 0; $('in' + c).value = mm.inclinaison ?? 0; $('to' + c).value = mm.torsion ?? 0; }
   $('penche').value = p.penche ?? 0; $('queue').value = p.queue ?? 0; $('casque').value = p.casque ?? 0;
   g.poser(lire());
 }

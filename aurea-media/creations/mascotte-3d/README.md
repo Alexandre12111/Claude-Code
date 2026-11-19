@@ -77,12 +77,40 @@ g.poser(POSES.declic);                               // poses de référence : c
 | `position`, `rotationY` | placement du personnage |
 | `penche`, `pencheAvant`, `etire` | inclinaison latérale ou avant du haut du corps, étirement vertical (squash and stretch) |
 | `brasG` / `brasD` | `main: [x, y, z]` cible du poignet, `coude: 1 \| -1` |
-| `mainG` / `mainD` | `forme`, `fermeture` (0 à 1), `doigts: [f1..f4]`, `pouceFermeture`, `objet` (`tel`, `tasse`, `truelle`), `rotation` |
+| `mainG` / `mainD` | `forme`, `fermeture` (0 à 1), `doigts: [f1..f4]`, `pouceFermeture`, `objet` (`tel`, `tasse`, `truelle`) |
+| poignet (dans `mainX`) | `flexion` (±1,2 rad), `inclinaison` (±0,6), `torsion` (±1,6), ou une orientation imposée : `doigtsVers: [x, y, z]`, `paumeVers: [x, y, z]` |
 | `piedG` / `piedD` | cible de la cheville |
 | `queue`, `queueLeve`, `queueCourbe` | orientation et courbure de la queue |
 | `casque` | décalage vertical du casque (follow-through) |
 | `telCeinture` | téléphone visible dans la poche, masqué automatiquement quand il est en main |
 | `visage` | `bouche` (sourire, ouvert, rire, o, cri, moue, plat, grimace, baille), `paupieres`, `cligne`, `sourcils`, `froncer`, `regardX`, `regardY`, `oeil`, `dents` |
+
+**Yeux :** l'œil, la pupille et les paupières vivent dans un même repère étiré où tout est une sphère. La paupière glisse donc exactement sur l'œil, sans jamais y entrer.
+
+**Dents :** elles sont accrochées au bord haut de chaque bouche, avec leur longueur propre. Quand la bouche s'ouvre, elles remontent avec la lèvre et la langue apparaît dessous.
+
+## Poignet
+
+L'os `mainX` est une vraie articulation. Chaque forme a son orientation naturelle :
+- **salut :** paume vers l'avant, doigts en l'air ;
+- **téléphone :** contre la joue, vertical ;
+- **tasse :** tenue de côté ;
+- **pouce levé :** poing de côté, pouce vers le haut.
+
+Les réglages fins (flexion, inclinaison, torsion) s'ajoutent par-dessus. L'angle entre les doigts et l'avant-bras est limité à 80° pour que le poignet ne se casse jamais.
+
+## Le bras ne traverse jamais le corps
+
+Trois mécanismes s'enchaînent :
+1. **Cible repoussée :** elle sort du volume du corps et ne dépasse pas le milieu du ventre vers l'autre côté. Elle passe devant le ventre plutôt que derrière.
+2. **Recherche du coude :** si le coude ou les segments entrent dans le corps, le plan du coude tourne autour de l'axe épaule–main jusqu'à l'orientation libre la plus proche.
+3. **Repli :** si aucune orientation n'est libre, la cible glisse progressivement vers un point sûr sur le côté.
+
+La racine de l'épaule reste ancrée dans le flanc, comme sur le dessin 2D.
+
+Contrôle : 800 positions de main aléatoires, puis 500 avec le corps penché au hasard, donnent 0 bras à plus de 3 cm dans le corps.
+
+**Conséquence :** une main visée tout droit au-dessus de la tête est ramenée de côté, bras en V, car un bras vertical traverserait la tête.
 
 ## Règles automatiques (reprises de la 2D)
 
