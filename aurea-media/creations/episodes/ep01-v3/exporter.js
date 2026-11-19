@@ -27,10 +27,10 @@ const types = { '.html': 'text/html', '.js': 'application/javascript', '.json': 
   }
   await b.close();
   const run = c => execSync(`ffmpeg -y -loglevel error ${c}`, { cwd: ICI });
-  // V4 : normalisation en deux passes (linéaire, sans pompage ni saturation) puis limiteur à -1,5 dBTP
-  const mes = execSync(`ffmpeg -hide_banner -i son.wav -af loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json -f null - 2>&1`, { cwd: ICI }).toString();
-  const j = JSON.parse(mes.slice(mes.lastIndexOf('{'), mes.lastIndexOf('}') + 1));
-  const ln = `loudnorm=I=-14:TP=-1.5:LRA=11:linear=true:measured_I=${j.input_i}:measured_TP=${j.input_tp}:measured_LRA=${j.input_lra}:measured_thresh=${j.input_thresh}:offset=${j.target_offset},alimiter=limit=0.84:attack=5:release=50,aresample=48000:resampler=soxr`;
+  // V4 : gain fixe vers -14,5 LUFS puis limiteur sans remontée automatique (level=disabled) à -3 dBFS : aucune saturation après AAC
+  const mes = execSync(`ffmpeg -hide_banner -i son.wav -af ebur128 -f null - 2>&1`, { cwd: ICI }).toString();
+  const I = parseFloat(mes.match(/I:\s+(-?[\d.]+) LUFS/g).pop().match(/-?[\d.]+/)[0]);
+  const ln = `volume=${(-14.5 - I).toFixed(2)}dB,alimiter=limit=0.708:attack=3:release=60:level=disabled,aresample=48000:resampler=soxr`;
   const src = `-framerate ${fps} -i ${dossier}/f%05d.jpg -i son.wav`;
   run(`${src} -map 0:v -map 1:a -c:v libx264 -pix_fmt yuv420p -crf 17 -preset slow -tune animation -c:a aac -b:a 256k -af ${ln} -shortest -movflags +faststart ep01-v4-1080x1920.mp4`);
   run(`-ss 0.9 -i ep01-v4-1080x1920.mp4 -frames:v 1 -q:v 2 ep01-v4-couverture.jpg`);
