@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Épisode 1 V3 · Aurea Media</title>
+<style>
+@font-face{font-family:"Bricolage";src:url(polices/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(polices/geist.woff2) format("woff2");font-weight:100 900}
+html,body{margin:0;background:#000}
+#scene{position:relative;width:1080px;height:1920px;overflow:hidden;background:#111}
+#svg{position:absolute;inset:0}
+#tel{position:absolute;left:0;top:0;width:430px;height:884px;border-radius:72px;background:#0c0d10;padding:20px;box-sizing:border-box;box-shadow:0 60px 120px rgba(40,30,10,.35),0 0 0 3px #2a2c33 inset;transform-origin:50% 50%;display:none}
+#tel #site{border-radius:54px}
+#tel .encoche{position:absolute;left:50%;top:32px;width:120px;height:34px;margin-left:-60px;border-radius:20px;background:#000;z-index:20}
+#tel .refletBox{position:absolute;inset:20px;border-radius:54px;overflow:hidden;pointer-events:none;z-index:21}
+#telReflet{position:absolute;top:-200px;left:0;width:160px;height:1300px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.22),rgba(255,255,255,0))}
+#st{position:absolute;left:90px;right:90px;top:1300px;height:250px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:0 22px;pointer-events:none}
+#st .m{font:800 86px/1.06 "Bricolage";letter-spacing:-.015em;color:#fff;display:inline-block;transform-origin:50% 90%;-webkit-text-stroke:14px #15181e;paint-order:stroke fill;text-shadow:0 8px 0 rgba(21,24,30,.9)}
+#st .m.cle{color:#ffd23f}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+#fondu{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+</style><style id="siteCss"></style></head>
+<body>
+<div id="scene">
+  <svg id="svg" width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"><defs id="defs"></defs></svg>
+  <div id="tel"><div class="encoche"></div><div id="telEcran"></div><div class="refletBox"><div id="telReflet"></div></div></div>
+  <svg id="svgHaut" width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;inset:0;pointer-events:none"></svg>
+  <div id="flash"></div>
+  <div id="fondu"></div>
+  <div id="st"></div>
+</div>
+<script src="anim.js"></script>
+<script src="fx.js"></script>
+<script src="pantin.js"></script>
+<script src="gaspard.js"></script>
+<script src="site.js"></script>
+<script src="scenes.js"></script>
+<script src="sous-titres.js"></script>
+<script>
+(async () => {
+  const script = await (await fetch('script.json')).json();
+  let calage = null;
+  try { calage = await (await fetch('calage.json', { cache: 'no-store' })).json(); } catch (e) {}
+  window.CAL = construireCalage(script, calage);
+  document.getElementById('siteCss').textContent = SITE_CSS;
+  document.getElementById('telEcran').innerHTML = SITE_HTML;
+  construireScenes();
+  construireSousTitres(script, window.CAL);
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  await document.fonts.ready;
+  document.getElementById('tel').style.display = 'block';
+  siteMesurer();
+  document.getElementById('tel').style.display = 'none';
+  window.duree = window.CAL.duree;
+  window.pret = true;
+})();
+</script>
+</body></html>
