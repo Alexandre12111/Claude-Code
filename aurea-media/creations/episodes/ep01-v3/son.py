@@ -263,6 +263,7 @@ for i in range(6): ajoute(pop(1800 + 150 * i, .18), tEnv + .3 + i * .05, pan=(i 
 ajoute(whoosh(.8, 400, 3000, .9), T["vol"] - .1)
 ajoute(carillon([88, 91], .5), T["ret"] + .05); ajoute(impact(.4), T["ret"] + .25); ajoute(claque(.6), T["ret"] + .25)
 # V4 · le planning : trois devis épinglés, il décroche, tampons « Rappelé », filé vers le collègue
+ajoute(whoosh(.35, 500, 2600, .45), T["fil"])
 tcs = [Mo("l10", 1) - .1, Mo("l10", 4) - .1, Mo("l10", 8) - .15]; tAppel = Mo("l10", 9) - .05
 for i, x in enumerate(tcs):
     ajoute(whoosh(.4, 500, 2000, .3), x, pan=-.4); ajoute(bloc(.3, 1900), x + .42); ajoute(glock(79 + 3 * i, .18), x + .45, mus=True)

@@ -288,6 +288,7 @@ function reperes() {
 }
 function rendre(t) {
   if (!T.whip) reperes();
+  if (L.tableau.nextSibling !== L.fin) { $('svg').insertBefore(L.plan, L.fin); $('svg').insertBefore(L.tableau, L.fin); }   // V4 : nouveaux plans au-dessus des anciens
   for (const id in L) vis(L[id], false);
   vis(L.ui, true);
   $('flash').style.opacity = 0; $('fondu').style.opacity = 0;
@@ -298,7 +299,7 @@ function rendre(t) {
   const fondu = v => { $('fondu').style.opacity = Math.max(+$('fondu').style.opacity, v); };
 
   if (t < T.whip + .25) { vis(L.hook, true); rHook(t); }
-  const extA = t >= T.whip && t < T.ch, extB = t >= T.ret && t < T.ret + 1.0, extC = t >= T.co;
+  const extA = t >= T.whip && t < T.ch, extB = t >= T.ret && t < Math.min(T.ret + 1.0, T.fil) && T.fil > T.ret + .5, extC = t >= T.co;
   if (extA || extB || extC) { vis(L.ext, true); rExt(t, extA ? 'a' : extB ? 'b' : 'c'); if (extC && t < T.co + .3) tr(L.ext, `translate(${(1 - E.out(clamp((t - T.co + .05) / .35))) * 1080},0)`); }
   if (t >= T.whip && t < T.whip + .25) tr(L.hook, `translate(0,${E.in((t - T.whip) / .25) * 1920})`);
   if (t >= T.whip && t < T.whip + .3) tr(L.ext, `translate(0,${(E.out((t - T.whip) / .3) - 1) * 1920})`);
@@ -313,7 +314,7 @@ function rendre(t) {
   flash(.75 * (1 - Math.abs(t - T.ba) / .1)); flash(.7 * (1 - Math.abs(t - T.si) / .09));
   if (t >= T.si && t < T.cn + .3) { vis(L.siteFond, true); rSite(t); }
   if (t >= T.cn && t < T.vol + .15) { vis(L.canape, true); rCanape(t); }
-  if (t >= T.vol && t < T.ret + .1) { vis(L.vol, true); rVol(t); }
+  if (t >= T.vol && t < Math.max(T.ret + .1, T.fil + .35)) { vis(L.vol, true); rVol(t); }
   if (t >= T.fin) { vis(L.fin, true); rFin(t); }
   fondu(1 - Math.abs(t - T.fin) / .2); fondu(clamp((t - CAL.duree + .3) / .3));
   fx += rUI(t) + (extA && window.bullesUI ? window.bullesUI : '');
@@ -699,7 +700,9 @@ function rTableau(t) {
   PERS.gt.poser(p);
   // fin du plan : filé vers la droite, le collègue arrive dans le plan suivant
   const sortie = E.in(clamp((t - T.co + .05) / .35));
+  const entree = E.out(clamp((t - T.fil) / .32));
   if (sortie > 0) { tr(L.tableau, `translate(${-sortie * 1080},0)`); fx += lignesVitesse(t, T.co - .1, .5, 540, 960, '#fff', .7); }
+  else if (entree < 1) tr(L.tableau, `translate(${(1 - entree) * 1080},0)`);
   $('tb-fx').innerHTML = fx;
 }
 

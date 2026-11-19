@@ -14,7 +14,7 @@ TEL = Path(sys.argv[2])
 script = json.loads((ICI / "script.json").read_text())
 # respirations entre les répliques (le montage s'adapte à la voix ; aucune accélération de la voix)
 PAUSE = .28
-PAUSES = {"l00": .32, "l02": .3, "q1": .22, "q2": .22, "q3": .22, "q4": .35, "l06": .75, "l07": .1, "l07b": .5, "l10": .55}
+PAUSES = {"l00": .32, "l02": .3, "q1": .14, "q2": .14, "q3": .14, "q4": .3, "l06": .75, "l07": .1, "l07b": .5, "l10": .55}
 # V4 : chaîne douce anti grésillements (aucun rehaussement au-dessus de 8 kHz, zone où le vocodeur crépite)
 CHAINE = ("adeclick=w=55:o=75:t=2,highpass=f=85:p=2,lowpass=f=10500:p=2,afftdn=nr=6:nf=-52:tn=1,"
           "equalizer=f=150:t=q:w=0.9:g=2,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=2800:t=q:w=1.0:g=1.5,"
