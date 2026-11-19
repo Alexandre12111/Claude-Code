@@ -1,5 +1,5 @@
 {
- "titre": "Épisode 1, V4 : Gaspard et les quatorze appels",
+ "titre": "Épisode 1, V5 : Gaspard et les quatorze appels",
  "phrases": [
   {
    "id": "l00",
@@ -88,12 +88,12 @@
   },
   {
    "id": "l03",
-   "texte": "Pour répondre encore une fois aux mêmes questions.",
+   "texte": "Pour répondre, encore une fois, aux mêmes questions !",
    "fort": false,
-   "sous_titre": "Pour répondre encore une fois aux *mêmes questions*.",
+   "sous_titre": "Pour répondre, encore une fois, aux *mêmes questions !*",
    "debut_prevu": 8.63,
    "source": [
-    "sortie_ep01",
+    "sortie_v5f",
     3
    ]
   },
@@ -121,12 +121,12 @@
   },
   {
    "id": "l06",
-   "texte": "Le soir, épuisé, tu rappelles tout le monde.",
+   "texte": "Le soir… épuisé… tu rappelles tout le monde.",
    "fort": false,
-   "sous_titre": "Le soir, épuisé, tu *rappelles tout le monde*.",
+   "sous_titre": "Le soir… épuisé… tu *rappelles tout le monde*.",
    "debut_prevu": 16.94,
    "source": [
-    "sortie_ep01",
+    "sortie_v5f",
     6
    ]
   },

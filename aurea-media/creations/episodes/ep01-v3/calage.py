@@ -13,8 +13,8 @@ KIT = Path(sys.argv[1])          # dossier du kit Voix_Alexandre (contient sorti
 TEL = Path(sys.argv[2])
 script = json.loads((ICI / "script.json").read_text())
 # respirations entre les répliques (le montage s'adapte à la voix ; aucune accélération de la voix)
-PAUSE = .28
-PAUSES = {"l00": .32, "l02": .3, "q1": .14, "q2": .14, "q3": .14, "q4": .3, "l06": .75, "l07": .1, "l07b": .5, "l10": .55}
+PAUSE = .4
+PAUSES = {"l00": .44, "l02": .42, "q1": .04, "q2": .04, "q3": .04, "q4": .25, "l04": .5, "l06": .87, "l07": .22, "l07b": .62, "l10": .67, "l11": .6}
 # V4 : chaîne douce anti grésillements (aucun rehaussement au-dessus de 8 kHz, zone où le vocodeur crépite)
 CHAINE = ("adeclick=w=55:o=75:t=2,highpass=f=85:p=2,lowpass=f=10500:p=2,afftdn=nr=6:nf=-52:tn=1,"
           "equalizer=f=150:t=q:w=0.9:g=2,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=2800:t=q:w=1.0:g=1.5,"
@@ -38,7 +38,7 @@ def jetons(st):
     return out
 
 
-t, phrases, srt, morceaux = 0.0, {}, [], []
+t, phrases, srt, morceaux, fins = 0.0, {}, [], [], {}
 for ph in script["phrases"]:
     dossier, n = ph["source"]; base = (TEL if dossier == "tel" else KIT / dossier)
     stem = f"q{n}" if dossier == "tel" else f"l{n:02d}"
@@ -68,30 +68,41 @@ for ph in script["phrases"]:
             if len(groupe) >= 4 or k == len(toks) - 1 or re.search(r"[.?!:]$", tok):
                 srt.append((groupe[0][1]["debut"], groupe[-1][1]["fin"] + .15, " ".join(x for x, _ in groupe))); groupe = []
     print(f"{ph['id']:5s} {t:6.2f}  {d:5.2f} s  {'OK ' if best['ok'] else 'À ÉCOUTER'} sim {best.get('sim', 0):.3f}  « {best['heard']} »")
+    # coupe après le dernier mot prononcé : fin de la syllabe en cours (énergie), puis 80 ms ; supprime les bribes parasites
+    import numpy as _np, soundfile as _sf
+    _x, _sr = _sf.read(str(wav)); _x = _x.mean(1) if _x.ndim > 1 else _x
+    _h = int(.02 * _sr); _e = _np.array([_np.sqrt(_np.mean(_x[i:i + _h] ** 2)) for i in range(0, len(_x) - _h, _h)]); _k = int((mots_w[-1]["b"] if mots_w else d) / .02)
+    while _k < len(_e) and _e[_k] > _e.max() * .05: _k += 1
+    fins[wav] = min(d, (_k + 4) * .02); d = fins[wav]
     morceaux.append((wav, PAUSES.get(ph["id"], PAUSE), ph.get("voix", "alexandre")))
     t += d + PAUSES.get(ph["id"], PAUSE)
 
 import numpy as np, soundfile as sf
-import librosa
-SR = 24000
-pistes = {"alexandre": [], "tel": []}
-for f, g, v in morceaux:
-    x, sr = sf.read(str(f))
-    if x.ndim > 1: x = x.mean(1)
-    if sr != SR: x = librosa.resample(x, orig_sr=sr, target_sr=SR)
-    n = int(len(x) + g * SR)
-    for k in pistes: pistes[k].append(np.pad(x, (0, n - len(x))) if k == v else np.zeros(n))
-brute = KIT / "voix_off_v4_brute.wav"; sf.write(str(brute), np.concatenate(pistes["alexandre"]).astype(np.float32), SR)
-brute_tel = TEL / "voix_tel_brute.wav"; sf.write(str(brute_tel), np.concatenate(pistes["tel"]).astype(np.float32), SR)
-voix = KIT / "voix_off_v4.wav"
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(brute), "-af", CHAINE, str(voix)], check=True)
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(brute_tel), "-af", CHAINE_TEL, str(ICI / "voix-tel.wav")], check=True)
-shutil.copy(voix, ICI / "voix-mix.wav")
-duree_voix = duree(voix)
+import os
+duree_voix = t   # durée de la piste (somme des prises coupées et des pauses)
 total = round(max(t, duree_voix) + .1 + script["fin"]["duree"], 3)
 (ICI / "calage.json").write_text(json.dumps({"source": "alexandre", "duree": total, "phrases": phrases}, ensure_ascii=False, indent=1))
 def hms(x):
     h, r = divmod(x, 3600); m, s = divmod(r, 60); return f"{int(h):02d}:{int(m):02d}:{int(s):02d},{int(round((s - int(s)) * 1000)):03d}"
 srt = [(a, min(b, srt[n + 1][0] - .02) if n + 1 < len(srt) else b, x) for n, (a, b, x) in enumerate(srt)]
 (KIT / "voix_off_v4.srt").write_text("\n".join(f"{n + 1}\n{hms(a)} --> {hms(b)}\n{txt}\n" for n, (a, b, txt) in enumerate(srt)), encoding="utf-8")
-print("durée totale", total, "s ; voix_off.wav", round(duree_voix, 2), "s ; srt :", len(srt), "sous-titres")
+print("durée totale", total, "s ; voix", round(duree_voix, 2), "s ; srt :", len(srt), "sous-titres", flush=True)
+if os.environ.get("SANS_MIX") != "1":
+    import librosa
+    SR = 24000
+    pistes = {"alexandre": [], "tel": []}
+    for f, g, v in morceaux:
+        x, sr = sf.read(str(f))
+        if x.ndim > 1: x = x.mean(1)
+        if f in fins:   # coupe déjà calculée lors du calage (fondu de 60 ms)
+          x = x[:int(fins[f] * sr)].copy(); n = int(.06 * sr); x[-n:] *= np.linspace(1, 0, n)
+        if sr != SR: x = librosa.resample(x, orig_sr=sr, target_sr=SR)
+        n = int(len(x) + g * SR)   # longueur de la prise coupée + pause
+        for k in pistes: pistes[k].append(np.pad(x, (0, n - len(x))) if k == v else np.zeros(n))
+    brute = KIT / "voix_off_v4_brute.wav"; sf.write(str(brute), np.concatenate(pistes["alexandre"]).astype(np.float32), SR)
+    brute_tel = TEL / "voix_tel_brute.wav"; sf.write(str(brute_tel), np.concatenate(pistes["tel"]).astype(np.float32), SR)
+    voix = KIT / "voix_off_v4.wav"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(brute), "-af", CHAINE, str(voix)], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(brute_tel), "-af", CHAINE_TEL, str(ICI / "voix-tel.wav")], check=True)
+    shutil.copy(voix, ICI / "voix-mix.wav")
+    print("mixage terminé : voix-mix.wav et voix-tel.wav", flush=True)

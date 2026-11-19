@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><title>Épisode 1 V4 · Aurea Media</title>
+<html lang="fr"><head><meta charset="utf-8"><title>Épisode 1 V5 · Aurea Media</title>
 <style>
 @font-face{font-family:"Bricolage";src:url(polices/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
 @font-face{font-family:"Geist";src:url(polices/geist.woff2) format("woff2");font-weight:100 900}
@@ -22,7 +22,9 @@ html,body{margin:0;background:#000}
 #st .m.cle{color:#ffd23f}
 #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
 #fondu{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
-</style><style id="siteCss"></style></head>
+</style><style id="siteCss"></style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module" src="gaspard3d-scene.js"></script></head>
 <body>
 <div id="scene">
   <svg id="svg" width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"><defs id="defs"></defs></svg>
@@ -42,6 +44,7 @@ html,body{margin:0;background:#000}
 <script src="sous-titres.js"></script>
 <script>
 (async () => {
+  if (!window.Gaspard3D) await new Promise(r => window.addEventListener('g3d-pret', r, { once: true }));   // V5 : Gaspard 3D
   const script = await (await fetch('script.json')).json();
   let calage = null;
   try { calage = await (await fetch('calage.json', { cache: 'no-store' })).json(); } catch (e) {}
