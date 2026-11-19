@@ -142,35 +142,36 @@ export function creerGaspard(THREE, options = {}) {
     bTorse.add(pivS);
     yeux[cote] = { pivot, pupille, paupH, paupB, sourcil: pivS, sy: sp.p.y - 1.6 };
   }
-  // museau, nez, dents
+  // ---------------- museau articulé : museau du haut (nez + dents) et mâchoire inférieure qui s'ouvre ----------------
+  // Les dents sont fixées sous le museau du haut, comme chez un vrai castor : quand la bouche s'ouvre, la mâchoire descend
+  // et dévoile la cavité et la langue derrière les dents. Aucune forme plaquée : tout est en volume.
   const museauZ = surface(0, DIM.museau.y).p.z;
-  const museau = maillage(new THREE.SphereGeometry(1, 48, 32), mats.museau, 'museau'); museau.scale.set(DIM.museau.rx, DIM.museau.ry, .5); surTorse(museau, 0, DIM.museau.y, museauZ - .12);
-  // surface avant du museau, prolongée par celle du corps hors de l'ellipse (la bouche peut déborder sous le museau)
-  const zMus = (x, y) => { const q = 1 - (x / DIM.museau.rx) ** 2 - ((y - DIM.museau.y) / DIM.museau.ry) ** 2; return Math.max(q > 0 ? museauZ - .12 + .5 * Math.sqrt(q) : -9, surface(x, y).p.z); };
+  const MH = { y: 2.86, rx: .96, ry: .5, rz: .5, z: museauZ - .12 };                       // museau du haut
+  const museau = maillage(new THREE.SphereGeometry(1, 56, 36), mats.museau, 'museau'); museau.scale.set(MH.rx, MH.ry, MH.rz); surTorse(museau, 0, MH.y, MH.z);
+  const zHaut = (x, y) => { const q = 1 - (x / MH.rx) ** 2 - ((y - MH.y) / MH.ry) ** 2; return q > 0 ? MH.z + MH.rz * Math.sqrt(q) : -9; };
+  const zMus = (x, y) => Math.max(zHaut(x, y), surface(x, y).p.z);
   const nez = maillage(new THREE.SphereGeometry(1, 32, 24), mats.nez, 'nez'); nez.scale.set(.36, .23, .2); surTorse(nez, 0, 3.08, zMus(0, 3.08) + .02);
   const refletNez = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 10), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: .45 })); refletNez.scale.set(.11, .06, .04); surTorse(refletNez, -.12, 3.17, zMus(-.12, 3.17) + .19);
-  // dents : groupe accroché par le haut (y 2,73) ; poserVisage les cale sur le bord haut de la bouche choisie
-  const dents = new THREE.Group(); dents.name = 'dents'; surTorse(dents, 0, 2.73, zMus(0, 2.6) - .02);
-  for (const x of [-.155, .155]) { const d = maillage(new THREE.CapsuleGeometry(.12, .3, 6, 16), new THREE.MeshBasicMaterial({ color: C.dents }), 'dent'); d.scale.set(1.15, 1, .45); d.position.set(x, -.27, 0); dents.add(d); }
-  // bouches : formes plaquées sur le museau, une seule visible à la fois (mêmes variantes que la 2D)
+  // mâchoire : pivot derrière, sous le museau ; menton, cavité sombre et langue
+  const machoire = new THREE.Group(); machoire.name = 'machoire'; const bMach = os_('machoire', bTorse, 0, 2.62 - 1.6, museauZ - .1); bMach.add(machoire);
+  const menton = maillage(new THREE.SphereGeometry(1, 48, 32), mats.museau, 'menton'); menton.scale.set(.68, .3, .28); menton.position.set(0, -.36, .02); machoire.add(menton);
+  const cavite = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 24), mats.bouche); cavite.name = 'bouche_cavite'; cavite.scale.set(.56, .3, .24); cavite.position.set(0, -.14, -.12); machoire.add(cavite);
+  const langue = new THREE.Mesh(new THREE.SphereGeometry(1, 32, 16), mats.langue); langue.name = 'langue'; langue.scale.set(.3, .09, .2); langue.position.set(0, -.12, .1); machoire.add(langue);
+  // dents : accrochées sous le museau du haut, devant le menton
+  const dents = new THREE.Group(); dents.name = 'dents'; surTorse(dents, 0, 2.56, museauZ + .33); dents.rotation.x = .25;   // haut rentré sous le museau, bas devant le menton
+  for (const x of [-.155, .155]) { const d = maillage(new THREE.CapsuleGeometry(.12, .28, 6, 16), new THREE.MeshBasicMaterial({ color: C.dents }), 'dent'); d.scale.set(1.15, 1, .45); d.position.set(x, -.26, 0); dents.add(d); }
+  // traits de bouche (bouche fermée) : sur la jonction museau / menton, de part et d'autre des dents
   const bouches = new THREE.Group(); bouches.name = 'bouches'; bTorse.add(bouches);
-  const plaque = (shape, mat, dz = .035) => { const g = new THREE.ShapeGeometry(shape, 24); const pos = g.attributes.position;
-    for (let i = 0; i < pos.count; i++) { const x = pos.getX(i), y = 2.68 + pos.getY(i); pos.setXYZ(i, x, y - 1.6, zMus(x, y) + dz); } g.computeVertexNormals(); const m = new THREE.Mesh(g, mat); m.renderOrder = 2; return m; };
-  const trace = (pts2, ep = .07) => { const c = new THREE.CatmullRomCurve3(pts2.map(([x, y]) => new THREE.Vector3(x, 2.68 + y - 1.6, zMus(x, 2.68 + y) + .03))); return new THREE.Mesh(new THREE.TubeGeometry(c, 32, ep / 2, 8, false), mats.trait); };
-  const ellipse = (cx, cy, rx, ry) => { const s = new THREE.Shape(); s.absellipse(cx, cy, rx, ry, 0, Math.PI * 2); return s; };
-  const formeBouche = (l, prof) => { const s = new THREE.Shape(); s.moveTo(-l, .04); s.bezierCurveTo(-l * .9, -prof, l * .9, -prof, l, .04); s.closePath(); return s; };
-  const defB = {
-    sourire: () => [trace([[-.46, 0], [-.25, -.2], [0, -.24], [.25, -.2], [.46, 0]])],
-    ouvert: () => [plaque(formeBouche(.44, .74), mats.bouche), plaque(ellipse(0, -.5, .22, .1), mats.langue, .042)],
-    rire: () => [plaque(formeBouche(.56, .92), mats.bouche), plaque(ellipse(0, -.62, .3, .13), mats.langue, .042)],
-    o: () => [plaque(ellipse(0, -.3, .2, .3), mats.bouche)],
-    cri: () => [plaque(formeBouche(.44, 1.12), mats.bouche), plaque(ellipse(0, -.8, .22, .12), mats.langue, .042)],
-    moue: () => [trace([[-.34, -.22], [0, -.1], [.34, -.22]])],
-    plat: () => [trace([[-.3, -.14], [.3, -.14]])],
-    grimace: () => { const s = new THREE.Shape(); s.moveTo(-.5, -.08); s.bezierCurveTo(-.3, .06, .3, .06, .5, -.08); s.bezierCurveTo(.3, -.22, -.3, -.22, -.5, -.08); return [plaque(s, mats.bouche)]; },
-    baille: () => [plaque(ellipse(0, -.4, .34, .5), mats.bouche), plaque(ellipse(0, -.72, .2, .11), mats.langue, .042)],
+  const trace = (pts2, ep = .065) => { const c = new THREE.CatmullRomCurve3(pts2.map(([x, y]) => new THREE.Vector3(x, y - 1.6, zMus(x, y) + .02))); return new THREE.Mesh(new THREE.TubeGeometry(c, 32, ep / 2, 8, false), mats.trait); };
+  // ouverture de la mâchoire (rad), largeur de la cavité, et traits éventuels pour chaque expression (mêmes noms que la 2D)
+  const BOUCHES = {
+    sourire: { ouv: 0, l: 1, traits: [[[-.5, 2.58], [-.38, 2.44], [-.24, 2.4]], [[.24, 2.4], [.38, 2.44], [.5, 2.58]]] },
+    moue: { ouv: 0, l: 1, traits: [[[-.4, 2.36], [-.3, 2.42], [-.22, 2.44]], [[.22, 2.44], [.3, 2.42], [.4, 2.36]]] },
+    plat: { ouv: 0, l: 1, traits: [[[-.4, 2.42], [-.24, 2.42]], [[.24, 2.42], [.4, 2.42]]] },
+    grimace: { ouv: .12, l: 1.1, traits: [] }, o: { ouv: .5, l: .55, traits: [] }, ouvert: { ouv: .6, l: 1, traits: [] },
+    rire: { ouv: .75, l: 1.12, traits: [] }, cri: { ouv: 1, l: .95, traits: [] }, baille: { ouv: 1.1, l: .8, traits: [] },
   };
-  for (const [k, f] of Object.entries(defB)) { const g = new THREE.Group(); g.name = 'bouche_' + k; f().forEach(m => g.add(m)); g.visible = k === 'sourire'; bouches.add(g); variantes[k] = g; }
+  for (const [k, d] of Object.entries(BOUCHES)) { const g = new THREE.Group(); g.name = 'bouche_' + k; d.traits.forEach(t => g.add(trace(t))); g.visible = k === 'sourire'; bouches.add(g); variantes[k] = g; }
   // moustaches, joues
   for (const s of [-1, 1]) for (let k = 0; k < 3; k++) {
     const a = new THREE.Vector3(s * .7, 2.74 - .44 - k * .14 + .2, 0), b = new THREE.Vector3(s * 1.16, 2.74 - .34 - k * .04 + .2 - k * .06, 0);
@@ -284,7 +285,7 @@ export function creerGaspard(THREE, options = {}) {
     for (let i = 0; i < 4; i++) {
       const xb = (-.165 + i * .11) * -s;    // auriculaire côté extérieur, index côté pouce
       const base = os_(`doigt${i + 1}_1${cote}`, main, xb, -.38 + Math.abs(i - 1.5) * .025, 0);
-      base.rotation.z = (i - 1.5) * .12 * -s;
+      base.rotation.z = (i - 1.5) * .12 * -s; base.userData = { L: L[i], R: R[i], ecart: base.rotation.z };
       const ph = [base]; let parent = base;
       for (let k = 0; k < 3; k++) {
         const seg = maillage(new THREE.CapsuleGeometry(R[i] * (1 - k * .08), L[i][k], 6, 12), mats.poil, `phalange${i + 1}_${k + 1}${cote}`); seg.position.y = -L[i][k] / 2; parent.add(seg);
@@ -293,23 +294,77 @@ export function creerGaspard(THREE, options = {}) {
       doigts.push(ph);
     }
     const p1 = os_('pouce1' + cote, main, .2 * s, -.16, .06), p2 = os_('pouce2' + cote, p1, 0, -.12, 0), p3 = os_('pouce3' + cote, p2, 0, -.1, 0);
+    const eminence = maillage(new THREE.SphereGeometry(1, 20, 14), mats.poil, 'eminence' + cote); eminence.scale.set(.12, .14, .1); eminence.position.copy(p1.position).add(new THREE.Vector3(-.03 * s, .01, -.01)); main.add(eminence);
     [[p1, .12], [p2, .1], [p3, .08]].forEach(([b, l], k) => { const seg = maillage(new THREE.CapsuleGeometry(.078 * (1 - k * .06), l, 6, 12), mats.poil, 'pouce_ph' + (k + 1) + cote); seg.position.y = -l / 2; b.add(seg); });
     const prise = new THREE.Group(); prise.name = 'prise' + cote; prise.position.set(0, -.34, .2); main.add(prise);
     return { main, doigts, pouce: [p1, p2, p3], prise, s, objets: {} };
   }
-  // objets tenus (prêts dans la prise de chaque main)
+  // Objets tenus, définis dans le repère de la main (paume vers +z, doigts vers -y, pouce côté +x·s).
+  // Chacun a une forme mathématique (distance signée) : les doigts se posent sur sa surface sans jamais la traverser.
+  const FORMES = {   // c : centre (repère de la main), h : demi-dimensions (boîte) ou { r, hl } (cylindre d'axe x)
+    tel: { type: 'boite', c: [0, -.36, .27], h: [.43, .21, .045] },
+    tasse: { type: 'cylindre', c: [0, -.42, .4], r: .215, hl: .25 },
+    truelle: { type: 'cylindre', c: [0, -.52, .21], r: .075, hl: .3 },
+  };
   for (const cote of ['G', 'D']) {
-    const pr = mains[cote].prise, s = mains[cote].s;
-    const tel = maillage(new THREE.BoxGeometry(.42, .86, .08), mats.tel, 'objet_tel' + cote); const ec = new THREE.Mesh(new THREE.PlaneGeometry(.35, .76), mats.ecran); ec.position.z = -.045; ec.rotation.y = Math.PI; tel.add(ec); tel.position.set(0, -.02, -.06); tel.visible = false; pr.add(tel);
-    const tasse = new THREE.Group(); tasse.name = 'objet_tasse' + cote; const tc = maillage(new THREE.CylinderGeometry(.3, .26, .62, 32, 1, true), new THREE.MeshToonMaterial({ color: 0xffffff, gradientMap: rampe, side: THREE.DoubleSide }), 'tasse_corps'); tasse.add(tc);
-    const fond = new THREE.Mesh(new THREE.CircleGeometry(.29, 32), mats.poilOmbre); fond.rotation.x = -Math.PI / 2; fond.position.y = .26; tasse.add(fond);
-    const anse = maillage(new THREE.TorusGeometry(.17, .045, 10, 24, Math.PI * 1.3), mats.trait, 'tasse_anse'); anse.rotation.z = -Math.PI * .65 * s; anse.position.x = .3 * -s; tasse.add(anse);
-    tasse.scale.setScalar(.8); tasse.position.set(0, -.05, .14); tasse.visible = false; pr.add(tasse);
-    const truelle = new THREE.Group(); truelle.name = 'objet_truelle' + cote; const manche = maillage(new THREE.CylinderGeometry(.07, .08, .5, 12), mats.pied, 'truelle_manche'); truelle.add(manche);
-    const lame = new THREE.Shape(); lame.moveTo(-.5, 0); lame.lineTo(.5, 0); lame.lineTo(0, -.86); lame.closePath();
-    const gl = new THREE.ExtrudeGeometry(lame, { depth: .03, bevelEnabled: false }); const ml = maillage(gl, new THREE.MeshToonMaterial({ color: 0xcfd6de, gradientMap: rampe }), 'truelle_lame'); ml.position.set(0, -.3, -.015); truelle.add(ml);
-    truelle.scale.setScalar(.6); truelle.rotation.z = Math.PI / 2; truelle.position.set(0, -.02, .02); truelle.visible = false; pr.add(truelle);
-    mains[cote].objets = { tel, tasse, truelle };
+    const M = mains[cote], s = M.s, pr = M.prise, P = pr.position;
+    const place = (o, c) => { o.position.set(c[0] - P.x, c[1] - P.y, c[2] - P.z); pr.add(o); o.visible = false; };
+    // téléphone : axe long selon x (vertical une fois à l'oreille), écran côté +z (vers la joue), dos contre les doigts
+    const tel = maillage(new THREE.BoxGeometry(.86, .42, .09), mats.tel, 'objet_tel' + cote);
+    const ec = new THREE.Mesh(new THREE.PlaneGeometry(.76, .34), mats.ecran); ec.position.z = .047; tel.add(ec); place(tel, FORMES.tel.c);
+    // tasse : axe selon x de la main (vertical avec l'orientation « tasse »), anse vers l'extérieur
+    const tasse = new THREE.Group(); tasse.name = 'objet_tasse' + cote; tasse.rotation.z = -s * Math.PI / 2;
+    const tc = maillage(new THREE.CylinderGeometry(.22, .2, .5, 36, 1, true), new THREE.MeshToonMaterial({ color: 0xffffff, gradientMap: rampe, side: THREE.DoubleSide }), 'tasse_corps'); tasse.add(tc);
+    const fondC = new THREE.Mesh(new THREE.CircleGeometry(.2, 32), mats.poilOmbre); fondC.rotation.x = -Math.PI / 2; fondC.position.y = .2; tasse.add(fondC);
+    const dessous = new THREE.Mesh(new THREE.CircleGeometry(.2, 32), mats.oeil); dessous.rotation.x = Math.PI / 2; dessous.position.y = -.25; tasse.add(dessous);
+    const anse = maillage(new THREE.TorusGeometry(.13, .04, 10, 28), mats.oeil, 'tasse_anse'); anse.rotation.y = Math.PI / 2; anse.position.set(0, 0, .25); tasse.add(anse);
+    place(tasse, FORMES.tasse.c);
+    // truelle : manche dans le poing (axe x), lame au bout du manche
+    const truelle = new THREE.Group(); truelle.name = 'objet_truelle' + cote; truelle.rotation.z = -s * Math.PI / 2;
+    const manche = maillage(new THREE.CylinderGeometry(.075, .075, .6, 14), mats.pied, 'truelle_manche'); truelle.add(manche);
+    const lame = new THREE.Shape(); lame.moveTo(-.32, 0); lame.lineTo(.32, 0); lame.lineTo(0, -.6); lame.closePath();
+    const ml = maillage(new THREE.ExtrudeGeometry(lame, { depth: .025, bevelEnabled: false }), new THREE.MeshToonMaterial({ color: 0xcfd6de, gradientMap: rampe }), 'truelle_lame');
+    ml.rotation.x = Math.PI / 2; ml.position.set(0, .3, -.012); ml.rotation.set(-Math.PI / 2, 0, 0); ml.position.set(0, .32, .02); truelle.add(ml);
+    place(truelle, FORMES.truelle.c);
+    M.objets = { tel, tasse, truelle };
+  }
+  // distance signée d'un point (repère de la main) à la surface d'un objet
+  const sdf = (F, p) => {
+    if (F.type === 'boite') { const qx = Math.abs(p.x - F.c[0]) - F.h[0], qy = Math.abs(p.y - F.c[1]) - F.h[1], qz = Math.abs(p.z - F.c[2]) - F.h[2];
+      return Math.hypot(Math.max(qx, 0), Math.max(qy, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qy, qz), 0); }
+    const dx = Math.abs(p.x - F.c[0]) - F.hl, dr = Math.hypot(p.y - F.c[1], p.z - F.c[2]) - F.r;
+    return Math.min(Math.max(dx, dr), 0) + Math.hypot(Math.max(dx, 0), Math.max(dr, 0));
+  };
+  // Solveur de prise : pour chaque doigt (et le pouce), cherche la courbure des phalanges qui touche l'objet
+  // sans le pénétrer. Calculé une fois par main et par objet (l'objet est fixe dans le repère de la main).
+  const PRISES = {};
+  function calculerPrise(cote, objet) {
+    const cle = cote + objet; if (PRISES[cle]) return PRISES[cle];
+    const M = mains[cote], s = M.s, F = FORMES[objet], X = new THREE.Vector3(1, 0, 0);
+    const res = { doigts: [], pouce: null };
+    M.doigts.forEach((ph, i) => {
+      const B = ph[0].position.clone(), sp = ph[0].userData.ecart ?? ph[0].rotation.z, L = ph[0].userData.L, R = ph[0].userData.R;
+      let best = null;
+      for (let a1 = 0; a1 <= 1.65; a1 += .075) for (let a2 = 0; a2 <= 1.85; a2 += .085) {
+        const a3 = Math.min(1.45, a2 * .9);
+        const q0 = new THREE.Quaternion().setFromEuler(new THREE.Euler(-a1, 0, sp)), q1 = q0.clone().multiply(new THREE.Quaternion().setFromAxisAngle(X, -a2)), q2 = q1.clone().multiply(new THREE.Quaternion().setFromAxisAngle(X, -a3));
+        const E1 = B.clone().add(new THREE.Vector3(0, -L[0], 0).applyQuaternion(q0)), E2 = E1.clone().add(new THREE.Vector3(0, -L[1], 0).applyQuaternion(q1)), T = E2.clone().add(new THREE.Vector3(0, -L[2], 0).applyQuaternion(q2));
+        let pen = 0; for (const [A, Bp] of [[B, E1], [E1, E2], [E2, T]]) for (let k = 1; k <= 4; k++) pen += Math.max(0, R - sdf(F, A.clone().lerp(Bp, k / 4)));
+        const cout = 60 * pen + 4 * Math.max(0, sdf(F, T) - R) + 1.2 * Math.max(0, sdf(F, E2) - R) + .02 * (a1 + a2);
+        if (!best || cout < best.cout) best = { cout, a: [a1, a2, a3] };
+      }
+      res.doigts.push(best.a);
+    });
+    // pouce : base dans la paume, deux rotations à la base et une courbure
+    const [p1, p2, p3] = M.pouce, Bp = p1.position.clone(); let best = null;
+    for (let rx = -1.8; rx <= .4; rx += .1) for (let rz = 0; rz <= 1.7; rz += .1) for (let c = 0; c <= 1.3; c += .13) {
+      const q0 = new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, 0, s * rz)), q1 = q0.clone().multiply(new THREE.Quaternion().setFromAxisAngle(X, -c)), q2 = q1.clone().multiply(new THREE.Quaternion().setFromAxisAngle(X, -c * .8));
+      const E1 = Bp.clone().add(new THREE.Vector3(0, -.12, 0).applyQuaternion(q0)), E2 = E1.clone().add(new THREE.Vector3(0, -.1, 0).applyQuaternion(q1)), T = E2.clone().add(new THREE.Vector3(0, -.08, 0).applyQuaternion(q2));
+      let pen = 0; for (const [A, B2] of [[Bp, E1], [E1, E2], [E2, T]]) for (let k = 1; k <= 3; k++) pen += Math.max(0, .078 - sdf(F, A.clone().lerp(B2, k / 3)));
+      const cout = 60 * pen + 4 * Math.max(0, sdf(F, T) - .078) + .5 * Math.max(0, sdf(F, E2) - .078) + .01 * Math.abs(rx);
+      if (!best || cout < best.cout) best = { cout, r: [rx, rz, c] };
+    }
+    res.pouce = best.r; PRISES[cle] = res; return res;
   }
 
   // ---------------- contrôle : IK des bras et des jambes, mains, visage ----------------
@@ -407,13 +462,18 @@ export function creerGaspard(THREE, options = {}) {
     M.pouceHaut = forme === 'pouce';
     if (M.pouceHaut) { M.pouce[1].rotation.set(0, 0, 0); M.pouce[2].rotation.set(0, 0, 0); }
     for (const [k, o] of Object.entries(M.objets)) o.visible = m.objet === k;
+    if (m.objet && FORMES[m.objet]) {   // prise réelle : chaque phalange posée sur la surface de l'objet
+      const P = calculerPrise(cote, m.objet);
+      M.doigts.forEach((ph, i) => { const [a1, a2, a3] = P.doigts[i]; ph[0].rotation.set(-a1, 0, ph[0].userData.ecart); ph[1].rotation.set(-a2, 0, 0); ph[2].rotation.set(-a3, 0, 0); });
+      const [rx, rz, c] = P.pouce; M.pouce[0].rotation.set(rx, 0, s * rz); M.pouce[1].rotation.set(-c, 0, 0); M.pouce[2].rotation.set(-c * .8, 0, 0); M.pouceHaut = false;
+    }
     M.reglage = { forme, objet: m.objet, flexion: m.flexion ?? 0, inclinaison: m.inclinaison ?? 0, torsion: m.torsion ?? 0, doigtsVers: m.doigtsVers, paumeVers: m.paumeVers };
   }
   // Orientation naturelle de la main pour chaque forme (repère du personnage, main droite ; miroir en x pour la gauche) :
   // [direction des doigts, direction de la paume]
   const ORIENT = {
     ouverte: [[0, -1, .2], [-1, 0, .25]], salut: [[.12, 1, .05], [0, .05, 1]], poing: [[0, -1, .35], [-1, 0, 0]], pointe: [[.05, 1, .15], [-.25, 0, 1]],
-    pouce: [[-.15, 0, 1], [-1, 0, -.1]], tient: [[0, -1, .4], [-1, 0, 0]], tel: [[0, 1, -.1], [-1, 0, .05]], tasse: [[-.25, 0, 1], [-1, 0, -.15]], truelle: [[0, -.4, 1], [-1, 0, 0]],
+    pouce: [[-.15, 0, 1], [-1, 0, -.1]], tient: [[0, -1, .4], [-1, 0, 0]], tel: [[0, .2, -1], [-1, 0, .1]], tasse: [[-.25, 0, 1], [-1, 0, -.15]], truelle: [[0, -.4, 1], [-1, 0, 0]],
   };
   // Le poignet : oriente l'os « main » vers l'orientation voulue, puis applique flexion, inclinaison et torsion,
   // en limitant l'angle avec l'avant-bras (flexion 80°, inclinaison 35°) pour qu'il ne se casse jamais.
@@ -448,11 +508,11 @@ export function creerGaspard(THREE, options = {}) {
       Y.sourcil.children[0].rotation.z = (v.froncer ?? 0) * .24 * sc;
     }
     for (const [k, g] of Object.entries(variantes)) g.visible = (v.bouche ?? 'sourire') === k;
-    // bord haut de l'ouverture (y), longueur (sy) et largeur (sx) des dents pour chaque bouche : la langue apparaît dessous
-    const D = { sourire: [2.73, 1, 1], moue: [2.73, .82, 1], plat: [2.73, .86, 1], ouvert: [2.74, .72, 1], rire: [2.75, .66, 1.04],
-      o: [2.7, .5, .78], cri: [2.75, .58, 1], grimace: [2.75, .5, 1.08], baille: [2.79, .56, .9] }[v.bouche ?? 'sourire'] || [2.73, 1, 1];
-    dents.position.y = D[0] - 1.6; dents.scale.set(D[2], D[1] * (v.dents ?? 1), 1);
-    dents.position.z = zMus(0, D[0] - .2) - .03;
+    // la mâchoire s'ouvre selon l'expression ; les dents restent sous le museau du haut
+    const B = BOUCHES[v.bouche ?? 'sourire'] || BOUCHES.sourire, ouv = v.ouverture ?? B.ouv;
+    bMach.rotation.x = ouv * .55; bMach.position.set(0, 2.62 - 1.6 - ouv * .3, museauZ - .1 + ouv * .06);
+    cavite.scale.set(.56 * B.l, .3 + ouv * .3, .24); cavite.position.y = -.14 + ouv * .16;   // toujours derrière les dents langue.visible = ouv > .2;
+    dents.scale.set(1, v.dents ?? 1, 1);
   }
   // pose complète. Cibles des mains et des pieds en coordonnées du personnage (unités).
   const REPOS = { mainG: [-2.05, 1.2, .25], mainD: [2.05, 1.2, .25] };
@@ -479,11 +539,10 @@ export function creerGaspard(THREE, options = {}) {
       p1.position.copy(p1.userData.repos || (p1.userData.repos = p1.position.clone())); p2.position.y = -.12; p3.position.y = -.1;
       if (M.pouceHaut) {   // pouce levé : base remontée au-dessus du poing, phalanges un peu allongées, toujours vers le haut de l'écran
         const qp = M.main.getWorldQuaternion(new THREE.Quaternion()).invert(), haut = new THREE.Vector3(0, 1, 0).applyQuaternion(racine.getWorldQuaternion(new THREE.Quaternion())).applyQuaternion(qp);
-        p1.position.addScaledVector(haut, .2); p2.position.y = -.15; p3.position.y = -.13;
+        p2.position.y = -.14; p3.position.y = -.12;
         racine.updateMatrixWorld(true);
         versMonde(p1, new THREE.Vector3(0, -1, 0), new THREE.Vector3(.1 * M.s, 1, .2));
       }
-      if (M.objets.tasse.visible) versMonde(M.objets.tasse, new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 1, 0));
     }
     racine.updateMatrixWorld(true);
   }

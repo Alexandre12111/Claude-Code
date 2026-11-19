@@ -31,11 +31,11 @@ Pour ouvrir la visionneuse, il faut servir le dossier `creations/` avec un petit
 | Museau | centre y 2,74, rayons 0,96 × 0,62 |
 | Casque | base y 4,52, dôme 1,56 × 1,42, bord jusqu'à environ 2,0 |
 
-## Squelette (54 os)
+## Squelette (55 os)
 
 | Zone | Os |
 |---|---|
-| Tronc | `racine` → `bassin` → `torse` (penche le haut du corps) → `tete` |
+| Tronc | `racine` → `bassin` → `torse` (penche le haut du corps) → `tete`, plus `machoire` (ouverture de la bouche) |
 | Tête | `oeilG`, `oeilD` (pivots des yeux et des paupières), `casque` (décalage pour les rebonds) |
 | Bras | `epauleX` → `coudeX` → `poignetX` → `mainX` |
 | Doigts | `doigtN_1X`, `doigtN_2X`, `doigtN_3X` : N = 1 auriculaire … 4 index, 3 phalanges par doigt |
@@ -87,7 +87,7 @@ g.poser(POSES.declic);                               // poses de référence : c
 
 **Yeux :** l'œil, la pupille et les paupières vivent dans un même repère étiré où tout est une sphère. La paupière glisse donc exactement sur l'œil, sans jamais y entrer.
 
-**Dents :** elles sont accrochées au bord haut de chaque bouche, avec leur longueur propre. Quand la bouche s'ouvre, elles remontent avec la lèvre et la langue apparaît dessous.
+**Bouche articulée :** le museau du haut porte le nez et les deux dents, toujours fixées sous lui comme chez un vrai castor. Une mâchoire inférieure (os `machoire`) pivote pour ouvrir la bouche et dévoile une cavité sombre et une langue, placées derrière les dents. Les dents suivent donc forcément la bouche, sans aucune forme plaquée. L'ouverture dépend de l'expression ; le paramètre `visage.ouverture` (en radians) la règle librement.
 
 ## Poignet
 
@@ -117,7 +117,10 @@ Contrôle : 800 positions de main aléatoires, puis 500 avec le corps penché au
 - **Index :** c'est toujours le doigt voisin du pouce qui se tend en forme `pointe`, jamais le majeur.
 - **Pouce levé :** en forme `pouce`, le pouce vise toujours le haut de l'écran, quel que soit l'angle du bras.
 - **Tasse :** elle reste droite quelle que soit la rotation de la main.
-- **Objets tenus :** ils se placent dans la paume et les doigts se referment devant eux (pas d'interpénétration).
+- **Objets tenus :** chaque objet a sa forme mathématique dans le repère de la main (le téléphone est une boîte, la tasse et le manche de truelle sont des cylindres). Pour chaque doigt et pour le pouce, un solveur cherche la courbure des trois phalanges qui touche la surface sans la traverser. Mesure : contact à 5 mm près, aucune pénétration. Le calcul est fait une fois par objet, puis mis en cache.
+  - **Téléphone :** tenu à la verticale à l'oreille, écran vers la joue, doigts refermés sur son bord arrière.
+  - **Tasse :** reste droite, doigts enroulés autour.
+  - **Truelle :** manche dans le poing fermé.
 - **Bras tendu :** quand il est presque tendu, il s'étire légèrement (jusqu'à 6 %) au lieu de se verrouiller sèchement.
 
 ## Modifier le personnage
