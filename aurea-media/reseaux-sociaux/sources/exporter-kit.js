@@ -1,7 +1,7 @@
 // Exporte chaque visuel du kit en PNG à ses dimensions exactes. Usage : node exporter-kit.js [dossier_sortie]
 const { chromium } = require('playwright'); const fs = require('fs'); const path = require('path');
 const ICI = __dirname, RACINE = path.join(ICI, '../..'), OUT = process.argv[2] || path.join(ICI, '../export');
-const IDS = ['avatar', 'avatar-clair', 'facebook-couverture', 'linkedin-page', 'linkedin-profil', 'une-realisations', 'une-avis', 'une-tarifs', 'une-methode', 'une-videos', 'une-contact', 'post-1-presentation', 'post-2-realisations', 'post-3-gaspard'];
+const IDS = ['avatar', 'avatar-monogramme', 'avatar-clair', 'facebook-couverture', 'linkedin-page', 'linkedin-profil', 'une-realisations', 'une-avis', 'une-tarifs', 'une-methode', 'une-videos', 'une-contact', 'post-1-presentation', 'post-2-realisations', 'post-3-gaspard'];
 const types = { '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.webp': 'image/webp', '.png': 'image/png' };
 (async () => {
   fs.mkdirSync(OUT, { recursive: true });

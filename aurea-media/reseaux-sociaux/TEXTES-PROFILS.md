@@ -11,14 +11,14 @@ Les textes sont prêts à copier. Les limites de caractères sont indiquées ent
 
 | Réseau | Emplacement | Fichier | Dimensions |
 |---|---|---|---|
-| Instagram, Facebook, LinkedIn | Photo de profil | `avatar.png` | 1080 × 1080 |
+| Instagram, Facebook, LinkedIn | Photo de profil (monogramme et AUREA MEDIA) | `avatar.png` | 1080 × 1080 |
 | Facebook | Photo de couverture | `facebook-couverture.png` | 1640 × 624 |
 | LinkedIn | Bannière de la page entreprise | `linkedin-page.png` | 1128 × 191 |
 | LinkedIn | Bannière de ton profil personnel | `linkedin-profil.png` | 1584 × 396 |
 | Instagram | Couvertures des stories à la une | `une-*.png` | 1080 × 1920 |
 | Les trois | Premières publications | `post-1`, `post-2`, `post-3` | 1080 × 1350 |
 
-`avatar-clair.png` est une variante sur fond clair, à garder en réserve.
+`avatar-clair.png` (fond clair) et `avatar-monogramme.png` (monogramme seul, plus lisible en très petit) sont des variantes à garder en réserve.
 
 ---
 
