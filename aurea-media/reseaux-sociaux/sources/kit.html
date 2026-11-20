@@ -29,9 +29,20 @@
 .laptop .ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:4px 4px 0 0}
 .laptop .base{height:14px;margin:0 -7%;background:linear-gradient(#3a3a37,#1d1d1b);border-radius:0 0 14px 14px;box-shadow:0 20px 40px rgba(0,0,0,.6)}
 .laptop .base:after{content:"";display:block;width:18%;height:5px;margin:0 auto;background:#121211;border-radius:0 0 6px 6px}
-.tel{position:absolute;border-radius:38px;background:linear-gradient(145deg,#3a3d42,#0d0e10 30%,#0d0e10 75%,#2c2f34);padding:9px;box-shadow:0 0 0 1.5px #6e737a,0 40px 70px rgba(0,0,0,.6)}
-.tel img{display:block;width:100%;aspect-ratio:9/19.5;object-fit:cover;object-position:top;border-radius:30px}
-.tel:after{content:"";position:absolute;top:18px;left:50%;width:30%;height:5.5%;max-height:24px;transform:translateX(-50%);background:#000;border-radius:20px}
+/* iPhone récent (gamme Pro) : cadre titane fin, bords d'écran très étroits, Dynamic Island, boutons latéraux.
+   Toutes les cotes sont proportionnelles à la largeur (variable --w posée par iphone()). */
+.tel{position:absolute;--w:150px;border-radius:calc(var(--w) * .165);padding:calc(var(--w) * .032);
+  background:linear-gradient(135deg,#d9d6cf 0%,#8e8a82 12%,#4b4844 30%,#2a2826 50%,#4b4844 70%,#9b968d 88%,#e2ded6 100%);
+  box-shadow:0 0 0 calc(var(--w) * .004) rgba(255,255,255,.35) inset,0 calc(var(--w) * .25) calc(var(--w) * .45) rgba(0,0,0,.55),0 calc(var(--w) * .06) calc(var(--w) * .1) rgba(0,0,0,.35)}
+.tel .verre{position:relative;border-radius:calc(var(--w) * .135);overflow:hidden;background:#000;padding:calc(var(--w) * .022)}
+.tel img{display:block;width:100%;aspect-ratio:9/18.2;object-fit:cover;object-position:top;border-radius:calc(var(--w) * .115) !important}
+.tel .statut{display:flex;justify-content:space-between;align-items:center;height:calc(var(--w) * .135);padding:0 calc(var(--w) * .1) 0 calc(var(--w) * .115);font:600 calc(var(--w) * .062) Geist,sans-serif;border-radius:calc(var(--w) * .115) calc(var(--w) * .115) 0 0}
+.tel .statut i{display:inline-block;margin-left:calc(var(--w) * .02);border-radius:2px;background:currentColor}
+.tel .verre > img{border-radius:0 0 calc(var(--w) * .115) calc(var(--w) * .115) !important}
+.tel .ile{position:absolute;top:calc(var(--w) * .052);left:50%;width:31%;height:calc(var(--w) * .09);transform:translateX(-50%);background:#000;border-radius:999px;box-shadow:0 0 0 1px rgba(255,255,255,.04)}
+.tel .ile:after{content:"";position:absolute;right:12%;top:50%;width:calc(var(--w) * .045);height:calc(var(--w) * .045);transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 35% 35%,#2b3a5c,#05070c 65%)}
+.tel .reflet{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 75%,rgba(255,255,255,.06) 100%)}
+.tel .btn{position:absolute;width:calc(var(--w) * .022);border-radius:2px;background:linear-gradient(90deg,#3a3835,#a19c93 55%,#55524d)}
 .mark{display:block}
 .filet{position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,169,97,.5),transparent)}
 </style></head><body>
@@ -167,6 +178,20 @@ fetch('icones.svg').then(r => r.text()).then(t => { document.getElementById('ico
 // couvertures de stories à la une
 const UNES = [['une-realisations', 'i-window'], ['une-avis', 'i-star'], ['une-tarifs', 'i-cart'], ['une-methode', 'i-calendar'], ['une-videos', 'i-film'], ['une-contact', 'i-mail']];
 for (const [id, ic] of UNES) { const n = document.getElementById('tpl-une').content.firstElementChild.cloneNode(true); n.id = id; n.querySelector('use').setAttribute('href', '#' + ic); document.body.appendChild(n); }
+// habille chaque .tel en iPhone récent : verre, Dynamic Island, reflet, boutons (action, volume, alimentation, commande caméra)
+document.querySelectorAll('.tel').forEach(t => {
+  const w = parseFloat(t.style.width); t.style.setProperty('--w', w + 'px'); t.style.borderRadius = ''; t.style.padding = '';
+  const img = t.querySelector('img'); img.style.borderRadius = '';
+  const verre = document.createElement('div'); verre.className = 'verre'; t.insertBefore(verre, img); verre.appendChild(img);
+  // barre d'état aux couleurs du haut de la page (comme un vrai iPhone : le contenu commence sous la Dynamic Island)
+  const c = document.createElement('canvas'); c.width = c.height = 4; const x = c.getContext('2d'); x.drawImage(img, 0, 0, 40, 40, 0, 0, 4, 4);
+  const [r, g, b] = x.getImageData(1, 1, 1, 1).data, clair = (r * .3 + g * .59 + b * .11) > 150;
+  verre.insertAdjacentHTML('afterbegin', `<div class="statut" style="background:rgb(${r},${g},${b});color:${clair ? '#111' : '#fff'}"><span>9:41</span><span><i style="width:calc(var(--w) * .05);height:calc(var(--w) * .035)"></i><i style="width:calc(var(--w) * .075);height:calc(var(--w) * .035);border-radius:3px"></i></span></div>`);
+  verre.insertAdjacentHTML('beforeend', '<div class="ile"></div><div class="reflet"></div>');
+  const H = w * 19.5 / 9;   // proportions d'un iPhone récent
+  for (const [cote, y, h] of [['g', .17, .055], ['g', .25, .1], ['g', .37, .1], ['d', .28, .15], ['d', .62, .09]]) {
+    const b = document.createElement('div'); b.className = 'btn'; b.style.top = (H * y) + 'px'; b.style.height = (H * h) + 'px'; b.style[cote === 'g' ? 'left' : 'right'] = (-w * .018) + 'px'; t.appendChild(b); }
+});
 window.montrer = id => { document.querySelectorAll('.v').forEach(v => v.classList.toggle('on', v.id === id)); const v = document.getElementById(id); return [v.offsetWidth, v.offsetHeight]; };
 </script>
 </body></html>
