@@ -9,6 +9,11 @@
 //   g.poser({ brasD: { main: [2.1, 1.2, .3] }, mainD: { fermeture: 1, objet: 'tel' }, visage: { bouche: 'rire' } });
 // Tous les os sont accessibles par leur nom dans g.os (voir README.md pour la liste complète).
 
+// Monogramme Aurea Media (même tracé que reseaux-sociaux/sources/logo-monogramme-clair.svg), utilisé sur le casque
+export const LOGO_MONOGRAMME = ["M68.6,1.4 L94.2,52.5 C92.50,54.42 87.45,59.58 84,64 C80.55,68.42 76.67,73.75 73.5,79 C70.33,84.25 67.53,90.50 65,95.5 C62.47,100.50 60.47,104.92 58.3,109 C56.13,113.08 54.72,116.90 52,120 C49.28,123.10 47.00,125.10 42,127.6 C37.00,130.10 28.40,132.80 22,135 C15.60,137.20 6.67,139.83 3.6,140.8 L1.4,139.6 Z", "M97.4,57.4 L135.4,138.6 L136,140.6 C134.50,140.22 131.00,139.63 127,138.3 C123.00,136.97 117.33,134.65 112,132.6 C106.67,130.55 99.30,128.77 95,126 C90.70,123.23 88.67,119.42 86.2,116 C83.73,112.58 81.67,108.83 80.2,105.5 C78.73,102.17 77.33,99.92 77.4,96 C77.47,92.08 78.83,86.58 80.6,82 C82.37,77.42 85.20,72.60 88,68.5 C90.80,64.40 95.83,59.25 97.4,57.4 Z"];
+
+const BADGE_REDRESSE = -.07;   // le badge est posé sur le flanc du dôme : léger contre-pivot pour que le logo paraisse droit de face
+
 export const COULEURS = {
   poil: 0xa8643a, poilOmbre: 0x7f4524, poilClair: 0xc98552, ventre: 0xf6d9ae, museau: 0xfbe6c6, nez: 0x3a2016,
   dents: 0xfffaf0, oeil: 0xffffff, pupille: 0x1a120d, casque: 0xffc21a, casqueOmbre: 0xe89b00, casqueClair: 0xffe27a,
@@ -191,12 +196,18 @@ export function creerGaspard(THREE, options = {}) {
     const g = new THREE.LatheGeometry(prof, 72); const pos = g.attributes.position; for (let i = 0; i < pos.count; i++) pos.setZ(i, pos.getZ(i) * .9); g.computeVertexNormals();
     const bord = maillage(g, mats.casqueOmbre, 'casque_bord'); bord.position.set(0, .02, .1); casque.add(bord); }
   const arete = maillage(new THREE.TorusGeometry(1, .14, 12, 48, Math.PI), mats.casqueClair, 'casque_arete'); arete.rotation.y = Math.PI / 2; arete.scale.set(1.36, 1.46, 1.4); casque.add(arete);
-  { const cv = document.createElement('canvas'); cv.width = cv.height = 256; const x = cv.getContext('2d');
-    x.fillStyle = '#15181e'; x.beginPath(); x.arc(128, 128, 124, 0, Math.PI * 2); x.fill(); x.fillStyle = '#ffc21a'; x.font = '800 150px Bricolage, Arial Black, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('A', 128, 140);
+  { // badge du casque : le vrai monogramme Aurea Media (tracé vectoriel identique au logo), sur pastille noire cerclée d'or
+    const cv = document.createElement('canvas'); cv.width = cv.height = 512; const x = cv.getContext('2d');
+    x.fillStyle = '#0A0A0A'; x.beginPath(); x.arc(256, 256, 250, 0, Math.PI * 2); x.fill();
+    x.strokeStyle = '#C9A961'; x.lineWidth = 14; x.beginPath(); x.arc(256, 256, 236, 0, Math.PI * 2); x.stroke();
+    x.save(); x.translate(256 - 69.7 * 2.25, 256 - 74 * 2.25); x.scale(2.25, 2.25);   // monogramme (repère 141 x 147) centré
+    x.fillStyle = x.strokeStyle = '#F5F5F0'; x.lineWidth = 2.6; x.lineJoin = 'round';
+    for (const d of LOGO_MONOGRAMME) { const p = new Path2D(d); x.fill(p); x.stroke(p); }
+    x.fillStyle = '#C9A961'; x.beginPath(); x.arc(69.7, 117.8, 10.2, 0, Math.PI * 2); x.fill(); x.restore();
     const tx = new THREE.CanvasTexture(cv); tx.colorSpace = THREE.SRGBColorSpace;
-    const badge = new THREE.Mesh(new THREE.CircleGeometry(.22, 40), new THREE.MeshBasicMaterial({ map: tx, transparent: true })); badge.name = 'casque_badge';
+    const badge = new THREE.Mesh(new THREE.CircleGeometry(.27, 48), new THREE.MeshBasicMaterial({ map: tx, transparent: true })); badge.name = 'casque_badge';
     const ang = -.5, el = .55; const dir = new THREE.Vector3(Math.sin(ang) * Math.cos(el), Math.sin(el), Math.cos(ang) * Math.cos(el));
-    badge.position.set(dir.x * 1.565, dir.y * 1.425, dir.z * 1.365); badge.lookAt(badge.position.clone().add(new THREE.Vector3(dir.x / 1.56, dir.y / 1.42, dir.z / 1.36))); casque.add(badge); }
+    badge.position.set(dir.x * 1.565, dir.y * 1.425, dir.z * 1.365); badge.lookAt(badge.position.clone().add(new THREE.Vector3(dir.x / 1.56, dir.y / 1.42, dir.z / 1.36))); badge.rotateZ(BADGE_REDRESSE); casque.add(badge); }
 
   // ---------------- ceinture à outils, poche et téléphone, crayon ----------------
   { const band = profil.filter(p => p[1] > .74 && p[1] < 1.16).map(p => new THREE.Vector2(p[0] + .035, p[1]));
