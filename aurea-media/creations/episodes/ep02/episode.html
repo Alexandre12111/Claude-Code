@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Épisode 1 Épisode 2 · Aurea Media</title>
+<style>
+@font-face{font-family:"Bricolage";src:url(polices/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(polices/geist.woff2) format("woff2");font-weight:100 900}
+html,body{margin:0;background:#000}
+#scene{position:relative;width:1080px;height:1920px;overflow:hidden;background:#111}
+#svg{position:absolute;inset:0}
+#tel{position:absolute;left:0;top:0;width:414px;height:868px;border-radius:66px;padding:12px;box-sizing:border-box;transform-origin:50% 50%;display:none;
+  background:linear-gradient(145deg,#2b2e34 0%,#0b0c0f 18%,#0b0c0f 82%,#24272d 100%);
+  box-shadow:0 0 0 1.5px #a7adb6,0 0 0 4px #4a4f57,0 0 0 5.5px #17191d,inset 0 0 0 1.5px #000,0 80px 120px -30px rgba(35,22,10,.5),0 34px 46px -24px rgba(0,0,0,.45)}
+#tel:before{content:"";position:absolute;right:-9px;top:236px;width:5px;height:104px;border-radius:0 3px 3px 0;background:linear-gradient(90deg,#3c4047,#a7adb6 60%,#5a5f67)}
+#tel:after{content:"";position:absolute;left:-9px;top:200px;width:5px;height:66px;border-radius:3px 0 0 3px;background:linear-gradient(270deg,#3c4047,#a7adb6 60%,#5a5f67);box-shadow:0 88px 0 #6f747c,0 -64px 0 #6f747c}
+#telEcran{position:relative;width:390px;height:844px;border-radius:54px;overflow:hidden;background:#000}
+#tel #site{border-radius:54px}
+#tel .encoche{position:absolute;left:50%;top:24px;width:118px;height:34px;margin-left:-59px;border-radius:20px;background:#000;z-index:20}
+#tel .encoche:after{content:"";position:absolute;right:16px;top:11px;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#3a4a6a,#0a0d14 60%)}
+#tel .refletBox{position:absolute;inset:12px;border-radius:54px;overflow:hidden;pointer-events:none;z-index:21;box-shadow:inset 0 0 0 1px rgba(0,0,0,.55);background:linear-gradient(128deg,rgba(255,255,255,.13) 0%,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 72%,rgba(255,255,255,.05) 100%)}
+#telReflet{position:absolute;top:-200px;left:0;width:150px;height:1300px;background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.16),rgba(255,255,255,0))}
+#st{position:absolute;left:90px;right:90px;top:1300px;height:250px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:0 22px;pointer-events:none}
+#st .m{font:800 86px/1.06 "Bricolage";letter-spacing:-.015em;color:#fff;display:inline-block;transform-origin:50% 90%;-webkit-text-stroke:14px #15181e;paint-order:stroke fill;text-shadow:0 8px 0 rgba(21,24,30,.9)}
+#st .m.cle{color:#ffd23f}
+#progression{position:absolute;left:0;right:0;top:0;height:10px;background:rgba(0,0,0,.18)}#progression i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e8b84a,#ffd86b);box-shadow:0 0 12px rgba(232,184,74,.8)}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none}
+#fondu{position:absolute;inset:0;background:#000;opacity:0;pointer-events:none}
+</style><style id="siteCss"></style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script type="module" src="gaspard3d-scene.js"></script></head>
+<body>
+<div id="scene">
+  <svg id="svg" width="1080" height="1920" viewBox="0 0 1080 1920" xmlns="http://www.w3.org/2000/svg"><defs id="defs"></defs></svg>
+  <div id="tel"><div class="encoche"></div><div id="telEcran"></div><div class="refletBox"><div id="telReflet"></div></div></div>
+  <svg id="svgHaut" width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;inset:0;pointer-events:none"></svg>
+  <div id="flash"></div>
+  <div id="fondu"></div>
+  <div id="st"></div>
+  <div id="progression"><i></i></div>
+</div>
+<script src="anim.js"></script>
+<script src="fx.js"></script>
+<script src="pantin.js"></script>
+<script src="scenes.js"></script>
+<script src="sous-titres.js"></script>
+<script>
+(async () => {
+  if (!window.Gaspard3D) await new Promise(r => window.addEventListener('g3d-pret', r, { once: true }));   // V5 : Gaspard 3D
+  const script = await (await fetch('script.json')).json();
+  let calage = null;
+  try { calage = await (await fetch('calage.json', { cache: 'no-store' })).json(); } catch (e) {}
+  window.CAL = construireCalage(script, calage);
+  construireScenes();
+  construireSousTitres(script, window.CAL);
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  await document.fonts.ready;
+  window.duree = window.CAL.duree;
+  window.pret = true;
+})();
+</script>
+</body></html>
