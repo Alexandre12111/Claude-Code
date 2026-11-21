@@ -1,0 +1,2906 @@
+{
+ "accueil": {
+  "fichier": "accueil.html",
+  "titre": "Accueil",
+  "seo_titre": "DualTech 2026 : rendez-vous incontournable de l'industrie duale",
+  "seo_description": "Le 26 novembre 2026 au Campus Cyber, DualTech réunit décideurs publics, industriels et investisseurs de l'industrie duale. Demandez votre accréditation.",
+  "mot_cle": "industrie duale",
+  "precharge": "assets/img/hero-poster.webp",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "{{site}}/#dualtech-2026",
+    "name": "DualTech 2026",
+    "description": "Seconde édition de DualTech, le rendez-vous de l'industrie duale : tables rondes, keynotes, pitch sessions, expositions et ateliers réunissant acteurs publics, industriels, scientifiques et financiers de la souveraineté technologique française et européenne.",
+    "startDate": "2026-11-26T08:30:00+01:00",
+    "endDate": "2026-11-26T19:00:00+01:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+     "@id": "{{site}}/#campus-cyber"
+    },
+    "image": [
+     "{{site}}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"
+    ],
+    "organizer": {
+     "@id": "{{site}}/#inas"
+    },
+    "sponsor": {
+     "@id": "{{site}}/#pold"
+    },
+    "inLanguage": "fr-FR",
+    "url": "{{site}}/",
+    "maximumAttendeeCapacity": 400,
+    "isAccessibleForFree": true,
+    "offers": {
+     "@type": "Offer",
+     "url": "https://luma.com/wr8t4i35",
+     "price": "0",
+     "priceCurrency": "EUR",
+     "availability": "https://schema.org/InStock",
+     "description": "Inscription sur demande, validée par l'organisation"
+    },
+    "performer": [
+     {
+      "@type": "Person",
+      "name": "Stéphane Boujnah",
+      "jobTitle": "CEO et Chairman of the Managing Board",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Euronext"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Chiva",
+      "jobTitle": "Président-directeur général",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Office National d’Études et de Recherches Aérospatiales (ONERA)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Stéphane Ouaki",
+      "jobTitle": "Head of Department",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "European Innovation Council and SMEs Executive Agency (EISMEA)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Benoist Grossmann",
+      "jobTitle": "Chairman",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Eurazeo Tech"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandra André",
+      "jobTitle": "Directrice",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "French Tech Grand Paris"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Clément Leprince",
+      "jobTitle": "Président",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandre Papaemmanuel",
+      "jobTitle": "Senior Vice President, Business Strategy & Future Portfolios",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "MBDA"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Charles Beigbeder",
+      "jobTitle": "Founding Partner",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Expansion Ventures"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jacques Kossowski",
+      "jobTitle": "Vice-président délégué au développement économique",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Paris Ouest La Défense"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexis Toustou",
+      "jobTitle": "Directeur général",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "François Carlot",
+      "jobTitle": "Associé gérant",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Rothschild & Co"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Christophe Fromantin",
+      "jobTitle": "Maire",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Mairie de Neuilly-sur-Seine"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Mathieu Fossat",
+      "jobTitle": "Sous-directeur, chef du service des biens à double usage",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Ministère de l’Économie et des Finances"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Marine Le Châtelier",
+      "jobTitle": "Directrice du pôle industrie de défense",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Louis Constanza",
+      "jobTitle": "Co-founder, EVP Development",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Wandercraft"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Christophe Lambert",
+      "jobTitle": "Président du Club StarAir by GIFAS et CEO d’Ascendance",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "StarAir by GIFAS · Ascendance"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Amélie Cindea",
+      "jobTitle": "Directrice des opérations",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandre Medvedowsky",
+      "jobTitle": "Président",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "ESL & NSI Group"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Eric Ottou",
+      "jobTitle": "Directeur Technology Intelligence, Assessment, Insertion",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Thales"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jeanne Tricot",
+      "jobTitle": "Directrice des programmes",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Pascal Saubion",
+      "jobTitle": "Directeur commercial de la division défense et sécurité",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Orange Business"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Xavier Desmaison",
+      "jobTitle": "Directeur général / CEO",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "NSI Group"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Michael Bollet",
+      "jobTitle": "Directeur des études adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Hubert Raymond",
+      "jobTitle": "Directeur de l’innovation et de GENERATE",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "GICAT"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Romain Lucken",
+      "jobTitle": "CEO et cofondateur",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Aldoria"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Léonie Meister",
+      "jobTitle": "Directrice des études",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Marc Antoine",
+      "jobTitle": "Directeur des affaires institutionnelles",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Safran AI"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Ankri",
+      "jobTitle": "Directeur stratégique",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Benoit Vedel",
+      "jobTitle": "Directeur adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "GICAT"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Paul Brun",
+      "jobTitle": "Président de la Commission du financement de l’industrie de défense (CFID)",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Menier",
+      "jobTitle": "Co-founder and Chief Executive Officer",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "NPco"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Eliot Bernard",
+      "jobTitle": "Directeur stratégique adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean Prévost",
+      "jobTitle": "Adjoint au Maire délégué au Développement économique et à l’Emploi",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Mairie de Suresnes"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Arthur Binetti",
+      "jobTitle": "Directeur adjoint des programmes",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     }
+    ]
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/#page",
+    "url": "{{site}}/",
+    "name": "DualTech 2026 : le rendez-vous incontournable de l'industrie duale",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "about": {
+     "@id": "{{site}}/#dualtech-2026"
+    },
+    "primaryImageOfPage": "{{site}}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"
+   }
+  ]
+ },
+ "l-evenement": {
+  "fichier": "l-evenement.html",
+  "titre": "L'événement",
+  "seo_titre": "L'événement DualTech 2026 : formats et temps forts",
+  "seo_description": "Keynotes, tables rondes, pitch sessions, ateliers et Prix de l'innovation duale : découvrez la journée DualTech du 26 novembre 2026 au Campus Cyber.",
+  "mot_cle": "événement DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "{{site}}/#dualtech-2026",
+    "name": "DualTech 2026",
+    "description": "Seconde édition de DualTech, le rendez-vous de l'industrie duale : tables rondes, keynotes, pitch sessions, expositions et ateliers réunissant acteurs publics, industriels, scientifiques et financiers de la souveraineté technologique française et européenne.",
+    "startDate": "2026-11-26T08:30:00+01:00",
+    "endDate": "2026-11-26T19:00:00+01:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+     "@id": "{{site}}/#campus-cyber"
+    },
+    "image": [
+     "{{site}}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"
+    ],
+    "organizer": {
+     "@id": "{{site}}/#inas"
+    },
+    "sponsor": {
+     "@id": "{{site}}/#pold"
+    },
+    "inLanguage": "fr-FR",
+    "url": "{{site}}/",
+    "maximumAttendeeCapacity": 400,
+    "isAccessibleForFree": true,
+    "offers": {
+     "@type": "Offer",
+     "url": "https://luma.com/wr8t4i35",
+     "price": "0",
+     "priceCurrency": "EUR",
+     "availability": "https://schema.org/InStock",
+     "description": "Inscription sur demande, validée par l'organisation"
+    },
+    "performer": [
+     {
+      "@type": "Person",
+      "name": "Stéphane Boujnah",
+      "jobTitle": "CEO et Chairman of the Managing Board",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Euronext"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Chiva",
+      "jobTitle": "Président-directeur général",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Office National d’Études et de Recherches Aérospatiales (ONERA)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Stéphane Ouaki",
+      "jobTitle": "Head of Department",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "European Innovation Council and SMEs Executive Agency (EISMEA)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Benoist Grossmann",
+      "jobTitle": "Chairman",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Eurazeo Tech"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandra André",
+      "jobTitle": "Directrice",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "French Tech Grand Paris"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Clément Leprince",
+      "jobTitle": "Président",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandre Papaemmanuel",
+      "jobTitle": "Senior Vice President, Business Strategy & Future Portfolios",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "MBDA"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Charles Beigbeder",
+      "jobTitle": "Founding Partner",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Expansion Ventures"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jacques Kossowski",
+      "jobTitle": "Vice-président délégué au développement économique",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Paris Ouest La Défense"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexis Toustou",
+      "jobTitle": "Directeur général",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "François Carlot",
+      "jobTitle": "Associé gérant",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Rothschild & Co"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Christophe Fromantin",
+      "jobTitle": "Maire",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Mairie de Neuilly-sur-Seine"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Mathieu Fossat",
+      "jobTitle": "Sous-directeur, chef du service des biens à double usage",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Ministère de l’Économie et des Finances"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Marine Le Châtelier",
+      "jobTitle": "Directrice du pôle industrie de défense",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Louis Constanza",
+      "jobTitle": "Co-founder, EVP Development",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Wandercraft"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Christophe Lambert",
+      "jobTitle": "Président du Club StarAir by GIFAS et CEO d’Ascendance",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "StarAir by GIFAS · Ascendance"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Amélie Cindea",
+      "jobTitle": "Directrice des opérations",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandre Medvedowsky",
+      "jobTitle": "Président",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "ESL & NSI Group"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Eric Ottou",
+      "jobTitle": "Directeur Technology Intelligence, Assessment, Insertion",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Thales"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jeanne Tricot",
+      "jobTitle": "Directrice des programmes",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Pascal Saubion",
+      "jobTitle": "Directeur commercial de la division défense et sécurité",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Orange Business"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Xavier Desmaison",
+      "jobTitle": "Directeur général / CEO",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "NSI Group"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Michael Bollet",
+      "jobTitle": "Directeur des études adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Hubert Raymond",
+      "jobTitle": "Directeur de l’innovation et de GENERATE",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "GICAT"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Romain Lucken",
+      "jobTitle": "CEO et cofondateur",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Aldoria"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Léonie Meister",
+      "jobTitle": "Directrice des études",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Marc Antoine",
+      "jobTitle": "Directeur des affaires institutionnelles",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Safran AI"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Ankri",
+      "jobTitle": "Directeur stratégique",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Benoit Vedel",
+      "jobTitle": "Directeur adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "GICAT"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Paul Brun",
+      "jobTitle": "Président de la Commission du financement de l’industrie de défense (CFID)",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Menier",
+      "jobTitle": "Co-founder and Chief Executive Officer",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "NPco"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Eliot Bernard",
+      "jobTitle": "Directeur stratégique adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean Prévost",
+      "jobTitle": "Adjoint au Maire délégué au Développement économique et à l’Emploi",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Mairie de Suresnes"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Arthur Binetti",
+      "jobTitle": "Directeur adjoint des programmes",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     }
+    ]
+   },
+   {
+    "@type": "AboutPage",
+    "@id": "{{site}}/l-evenement/#page",
+    "url": "{{site}}/l-evenement/",
+    "name": "L'événement DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/l-evenement/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/#dualtech-2026"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "L'événement",
+      "item": "{{site}}/l-evenement/"
+     }
+    ],
+    "@id": "{{site}}/l-evenement/#ariane"
+   }
+  ]
+ },
+ "programme-2026": {
+  "fichier": "programme-2026.html",
+  "titre": "Programme 2026",
+  "seo_titre": "Programme DualTech 2026 : keynotes et tables rondes",
+  "seo_description": "Programme du 26 novembre 2026 au Campus Cyber : keynotes, tables rondes, workshops et remise du Prix de l'innovation duale, de 8h30 à 19h.",
+  "mot_cle": "programme DualTech 2026",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "{{site}}/#dualtech-2026",
+    "name": "DualTech 2026",
+    "subEvent": [
+     {
+      "@type": "Event",
+      "name": "Table ronde : Industrie de défense, quelles innovations pour préparer les conflits de demain ?",
+      "startDate": "2026-11-26T09:30:00+01:00",
+      "endDate": "2026-11-26T10:15:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Eric Ottou"
+       },
+       {
+        "@type": "Person",
+        "name": "Alexandre Papaemmanuel"
+       },
+       {
+        "@type": "Person",
+        "name": "Marc Antoine"
+       },
+       {
+        "@type": "Person",
+        "name": "Hubert Raymond"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : La robotisation du champ de bataille : préparer les armées à la guerre de demain",
+      "startDate": "2026-11-26T10:15:00+01:00",
+      "endDate": "2026-11-26T10:30:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled"
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Recherche, investissement et commande : quel nouveau modèle pour l'innovation de défense ?",
+      "startDate": "2026-11-26T11:00:00+01:00",
+      "endDate": "2026-11-26T11:15:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Emmanuel Chiva"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Table ronde : Du civil au militaire : réussir la bascule duale",
+      "startDate": "2026-11-26T11:15:00+01:00",
+      "endDate": "2026-11-26T12:00:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Jean-Louis Constanza"
+       },
+       {
+        "@type": "Person",
+        "name": "Pascal Saubion"
+       },
+       {
+        "@type": "Person",
+        "name": "Alexandre Medvedowsky"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Défense européenne : quel rôle pour les banques publiques de développement ?",
+      "startDate": "2026-11-26T12:00:00+01:00",
+      "endDate": "2026-11-26T12:15:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled"
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Scale up : comment financer le passage à l'échelle des startups stratégiques ?",
+      "startDate": "2026-11-26T14:00:00+01:00",
+      "endDate": "2026-11-26T14:15:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Jean-Christophe Lambert"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Table ronde : Investir dans la New defence : effet de mode ou tendance de fond ?",
+      "startDate": "2026-11-26T14:15:00+01:00",
+      "endDate": "2026-11-26T15:00:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Charles Beigbeder"
+       },
+       {
+        "@type": "Person",
+        "name": "Benoist Grossmann"
+       },
+       {
+        "@type": "Person",
+        "name": "Romain Lucken"
+       },
+       {
+        "@type": "Person",
+        "name": "François Carlot"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Biens à double usage : comment concilier contrôle des exportations et développement industriel ?",
+      "startDate": "2026-11-26T15:45:00+01:00",
+      "endDate": "2026-11-26T16:00:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Mathieu Fossat"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Le territoire comme accélérateur d'innovation duale",
+      "startDate": "2026-11-26T16:15:00+01:00",
+      "endDate": "2026-11-26T16:30:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Jean-Christophe Fromantin"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Table ronde : Produire plus, plus vite : territoires, filières et deeptech au cœur de la réindustrialisation",
+      "startDate": "2026-11-26T16:30:00+01:00",
+      "endDate": "2026-11-26T17:15:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Benoit Vedel"
+       },
+       {
+        "@type": "Person",
+        "name": "Xavier Desmaison"
+       },
+       {
+        "@type": "Person",
+        "name": "Emmanuel Menier"
+       },
+       {
+        "@type": "Person",
+        "name": "Jean Prévost"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Remise du Prix de l'Innovation Duale",
+      "startDate": "2026-11-26T17:15:00+01:00",
+      "endDate": "2026-11-26T18:00:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Alexandra André"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Souveraineté technologique : le Dual-use au cœur de la nouvelle stratégie européenne d'innovation",
+      "startDate": "2026-11-26T18:15:00+01:00",
+      "endDate": "2026-11-26T18:30:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled",
+      "performer": [
+       {
+        "@type": "Person",
+        "name": "Stéphane Ouaki"
+       }
+      ]
+     },
+     {
+      "@type": "Event",
+      "name": "Keynote : Combattre demain : préparer et transformer nos forces armées",
+      "startDate": "2026-11-26T18:30:00+01:00",
+      "endDate": "2026-11-26T18:45:00+01:00",
+      "location": {
+       "@id": "{{site}}/#campus-cyber"
+      },
+      "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+      "eventStatus": "https://schema.org/EventScheduled"
+     }
+    ]
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/programme-2026/#page",
+    "url": "{{site}}/programme-2026/",
+    "name": "Programme DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/programme-2026/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/#dualtech-2026"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Programme 2026",
+      "item": "{{site}}/programme-2026/"
+     }
+    ],
+    "@id": "{{site}}/programme-2026/#ariane"
+   }
+  ]
+ },
+ "intervenants-2026": {
+  "fichier": "intervenants-2026.html",
+  "titre": "Intervenants 2026",
+  "seo_titre": "Intervenants DualTech 2026 : 34 speakers défense et industrie",
+  "seo_description": "Euronext, ONERA, Thales, MBDA, Eurazeo, EISMEA : découvrez les 34 intervenants de DualTech 2026, le 26 novembre au Campus Cyber de La Défense.",
+  "mot_cle": "intervenants DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "CollectionPage",
+    "@id": "{{site}}/intervenants-2026/#page",
+    "url": "{{site}}/intervenants-2026/",
+    "name": "Intervenants DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/intervenants-2026/#ariane"
+    },
+    "mainEntity": {
+     "@type": "ItemList",
+     "name": "Intervenants DualTech 2026",
+     "numberOfItems": 34,
+     "itemListElement": [
+      {
+       "@type": "ListItem",
+       "position": 1,
+       "item": {
+        "@type": "Person",
+        "name": "Stéphane Boujnah",
+        "jobTitle": "CEO et Chairman of the Managing Board",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Euronext"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/stephane-boujnah.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 2,
+       "item": {
+        "@type": "Person",
+        "name": "Emmanuel Chiva",
+        "jobTitle": "Président-directeur général",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Office National d’Études et de Recherches Aérospatiales (ONERA)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/emmanuel-chiva.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 3,
+       "item": {
+        "@type": "Person",
+        "name": "Stéphane Ouaki",
+        "jobTitle": "Head of Department",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "European Innovation Council and SMEs Executive Agency (EISMEA)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/stephane-ouaki.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 4,
+       "item": {
+        "@type": "Person",
+        "name": "Benoist Grossmann",
+        "jobTitle": "Chairman",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Eurazeo Tech"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/benoist-grossmann.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 5,
+       "item": {
+        "@type": "Person",
+        "name": "Alexandra André",
+        "jobTitle": "Directrice",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "French Tech Grand Paris"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/alexandra-andre.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 6,
+       "item": {
+        "@type": "Person",
+        "name": "Clément Leprince",
+        "jobTitle": "Président",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/clement-leprince.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 7,
+       "item": {
+        "@type": "Person",
+        "name": "Alexandre Papaemmanuel",
+        "jobTitle": "Senior Vice President, Business Strategy & Future Portfolios",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "MBDA"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/alexandre-papaemmanuel.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 8,
+       "item": {
+        "@type": "Person",
+        "name": "Charles Beigbeder",
+        "jobTitle": "Founding Partner",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Expansion Ventures"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/charles-beigbeder.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 9,
+       "item": {
+        "@type": "Person",
+        "name": "Jacques Kossowski",
+        "jobTitle": "Vice-président délégué au développement économique",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Paris Ouest La Défense"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/jacques-kossowski.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 10,
+       "item": {
+        "@type": "Person",
+        "name": "Alexis Toustou",
+        "jobTitle": "Directeur général",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/alexis-toustou.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 11,
+       "item": {
+        "@type": "Person",
+        "name": "François Carlot",
+        "jobTitle": "Associé gérant",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Rothschild & Co"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/francois-carlot.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 12,
+       "item": {
+        "@type": "Person",
+        "name": "Jean-Christophe Fromantin",
+        "jobTitle": "Maire",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Mairie de Neuilly-sur-Seine"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/jean-christophe-fromantin.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 13,
+       "item": {
+        "@type": "Person",
+        "name": "Mathieu Fossat",
+        "jobTitle": "Sous-directeur, chef du service des biens à double usage",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Ministère de l’Économie et des Finances"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/mathieu-fossat.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 14,
+       "item": {
+        "@type": "Person",
+        "name": "Marine Le Châtelier",
+        "jobTitle": "Directrice du pôle industrie de défense",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/marine-le-chatelier.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 15,
+       "item": {
+        "@type": "Person",
+        "name": "Jean-Louis Constanza",
+        "jobTitle": "Co-founder, EVP Development",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Wandercraft"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/jean-louis-constanza.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 16,
+       "item": {
+        "@type": "Person",
+        "name": "Jean-Christophe Lambert",
+        "jobTitle": "Président du Club StarAir by GIFAS et CEO d’Ascendance",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "StarAir by GIFAS · Ascendance"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/jean-christophe-lambert.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 17,
+       "item": {
+        "@type": "Person",
+        "name": "Amélie Cindea",
+        "jobTitle": "Directrice des opérations",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/amelie-cindea.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 18,
+       "item": {
+        "@type": "Person",
+        "name": "Alexandre Medvedowsky",
+        "jobTitle": "Président",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "ESL & NSI Group"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/alexandre-medvedowsky.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 19,
+       "item": {
+        "@type": "Person",
+        "name": "Eric Ottou",
+        "jobTitle": "Directeur Technology Intelligence, Assessment, Insertion",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Thales"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/eric-ottou.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 20,
+       "item": {
+        "@type": "Person",
+        "name": "Jeanne Tricot",
+        "jobTitle": "Directrice des programmes",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/jeanne-tricot.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 21,
+       "item": {
+        "@type": "Person",
+        "name": "Pascal Saubion",
+        "jobTitle": "Directeur commercial de la division défense et sécurité",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Orange Business"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/pascal-saubion.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 22,
+       "item": {
+        "@type": "Person",
+        "name": "Xavier Desmaison",
+        "jobTitle": "Directeur général / CEO",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "NSI Group"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/xavier-desmaison.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 23,
+       "item": {
+        "@type": "Person",
+        "name": "Michael Bollet",
+        "jobTitle": "Directeur des études adjoint",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/michael-bollet.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 24,
+       "item": {
+        "@type": "Person",
+        "name": "Hubert Raymond",
+        "jobTitle": "Directeur de l’innovation et de GENERATE",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "GICAT"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/hubert-raymond.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 25,
+       "item": {
+        "@type": "Person",
+        "name": "Romain Lucken",
+        "jobTitle": "CEO et cofondateur",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Aldoria"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/romain-lucken.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 26,
+       "item": {
+        "@type": "Person",
+        "name": "Léonie Meister",
+        "jobTitle": "Directrice des études",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/leonie-meister.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 27,
+       "item": {
+        "@type": "Person",
+        "name": "Marc Antoine",
+        "jobTitle": "Directeur des affaires institutionnelles",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Safran AI"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/marc-antoine.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 28,
+       "item": {
+        "@type": "Person",
+        "name": "Emmanuel Ankri",
+        "jobTitle": "Directeur stratégique",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/emmanuel-ankri.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 29,
+       "item": {
+        "@type": "Person",
+        "name": "Benoit Vedel",
+        "jobTitle": "Directeur adjoint",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "GICAT"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/benoit-vedel.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 30,
+       "item": {
+        "@type": "Person",
+        "name": "Paul Brun",
+        "jobTitle": "Président de la Commission du financement de l’industrie de défense (CFID)",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/paul-brun.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 31,
+       "item": {
+        "@type": "Person",
+        "name": "Emmanuel Menier",
+        "jobTitle": "Co-founder and Chief Executive Officer",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "NPco"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/emmanuel-menier.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 32,
+       "item": {
+        "@type": "Person",
+        "name": "Eliot Bernard",
+        "jobTitle": "Directeur stratégique adjoint",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/eliot-bernard.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 33,
+       "item": {
+        "@type": "Person",
+        "name": "Jean Prévost",
+        "jobTitle": "Adjoint au Maire délégué au Développement économique et à l’Emploi",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Mairie de Suresnes"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/jean-prevost.webp"
+       }
+      },
+      {
+       "@type": "ListItem",
+       "position": 34,
+       "item": {
+        "@type": "Person",
+        "name": "Arthur Binetti",
+        "jobTitle": "Directeur adjoint des programmes",
+        "worksFor": {
+         "@type": "Organization",
+         "name": "Institut National des Affaires Stratégiques (INAS)"
+        },
+        "image": "{{site}}/wp-content/themes/dualtech/assets/intervenants/arthur-binetti.webp"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Intervenants",
+      "item": "{{site}}/intervenants-2026/"
+     }
+    ],
+    "@id": "{{site}}/intervenants-2026/#ariane"
+   }
+  ]
+ },
+ "ateliers-workshops": {
+  "fichier": "ateliers-workshops.html",
+  "titre": "Ateliers & Workshops",
+  "seo_titre": "Workshops DualTech 2026 : proposer un atelier dual",
+  "seo_description": "Proposez un workshop lors de DualTech 2026 au Campus Cyber : partagez votre expertise de l'innovation duale avec industriels, investisseurs et institutions.",
+  "mot_cle": "workshop DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/ateliers-workshops/#page",
+    "url": "{{site}}/ateliers-workshops/",
+    "name": "Ateliers et workshops DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/ateliers-workshops/#ariane"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Ateliers & Workshops",
+      "item": "{{site}}/ateliers-workshops/"
+     }
+    ],
+    "@id": "{{site}}/ateliers-workshops/#ariane"
+   }
+  ]
+ },
+ "devenir-partenaire": {
+  "fichier": "devenir-partenaire.html",
+  "titre": "Devenir partenaire",
+  "seo_titre": "Devenir partenaire DualTech 2026 | Industrie duale",
+  "seo_description": "Associez votre organisation à DualTech 2026 : partenariat institutionnel ou média, 400 décideurs et 40 intervenants au Campus Cyber. Recevez le dossier.",
+  "mot_cle": "partenaire DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/devenir-partenaire/#page",
+    "url": "{{site}}/devenir-partenaire/",
+    "name": "Devenir partenaire de DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/devenir-partenaire/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/#dualtech-2026"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Devenir partenaire",
+      "item": "{{site}}/devenir-partenaire/"
+     }
+    ],
+    "@id": "{{site}}/devenir-partenaire/#ariane"
+   }
+  ]
+ },
+ "prix-de-linnovation-duale": {
+  "fichier": "prix-de-linnovation-duale.html",
+  "titre": "Prix de l'innovation duale",
+  "seo_titre": "Prix de l'innovation duale 2026 | Paris Ouest La Défense",
+  "seo_description": "Robotique, Santé, Deeptech : le Prix de l'innovation duale récompense trois startups à double usage civil et défense, 5 000 € par lauréat. Candidatez.",
+  "mot_cle": "prix de l'innovation duale",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "{{site}}/prix-de-linnovation-duale/#remise",
+    "name": "Remise du Prix de l'innovation duale 2026",
+    "startDate": "2026-11-26T17:15:00+01:00",
+    "endDate": "2026-11-26T18:00:00+01:00",
+    "location": {
+     "@id": "{{site}}/#campus-cyber"
+    },
+    "superEvent": {
+     "@id": "{{site}}/#dualtech-2026"
+    },
+    "organizer": {
+     "@id": "{{site}}/#pold"
+    },
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "description": "Remise des trois prix (Robotique, Santé, Deeptech) dotés de 5 000 € chacun, lors de DualTech 2026."
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/prix-de-linnovation-duale/#page",
+    "url": "{{site}}/prix-de-linnovation-duale/",
+    "name": "Prix de l'innovation duale 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/prix-de-linnovation-duale/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/prix-de-linnovation-duale/#remise"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Prix de l'innovation duale",
+      "item": "{{site}}/prix-de-linnovation-duale/"
+     }
+    ],
+    "@id": "{{site}}/prix-de-linnovation-duale/#ariane"
+   }
+  ]
+ },
+ "infos-pratiques": {
+  "fichier": "infos-pratiques.html",
+  "titre": "Infos pratiques",
+  "seo_titre": "Infos pratiques DualTech 2026 : accès au Campus Cyber",
+  "seo_description": "Accès au Campus Cyber de La Défense, transports, accréditation, hôtels à proximité et FAQ : tout pour préparer votre venue à DualTech le 26 novembre 2026.",
+  "mot_cle": "DualTech Campus Cyber",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@id": "{{site}}/#dualtech-2026",
+    "@type": "Event",
+    "name": "DualTech 2026",
+    "startDate": "2026-11-26T08:30:00+01:00",
+    "location": {
+     "@id": "{{site}}/#campus-cyber"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/infos-pratiques/#page",
+    "url": "{{site}}/infos-pratiques/",
+    "name": "Infos pratiques DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/infos-pratiques/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/#dualtech-2026"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Infos pratiques",
+      "item": "{{site}}/infos-pratiques/"
+     }
+    ],
+    "@id": "{{site}}/infos-pratiques/#ariane"
+   }
+  ]
+ },
+ "retrospective-fevrier-2026": {
+  "fichier": "retrospective-fevrier-2026.html",
+  "titre": "Rétrospective février 2026",
+  "seo_titre": "Rétrospective DualTech : 1re édition au Sénat, février 2026",
+  "seo_description": "Retour sur la première édition de DualTech au Palais du Luxembourg le 5 février 2026 : 150 invités, deux tables rondes et douze partenaires de l'innovation duale.",
+  "mot_cle": "rétrospective DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "{{site}}/retrospective-fevrier-2026/#edition-2026-02",
+    "name": "DualTech, première édition",
+    "startDate": "2026-02-05T19:30:00+01:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+     "@type": "Place",
+     "name": "Palais du Luxembourg",
+     "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "15 rue de Vaugirard",
+      "postalCode": "75006",
+      "addressLocality": "Paris",
+      "addressCountry": "FR"
+     }
+    },
+    "organizer": {
+     "@id": "{{site}}/#inas"
+    },
+    "maximumAttendeeCapacity": 150,
+    "performer": [
+     {
+      "@type": "Person",
+      "name": "Emmanuel Chiva"
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Louis Thiériot"
+     },
+     {
+      "@type": "Person",
+      "name": "Bertrand Besancenot"
+     },
+     {
+      "@type": "Person",
+      "name": "Guillaume Morelli"
+     },
+     {
+      "@type": "Person",
+      "name": "Grégoire Chauvière Le Drian"
+     },
+     {
+      "@type": "Person",
+      "name": "Nicolas Dubourg"
+     },
+     {
+      "@type": "Person",
+      "name": "Cédric Lowenbach"
+     },
+     {
+      "@type": "Person",
+      "name": "Guy Gourevitch"
+     },
+     {
+      "@type": "Person",
+      "name": "Thomas Gourlan"
+     },
+     {
+      "@type": "Person",
+      "name": "Bertrand Gouillart"
+     },
+     {
+      "@type": "Person",
+      "name": "Hubert Raymond"
+     }
+    ]
+   },
+   {
+    "@type": "AboutPage",
+    "@id": "{{site}}/retrospective-fevrier-2026/#page",
+    "url": "{{site}}/retrospective-fevrier-2026/",
+    "name": "Rétrospective DualTech, février 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/retrospective-fevrier-2026/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/retrospective-fevrier-2026/#edition-2026-02"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Rétrospective février 2026",
+      "item": "{{site}}/retrospective-fevrier-2026/"
+     }
+    ],
+    "@id": "{{site}}/retrospective-fevrier-2026/#ariane"
+   }
+  ]
+ },
+ "contact": {
+  "fichier": "contact.html",
+  "titre": "Contact",
+  "seo_titre": "Contact DualTech : programme, partenariat et presse",
+  "seo_description": "Programme, inscription, partenariat ou presse : contactez l'équipe DualTech, réponse sous 48h ouvrées. DualTech 2026, le 26 novembre au Campus Cyber.",
+  "mot_cle": "contact DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "ContactPage",
+    "@id": "{{site}}/contact/#page",
+    "url": "{{site}}/contact/",
+    "name": "Contacter l'équipe DualTech",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/contact/#ariane"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Contact",
+      "item": "{{site}}/contact/"
+     }
+    ],
+    "@id": "{{site}}/contact/#ariane"
+   }
+  ]
+ },
+ "inscription": {
+  "fichier": "inscription.html",
+  "titre": "Inscription",
+  "seo_titre": "Inscription DualTech 2026 : demandez votre accréditation",
+  "seo_description": "Inscription gratuite à DualTech 2026 le 26 novembre au Campus Cyber : 400 places sur demande validée par l'organisation. Formulaire en ligne en 3 étapes.",
+  "mot_cle": "inscription DualTech 2026",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "Event",
+    "@id": "{{site}}/#dualtech-2026",
+    "name": "DualTech 2026",
+    "description": "Seconde édition de DualTech, le rendez-vous de l'industrie duale : tables rondes, keynotes, pitch sessions, expositions et ateliers réunissant acteurs publics, industriels, scientifiques et financiers de la souveraineté technologique française et européenne.",
+    "startDate": "2026-11-26T08:30:00+01:00",
+    "endDate": "2026-11-26T19:00:00+01:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "location": {
+     "@id": "{{site}}/#campus-cyber"
+    },
+    "image": [
+     "{{site}}/wp-content/themes/dualtech/assets/img/og-dualtech-2026.jpg"
+    ],
+    "organizer": {
+     "@id": "{{site}}/#inas"
+    },
+    "sponsor": {
+     "@id": "{{site}}/#pold"
+    },
+    "inLanguage": "fr-FR",
+    "url": "{{site}}/",
+    "maximumAttendeeCapacity": 400,
+    "isAccessibleForFree": true,
+    "offers": {
+     "@type": "Offer",
+     "url": "https://luma.com/wr8t4i35",
+     "price": "0",
+     "priceCurrency": "EUR",
+     "availability": "https://schema.org/InStock",
+     "description": "Inscription sur demande, validée par l'organisation"
+    },
+    "performer": [
+     {
+      "@type": "Person",
+      "name": "Stéphane Boujnah",
+      "jobTitle": "CEO et Chairman of the Managing Board",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Euronext"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Chiva",
+      "jobTitle": "Président-directeur général",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Office National d’Études et de Recherches Aérospatiales (ONERA)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Stéphane Ouaki",
+      "jobTitle": "Head of Department",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "European Innovation Council and SMEs Executive Agency (EISMEA)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Benoist Grossmann",
+      "jobTitle": "Chairman",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Eurazeo Tech"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandra André",
+      "jobTitle": "Directrice",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "French Tech Grand Paris"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Clément Leprince",
+      "jobTitle": "Président",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandre Papaemmanuel",
+      "jobTitle": "Senior Vice President, Business Strategy & Future Portfolios",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "MBDA"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Charles Beigbeder",
+      "jobTitle": "Founding Partner",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Expansion Ventures"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jacques Kossowski",
+      "jobTitle": "Vice-président délégué au développement économique",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Paris Ouest La Défense"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexis Toustou",
+      "jobTitle": "Directeur général",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "François Carlot",
+      "jobTitle": "Associé gérant",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Rothschild & Co"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Christophe Fromantin",
+      "jobTitle": "Maire",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Mairie de Neuilly-sur-Seine"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Mathieu Fossat",
+      "jobTitle": "Sous-directeur, chef du service des biens à double usage",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Ministère de l’Économie et des Finances"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Marine Le Châtelier",
+      "jobTitle": "Directrice du pôle industrie de défense",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Louis Constanza",
+      "jobTitle": "Co-founder, EVP Development",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Wandercraft"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean-Christophe Lambert",
+      "jobTitle": "Président du Club StarAir by GIFAS et CEO d’Ascendance",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "StarAir by GIFAS · Ascendance"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Amélie Cindea",
+      "jobTitle": "Directrice des opérations",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Alexandre Medvedowsky",
+      "jobTitle": "Président",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "ESL & NSI Group"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Eric Ottou",
+      "jobTitle": "Directeur Technology Intelligence, Assessment, Insertion",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Thales"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jeanne Tricot",
+      "jobTitle": "Directrice des programmes",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Pascal Saubion",
+      "jobTitle": "Directeur commercial de la division défense et sécurité",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Orange Business"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Xavier Desmaison",
+      "jobTitle": "Directeur général / CEO",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "NSI Group"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Michael Bollet",
+      "jobTitle": "Directeur des études adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Hubert Raymond",
+      "jobTitle": "Directeur de l’innovation et de GENERATE",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "GICAT"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Romain Lucken",
+      "jobTitle": "CEO et cofondateur",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Aldoria"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Léonie Meister",
+      "jobTitle": "Directrice des études",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Marc Antoine",
+      "jobTitle": "Directeur des affaires institutionnelles",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Safran AI"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Ankri",
+      "jobTitle": "Directeur stratégique",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Benoit Vedel",
+      "jobTitle": "Directeur adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "GICAT"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Paul Brun",
+      "jobTitle": "Président de la Commission du financement de l’industrie de défense (CFID)",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Emmanuel Menier",
+      "jobTitle": "Co-founder and Chief Executive Officer",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "NPco"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Eliot Bernard",
+      "jobTitle": "Directeur stratégique adjoint",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Jean Prévost",
+      "jobTitle": "Adjoint au Maire délégué au Développement économique et à l’Emploi",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Mairie de Suresnes"
+      }
+     },
+     {
+      "@type": "Person",
+      "name": "Arthur Binetti",
+      "jobTitle": "Directeur adjoint des programmes",
+      "worksFor": {
+       "@type": "Organization",
+       "name": "Institut National des Affaires Stratégiques (INAS)"
+      }
+     }
+    ]
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/inscription/#page",
+    "url": "{{site}}/inscription/",
+    "name": "Inscription à DualTech 2026",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/inscription/#ariane"
+    },
+    "about": {
+     "@id": "{{site}}/#dualtech-2026"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Inscription",
+      "item": "{{site}}/inscription/"
+     }
+    ],
+    "@id": "{{site}}/inscription/#ariane"
+   }
+  ]
+ },
+ "mentions-legales": {
+  "fichier": "mentions-legales.html",
+  "titre": "Mentions légales",
+  "seo_titre": "Mentions légales du site DualTech | INAS",
+  "seo_description": "Mentions légales de dualtech-event.eu : éditeur (Institut National des Affaires Stratégiques), directeur de la publication, hébergeur et propriété intellectuelle.",
+  "mot_cle": "mentions légales DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/mentions-legales/#page",
+    "url": "{{site}}/mentions-legales/",
+    "name": "Mentions légales",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/mentions-legales/#ariane"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Mentions légales",
+      "item": "{{site}}/mentions-legales/"
+     }
+    ],
+    "@id": "{{site}}/mentions-legales/#ariane"
+   }
+  ]
+ },
+ "politique-de-confidentialite": {
+  "fichier": "politique-de-confidentialite.html",
+  "titre": "Politique de confidentialité",
+  "seo_titre": "Politique de confidentialité DualTech | Données personnelles",
+  "seo_description": "Données collectées par DualTech via les formulaires, l'inscription et le Prix de l'innovation duale : finalités, conservation, cookies et droits RGPD.",
+  "mot_cle": "politique de confidentialité DualTech",
+  "precharge": "",
+  "graphe": [
+   {
+    "@type": "Organization",
+    "@id": "{{site}}/#inas",
+    "name": "Institut National des Affaires Stratégiques",
+    "alternateName": "INAS",
+    "url": "https://inas-france.fr/"
+   },
+   {
+    "@type": "GovernmentOrganization",
+    "@id": "{{site}}/#pold",
+    "name": "Paris Ouest La Défense",
+    "description": "Établissement public territorial",
+    "url": "https://www.parisouestladefense.fr/"
+   },
+   {
+    "@type": "WebSite",
+    "@id": "{{site}}/#site",
+    "url": "{{site}}/",
+    "name": "DualTech",
+    "inLanguage": "fr-FR",
+    "publisher": {
+     "@id": "{{site}}/#inas"
+    }
+   },
+   {
+    "@type": "Place",
+    "@id": "{{site}}/#campus-cyber",
+    "name": "Campus Cyber",
+    "url": "https://campuscyber.fr/",
+    "address": {
+     "@type": "PostalAddress",
+     "streetAddress": "5-7 rue Bellini",
+     "postalCode": "92800",
+     "addressLocality": "Puteaux",
+     "addressRegion": "Île-de-France",
+     "addressCountry": "FR"
+    }
+   },
+   {
+    "@type": "WebPage",
+    "@id": "{{site}}/politique-de-confidentialite/#page",
+    "url": "{{site}}/politique-de-confidentialite/",
+    "name": "Politique de confidentialité",
+    "isPartOf": {
+     "@id": "{{site}}/#site"
+    },
+    "inLanguage": "fr-FR",
+    "dateModified": "2026-10-28",
+    "breadcrumb": {
+     "@id": "{{site}}/politique-de-confidentialite/#ariane"
+    }
+   },
+   {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+     {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "{{site}}/"
+     },
+     {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Politique de confidentialité",
+      "item": "{{site}}/politique-de-confidentialite/"
+     }
+    ],
+    "@id": "{{site}}/politique-de-confidentialite/#ariane"
+   }
+  ]
+ }
+}

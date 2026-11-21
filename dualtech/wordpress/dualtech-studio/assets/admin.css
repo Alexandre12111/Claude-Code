@@ -1,0 +1,50 @@
+/* DualTech Studio : écrans d'administration (couleurs de la charte DualTech) */
+.dts-entete { margin: 18px 0 24px; padding: 26px 30px; background: #071B36; color: #E8EFFA; border-radius: 4px; border-left: 6px solid #DF2229; }
+.dts-entete h1 { margin: 6px 0 4px; color: #fff; font-size: 26px; }
+.dts-entete p { margin: 0; color: #9DB6DC; }
+.dts-marque { font: 800 13px/1 Arial, sans-serif; letter-spacing: .18em; color: #fff !important; }
+.dts-marque span { color: #DF2229; }
+.dts-marque em { font-style: normal; font-weight: 500; letter-spacing: .1em; color: #9DB6DC; margin-left: 6px; }
+.dts-cartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.dts-carte, .dts-panneau { background: #fff; border: 1px solid #DDE3EC; border-radius: 4px; padding: 20px 22px; }
+.dts-panneau { max-width: 760px; margin-bottom: 16px; }
+.dts-carte__nb { margin: 0; font: 700 34px/1 Arial, sans-serif; color: #1B5FC1; }
+.dts-carte h2 { margin: 10px 0 6px; font-size: 17px; }
+.dts-carte h2 a { text-decoration: none; color: #131A26; }
+.dts-carte p { color: #5B6779; }
+.dts-champ { display: grid; gap: 6px; margin: 0 0 16px; }
+.dts-champ label, .dts-libelle { font-weight: 600; color: #131A26; }
+.dts-champ input[type=text], .dts-champ input[type=url], .dts-champ input[type=email], .dts-champ textarea, .dts-champ select { width: 100%; max-width: 640px; }
+.dts-ligne { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0 20px; max-width: 640px; }
+.dts-aide { color: #5B6779; font-size: 12px; }
+.dts-intro { padding: 10px 14px; background: #F5F7FA; border-left: 3px solid #1B5FC1; }
+.dts-alerte { padding: 10px 14px; background: #FDF1F1; border-left: 3px solid #DF2229; }
+.dts-mini { width: 48px; height: 48px; object-fit: cover; border-radius: 3px; display: block; background: #F5F7FA; }
+.dts-mini--rond { border-radius: 50%; filter: grayscale(1); }
+.dts-logo-liste { max-width: 110px; max-height: 44px; object-fit: contain; }
+.column-dts_logo, .column-dts_photo { width: 120px; }
+.column-dts_ordre, .column-dts_tf { width: 70px; }
+.column-dts_statut { width: 100px; }
+.column-dts_horaire { width: 120px; }
+.dts-badge, .dts-statut { display: inline-block; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; background: #EEF3FA; color: #1B5FC1; }
+.dts-badge--table { background: #E7F5EF; color: #0F7A55; }
+.dts-badge--atelier { background: #F2ECFE; color: #7C3AED; }
+.dts-badge--temps-fort { background: #F3EBDA; color: #8A6A1F; }
+.dts-badge--networking, .dts-badge--autres { background: #F0F1F3; color: #5B6779; }
+.dts-badge--partenariat { background: #F3EBDA; color: #8A6A1F; }
+.dts-badge--workshop { background: #F2ECFE; color: #7C3AED; }
+.dts-statut--nouvelle { background: #DF2229; color: #fff; }
+.dts-statut--en-cours { background: #FFF4D6; color: #8A6A1F; }
+.dts-statut--traitee { background: #E7F5EF; color: #0F7A55; }
+.dts-fiche { border-collapse: collapse; width: 100%; max-width: 860px; }
+.dts-fiche th, .dts-fiche td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid #DDE3EC; }
+.dts-fiche th { width: 240px; color: #5B6779; font-weight: 600; }
+.dts-choix__liste { margin: 0 0 8px; padding: 0; list-style: none; max-width: 640px; }
+.dts-choix__liste li { display: flex; align-items: center; gap: 8px; padding: 8px 10px; margin: 0 0 6px; background: #F5F7FA; border: 1px solid #DDE3EC; border-radius: 3px; }
+.dts-choix__liste li span { flex: 1; }
+.dts-choix__liste button { font-size: 15px; text-decoration: none; padding: 0 4px; }
+.dts-retirer { color: #b32d2e !important; }
+.dts-passages { margin: 0; }
+.dts-passages li { margin: 0 0 6px; }
+.dts-supprimer { color: #b32d2e; }
+.dts-liste { list-style: disc; margin-left: 20px; }

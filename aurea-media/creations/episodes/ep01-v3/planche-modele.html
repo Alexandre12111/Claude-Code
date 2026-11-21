@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"Bricolage";src:url(polices/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(polices/geist.woff2) format("woff2");font-weight:100 900}
+body{margin:0;background:#f3ead9}</style></head><body>
+<svg id="s" width="2400" height="1500" viewBox="0 0 2400 1500" font-family="Geist">
+<text x="60" y="80" font-family="Bricolage" font-weight="800" font-size="58" fill="#15181e">Gaspard, le castor bâtisseur : planche de référence</text>
+<text x="60" y="124" font-size="26" fill="#6d655a">Expressions et poses clés. Le même modèle est utilisé dans toutes les scènes.</text>
+<g id="c"></g></svg>
+<script src="anim.js"></script><script src="gaspard.js"></script>
+<script>
+const c=document.getElementById('c');
+const items=[
+ ['Content','{}',{bouche:'sourire',queue:-4}],
+ ['Panique',"",{bouche:'cri',oeil:1.35,paup:0,sourcils:1.4,froncer:1,sueur:1,mainG:{x:-170,y:-430},mainD:{x:170,y:-430},coudeG:1,coudeD:-1,formeG:'salut',formeD:'salut',casque:-30,queue:-30,sy:1.06,sx:.95}],
+ ['Épuisé','',{bouche:'baille',paup:.62,sourcils:-.4,froncer:.6,pench:-6,mainG:{x:-200,y:-110},mainD:{x:200,y:-110},queue:12}],
+ ['Blasé','',{bouche:'plat',paup:.5,sourcils:-.3,regardX:.8,mainG:{x:-60,y:-200},mainD:{x:70,y:-210},coudeG:-1,coudeD:1,formeG:'poing',formeD:'poing'}],
+ ['Déclic','',{bouche:'o',oeil:1.25,paup:0,sourcils:1.3,mainD:{x:200,y:-480},formeD:'pointe',coudeD:1,queue:-20,casque:-14}],
+ ['Joie','',{bouche:'rire',paup:0,sourcils:1,mainG:{x:-230,y:-520},mainD:{x:230,y:-520},formeG:'poing',formeD:'poing',coudeG:1,coudeD:-1,sy:1.05,sx:.96,queue:-25}],
+ ['Au téléphone','',{bouche:'ouvert',paup:.1,sourcils:.6,froncer:.8,mainD:{x:160,y:-400},objetD:'tel',coudeD:1,formeD:'tient',regardX:.7,regardY:-.3,telCeinture:false}],
+ ['Pouce levé','',{bouche:'sourire',mainD:{x:250,y:-330},formeD:'pouce',coudeD:1,mainG:{x:-200,y:-160},objetG:'tasse',formeG:'tient',queue:-10}],
+];
+items.forEach(([nom,_,p],i)=>{const x=60+(i%4)*580,y=170+Math.floor(i/4)*660;
+ const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+ g.innerHTML=`<rect x="${x}" y="${y}" width="550" height="630" rx="28" fill="#fff"/><text x="${x+30}" y="${y+56}" font-family="Bricolage" font-weight="800" font-size="34" fill="#15181e">${nom}</text><g id="p${i}" transform="translate(${x+250},${y+600}) scale(.78)"></g>`;
+ c.appendChild(g);const G=new Gaspard('g'+i);document.getElementById('p'+i).innerHTML=G.svg();G.poser(p);});
+window.pret=true;window.rendre=()=>{};
+</script></body></html>

@@ -1,0 +1,152 @@
+{
+ "titre": "Épisode 2 : La recommandation perdue",
+ "fin": {
+  "texte_ecran": "Tu te reconnais ? Écris SITE en commentaire.",
+  "duree": 3.4
+ },
+ "phrases": [
+  {
+   "id": "l00",
+   "texte": "Ta meilleure cliente vient de te recommander… et tu viens de perdre le chantier.",
+   "fort": true,
+   "sous_titre": "Ta meilleure cliente vient de te recommander… et tu viens de *perdre le chantier.*",
+   "source": [
+    "sortie_ep02",
+    0
+   ],
+   "debut_prevu": 0.2
+  },
+  {
+   "id": "l01",
+   "texte": "Elle a adoré sa nouvelle salle de bain.",
+   "fort": false,
+   "sous_titre": "Elle a *adoré* sa nouvelle salle de bain.",
+   "source": [
+    "sortie_ep02",
+    1
+   ],
+   "debut_prevu": 5.6
+  },
+  {
+   "id": "l02",
+   "texte": "Alors elle donne ton nom à sa voisine.",
+   "fort": false,
+   "sous_titre": "Alors elle donne *ton nom* à sa voisine.",
+   "source": [
+    "sortie_ep02",
+    2
+   ],
+   "debut_prevu": 8.44
+  },
+  {
+   "id": "l03",
+   "texte": "Et la voisine fait ce que tout le monde fait : elle te cherche sur Google.",
+   "fort": false,
+   "sous_titre": "Et la voisine fait ce que tout le monde fait : elle te cherche sur *Google.*",
+   "source": [
+    "sortie_ep02",
+    3
+   ],
+   "debut_prevu": 11.21
+  },
+  {
+   "id": "l04",
+   "texte": "Et là… une vieille page Facebook, une photo floue, et deux avis.",
+   "fort": false,
+   "sous_titre": "Et là… une vieille page Facebook, une photo floue, et *2 avis.*",
+   "source": [
+    "sortie_ep02",
+    4
+   ],
+   "debut_prevu": 16.24
+  },
+  {
+   "id": "l05",
+   "texte": "Juste en dessous, ton concurrent. Un vrai site, des photos de chantiers, quarante-huit avis.",
+   "fort": false,
+   "sous_titre": "Juste en dessous, ton concurrent. Un vrai site, des photos de chantiers, *48 avis.*",
+   "source": [
+    "sortie_ep02",
+    5
+   ],
+   "debut_prevu": 20.64
+  },
+  {
+   "id": "l06",
+   "texte": "Devine qui elle appelle ?",
+   "fort": false,
+   "sous_titre": "Devine qui elle *appelle ?*",
+   "source": [
+    "sortie_ep02",
+    6
+   ],
+   "debut_prevu": 26.79
+  },
+  {
+   "id": "l07",
+   "texte": "Aujourd'hui, une recommandation, ça se vérifie en ligne.",
+   "fort": false,
+   "sous_titre": "Aujourd'hui, une recommandation, *ça se vérifie en ligne.*",
+   "source": [
+    "sortie_ep02",
+    7
+   ],
+   "debut_prevu": 28.75
+  },
+  {
+   "id": "l08",
+   "texte": "Si on ne te trouve pas, c'est comme si tu n'existais pas.",
+   "fort": false,
+   "sous_titre": "Si on ne te trouve pas, c'est comme si *tu n'existais pas.*",
+   "source": [
+    "sortie_ep02",
+    8
+   ],
+   "debut_prevu": 32.65
+  },
+  {
+   "id": "l09",
+   "texte": "Ton site, c'est ta vitrine : tes réalisations, tes avis, ta zone, ton numéro.",
+   "fort": false,
+   "sous_titre": "Ton site, c'est ta vitrine : tes *réalisations,* tes *avis,* ta *zone,* ton *numéro.*",
+   "source": [
+    "sortie_ep02",
+    9
+   ],
+   "debut_prevu": 36.61
+  },
+  {
+   "id": "l10",
+   "texte": "La voisine te trouve, elle voit ton travail, et elle t'appelle. Toi.",
+   "fort": false,
+   "sous_titre": "La voisine te trouve, elle voit ton travail, et elle t'appelle. *Toi.*",
+   "source": [
+    "sortie_ep02",
+    10
+   ],
+   "debut_prevu": 41.82
+  },
+  {
+   "id": "l11",
+   "texte": "Le bouche-à-oreille t'amène le client. Ton site lui donne envie de t'appeler.",
+   "fort": true,
+   "sous_titre": "Le bouche-à-oreille t'amène le client. Ton site lui donne *envie de t'appeler.*",
+   "source": [
+    "sortie_ep02",
+    11
+   ],
+   "debut_prevu": 46.47
+  },
+  {
+   "id": "l12",
+   "texte": "Ton travail est bon. Il mérite d'être trouvé.",
+   "fort": false,
+   "sous_titre": "Ton travail est bon. Il mérite *d'être trouvé.*",
+   "source": [
+    "sortie_ep02",
+    12
+   ],
+   "debut_prevu": 51.69
+  }
+ ]
+}

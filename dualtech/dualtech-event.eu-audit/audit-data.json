@@ -1,0 +1,299 @@
+{
+ "summary": {
+  "health_score": 74,
+  "business_type": "Site d'événement professionnel B2B institutionnel (salon de l'industrie duale)",
+  "top_findings": [
+   "Lien « L'évènement » vers /salon-industrie-duale/ (404) sur toutes les pages",
+   "Page /l-evenement/ orpheline (0 lien interne)",
+   "Aucun lien vers les mentions légales, la confidentialité et la gestion des cookies dans le pied de page",
+   "Performance mobile 64/100, LCP 6,9 s, 1,7 Mo d'images surdimensionnées",
+   "Pages parasites indexables : Hello world, Uncategorized, gabarits Elementor dans le plan du site"
+  ],
+  "quick_wins": [
+   "Retirer l'en-tête et le pied de page Elementor pour rétablir ceux du thème",
+   "Redirection 301 /salon-industrie-duale/ vers /l-evenement/",
+   "Supprimer Hello world et nettoyer le plan du site Rank Math",
+   "Désactiver Elementor et ses modules",
+   "Redimensionner les photos de filières à 800 px"
+  ]
+ },
+ "categories": [
+  {
+   "name": "Technical SEO",
+   "score": 72,
+   "what_works": [
+    "HTTPS et redirections 301",
+    "robots.txt propre",
+    "Plan du site Rank Math",
+    "Canonical correctes",
+    "Réponse serveur 150 ms"
+   ],
+   "findings": [
+    {
+     "title": "Lien interne cassé sur toutes les pages",
+     "severity": "High",
+     "description": "Le pied de page Elementor lie /salon-industrie-duale/ qui renvoie 404 (15 pages).",
+     "recommendation": "Rétablir le pied de page du thème et rediriger en 301 vers /l-evenement/."
+    },
+    {
+     "title": "Fichiers Royal Elementor Addons en 404",
+     "severity": "Medium",
+     "description": "7 CSS et JS appelés sur chaque page renvoient 404.",
+     "recommendation": "Désactiver Royal Elementor Addons et ses gabarits."
+    },
+    {
+     "title": "Plan du site pollué",
+     "severity": "Medium",
+     "description": "?wpr_templates=… et /category/uncategorized/ présents.",
+     "recommendation": "Désactiver ces types dans Rank Math."
+    },
+    {
+     "title": "Article Hello world indexable",
+     "severity": "Medium",
+     "description": "Contenu d'exemple en anglais publié.",
+     "recommendation": "Supprimer l'article."
+    },
+    {
+     "title": "En-têtes de sécurité absents",
+     "severity": "Low",
+     "description": "Pas de HSTS, nosniff, X-Frame-Options, Referrer-Policy.",
+     "recommendation": "Ajouter dans le .htaccess."
+    },
+    {
+     "title": "Cache statique court",
+     "severity": "Low",
+     "description": "30 minutes sur images, polices, scripts.",
+     "recommendation": "Expires 1 an dans le .htaccess."
+    }
+   ]
+  },
+  {
+   "name": "Content Quality",
+   "score": 78,
+   "what_works": [
+    "Contenu original de 172 à 1 346 mots",
+    "Organisateur, intervenants et partenaires nommés",
+    "Mentions légales complètes"
+   ],
+   "findings": [
+    {
+     "title": "Page L'événement orpheline",
+     "severity": "High",
+     "description": "Aucun lien interne vers /l-evenement/ (603 mots).",
+     "recommendation": "Rétablir le menu du thème et lier depuis l'accueil."
+    },
+    {
+     "title": "Page Contact courte",
+     "severity": "Low",
+     "description": "172 mots.",
+     "recommendation": "Ajouter délais, contact presse, adresse."
+    },
+    {
+     "title": "Pas de section Presse",
+     "severity": "Low",
+     "description": "Aucun kit média.",
+     "recommendation": "Créer une page Presse."
+    }
+   ]
+  },
+  {
+   "name": "On-Page SEO",
+   "score": 75,
+   "what_works": [
+    "Titres 40 à 63 caractères uniques",
+    "Descriptions 138 à 162 caractères",
+    "Un H1 par page",
+    "URL courtes"
+   ],
+   "findings": [
+    {
+     "title": "Menu caché sur ordinateur",
+     "severity": "High",
+     "description": "L'en-tête Elementor n'affiche qu'un bouton burger à 1 440 px.",
+     "recommendation": "Rétablir l'en-tête du thème."
+    },
+    {
+     "title": "Lignes des H1 collées dans le HTML",
+     "severity": "Low",
+     "description": "« Mentionslégales » dans le code brut.",
+     "recommendation": "Ajouter un espace entre les lignes."
+    },
+    {
+     "title": "Mots clés Rank Math désalignés",
+     "severity": "Low",
+     "description": "Mot clé absent de la description sur 9 pages.",
+     "recommendation": "Aligner sur les titres."
+    },
+    {
+     "title": "Lien LinkedIn générique",
+     "severity": "Low",
+     "description": "Pointe vers linkedin.com.",
+     "recommendation": "Pied de page du thème."
+    }
+   ]
+  },
+  {
+   "name": "Schema / Structured Data",
+   "score": 90,
+   "what_works": [
+    "Event complet avec 34 performers et sous-événements",
+    "Place, Organization, BreadcrumbList",
+    "Un seul graphe par page"
+   ],
+   "findings": [
+    {
+     "title": "Logo de l'organisateur absent",
+     "severity": "Info",
+     "description": "Organization INAS sans logo.",
+     "recommendation": "Ajouter logo."
+    },
+    {
+     "title": "Schéma des pages parasites",
+     "severity": "Low",
+     "description": "BlogPosting sur Hello world.",
+     "recommendation": "Supprimer la page."
+    }
+   ]
+  },
+  {
+   "name": "Performance (CWV)",
+   "score": 55,
+   "what_works": [
+    "CLS 0",
+    "TBT 140 ms mobile",
+    "Réponse serveur 150 ms"
+   ],
+   "findings": [
+    {
+     "title": "LCP mobile 6,9 s",
+     "severity": "High",
+     "description": "Lighthouse mobile 64/100, 2,4 Mo, 71 requêtes.",
+     "recommendation": "Voir images et extensions."
+    },
+    {
+     "title": "Photos de filières surdimensionnées",
+     "severity": "High",
+     "description": "13 images, 1,7 Mo gaspillés.",
+     "recommendation": "Redimensionner à 800 px."
+    },
+    {
+     "title": "Elementor chargé inutilement",
+     "severity": "Medium",
+     "description": "CSS, JS, Font Awesome, Google Fonts Roboto.",
+     "recommendation": "Désactiver Elementor."
+    },
+    {
+     "title": "Travail processeur élevé sur mobile",
+     "severity": "Medium",
+     "description": "9 s simulées (styles, rendu).",
+     "recommendation": "Alléger flou et animations sous 768 px."
+    }
+   ]
+  },
+  {
+   "name": "AI Search Readiness",
+   "score": 75,
+   "what_works": [
+    "Robots IA autorisés",
+    "FAQ et données structurées",
+    "Informations factuelles citables"
+   ],
+   "findings": [
+    {
+     "title": "llms.txt absent",
+     "severity": "Info",
+     "description": "Optionnel.",
+     "recommendation": "Facultatif."
+    },
+    {
+     "title": "Peu de signaux externes",
+     "severity": "Medium",
+     "description": "Peu de mentions et liens connus.",
+     "recommendation": "Liens des partenaires, page Presse."
+    }
+   ]
+  },
+  {
+   "name": "Images",
+   "score": 65,
+   "what_works": [
+    "Alt présents partout",
+    "WebP",
+    "Dimensions déclarées"
+   ],
+   "findings": [
+    {
+     "title": "Images surdimensionnées",
+     "severity": "High",
+     "description": "Photos de filières.",
+     "recommendation": "800 px."
+    },
+    {
+     "title": "Logo PNG du pied Elementor",
+     "severity": "Low",
+     "description": "Sans dimensions, nom non descriptif, 48 Ko de trop.",
+     "recommendation": "Pied de page du thème."
+    },
+    {
+     "title": "Attribut loading en double",
+     "severity": "Low",
+     "description": "loading=lazy ajouté deux fois.",
+     "recommendation": "Filtre WordPress dans le thème."
+    }
+   ]
+  }
+ ],
+ "action_plan": {
+  "phases": [
+   {
+    "name": "Phase 1: Critical Fixes",
+    "timeframe": "Week 1",
+    "items": [
+     "Retirer en-tête et pied de page Elementor",
+     "Redirection 301 /salon-industrie-duale/",
+     "Lier L'événement",
+     "Supprimer Hello world, catégorie et gabarits",
+     "Nettoyer le plan du site",
+     "Désactiver Elementor et modules",
+     "Déclarer GTranslate dans le bandeau cookies"
+    ]
+   },
+   {
+    "name": "Phase 2: High-Impact Improvements",
+    "timeframe": "Weeks 2-3",
+    "items": [
+     "Photos de filières à 800 px",
+     "Alléger effets mobile",
+     "Cache long .htaccess",
+     "Mots clés Rank Math",
+     "Espaces H1",
+     "En-têtes de sécurité"
+    ]
+   },
+   {
+    "name": "Phase 3: Content & Authority",
+    "timeframe": "Month 2",
+    "items": [
+     "Page Presse",
+     "Liens partenaires",
+     "Enrichir Contact",
+     "Logo INAS en schéma",
+     "Rétrospective 2026"
+    ]
+   },
+   {
+    "name": "Phase 4: Monitoring & Iteration",
+    "timeframe": "Ongoing",
+    "items": [
+     "Search Console",
+     "Test résultats enrichis",
+     "Nouvel audit après phase 1"
+    ]
+   }
+  ]
+ },
+ "artifacts": {
+  "findings_dir": "findings/",
+  "screenshots_dir": "screenshots/"
+ }
+}

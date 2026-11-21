@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Film de marque Aurea Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Film de marque Aurea Media, 16,5 s, 1920 x 1080. Chaque image est calculée par rendre(t) ; exporter.js capture 30 images par seconde. */
+:root{--gold:#C9A961;--cream:#F5F5F0;--grad:linear-gradient(100deg,#B8934E,#E6CB8C 45%,#C9A961)}
+*{box-sizing:border-box;margin:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0A0A0A}
+#scene{position:relative;width:1920px;height:1080px;overflow:hidden;font-family:"Geist",sans-serif;color:var(--cream);background:#080807}
+.abs{position:absolute;will-change:transform,opacity}
+#fond{inset:0;background:radial-gradient(1200px 700px at 50% 40%,#1c170d,transparent 70%)}
+.halo{width:1400px;height:1400px;border-radius:50%;background:radial-gradient(closest-side,rgba(201,169,97,.30),transparent 70%);left:260px;top:-200px}
+.grille{inset:0;background-image:linear-gradient(rgba(245,245,240,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(245,245,240,.045) 1px,transparent 1px);background-size:96px 96px;-webkit-mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000,transparent);mask-image:radial-gradient(ellipse 60% 60% at 50% 50%,#000,transparent)}
+.p{width:6px;height:6px;border-radius:50%;background:#E6CB8C;box-shadow:0 0 12px #C9A961}
+#vignette{inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.65));pointer-events:none}
+/* 1. Logo */
+#marque{left:50%;top:50%;width:240px;height:252px;margin:-170px 0 0 -120px}
+#marque svg{width:240px;height:252px;overflow:visible}
+#trace{stroke-dasharray:1000;stroke-dashoffset:1000}
+#point{transform-origin:99px 211px}
+#reflet{position:absolute;inset:-20px;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.75) 50%,transparent 60%);mix-blend-mode:overlay;-webkit-mask:url('#m');pointer-events:none}
+#nom{left:0;right:0;top:640px;text-align:center;font:700 84px "Bricolage Grotesque";letter-spacing:.2em}
+#nom span{display:inline-block}
+#sous{left:0;right:0;top:752px;text-align:center;font:500 24px "Geist Mono";letter-spacing:.6em;color:var(--gold)}
+/* 2. Message */
+.ligne{left:0;right:0;text-align:center;font:700 148px/1 "Bricolage Grotesque";letter-spacing:-.045em}
+.ligne span{display:inline-block}
+.g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+#l1{top:330px}#l2{top:500px}
+#trait{left:50%;top:690px;height:6px;width:520px;margin-left:-260px;border-radius:6px;background:var(--grad);transform-origin:left}
+/* 3. Vitrine : vrais sites clients sur ordinateur et téléphone */
+#vitrine{inset:0}
+#portable{left:250px;top:250px;width:1140px}
+#portable .ecran-p{position:relative;border-radius:22px 22px 6px 6px;background:#0a0a0a;padding:20px 20px 26px;border:1px solid #3a3a35;box-shadow:0 80px 140px -40px #000,inset 0 0 0 1px rgba(255,255,255,.05)}
+#portable .vue{position:relative;aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:#fff}
+#portable .vue img,#mobile .vue img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0;opacity:0}
+#portable .base{height:26px;margin:0 -75px;border-radius:3px 3px 26px 26px/3px 3px 60% 60%;background:linear-gradient(180deg,#5a5a55,#2f2f2c 35%,#1b1b19 70%,#0e0e0d);box-shadow:0 40px 60px -20px #000}
+#mobile{left:1330px;top:300px;width:330px;padding:9px;border-radius:17%/7.9%;background:linear-gradient(150deg,#4a4a46,#1d1d1b 18%,#0d0d0c 50%,#1a1a18 82%,#3d3d39);box-shadow:0 0 0 2px #55554f,0 70px 120px -40px #000}
+#mobile::before{content:"";position:absolute;top:3.1%;left:50%;width:29%;height:3.3%;transform:translateX(-50%);border-radius:999px;background:#000;z-index:2}
+#mobile .vue{position:relative;aspect-ratio:390/844;border-radius:14.6%/6.75%;overflow:hidden;background:#000}
+#etiquette{left:250px;top:900px;display:flex;align-items:center;gap:18px;padding:18px 30px 18px 22px;border-radius:999px;background:rgba(18,18,17,.92);border:1px solid rgba(245,245,240,.16)}
+#etiquette i{width:16px;height:16px;border-radius:50%;background:#5fd19f;box-shadow:0 0 0 8px rgba(95,209,159,.16)}
+#etiquette b{display:block;font:500 30px "Geist Mono";color:var(--cream)}
+#etiquette span{display:block;font-size:24px;color:#A9A9A2}
+.puce{display:flex;align-items:center;gap:20px;padding:24px 32px 24px 22px;border-radius:26px;background:rgba(24,24,22,.92);border:1px solid rgba(245,245,240,.18);font-size:30px;white-space:nowrap;box-shadow:0 30px 60px -20px #000}
+.puce b{display:block;font-weight:500}.puce span{font-size:22px;color:#A9A9A2}
+.puce em{width:66px;height:66px;border-radius:18px;background:rgba(201,169,97,.18);display:grid;place-items:center;font-style:normal;color:var(--gold)}
+.puce em svg{width:34px;height:34px}
+#titre3{left:0;right:0;top:110px;text-align:center;font:700 92px "Bricolage Grotesque";letter-spacing:-.04em;text-shadow:0 10px 40px #000}
+/* 4. Chiffres */
+#chiffres{left:0;right:0;top:330px;display:flex;justify-content:center;gap:120px;text-align:center}
+#chiffres>div{position:relative;width:360px}
+#chiffres svg{width:300px;height:300px;display:block;margin:0 auto}
+#chiffres b{position:absolute;left:0;right:0;top:92px;font:700 104px/1 "Bricolage Grotesque";letter-spacing:-.06em}
+#chiffres span{display:block;margin-top:26px;font-size:30px;color:#A9A9A2}
+/* 5. Fin */
+#fin{left:0;right:0;top:330px;text-align:center}
+#fin img{height:150px;margin:0 auto}
+#fin h2{margin-top:56px;font:700 64px "Bricolage Grotesque";letter-spacing:-.03em}
+#fin p{margin-top:28px;font:500 30px "Geist Mono";letter-spacing:.3em;color:var(--gold)}
+</style>
+</head>
+<body>
+<div id="scene">
+  <div class="abs" id="fond"></div>
+  <div class="abs grille" id="grille"></div>
+  <div class="abs halo" id="halo"></div>
+  <div id="poussiere"></div>
+
+  <div class="abs" id="marque"><svg viewBox="0 0 240 252">
+    <defs><linearGradient id="or" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F5F5F0"/><stop offset="1" stop-color="#E9E3D2"/></linearGradient>
+    <linearGradient id="balayage" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <clipPath id="forme"><path d="M120 10 L12 240 L72 240 L120 132 L168 240 L228 240 Z"/></clipPath></defs>
+    <path id="trace" d="M120 10 L12 240 L72 240 L120 132 L168 240 L228 240 Z" fill="none" stroke="#F5F5F0" stroke-width="5" stroke-linejoin="round"/>
+    <path id="plein" d="M120 10 L12 240 L72 240 L120 132 L168 240 L228 240 Z" fill="url(#or)" opacity="0"/>
+    <g clip-path="url(#forme)"><rect id="eclat" x="-160" y="0" width="120" height="252" fill="url(#balayage)" transform="skewX(-18)"/></g>
+    <circle id="point" cx="99" cy="211" r="20" fill="#C9A961"/>
+  </svg></div>
+  <div class="abs" id="nom"></div>
+  <div class="abs" id="sous">WEB AGENCY</div>
+
+  <div class="abs ligne" id="l1"><span>Des</span> <span>sites</span> <span>sur</span> <span>mesure</span></div>
+  <div class="abs ligne" id="l2"><span>qui</span> <span>apportent</span> <span>des</span> <span class="g">clients.</span></div>
+  <div class="abs" id="trait"></div>
+
+  <div class="abs" id="vitrine">
+    <div class="abs" id="portable"><div class="ecran-p"><div class="vue" id="vue-p"></div></div><div class="base"></div></div>
+    <div class="abs" id="mobile"><div class="vue" id="vue-m"></div></div>
+    <div class="abs" id="etiquette"><i></i><div><b id="et-dom"></b><span id="et-txt"></span></div></div>
+  </div>
+  <div class="abs" id="titre3">45 sites livrés en France et en Europe</div>
+
+  <div class="abs" id="chiffres">
+    <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/><defs><linearGradient id="ann"><stop offset="0" stop-color="#B8934E"/><stop offset="1" stop-color="#E6CB8C"/></linearGradient></defs></svg><b id="c1">0</b><span>sites livrés</span></div>
+    <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/></svg><b id="c2">0</b><span>semaines en moyenne</span></div>
+    <div><svg viewBox="0 0 300 300"><circle cx="150" cy="150" r="130" fill="none" stroke="rgba(245,245,240,.08)" stroke-width="8"/><circle class="anneau" cx="150" cy="150" r="130" fill="none" stroke="url(#ann)" stroke-width="8" stroke-linecap="round" transform="rotate(-90 150 150)" stroke-dasharray="817" stroke-dashoffset="817"/></svg><b id="c3" class="g">0</b><span>note Google</span></div>
+  </div>
+
+  <div class="abs" id="fin"><img src="../../maquette/assets/logo-aurea-media-clair.png" alt=""><h2>Votre site, <span class="g">sur mesure</span>.</h2><p>AUREA-MEDIA.FR</p></div>
+  <div class="abs" id="vignette"></div>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const prog = (t, a, b) => clamp((t - a) / (b - a));
+const sortie = p => 1 - Math.pow(1 - p, 4);
+const entree = p => p * p * p;
+const douce = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const set = (el, o, tr, flou) => { el.style.opacity = o; el.style.transform = tr || ''; el.style.filter = flou ? `blur(${flou}px)` : ''; };
+
+// Poussière dorée : positions fixes (pseudo aléatoire reproductible)
+let graine = 7; const alea = () => (graine = (graine * 16807) % 2147483647) / 2147483647;
+const poussiere = Array.from({ length: 70 }, () => ({ x: alea() * 1920, y: alea() * 1080, v: 10 + alea() * 30, a: alea() * 6.28, s: .4 + alea() * 1.2, o: .2 + alea() * .6 }));
+poussiere.forEach(() => { const d = document.createElement('i'); d.className = 'abs p'; $('poussiere').append(d); });
+const grains = [...$('poussiere').children];
+
+// Vitrine : 4 vrais sites clients (page complète sur l'ordinateur, version mobile sur le téléphone)
+const sites = [['villa-moniris', 'villamoniris.fr', 'Location de villa · Provence'], ['portugal-expert', 'portugalexpertproperties.com', 'Constructeur de luxe · Lisbonne'], ['xpert-medical', 'xpert-medical.fr', 'Centres médicaux · France'], ['havel-trading', 'haveltrading.com', 'Négoce d’énergie · Genève']];
+$('vue-p').innerHTML = sites.map(s => `<img src="../../wordpress/aurea/assets/realisations/${s[0]}-long.webp" alt="">`).join('');
+$('vue-m').innerHTML = sites.map(s => `<img src="../../wordpress/aurea/assets/realisations/${s[0]}-mobile.webp" alt="">`).join('');
+const imgsP = [...$('vue-p').children], imgsM = [...$('vue-m').children];
+
+const nom = 'AUREA MEDIA';
+$('nom').innerHTML = [...nom].map(c => `<span>${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+const lettres = [...$('nom').children];
+const mots = [...document.querySelectorAll('#l1 span, #l2 span')];
+
+window.rendre = t => {
+  $('halo').style.transform = `translate(${Math.sin(t * .5) * 90}px,${Math.cos(t * .4) * 50}px) scale(${1 + Math.sin(t * .7) * .06})`;
+  $('grille').style.transform = `translateY(${-t * 8}px)`;
+  grains.forEach((g, i) => {
+    const p = poussiere[i];
+    const y = (p.y - t * p.v + 1080) % 1080, x = p.x + Math.sin(t * .6 + p.a) * 30;
+    g.style.transform = `translate(${x}px,${y}px) scale(${p.s})`;
+    g.style.opacity = p.o * (.5 + .5 * Math.sin(t * 1.5 + p.a));
+  });
+
+  // 1. Logo : 0 à 3,4 s
+  $('trace').style.strokeDashoffset = 1000 * (1 - sortie(prog(t, .2, 1.4)));
+  const plein = sortie(prog(t, 1.1, 1.7));
+  $('plein').setAttribute('opacity', plein);
+  $('trace').style.opacity = 1 - plein * .9;
+  $('point').style.transform = `scale(${sortie(prog(t, 1.4, 1.9)) * (1 + .15 * Math.sin(prog(t, 1.9, 2.4) * Math.PI))})`;
+  $('eclat').setAttribute('x', -160 + 520 * douce(prog(t, 1.9, 2.6)));
+  const sortLogo = entree(prog(t, 3, 3.5));
+  set($('marque'), 1 - sortLogo, `translateY(${-80 * sortLogo}px) scale(${(.85 + .15 * sortie(prog(t, 0, 1.6))) * (1 - .25 * sortLogo)})`);
+  lettres.forEach((l, i) => { const p = sortie(prog(t, 1.6 + i * .05, 2.3 + i * .05)); set(l, p * (1 - sortLogo), `translateY(${(1 - p) * 40}px)`, (1 - p) * 12); });
+  const ps = sortie(prog(t, 2.3, 2.8));
+  set($('sous'), ps * (1 - sortLogo), `translateY(${(1 - ps) * 16}px)`, 0);
+
+  // 2. Message : 3,4 à 6,4 s
+  mots.forEach((m, i) => {
+    const d = 3.5 + i * .09, p = sortie(prog(t, d, d + .7)), s = entree(prog(t, 6, 6.4));
+    m.style.clipPath = `inset(0 0 ${(1 - p) * 100}% 0)`;
+    set(m, 1 - s, `translateY(${(1 - p) * 90 - s * 60}px)`, s * 10);
+  });
+  const pt = sortie(prog(t, 4.4, 5.2)), st = entree(prog(t, 6, 6.4));
+  set($('trait'), 1 - st, `scaleX(${pt})`);
+
+  // 3. Vitrine : 6,3 à 12,4 s, un site toutes les 1,5 s
+  const pv = sortie(prog(t, 6.3, 7.1)), sv = entree(prog(t, 12, 12.4));
+  set($('portable'), pv * (1 - sv), `translateY(${(1 - pv) * 80}px) scale(${.96 + pv * .04})`, sv * 8);
+  const pmob = sortie(prog(t, 6.6, 7.4));
+  set($('mobile'), pmob * (1 - sv), `translateY(${(1 - pmob) * 120 + Math.sin(t * 1.2) * 6}px) rotate(${(1 - pmob) * 6}deg)`, sv * 8);
+  const pe = sortie(prog(t, 7, 7.6));
+  set($('etiquette'), pe * (1 - sv), `translateY(${(1 - pe) * 30}px)`);
+  const p3 = sortie(prog(t, 6.5, 7.2));
+  set($('titre3'), p3 * (1 - sv), `translateY(${(1 - p3) * 40}px)`);
+  const debut = i => 6.3 + i * 1.5;
+  const idx = Math.min(sites.length - 1, Math.max(0, Math.floor((t - 6.3) / 1.5)));
+  sites.forEach((s, i) => {
+    const entre = i === 0 ? 1 : sortie(prog(t, debut(i), debut(i) + .3));
+    const sort = i === sites.length - 1 ? 0 : sortie(prog(t, debut(i + 1), debut(i + 1) + .3));
+    const op = entre * (1 - sort);
+    imgsP[i].style.opacity = op; imgsM[i].style.opacity = op;
+    const defil = douce(prog(t, debut(i), debut(i) + 1.8));
+    imgsP[i].style.objectPosition = `50% ${defil * 38}%`;
+    imgsM[i].style.objectPosition = `50% ${defil * 4}%`;
+  });
+  $('et-dom').textContent = sites[idx][1]; $('et-txt').textContent = sites[idx][2];
+
+  // 4. Chiffres : 12,3 à 14,5 s
+  const pc = sortie(prog(t, 12.3, 12.9)), sc = entree(prog(t, 14.1, 14.5));
+  set($('chiffres'), pc * (1 - sc), `translateY(${(1 - pc) * 50}px) scale(${1 - sc * .05})`, sc * 8);
+  const k = douce(prog(t, 12.4, 13.6));
+  $('c1').textContent = Math.round(45 * k) + '+';
+  $('c2').textContent = Math.max(1, Math.round(4 * k));
+  $('c3').textContent = (4.9 * k).toFixed(1).replace('.', ',');
+  document.querySelectorAll('.anneau').forEach((a, i) => { a.style.strokeDashoffset = 817 * (1 - douce(prog(t, 12.4 + i * .12, 13.7 + i * .12)) * [.92, .8, .98][i]); });
+
+  // 5. Fin : 14,5 à 16,5 s
+  const pf = sortie(prog(t, 14.5, 15.2));
+  set($('fin'), pf, `scale(${.94 + pf * .06})`, (1 - pf) * 10);
+};
+window.rendre(0);
+</script>
+</body>
+</html>

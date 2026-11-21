@@ -1,0 +1,503 @@
+{
+ "source": "temoin",
+ "duree": 41.47,
+ "phrases": {
+  "v1": {
+   "debut": 0.2,
+   "fin": 3.18,
+   "mots": [
+    {
+     "debut": 0.2,
+     "fin": 0.32
+    },
+    {
+     "debut": 0.32,
+     "fin": 0.72
+    },
+    {
+     "debut": 0.72,
+     "fin": 0.92
+    },
+    {
+     "debut": 0.92,
+     "fin": 1.24
+    },
+    {
+     "debut": 1.24,
+     "fin": 1.62
+    },
+    {
+     "debut": 1.62,
+     "fin": 1.8
+    },
+    {
+     "debut": 1.8,
+     "fin": 1.94
+    },
+    {
+     "debut": 1.94,
+     "fin": 2.18
+    }
+   ],
+   "entendu": "Ton téléphone a sonné quatorze fois ce matin."
+  },
+  "v2": {
+   "debut": 3.36,
+   "fin": 5.98,
+   "mots": [
+    {
+     "debut": 3.36,
+     "fin": 3.52
+    },
+    {
+     "debut": 3.52,
+     "fin": 3.76
+    },
+    {
+     "debut": 4.34,
+     "fin": 4.6
+    },
+    {
+     "debut": 4.6,
+     "fin": 4.84
+    },
+    {
+     "debut": 4.84,
+     "fin": 4.96
+    },
+    {
+     "debut": 4.96,
+     "fin": 5.06
+    },
+    {
+     "debut": 5.06,
+     "fin": 5.8
+    }
+   ],
+   "entendu": "Et toi, t'étais en haut de l'échafaudage."
+  },
+  "v3": {
+   "debut": 6.2,
+   "fin": 9.02,
+   "mots": [
+    {
+     "debut": 6.2,
+     "fin": 6.44
+    },
+    {
+     "debut": 6.44,
+     "fin": 6.7
+    },
+    {
+     "debut": 6.7,
+     "fin": 7.32
+    },
+    {
+     "debut": 7.5,
+     "fin": 7.8
+    },
+    {
+     "debut": 7.8,
+     "fin": 8.02
+    },
+    {
+     "debut": 8.02,
+     "fin": 8.16
+    },
+    {
+     "debut": 8.16,
+     "fin": 8.6
+    },
+    {
+     "debut": 8.6,
+     "fin": 8.94
+    }
+   ],
+   "entendu": "Alors tu décroches, avec les mains pleines d'enduit."
+  },
+  "v4": {
+   "debut": 9.22,
+   "fin": 12.02,
+   "mots": [
+    {
+     "debut": 9.22,
+     "fin": 9.34
+    },
+    {
+     "debut": 9.34,
+     "fin": 9.48
+    },
+    {
+     "debut": 9.48,
+     "fin": 9.76
+    },
+    {
+     "debut": 9.76,
+     "fin": 9.94
+    },
+    {
+     "debut": 9.94,
+     "fin": 10.1
+    },
+    {
+     "debut": 10.1,
+     "fin": 10.56
+    }
+   ],
+   "entendu": "Et c'est toujours les mêmes questions."
+  },
+  "v5": {
+   "debut": 12.32,
+   "fin": 14.69,
+   "mots": [
+    {
+     "debut": 12.32,
+     "fin": 12.56
+    },
+    {
+     "debut": 12.56,
+     "fin": 12.68
+    },
+    {
+     "debut": 12.68,
+     "fin": 12.94
+    },
+    {
+     "debut": 13.52,
+     "fin": 13.64
+    },
+    {
+     "debut": 13.64,
+     "fin": 14.04
+    },
+    {
+     "debut": 14.04,
+     "fin": 14.38
+    },
+    {
+     "debut": 14.38,
+     "fin": 14.58
+    }
+   ],
+   "entendu": "Pendant ce temps, ton chantier n'avance pas."
+  },
+  "v6": {
+   "debut": 14.94,
+   "fin": 17.65,
+   "mots": [
+    {
+     "debut": 14.94,
+     "fin": 15.06
+    },
+    {
+     "debut": 15.06,
+     "fin": 15.26
+    },
+    {
+     "debut": 15.26,
+     "fin": 15.46
+    },
+    {
+     "debut": 15.46,
+     "fin": 15.62
+    },
+    {
+     "debut": 15.62,
+     "fin": 16.02
+    },
+    {
+     "debut": 16.3,
+     "fin": 16.7
+    },
+    {
+     "debut": 16.7,
+     "fin": 16.98
+    },
+    {
+     "debut": 16.98,
+     "fin": 17.16
+    },
+    {
+     "debut": 17.16,
+     "fin": 17.58
+    }
+   ],
+   "entendu": "Et celui que tu rates, il appelle le suivant."
+  },
+  "v7": {
+   "debut": 18.0,
+   "fin": 21.69,
+   "mots": [
+    {
+     "debut": 18.0,
+     "fin": 18.12
+    },
+    {
+     "debut": 18.12,
+     "fin": 18.4
+    },
+    {
+     "debut": 18.94,
+     "fin": 19.14
+    },
+    {
+     "debut": 19.14,
+     "fin": 19.56
+    },
+    {
+     "debut": 19.56,
+     "fin": 19.7
+    },
+    {
+     "debut": 19.7,
+     "fin": 19.82
+    },
+    {
+     "debut": 19.82,
+     "fin": 20.08
+    },
+    {
+     "debut": 20.08,
+     "fin": 20.42
+    },
+    {
+     "debut": 20.42,
+     "fin": 20.78
+    },
+    {
+     "debut": 20.78,
+     "fin": 20.98
+    },
+    {
+     "debut": 20.98,
+     "fin": 21.1
+    },
+    {
+     "debut": 21.1,
+     "fin": 21.36
+    }
+   ],
+   "entendu": "Le soir, tu rappelles tout le monde pour répondre aux mêmes questions."
+  },
+  "v8": {
+   "debut": 22.19,
+   "fin": 24.05,
+   "mots": [
+    {
+     "debut": 22.19,
+     "fin": 22.348
+    },
+    {
+     "debut": 22.348,
+     "fin": 22.507
+    },
+    {
+     "debut": 22.507,
+     "fin": 22.942
+    },
+    {
+     "debut": 22.942,
+     "fin": 23.377
+    },
+    {
+     "debut": 23.377,
+     "fin": 23.496
+    },
+    {
+     "debut": 23.496,
+     "fin": 23.654
+    },
+    {
+     "debut": 23.654,
+     "fin": 23.931
+    },
+    {
+     "debut": 23.931,
+     "fin": 24.05
+    }
+   ],
+   "entendu": "Et si quelqu'un répondait à ta place?"
+  },
+  "v9": {
+   "debut": 24.45,
+   "fin": 30.45,
+   "mots": [
+    {
+     "debut": 24.45,
+     "fin": 24.59
+    },
+    {
+     "debut": 24.59,
+     "fin": 24.93
+    },
+    {
+     "debut": 25.45,
+     "fin": 25.61
+    },
+    {
+     "debut": 25.61,
+     "fin": 25.97
+    },
+    {
+     "debut": 25.97,
+     "fin": 26.09
+    },
+    {
+     "debut": 26.09,
+     "fin": 26.43
+    },
+    {
+     "debut": 26.79,
+     "fin": 26.85
+    },
+    {
+     "debut": 26.85,
+     "fin": 27.25
+    },
+    {
+     "debut": 27.51,
+     "fin": 27.59
+    },
+    {
+     "debut": 27.59,
+     "fin": 28.13
+    },
+    {
+     "debut": 28.13,
+     "fin": 28.23
+    },
+    {
+     "debut": 28.23,
+     "fin": 28.63
+    },
+    {
+     "debut": 29.01,
+     "fin": 29.15
+    },
+    {
+     "debut": 29.15,
+     "fin": 29.31
+    },
+    {
+     "debut": 29.31,
+     "fin": 29.59
+    },
+    {
+     "debut": 29.59,
+     "fin": 29.75
+    },
+    {
+     "debut": 29.75,
+     "fin": 29.89
+    },
+    {
+     "debut": 29.89,
+     "fin": 30.17
+    }
+   ],
+   "entendu": "Ta zone, tes chantiers en photo, tes délais, ton formulaire de devis, tout est déjà sur ton site."
+  },
+  "v10": {
+   "debut": 30.9,
+   "fin": 33.7,
+   "mots": [
+    {
+     "debut": 30.9,
+     "fin": 31.06
+    },
+    {
+     "debut": 31.06,
+     "fin": 31.32
+    },
+    {
+     "debut": 31.76,
+     "fin": 31.98
+    },
+    {
+     "debut": 31.98,
+     "fin": 32.08
+    },
+    {
+     "debut": 32.08,
+     "fin": 32.4
+    },
+    {
+     "debut": 32.4,
+     "fin": 32.64
+    },
+    {
+     "debut": 32.64,
+     "fin": 32.84
+    },
+    {
+     "debut": 32.84,
+     "fin": 32.96
+    },
+    {
+     "debut": 32.96,
+     "fin": 33.2
+    },
+    {
+     "debut": 33.2,
+     "fin": 33.58
+    }
+   ],
+   "entendu": "Et toi, tu ne rappelles plus que les vrais chantiers."
+  },
+  "v11": {
+   "debut": 34.1,
+   "fin": 37.67,
+   "mots": [
+    {
+     "debut": 34.1,
+     "fin": 34.26
+    },
+    {
+     "debut": 34.26,
+     "fin": 34.36
+    },
+    {
+     "debut": 34.36,
+     "fin": 34.82
+    },
+    {
+     "debut": 35.1,
+     "fin": 35.56
+    },
+    {
+     "debut": 35.56,
+     "fin": 35.68
+    },
+    {
+     "debut": 35.68,
+     "fin": 36.16
+    },
+    {
+     "debut": 36.16,
+     "fin": 36.38
+    },
+    {
+     "debut": 36.38,
+     "fin": 36.64
+    },
+    {
+     "debut": 36.64,
+     "fin": 36.96
+    },
+    {
+     "debut": 36.96,
+     "fin": 37.1
+    },
+    {
+     "debut": 37.1,
+     "fin": 37.2
+    },
+    {
+     "debut": 37.2,
+     "fin": 37.46
+    }
+   ],
+   "entendu": "Un site internet, c'est un collègue qui répond pendant que tu bosses."
+  }
+ }
+}

@@ -1,0 +1,90 @@
+{
+ "/ mobile": {
+  "ttfb": 1733,
+  "fcp": 4228,
+  "lcp": 4228,
+  "cls": 0,
+  "dom": 4851,
+  "load": 5304,
+  "lcpEl": "H1.split-words is-in ",
+  "requetes": 38,
+  "ko": 593
+ },
+ "/ desktop": {
+  "ttfb": 741,
+  "fcp": 1532,
+  "lcp": 1532,
+  "cls": 0,
+  "dom": 1581,
+  "load": 2919,
+  "lcpEl": "H1.split-words is-in ",
+  "requetes": 49,
+  "ko": 886
+ },
+ "/en/ mobile": {
+  "ttfb": 726,
+  "fcp": 2096,
+  "lcp": 3632,
+  "cls": 0,
+  "dom": 2276,
+  "load": 4522,
+  "lcpEl": "P.lead rv is-in ",
+  "requetes": 38,
+  "ko": 593
+ },
+ "/en/ desktop": {
+  "ttfb": 686,
+  "fcp": 1432,
+  "lcp": 1432,
+  "cls": 0,
+  "dom": 1413,
+  "load": 2609,
+  "lcpEl": "H1.split-words is-in ",
+  "requetes": 49,
+  "ko": 886
+ },
+ "/creation-site-vitrine/ mobile": {
+  "ttfb": 706,
+  "fcp": 1892,
+  "lcp": 3152,
+  "cls": 0,
+  "dom": 1938,
+  "load": 4118,
+  "lcpEl": "P.lead rv is-in ",
+  "requetes": 13,
+  "ko": 629
+ },
+ "/creation-site-vitrine/ desktop": {
+  "ttfb": 699,
+  "fcp": 1440,
+  "lcp": 1440,
+  "cls": 0,
+  "dom": 1517,
+  "load": 1521,
+  "lcpEl": "H1.split-words is-in ",
+  "requetes": 20,
+  "ko": 853
+ },
+ "/realisations/ mobile": {
+  "ttfb": 735,
+  "fcp": 1748,
+  "lcp": 1748,
+  "cls": 0,
+  "dom": 1863,
+  "load": 2688,
+  "lcpEl": "H1.split-words is-in ",
+  "requetes": 31,
+  "ko": 394
+ },
+ "/realisations/ desktop": {
+  "ttfb": 731,
+  "fcp": 1300,
+  "lcp": 1784,
+  "cls": 0,
+  "dom": 1293,
+  "load": 2491,
+  "lcpEl": "IMG. 6/10/realisation-havel-trading-4c43e4-768x480.webp",
+  "requetes": 51,
+  "ko": 908
+ }
+}
