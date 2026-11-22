@@ -79,6 +79,9 @@ function construireScenes() {
     <filter id="nb"><feColorMatrix id="nbM" type="saturate" values="1"/></filter>
     <filter id="flouFond" x="-5%" y="-5%" width="110%" height="110%"><feGaussianBlur stdDeviation="5"/></filter>
     <filter id="flouPhoto" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+    <filter id="fb" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence id="fbTurb" type="fractalNoise" baseFrequency="0.005 0.02" numOctaves="2" seed="7" result="n"/><feDisplacementMap id="fbDisp" in="SourceGraphic" in2="n" scale="0" xChannelSelector="R" yChannelSelector="G" result="d"/><feColorMatrix id="fbSep" in="d" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0"/></filter>
+    <radialGradient id="fbVig" cx=".5" cy=".46" r=".72"><stop offset=".55" stop-color="#2a1606" stop-opacity="0"/><stop offset="1" stop-color="#2a1606" stop-opacity=".85"/></radialGradient>
+    <radialGradient id="fbFuite" cx="1" cy="0" r="1"><stop offset="0" stop-color="#ffb347" stop-opacity=".75"/><stop offset=".5" stop-color="#ff7a2c" stop-opacity=".2"/><stop offset="1" stop-color="#ff7a2c" stop-opacity="0"/></radialGradient>
     <filter id="vhs"><feOffset dx="7" in="SourceGraphic" result="r"/><feColorMatrix in="r" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="rr"/><feOffset dx="-7" in="SourceGraphic" result="b"/><feColorMatrix in="b" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0" result="bb"/><feBlend in="rr" in2="bb" mode="screen"/></filter>
     <linearGradient id="gCiel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6cc0f2"/><stop offset=".7" stop-color="#bfe3f7"/><stop offset="1" stop-color="#ffe2b8"/></linearGradient>
     <linearGradient id="gTitane" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e2ded6"/><stop offset=".15" stop-color="#8e8a82"/><stop offset=".45" stop-color="#3a3835"/><stop offset=".7" stop-color="#55524d"/><stop offset=".9" stop-color="#a19c93"/><stop offset="1" stop-color="#e2ded6"/></linearGradient>
@@ -165,7 +168,7 @@ function construireScenes() {
 const T = {};
 function reperes() {
   T.gel = M('l00', 7) - .04; T.tamp = M('l00', 11) - .02;
-  T.rw = P('l01') - .45; T.j = P('l02') - .12; T.g = P('l03') - .12; T.ap = P('l06') - .1; T.v = P('l07') - .1;
+  T.rw = P('l01') - .8; T.j = P('l02') - .12; T.g = P('l03') - .12; T.ap = P('l06') - .1; T.v = P('l07') - .1;
   T.fa = P('l08') - .1; T.vi = P('l09') - .1; T.w = P('l10') - .1; T.wJ = M('l10', 10) + .1; T.fi = P('l11') - .1; T.sd = P('l12') - .1; T.fin = CAL.finTexte;
 }
 function rendre(t) {
@@ -193,7 +196,7 @@ function rendre(t) {
   fx += lignesVitesse(t, T.g - .05, .4, 540, 960, '#fff', .6) + lignesVitesse(t, T.w - .05, .4, 540, 960, '#fff', .6);
   $('ui-fx').innerHTML = fx + window._uiSdb + window._uiTampon;
   rendreSousTitres(t);
-  $('st').style.opacity = t >= T.fin - .05 ? 0 : 1;
+  if (t >= T.fin - .05) $('st').style.opacity = 0;
   $('progression').firstElementChild.style.width = (clamp(t / CAL.duree) * 100) + '%';
 }
 
@@ -202,7 +205,7 @@ function rSdb(t) {
   let fx = '';
   const fin = t >= T.sd;
   const gele = !fin && t >= T.gel && t < T.rw, tt = gele ? T.gel : t;       // arrêt sur image
-  const rewind = !fin && t >= T.rw && t < P('l01') + .05;
+  const flashback = !fin && t >= T.rw;
   let cam;
   if (!fin) cam = piste(tt, [[0, { x: 540, y: 980, z: 1.08 }], [M('l00', 3), { x: 540, y: 930, z: 1.18 }, E.sine], [T.gel, { x: 560, y: 860, z: 1.28 }, E.sine], [P('l01'), { x: 600, y: 900, z: 1.2 }], [F('l01') + .3, { x: 640, y: 880, z: 1.32 }, E.sine]]);
   else cam = piste(t, [[T.sd, { x: 540, y: 820, z: 1.45 }], [T.fin, { x: 540, y: 960, z: 1.06 }, E.io]]);
@@ -237,8 +240,8 @@ function rSdb(t) {
     // fin douce : Gaspard fier devant son chantier, lumière chaude
     Object.assign(g, { x: 540, y: 1520, s: 1.12, tourne: .25, mainD: { x: 230, y: -330 }, formeD: 'pouce', coudeD: 1, mainG: { x: -210, y: -170 }, bouche: 'sourire', paup: .12, sourcils: .4, regardX: 0 });
     c.x = 2000;
-    fx += motCle(540, 380, 'Bon travail.', t, M('l12', 2) - .1, 1.2, '#ffd23f', 104, -3);
-    fx += etincelles(540, 600, t, M('l12', 4), 10, 300, '#ffd23f', 1);
+    fx += motCle(540, 380, 'Exceptionnel.', t, M('l12', 5) - .1, 1.3, '#ffd23f', 104, -3);
+    fx += etincelles(540, 600, t, M('l12', 5), 10, 300, '#ffd23f', 1);
   }
   PERS.gs.poser(g); PERS.cs.poser(c);
   $('sb-fx').innerHTML = fx;
@@ -246,13 +249,37 @@ function rSdb(t) {
   if (gele) { L.sdb.setAttribute('filter', 'url(#nb)'); attr('nbM', 'values', mix(1, 0, clamp((t - T.gel) / .1))); }
   let ui = '';
   if (gele) ui += `<rect width="1080" height="1920" fill="none" stroke="#fff" stroke-width="18" opacity=".9"/><g transform="translate(70,150)"><rect width="34" height="90" fill="#fff"/><rect x="54" width="34" height="90" fill="#fff"/></g>`;
-  if (rewind) {
-    const k = clamp((t - T.rw) / (P('l01') + .05 - T.rw));
-    L.sdb.setAttribute('filter', 'url(#vhs)');
-    tr(L.sdb, `translate(${Math.sin(t * 90) * 10},${(Math.sin(t * 37) > .7 ? 16 : 0)})`);
-    ui += Array.from({ length: 24 }, (_, i) => `<rect x="0" y="${i * 80 + ((t * 900) % 80)}" width="1080" height="4" fill="#fff" opacity=".12"/>`).join('');
-    ui += `<rect x="0" y="${(t * 2400) % 1920}" width="1080" height="70" fill="#fff" opacity=".18"/>`;
-    ui += `<g transform="translate(70,190)" opacity="${.6 + .4 * (Math.sin(t * 20) > 0)}"><path d="M70,0 L0,40 L70,80 Z M140,0 L70,40 L140,80 Z" fill="#fff"/><text x="170" y="64" font-family="Geist" font-weight="700" font-size="58" fill="#fff" letter-spacing="3">3 JOURS PLUS TÔT</text></g>`;
+  if (flashback) {
+    // flash-back « 48 H AVANT » : éclair blanc, l'image ondule comme un souvenir, puis sépia, vignette, grain et fuite de lumière
+    const fbA = P('l01') - .05, k = clamp((t - T.rw) / (fbA - T.rw)), onde = Math.sin(Math.PI * clamp(k * 1.1));
+    const sep = .8 * E.out(clamp(k * 1.4)), I = 1 - sep;
+    const S3 = [[.393, .769, .189], [.349, .686, .168], [.272, .534, .131]];
+    const m = S3.map((r, a) => r.map((v, b) => (I * (a === b ? 1 : 0) + sep * v * 1.05).toFixed(3)).join(' ') + ' 0 ' + (sep * .03).toFixed(3)).join('  ') + '  0 0 0 1 0';
+    L.sdb.setAttribute('filter', 'url(#fb)');
+    attr('fbSep', 'values', m);
+    attr('fbDisp', 'scale', (onde * 60).toFixed(1));
+    attr('fbTurb', 'baseFrequency', `${(.004 + .003 * k).toFixed(4)} ${(.02 + .008 * Math.sin(t * 11)).toFixed(4)}`);
+    tr(L.sdb, `translate(540,900) scale(${(1 + .22 * onde).toFixed(3)}) rotate(${(-5 * onde).toFixed(2)}) translate(-540,-900)`);
+    // éclair blanc à l'entrée
+    ui += `<rect width="1080" height="1920" fill="#fff" opacity="${(clamp(1 - Math.abs(t - T.rw - .06) / .22) * .95).toFixed(3)}"/>`;
+    // ambiance souvenir
+    ui += `<rect width="1080" height="1920" fill="url(#fbVig)" opacity="${sep.toFixed(3)}"/><rect width="1080" height="1920" fill="url(#fbFuite)" opacity="${(sep * (.55 + .25 * Math.sin(t * 2.3))).toFixed(3)}"/>`;
+    const img = Math.floor(t * 12);
+    for (let i = 0; i < 22; i++) { const h = Math.sin((img * 31 + i) * 12.9898) * 43758.5453, u = h - Math.floor(h), v = (h * 7.3) - Math.floor(h * 7.3); ui += `<circle cx="${(u * 1080).toFixed(0)}" cy="${(v * 1920).toFixed(0)}" r="${(1.5 + (i % 3) * 1.5).toFixed(1)}" fill="${i % 4 ? '#fff6e0' : '#2a1606'}" opacity="${(.5 * sep).toFixed(2)}"/>`; }
+    if (Math.sin(img * 3.7) > .6) ui += `<rect x="${(200 + (img * 97) % 700)}" y="0" width="2" height="1920" fill="#fff6e0" opacity="${(.35 * sep).toFixed(2)}"/>`;
+    // carton « 48 H AVANT » avec horloge qui tourne à l'envers, puis étiquette dans le coin
+    const ent = E.backS(clamp((t - T.rw - .08) / .35)), red = E.io(clamp((t - P('l01') - .45) / .4));
+    const cx = mix(540, 270, red), cy = mix(560, 190, red), sc = mix(1, .42, red) * ent;
+    const aig = -(t - T.rw) * 900;
+    ui += `<g transform="translate(${cx.toFixed(1)},${cy.toFixed(1)}) scale(${sc.toFixed(3)})" opacity="${clamp(ent * 1.5).toFixed(3)}">
+      <rect x="-460" y="-130" width="920" height="260" rx="34" fill="#1d1208" opacity=".82"/>
+      <rect x="-444" y="-114" width="888" height="228" rx="24" fill="none" stroke="#ffd23f" stroke-width="5" opacity=".9"/>
+      <g transform="translate(-320,0)"><circle r="84" fill="#fff6e0" stroke="#ffd23f" stroke-width="10"/>
+        ${Array.from({ length: 12 }, (_, i) => `<rect x="-3" y="-74" width="6" height="${i % 3 ? 10 : 18}" fill="#1d1208" transform="rotate(${i * 30})"/>`).join('')}
+        <rect x="-5" y="-62" width="10" height="62" rx="5" fill="#1d1208" transform="rotate(${(aig / 12).toFixed(1)})"/><rect x="-4" y="-74" width="8" height="74" rx="4" fill="#e5484d" transform="rotate(${aig.toFixed(1)})"/><circle r="9" fill="#1d1208"/>
+        <path d="M-118,-30 A120,120 0 0 1 -60,-104" fill="none" stroke="#ffd23f" stroke-width="10" stroke-linecap="round"/><path d="M-138,-44 L-116,-6 L-92,-42 Z" fill="#ffd23f"/></g>
+      <text x="-196" y="40" text-anchor="start" font-family="Bricolage" font-weight="800" font-size="118" fill="#ffd23f" letter-spacing="-2">48 H AVANT</text>
+    </g>`;
   }
   window._uiSdb = ui;
 }
@@ -286,12 +313,13 @@ function rJardin(t, mode) {
   } else if (mode === 'appel') {
     // le téléphone de Gaspard vibre : salto de joie sur « Toi »
     cam = piste(t, [[T.wJ, { x: 540, y: 1000, z: 1.5 }], [T.fi, { x: 540, y: 1040, z: 1.35 }, E.sine]]);
-    const toi = M('l10', 11) - .05, s = saut(t, toi, .26, 260), rot = t > toi ? 360 * E.io(clamp((t - toi) / .55)) : 0;
+    const toi = T.wJ + .4,   // salto quand le téléphone sonne (le « Toi » a été retiré)
+      s = saut(t, toi, .26, 260), rot = t > toi ? 360 * E.io(clamp((t - toi) / .55)) : 0;
     const h = 320, th = rot * Math.PI / 180;   // salto autour du centre du corps (et non des pieds)
     Object.assign(g, { x: 540 - h * Math.sin(th), y: 1580 + s.y - h + h * Math.cos(th), s: 1.0, sx: s.sx, sy: s.sy, rot, bouche: t > toi ? 'rire' : 'o', oeil: 1.15, paup: 0, sourcils: 1, mainD: { x: 165, y: -405 }, objetD: 'tel', formeD: 'tient', telCeinture: false, regardX: .5, regardY: -.2 });
     cl.x = 1800; vo.x = 2000;
-    fx += vibrations(540 + 200, 1580 - 420, t, t < toi, 80, '#3a1a06') + onomatopee(800, 600, 'DRIIING !', t, T.wJ, .6, '#ffd23f', 100, 8);
-    fx += motCle(540, 520, 'TOI.', t, toi, .9, '#ffd23f', 150, -6) + etincelles(540, 1100, t, toi + .5, 10, 300, '#ffd23f', .8);
+    fx += vibrations(540 + 200, 1580 - 420, t, t < toi, 80, '#3a1a06') + onomatopee(640, 600, 'DRIIING !', t, T.wJ, .6, '#ffd23f', 100, 8);
+    fx += etincelles(540, 1100, t, toi + .5, 10, 300, '#ffd23f', .8);
   } else {
     // final : tope là à trois, tampon CHANTIER GAGNÉ
     cam = piste(t, [[T.fi, { x: 540, y: 1060, z: 1.22 }], [T.sd, { x: 540, y: 1020, z: 1.34 }, E.sine]]);

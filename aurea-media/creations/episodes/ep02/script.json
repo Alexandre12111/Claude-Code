@@ -117,14 +117,15 @@
   },
   {
    "id": "l10",
-   "texte": "La voisine te trouve, elle voit ton travail, et elle t'appelle. Toi.",
+   "texte": "La voisine te trouve, elle voit ton travail, et elle t'appelle.",
    "fort": false,
-   "sous_titre": "La voisine te trouve, elle voit ton travail, et elle t'appelle. *Toi.*",
+   "sous_titre": "La voisine te trouve, elle voit ton travail, et *elle t'appelle.*",
    "source": [
     "sortie_ep02",
     10
    ],
-   "debut_prevu": 41.82
+   "debut_prevu": 41.82,
+   "garder": 11
   },
   {
    "id": "l11",
@@ -139,12 +140,12 @@
   },
   {
    "id": "l12",
-   "texte": "Ton travail est bon. Il mérite d'être trouvé.",
+   "texte": "Tu sais que ton travail est exceptionnel. Il mérite d'être trouvé.",
    "fort": false,
-   "sous_titre": "Ton travail est bon. Il mérite *d'être trouvé.*",
+   "sous_titre": "Tu sais que ton travail est *exceptionnel.* Il mérite *d'être trouvé.*",
    "source": [
-    "sortie_ep02",
-    12
+    "sortie_ep02c",
+    0
    ],
    "debut_prevu": 51.69
   }

@@ -187,7 +187,11 @@ class Pantin {
     for (const [cote, sx] of [['G', -1], ['D', 1]]) {
       const S = rotP(sx * 86, -206);
       const M = p['main' + cote];
-      const E = this.articulation(S, M, 128, 122, p['coude' + cote]);
+      // Coude naturel : des deux solutions, on garde celle qui part vers l'extérieur et vers le bas
+      // (le sens fixe faisait rentrer le coude dès que la main passait au-dessus de l'épaule).
+      const E1 = this.articulation(S, M, 128, 122, 1), E2 = this.articulation(S, M, 128, 122, -1);
+      const note = Q => sx * (Q.x - S.x) + .6 * (Q.y - S.y);
+      const E = note(E1) >= note(E2) ? E1 : E2;
       const fin = this.surTube(S, E, M, .27);
       const milieu = this.surTube(S, E, M, .14);
       let s = this.tube(S, E, M, 40, c.peau, c.peauTrait);

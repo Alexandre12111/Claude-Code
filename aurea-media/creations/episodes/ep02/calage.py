@@ -14,7 +14,7 @@ TEL = Path(sys.argv[2])
 script = json.loads((ICI / "script.json").read_text())
 # respirations entre les répliques (le montage s'adapte à la voix ; aucune accélération de la voix)
 PAUSE = .4
-PAUSES = {"l00": .55, "l03": .32, "l04": .3, "l05": .45, "l06": .7, "l08": .45, "l10": .5, "l11": .55}
+PAUSES = {"l00": .9, "l03": .32, "l04": .3, "l05": .45, "l06": .7, "l08": .45, "l10": .95, "l11": .55}
 # V4 : chaîne douce anti grésillements (aucun rehaussement au-dessus de 8 kHz, zone où le vocodeur crépite)
 CHAINE = ("adeclick=w=55:o=75:t=2,highpass=f=85:p=2,lowpass=f=10500:p=2,afftdn=nr=6:nf=-52:tn=1,"
           "equalizer=f=150:t=q:w=0.9:g=2,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=2800:t=q:w=1.0:g=1.5,"
@@ -51,6 +51,13 @@ for ph in script["phrases"]:
         if fus and (w["w"].startswith("'") or fus[-1]["w"].endswith("'")): fus[-1] = {"w": fus[-1]["w"] + w["w"], "a": fus[-1]["a"], "b": w["b"]}
         else: fus.append(dict(w))
     mots_w = fus
+    # une ponctuation seule (« ? ») n'est pas un mot : Whisper l'étire parfois sur les bruits parasites qui suivent
+    mots_w = [w for w in mots_w if not re.fullmatch(r"[?!:;.,…\s-]+", w["w"])]
+    # « garder » : on ne conserve que les N premiers mots (coupe propre avant le mot suivant)
+    limite = None
+    if ph.get("garder"):
+        if len(mots_w) > ph["garder"]: limite = mots_w[ph["garder"]]["a"] - .04
+        mots_w = mots_w[:ph["garder"]]
     toks = jetons(ph["sous_titre"])
     if len(mots_w) == len(toks):
         mots = [{"debut": round(t + w["a"], 3), "fin": round(t + w["b"], 3)} for w in mots_w]
@@ -65,7 +72,7 @@ for ph in script["phrases"]:
         groupe = []
         for k, (tok, m) in enumerate(zip(toks, mots)):
             groupe.append((tok, m))
-            if len(groupe) >= 4 or k == len(toks) - 1 or re.search(r"[.?!:]$", tok):
+            if len(groupe) >= 8 or sum(len(x) + 1 for x, _ in groupe) > 36 or k == len(toks) - 1 or re.search(r"[.?!:]$", tok):
                 srt.append((groupe[0][1]["debut"], groupe[-1][1]["fin"] + .15, " ".join(x for x, _ in groupe))); groupe = []
     print(f"{ph['id']:5s} {t:6.2f}  {d:5.2f} s  {'OK ' if best['ok'] else 'À ÉCOUTER'} sim {best.get('sim', 0):.3f}  « {best['heard']} »")
     # coupe après le dernier mot prononcé : fin de la syllabe en cours (énergie), puis 80 ms ; supprime les bribes parasites
@@ -73,7 +80,11 @@ for ph in script["phrases"]:
     _x, _sr = _sf.read(str(wav)); _x = _x.mean(1) if _x.ndim > 1 else _x
     _h = int(.02 * _sr); _e = _np.array([_np.sqrt(_np.mean(_x[i:i + _h] ** 2)) for i in range(0, len(_x) - _h, _h)]); _k = int((mots_w[-1]["b"] if mots_w else d) / .02)
     while _k < len(_e) and _e[_k] > _e.max() * .05: _k += 1
-    fins[wav] = min(d, (_k + 4) * .02); d = fins[wav]
+    fins[wav] = min(d, (_k + 4) * .02)
+    if limite is not None:   # point le plus calme entre la fin du dernier mot gardé et le mot suivant
+        a, b = int(mots_w[-1]["b"] / .02), max(int(mots_w[-1]["b"] / .02) + 1, int(limite / .02))
+        fins[wav] = min(fins[wav], (a + int(_np.argmin(_e[a:b]))) * .02 + .02)
+    d = fins[wav]
     morceaux.append((wav, PAUSES.get(ph["id"], PAUSE), ph.get("voix", "alexandre")))
     t += d + PAUSES.get(ph["id"], PAUSE)
 

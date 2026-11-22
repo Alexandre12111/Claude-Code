@@ -20,7 +20,7 @@ rng = np.random.default_rng(2026)
 P = lambda i: PH[i]["debut"]; F = lambda i: PH[i]["fin"]
 def Mo(i, k): m = PH[i]["mots"]; return m[min(k, len(m) - 1)]["debut"]
 # repères identiques à scenes.js (épisode 2)
-T = dict(gel=Mo("l00", 7) - .04, tamp=Mo("l00", 11) - .02, rw=P("l01") - .45, j=P("l02") - .12, g=P("l03") - .12, ap=P("l06") - .1, v=P("l07") - .1,
+T = dict(gel=Mo("l00", 7) - .04, tamp=Mo("l00", 11) - .02, rw=P("l01") - .8, j=P("l02") - .12, g=P("l03") - .12, ap=P("l06") - .1, v=P("l07") - .1,
          fa=P("l08") - .1, vi=P("l09") - .1, w=P("l10") - .1, wJ=Mo("l10", 10) + .1, fi=P("l11") - .1, sd=P("l12") - .1,
          fin=CAL["finTexte"] if "finTexte" in CAL else F("l12") + .4)
 ML, MR, SL, SR_ = (np.zeros(N) for _ in range(4))
@@ -155,7 +155,10 @@ for k in range(int(T["gel"] / (B / 2)) + 1):
     ajoute(charley(.4), tt, pan=.35, mus=True)
 ajoute(scratch(1.1), T["gel"] - .02)
 # B. Retour en arrière : glissando inversé, puis groove doux pendant la salle de bain et la haie
-ajoute(glissando(.45, .45)[::-1], T["rw"])
+# flash-back : souffle qui monte, arpège de glockenspiel vers l'aigu, cloche douce à l'arrivée dans le souvenir
+_d = .7; _x = X(_d); ajoute(bp(bruit(_d), 2400, .7) * (_x / _d) ** 2 * .35, T["rw"] - .05)
+for _i, _n in enumerate([84, 88, 91, 96, 100, 103]): ajoute(glock(_n, .35), T["rw"] + .05 + _i * .06, pan=(_i - 2.5) * .12)
+ajoute(carillon([76, 83], .3), P("l01") - .1)
 basse = [48, 55, 52, 55, 45, 52, 48, 52]; acc = [[60, 64, 67], [57, 60, 64]]
 x0 = P("l01") - .05
 while x0 < T["g"]:
@@ -220,7 +223,7 @@ tope = Mo("l00", 4)
 ajoute(claque(1.2), tope); ajoute(pop(1400, .5), tope + .02)
 for i in range(8): ajoute(pop(1600 + 120 * i, .14), tope + .05 + i * .04, pan=(i - 4) * .15)
 ajoute(impact(.7), T["gel"]); ajoute(tampon_son(1.), T["tamp"])
-ajoute(whoosh(.45, 4000, 300, .5), T["rw"]); ajoute(bp(bruit(.45), 1800, .6) * .25, T["rw"])     # bande qui rembobine
+ajoute(whoosh(.6, 600, 5000, .45), T["rw"])                                                         # entrée dans le souvenir
 for i in range(4): ajoute(tinte(.22), P("l01") + .3 + i * .35, pan=.4)                              # cœurs
 ajoute(whoosh(.35, 300, 2600, .5), T["j"]); ajoute(page(.6), Mo("l02", 3))                          # post-it
 ajoute(whoosh(.4, 400, 3000, .6), T["g"] - .05)
@@ -237,11 +240,11 @@ for i, d in enumerate((.2, .55, .9)): ajoute(osc(220, .18) * env(int(.18 * SR), 
 ajoute(glissando(.7, .35)[::-1], T["fa"]); ajoute(tampon_son(.7), Mo("l08", 7) - .1)
 for k in (6, 8, 10, 12): ajoute(pop(1100 + k * 25, .5), Mo("l09", k) - .1, pan=-.2); ajoute(bloc(.3, 700), Mo("l09", k) + .02)
 ajoute(whoosh(.4, 400, 3000, .6), T["w"] - .05); ajoute(clic(1.), Mo("l10", 10) - .15)
-ajoute(sonnerie(.8, 1.), T["wJ"]); ajoute(boing(260, .6, .5), Mo("l10", 11) - .05); ajoute(whoosh(.5, 300, 3500, .6), Mo("l10", 11))
+ajoute(sonnerie(.8, 1.), T["wJ"]); ajoute(boing(260, .6, .5), T["wJ"] + .35); ajoute(whoosh(.5, 300, 3500, .6), T["wJ"] + .4)
 ajoute(claque(1.3), Mo("l11", 4) - .1); ajoute(impact(.5), Mo("l11", 4) - .1)
 for i in range(8): ajoute(pop(1700 + 140 * i, .14), Mo("l11", 4) + i * .04, pan=(i - 4) * .15)
 ajoute(tampon_son(.9), Mo("l11", 9) - .1)
-ajoute(tinte(.3), Mo("l12", 4)); ajoute(whoosh(.3, 4000, 600, .4), T["fin"] - .1); ajoute(boing(240, .5, .5), T["fin"] + .55)
+ajoute(tinte(.3), Mo("l12", 5)); ajoute(whoosh(.3, 4000, 600, .4), T["fin"] - .1); ajoute(boing(240, .5, .5), T["fin"] + .55)
 
 # ================= VOIX ET MIXAGE =================
 with wave.open(str(ICI / "voix-mix.wav")) as w:
