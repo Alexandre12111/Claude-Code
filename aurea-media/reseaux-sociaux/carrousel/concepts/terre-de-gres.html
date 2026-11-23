@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Terre de Grès · Céramiques artisanales façonnées à la main</title>
+<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). -->
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
+<style>
+:root{--sable:#EFE8DC;--sable2:#E6DCCB;--argile:#B6643B;--argile2:#9C5130;--brun:#2A211B;--mute:#7C6E62;--blanc:#FBF8F3}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--sable);color:var(--brun);font:400 16px/1.6 "DM Sans",sans-serif;-webkit-font-smoothing:antialiased}
+.ds{font-family:"DM Serif Display",serif;font-weight:400}
+.annonce{background:var(--brun);color:var(--sable);text-align:center;font-size:13px;letter-spacing:.06em;padding:10px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:22px 56px}
+.logo{font-family:"DM Serif Display";font-size:30px}.logo i{color:var(--argile)}
+nav ul{display:flex;gap:34px;list-style:none;font-size:15px;font-weight:500}
+.icones{display:flex;gap:18px;align-items:center}
+.ico{width:42px;height:42px;border-radius:50%;background:var(--blanc);display:grid;place-items:center;position:relative}
+.ico svg{width:19px;height:19px}
+.ico .n{position:absolute;top:-3px;right:-3px;width:18px;height:18px;border-radius:50%;background:var(--argile);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center}
+.hero{margin:6px 56px 0;border-radius:32px;overflow:hidden;display:grid;grid-template-columns:1fr 1.1fr;background:var(--sable2);height:580px}
+.hero .txt{padding:64px 56px;display:flex;flex-direction:column;justify-content:center}
+.chip{align-self:flex-start;background:var(--blanc);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;color:var(--argile2)}
+.hero h1{font-size:68px;line-height:1;margin:20px 0 18px}.hero h1 i{color:var(--argile)}
+.hero p{color:var(--mute);font-size:17px;max-width:440px}
+.btn{display:inline-flex;align-items:center;gap:10px;background:var(--argile);color:#fff;padding:16px 28px;border-radius:999px;font-weight:600;font-size:15px;margin-top:30px;align-self:flex-start;box-shadow:0 14px 30px rgba(182,100,59,.3)}
+.hero .img{position:relative}.hero .img img{width:100%;height:100%;object-fit:cover;display:block}
+.hero .prix{position:absolute;left:28px;bottom:28px;background:rgba(251,248,243,.92);border-radius:20px;padding:14px 18px;display:flex;gap:14px;align-items:center;box-shadow:0 20px 40px rgba(42,33,27,.15)}
+.hero .prix img{width:56px;height:56px;border-radius:12px;object-fit:cover}
+.hero .prix b{display:block;font-size:15px}.hero .prix span{font-size:14px;color:var(--argile2);font-weight:700}
+.produits{padding:44px 56px 70px}
+.produits header{display:flex;justify-content:space-between;align-items:end;margin-bottom:26px}
+.produits h2{font-size:44px}
+.filtres{display:flex;gap:10px}.filtres span{padding:9px 18px;border-radius:999px;background:var(--blanc);font-size:14px;font-weight:500}.filtres span.on{background:var(--brun);color:var(--sable)}
+.grille{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.carte{background:var(--blanc);border-radius:24px;padding:12px}
+.carte .ph{position:relative;border-radius:16px;overflow:hidden;height:250px}
+.carte .ph img{width:100%;height:100%;object-fit:cover}
+.carte .tag{position:absolute;top:12px;left:12px;background:var(--blanc);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700}
+.carte .tag.neuf{background:var(--argile);color:#fff}
+.carte .bas{display:flex;justify-content:space-between;align-items:center;padding:14px 6px 4px}
+.carte b{font-size:16px}.carte small{display:block;color:var(--mute);font-size:13px}
+.carte .plus{width:40px;height:40px;border-radius:50%;background:var(--brun);color:var(--sable);display:grid;place-items:center;font-size:22px;line-height:1}
+.carte .p{font-weight:700;color:var(--argile2)}
+@media (max-width:600px){
+  .annonce{font-size:11px}
+  nav{padding:16px 18px}nav ul{display:none}.logo{font-size:25px}.ico.cache{display:none}
+  .hero{margin:0 14px;grid-template-columns:1fr;height:auto;border-radius:26px}
+  .hero .txt{padding:30px 24px 26px}
+  .hero h1{font-size:44px;margin:16px 0 12px}.hero p{font-size:15px}.btn{margin-top:20px}
+  .hero .img{height:270px}
+  .produits{padding:34px 14px}.produits h2{font-size:30px}.filtres{display:none}
+  .grille{grid-template-columns:1fr 1fr;gap:12px}.carte{padding:8px;border-radius:18px}.carte .ph{height:160px}.carte .plus{width:32px;height:32px;font-size:18px}.carte b{font-size:14px}
+}
+</style></head><body>
+<div class="annonce">Livraison offerte dès 60 € · Chaque pièce est unique, façonnée dans notre atelier de Bourgogne</div>
+<nav><div class="logo">Terre <i>de</i> Grès</div>
+<ul><li>Vaisselle</li><li>Vases</li><li>Bougies</li><li>L'atelier</li><li>Ateliers poterie</li></ul>
+<div class="icones"><div class="ico cache"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></div><div class="ico cache"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="n">2</span></div></div></nav>
+<section class="hero">
+  <div class="txt"><span class="chip">Nouvelle collection · Hiver</span>
+    <h1 class="ds">La beauté des choses <i>faites main</i>.</h1>
+    <p>Tasses, bols et vases en grès, tournés un par un et émaillés à la main. Pour une table qui raconte une histoire.</p>
+    <a class="btn">Découvrir la collection →</a></div>
+  <div class="img"><img src="photos/gres-hero.webp" alt=""><div class="prix"><img src="photos/gres-1.webp" alt=""><div><b>Vase Albâtre</b><span>48 €</span></div></div></div>
+</section>
+<section class="produits">
+  <header><h2 class="ds">Nos best-sellers</h2><div class="filtres"><span class="on">Tout</span><span>Tasses</span><span>Bols</span><span>Vases</span></div></header>
+  <div class="grille">
+    <div class="carte"><div class="ph"><img src="photos/gres-3.webp" alt=""><span class="tag">Best-seller</span></div><div class="bas"><div><b>Assiettes Lagon</b><small class="p">par 4 · 72 €</small></div><span class="plus">+</span></div></div>
+    <div class="carte"><div class="ph"><img src="photos/gres-2.webp" alt=""><span class="tag neuf">Nouveau</span></div><div class="bas"><div><b>Trio Ardoise</b><small class="p">54 €</small></div><span class="plus">+</span></div></div>
+    <div class="carte"><div class="ph"><img src="photos/gres-1.webp" alt=""></div><div class="bas"><div><b>Vase Albâtre</b><small class="p">48 €</small></div><span class="plus">+</span></div></div>
+    <div class="carte"><div class="ph"><img src="photos/gres-4.webp" alt=""></div><div class="bas"><div><b>Soliflores Sakura</b><small class="p">36 €</small></div><span class="plus">+</span></div></div>
+  </div>
+</section>
+</body></html>

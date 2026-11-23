@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Carrousel Aurea Media</title>
+<style>
+/* Carrousel de présentation Aurea Media : 10 visuels 1080 x 1350 (Instagram et LinkedIn). Rendu par exporter-carrousel.js. */
+@font-face{font-family:"Bricolage";src:url(../sources/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(../sources/geist.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Spectral SC";src:url(../sources/spectral-sc-600.woff2) format("woff2");font-weight:600}
+:root{--ink:#0A0A0A;--ink2:#121211;--ink3:#191917;--cream:#F5F5F0;--mute:#AEAEA8;--gold:#C9A961;--gold2:#B8934E;--line:rgba(245,245,240,.10)}
+*{box-sizing:border-box}html,body{margin:0;background:#333}
+.v{position:relative;width:1080px;height:1350px;overflow:hidden;background:var(--ink);color:var(--cream);font-family:Geist,sans-serif;display:none}
+.v.on{display:block}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.halo{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(201,169,97,.22),rgba(201,169,97,0) 65%);pointer-events:none}
+.titre{font-family:Bricolage,sans-serif;font-weight:620;letter-spacing:-.035em;line-height:1;text-wrap:balance;margin:0}
+.or{background:linear-gradient(100deg,#E3CB8F 0%,#C9A961 45%,#A9873F 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sur{font:600 18px/1 Geist;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.mute{color:var(--mute)}
+.logotype{font-family:"Spectral SC",serif;font-weight:600;letter-spacing:.04em;white-space:nowrap}
+.entete{position:absolute;left:80px;right:80px;top:70px;display:flex;align-items:center;justify-content:space-between}
+.entete .marque{display:flex;align-items:center;gap:16px;font-size:24px}
+.entete .marque img{width:46px}
+.entete .page{font:500 20px Geist;color:var(--mute);letter-spacing:.08em}
+.glisse{position:absolute;right:0;top:50%;transform:translateY(-50%);width:64px;height:128px;border-radius:64px 0 0 64px;background:rgba(201,169,97,.14);border:1px solid rgba(201,169,97,.35);border-right:0;display:grid;place-items:center;color:var(--gold);font:600 34px Geist}
+.carte{border:1px solid var(--line);border-radius:28px;background:rgba(245,245,240,.035)}
+.chip{display:inline-flex;align-items:center;gap:12px;border:1px solid rgba(201,169,97,.4);background:rgba(201,169,97,.08);border-radius:999px;padding:14px 24px;font:500 22px Geist;color:var(--cream);white-space:nowrap}
+.persp{transform-style:preserve-3d}
+/* ordinateur */
+.laptop{position:absolute}
+.laptop .ecran{position:relative;border-radius:18px 18px 0 0;background:#0c0c0c;padding:2.2% 2.2% 0;box-shadow:0 0 0 2px #2b2b29,0 50px 100px rgba(0,0,0,.6)}
+.laptop .ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:4px 4px 0 0}
+.laptop .base{height:16px;margin:0 -7%;background:linear-gradient(#3a3a37,#1d1d1b);border-radius:0 0 16px 16px;box-shadow:0 24px 48px rgba(0,0,0,.6)}
+.laptop .base:after{content:"";display:block;width:18%;height:6px;margin:0 auto;background:#121211;border-radius:0 0 6px 6px}
+/* iPhone récent */
+.tel{position:absolute;--w:150px;border-radius:calc(var(--w) * .165);padding:calc(var(--w) * .032);
+  background:linear-gradient(135deg,#d9d6cf 0%,#8e8a82 12%,#4b4844 30%,#2a2826 50%,#4b4844 70%,#9b968d 88%,#e2ded6 100%);
+  box-shadow:0 0 0 calc(var(--w) * .004) rgba(255,255,255,.35) inset,0 calc(var(--w) * .25) calc(var(--w) * .45) rgba(0,0,0,.6),0 calc(var(--w) * .06) calc(var(--w) * .1) rgba(0,0,0,.35)}
+.tel .verre{position:relative;border-radius:calc(var(--w) * .135);overflow:hidden;background:#000;padding:calc(var(--w) * .022)}
+.tel img{display:block;width:100%;aspect-ratio:9/18.2;object-fit:cover;object-position:top}
+.tel .statut{display:flex;justify-content:space-between;align-items:center;height:calc(var(--w) * .135);padding:0 calc(var(--w) * .1) 0 calc(var(--w) * .115);font:600 calc(var(--w) * .062) Geist,sans-serif;border-radius:calc(var(--w) * .115) calc(var(--w) * .115) 0 0}
+.tel .statut i{display:inline-block;margin-left:calc(var(--w) * .02);border-radius:2px;background:currentColor}
+.tel .verre > img{border-radius:0 0 calc(var(--w) * .115) calc(var(--w) * .115)}
+.tel .ile{position:absolute;top:calc(var(--w) * .052);left:50%;width:31%;height:calc(var(--w) * .09);transform:translateX(-50%);background:#000;border-radius:999px}
+.tel .reflet{position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.16) 0%,rgba(255,255,255,0) 30%,rgba(255,255,255,0) 75%,rgba(255,255,255,.06) 100%)}
+.tel .btn{position:absolute;width:calc(var(--w) * .022);border-radius:2px;background:linear-gradient(90deg,#3a3835,#a19c93 55%,#55524d)}
+/* étiquettes de projet */
+.projet{position:absolute;left:80px;right:80px;bottom:80px;display:flex;justify-content:space-between;align-items:flex-end}
+.projet b{display:block;font:620 40px/1.1 Bricolage;letter-spacing:-.02em}
+.projet span{font-size:22px}
+.badge{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:12px 20px;font:600 17px Geist;letter-spacing:.14em;text-transform:uppercase}
+.badge.reel{background:rgba(47,158,110,.14);color:#6fd3a5;border:1px solid rgba(47,158,110,.4)}
+.badge.concept{background:rgba(201,169,97,.12);color:var(--gold);border:1px solid rgba(201,169,97,.45)}
+.num{font:620 26px Bricolage;color:var(--gold)}
+</style></head><body>
+
+<!-- ===================== 1. ACCROCHE ===================== -->
+<section class="v" id="c01">
+  <div class="halo" style="width:1500px;height:1500px;left:-210px;top:330px"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">01 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:200px">
+    <h1 class="titre" style="font-size:108px">Vos clients vous jugent en <span class="or">3 secondes</span>.</h1>
+    <div class="titre mute" style="font-size:60px;margin-top:22px;font-weight:500">Sur votre site.</div>
+  </div>
+  <div style="position:absolute;left:60px;top:690px;width:760px;perspective:1800px">
+    <div class="laptop persp" style="position:relative;width:700px;transform:rotateY(14deg) rotateX(3deg)"><div class="ecran"><img src="concepts/captures/maison-sorel.png"></div><div class="base"></div></div>
+  </div>
+  <div class="tel" style="left:640px;top:760px;width:200px"><img src="concepts/captures/braise-mobile.png"></div>
+  <div class="tel" style="left:820px;top:690px;width:200px"><img src="concepts/captures/terre-de-gres-mobile.png"></div>
+  <div style="position:absolute;left:80px;bottom:76px" class="chip">Glisse pour voir ce qu'on crée <span style="color:var(--gold)">→</span></div>
+  <div class="grain"></div>
+</section>
+
+<!-- ===================== 2. QUI ON EST ===================== -->
+<section class="v" id="c02">
+  <div class="halo" style="width:1300px;height:1300px;left:280px;top:-500px"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">02 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:210px">
+    <div class="sur">Agence web · Paris · depuis 2021</div>
+    <h2 class="titre" style="font-size:86px;margin-top:28px">On crée des sites qui donnent <span class="or">envie d'appeler</span>.</h2>
+    <p class="mute" style="font-size:31px;line-height:1.45;margin:34px 0 0;max-width:860px">Sites vitrines et e-commerce sur mesure pour les artisans, les indépendants, les TPE et les PME. Beaux, rapides, et pensés pour transformer vos visiteurs en demandes de devis.</p>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;top:820px;display:grid;grid-template-columns:1fr 1fr;gap:22px">
+    <div class="carte" style="padding:34px 36px"><div class="titre or" style="font-size:84px">45+</div><div class="mute" style="font-size:24px;margin-top:10px">sites livrés</div></div>
+    <div class="carte" style="padding:34px 36px"><div style="display:flex;align-items:baseline;gap:14px"><div class="titre or" style="font-size:84px">4,9</div><div style="color:var(--gold);font-size:30px;letter-spacing:3px">★★★★★</div></div><div class="mute" style="font-size:24px;margin-top:10px">sur 39 avis Google</div></div>
+    <div class="carte" style="padding:34px 36px"><div class="titre or" style="font-size:84px">4 sem.</div><div class="mute" style="font-size:24px;margin-top:10px">de la maquette à la mise en ligne</div></div>
+    <div class="carte" style="padding:34px 36px;display:flex;align-items:center;gap:22px"><img src="../../maquette/assets/alexandre-coury.webp" style="width:104px;height:104px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)"><div><div style="font:620 30px/1.15 Bricolage">Un seul interlocuteur</div><div class="mute" style="font-size:22px;margin-top:6px">du premier appel à la mise en ligne</div></div></div>
+  </div>
+  <div class="glisse">›</div><div class="grain"></div>
+</section>
+
+<!-- ===================== 3. CE QU'ON FAIT ===================== -->
+<section class="v" id="c03">
+  <div class="halo" style="width:1300px;height:1300px;left:-500px;top:500px"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">03 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:200px">
+    <div class="sur">Ce qu'on fait</div>
+    <h2 class="titre" style="font-size:80px;margin-top:26px">Tout pour être <span class="or">trouvé</span> et <span class="or">choisi</span>.</h2>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;top:500px;display:flex;flex-direction:column;gap:18px" id="services"></div>
+  <div class="glisse">›</div><div class="grain"></div>
+</section>
+
+<!-- ===================== 4. MÉTHODE ===================== -->
+<section class="v" id="c04">
+  <div class="halo" style="width:1400px;height:1400px;left:300px;top:400px"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">04 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:200px">
+    <div class="sur">Notre méthode</div>
+    <h2 class="titre" style="font-size:80px;margin-top:26px">Votre site en ligne en <span class="or">4 semaines</span>.</h2>
+    <p class="mute" style="font-size:29px;line-height:1.45;margin:26px 0 0;max-width:820px">Vous validez chaque étape. Vous continuez votre métier, on s'occupe du reste.</p>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;top:620px" id="etapes"></div>
+  <div class="glisse">›</div><div class="grain"></div>
+</section>
+
+<!-- ===================== 5. RÉALISATION PHARE ===================== -->
+<section class="v" id="c05">
+  <div class="halo" style="width:1300px;height:1300px;left:-120px;top:240px;background:radial-gradient(circle,rgba(47,109,246,.26),rgba(47,109,246,0) 62%)"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">05 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:200px">
+    <div class="sur">Nos réalisations</div>
+    <h2 class="titre" style="font-size:80px;margin-top:26px">Ils nous ont fait <span class="or">confiance</span>.</h2>
+  </div>
+  <div style="position:absolute;left:70px;top:480px;width:800px;perspective:1800px">
+    <div class="laptop persp" style="position:relative;width:760px;transform:rotateY(12deg) rotateX(3deg)"><div class="ecran"><img src="../../maquette/assets/realisations/dual-tech.webp"></div><div class="base"></div></div>
+  </div>
+  <div class="tel" style="left:770px;top:560px;width:230px"><img src="../../maquette/assets/realisations/dual-tech-mobile.webp"></div>
+  <div class="projet"><div><span class="badge reel">● Client réel</span><b style="margin-top:20px">Dual Tech</b><span class="mute">Site vitrine · services techniques</span></div><div class="mute" style="font-size:22px">ordinateur + mobile</div></div>
+  <div class="glisse">›</div><div class="grain"></div>
+</section>
+
+<!-- ===================== 6. GRILLE DE RÉALISATIONS ===================== -->
+<section class="v" id="c06">
+  <div class="halo" style="width:1300px;height:1300px;left:-100px;top:300px"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">06 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:200px">
+    <div class="sur">Nos réalisations</div>
+    <h2 class="titre" style="font-size:72px;margin-top:26px">Chaque métier a son site. <span class="or">Sur mesure.</span></h2>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;top:450px;display:grid;grid-template-columns:1fr 1fr;gap:22px 26px" id="grille"></div>
+  <div style="position:absolute;left:80px;bottom:60px"><span class="badge reel">● Clients réels</span><span class="mute" style="font-size:24px;margin-left:18px">et plus de 40 autres projets</span></div>
+  <div class="glisse">›</div><div class="grain"></div>
+</section>
+
+<!-- ===================== 7 à 9. CONCEPTS ===================== -->
+<template id="tpl-concept"><section class="v">
+  <div class="halo"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page"></div></div>
+  <div style="position:absolute;left:80px;right:80px;top:200px"><div class="sur"></div><h2 class="titre" style="font-size:76px;margin-top:26px"></h2></div>
+  <div class="zone-laptop" style="position:absolute;left:70px;top:520px;width:800px;perspective:1800px"><div class="laptop persp" style="position:relative;width:760px;transform:rotateY(12deg) rotateX(3deg)"><div class="ecran"><img></div><div class="base"></div></div></div>
+  <div class="tel" style="left:770px;top:600px;width:230px"><img></div>
+  <div class="projet"><div><span class="badge concept">◆ Concept Aurea Media</span><b style="margin-top:20px"></b><span class="mute"></span></div></div>
+  <div class="glisse">›</div><div class="grain"></div>
+</section></template>
+
+<!-- ===================== 10. APPEL À L'ACTION ===================== -->
+<section class="v" id="c10">
+  <div class="halo" style="width:1700px;height:1700px;left:-310px;top:-200px"></div>
+  <div class="entete"><div class="marque"><img src="../sources/logo-monogramme-clair.svg"><span class="logotype">AUREA MEDIA</span></div><div class="page">10 / 10</div></div>
+  <div style="position:absolute;left:80px;right:80px;top:250px;text-align:center">
+    <img src="../sources/logo-monogramme-clair.svg" style="width:150px">
+    <h2 class="titre" style="font-size:100px;margin-top:50px">Et si le prochain, c'était <span class="or">le vôtre</span> ?</h2>
+    <p class="mute" style="font-size:32px;line-height:1.45;margin:36px auto 0;max-width:800px">Parlez-nous de votre activité. On vous envoie un devis gratuit et détaillé sous 24 h.</p>
+  </div>
+  <div style="position:absolute;left:0;right:0;top:900px;display:flex;flex-direction:column;align-items:center;gap:22px">
+    <div style="display:inline-flex;align-items:center;gap:14px;background:linear-gradient(100deg,#E3CB8F,#C9A961 50%,#A9873F);color:#0A0A0A;border-radius:999px;padding:26px 46px;font:650 32px Geist">Lien en bio <span>→</span></div>
+    <div class="mute" style="font-size:26px">ou sur <span style="color:var(--cream);font-weight:600">aurea-media.fr</span></div>
+  </div>
+  <div style="position:absolute;left:80px;right:80px;bottom:80px;display:flex;justify-content:center;gap:16px">
+    <span class="chip">💬 Écrivez SITE en commentaire</span>
+  </div>
+  <div class="grain"></div>
+</section>
+
+<script>
+// Services
+const SERVICES = [
+  ['Site vitrine', 'Présentez votre métier, vos réalisations et vos avis. Dès 1 000 € HT.'],
+  ['Site e-commerce', 'Une boutique en ligne qui vend jour et nuit, simple à gérer.'],
+  ['Refonte de site', 'Votre site actuel ne rapporte rien ? On le transforme.'],
+  ['Référencement local', 'Être trouvé sur Google quand on cherche votre métier près de chez vous.'],
+  ['Identité visuelle', 'Logo, couleurs et supports pour une image professionnelle.'],
+];
+document.getElementById('services').innerHTML = SERVICES.map(([t, d], i) => `<div class="carte" style="display:flex;align-items:center;gap:30px;padding:28px 34px"><div class="num" style="font-size:30px;width:52px">0${i + 1}</div><div><div style="font:620 36px/1.1 Bricolage;letter-spacing:-.02em">${t}</div><div class="mute" style="font-size:23px;margin-top:6px">${d}</div></div></div>`).join('');
+// Méthode
+const ETAPES = [['S1', 'On échange', 'Votre activité, vos clients, vos objectifs.'], ['S2', 'Maquette', 'Vous voyez votre site avant toute ligne de code.'], ['S3', 'Création', 'Développement, contenus, référencement.'], ['S4', 'Mise en ligne', 'On publie, on vous forme, on reste là.']];
+document.getElementById('etapes').innerHTML = `<div style="position:relative;display:flex;flex-direction:column;gap:20px">` + ETAPES.map(([s, t, d], i) => `<div style="display:flex;gap:30px;align-items:center"><div style="flex:none;width:104px;height:104px;border-radius:50%;display:grid;place-items:center;font:650 34px Bricolage;${i === 3 ? 'background:linear-gradient(135deg,#E3CB8F,#A9873F);color:#0A0A0A' : 'border:2px solid rgba(201,169,97,.55);color:var(--gold)'}">${s}</div><div class="carte" style="flex:1;padding:24px 32px"><div style="font:620 34px/1.1 Bricolage">${t}</div><div class="mute" style="font-size:23px;margin-top:6px">${d}</div></div></div>`).join('') + `</div>`;
+// Grille de vraies réalisations
+const REELS = [['novexia', 'Novexia', 'Construction'], ['villa-moniris', 'Villa Moniris', 'Location de prestige'], ['laurence-paoli', 'Laurence Paoli', 'Avocate'], ['normande-isolation', "Normande d'Isolation", 'Industrie']];
+document.getElementById('grille').innerHTML = REELS.map(([f, n, s]) => `<figure style="margin:0"><div style="border-radius:16px;overflow:hidden;box-shadow:0 0 0 2px #2b2b29,0 30px 60px rgba(0,0,0,.5);background:#0c0c0c;padding:10px 10px 0"><img src="../../maquette/assets/realisations/${f}.webp" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:6px 6px 0 0"></div><figcaption style="margin-top:16px"><div style="font:620 28px Bricolage">${n}</div><div class="mute" style="font-size:20px;margin-top:2px">${s}</div></figcaption></figure>`).join('');
+// Concepts
+const CONCEPTS = [
+  ['c07', 'maison-sorel', 'Et maintenant, nos concepts', 'Et si votre site <span class="or">ressemblait</span> à ça ?', 'Maison Sorel', "Architecte d'intérieur · site vitrine", 'left:-200px;top:300px'],
+  ['c08', 'braise', 'Concept · restaurant', 'Un site qui <span class="or">remplit</span> vos tables.', 'Braise', 'Table gastronomique · réservation en ligne', 'left:-150px;top:350px;background:radial-gradient(circle,rgba(227,106,46,.24),rgba(227,106,46,0) 62%)'],
+  ['c09', 'terre-de-gres', 'Concept · e-commerce', 'Une boutique qui <span class="or">vend</span> pendant que vous dormez.', 'Terre de Grès', 'Céramique artisanale · boutique en ligne', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(182,100,59,.26),rgba(182,100,59,0) 62%)'],
+];
+const tpl = document.getElementById('tpl-concept').content.firstElementChild, fin = document.getElementById('c10');
+for (const [id, f, sur, titre, nom, desc, halo] of CONCEPTS) {
+  const n = tpl.cloneNode(true); n.id = id;
+  const h = n.querySelector('.halo'); h.style.cssText = 'width:1400px;height:1400px;' + halo;
+  n.querySelector('.page').textContent = id.slice(1) + ' / 10';
+  n.querySelector('.sur').textContent = sur; n.querySelector('h2').innerHTML = titre;
+  n.querySelector('.laptop img').src = `concepts/captures/${f}.png`; n.querySelector('.tel img').src = `concepts/captures/${f}-mobile.png`;
+  n.querySelector('.projet b').textContent = nom; n.querySelector('.projet .mute').textContent = desc;
+  document.body.insertBefore(n, fin);
+}
+// habille chaque .tel en iPhone récent
+async function habiller() {
+  await Promise.all([...document.images].map(i => i.decode().catch(() => {})));
+  document.querySelectorAll('.tel').forEach(t => {
+    const w = parseFloat(t.style.width); t.style.setProperty('--w', w + 'px');
+    const img = t.querySelector('img');
+    const verre = document.createElement('div'); verre.className = 'verre'; t.insertBefore(verre, img); verre.appendChild(img);
+    const c = document.createElement('canvas'); c.width = c.height = 4; const x = c.getContext('2d'); x.drawImage(img, 0, 0, 40, 40, 0, 0, 4, 4);
+    const [r, g, b] = x.getImageData(1, 1, 1, 1).data, clair = (r * .3 + g * .59 + b * .11) > 150;
+    verre.insertAdjacentHTML('afterbegin', `<div class="statut" style="background:rgb(${r},${g},${b});color:${clair ? '#111' : '#fff'}"><span>9:41</span><span><i style="width:calc(var(--w) * .05);height:calc(var(--w) * .035)"></i><i style="width:calc(var(--w) * .075);height:calc(var(--w) * .035);border-radius:3px"></i></span></div>`);
+    verre.insertAdjacentHTML('beforeend', '<div class="ile"></div><div class="reflet"></div>');
+    const H = w * 19.5 / 9;
+    for (const [cote, y, h] of [['g', .17, .055], ['g', .25, .1], ['g', .37, .1], ['d', .28, .15], ['d', .62, .09]]) {
+      const bt = document.createElement('div'); bt.className = 'btn'; bt.style.top = (H * y) + 'px'; bt.style.height = (H * h) + 'px'; bt.style[cote === 'g' ? 'left' : 'right'] = (-w * .018) + 'px'; t.appendChild(bt); }
+  });
+  window.pret = true;
+}
+habiller();
+window.montrer = id => { document.querySelectorAll('.v').forEach(v => v.classList.toggle('on', v.id === id)); };
+</script>
+</body></html>

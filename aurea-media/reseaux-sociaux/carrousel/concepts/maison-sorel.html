@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maison Sorel · Architecture d'intérieur à Paris</title>
+<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+:root{--ivoire:#F4F0E8;--sable:#E7DFD2;--encre:#1E1C19;--gris:#6F6A62;--bronze:#A47E54}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--ivoire);color:var(--encre);font:400 16px/1.6 Manrope,sans-serif;-webkit-font-smoothing:antialiased}
+.serif{font-family:"Cormorant Garamond",serif;font-weight:400;letter-spacing:-.01em}
+nav{display:flex;align-items:center;justify-content:space-between;padding:30px 64px}
+.logo{font-family:"Cormorant Garamond",serif;font-size:28px;letter-spacing:.32em;text-transform:uppercase}
+.logo small{display:block;font:500 9px/1 Manrope;letter-spacing:.42em;color:var(--gris);margin-top:4px}
+nav ul{display:flex;gap:40px;list-style:none;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gris)}
+.btn{display:inline-flex;align-items:center;gap:12px;background:var(--encre);color:var(--ivoire);padding:16px 26px;font:600 12px/1 Manrope;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+.btn.clair{background:transparent;color:var(--encre);border:1px solid var(--encre)}
+.hero{display:grid;grid-template-columns:5fr 7fr;gap:56px;padding:40px 64px 0;align-items:end}
+.hero .sur{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--bronze)}
+.hero h1{font-size:96px;line-height:.98;margin:26px 0 30px}
+.hero h1 em{font-style:italic;color:var(--bronze)}
+.hero p{color:var(--gris);font-size:17px;max-width:420px}
+.hero .actions{display:flex;gap:14px;margin-top:38px}
+.hero .visuel{position:relative;height:600px}
+.hero .visuel img{width:100%;height:100%;object-fit:cover;display:block}
+.hero .badge{position:absolute;left:-46px;bottom:56px;background:var(--ivoire);padding:24px 28px;box-shadow:0 30px 60px rgba(30,28,25,.12)}
+.hero .badge b{font-family:"Cormorant Garamond";font-size:46px;font-weight:500;line-height:1}
+.hero .badge span{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gris);margin-top:6px}
+.bande{display:flex;justify-content:space-between;padding:34px 64px;border-bottom:1px solid var(--sable);margin-top:0;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gris)}
+.projets{padding:90px 64px}
+.projets header{display:flex;justify-content:space-between;align-items:end;margin-bottom:44px}
+.projets h2{font-size:64px;line-height:1}
+.grille{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:22px}
+.grille figure img{width:100%;height:420px;object-fit:cover;display:block}
+.grille figure:first-child img{height:520px}
+.grille figcaption{display:flex;justify-content:space-between;margin-top:14px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris)}
+.grille figcaption b{font-family:"Cormorant Garamond";font-size:24px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--encre)}
+@media (max-width:600px){
+  nav{padding:22px 22px}nav ul,.nav-btn{display:none}
+  .burger{display:block !important}
+  .hero{grid-template-columns:1fr;padding:6px 22px 0;gap:30px}
+  .hero h1{font-size:54px;margin:16px 0 18px}
+  .hero p{font-size:15px}
+  .hero .actions{margin-top:26px}.hero .actions .clair{display:none}
+  .hero .visuel{height:330px;margin:0 -22px}
+  .hero .badge{left:22px;bottom:-30px;padding:16px 20px}.hero .badge b{font-size:34px}
+  .bande{display:none}
+  .projets{padding:70px 22px}.projets h2{font-size:40px}.projets header .btn{display:none}
+  .grille{grid-template-columns:1fr}.grille figure img,.grille figure:first-child img{height:300px}
+}
+.burger{display:none;width:28px;height:12px;border-top:1.5px solid var(--encre);border-bottom:1.5px solid var(--encre)}
+</style></head><body>
+<nav><div class="logo">Sorel<small>Maison d'architecture</small></div>
+<ul><li>Projets</li><li>Approche</li><li>Atelier</li><li>Journal</li></ul>
+<a class="btn nav-btn">Prendre rendez-vous</a><div class="burger"></div></nav>
+<section class="hero">
+  <div>
+    <div class="sur">Architecture d'intérieur · Paris</div>
+    <h1 class="serif">Des lieux qui vous <em>ressemblent</em>.</h1>
+    <p>Appartements, maisons et boutiques : nous concevons des intérieurs calmes, lumineux et faits pour durer, de l'esquisse à la livraison.</p>
+    <div class="actions"><a class="btn">Parler de mon projet →</a><a class="btn clair">Voir les projets</a></div>
+  </div>
+  <div class="visuel"><img src="photos/sorel-hero.webp" alt=""><div class="badge"><b>120+</b><span>intérieurs livrés</span></div></div>
+</section>
+<div class="bande"><span>Rénovation complète</span><span>Agencement sur mesure</span><span>Mobilier &amp; lumière</span><span>Suivi de chantier</span></div>
+<section class="projets">
+  <header><h2 class="serif">Projets récents</h2><a class="btn clair">Tous les projets</a></header>
+  <div class="grille">
+    <figure><img src="photos/sorel-3.webp" alt=""><figcaption><b>Appartement Haussmann</b><span>Paris 8e</span></figcaption></figure>
+    <figure><img src="photos/sorel-1.webp" alt=""><figcaption><b>Studio Jaune</b><span>Paris 11e</span></figcaption></figure>
+    <figure><img src="photos/sorel-2.webp" alt=""><figcaption><b>Maison Lin</b><span>Chatou</span></figcaption></figure>
+  </div>
+</section>
+</body></html>
