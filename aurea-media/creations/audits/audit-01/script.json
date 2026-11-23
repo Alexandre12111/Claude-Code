@@ -1,0 +1,118 @@
+{
+ "titre": "Audit express n°1 : Martin Rénovation",
+ "phrases": [
+  {
+   "id": "l00",
+   "texte": "Ce site fait perdre des clients à cet artisan. Et il ne le sait pas.",
+   "fort": true,
+   "sous_titre": "Ce site fait *perdre des clients* à cet artisan. Et il ne le sait pas.",
+   "source": [
+    "sortie_audit01",
+    0
+   ]
+  },
+  {
+   "id": "l01",
+   "texte": "Premier problème : son numéro de téléphone.",
+   "fort": false,
+   "sous_titre": "Premier problème : son *numéro de téléphone.*",
+   "source": [
+    "sortie_audit01",
+    1
+   ]
+  },
+  {
+   "id": "l02",
+   "texte": "Il est tout en bas, en tout petit. Sur mobile, presque personne ne descend jusque-là.",
+   "fort": false,
+   "sous_titre": "Il est tout en bas, en tout petit. Sur mobile, presque *personne* ne descend jusque-là.",
+   "source": [
+    "sortie_audit01",
+    2
+   ]
+  },
+  {
+   "id": "l03",
+   "texte": "Deuxième problème : aucune photo de ses chantiers.",
+   "fort": false,
+   "sous_titre": "Deuxième problème : *aucune photo* de ses chantiers.",
+   "source": [
+    "sortie_audit01",
+    3
+   ]
+  },
+  {
+   "id": "l04",
+   "texte": "Juste une image de banque d'images. Or c'est son travail qui rassure, pas une poignée de main.",
+   "fort": false,
+   "sous_titre": "Juste une image de banque d'images. Or c'est *son travail* qui rassure, pas une poignée de main.",
+   "source": [
+    "sortie_audit01",
+    4
+   ]
+  },
+  {
+   "id": "l05",
+   "texte": "Troisième problème : le titre. Bienvenue sur notre site.",
+   "fort": false,
+   "sous_titre": "Troisième problème : le titre. *Bienvenue sur notre site.*",
+   "source": [
+    "sortie_audit01",
+    5
+   ]
+  },
+  {
+   "id": "l06",
+   "texte": "En trois secondes, le visiteur ne sait ni ce qu'il fait, ni où il intervient.",
+   "fort": false,
+   "sous_titre": "En *3 secondes,* le visiteur ne sait ni ce qu'il fait, ni où il intervient.",
+   "source": [
+    "sortie_audit01",
+    6
+   ]
+  },
+  {
+   "id": "l07",
+   "texte": "Alors voilà ce que je changerais.",
+   "fort": false,
+   "sous_titre": "Alors voilà ce que *je changerais.*",
+   "source": [
+    "sortie_audit01",
+    7
+   ]
+  },
+  {
+   "id": "l08",
+   "texte": "Un titre clair, avec son métier et sa ville. Ses vraies réalisations. Et un bouton pour l'appeler, toujours visible.",
+   "fort": false,
+   "sous_titre": "Un *titre clair,* avec son métier et sa ville. Ses *vraies réalisations.* Et un *bouton pour l'appeler,* toujours visible.",
+   "source": [
+    "sortie_audit01",
+    8
+   ]
+  },
+  {
+   "id": "l09",
+   "texte": "Même artisan, même travail. Mais cette fois, le client appelle.",
+   "fort": false,
+   "sous_titre": "Même artisan, même travail. Mais cette fois, *le client appelle.*",
+   "source": [
+    "sortie_audit01",
+    9
+   ]
+  },
+  {
+   "id": "l10",
+   "texte": "Tu veux que je regarde le tien ? Écris audit en commentaire.",
+   "fort": false,
+   "sous_titre": "Tu veux que je regarde le tien ? Écris *AUDIT* en commentaire.",
+   "source": [
+    "sortie_audit01",
+    10
+   ]
+  }
+ ],
+ "fin": {
+  "duree": 3.0
+ }
+}
