@@ -37,7 +37,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 .lettres span{display:inline-block;white-space:pre}
 </style></head><body>
 <div id="v">
-  <div class="calque" id="A"></div><div class="calque" id="B"></div><div class="calque" id="C"></div><div class="calque" id="D"></div><div class="calque" id="E"></div>
+  <div class="calque" id="H"></div><div class="calque" id="A"></div><div class="calque" id="R"></div><div class="calque" id="B"></div><div class="calque" id="C"></div><div class="calque" id="D"></div><div class="calque" id="E"></div>
   <div id="volet"></div><div id="voile"></div><div id="flash"></div><div class="grain"></div>
 </div>
 <script>
@@ -54,8 +54,10 @@ const SITES = [
   ['Terre de Grès', 'Céramique artisanale · e-shop', 'Syne · Manrope', C1 + 'terre-de-gres', '#EFE6D8', '#C0663A', 0, 'tranches'],
 ];
 const B = .45;                                   // un temps à 133 BPM
-const W1 = 1.9, W2 = 2.5, W3 = 2.9, W4 = 3.25, W5 = 3.6;   // balayage avant/après
-const TT = 4.5, T0 = 5.3, DS = 1.8, TMUR = T0 + SITES.length * DS, TFIN = TMUR + 3.5, DUREE = 29;
+const HF = 2.0, HE = 3.6;                                    // accroche : mur de sites, puis rafale
+const BA0 = HE, W1 = 4.4, W2 = 4.95, W3 = 5.3, W4 = 5.6, W5 = 5.95, BAE = 7.4;   // avant / après
+const R0 = BAE;                                              // recommandations
+const TT = BAE, T0 = 10.2, DS = 1.8, TMUR = T0 + SITES.length * DS, TFIN = TMUR, DUREE = TFIN + 6;
 const CLIC = TFIN + 3.55;
 const $ = id => document.getElementById(id);
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -112,18 +114,18 @@ function scnA(t) {
   // fenêtre : léger mouvement de caméra, secousse « datée » au début
   const fin = E.out(prog(t, W5, .6));
   const sh = t < W1 ? Math.sin(t * 40) * 1.5 : 0;
-  $('aFen').style.transform = `rotateX(${mix(8, 0, E.out(prog(t, 0, 1.6)))}deg) translate(${sh}px,0px) scale(${1 + .015 * Math.sin(t * 1.3)})`;
+  $('aFen').style.transform = `rotateX(${mix(14, 0, E.out(prog(t, BA0, .7)))}deg) translate(${sh}px,0px) scale(${1 + .015 * Math.sin(t * 1.3)})`;
   $('aFen').style.transformOrigin = '50% 0';
   $('aReflet').style.transform = `translateX(${mix(-1200, 1200, prog(t, W5 + .1, .7))}px)`;
   // titres
   const swap = prog(t, W1 + .05, .2);
   $('aT1').style.cssText += `;opacity:${1 - swap};transform:translateY(${-swap * 60}px)`;
-  ['a1', 'a2', 'a4'].forEach(id => $(id).style.cssText = 'opacity:1');
-  const p = E.back(prog(t, -.4, .35)); $('a3').style.cssText = `position:relative;color:#fff;padding:0 18px;margin-left:-6px;display:inline-block;transform:scale(${mix(.6, 1, p)}) rotate(${(1 - p) * -8 + Math.sin(t * 9) * .8}deg)`;
+  [['a1', BA0], ['a2', BA0 + .08], ['a4', BA0 + .16]].forEach(([id, a]) => $(id).style.cssText = mot(t, a, .25));
+  const p = E.back(prog(t, BA0 + .1, .3)); $('a3').style.cssText = `position:relative;color:#fff;padding:0 18px;margin-left:-6px;display:inline-block;transform:scale(${mix(.6, 1, p)}) rotate(${(1 - p) * -8 + Math.sin(t * 9) * .8}deg)`;
   $('a5').style.cssText = mot(t, W1 + .2); $('a6').style.cssText = mot(t, W1 + .38); $('a7').style.cssText = mot(t, W3, .3);
   $('aT2').style.opacity = t >= W1 ? 1 : 0;
   // pastilles : problèmes puis solutions
-  [['p1', 0], ['p2', .45], ['p3', .9]].forEach(([id, a]) => $(id).style.cssText += ';' + (t < W1 ? (a === 0 ? 'opacity:1;transform:none' : mot(t, a, .25)) : `opacity:${1 - prog(t, W1, .15)};transform:translateX(${-prog(t, W1, .25) * 300}px)`));
+  [['p1', BA0 + .1], ['p2', BA0 + .3], ['p3', BA0 + .5]].forEach(([id, a]) => $(id).style.cssText += ';' + (t < W1 ? mot(t, a, .22) : `opacity:${1 - prog(t, W1, .15)};transform:translateX(${-prog(t, W1, .25) * 300}px)`));
   [['q1', W5 - .1], ['q2', W5 + .1], ['q3', W5 + .3]].forEach(([id, a]) => $(id).style.cssText += ';' + mot(t, a, .25));
   $('aOk').style.opacity = t >= W5 - .15 ? 1 : 0; $('aPb').style.opacity = t < W1 + .3 ? 1 : 0;
   // étiquettes
@@ -133,10 +135,10 @@ function scnA(t) {
   $('aHalo').style.background = `radial-gradient(circle,${w > .5 ? 'rgba(201,169,97,.26)' : 'rgba(229,72,77,.22)'},rgba(0,0,0,0) 60%)`;
   $('rec').style.opacity = Math.sin(t * 6) > 0 ? 1 : .25;
   // téléphone : la version mobile arrive
-  const bas = E.out(prog(t, -.5, .5)), flip = prog(t, W5 - .1, .4), ang = flip < .5 ? flip * 180 : (flip - .5) * 180 - 90;
+  const bas = E.out(prog(t, BA0 + .05, .4)), flip = prog(t, W5 - .1, .4), ang = flip < .5 ? flip * 180 : (flip - .5) * 180 - 90;
   $('aTel').innerHTML = `<div class="tel" style="left:690px;top:${mix(1300, 1160, bas)}px;width:310px;transform:rotateY(${ang}deg) rotate(${5 + Math.sin(t * 1.4) * 1.5}deg)"><div class="verre"><img src="${flip < .5 ? AV : AP}-mobile.png"><div class="ile"></div></div></div>`;
   // sortie
-  const s = prog(t, TT - .25, .25); $('A').style.opacity = 1 - s; $('A').style.transform = `scale(${1 + s * .25})`;
+  const s = prog(t, BAE - .25, .25), en = E.expo(prog(t, BA0, .3)); $('A').style.opacity = 1 - s; $('A').style.transform = `scale(${mix(1.25, 1, en) + s * .25})`; $('A').style.filter = `blur(${(1 - en) * 12}px)`;
 }
 
 // ======================= B. « ET CE N'EST QUE LE DÉBUT » =======================
@@ -232,15 +234,88 @@ function scnE(t) {
   $('eHalo').style.transform = `scale(${1 + .06 * Math.sin(u * 2)})`;
 }
 
+
+// ======================= H. ACCROCHE : MUR DE SITES PUIS RAFALE =======================
+const RE = '../../maquette/assets/realisations/';
+const REELS = 'novexia dual-tech villa-moniris laurence-paoli normande-isolation perle-hair enzym iff-paris sultan sunrock havel-trading maryes xpert-medical duchentyls eddy-bilou inas massy portugal-expert tayeb verisol cercle-la-raison barber-korner tcm-grand-est'.split(' ')
+  .map(n => ({ d: RE + n + '.webp', m: ['barber-korner', 'tcm-grand-est'].includes(n) ? null : RE + n + '-mobile.webp' }));
+const CONC = [...SITES.map(s => ({ d: s[3] + '.png', m: s[3] + '-mobile.png' })), { d: AP + '.png', m: AP + '-mobile.png' }];
+const TOUS = []; for (let i = 0; i < Math.max(REELS.length, CONC.length * 2); i++) { if (REELS[i]) TOUS.push(REELS[i]); if (i % 2 === 0 && CONC[i / 2]) TOUS.push(CONC[i / 2]); }
+const HAUT = 540 * 10 / 16 + 30, NCOL = 5, NPAR = 10;
+$('H').innerHTML = `<div style="position:absolute;inset:0;perspective:1800px"><div id="hMur" style="position:absolute;left:50%;top:50%;width:${NCOL * 580}px;height:4200px">` +
+  Array.from({ length: NCOL }, (_, c) => `<div id="hc${c}" style="position:absolute;left:${c * 580}px;top:0;width:540px">` + Array.from({ length: NPAR * 2 }, (_, r) => `<img src="${TOUS[(c * 7 + r) % TOUS.length].d}" style="display:block;width:540px;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:14px;margin-bottom:30px;box-shadow:0 0 0 1.5px rgba(255,255,255,.08),0 30px 60px rgba(0,0,0,.6)">`).join('') + `</div>`).join('') + `</div></div>
+  <div id="hVoile" style="position:absolute;inset:0;background:radial-gradient(ellipse 85% 42% at 50% 47%,rgba(10,10,10,.86),rgba(10,10,10,.3) 70%,rgba(10,10,10,.6))"></div>
+  <div id="hTxt" class="titre" style="position:absolute;left:40px;right:40px;top:560px;text-align:center;text-shadow:0 10px 50px rgba(0,0,0,.6)">
+    <div style="font-size:150px"><span class="mot" id="h1">Votre site</span></div><div style="font-size:150px"><span class="mot" id="h2">pourrait</span></div><div style="font-size:150px"><span class="mot" id="h3">ressembler</span></div><div style="font-size:230px;margin-top:6px"><span class="mot or" id="h4">à ça.</span></div></div>
+  <div id="hRaf" style="position:absolute;inset:0;perspective:2000px"></div>
+  <div id="hHaut" style="position:absolute;left:70px;right:70px;top:150px;display:flex;justify-content:space-between;font:600 26px Geist;letter-spacing:.24em;color:#C9A961"><span>NOS RÉALISATIONS</span><span id="hIdx"></span></div>
+  <div id="hCpt" style="position:absolute;left:0;right:0;top:1360px;text-align:center"><div id="hN" class="titre" style="font-size:260px"></div><div style="font:500 36px Geist;color:#AEAEA8;margin-top:6px">sites livrés depuis 2021</div></div>`;
+const PAL = ['#8B6CFF', '#FF6B2C', '#D7FF3A', '#2563EB', '#C9A961', '#FF3B1F', '#16B988', '#E8C88A'];
+function scnH(t) {
+  const v = 1300 * t + 650 * t * t;   // le mur accélère
+  for (let c = 0; c < NCOL; c++) $('hc' + c).style.transform = `translateY(${-(((c % 2 ? v : -v) * (1 + c * .08) % (NPAR * HAUT)) + NPAR * HAUT) % (NPAR * HAUT)}px)`;
+  const raf = t >= HF, zr = E.io(prog(t, HF - .15, .35));
+  $('hMur').style.transform = `translate(-50%,-50%) rotateX(32deg) rotateZ(-18deg) scale(${1 + .06 * t + zr * .5})`;
+  $('hMur').style.filter = `blur(${zr * 10}px) brightness(${1 - zr * .5})`;
+  // phrase d'accroche : lisible dès la première image, « à ça. » claque sur le premier temps
+  const pun = Math.exp(-Math.max(0, t - .45) * 6) * (t > .45 ? 1 : 0);
+  ['h1', 'h2', 'h3'].forEach((id, i) => $(id).style.cssText = `display:inline-block;transform:scale(${1 + .015 * Math.sin(t * 4 + i)})`);
+  const k4 = prog(t, -.25, .25); $('h4').style.cssText = `display:inline-block;opacity:${clamp(k4 * 3)};transform:scale(${mix(2.6, 1, E.out(k4)) + pun * .08}) rotate(${(1 - E.back(k4)) * -8}deg);filter:blur(${(1 - clamp(k4 * 2)) * 14}px)`;
+  const sortTxt = prog(t, HF - .05, .2); $('hTxt').style.cssText += `;opacity:${1 - sortTxt};transform:translateY(${-sortTxt * 140}px) scale(${1 - sortTxt * .1})`;
+  $('hVoile').style.opacity = 1 - zr * .3;
+  // rafale de sites coupés en rythme, avec compteur jusqu'à 45+
+  const P = .148, j = Math.floor((t - HF) / P), uj = ((t - HF) % P) / P;
+  if (raf) {
+    const s = TOUS[(j * 5 + 3) % TOUS.length], col = PAL[j % PAL.length], tel = j % 2 && s.m;
+    const pop = 1 + (1 - E.out(clamp(uj * 2))) * .1;
+    $('hRaf').innerHTML = `<div style="position:absolute;left:50%;top:47%;width:1300px;height:1300px;margin:-650px;border-radius:50%;background:radial-gradient(circle,${col}55,transparent 62%)"></div>` +
+      (tel ? `<div class="tel" style="left:330px;top:300px;width:420px;transform:scale(${pop}) rotate(${(j % 4 - 1.5) * 2}deg)"><div class="verre"><img src="${s.m}"><div class="ile"></div></div></div>`
+           : `<div class="fenetre" style="left:40px;top:${470}px;width:1000px;transform:scale(${pop}) rotate(${(j % 3 - 1) * 1.5}deg)"><div class="bar"><i></i><i></i><i></i></div><img src="${s.d}" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top"></div>`);
+  } else $('hRaf').innerHTML = '';
+  const n = Math.round(1 + 44 * E.out(prog(t, HF, 1.4))), fini = t >= HF + 1.42;
+  $('hN').innerHTML = fini ? '<span class="or">45+</span>' : String(n);
+  const ck = prog(t, HF, .2); $('hCpt').style.cssText += `;opacity:${raf ? ck : 0};transform:scale(${fini ? 1 + Math.exp(-(t - HF - 1.42) * 7) * .25 : 1})`;
+  $('hHaut').style.opacity = raf ? 1 : 0; $('hIdx').textContent = raf ? String(Math.min(45, j + 1)).padStart(2, '0') : '';
+  const s2 = prog(t, HE - .12, .12); $('H').style.opacity = 1 - s2;
+}
+
+// ======================= R. RECOMMANDATIONS =======================
+const etoile = (k) => `<svg viewBox="0 0 24 24" style="width:96px;height:96px"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#3a352b"/><path id="et${k}" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#F2C14E"/></svg>`;
+$('R').innerHTML = `<div id="rHalo" style="position:absolute;width:1700px;height:1700px;left:-310px;top:200px;border-radius:50%;background:radial-gradient(circle,rgba(242,193,78,.25),rgba(242,193,78,0) 60%)"></div>
+  <div class="titre" style="position:absolute;left:60px;right:60px;top:250px;text-align:center"><div style="font-size:128px" id="r1"></div><div style="font-size:128px" id="r2"></div></div>
+  <div id="rCarte" style="position:absolute;left:90px;right:90px;top:690px;padding:56px 50px;border-radius:44px;background:rgba(245,245,240,.05);border:1.5px solid rgba(245,245,240,.12);text-align:center;box-shadow:0 60px 120px rgba(0,0,0,.5)">
+    <svg viewBox="0 0 48 48" style="width:110px;height:110px"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+    <div id="rNote" class="titre" style="font-size:240px;margin-top:10px"></div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-top:10px">${[0, 1, 2, 3, 4].map(etoile).join('')}</div>
+    <div style="font:500 40px Geist;color:#AEAEA8;margin-top:24px">sur <b style="color:#F5F5F0">39 avis Google</b></div></div>
+  <div id="rChips" style="position:absolute;left:60px;right:60px;top:1500px;display:flex;flex-wrap:wrap;justify-content:center;gap:18px">
+    <div class="pastille" id="rc1" style="background:rgba(201,169,97,.12);border:1.5px solid rgba(201,169,97,.5);color:#F0DCA4;font-size:34px">45+ sites livrés</div>
+    <div class="pastille" id="rc2" style="background:rgba(201,169,97,.12);border:1.5px solid rgba(201,169,97,.5);color:#F0DCA4;font-size:34px">Depuis 2021</div>
+    <div class="pastille" id="rc3" style="background:rgba(201,169,97,.12);border:1.5px solid rgba(201,169,97,.5);color:#F0DCA4;font-size:34px">Un seul interlocuteur</div></div>
+  <div id="rEclats" style="position:absolute;inset:0;pointer-events:none"></div>`;
+function scnR(t) {
+  $('r1').innerHTML = lettres('Ils nous', t, R0 + .05, .025);
+  $('r2').innerHTML = `<span class="or">${lettres('recommandent.', t, R0 + .25, .025)}</span>`;
+  const c = E.back(prog(t, R0 + .3, .45)); $('rCarte').style.cssText += `;opacity:${clamp(c * 2)};transform:translateY(${(1 - c) * 120}px) scale(${mix(.85, 1, c)})`;
+  const n = mix(0, 4.9, E.out(prog(t, R0 + .5, .9)));
+  $('rNote').textContent = n.toFixed(1).replace('.', ',');
+  for (let k = 0; k < 5; k++) { const a = R0 + .7 + k * .13, e = E.back(prog(t, a, .25)); const el = $('et' + k); el.style.transformOrigin = '12px 12px'; el.style.transform = `scale(${e})`; }
+  const fin = R0 + .7 + 4 * .13 + .2;
+  $('rEclats').innerHTML = t > fin ? Array.from({ length: 22 }, (_, i) => { const a = i / 22 * Math.PI * 2, d = E.out(prog(t, fin, .8)) * (360 + (i % 4) * 60); return `<i style="position:absolute;left:${540 + Math.cos(a) * d}px;top:${1060 + Math.sin(a) * d * .7}px;width:14px;height:14px;border-radius:50%;background:${i % 3 ? '#F2C14E' : '#F5F5F0'};opacity:${1 - prog(t, fin, .9)}"></i>`; }).join('') : '';
+  [['rc1', R0 + 1.5], ['rc2', R0 + 1.65], ['rc3', R0 + 1.8]].forEach(([id, a]) => $(id).style.cssText += ';' + mot(t, a, .25));
+  $('rHalo').style.transform = `scale(${1 + .08 * Math.sin((t - R0) * 3)})`;
+  const s = prog(t, T0 - .2, .2); $('R').style.opacity = 1 - s; $('R').style.transform = `scale(${1 + s * .2})`;
+}
+
 function rendre(t) {
   const vis = (id, on) => $(id).style.display = on ? 'block' : 'none';
-  vis('A', t < TT); vis('B', t >= TT && t < T0); vis('C', t >= T0 && t < TMUR); vis('D', t >= TMUR && t < TFIN); vis('E', t >= TFIN);
-  if (t < TT) scnA(t); else if (t < T0) scnB(t); else if (t < TMUR) scnC(t); else if (t < TFIN) scnD(t); else scnE(t);
+  vis('H', t < HE); vis('A', t >= HE && t < BAE); vis('R', t >= BAE && t < T0); vis('B', false); vis('C', t >= T0 && t < TFIN); vis('D', false); vis('E', t >= TFIN);
+  if (t < HE) scnH(t); else if (t < BAE) scnA(t); else if (t < T0) scnR(t); else if (t < TFIN) scnC(t); else scnE(t);
   // volet coloré entre deux sites (et à l'entrée du défilé)
   const coupes = SITES.map((s, i) => [T0 + i * DS, s[5]]);
   let vol = null; for (const [c, col] of coupes) if (Math.abs(t - c) < .16) vol = [c, col];
   if (vol) { const k = (t - vol[0] + .16) / .32; $('volet').style.cssText = `display:block;left:0;background:${vol[1]};transform:translateX(${mix(1200, -2800, E.io(k))}px) skewX(-14deg)`; } else $('volet').style.display = 'none';
-  let f = 0; for (const c of [W1, W5, TMUR, TFIN]) f = Math.max(f, clamp(1 - Math.abs(t - c) / .1) * (c === W5 ? .7 : .5));
+  let f = 0; for (const c of [HF, HE, W5, TFIN]) f = Math.max(f, clamp(1 - Math.abs(t - c) / .1) * (c === W5 || c === HE ? .75 : .5));
   $('flash').style.opacity = f;
   $('voile').style.background = t > DUREE - .5 ? `rgba(0,0,0,${clamp((t - DUREE + .5) / .5)})` : 'transparent';
 }

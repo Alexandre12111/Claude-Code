@@ -1,18 +1,20 @@
-"""Bande son originale de la vidéo « Nos réalisations » V2 (48 kHz stéréo, 29 s, 133 BPM, la mineur).
-Entièrement synthétisée : aucun échantillon externe. Les repères suivent video.html (avant/après, puis un site toutes les 1,8 s dès 5,3 s).
+"""Bande son originale de la vidéo « Nos réalisations » V3 (48 kHz stéréo, 30,6 s, 133 BPM, la mineur).
+Entièrement synthétisée : aucun échantillon externe. Repères identiques à video.html :
+mur de sites et rafale (0 → 3,6 s), avant/après (3,6 → 7,4 s), recommandations (7,4 → 10,2 s), focus sites, appel à l'action.
 Usage : python3 son.py  →  son.wav
 """
 import wave
 from pathlib import Path
 import numpy as np
 
-SR = 48000; DUREE = 29.0; N = int(DUREE * SR)
+SR = 48000; DUREE = 30.6; N = int(DUREE * SR)
 ICI = Path(__file__).resolve().parent
 rng = np.random.default_rng(7)
-W1, W2, W3, W4, W5 = 1.9, 2.5, 2.9, 3.25, 3.6   # balayage avant/après
-TT, T0, DS, NS = 4.5, 5.3, 1.8, 8
-TMUR = T0 + NS * DS; TFIN = TMUR + 3.5; CLIC = TFIN + 3.55
-COUPE = W5
+HF, HE = 2.0, 3.6
+BA0, W1, W2, W3, W4, W5, BAE = HE, 4.4, 4.95, 5.3, 5.6, 5.95, 7.4
+R0 = BAE
+T0, DS, NS = 10.2, 1.8, 8
+TMUR = T0 + NS * DS; TFIN = TMUR; CLIC = TFIN + 3.55
 B = .45   # un temps à 133 BPM
 L = np.zeros(N); R = np.zeros(N)
 
@@ -79,26 +81,44 @@ def glitch(d=.3, g=1.):
     t = X(d); s = np.sign(np.sin(2 * np.pi * 180 * t * (1 + 3 * (np.floor(t * 40) % 3)))) * .3
     return s * (np.floor(t * 30) % 2) * g
 
-# ================= A. ACCROCHE AVANT / APRÈS (0 → 4,5 s) =================
-ajoute(nappe([45, 52], W1 + .1, .7, 900), 0)
-for k in range(int(W1 / (B / 2))): ajoute(tic(1 if k % 2 == 0 else .55), k * B / 2, pan=.3 if k % 2 else -.3)    # tic-tac tendu
-for k in range(int(W1 / B)): ajoute(sous_basse(33, .2, .7), k * B)
-for i, a in enumerate((0, .45, .9)): ajoute(glitch(.12, .35), a + .05, pan=-.3 + i * .3)                          # pastilles « ✕ »
-ajoute(montee(1.2, .8), W1 - 1.2)
-ajoute(whoosh(.6, 300, 7000, 1.), W1 - .05)                                                                        # le balayage révèle la refonte
-ajoute(whoosh(.4, 6000, 900, .6), W2); ajoute(tic(1.), W3)                                                          # retour de la poignée au milieu
-ajoute(whoosh(.35, 500, 6000, .7), W4)
-ajoute(impact(1.), W5); ajoute(nappe([57, 60, 64, 69], TT - W5 + .2, .5, 4500), W5)                               # révélation complète
-for i, n in enumerate([76, 79, 84]): ajoute(cloche(n, .45), W5 - .1 + i * .2, pan=-.4 + i * .4)                     # pastilles « ✓ »
-for k in range(2): ajoute(kick(.9), W5 + k * B); ajoute(sous_basse(45 - 24 + 12, B * .9, .6), W5 + k * B)
+# ================= H. ACCROCHE (0 → 3,6 s) : énergie immédiate =================
+GRILLE = [(57, [57, 60, 64]), (53, [53, 57, 60]), (48, [55, 60, 64]), (55, [55, 59, 62])]   # la m · fa · do · sol
+ajoute(impact(.9), 0); ajoute(cloche(81, .5), 0)
+for k in range(int(HF / B) + 1):                       # groove dès la première image
+    tk = k * B
+    if tk >= HF: break
+    ajoute(kick(1.), tk); ajoute(sous_basse([45, 41][(k // 4) % 2] - 12, B * .9, .9), tk)
+    if k % 2: ajoute(clap(1.), tk)
+    for h in range(2): ajoute(hat(1 if h else .6), tk + h * B / 2, pan=.35)
+ajoute(nappe([57, 60, 64], HF, .5, 3500), 0)
+ajoute(whoosh(.5, 300, 7000, .8), .2)                   # « à ça. »
+ajoute(montee(.6, .7), HF - .6)
+P = .148                                                  # rafale : un site par coupe, un « tic » par site
+for j in range(int((HE - HF) / P)):
+    tj = HF + j * P; ajoute(tic(1.2), tj, pan=(-.5 if j % 2 else .5)); ajoute(pluck(69 + [0, 3, 7, 10, 12, 15][j % 6], .45), tj, pan=(.3 if j % 2 else -.3))
+    if j % 2 == 0: ajoute(kick(.8), tj)
+ajoute(sous_basse(33, HE - HF, .7), HF)
+ajoute(impact(.8), HF + 1.42); ajoute(cloche(88, .5), HF + 1.42)       # « 45+ »
 
-# ================= B. « ET CE N'EST QUE LE DÉBUT » (4,5 → 5,3 s) =================
-ajoute(montee(.8, .9), TT); ajoute(whoosh(.8, 200, 8000, .7), TT)
-for k in range(8): ajoute(clap(.25 + k * .08), TT + k * .1)                                                         # roulement qui monte
-ajoute(impact(.9), T0)
+# ================= A. AVANT / APRÈS (3,6 → 7,4 s) =================
+ajoute(whoosh(.4, 6000, 400, .8), BA0 - .05)
+for k in range(int((W1 - BA0) / (B / 2))): ajoute(tic(.8), BA0 + k * B / 2, pan=.3)
+for i, a in enumerate((.1, .3, .5)): ajoute(glitch(.1, .35), BA0 + a, pan=-.3 + i * .3)                # pastilles « ✕ »
+ajoute(whoosh(.55, 300, 7000, 1.), W1 - .05)                                                               # balayage
+ajoute(whoosh(.35, 6000, 900, .6), W2); ajoute(tic(1.), W3); ajoute(whoosh(.35, 500, 6000, .7), W4)
+ajoute(impact(1.), W5); ajoute(nappe([57, 60, 64, 69], BAE - W5, .5, 4500), W5)
+for i, n in enumerate([76, 79, 84]): ajoute(cloche(n, .45), W5 - .1 + i * .2, pan=-.4 + i * .4)
+for k in range(int((BAE - W5) / B)): ajoute(kick(.85), W5 + k * B); ajoute(sous_basse(33, B * .9, .6), W5 + k * B); ajoute(hat(.6), W5 + k * B + B / 2)
+
+# ================= R. RECOMMANDATIONS (7,4 → 10,2 s) =================
+ajoute(whoosh(.4, 400, 5000, .6), R0 - .1); ajoute(nappe([53, 57, 60, 64], T0 - R0, .6, 4000), R0)
+for k in range(5): ajoute(cloche(76 + [0, 2, 4, 7, 9][k], .5), R0 + .7 + k * .13, pan=-.5 + k * .25)    # étoiles
+ajoute(impact(.5), R0 + 1.42)
+for i in range(3): ajoute(pluck(81 + i * 2, .5), R0 + 1.5 + i * .15)
+for k in range(int((T0 - R0) / B)): ajoute(kick(.7) if k % 2 == 0 else hat(.7), R0 + k * B)
+ajoute(montee(.7, .8), T0 - .7)
 
 # ================= C. DÉFILÉ DES SITES (4,5 → 20,5 s) : groove =================
-GRILLE = [(57, [57, 60, 64]), (53, [53, 57, 60]), (48, [55, 60, 64]), (55, [55, 59, 62])]   # la m · fa · do · sol
 for s in range(NS):
     t0 = T0 + s * DS; rac, acc = GRILLE[s % 4]
     ajoute(whoosh(.42, 400, 6000, .9), t0 - .3, pan=(-1) ** s * .4)                             # passage d'un site à l'autre
@@ -112,13 +132,6 @@ for s in range(NS):
     arp = [acc[0] + 12, acc[1] + 12, acc[2] + 12, acc[1] + 12]
     for k in range(8): ajoute(pluck(arp[k % 4], .55), t0 + k * B / 2, pan=(-.4 if k % 2 else .4))
 ajoute(cloche(81, .5), T0 + .02)
-
-# ================= D. MUR DE SITES (20,5 → 24,5 s) : respiration =================
-ajoute(impact(.6), TMUR); ajoute(nappe([57, 64, 69, 72], 4.1, .7, 5000), TMUR)
-for k in range(4): ajoute(kick(.8), TMUR + k * 2 * B); ajoute(sous_basse(33, B * 1.8, .7), TMUR + k * 2 * B)
-for i, a in enumerate((.15, .6, 1.05)): ajoute(cloche([76, 79, 84][i], .55), TMUR + a)                      # « 8 sites · 8 univers · 0 template »
-for k in range(16): ajoute(hat(.5), TMUR + k * B / 2, pan=-.3)
-ajoute(montee(1.0, .8), TFIN - 1.0)
 
 # ================= E. FIN (24,5 → 30 s) : logo et appel =================
 ajoute(impact(.8), TFIN); ajoute(nappe([45, 57, 60, 64, 71], 5.5, .8, 4500), TFIN)
