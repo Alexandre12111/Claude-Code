@@ -1,74 +1,89 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Terre de Grès · Céramiques artisanales façonnées à la main</title>
-<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). -->
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=block" rel="stylesheet">
+<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). Typo : Syne (géométrique d'atelier) + Manrope. -->
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&display=block" rel="stylesheet">
 <style>
-:root{--sable:#EFE8DC;--sable2:#E6DCCB;--argile:#B6643B;--argile2:#9C5130;--brun:#2A211B;--mute:#7C6E62;--blanc:#FBF8F3}
+:root{--fond:#F5EFE6;--sable:#E9DFD0;--argile:#C0663A;--argile2:#A04E27;--olive:#5E6B4E;--brun:#24190F;--mute:#7E7064;--blanc:#FFFCF7}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--sable);color:var(--brun);font:400 16px/1.6 "DM Sans",sans-serif;-webkit-font-smoothing:antialiased}
-.ds{font-family:"DM Serif Display",serif;font-weight:400}
-.annonce{background:var(--brun);color:var(--sable);text-align:center;font-size:13px;letter-spacing:.06em;padding:10px}
-nav{display:flex;align-items:center;justify-content:space-between;padding:22px 56px}
-.logo{font-family:"DM Serif Display";font-size:30px}.logo i{color:var(--argile)}
-nav ul{display:flex;gap:34px;list-style:none;font-size:15px;font-weight:500}
-.icones{display:flex;gap:18px;align-items:center}
-.ico{width:42px;height:42px;border-radius:50%;background:var(--blanc);display:grid;place-items:center;position:relative}
-.ico svg{width:19px;height:19px}
-.ico .n{position:absolute;top:-3px;right:-3px;width:18px;height:18px;border-radius:50%;background:var(--argile);color:#fff;font-size:10px;font-weight:700;display:grid;place-items:center}
-.hero{margin:6px 56px 0;border-radius:32px;overflow:hidden;display:grid;grid-template-columns:1fr 1.1fr;background:var(--sable2);height:580px}
-.hero .txt{padding:64px 56px;display:flex;flex-direction:column;justify-content:center}
-.chip{align-self:flex-start;background:var(--blanc);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;color:var(--argile2)}
-.hero h1{font-size:68px;line-height:1;margin:20px 0 18px}.hero h1 i{color:var(--argile)}
-.hero p{color:var(--mute);font-size:17px;max-width:440px}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--argile);color:#fff;padding:16px 28px;border-radius:999px;font-weight:600;font-size:15px;margin-top:30px;align-self:flex-start;box-shadow:0 14px 30px rgba(182,100,59,.3)}
-.hero .img{position:relative}.hero .img img{width:100%;height:100%;object-fit:cover;display:block}
-.hero .prix{position:absolute;left:28px;bottom:28px;background:rgba(251,248,243,.92);border-radius:20px;padding:14px 18px;display:flex;gap:14px;align-items:center;box-shadow:0 20px 40px rgba(42,33,27,.15)}
-.hero .prix img{width:56px;height:56px;border-radius:12px;object-fit:cover}
-.hero .prix b{display:block;font-size:15px}.hero .prix span{font-size:14px;color:var(--argile2);font-weight:700}
-.produits{padding:44px 56px 70px}
-.produits header{display:flex;justify-content:space-between;align-items:end;margin-bottom:26px}
-.produits h2{font-size:44px}
-.filtres{display:flex;gap:10px}.filtres span{padding:9px 18px;border-radius:999px;background:var(--blanc);font-size:14px;font-weight:500}.filtres span.on{background:var(--brun);color:var(--sable)}
-.grille{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.carte{background:var(--blanc);border-radius:24px;padding:12px}
-.carte .ph{position:relative;border-radius:16px;overflow:hidden;height:250px}
-.carte .ph img{width:100%;height:100%;object-fit:cover}
-.carte .tag{position:absolute;top:12px;left:12px;background:var(--blanc);border-radius:999px;padding:5px 12px;font-size:12px;font-weight:700}
-.carte .tag.neuf{background:var(--argile);color:#fff}
-.carte .bas{display:flex;justify-content:space-between;align-items:center;padding:14px 6px 4px}
-.carte b{font-size:16px}.carte small{display:block;color:var(--mute);font-size:13px}
-.carte .plus{width:40px;height:40px;border-radius:50%;background:var(--brun);color:var(--sable);display:grid;place-items:center;font-size:22px;line-height:1}
-.carte .p{font-weight:700;color:var(--argile2)}
+body{background:var(--fond);color:var(--brun);font:400 15px/1.55 Manrope,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.sy{font-family:Syne,sans-serif}
+.annonce{display:flex;justify-content:center;gap:46px;background:var(--brun);color:#EADFCD;font:600 12px/1 Manrope;letter-spacing:.14em;text-transform:uppercase;padding:12px}
+.annonce span:before{content:"✺ ";color:var(--argile)}
+nav{display:flex;align-items:center;justify-content:space-between;padding:20px 40px}
+.logo{display:flex;align-items:center;gap:12px;font:700 27px/1 Syne;letter-spacing:-.03em;white-space:nowrap}
+.logo i{width:38px;height:38px;border-radius:50% 50% 46% 54% / 56% 50% 50% 44%;background:var(--argile);display:grid;place-items:center;color:var(--blanc);font:700 15px Syne;font-style:normal}
+nav ul{display:flex;gap:30px;list-style:none;font:600 15px Manrope}
+nav ul li:last-child{color:var(--argile2)}
+.ic{display:flex;gap:10px}
+.ic span{height:44px;min-width:44px;padding:0 14px;border-radius:999px;background:var(--blanc);display:flex;align-items:center;justify-content:center;gap:8px;font:700 14px Manrope}
+.ic span.pan{background:var(--brun);color:var(--fond)}
+.ic svg{width:18px;height:18px}
+.bento{display:grid;grid-template-columns:1.15fr .95fr .9fr;grid-template-rows:1fr 1fr;gap:14px;padding:4px 40px 0;height:600px}
+.t{border-radius:30px;overflow:hidden;position:relative}
+.t1{grid-row:span 2;background:var(--sable);padding:44px 42px;display:flex;flex-direction:column}
+.pastille{align-self:flex-start;display:flex;align-items:center;gap:8px;background:var(--blanc);border-radius:999px;padding:8px 14px 8px 8px;font:700 13px Manrope}
+.pastille b{background:var(--olive);color:#fff;border-radius:999px;padding:4px 10px;font-size:11px;letter-spacing:.08em}
+h1{font:700 80px/.98 Syne;letter-spacing:-.05em;margin:26px 0 20px}
+h1 em{font-style:normal;color:var(--argile)}
+.t1 p{font-size:16px;color:var(--mute);max-width:420px}
+.boutons{display:flex;gap:10px;margin-top:auto}
+.btn{height:58px;padding:0 26px;border-radius:999px;background:var(--brun);color:var(--fond);font:700 15px Manrope;display:flex;align-items:center;gap:12px}
+.btn.b2{background:transparent;border:1.5px solid var(--brun);color:var(--brun)}
+.t2{grid-row:span 2}
+.t2 img,.t3 img{width:100%;height:100%;object-fit:cover}
+.fiche{position:absolute;left:16px;right:16px;bottom:16px;background:rgba(255,252,247,.94);backdrop-filter:blur(10px);border-radius:22px;padding:14px 14px 14px 18px;display:flex;align-items:center;justify-content:space-between}
+.fiche b{display:block;font:700 17px Syne}
+.fiche small{color:var(--mute);font-size:13px}
+.teintes{display:flex;gap:5px;margin-top:6px}.teintes i{width:14px;height:14px;border-radius:50%;border:2px solid var(--blanc);box-shadow:0 0 0 1px rgba(36,25,15,.2)}
+.fiche .ajout{height:46px;padding:0 18px;border-radius:999px;background:var(--argile);color:#fff;font:700 14px Manrope;display:flex;align-items:center;gap:8px}
+.t3 .lab{position:absolute;left:18px;top:18px;right:18px;display:flex;justify-content:space-between;align-items:flex-start}
+.t3 .lab b{font:700 22px/1.05 Syne;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.fl{width:44px;height:44px;border-radius:50%;background:var(--blanc);display:grid;place-items:center;font-size:18px}
+.t4{background:var(--argile);color:var(--blanc);padding:24px 26px;display:flex;flex-direction:column;justify-content:space-between}
+.t4 .note{display:flex;align-items:baseline;gap:10px}
+.t4 .note b{font:700 64px/1 Syne;letter-spacing:-.04em}
+.t4 .note span{font-size:20px;letter-spacing:2px;color:#FFD9B8}
+.t4 q{font:600 16px/1.4 Manrope;quotes:none}
+.t4 .avis{display:flex;align-items:center;gap:12px;font-size:13px;color:#FFE6D2}
+.av{display:flex}.av i{width:32px;height:32px;border-radius:50%;border:2px solid var(--argile);margin-left:-8px;background:linear-gradient(135deg,#f3d2b8,#b97a55)}.av i:first-child{margin-left:0}
+.av i:nth-child(2){background:linear-gradient(135deg,#d9c3a5,#6d5a43)}.av i:nth-child(3){background:linear-gradient(135deg,#e9b79a,#8d4a2c)}
+.rangee{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;padding:14px 40px}
+.mini{background:var(--blanc);border-radius:22px;padding:10px;display:flex;align-items:center;gap:12px}
+.mini img{width:64px;height:64px;border-radius:14px;object-fit:cover}
+.mini b{display:block;font:700 15px Syne}.mini span{font:700 14px Manrope;color:var(--argile2)}
+.mini.cat{background:var(--olive);color:#fff;justify-content:center;font:700 16px Syne}
 @media (max-width:600px){
-  .annonce{font-size:11px}
-  nav{padding:16px 18px}nav ul{display:none}.logo{font-size:25px}.ico.cache{display:none}
-  .hero{margin:0 14px;grid-template-columns:1fr;height:auto;border-radius:26px}
-  .hero .txt{padding:30px 24px 26px}
-  .hero h1{font-size:44px;margin:16px 0 12px}.hero p{font-size:15px}.btn{margin-top:20px}
-  .hero .img{height:270px}
-  .produits{padding:34px 14px}.produits h2{font-size:30px}.filtres{display:none}
-  .grille{grid-template-columns:1fr 1fr;gap:12px}.carte{padding:8px;border-radius:18px}.carte .ph{height:160px}.carte .plus{width:32px;height:32px;font-size:18px}.carte b{font-size:14px}
+  .annonce{gap:0;font-size:10px}.annonce span:nth-child(n+2){display:none}
+  nav{padding:14px 16px}nav ul,.ic span:not(.pan){display:none}.logo{font-size:22px}.logo i{width:32px;height:32px}
+  .bento{grid-template-columns:1fr 1fr;grid-template-rows:auto 250px 150px;height:auto;padding:0 12px;gap:10px}
+  .t1{grid-column:span 2;grid-row:auto;padding:26px 22px;border-radius:24px}
+  h1{font-size:44px;margin:16px 0 12px}.t1 p{font-size:14px}.boutons{margin-top:18px}.btn.b2{display:none}.btn{height:50px}
+  .t2{grid-column:span 2;grid-row:auto;border-radius:24px}
+  .fiche{padding:10px 10px 10px 14px;border-radius:18px}.fiche b{font-size:15px}.fiche .ajout{height:40px;padding:0 14px}
+  .t3,.t4{border-radius:22px}.t3 .lab b{font-size:16px}.fl{width:34px;height:34px}
+  .t4{padding:16px}.t4 .note b{font-size:40px}.t4 .note span{font-size:12px}.t4 q,.t4 .avis{display:none}
+  .rangee{display:none}
 }
 </style></head><body>
-<div class="annonce">Livraison offerte dès 60 € · Chaque pièce est unique, façonnée dans notre atelier de Bourgogne</div>
-<nav><div class="logo">Terre <i>de</i> Grès</div>
-<ul><li>Vaisselle</li><li>Vases</li><li>Bougies</li><li>L'atelier</li><li>Ateliers poterie</li></ul>
-<div class="icones"><div class="ico cache"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></div><div class="ico cache"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></div><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="n">2</span></div></div></nav>
-<section class="hero">
-  <div class="txt"><span class="chip">Nouvelle collection · Hiver</span>
-    <h1 class="ds">La beauté des choses <i>faites main</i>.</h1>
-    <p>Tasses, bols et vases en grès, tournés un par un et émaillés à la main. Pour une table qui raconte une histoire.</p>
-    <a class="btn">Découvrir la collection →</a></div>
-  <div class="img"><img src="photos/gres-hero.webp" alt=""><div class="prix"><img src="photos/gres-1.webp" alt=""><div><b>Vase Albâtre</b><span>48 €</span></div></div></div>
+<div class="annonce"><span>Livraison offerte dès 60 €</span><span>Pièces uniques tournées à la main</span><span>Atelier en Bourgogne</span></div>
+<nav><div class="logo"><i>tg</i>terre de grès</div>
+<ul><li>Vaisselle</li><li>Vases</li><li>Bougies</li><li>L'atelier</li><li>Cours de poterie</li></ul>
+<div class="ic"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span><span class="pan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Panier · 2</span></div></nav>
+<section class="bento">
+  <div class="t t1"><span class="pastille"><b>NOUVEAU</b>Collection Ardoise</span>
+    <h1>Fait main,<br>fait pour <em>durer.</em></h1>
+    <p>Tasses, bols et vases en grès, tournés un par un et émaillés à la main dans notre atelier. Chaque pièce est unique.</p>
+    <div class="boutons"><a class="btn">Découvrir la boutique →</a><a class="btn b2">L'atelier</a></div></div>
+  <div class="t t2"><img src="photos/gres-hero.webp" alt=""><div class="fiche"><div><b>Tasses Sablé</b><small>par 2 · 38 €</small><div class="teintes"><i style="background:#E8D6BC"></i><i style="background:#C0663A"></i><i style="background:#5E6B4E"></i></div></div><a class="ajout">+ Ajouter</a></div></div>
+  <div class="t t3"><img src="photos/gres-2.webp" alt=""><div class="lab"><b>Vases<br>Ardoise</b><span class="fl">↗</span></div></div>
+  <div class="t t4"><div class="note"><b>4,9</b><span>★★★★★</span></div><q>« Encore plus belles en vrai. On sent le travail de la main. »</q><div class="avis"><div class="av"><i></i><i></i><i></i></div>2 300 clients ravis</div></div>
 </section>
-<section class="produits">
-  <header><h2 class="ds">Nos best-sellers</h2><div class="filtres"><span class="on">Tout</span><span>Tasses</span><span>Bols</span><span>Vases</span></div></header>
-  <div class="grille">
-    <div class="carte"><div class="ph"><img src="photos/gres-3.webp" alt=""><span class="tag">Best-seller</span></div><div class="bas"><div><b>Assiettes Lagon</b><small class="p">par 4 · 72 €</small></div><span class="plus">+</span></div></div>
-    <div class="carte"><div class="ph"><img src="photos/gres-2.webp" alt=""><span class="tag neuf">Nouveau</span></div><div class="bas"><div><b>Trio Ardoise</b><small class="p">54 €</small></div><span class="plus">+</span></div></div>
-    <div class="carte"><div class="ph"><img src="photos/gres-1.webp" alt=""></div><div class="bas"><div><b>Vase Albâtre</b><small class="p">48 €</small></div><span class="plus">+</span></div></div>
-    <div class="carte"><div class="ph"><img src="photos/gres-4.webp" alt=""></div><div class="bas"><div><b>Soliflores Sakura</b><small class="p">36 €</small></div><span class="plus">+</span></div></div>
-  </div>
-</section>
+<div class="rangee">
+  <div class="mini"><img src="photos/gres-3.webp" alt=""><div><b>Assiettes Lagon</b><span>72 €</span></div></div>
+  <div class="mini"><img src="photos/gres-1.webp" alt=""><div><b>Vase Albâtre</b><span>48 €</span></div></div>
+  <div class="mini"><img src="photos/gres-4.webp" alt=""><div><b>Soliflores</b><span>36 €</span></div></div>
+  <div class="mini"><img src="photos/gres-2.webp" alt=""><div><b>Trio Ardoise</b><span>54 €</span></div></div>
+  <div class="mini cat">Tout voir →</div>
+</div>
 </body></html>

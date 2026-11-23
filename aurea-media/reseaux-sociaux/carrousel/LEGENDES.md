@@ -15,7 +15,7 @@ Visuels : `export/carrousel-01.png` à `carrousel-10.png` (1080 × 1350, format 
 | 9 | Concept : Terre de Grès, boutique en ligne de céramique |
 | 10 | Appel à l'action : devis sous 24 h, lien en bio |
 
-Les concepts (7 à 9) sont des marques fictives, conçues de A à Z, et sont signalés « Concept Aurea Media » sur chaque visuel. Leurs pages sont dans `concepts/`, les photos viennent d'Unsplash (licence libre, voir `concepts/photos/CREDITS.txt`).
+Les concepts (7 à 9) sont des marques fictives, conçues de A à Z, et sont signalés « Concept Aurea Media » sur chaque visuel. Chacun a sa propre typographie : Bodoni Moda et Jost pour Maison Sorel (esprit magazine de décoration), Big Shoulders Display et Inter Tight pour Braise (affiche condensée), Syne et Manrope pour Terre de Grès (géométrique d'atelier). Leurs pages sont dans `concepts/`, les photos viennent d'Unsplash (licence libre, voir `concepts/photos/CREDITS.txt`).
 
 ## Légende Instagram
 

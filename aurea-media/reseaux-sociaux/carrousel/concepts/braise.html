@@ -1,75 +1,86 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Braise · Table de saison, cuisine au feu de bois · Lyon</title>
-<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). -->
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
+<title>Braise · Cuisine de feu et de saison · Lyon</title>
+<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). Typo : Big Shoulders Display (affiche condensée) + Inter Tight. -->
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Inter+Tight:wght@400;500;600&display=block" rel="stylesheet">
 <style>
-:root{--nuit:#110E0C;--nuit2:#1B1613;--creme:#F3E9DC;--mute:#A79A8B;--braise:#E36A2E;--or:#E8B26A}
+:root{--nuit:#0E0A08;--nuit2:#17110D;--creme:#F4EADB;--mute:#9C8E7E;--feu:#FF6B2C;--feu2:#FFA347}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--nuit);color:var(--creme);font:400 16px/1.6 Inter,sans-serif;-webkit-font-smoothing:antialiased}
-.pf{font-family:"Playfair Display",serif}
-.hero{position:relative;height:900px;overflow:hidden}
-.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(17,14,12,.94) 0%,rgba(17,14,12,.72) 42%,rgba(17,14,12,.15) 75%),linear-gradient(0deg,rgba(17,14,12,.9),rgba(17,14,12,0) 35%)}
-nav{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:32px 64px}
-.logo{font-family:"Playfair Display";font-size:34px;font-weight:600;letter-spacing:.02em}
-.logo span{color:var(--braise)}
-nav ul{display:flex;gap:38px;list-style:none;font-size:14px;color:var(--mute)}
-.btn{display:inline-flex;align-items:center;gap:10px;background:var(--braise);color:#1a0d06;padding:16px 28px;border-radius:999px;font:600 14px/1 Inter;text-decoration:none;box-shadow:0 14px 40px rgba(227,106,46,.35)}
-.btn.ghost{background:rgba(243,233,220,.08);color:var(--creme);box-shadow:none;border:1px solid rgba(243,233,220,.25)}
-.contenu{position:relative;z-index:2;padding:96px 64px 0;max-width:760px}
-.sur{display:inline-flex;align-items:center;gap:12px;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--or)}
-.sur:before{content:"";width:34px;height:1px;background:var(--or)}
-h1{font-size:82px;line-height:1;font-weight:500;margin:24px 0 24px}
-h1 em{color:var(--braise)}
-.contenu p{font-size:19px;color:#d9ccbc;max-width:520px}
-.actions{display:flex;gap:14px;margin-top:40px}
-.infos{position:absolute;z-index:2;left:64px;right:64px;bottom:44px;display:flex;gap:56px;font-size:14px;color:var(--mute)}
-.infos b{display:block;color:var(--creme);font-weight:600;font-size:16px;margin-bottom:2px}
-.carte{position:absolute;z-index:2;right:64px;bottom:44px;width:330px;background:rgba(27,22,19,.82);backdrop-filter:blur(14px);border:1px solid rgba(243,233,220,.12);border-radius:22px;padding:22px}
-.carte .t{display:flex;justify-content:space-between;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--or)}
-.carte h3{font-family:"Playfair Display";font-weight:500;font-size:26px;margin:10px 0 14px}
-.carte .crx{display:flex;gap:8px}.carte .crx span{flex:1;text-align:center;padding:10px 0;border-radius:12px;border:1px solid rgba(243,233,220,.18);font-size:14px}
-.carte .crx span.on{background:var(--creme);color:var(--nuit);border-color:var(--creme);font-weight:600}
-.menu{padding:100px 64px;display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center;background:var(--nuit2)}
-.menu img{width:100%;height:520px;object-fit:cover;border-radius:26px}
-.menu h2{font-size:58px;font-weight:500;line-height:1.05;margin:18px 0 30px}
-.plat{display:flex;justify-content:space-between;padding:18px 0;border-bottom:1px solid rgba(243,233,220,.1)}
-.plat b{font-family:"Playfair Display";font-weight:500;font-size:22px}.plat small{display:block;color:var(--mute);font-size:14px}.plat i{font-style:normal;color:var(--or);font-weight:600}
+body{background:var(--nuit);color:var(--creme);font:400 16px/1.55 "Inter Tight",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.bs{font-family:"Big Shoulders Display",sans-serif}
+.lueur{position:absolute;width:1100px;height:1100px;left:-300px;bottom:-640px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,44,.42),rgba(255,107,44,0) 62%);filter:blur(10px)}
+nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:28px 56px}
+.logo{display:flex;align-items:center;gap:10px;font:900 34px/1 "Big Shoulders Display";letter-spacing:.06em}
+.logo svg{width:26px;height:32px}
+nav ul{display:flex;gap:6px;list-style:none;background:rgba(244,234,219,.06);border:1px solid rgba(244,234,219,.1);border-radius:999px;padding:6px}
+nav li{padding:10px 20px;border-radius:999px;font-size:14px;color:#d9cdbd}
+nav li.on{background:var(--creme);color:var(--nuit);font-weight:600}
+.tel{font:500 15px "Inter Tight";color:#d9cdbd}.tel b{color:var(--creme)}
+.scene{position:relative;z-index:2;display:grid;grid-template-columns:1.12fr .88fr;gap:40px;padding:8px 56px 0;height:calc(100vh - 230px)}
+.sur{display:flex;align-items:center;gap:12px;font:600 13px/1 "Inter Tight";letter-spacing:.26em;text-transform:uppercase;color:var(--feu2)}
+.sur i{width:8px;height:8px;border-radius:50%;background:var(--feu);box-shadow:0 0 14px var(--feu)}
+h1{font:900 150px/.84 "Big Shoulders Display";text-transform:uppercase;letter-spacing:-.005em;margin:26px 0 26px}
+h1 .contour{color:transparent;-webkit-text-stroke:2.5px var(--creme)}
+h1 .feu{background:linear-gradient(180deg,#FFC37A 0%,#FF6B2C 60%,#C8361A 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(255,107,44,.45))}
+.chapo{display:flex;gap:28px;align-items:flex-start;max-width:600px}
+.chapo p{font-size:17px;color:#cfc2b2}
+.chapo .chef{flex:none;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mute)}
+.chapo .chef img{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--feu)}
+.photos{position:relative}
+.photos .p1{position:absolute;inset:0 0 10px 40px;border-radius:30px;overflow:hidden}
+.photos .p1 img{width:100%;height:100%;object-fit:cover}
+.photos .p1:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(14,10,8,.55),rgba(14,10,8,0) 45%)}
+.photos .p2{position:absolute;left:-20px;bottom:50px;width:200px;height:250px;border-radius:22px;overflow:hidden;border:6px solid var(--nuit);box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.photos .p2 img{width:100%;height:100%;object-fit:cover}
+.sceau{position:absolute;right:-26px;top:-20px;width:150px;height:150px}
+.plat{position:absolute;right:28px;bottom:34px;text-align:right}
+.plat small{font:600 12px "Inter Tight";letter-spacing:.2em;text-transform:uppercase;color:var(--feu2)}
+.plat b{display:block;font:700 34px/1 "Big Shoulders Display";text-transform:uppercase;margin-top:6px}
+.resa{position:absolute;z-index:3;left:56px;right:56px;bottom:30px;height:96px;display:grid;grid-template-columns:1fr 1fr 1fr 1.25fr auto;align-items:center;background:rgba(23,17,13,.86);backdrop-filter:blur(16px);border:1px solid rgba(244,234,219,.12);border-radius:24px;padding:0 12px 0 30px}
+.champ{padding:0 24px;border-right:1px solid rgba(244,234,219,.1)}
+.champ small{display:block;font:600 11px "Inter Tight";letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.champ b{font:600 18px "Inter Tight"}
+.creneaux{display:flex;gap:8px;padding:0 20px}
+.creneaux span{padding:9px 13px;border-radius:12px;border:1px solid rgba(244,234,219,.16);font-size:14px}
+.creneaux span.on{background:var(--creme);color:var(--nuit);font-weight:600;border-color:var(--creme)}
+.go{height:72px;padding:0 34px;border-radius:18px;background:linear-gradient(135deg,#FF8A3D,#E8461C);color:#1a0a03;font:800 22px "Big Shoulders Display";letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:12px;box-shadow:0 14px 40px rgba(255,107,44,.4)}
 @media (max-width:600px){
-  .hero{height:844px}
-  .hero:after{background:linear-gradient(0deg,rgba(17,14,12,.97) 30%,rgba(17,14,12,.35) 70%,rgba(17,14,12,.55))}
-  nav{padding:22px}nav ul,.nav-btn{display:none}.logo{font-size:28px}
-  .burger{display:block !important}
-  .contenu{padding:330px 22px 0}
-  h1{font-size:50px;margin:16px 0 16px}
-  .contenu p{font-size:16px}
-  .actions{margin-top:26px}.actions .ghost{display:none}
-  .infos{display:none}
-  .carte{display:none}
-  .menu{grid-template-columns:1fr;padding:60px 22px;gap:30px}.menu img{height:300px}.menu h2{font-size:38px}
+  nav{padding:18px 18px}nav ul,.tel{display:none}.logo{font-size:28px}
+  .burger{display:grid !important}
+  .scene{grid-template-columns:1fr;padding:0 18px;gap:0;height:auto}
+  h1{font-size:96px;margin:18px 0 16px}
+  .chapo{flex-direction:column;gap:14px}.chapo p{font-size:15px}
+  .photos{height:250px;margin-top:22px}.photos .p1{inset:0;border-radius:22px}.photos .p2{display:none}
+  .sceau{width:104px;height:104px;right:-8px;top:-40px}
+  .plat{display:none}
+  .resa{left:18px;right:18px;bottom:22px;height:auto;grid-template-columns:1fr;padding:10px}
+  .resa .champ,.resa .creneaux{display:none}
+  .go{height:62px;justify-content:center;font-size:20px}
 }
-.burger{display:none;width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,233,220,.3);position:relative}
-.burger:before,.burger:after{content:"";position:absolute;left:13px;right:13px;height:1.5px;background:var(--creme);top:18px}.burger:after{top:25px}
+.burger{display:none;width:46px;height:46px;border-radius:50%;background:rgba(244,234,219,.08);place-items:center}
+.burger i{width:18px;height:8px;border-top:2px solid var(--creme);border-bottom:2px solid var(--creme)}
 </style></head><body>
-<section class="hero">
-  <img src="photos/braise-hero.webp" alt="">
-  <nav><div class="logo">Braise<span>.</span></div><ul><li>La carte</li><li>Le chef</li><li>Événements</li><li>Bons cadeaux</li></ul><a class="btn nav-btn">Réserver une table</a><div class="burger"></div></nav>
-  <div class="contenu">
-    <div class="sur">Table de saison · Lyon 2e</div>
-    <h1 class="pf">Cuisiné au <em>feu de bois</em>, servi avec le cœur.</h1>
-    <p>Produits du marché, cuisson à la braise et carte qui change chaque semaine. Une table de 32 couverts au cœur de la Presqu'île.</p>
-    <div class="actions"><a class="btn">Réserver une table →</a><a class="btn ghost">Découvrir la carte</a></div>
+<div class="lueur"></div>
+<nav><div class="logo"><svg viewBox="0 0 26 32"><path d="M13 1c2 6 9 9 9 18a9 9 0 0 1-18 0c0-4 2-7 4-9 0 4 2 6 4 6-1-5 0-11 1-15z" fill="url(#f)"/><defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC37A"/><stop offset="1" stop-color="#E8461C"/></linearGradient></defs></svg>BRAISE</div>
+<ul><li class="on">La carte</li><li>Le chef</li><li>Privatiser</li><li>Bons cadeaux</li></ul><div class="tel">Réservations <b>04 78 00 00 00</b></div><div class="burger"><i></i></div></nav>
+<section class="scene">
+  <div>
+    <div class="sur"><i></i>Ouvert ce soir · Lyon 2e</div>
+    <h1>Cuisine<br><span class="feu">de feu</span><br><span class="contour">& de saison</span></h1>
+    <div class="chapo"><div class="chef"><img src="photos/braise-1.webp" alt="">Chef<br>Hugo Marchal</div><p>Produits du marché, cuisson lente à la braise et une carte qui change chaque semaine. 32 couverts, une seule obsession : le goût.</p></div>
   </div>
-  <div class="infos"><div><b>Mar. au sam.</b>12 h · 19 h 30</div><div><b>Menu dégustation</b>dès 58 €</div><div><b>★ 4,8</b>612 avis</div></div>
-  <div class="carte"><div class="t"><span>Ce soir</span><span>4 tables libres</span></div><h3>Réservez en 30 secondes</h3><div class="crx"><span>19:30</span><span class="on">20:00</span><span>20:30</span><span>21:15</span></div></div>
-</section>
-<section class="menu">
-  <img src="photos/braise-1.webp" alt="">
-  <div><div class="sur">La carte de la semaine</div><h2 class="pf">Le marché du matin, la braise du soir.</h2>
-    <div class="plat"><div><b>Poireaux brûlés</b><small>noisette, beurre noisette, sarrasin</small></div><i>14 €</i></div>
-    <div class="plat"><div><b>Pigeon de Bresse</b><small>braisé, jus corsé, betterave fumée</small></div><i>34 €</i></div>
-    <div class="plat"><div><b>Poire à la cendre</b><small>crème crue, sablé breton</small></div><i>12 €</i></div>
+  <div class="photos">
+    <div class="p1"><img src="photos/braise-hero.webp" alt=""></div>
+    <div class="p2"><img src="photos/braise-2.webp" alt=""></div>
+    <svg class="sceau" viewBox="0 0 200 200"><circle cx="100" cy="100" r="98" fill="#FF6B2C"/><defs><path id="c" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><text fill="#1a0a03" font-family="Big Shoulders Display" font-weight="800" font-size="21" letter-spacing="5.2"><textPath href="#c">FEU DE BOIS · DEPUIS 2015 · LYON · </textPath></text><text x="100" y="122" text-anchor="middle" fill="#1a0a03" font-family="Big Shoulders Display" font-weight="900" font-size="64">★</text></svg>
+    <div class="plat"><small>Plat signature</small><b>Pigeon braisé, jus corsé</b></div>
   </div>
 </section>
+<div class="resa">
+  <div class="champ"><small>Date</small><b>Ce soir, ven. 14</b></div>
+  <div class="champ"><small>Couverts</small><b>2 personnes</b></div>
+  <div class="champ" style="border:0"><small>Créneaux libres</small><b>4 tables</b></div>
+  <div class="creneaux"><span>19:30</span><span class="on">20:00</span><span>20:45</span><span>21:15</span></div>
+  <a class="go">Réserver →</a>
+</div>
 </body></html>
