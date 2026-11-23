@@ -13,10 +13,15 @@ nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:
 .logo b{color:var(--lime)}
 nav ul{display:flex;gap:30px;list-style:none;font:600 14px Archivo;text-transform:uppercase;letter-spacing:.06em}
 .panier{display:flex;align-items:center;gap:10px;font:600 13px "JetBrains Mono"}.panier i{width:26px;height:26px;border-radius:50%;background:var(--lime);color:#000;display:grid;place-items:center;font-style:normal;font-weight:700}
-.geant{position:absolute;left:0;right:0;top:96px;text-align:center;font:900 300px/.8 Archivo;font-stretch:125%;letter-spacing:-.05em;font-style:italic;color:#1e1e1c;white-space:nowrap;z-index:1}
-.geant span{-webkit-text-stroke:2px #3c3c39;color:transparent}
+.geant{position:absolute;left:0;right:0;top:96px;text-align:center;font:900 300px/.8 Archivo;font-stretch:125%;letter-spacing:-.05em;font-style:italic;color:transparent;-webkit-text-stroke:2px rgba(215,255,58,.22);white-space:nowrap;z-index:1}
+.geant span{-webkit-text-stroke:0;color:rgba(215,255,58,.10)}
 .velo{position:absolute;z-index:2;left:290px;right:290px;top:150px;height:560px;border-radius:0;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 60% 62% at 50% 52%,#000 55%,transparent 75%)}
-.velo img{width:100%;height:100%;object-fit:cover;object-position:center 60%}
+.velo img{width:100%;height:100%;object-fit:cover;object-position:center 60%;filter:brightness(1.9) contrast(1.15) saturate(1.1)}
+.halo{position:absolute;z-index:1;left:50%;top:470px;width:900px;height:520px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(215,255,58,.30),rgba(215,255,58,0) 65%)}
+.sol{position:absolute;z-index:1;left:50%;top:690px;width:760px;height:60px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,rgba(215,255,58,.35),transparent 70%)}
+.pt{position:absolute;z-index:4;display:flex;align-items:center;gap:10px;font:600 12px "JetBrains Mono";letter-spacing:.06em;text-transform:uppercase}
+.pt i{width:16px;height:16px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 6px rgba(215,255,58,.25),0 0 22px var(--lime)}
+.pt span{background:rgba(10,10,10,.8);border:1px solid #333;padding:6px 10px}
 .gauche{position:absolute;z-index:3;left:48px;top:170px;width:300px}
 .tag{display:inline-block;background:var(--lime);color:#000;font:700 12px "JetBrains Mono";padding:6px 10px;letter-spacing:.06em}
 h1{font:900 64px/.9 Archivo;font-stretch:110%;letter-spacing:-.03em;text-transform:uppercase;margin:18px 0 16px;font-style:italic}
@@ -38,7 +43,7 @@ h1 b{color:var(--lime)}
 .defile{position:absolute;z-index:3;left:50%;bottom:44px;transform:translateX(-50%);font:400 11px "JetBrains Mono";color:var(--gris);letter-spacing:.2em}
 @media (max-width:600px){
   nav{padding:18px}nav ul{display:none}.logo{font-size:24px}
-  .geant{font-size:120px;top:120px}
+  .geant{font-size:120px;top:120px}.pt{display:none}.halo{top:480px;width:500px}.sol{display:none}
   .velo{left:-40px;right:-40px;top:330px;height:300px}
   .gauche{left:18px;right:18px;top:96px;width:auto}h1{font-size:44px;margin:12px 0 10px}.gauche p{font-size:14px}
   .specs{left:18px;right:18px;top:auto;bottom:120px;width:auto;flex-direction:row;gap:14px}.spec{flex:1;padding:8px 0}.spec b{font-size:20px}.spec:nth-child(n+3){display:none}
@@ -47,7 +52,8 @@ h1 b{color:var(--lime)}
 </style></head><body>
 <nav><div class="logo">VÉLOCE<b>.</b></div><ul><li>Route</li><li>Gravel</li><li>Équipement</li><li>Atelier</li></ul><div class="panier">PANIER <i>1</i></div></nav>
 <div class="geant">RIDE <span>FAST</span></div>
-<div class="velo"><img src="photos/veloce-hero.webp" alt=""></div>
+<div class="halo"></div><div class="sol"></div><div class="velo"><img src="photos/veloce-hero.webp" alt=""></div>
+<div class="pt" style="left:640px;top:330px"><i></i><span>Cockpit intégré</span></div><div class="pt" style="left:820px;top:560px"><i></i><span>Roues carbone 50 mm</span></div><div class="pt" style="left:560px;top:600px"><i></i><span>Di2 sans fil</span></div>
 <div class="gauche"><span class="tag">NOUVEAU · 2026</span><h1>Aero<b>/</b>One<br>Carbone</h1><p>Le cadre le plus léger jamais conçu par notre atelier. Monté à la main, livré prêt à rouler.</p></div>
 <div class="specs"><div class="spec"><small>Poids</small><b>6,8 <em>kg</em></b></div><div class="spec"><small>Cadre</small><b>T1000</b></div><div class="spec"><small>Transmission</small><b>Di2 <em>12v</em></b></div><div class="spec"><small>Garantie</small><b>À vie</b></div></div>
 <div class="bas"><div class="couleurs"><small>Coloris · Stealth</small><div><i class="on" style="background:#151515;border-color:#333"></i><i style="background:#D7FF3A"></i><i style="background:#E8E6DF"></i><i style="background:#C2401F"></i></div></div>

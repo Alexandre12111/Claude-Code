@@ -1,17 +1,19 @@
-"""Bande son originale de la vidéo « Nos réalisations » (48 kHz stéréo, 30 s, 120 BPM, la mineur).
-Entièrement synthétisée : aucun échantillon externe. Les repères suivent video.html (coupe 3 s, sites toutes les 2 s dès 4,5 s).
+"""Bande son originale de la vidéo « Nos réalisations » V2 (48 kHz stéréo, 29 s, 133 BPM, la mineur).
+Entièrement synthétisée : aucun échantillon externe. Les repères suivent video.html (avant/après, puis un site toutes les 1,8 s dès 5,3 s).
 Usage : python3 son.py  →  son.wav
 """
 import wave
 from pathlib import Path
 import numpy as np
 
-SR = 48000; DUREE = 30.0; N = int(DUREE * SR)
+SR = 48000; DUREE = 29.0; N = int(DUREE * SR)
 ICI = Path(__file__).resolve().parent
 rng = np.random.default_rng(7)
-COUPE, T0, DS, NS = 3.0, 4.5, 2.0, 8
-TMUR = T0 + NS * DS; TFIN = TMUR + 4.0
-B = .5   # un temps à 120 BPM
+W1, W2, W3, W4, W5 = 1.9, 2.5, 2.9, 3.25, 3.6   # balayage avant/après
+TT, T0, DS, NS = 4.5, 5.3, 1.8, 8
+TMUR = T0 + NS * DS; TFIN = TMUR + 3.5; CLIC = TFIN + 3.55
+COUPE = W5
+B = .45   # un temps à 133 BPM
 L = np.zeros(N); R = np.zeros(N)
 
 def X(d): return np.arange(int(d * SR)) / SR
@@ -71,24 +73,29 @@ def impact(g=1.):
     boum = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t * 2.2)
     souffle = pb(rng.standard_normal(len(t)), 3000) * np.exp(-t * 5) * .5
     return np.tanh((boum + souffle) * 1.6) * .8 * g
+def clic(g=1.): n = rng.standard_normal(int(.02 * SR)); return pb(n, 5000) * env(len(n), .0003, .004) * 1.2 * g
 def tic(g=1.): n = rng.standard_normal(int(.03 * SR)); return ph(n, 3000) * env(len(n), .0005, .006) * .5 * g
 def glitch(d=.3, g=1.):
     t = X(d); s = np.sign(np.sin(2 * np.pi * 180 * t * (1 + 3 * (np.floor(t * 40) % 3)))) * .3
     return s * (np.floor(t * 30) % 2) * g
 
-# ================= A. ACCROCHE (0 → 3 s) : tension =================
-ajoute(nappe([45, 52], 3.1, .7, 900), 0)
-for k in range(12): ajoute(tic(1 if k % 2 == 0 else .55), k * B / 2, pan=.3 if k % 2 else -.3)   # tic-tac en croches
-for k in range(6): ajoute(sous_basse(33, .2, .7), k * B)                                         # pulsation grave
-ajoute(montee(1.6, 1.), COUPE - 1.6)
-ajoute(glitch(.35, .6), 2.62); ajoute(glitch(.2, .5), 2.85, pan=.4)
-for i, n in enumerate([69, 72, 76]): ajoute(pluck(n, .6), .5 + i * .15, pan=-.3 + i * .3)         # « à tous les autres ? »
+# ================= A. ACCROCHE AVANT / APRÈS (0 → 4,5 s) =================
+ajoute(nappe([45, 52], W1 + .1, .7, 900), 0)
+for k in range(int(W1 / (B / 2))): ajoute(tic(1 if k % 2 == 0 else .55), k * B / 2, pan=.3 if k % 2 else -.3)    # tic-tac tendu
+for k in range(int(W1 / B)): ajoute(sous_basse(33, .2, .7), k * B)
+for i, a in enumerate((0, .45, .9)): ajoute(glitch(.12, .35), a + .05, pan=-.3 + i * .3)                          # pastilles « ✕ »
+ajoute(montee(1.2, .8), W1 - 1.2)
+ajoute(whoosh(.6, 300, 7000, 1.), W1 - .05)                                                                        # le balayage révèle la refonte
+ajoute(whoosh(.4, 6000, 900, .6), W2); ajoute(tic(1.), W3)                                                          # retour de la poignée au milieu
+ajoute(whoosh(.35, 500, 6000, .7), W4)
+ajoute(impact(1.), W5); ajoute(nappe([57, 60, 64, 69], TT - W5 + .2, .5, 4500), W5)                               # révélation complète
+for i, n in enumerate([76, 79, 84]): ajoute(cloche(n, .45), W5 - .1 + i * .2, pan=-.4 + i * .4)                     # pastilles « ✓ »
+for k in range(2): ajoute(kick(.9), W5 + k * B); ajoute(sous_basse(45 - 24 + 12, B * .9, .6), W5 + k * B)
 
-# ================= B. COUPE (3 s) : impact =================
-ajoute(impact(1.), COUPE); ajoute(whoosh(.5, 6000, 300, .8), COUPE - .02)
-ajoute(nappe([57, 60, 64, 69], 1.6, .5, 4000), COUPE + .05)
-ajoute(clap(.9), 3.5); ajoute(kick(1.), 3.5)                                                         # « non. »
-ajoute(montee(.8, .7), T0 - .8)
+# ================= B. « ET CE N'EST QUE LE DÉBUT » (4,5 → 5,3 s) =================
+ajoute(montee(.8, .9), TT); ajoute(whoosh(.8, 200, 8000, .7), TT)
+for k in range(8): ajoute(clap(.25 + k * .08), TT + k * .1)                                                         # roulement qui monte
+ajoute(impact(.9), T0)
 
 # ================= C. DÉFILÉ DES SITES (4,5 → 20,5 s) : groove =================
 GRILLE = [(57, [57, 60, 64]), (53, [53, 57, 60]), (48, [55, 60, 64]), (55, [55, 59, 62])]   # la m · fa · do · sol
@@ -109,15 +116,15 @@ ajoute(cloche(81, .5), T0 + .02)
 # ================= D. MUR DE SITES (20,5 → 24,5 s) : respiration =================
 ajoute(impact(.6), TMUR); ajoute(nappe([57, 64, 69, 72], 4.1, .7, 5000), TMUR)
 for k in range(4): ajoute(kick(.8), TMUR + k * 2 * B); ajoute(sous_basse(33, B * 1.8, .7), TMUR + k * 2 * B)
-for i, a in enumerate((.2, .7, 1.2)): ajoute(cloche([76, 79, 84][i], .55), TMUR + a)                      # « 8 sites · 8 univers · 0 template »
+for i, a in enumerate((.15, .6, 1.05)): ajoute(cloche([76, 79, 84][i], .55), TMUR + a)                      # « 8 sites · 8 univers · 0 template »
 for k in range(16): ajoute(hat(.5), TMUR + k * B / 2, pan=-.3)
-ajoute(montee(1.2, .8), TFIN - 1.2)
+ajoute(montee(1.0, .8), TFIN - 1.0)
 
 # ================= E. FIN (24,5 → 30 s) : logo et appel =================
 ajoute(impact(.8), TFIN); ajoute(nappe([45, 57, 60, 64, 71], 5.5, .8, 4500), TFIN)
 for i, n in enumerate([69, 72, 76, 79, 81, 84]): ajoute(cloche(n, .4, 2.2), TFIN + 1.6 + i * .07, pan=-.5 + i * .2)   # scintillement du logo
-ajoute(pluck(81, .7), TFIN + 2.2); ajoute(pluck(88, .5), TFIN + 2.35)                                          # bouton « Contactez-nous »
-for k in range(6): ajoute(kick(.6), TFIN + 2 * B * k + 2.2) if TFIN + 2 * B * k + 2.2 < DUREE - 1 else None
+ajoute(pluck(81, .7), TFIN + 1.9); ajoute(pluck(88, .5), TFIN + 2.05)                                          # bouton « Contactez-nous »
+ajoute(clic(1.), CLIC); ajoute(cloche(88, .6), CLIC + .02); ajoute(cloche(93, .4), CLIC + .12)                   # clic du curseur
 
 # ================= MIXAGE =================
 st = np.stack([L, R], 1)
