@@ -44,20 +44,18 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
 const C1 = '../../reseaux-sociaux/carrousel/concepts/captures/', C2 = 'sites/captures/';
 // nom, secteur, typographie, captures, fond, accent, texte clair (1) ou foncé (0), mise en scène
 const SITES = [
-  ['Halo', 'Banque des indépendants', 'Unbounded · Inter', C2 + 'halo', '#0B0820', '#8B6CFF', 1, 'duo'],
-  ['Maison Sorel', "Architecte d'intérieur", 'Bodoni Moda · Jost', C1 + 'maison-sorel', '#E9E2D6', '#9A6B43', 0, 'pleine'],
-  ['Braise', 'Restaurant gastronomique', 'Big Shoulders · Inter Tight', C1 + 'braise', '#140C08', '#FF6B2C', 1, 'tel'],
   ['Véloce', 'Vélos en carbone · e-shop', 'Archivo Expanded · Mono', C2 + 'veloce', '#0A0A0A', '#D7FF3A', 1, 'duo'],
-  ['Domaine des Aubes', 'Vins de Bourgogne', 'Instrument Serif', C2 + 'domaine-des-aubes', '#5A1624', '#E8C88A', 1, 'tranches'],
-  ['Kinée', 'Cabinet de kinésithérapie', 'Plus Jakarta Sans', C2 + 'kinee', '#E3EDFF', '#2563EB', 0, 'pleine'],
-  ['Studio Brut', 'Photographe portrait', 'Anton · Space Mono', C2 + 'studio-brut', '#E8E5DD', '#FF3B1F', 0, 'tel'],
-  ['Terre de Grès', 'Céramique artisanale · e-shop', 'Syne · Manrope', C1 + 'terre-de-gres', '#EFE6D8', '#C0663A', 0, 'tranches'],
+  ['Monolithe', 'Construction · gros œuvre', 'Syncopate · Barlow', C2 + 'monolithe', '#101214', '#FF5A1F', 1, 'pleine'],
+  ['Valmont Avocats', "Cabinet d'avocats d'affaires", 'Bodoni Moda · DM Mono', C2 + 'valmont', '#0B0A09', '#D4B06A', 1, 'tel'],
+  ['Braise', 'Restaurant gastronomique', 'Big Shoulders · Inter Tight', C1 + 'braise', '#140C08', '#FF6B2C', 1, 'tranches'],
+  ['Uppercut', 'Club de boxe', 'Anton · Space Mono', C2 + 'uppercut', '#070707', '#FF2B2B', 1, 'duo'],
+  ['Ébène', 'Ébéniste · mobilier sur mesure', 'Fraunces · Karla', C2 + 'ebene', '#16100C', '#E9C48A', 1, 'pleine'],
 ];
 const B = .45;                                   // un temps à 133 BPM
-const HF = 2.0, HE = 3.6;                                    // accroche : mur de sites, puis rafale
-const BA0 = HE, W1 = 4.4, W2 = 4.95, W3 = 5.3, W4 = 5.6, W5 = 5.95, BAE = 7.4;   // avant / après
+const HF = 99, HE = 2.4;                                    // accroche : mur de sites, puis rafale
+const BA0 = HE, W1 = 90, W2 = 91, W3 = 92, W4 = 93, W5 = 94, BAE = HE;   // avant / après
 const R0 = BAE;                                              // recommandations
-const TT = BAE, T0 = 10.2, DS = 1.8, TMUR = T0 + SITES.length * DS, TFIN = TMUR, DUREE = TFIN + 6;
+const TT = BAE, T0 = HE, DS = 2.7, TMUR = T0 + SITES.length * DS, TFIN = TMUR, DUREE = TFIN + 6;
 const CLIC = TFIN + 3.55;
 const $ = id => document.getElementById(id);
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -186,7 +184,7 @@ function scnC(t) {
   // étiquette lettre par lettre
   $('nom').innerHTML = lettres(nom, t, T0 + i * DS + .1, .03);
   $('sect').textContent = sect; $('typo').textContent = typo;
-  $('cpt').innerHTML = `<b style="color:${acc}">${String(i + 1).padStart(2, '0')}</b> / 08`;
+  $('cpt').innerHTML = `<b style="color:${acc}">${String(i + 1).padStart(2, '0')}</b> / 06`;
   $('bp').style.cssText = `display:block;height:100%;width:${((i + u) / SITES.length) * 100}%;background:${acc}`;
 }
 
@@ -254,14 +252,14 @@ const PAL = ['#8B6CFF', '#FF6B2C', '#D7FF3A', '#2563EB', '#C9A961', '#FF3B1F', '
 function scnH(t) {
   const v = 1300 * t + 650 * t * t;   // le mur accélère
   for (let c = 0; c < NCOL; c++) $('hc' + c).style.transform = `translateY(${-(((c % 2 ? v : -v) * (1 + c * .08) % (NPAR * HAUT)) + NPAR * HAUT) % (NPAR * HAUT)}px)`;
-  const raf = t >= HF, zr = E.io(prog(t, HF - .15, .35));
+  const raf = t >= HF, zr = E.io(prog(t, HE - .45, .45));
   $('hMur').style.transform = `translate(-50%,-50%) rotateX(32deg) rotateZ(-18deg) scale(${1 + .06 * t + zr * .5})`;
   $('hMur').style.filter = `blur(${zr * 10}px) brightness(${1 - zr * .5})`;
   // phrase d'accroche : lisible dès la première image, « à ça. » claque sur le premier temps
   const pun = Math.exp(-Math.max(0, t - .45) * 6) * (t > .45 ? 1 : 0);
   ['h1', 'h2', 'h3'].forEach((id, i) => $(id).style.cssText = `display:inline-block;transform:scale(${1 + .015 * Math.sin(t * 4 + i)})`);
   const k4 = prog(t, -.25, .25); $('h4').style.cssText = `display:inline-block;opacity:${clamp(k4 * 3)};transform:scale(${mix(2.6, 1, E.out(k4)) + pun * .08}) rotate(${(1 - E.back(k4)) * -8}deg);filter:blur(${(1 - clamp(k4 * 2)) * 14}px)`;
-  const sortTxt = prog(t, HF - .05, .2); $('hTxt').style.cssText += `;opacity:${1 - sortTxt};transform:translateY(${-sortTxt * 140}px) scale(${1 - sortTxt * .1})`;
+  const sortTxt = prog(t, HE - .35, .25); $('hTxt').style.cssText += `;opacity:${1 - sortTxt};transform:translateY(${-sortTxt * 140}px) scale(${1 - sortTxt * .1})`;
   $('hVoile').style.opacity = 1 - zr * .3;
   // rafale de sites coupés en rythme, avec compteur jusqu'à 45+
   const P = .148, j = Math.floor((t - HF) / P), uj = ((t - HF) % P) / P;
@@ -315,7 +313,7 @@ function rendre(t) {
   const coupes = SITES.map((s, i) => [T0 + i * DS, s[5]]);
   let vol = null; for (const [c, col] of coupes) if (Math.abs(t - c) < .16) vol = [c, col];
   if (vol) { const k = (t - vol[0] + .16) / .32; $('volet').style.cssText = `display:block;left:0;background:${vol[1]};transform:translateX(${mix(1200, -2800, E.io(k))}px) skewX(-14deg)`; } else $('volet').style.display = 'none';
-  let f = 0; for (const c of [HF, HE, W5, TFIN]) f = Math.max(f, clamp(1 - Math.abs(t - c) / .1) * (c === W5 || c === HE ? .75 : .5));
+  let f = 0; for (const c of [HE, TFIN]) f = Math.max(f, clamp(1 - Math.abs(t - c) / .1) * .6);
   $('flash').style.opacity = f;
   $('voile').style.background = t > DUREE - .5 ? `rgba(0,0,0,${clamp((t - DUREE + .5) / .5)})` : 'transparent';
 }

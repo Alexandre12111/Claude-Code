@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Uppercut · Club de boxe · Lyon</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Anton (penchée) + Rubik + Space Mono. -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=block" rel="stylesheet">
+<style>
+:root{--noir:#070707;--rouge:#FF2B2B;--blanc:#F5F3F0;--gris:#8D8A86}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--noir);color:var(--blanc);font:400 15px/1.5 Rubik,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.bandes{position:absolute;right:-200px;top:-100px;width:900px;height:1300px;transform:rotate(18deg);background:repeating-linear-gradient(90deg,var(--rouge) 0 46px,transparent 46px 92px);opacity:.9}
+.gants{position:absolute;right:60px;top:90px;width:820px;height:640px;clip-path:polygon(12% 0,100% 0,88% 100%,0 100%);overflow:hidden;box-shadow:0 0 0 1px #222}
+.gants img{width:100%;height:100%;object-fit:cover;object-position:45% 50%;filter:contrast(1.25) brightness(1.15)}
+.gants:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 45% 55%,rgba(255,43,43,0),rgba(255,43,43,.25) 80%)}
+nav{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:22px 48px}
+.logo{font:400 34px/1 Anton;letter-spacing:.02em;transform:skewX(-10deg);display:flex;align-items:center;gap:6px}
+.logo b{background:var(--rouge);color:var(--noir);padding:0 8px;font-weight:400}
+nav ul{display:flex;gap:30px;list-style:none;font:700 13px "Space Mono";letter-spacing:.08em;text-transform:uppercase}
+nav ul li:first-child{color:var(--rouge)}
+.essai{height:50px;padding:0 22px;background:var(--blanc);color:var(--noir);display:flex;align-items:center;font:800 14px Rubik;text-transform:uppercase;transform:skewX(-10deg)}
+h1{position:absolute;z-index:3;left:44px;top:140px;font:400 196px/.84 Anton;text-transform:uppercase;transform:skewX(-10deg);letter-spacing:-.01em}
+h1 span{display:block}
+h1 .c{color:transparent;-webkit-text-stroke:3px var(--blanc)}
+h1 .r{color:var(--rouge)}
+.txt{position:absolute;z-index:3;left:56px;top:660px;width:430px}
+.txt p{font-size:17px;color:#c9c6c2}
+.cta{display:flex;align-items:center;gap:16px;margin-top:22px}
+.go{height:64px;padding:0 30px;background:var(--rouge);color:var(--noir);display:flex;align-items:center;gap:12px;font:800 16px Rubik;text-transform:uppercase;transform:skewX(-10deg);box-shadow:8px 8px 0 var(--blanc)}
+.cta small{font:400 12px "Space Mono";color:var(--gris)}
+.planning{position:absolute;z-index:4;right:48px;bottom:36px;display:flex;gap:10px}
+.cours{background:rgba(7,7,7,.88);border:1px solid #2a2a2a;padding:14px 16px;width:170px}
+.cours small{display:block;font:700 11px "Space Mono";letter-spacing:.1em;color:var(--rouge)}
+.cours b{display:block;font:400 26px/1 Anton;text-transform:uppercase;margin:6px 0 4px}
+.cours span{font-size:13px;color:var(--gris)}
+.cours.on{background:var(--rouge);border-color:var(--rouge);color:var(--noir)}.cours.on small,.cours.on span{color:var(--noir)}
+.stat{position:absolute;z-index:4;left:560px;top:650px;display:flex;gap:30px}
+.stat b{display:block;font:400 54px/1 Anton}.stat small{font:700 11px "Space Mono";color:var(--gris);letter-spacing:.1em}
+@media (max-width:600px){
+  nav{padding:16px}nav ul{display:none}.logo{font-size:26px}.essai{height:40px;padding:0 14px;font-size:12px}
+  .bandes{right:-300px;width:600px}
+  .gants{left:18px;right:18px;top:340px;width:auto;height:280px}
+  h1{font-size:104px;left:20px;top:80px}
+  .txt{left:20px;right:20px;top:640px;width:auto}.txt p{font-size:14px}.cta small{display:none}.go{height:54px}
+  .stat{display:none}.planning{left:20px;right:20px;bottom:auto;top:560px}.cours{width:auto;flex:1;padding:8px 10px}.cours b{font-size:18px}.cours span{display:none}.cours:nth-child(3){display:none}
+}
+</style></head><body>
+<div class="bandes"></div>
+<div class="gants"><img src="photos/uppercut-hero.webp" alt=""></div>
+<nav><div class="logo">UPPER<b>CUT</b></div><ul><li>Cours</li><li>Coachs</li><li>Tarifs</li><li>Compétition</li></ul><a class="essai">1er cours offert</a></nav>
+<h1><span>Frappe</span><span class="c">plus</span><span class="r">fort.</span></h1>
+<div class="txt"><p>Boxe anglaise, cardio-boxe et préparation physique. Débutants bienvenus, champions entraînés. Un club, une famille.</p>
+  <div class="cta"><a class="go">Réserver mon essai →</a><small>SANS ENGAGEMENT</small></div></div>
+<div class="stat"><div><b>12</b><small>COACHS DIPLÔMÉS</small></div><div><b>40</b><small>COURS / SEMAINE</small></div></div>
+<div class="planning"><div class="cours on"><small>CE SOIR · 19:00</small><b>Boxe anglaise</b><span>Tous niveaux · 6 places</span></div><div class="cours"><small>DEMAIN · 12:30</small><b>Cardio boxe</b><span>45 min · intense</span></div><div class="cours"><small>SAMEDI · 10:00</small><b>Kids boxing</b><span>8 à 14 ans</span></div></div>
+</body></html>

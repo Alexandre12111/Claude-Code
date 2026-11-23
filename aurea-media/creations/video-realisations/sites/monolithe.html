@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Monolithe · Construction et gros œuvre</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Syncopate (capitales larges) + Barlow + IBM Plex Mono. -->
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+:root{--beton:#0E0F10;--orange:#FF5A1F;--gris:#9AA0A6;--blanc:#F2F1EE}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--beton);color:var(--blanc);font:400 15px/1.5 Barlow,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.mono{font-family:"IBM Plex Mono",monospace}
+.fond{position:absolute;inset:0}
+.fond img{width:100%;height:100%;object-fit:cover;object-position:60% 50%;filter:saturate(1.1) contrast(1.05)}
+.fond:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,15,16,.96) 0%,rgba(14,15,16,.78) 34%,rgba(14,15,16,.12) 62%,rgba(14,15,16,.35) 100%),linear-gradient(0deg,rgba(14,15,16,.9),rgba(14,15,16,0) 30%)}
+.trame{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:linear-gradient(90deg,transparent 40%,#000 70%)}
+nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:26px 48px;border-bottom:1px solid rgba(242,241,238,.12)}
+.logo{display:flex;align-items:center;gap:14px;font:700 21px/1 Syncopate;letter-spacing:.12em}
+.logo i{width:26px;height:26px;background:var(--orange);clip-path:polygon(0 100%,50% 0,100% 100%)}
+nav ul{display:flex;gap:34px;list-style:none;font:600 13px Barlow;letter-spacing:.16em;text-transform:uppercase;color:#cfd2d5}
+.devis{height:48px;padding:0 22px;background:var(--orange);color:#120700;display:flex;align-items:center;gap:10px;font:700 13px Barlow;letter-spacing:.14em;text-transform:uppercase}
+.contenu{position:relative;z-index:3;padding:70px 48px 0;width:700px}
+.ref{display:flex;align-items:center;gap:12px;font:500 12px "IBM Plex Mono";letter-spacing:.12em;color:var(--orange)}
+.ref:before{content:"";width:40px;height:2px;background:var(--orange)}
+h1{font:700 64px/1.02 Syncopate;letter-spacing:-.01em;text-transform:uppercase;margin:26px 0 26px}
+h1 b{color:var(--orange);font-weight:700}
+.contenu p{font-size:18px;color:#c3c7cb;max-width:500px}
+.actions{display:flex;gap:12px;margin-top:34px}
+.btn{height:60px;padding:0 28px;display:flex;align-items:center;gap:12px;font:700 14px Barlow;letter-spacing:.14em;text-transform:uppercase;background:var(--blanc);color:var(--beton)}
+.btn.l{background:transparent;color:var(--blanc);border:1.5px solid rgba(242,241,238,.4)}
+/* cotes d'architecte posées sur la photo */
+.cote{position:absolute;z-index:2;font:500 12px "IBM Plex Mono";color:var(--blanc);letter-spacing:.08em}
+.cote.h{height:1.5px;background:var(--orange)}.cote.h:before,.cote.h:after{content:"";position:absolute;top:-7px;width:1.5px;height:16px;background:var(--orange)}.cote.h:before{left:0}.cote.h:after{right:0}
+.cote.h span{position:absolute;left:50%;top:-26px;transform:translateX(-50%);background:var(--beton);padding:2px 8px}
+.cote.v{width:1.5px;background:var(--orange)}.cote.v:before,.cote.v:after{content:"";position:absolute;left:-7px;width:16px;height:1.5px;background:var(--orange)}.cote.v:before{top:0}.cote.v:after{bottom:0}
+.cote.v span{position:absolute;top:50%;left:12px;transform:translateY(-50%);background:var(--beton);padding:2px 8px;white-space:nowrap}
+.pt{position:absolute;z-index:3;display:flex;align-items:center;gap:10px;font:500 12px "IBM Plex Mono";letter-spacing:.06em;text-transform:uppercase}
+.pt i{width:18px;height:18px;border:2px solid var(--orange);border-radius:50%;display:grid;place-items:center}
+.pt i:after{content:"";width:6px;height:6px;border-radius:50%;background:var(--orange)}
+.pt span{background:rgba(14,15,16,.85);border:1px solid rgba(242,241,238,.15);padding:6px 10px}
+.bas{position:absolute;z-index:3;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,1fr) 1.3fr;border-top:1px solid rgba(242,241,238,.14);background:rgba(14,15,16,.7);backdrop-filter:blur(10px)}
+.bas div{padding:20px 28px;border-right:1px solid rgba(242,241,238,.1)}
+.bas small{display:block;font:500 11px "IBM Plex Mono";letter-spacing:.12em;color:var(--gris);text-transform:uppercase}
+.bas b{font:700 30px/1.2 Syncopate}
+.bas .projet{display:flex;align-items:center;gap:14px;border:0}
+.bas .projet img{width:86px;height:56px;object-fit:cover}
+.bas .projet b{font:600 17px Barlow;display:block}
+@media (max-width:600px){
+  nav{padding:16px 18px}nav ul{display:none}.logo{font-size:15px}.devis{height:40px;padding:0 14px;font-size:11px}
+  .fond img{object-position:68% 50%}.fond:after{background:linear-gradient(0deg,rgba(14,15,16,.98) 38%,rgba(14,15,16,.3) 70%,rgba(14,15,16,.6))}
+  .contenu{width:auto;padding:330px 18px 0}h1{font-size:30px;margin:16px 0 14px}.contenu p{font-size:15px}.actions{margin-top:20px}.btn.l{display:none}.btn{height:52px}
+  .cote,.pt{display:none}.bas{grid-template-columns:1fr 1fr}.bas div:nth-child(n+3){display:none}.bas div{padding:14px 18px}.bas b{font-size:20px}
+}
+</style></head><body>
+<div class="fond"><img src="photos/mono-hero.webp" alt=""></div><div class="trame"></div>
+<nav><div class="logo"><i></i>MONOLITHE</div><ul><li>Réalisations</li><li>Savoir-faire</li><li>Process</li><li>Carrières</li></ul><a class="devis">Étude gratuite →</a></nav>
+<div class="cote h" style="left:860px;top:250px;width:520px"><span>18,40 m</span></div>
+<div class="cote v" style="left:1330px;top:300px;height:330px"><span>7,20 m</span></div>
+<div class="pt" style="left:940px;top:420px"><i></i><span>Béton bas carbone</span></div>
+<div class="pt" style="left:1130px;top:560px"><i></i><span>Baies alu 4 m</span></div>
+<div class="pt" style="left:820px;top:640px"><i></i><span>RE2020 · A+</span></div>
+<section class="contenu">
+  <div class="ref">GROS ŒUVRE · MAISONS D'ARCHITECTE · HAUTE-SAVOIE</div>
+  <h1>On bâtit<br>ce qui <b>dure.</b></h1>
+  <p>Terrassement, structure, maçonnerie et clos-couvert. Une seule équipe, un planning tenu et des finitions dignes d'un architecte.</p>
+  <div class="actions"><a class="btn">Lancer mon projet →</a><a class="btn l">Voir 120 chantiers</a></div>
+</section>
+<div class="bas"><div><small>Fondée en</small><b>1998</b></div><div><small>Chantiers livrés</small><b>120+</b></div><div><small>Délais tenus</small><b>97 %</b></div><div><small>Garantie</small><b>10 ans</b></div><div class="projet"><img src="photos/mono-2.webp" alt=""><div><small>Projet en cours · 07/24</small><b>Villa Lumen · Annecy</b></div></div></div>
+</body></html>

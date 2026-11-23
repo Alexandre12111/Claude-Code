@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Valmont Avocats · Cabinet d'affaires à Paris</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Bodoni Moda (très grand) + Inter + DM Mono. -->
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+:root{--noir:#0B0A09;--or:#D4B06A;--or2:#F1DDA8;--creme:#EFE8DA;--mute:#8E877C}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--noir);color:var(--creme);font:400 15px/1.6 Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.statue{position:absolute;right:0;top:0;bottom:0;width:58%}
+.statue img{width:100%;height:100%;object-fit:cover;object-position:40% 30%;filter:grayscale(1) contrast(1.25) brightness(.85) sepia(.35)}
+.statue:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--noir) 0%,rgba(11,10,9,.55) 30%,rgba(11,10,9,0) 60%),linear-gradient(0deg,var(--noir),rgba(11,10,9,0) 35%),radial-gradient(ellipse at 55% 35%,rgba(212,176,106,.25),transparent 60%);mix-blend-mode:normal}
+.rayon{position:absolute;right:220px;top:-200px;width:340px;height:1300px;transform:rotate(18deg);background:linear-gradient(90deg,transparent,rgba(241,221,168,.13),transparent);filter:blur(10px)}
+nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:30px 60px}
+.logo{display:flex;align-items:center;gap:16px}
+.logo .m{width:46px;height:46px;border:1px solid var(--or);display:grid;place-items:center;font:400 26px "Bodoni Moda";font-style:italic;color:var(--or)}
+.logo b{display:block;font:500 20px "Bodoni Moda";letter-spacing:.28em}
+.logo small{font:500 10px "DM Mono";letter-spacing:.3em;color:var(--mute)}
+nav ul{display:flex;gap:36px;list-style:none;font:500 13px Inter;letter-spacing:.1em;text-transform:uppercase;color:#c9c1b3}
+.rdv{height:50px;padding:0 24px;border:1px solid var(--or);color:var(--or2);display:flex;align-items:center;gap:10px;font:500 13px Inter;letter-spacing:.14em;text-transform:uppercase}
+.contenu{position:relative;z-index:3;padding:56px 60px 0;width:780px}
+.sur{font:500 12px "DM Mono";letter-spacing:.3em;color:var(--or)}
+h1{font:400 128px/.88 "Bodoni Moda";letter-spacing:-.035em;margin:26px 0 30px}
+h1 i{color:var(--or2)}
+.contenu p{font-size:18px;color:#b9b1a4;max-width:470px}
+.actions{display:flex;align-items:center;gap:28px;margin-top:36px}
+.btn{height:62px;padding:0 32px;background:linear-gradient(100deg,var(--or2),var(--or));color:#1a1208;display:flex;align-items:center;gap:12px;font:600 14px Inter;letter-spacing:.14em;text-transform:uppercase}
+.tel{font:500 14px "DM Mono";color:var(--creme);letter-spacing:.08em}.tel small{display:block;color:var(--mute);font-size:11px;letter-spacing:.2em}
+.expertises{display:none}
+.expertises div{display:flex;gap:16px;align-items:baseline;padding:16px 0;border-bottom:1px solid rgba(212,176,106,.22)}
+.expertises span{font:500 12px "DM Mono";color:var(--or)}
+.expertises b{font:400 24px "Bodoni Moda"}
+.expertises div:first-child{border-top:1px solid rgba(212,176,106,.22)}
+.bas{position:absolute;z-index:3;left:60px;right:60px;bottom:40px;display:flex;justify-content:space-between;align-items:flex-end}
+.chiffres{display:flex;gap:56px}
+.chiffres b{display:block;font:400 52px/1 "Bodoni Moda";color:var(--or2)}
+.chiffres small{font:500 11px "DM Mono";letter-spacing:.2em;color:var(--mute);text-transform:uppercase}
+.sceau{width:120px;height:120px}
+@media (max-width:600px){
+  nav{padding:18px}nav ul,.rdv{display:none}.logo b{font-size:15px}
+  .statue{width:100%;height:440px;bottom:auto}.statue:after{background:linear-gradient(0deg,var(--noir) 5%,rgba(11,10,9,0) 60%)}
+  .contenu{width:auto;padding:300px 20px 0}h1{font-size:68px;margin:14px 0 16px}.contenu p{font-size:15px}.tel{display:none}.btn{height:54px}
+  .expertises,.sceau{display:none}.bas{left:20px;right:20px;bottom:24px}.chiffres{display:none}.sceau{display:none}
+}
+</style></head><body>
+<div class="statue"><img src="photos/valmont-hero.webp" alt=""></div><div class="rayon"></div>
+<nav><div class="logo"><div class="m">V</div><div><b>VALMONT</b><small>AVOCATS · PARIS VIII</small></div></div><ul><li>Expertises</li><li>Le cabinet</li><li>Honoraires</li><li>Publications</li></ul><a class="rdv">Consultation →</a></nav>
+<section class="contenu">
+  <div class="sur">DROIT DES AFFAIRES · CONTENTIEUX · PATRIMOINE</div>
+  <h1>Défendre<br>ce qui vous<br>est <i>cher.</i></h1>
+  <p>Un cabinet à taille humaine pour les dirigeants et les familles. Une stratégie claire, des honoraires annoncés, un avocat qui décroche.</p>
+  <div class="actions"><a class="btn">Prendre rendez-vous</a><div class="tel">01 40 00 00 00<small>RÉPONSE SOUS 24 H</small></div></div>
+</section>
+<div class="expertises"><div><span>01</span><b>Droit des affaires</b></div><div><span>02</span><b>Contentieux</b></div><div><span>03</span><b>Droit immobilier</b></div><div><span>04</span><b>Famille &amp; patrimoine</b></div></div>
+<div class="bas"><div class="chiffres"><div><b>25</b><small>ans de barreau</small></div><div><b>1 400</b><small>dossiers suivis</small></div><div><b>6</b><small>associés</small></div></div>
+<svg class="sceau" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="none" stroke="#D4B06A" stroke-width="1.5"/><defs><path id="c" d="M100,100 m-72,0 a72,72 0 1,1 144,0 a72,72 0 1,1 -144,0"/></defs><text fill="#D4B06A" font-family="DM Mono" font-size="14" letter-spacing="5"><textPath href="#c">BARREAU DE PARIS · DEPUIS 2001 · </textPath></text><text x="100" y="118" text-anchor="middle" fill="#F1DDA8" font-family="Bodoni Moda" font-style="italic" font-size="52">V</text></svg></div>
+</body></html>

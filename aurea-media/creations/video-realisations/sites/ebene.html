@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ébène · Atelier d'ébénisterie sur mesure</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Fraunces (variable, « soft ») + Karla + Overpass Mono. -->
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=Karla:wght@400;500;700&family=Overpass+Mono:wght@400;600&display=block" rel="stylesheet">
+<style>
+:root{--noyer:#16100C;--noyer2:#22180F;--laiton:#C99A5B;--laiton2:#E9C48A;--creme:#F1E7D8;--mute:#9C8B78}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1000px 700px at 62% 48%,#3a2717 0%,var(--noyer) 62%);color:var(--creme);font:400 15px/1.55 Karla,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.fr{font-family:Fraunces,serif;font-variation-settings:"SOFT" 100,"WONK" 1}
+.geant{position:absolute;left:0;right:0;top:120px;text-align:center;font:900 330px/.8 Fraunces;font-variation-settings:"SOFT" 100,"WONK" 1;font-style:italic;color:transparent;-webkit-text-stroke:1.5px rgba(201,154,91,.28);white-space:nowrap}
+nav{position:relative;z-index:4;display:flex;align-items:center;justify-content:space-between;padding:26px 52px}
+.logo{font:600 32px/1 Fraunces;font-variation-settings:"SOFT" 100,"WONK" 1;font-style:italic;letter-spacing:-.02em}
+.logo span{color:var(--laiton)}
+nav ul{display:flex;gap:32px;list-style:none;font:500 14px Karla;color:#d6c8b4}
+.panier{font:600 13px "Overpass Mono";border:1px solid rgba(201,154,91,.5);padding:10px 16px;border-radius:999px}
+.meuble{position:absolute;z-index:2;left:50%;top:140px;width:560px;height:620px;transform:translateX(-50%);border-radius:300px 300px 24px 24px;overflow:hidden;box-shadow:0 60px 120px rgba(0,0,0,.6),0 0 0 1px rgba(201,154,91,.3)}
+.meuble img{width:100%;height:100%;object-fit:cover;filter:sepia(.25) saturate(1.1) brightness(.98)}
+.meuble:after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(255,220,170,.18),transparent 40%,rgba(22,16,12,.35))}
+.pt{position:absolute;z-index:3;display:flex;align-items:center;gap:10px;font:600 12px "Overpass Mono";letter-spacing:.04em}
+.pt i{width:14px;height:14px;border-radius:50%;background:var(--laiton2);box-shadow:0 0 0 6px rgba(233,196,138,.22),0 0 18px var(--laiton2)}
+.pt span{background:rgba(22,16,12,.85);border:1px solid rgba(201,154,91,.35);padding:6px 11px;border-radius:999px}
+.gauche{position:absolute;z-index:3;left:52px;top:190px;width:330px}
+.sur{font:600 11px "Overpass Mono";letter-spacing:.22em;color:var(--laiton)}
+h1{font:500 74px/.95 Fraunces;font-variation-settings:"SOFT" 100,"WONK" 1;letter-spacing:-.03em;margin:20px 0 18px}
+h1 i{color:var(--laiton2);font-weight:400}
+.gauche p{color:#cbbba6;font-size:16px}
+.specs{position:absolute;z-index:3;right:52px;top:200px;width:260px}
+.spec{border-top:1px solid rgba(201,154,91,.25);padding:14px 0}
+.spec small{display:block;font:600 11px "Overpass Mono";letter-spacing:.14em;color:var(--mute);text-transform:uppercase}
+.spec b{font:500 26px/1.2 Fraunces;font-variation-settings:"SOFT" 100}
+.bas{position:absolute;z-index:3;left:52px;right:52px;bottom:34px;display:flex;align-items:flex-end;justify-content:space-between}
+.essences small{font:600 11px "Overpass Mono";letter-spacing:.14em;color:var(--mute)}
+.essences div{display:flex;gap:10px;margin-top:10px}
+.essences i{width:40px;height:40px;border-radius:50%;background-size:cover}
+.essences i.on{outline:2px solid var(--laiton2);outline-offset:3px}
+.achat{display:flex;align-items:center;gap:22px}
+.prix{text-align:right}.prix small{display:block;font:600 11px "Overpass Mono";color:var(--mute);letter-spacing:.1em}.prix b{font:500 44px/1 Fraunces}
+.go{height:64px;padding:0 30px;border-radius:999px;background:linear-gradient(100deg,var(--laiton2),var(--laiton));color:#1d1208;display:flex;align-items:center;gap:12px;font:700 15px Karla;letter-spacing:.04em}
+@media (max-width:600px){
+  nav{padding:16px 18px}nav ul{display:none}.logo{font-size:26px}
+  .geant{font-size:130px;top:90px}
+  .meuble{top:270px;width:300px;height:330px;border-radius:160px 160px 18px 18px}.pt{display:none}
+  .gauche{left:20px;right:20px;top:80px;width:auto}h1{font-size:44px;margin:12px 0 0}.gauche p{display:none}
+  .specs{left:20px;right:20px;top:auto;bottom:110px;width:auto;display:flex;gap:16px}.spec{flex:1;padding:8px 0}.spec b{font-size:19px}.spec:nth-child(3){display:none}
+  .bas{left:20px;right:20px;bottom:22px}.essences{display:none}.achat{width:100%;justify-content:space-between}.prix b{font-size:30px}.go{height:54px;padding:0 20px;font-size:14px}
+}
+</style></head><body>
+<div class="geant">fait main</div>
+<nav><div class="logo">Ébène<span>.</span></div><ul><li>Mobilier</li><li>Cuisines</li><li>Bibliothèques</li><li>L'atelier</li></ul><div class="panier">DEVIS · 0</div></nav>
+<div class="meuble"><img src="photos/ebene-hero.webp" alt=""></div>
+<div class="pt" style="left:640px;top:300px"><i></i><span>Plateau noyer massif</span></div>
+<div class="pt" style="left:770px;top:470px"><i></i><span>Tenon-mortaise</span></div>
+<div class="pt" style="left:520px;top:640px"><i></i><span>Huile naturelle</span></div>
+<div class="gauche"><div class="sur">COLLECTION 2026 · PIÈCE Nº 014</div><h1>Le bois,<br><i>façonné</i><br>pour vous.</h1><p>Chaque meuble est dessiné, taillé et assemblé à la main dans notre atelier du Jura. Pour durer plusieurs vies.</p></div>
+<div class="specs"><div class="spec"><small>Essence</small><b>Noyer d'Europe</b></div><div class="spec"><small>Délai atelier</small><b>6 semaines</b></div><div class="spec"><small>Garantie</small><b>À vie</b></div></div>
+<div class="bas"><div class="essences"><small>ESSENCE · NOYER</small><div><i class="on" style="background:linear-gradient(135deg,#6b4428,#3a2414)"></i><i style="background:linear-gradient(135deg,#d9b98a,#a7804f)"></i><i style="background:linear-gradient(135deg,#2a1d14,#120c08)"></i><i style="background:linear-gradient(135deg,#c79a6a,#8a5a35)"></i></div></div>
+<div class="achat"><div class="prix"><small>SUR MESURE · DÈS</small><b>890 €</b></div><a class="go">Dessiner ma pièce →</a></div></div>
+</body></html>
