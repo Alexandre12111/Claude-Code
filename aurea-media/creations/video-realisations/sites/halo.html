@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Halo · La banque des indépendants</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Unbounded + Inter. -->
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600&family=Inter:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#06060B;color:#EDEBFF;font:400 16px/1.55 Inter,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.u{font-family:Unbounded,sans-serif}
+.aurore{position:absolute;inset:0;overflow:hidden}
+.aurore i{position:absolute;border-radius:50%;filter:blur(90px);opacity:.75}
+.aurore i:nth-child(1){width:720px;height:520px;right:-120px;top:-160px;background:#6C4BFF}
+.aurore i:nth-child(2){width:560px;height:460px;right:280px;top:260px;background:#00D1FF;opacity:.45}
+.aurore i:nth-child(3){width:520px;height:420px;left:-200px;bottom:-260px;background:#FF4FD8;opacity:.35}
+.grille{position:absolute;inset:0;background-image:linear-gradient(rgba(237,235,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(237,235,255,.05) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse at 70% 40%,#000 20%,transparent 70%)}
+nav{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:26px 56px}
+.logo{display:flex;align-items:center;gap:12px;font:600 26px Unbounded}
+.logo i{width:30px;height:30px;border-radius:50%;border:5px solid transparent;background:linear-gradient(#06060B,#06060B) padding-box,conic-gradient(#6C4BFF,#00D1FF,#FF4FD8,#6C4BFF) border-box}
+nav ul{display:flex;gap:34px;list-style:none;font-size:15px;color:#a9a6c7}
+.nb{display:flex;gap:12px}
+.b{height:48px;padding:0 22px;border-radius:14px;display:flex;align-items:center;font-weight:600;font-size:15px}
+.b.g{background:rgba(237,235,255,.08);border:1px solid rgba(237,235,255,.14)}
+.b.p{background:#EDEBFF;color:#06060B}
+.hero{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;padding:40px 56px 0;gap:30px}
+.chip{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:7px 14px 7px 7px;background:rgba(237,235,255,.06);border:1px solid rgba(237,235,255,.12);font-size:14px;color:#cfcbef}
+.chip b{background:linear-gradient(90deg,#6C4BFF,#00D1FF);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px}
+h1{font:500 74px/1.02 Unbounded;letter-spacing:-.045em;margin:28px 0 24px}
+h1 span{background:linear-gradient(90deg,#B9A8FF,#7BE7FF 50%,#FF9BEA);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sous{font-size:18px;color:#a9a6c7;max-width:470px}
+.cta{display:flex;gap:12px;margin-top:36px}
+.cta .b{height:58px;padding:0 28px;border-radius:16px;font-size:16px}
+.cta .p{background:linear-gradient(90deg,#7B5CFF,#4FC8FF);color:#fff;box-shadow:0 20px 50px rgba(108,75,255,.45)}
+.preuve{display:flex;align-items:center;gap:16px;margin-top:44px;font-size:14px;color:#a9a6c7}
+.preuve .av{display:flex}.preuve .av i{width:34px;height:34px;border-radius:50%;margin-left:-9px;border:2px solid #06060B}
+.preuve .av i:first-child{margin:0;background:linear-gradient(135deg,#f6c39a,#a0603c)}.preuve .av i:nth-child(2){background:linear-gradient(135deg,#c9b4ff,#5a3cc9)}.preuve .av i:nth-child(3){background:linear-gradient(135deg,#9be7ff,#1a7da0)}.preuve .av i:nth-child(4){background:linear-gradient(135deg,#ffb3e8,#a8327e)}
+.scene{position:relative;height:640px}
+.verre{position:absolute;background:rgba(18,17,32,.6);backdrop-filter:blur(22px);border:1px solid rgba(237,235,255,.12);border-radius:26px;box-shadow:0 40px 80px rgba(0,0,0,.45)}
+.tableau{left:40px;top:40px;width:460px;padding:26px}
+.tableau small{color:#a9a6c7;font-size:13px}
+.solde{font:500 46px Unbounded;letter-spacing:-.04em;margin:6px 0 4px}
+.hausse{color:#5CF2B0;font-size:14px;font-weight:600}
+.tableau svg{display:block;width:100%;height:150px;margin-top:16px}
+.lignes{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.ligne{display:flex;align-items:center;gap:12px;font-size:14px}
+.ligne i{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-weight:700}
+.ligne span{flex:1}.ligne b{font-weight:600}
+.carte{position:absolute;right:0;top:250px;width:360px;height:226px;border-radius:24px;padding:24px;transform:rotate(-9deg);background:linear-gradient(135deg,#7B5CFF 0%,#3A2BB8 45%,#0E8FC0 100%);box-shadow:0 50px 90px rgba(60,40,200,.55),inset 0 1px 0 rgba(255,255,255,.35);overflow:hidden}
+.carte:before{content:"";position:absolute;width:300px;height:300px;right:-120px;top:-140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.35),rgba(255,255,255,0) 60%)}
+.carte .puce{width:46px;height:34px;border-radius:8px;background:linear-gradient(135deg,#f6e3a7,#c9a14a);margin-top:34px}
+.carte .num{font:500 17px Unbounded;letter-spacing:.14em;margin-top:24px}
+.carte .nom{display:flex;justify-content:space-between;margin-top:12px;font-size:13px;color:#e8e4ff}
+.notif{right:-10px;top:-24px;width:300px;padding:16px 18px;display:flex;gap:12px;align-items:center;border-radius:20px}
+.notif i{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#5CF2B0,#14A672);display:grid;place-items:center;font-style:normal;font-weight:800;color:#03140c}
+.notif b{display:block;font-size:15px}.notif small{color:#a9a6c7;font-size:13px}
+.tva{left:120px;bottom:30px;width:330px;padding:18px 20px;border-radius:20px}
+.tva .barre{height:10px;border-radius:999px;background:rgba(237,235,255,.1);margin-top:12px;overflow:hidden}.tva .barre i{display:block;width:72%;height:100%;background:linear-gradient(90deg,#FF4FD8,#7B5CFF)}
+@media (max-width:600px){
+  nav{padding:18px}nav ul,.nb .g{display:none}.logo{font-size:22px}.b{height:42px;padding:0 16px;font-size:14px}
+  .hero{grid-template-columns:1fr;padding:10px 18px 0;gap:0}
+  h1{font-size:40px;margin:18px 0 14px}.sous{font-size:15px}.cta{margin-top:22px}.cta .g{display:none}.cta .b{height:52px}.preuve{display:none}
+  .scene{height:400px;margin-top:20px}
+  .tableau{left:0;top:10px;width:290px;padding:18px}.solde{font-size:32px}.tableau svg{height:90px}.lignes{display:none}
+  .carte{width:230px;height:146px;right:-10px;top:200px;padding:16px}.carte .puce{margin-top:16px;width:34px;height:26px}.carte .num{font-size:12px;margin-top:14px}.carte .nom{font-size:11px}
+  .notif{display:none}.tva{display:none}
+}
+</style></head><body>
+<div class="aurore"><i></i><i></i><i></i></div><div class="grille"></div>
+<nav><div class="logo"><i></i>halo</div><ul><li>Compte pro</li><li>Facturation</li><li>Tarifs</li><li>Ressources</li></ul><div class="nb"><a class="b g">Se connecter</a><a class="b p">Ouvrir un compte</a></div></nav>
+<section class="hero">
+  <div>
+    <span class="chip"><b>NOUVEAU</b>La TVA calculée automatiquement</span>
+    <h1>Votre argent pro, enfin <span>limpide.</span></h1>
+    <p class="sous">Compte, cartes, factures et TVA réunis dans une seule app. Pensée pour les indépendants qui ont mieux à faire que de la paperasse.</p>
+    <div class="cta"><a class="b p">Ouvrir mon compte en 5 min →</a><a class="b g">Voir la démo</a></div>
+    <div class="preuve"><div class="av"><i></i><i></i><i></i><i></i></div><span><b style="color:#EDEBFF">48 000 indépendants</b> · 4,8 sur l'App Store</span></div>
+  </div>
+  <div class="scene">
+    <div class="verre tableau"><small>Solde disponible</small><div class="solde">18 420,50 €</div><span class="hausse">▲ +12,4 % ce mois-ci</span>
+      <svg viewBox="0 0 400 150" preserveAspectRatio="none"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7B5CFF" stop-opacity=".55"/><stop offset="1" stop-color="#7B5CFF" stop-opacity="0"/></linearGradient><linearGradient id="l" x1="0" x2="1"><stop offset="0" stop-color="#7B5CFF"/><stop offset="1" stop-color="#4FC8FF"/></linearGradient></defs><path d="M0,120 C40,110 60,80 100,90 S160,60 200,70 S260,30 300,45 S360,10 400,18 L400,150 L0,150Z" fill="url(#g)"/><path d="M0,120 C40,110 60,80 100,90 S160,60 200,70 S260,30 300,45 S360,10 400,18" fill="none" stroke="url(#l)" stroke-width="3.5"/><circle cx="300" cy="45" r="7" fill="#fff" stroke="#7B5CFF" stroke-width="4"/></svg>
+      <div class="lignes"><div class="ligne"><i style="background:#1d3b2f;color:#5CF2B0">↓</i><span>Studio Lumen · facture #128</span><b style="color:#5CF2B0">+2 400 €</b></div><div class="ligne"><i style="background:#2a2240;color:#B9A8FF">↑</i><span>Adobe Creative Cloud</span><b>−59,99 €</b></div></div></div>
+    <div class="carte"><div style="display:flex;justify-content:space-between;align-items:center"><span class="u" style="font-weight:600;font-size:20px">halo</span><span style="font-size:12px;letter-spacing:.2em">PRO</span></div><div class="puce"></div><div class="num">5412 •••• •••• 2048</div><div class="nom"><span>CAMILLE ROUSSEL</span><span>09/29</span></div></div>
+    <div class="verre notif"><i>€</i><div><b>Paiement reçu · 2 400 €</b><small>Facture #128 réglée en 3 jours</small></div></div>
+    <div class="verre tva"><div style="display:flex;justify-content:space-between;font-size:14px"><span>Provision TVA</span><b>3 684 €</b></div><div class="barre"><i></i></div></div>
+  </div>
+</section>
+</body></html>

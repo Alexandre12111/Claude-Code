@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Véloce · Vélos de route en carbone</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Archivo (étendue, 900) + Archivo Narrow + JetBrains Mono. -->
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@400;600&display=block" rel="stylesheet">
+<style>
+:root{--noir:#0A0A0A;--lime:#D7FF3A;--gris:#8A8A85}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--noir);color:#F2F2EE;font:400 15px/1.5 Archivo,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.mono{font-family:"JetBrains Mono",monospace}
+nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:24px 48px}
+.logo{font:900 30px/1 Archivo;font-stretch:125%;letter-spacing:-.02em;font-style:italic}
+.logo b{color:var(--lime)}
+nav ul{display:flex;gap:30px;list-style:none;font:600 14px Archivo;text-transform:uppercase;letter-spacing:.06em}
+.panier{display:flex;align-items:center;gap:10px;font:600 13px "JetBrains Mono"}.panier i{width:26px;height:26px;border-radius:50%;background:var(--lime);color:#000;display:grid;place-items:center;font-style:normal;font-weight:700}
+.geant{position:absolute;left:0;right:0;top:96px;text-align:center;font:900 300px/.8 Archivo;font-stretch:125%;letter-spacing:-.05em;font-style:italic;color:#1e1e1c;white-space:nowrap;z-index:1}
+.geant span{-webkit-text-stroke:2px #3c3c39;color:transparent}
+.velo{position:absolute;z-index:2;left:290px;right:290px;top:150px;height:560px;border-radius:0;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 60% 62% at 50% 52%,#000 55%,transparent 75%)}
+.velo img{width:100%;height:100%;object-fit:cover;object-position:center 60%}
+.gauche{position:absolute;z-index:3;left:48px;top:170px;width:300px}
+.tag{display:inline-block;background:var(--lime);color:#000;font:700 12px "JetBrains Mono";padding:6px 10px;letter-spacing:.06em}
+h1{font:900 64px/.9 Archivo;font-stretch:110%;letter-spacing:-.03em;text-transform:uppercase;margin:18px 0 16px;font-style:italic}
+h1 b{color:var(--lime)}
+.gauche p{color:#b8b8b2;font-size:15px}
+.specs{position:absolute;z-index:3;right:48px;top:176px;width:250px;display:flex;flex-direction:column;gap:2px}
+.spec{border-top:1px solid #2a2a28;padding:14px 0}
+.spec small{display:block;font:400 11px "JetBrains Mono";color:var(--gris);letter-spacing:.1em;text-transform:uppercase}
+.spec b{font:800 30px/1.1 Archivo;font-stretch:115%;letter-spacing:-.02em}
+.spec b em{font-style:normal;font-size:16px;color:var(--gris);font-weight:600}
+.bas{position:absolute;z-index:3;left:48px;right:48px;bottom:34px;display:flex;align-items:flex-end;justify-content:space-between}
+.couleurs small{font:400 11px "JetBrains Mono";color:var(--gris);letter-spacing:.1em;text-transform:uppercase}
+.couleurs div{display:flex;gap:10px;margin-top:10px}
+.couleurs i{width:34px;height:34px;border-radius:50%;border:2px solid transparent}
+.couleurs i.on{outline:2px solid var(--lime);outline-offset:3px}
+.achat{display:flex;align-items:center;gap:22px}
+.prix{text-align:right}.prix small{display:block;font:400 12px "JetBrains Mono";color:var(--gris)}.prix b{font:900 46px/1 Archivo;font-stretch:115%;letter-spacing:-.03em}
+.go{height:72px;padding:0 34px;background:var(--lime);color:#000;display:flex;align-items:center;gap:14px;font:800 17px Archivo;text-transform:uppercase;letter-spacing:.04em;clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%)}
+.defile{position:absolute;z-index:3;left:50%;bottom:44px;transform:translateX(-50%);font:400 11px "JetBrains Mono";color:var(--gris);letter-spacing:.2em}
+@media (max-width:600px){
+  nav{padding:18px}nav ul{display:none}.logo{font-size:24px}
+  .geant{font-size:120px;top:120px}
+  .velo{left:-40px;right:-40px;top:330px;height:300px}
+  .gauche{left:18px;right:18px;top:96px;width:auto}h1{font-size:44px;margin:12px 0 10px}.gauche p{font-size:14px}
+  .specs{left:18px;right:18px;top:auto;bottom:120px;width:auto;flex-direction:row;gap:14px}.spec{flex:1;padding:8px 0}.spec b{font-size:20px}.spec:nth-child(n+3){display:none}
+  .bas{left:18px;right:18px;bottom:22px}.couleurs,.defile{display:none}.achat{width:100%;justify-content:space-between}.prix b{font-size:28px;white-space:nowrap}.go{height:58px;padding:0 22px;font-size:15px}
+}
+</style></head><body>
+<nav><div class="logo">VÉLOCE<b>.</b></div><ul><li>Route</li><li>Gravel</li><li>Équipement</li><li>Atelier</li></ul><div class="panier">PANIER <i>1</i></div></nav>
+<div class="geant">RIDE <span>FAST</span></div>
+<div class="velo"><img src="photos/veloce-hero.webp" alt=""></div>
+<div class="gauche"><span class="tag">NOUVEAU · 2026</span><h1>Aero<b>/</b>One<br>Carbone</h1><p>Le cadre le plus léger jamais conçu par notre atelier. Monté à la main, livré prêt à rouler.</p></div>
+<div class="specs"><div class="spec"><small>Poids</small><b>6,8 <em>kg</em></b></div><div class="spec"><small>Cadre</small><b>T1000</b></div><div class="spec"><small>Transmission</small><b>Di2 <em>12v</em></b></div><div class="spec"><small>Garantie</small><b>À vie</b></div></div>
+<div class="bas"><div class="couleurs"><small>Coloris · Stealth</small><div><i class="on" style="background:#151515;border-color:#333"></i><i style="background:#D7FF3A"></i><i style="background:#E8E6DF"></i><i style="background:#C2401F"></i></div></div>
+<div class="achat"><div class="prix"><small>ou 4 × 1 072,50 €</small><b>4 290 €</b></div><a class="go">Ajouter au panier →</a></div></div>
+<div class="defile">↓ DÉFILER POUR LA FICHE TECHNIQUE</div>
+</body></html>

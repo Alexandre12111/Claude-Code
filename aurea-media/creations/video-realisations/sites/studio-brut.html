@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio Brut · Photographe portrait · Paris</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Anton + Space Mono (esprit brutaliste). -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:wght@400;700&display=block" rel="stylesheet">
+<style>
+:root{--papier:#E8E5DD;--noir:#111;--rouge:#FF3B1F}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--papier);color:var(--noir);font:400 13px/1.5 "Space Mono",monospace;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh}
+.haut{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:2px solid var(--noir);font-size:12px;text-transform:uppercase}
+.haut div{padding:14px 20px;border-right:2px solid var(--noir)}.haut div:last-child{border:0;display:flex;justify-content:space-between}
+.dispo{display:inline-flex;align-items:center;gap:8px}.dispo i{width:10px;height:10px;border-radius:50%;background:var(--rouge)}
+.titre{display:flex;align-items:flex-end;justify-content:space-between;padding:10px 20px 0;border-bottom:2px solid var(--noir)}
+.titre h1{font:400 236px/.82 Anton;letter-spacing:-.01em;text-transform:uppercase}
+.titre h1 span{color:var(--rouge)}
+.titre .meta{text-align:right;padding-bottom:22px;font-size:12px;text-transform:uppercase;line-height:1.7}
+.grille{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;height:calc(100vh - 290px)}
+.case{position:relative;border-right:2px solid var(--noir);overflow:hidden}
+.case:last-child{border:0}
+.case img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.08)}
+.case.c{filter:none}.case.c img{filter:none}
+.case .n{position:absolute;left:12px;top:12px;background:var(--papier);padding:4px 8px;font-weight:700;font-size:12px;border:2px solid var(--noir)}
+.case .l{position:absolute;left:12px;right:12px;bottom:12px;display:flex;justify-content:space-between;color:#fff;font-size:12px;text-transform:uppercase;mix-blend-mode:difference}
+.bouton{position:absolute;right:40px;top:330px;width:150px;height:150px;border-radius:50%;background:var(--rouge);color:#fff;display:grid;place-items:center;text-align:center;font:400 26px/1 Anton;text-transform:uppercase;transform:rotate(-12deg);border:2px solid var(--noir);z-index:3}
+@media (max-width:600px){
+  .haut{grid-template-columns:1fr 1fr}.haut div:nth-child(2),.haut div:nth-child(3){display:none}.haut div{padding:12px}
+  .titre{flex-direction:column;align-items:flex-start;padding:10px 12px 0}.titre h1{font-size:84px}.titre .meta{text-align:left;padding:8px 0 14px}
+  .grille{grid-template-columns:1fr 1fr;height:auto}.case{height:250px;border-bottom:2px solid var(--noir)}.case:nth-child(2){border-right:0}
+  .bouton{width:104px;height:104px;font-size:18px;top:auto;bottom:40px;right:16px}
+}
+</style></head><body>
+<div class="haut"><div>Studio Brut ©</div><div>Portrait · Éditorial · Marques</div><div>Paris 11e</div><div><span class="dispo"><i></i>Dispo en mars</span><span>Menu +</span></div></div>
+<div class="titre"><h1>Studio<span>/</span>Brut</h1><div class="meta">Léa Marchetti<br>Photographe portrait<br>Index 2019 → 2026<br>(42 projets)</div></div>
+<div class="grille">
+  <div class="case c"><img src="photos/brut-1.webp" alt=""><span class="n">001</span><span class="l"><span>Nina · Maison Vela</span><span>2026</span></span></div>
+  <div class="case"><img src="photos/brut-2.webp" alt=""><span class="n">002</span><span class="l"><span>Inès</span><span>2025</span></span></div>
+  <div class="case"><img src="photos/brut-3.webp" alt=""><span class="n">003</span><span class="l"><span>Margaux</span><span>2025</span></span></div>
+  <div class="case"><img src="photos/brut-4.webp" alt=""><span class="n">004</span><span class="l"><span>Adrien</span><span>2024</span></span></div>
+</div>
+<div class="bouton">Réserver<br>un shooting</div>
+</body></html>

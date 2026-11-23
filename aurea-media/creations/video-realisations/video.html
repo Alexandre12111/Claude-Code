@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Aurea Media · Nos réalisations</title>
+<style>
+/* Vidéo motion design 1080 x 1920 : rendu image par image, rendre(t) est appelée par exporter.js */
+@font-face{font-family:"Bricolage";src:url(../../reseaux-sociaux/sources/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(../../reseaux-sociaux/sources/geist.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Spectral SC";src:url(../../reseaux-sociaux/sources/spectral-sc-600.woff2) format("woff2");font-weight:600}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#v{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0A0A0A;color:#F5F5F0;font-family:Geist,sans-serif}
+.calque{position:absolute;inset:0;overflow:hidden}
+.titre{font-family:Bricolage,sans-serif;font-weight:640;letter-spacing:-.045em;line-height:.95}
+.or{background:linear-gradient(100deg,#F0DCA4 0%,#C9A961 45%,#A9873F 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mot{display:inline-block;will-change:transform}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.06;z-index:50;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+/* site modèle générique (accroche) */
+.modele{position:absolute;width:900px;height:620px;background:#d9d9d6;border-radius:14px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.modele .barre{height:38px;background:#c4c4c0;display:flex;align-items:center;gap:8px;padding:0 16px}.modele .barre i{width:11px;height:11px;border-radius:50%;background:#a9a9a5}
+.modele .nav{display:flex;align-items:center;justify-content:space-between;padding:22px 34px}
+.modele .logoM{width:110px;height:30px;background:#a7a7a3;border-radius:4px;display:grid;place-items:center;font:700 14px Geist;color:#e8e8e5;letter-spacing:.2em}
+.modele .menu{display:flex;gap:16px}.modele .menu i{width:62px;height:12px;background:#b3b3af;border-radius:6px}
+.modele .heroM{margin:4px 34px;height:250px;background:linear-gradient(135deg,#b9b9b5,#a3a39f);border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:#f0f0ee;font:600 30px Geist}
+.modele .heroM small{font:400 15px Geist;opacity:.8}.modele .heroM b{background:#8f8f8b;padding:10px 24px;border-radius:4px;font:600 14px Geist}
+.modele .cartes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding:22px 34px}.modele .cartes i{height:150px;background:#c6c6c2;border-radius:8px}
+/* appareils */
+.laptop{position:absolute;transform-style:preserve-3d}
+.laptop .ecran{border-radius:22px 22px 0 0;background:#0c0c0c;padding:2.2% 2.2% 0;box-shadow:0 0 0 2px #2b2b29,0 60px 120px rgba(0,0,0,.6)}
+.laptop .ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:5px 5px 0 0}
+.laptop .base{height:20px;margin:0 -7%;background:linear-gradient(#3a3a37,#1d1d1b);border-radius:0 0 20px 20px}
+.tel{position:absolute;border-radius:62px;padding:12px;background:linear-gradient(135deg,#d9d6cf 0%,#8e8a82 12%,#4b4844 30%,#2a2826 50%,#4b4844 70%,#9b968d 88%,#e2ded6 100%);box-shadow:0 60px 120px rgba(0,0,0,.6)}
+.tel .verre{position:relative;border-radius:52px;overflow:hidden;background:#000;padding:8px}
+.tel .verre img{display:block;width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:44px}
+.tel .ile{position:absolute;top:22px;left:50%;width:31%;height:30px;transform:translateX(-50%);background:#000;border-radius:999px}
+.fenetre{position:absolute;border-radius:18px;overflow:hidden;box-shadow:0 50px 100px rgba(0,0,0,.55);background:#111}
+.fenetre .bar{height:40px;background:#1b1b1a;display:flex;align-items:center;gap:9px;padding:0 18px}.fenetre .bar i{width:12px;height:12px;border-radius:50%;background:#3a3a38}
+.fenetre .bar span{margin-left:16px;flex:1;height:22px;border-radius:7px;background:#262625;font:500 12px/22px Geist;color:#8b8b86;padding-left:12px}
+.fenetre img{display:block;width:100%}
+/* étiquettes */
+.etiquette{position:absolute;left:70px;right:70px;bottom:150px;z-index:20}
+.etiquette .nom{font:650 104px/1 Bricolage;letter-spacing:-.05em}
+.etiquette .secteur{display:flex;align-items:center;gap:16px;margin-top:16px;font:500 30px Geist;opacity:.85}
+.etiquette .chip{font:600 17px Geist;letter-spacing:.16em;text-transform:uppercase;border-radius:999px;padding:9px 16px;border:1.5px solid currentColor;opacity:.75}
+.compteur{position:absolute;left:70px;top:120px;z-index:20;font:600 26px Geist;letter-spacing:.14em}
+.compteur b{font-weight:700}
+.typo{position:absolute;right:70px;top:120px;z-index:20;font:500 22px Geist;letter-spacing:.06em;opacity:.7;text-align:right}
+.barreProg{position:absolute;left:70px;right:70px;top:176px;height:4px;border-radius:4px;background:rgba(255,255,255,.15);z-index:20;overflow:hidden}
+.barreProg i{display:block;height:100%;width:0}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:60;pointer-events:none}
+#voile{position:absolute;inset:0;z-index:55;pointer-events:none}
+</style></head><body>
+<div id="v">
+  <div class="calque" id="A"></div>
+  <div class="calque" id="B"></div>
+  <div class="calque" id="C"></div>
+  <div class="calque" id="D"></div>
+  <div class="calque" id="E"></div>
+  <div id="voile"></div><div id="flash"></div><div class="grain"></div>
+</div>
+<script>
+const C1 = '../../reseaux-sociaux/carrousel/concepts/captures/', C2 = 'sites/captures/';
+// 8 sites conceptuels : nom, secteur, typographie, fichiers, fond de la scène, couleur d'accent, texte clair ou foncé, mise en scène
+const SITES = [
+  ['Halo', 'Banque des indépendants', 'Unbounded · Inter', C2 + 'halo', '#0B0820', '#8B6CFF', 1, 'duo'],
+  ['Maison Sorel', "Architecte d'intérieur", 'Bodoni Moda · Jost', C1 + 'maison-sorel', '#E9E2D6', '#9A6B43', 0, 'pleine'],
+  ['Braise', 'Restaurant gastronomique', 'Big Shoulders · Inter Tight', C1 + 'braise', '#140C08', '#FF6B2C', 1, 'tel'],
+  ['Domaine des Aubes', 'Vins de Bourgogne', 'Instrument Serif', C2 + 'domaine-des-aubes', '#5A1624', '#E8C88A', 1, 'tranches'],
+  ['Véloce', 'Vélos en carbone · e-shop', 'Archivo Expanded · Mono', C2 + 'veloce', '#0A0A0A', '#D7FF3A', 1, 'duo'],
+  ['Kinée', 'Cabinet de kinésithérapie', 'Plus Jakarta Sans', C2 + 'kinee', '#E8F0FF', '#2563EB', 0, 'pleine'],
+  ['Studio Brut', 'Photographe portrait', 'Anton · Space Mono', C2 + 'studio-brut', '#E8E5DD', '#FF3B1F', 0, 'tel'],
+  ['Terre de Grès', 'Céramique artisanale · e-shop', 'Syne · Manrope', C1 + 'terre-de-gres', '#EFE6D8', '#C0663A', 0, 'tranches'],
+];
+const T0 = 4.5, DS = 2.0, TMUR = T0 + SITES.length * DS, TFIN = TMUR + 4.0, DUREE = 30;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const mix = (a, b, k) => a + (b - a) * k;
+const E = { out: k => 1 - Math.pow(1 - k, 3), io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, back: k => { const c = 1.7; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }, expo: k => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k) };
+const prog = (t, a, d) => clamp((t - a) / d);
+// apparition d'un mot : montée, rebond, flou de mouvement
+function mot(t, a, d = .35) { const k = prog(t, a, d), e = E.back(k); return `opacity:${clamp(k * 3)};transform:translateY(${(1 - e) * 90}px) scale(${mix(.7, 1, e)});filter:blur(${(1 - clamp(k * 1.6)) * 10}px)`; }
+
+// ---------- construction des calques ----------
+const modeleHTML = `<div class="barre"><i></i><i></i><i></i></div><div class="nav"><div class="logoM">LOGO</div><div class="menu"><i></i><i></i><i></i><i></i></div></div><div class="heroM">Bienvenue sur notre site<small>Nous sommes une entreprise de qualité</small><b>EN SAVOIR PLUS</b></div><div class="cartes"><i></i><i></i><i></i></div>`;
+$('A').innerHTML = Array.from({ length: 9 }, (_, i) => `<div class="modele" id="m${i}">${modeleHTML}</div>`).join('') +
+  `<div id="aTxt" style="position:absolute;left:70px;right:70px;top:230px;z-index:5" class="titre"><div style="font-size:112px"><span class="mot" id="a1">Votre</span> <span class="mot" id="a2">site</span> <span class="mot" id="a3">ressemble</span></div><div style="font-size:112px;margin-top:8px"><span class="mot" id="a4">à</span> <span class="mot" id="a5">tous</span> <span class="mot" id="a6">les</span> <span class="mot or" id="a7">autres&nbsp;?</span></div></div>
+   <svg id="curseur" viewBox="0 0 24 24" style="position:absolute;width:56px;height:56px;z-index:6"><path d="M4 2l16 9-7 2-3 7z" fill="#fff" stroke="#000" stroke-width="1.5"/></svg>`;
+$('B').innerHTML = `<div id="bande" style="position:absolute;left:0;top:0;width:100%;height:100%"></div>
+  <div style="position:absolute;left:70px;right:70px;top:700px;z-index:5;text-align:center" class="titre"><div style="font-size:150px"><span class="mot" id="b1">Les</span> <span class="mot" id="b2">nôtres,</span></div><div style="font-size:260px;margin-top:10px"><span class="mot or" id="b3">non.</span></div></div>`;
+$('C').innerHTML = `<div id="scene" style="position:absolute;inset:0;perspective:2200px"></div>
+  <div class="compteur" id="cpt"></div><div class="typo" id="typo"></div><div class="barreProg"><i id="bp"></i></div>
+  <div class="etiquette" id="eti"><div class="nom" id="nom"></div><div class="secteur"><span id="sect"></span><span class="chip">Concept</span></div></div>`;
+$('D').innerHTML = `<div id="mur" style="position:absolute;left:50%;top:50%;width:2400px;height:3600px;transform-style:preserve-3d"></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(10,10,10,.35),rgba(10,10,10,.92) 75%)"></div>
+  <div style="position:absolute;left:70px;right:70px;top:620px;text-align:center" class="titre"><div style="font-size:150px"><span class="mot" id="d1">8&nbsp;sites.</span></div><div style="font-size:150px;margin-top:6px"><span class="mot" id="d2">8&nbsp;univers.</span></div><div style="font-size:150px;margin-top:6px"><span class="mot or" id="d3">0&nbsp;template.</span></div></div>`;
+$('E').innerHTML = `<div style="position:absolute;width:1700px;height:1700px;left:-310px;top:120px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,97,.28),rgba(201,169,97,0) 62%)" id="eHalo"></div>
+  <div style="position:absolute;left:70px;right:70px;top:300px;text-align:center" class="titre"><div style="font-size:100px"><span class="mot" id="e1">Un projet</span> <span class="mot" id="e2">en tête ?</span></div><div style="font-size:100px;margin-top:10px"><span class="mot" id="e3">On lui</span> <span class="mot or" id="e4">donne vie.</span></div></div>
+  <div id="eLogo" style="position:absolute;left:0;right:0;top:830px;display:flex;flex-direction:column;align-items:center">
+    <img src="../../reseaux-sociaux/sources/logo-monogramme-clair.svg" style="width:190px">
+    <div style="font:600 64px 'Spectral SC';letter-spacing:.06em;margin-top:34px">AUREA MEDIA</div>
+    <div style="font:600 22px 'Spectral SC';letter-spacing:.5em;color:#C9A961;margin-top:12px">AGENCE WEB · PARIS</div></div>
+  <div id="eCta" style="position:absolute;left:0;right:0;top:1330px;display:flex;flex-direction:column;align-items:center;gap:26px">
+    <div style="display:inline-flex;align-items:center;gap:18px;background:linear-gradient(100deg,#F0DCA4,#C9A961 50%,#A9873F);color:#0A0A0A;border-radius:999px;padding:34px 60px;font:650 44px Geist;box-shadow:0 30px 80px rgba(201,169,97,.35)">Contactez-nous <span>→</span></div>
+    <div style="font:500 32px Geist;color:#AEAEA8">Devis gratuit sous 24 h · <b style="color:#F5F5F0">aurea-media.fr</b></div></div>
+  <div id="eBio" style="position:absolute;left:0;right:0;bottom:150px;text-align:center;font:600 26px Geist;letter-spacing:.24em;color:#C9A961">LIEN EN BIO</div>`;
+
+// mur de sites (scène D) : 4 colonnes de captures ordinateur
+const mur = $('mur'); let html = '';
+for (let c = 0; c < 4; c++) for (let r = 0; r < 7; r++) { const s = SITES[(c * 3 + r) % SITES.length]; html += `<div class="fenetre" style="left:${c * 620}px;top:${r * 420 + (c % 2) * 210}px;width:580px"><div class="bar"><i></i><i></i><i></i></div><img src="${s[3]}.png"></div>`; }
+mur.innerHTML = html;
+
+// bande de sites qui défilent derrière « Les nôtres, non. »
+$('bande').innerHTML = [0, 1, 2].map(r => `<div id="bd${r}" style="position:absolute;left:0;top:${150 + r * 560}px;display:flex;gap:30px;white-space:nowrap">${[...SITES, ...SITES].map(s => `<img src="${s[3]}.png" style="width:760px;border-radius:14px;opacity:.55">`).join('')}</div>`).join('');
+
+// ---------- scènes ----------
+function scnA(t) {
+  // un site modèle, puis il se clone partout : « ressemble à tous les autres »
+  const clones = E.io(prog(t, 1.5, .9));
+  for (let i = 0; i < 9; i++) {
+    const m = $('m' + i), col = i % 3, row = Math.floor(i / 3);
+    const x0 = 90, y0 = 820, s0 = 1;                       // position de départ (centrée)
+    const x1 = 30 + col * 345, y1 = 760 + row * 245, s1 = .36; // grille 3 x 3
+    const k = i === 4 ? 0 : clones;
+    const x = i === 4 ? mix(x0, x1, clones) : mix(x0, x1, k), y = i === 4 ? mix(y0, y1, clones) : mix(y0, y1, k), s = i === 4 ? mix(s0, s1, clones) : mix(s0, s1, k);
+    m.style.cssText = `left:0;top:0;transform-origin:0 0;transform:translate(${x}px,${y + Math.sin(t * 2 + i) * 4}px) scale(${s});opacity:${i === 4 ? 1 : clamp(clones * 3)};filter:saturate(0) ${t > 2.75 ? `hue-rotate(${(t * 900) % 360}deg)` : ''}`;
+  }
+  const mots = [-1, -1, -1, .5, .65, .8, .95];   // la question est lisible dès la première image
+  mots.forEach((a, i) => $('a' + (i + 1)).style.cssText = mot(t, a));
+  // curseur qui hésite
+  const cx = 540 + Math.sin(t * 1.7) * 160 + t * 30, cy = 1120 + Math.cos(t * 1.3) * 90;
+  $('curseur').style.cssText += `;left:${cx}px;top:${cy}px;opacity:${1 - clones}`;
+  // glitch avant la cassure
+  if (t > 2.6) { const g = (t - 2.6) / .4; $('A').style.transform = `translate(${Math.sin(t * 173) * 26 * g}px,${Math.cos(t * 97) * 10 * g}px) skewX(${Math.sin(t * 61) * 8 * g}deg)`; $('A').style.filter = `contrast(${1 + g}) drop-shadow(${12 * g}px 0 0 rgba(255,0,60,.8)) drop-shadow(${-12 * g}px 0 0 rgba(0,220,255,.8))`; }
+  else { $('A').style.transform = ''; $('A').style.filter = ''; }
+}
+function scnB(t) {
+  const u = t - 3;
+  [0, 1, 2].forEach(r => $('bd' + r).style.transform = `translateX(${(r % 2 ? -1 : 1) * (u * 900) - (r % 2 ? 0 : 3000)}px)`);
+  $('bande').style.opacity = .5 + .2 * Math.sin(u * 20);
+  $('b1').style.cssText = mot(t, 3.02, .3); $('b2').style.cssText = mot(t, 3.2, .3);
+  const k = prog(t, 3.5, .35), e = E.back(k);
+  $('b3').style.cssText = `opacity:${clamp(k * 3)};transform:scale(${mix(2.4, 1, E.out(k))}) rotate(${(1 - e) * -6}deg);filter:blur(${(1 - clamp(k * 2)) * 16}px)`;
+  const sortie = prog(t, 4.25, .25);
+  $('B').style.transform = `scale(${1 + sortie * .4})`; $('B').style.opacity = 1 - sortie;
+}
+function appareilLaptop(src, x, y, w, ry, rx, rz = 0) { return `<div class="laptop" style="left:${x}px;top:${y}px;width:${w}px;transform:rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg)"><div class="ecran"><img src="${src}.png"></div><div class="base"></div></div>`; }
+function appareilTel(src, x, y, w, ry = 0, rz = 0) { return `<div class="tel" style="left:${x}px;top:${y}px;width:${w}px;transform:rotateY(${ry}deg) rotateZ(${rz}deg)"><div class="verre"><img src="${src}-mobile.png"><div class="ile"></div></div></div>`; }
+let sceneCourante = -1;
+function scnC(t) {
+  const i = Math.min(SITES.length - 1, Math.floor((t - T0) / DS)), u = (t - T0 - i * DS) / DS;   // 0 → 1 dans le site
+  const [nom, sect, typo, src, fond, acc, sombre, mode] = SITES[i];
+  const ink = sombre ? '#F5F5F0' : '#141414';
+  $('C').style.background = fond; $('C').style.color = ink;
+  // entrée en balayage, sortie en accélération (motion blur)
+  const ent = E.expo(clamp(u / .16)), sor = clamp((u - .9) / .1);
+  const dir = i % 2 ? -1 : 1;
+  const k = E.io(u);   // mouvement de caméra continu
+  let h = '';
+  if (mode === 'duo') {
+    h = appareilLaptop(src, mix(-40, 10, k), mix(560, 520, k), 980, mix(22, 8, k), 6) + appareilTel(src, mix(720, 670, k), mix(880, 850, k), 300, mix(-18, -6, k), 4);
+  } else if (mode === 'pleine') {
+    const s = mix(1.5, 1.05, E.out(u));
+    h = `<div class="fenetre" style="left:40px;top:330px;width:1000px;transform:scale(${s});transform-origin:30% 0"><div class="bar"><i></i><i></i><i></i><span>${nom.toLowerCase().replace(/[^a-z]/g, '')}.fr</span></div><img src="${src}.png"></div>` + appareilTel(src, 680, mix(1500, 880, E.out(clamp(u * 1.6))), 300, -6, 5);
+  } else if (mode === 'tel') {
+    h = `<div style="position:absolute;left:-200px;top:380px;width:1480px;opacity:.35;filter:blur(6px)"><img src="${src}.png" style="width:100%;border-radius:20px"></div>` + appareilTel(src, 280, mix(360, 300, k), 520, mix(28, -14, k), mix(-6, 3, k));
+  } else if (mode === 'tranches') {
+    h = [0, 1, 2].map(j => { const d = clamp((u - j * .06) / .25), x = (1 - E.expo(d)) * (j % 2 ? -1200 : 1200); return `<div style="position:absolute;left:40px;top:${380 + j * 225}px;width:1000px;height:225px;overflow:hidden;border-radius:${j === 0 ? '18px 18px 0 0' : j === 2 ? '0 0 18px 18px' : '0'};transform:translateX(${x}px)"><img src="${src}.png" style="width:1000px;position:absolute;top:${-j * 225}px;left:0"></div>`; }).join('') + appareilTel(src, 700, mix(940, 900, k), 280, -8, 6);
+  }
+  if (sceneCourante !== i + mode) { $('scene').innerHTML = h; sceneCourante = i + mode; } else $('scene').innerHTML = h;
+  $('scene').style.transform = `translateX(${(1 - ent) * dir * 1100 + sor * -dir * 900}px) scale(${1 + sor * .15})`;
+  $('scene').style.filter = `blur(${(1 - ent) * 18 + sor * 22}px)`;
+  // étiquette
+  $('nom').textContent = nom; $('sect').textContent = sect;
+  $('nom').style.cssText = mot(t, T0 + i * DS + .12, .4) + `;color:${ink}`;
+  $('eti').style.opacity = 1 - sor;
+  $('cpt').innerHTML = `<b style="color:${acc}">${String(i + 1).padStart(2, '0')}</b> / 08`;
+  $('typo').textContent = typo;
+  $('bp').style.cssText = `width:${((i + u) / SITES.length) * 100}%;background:${acc}`;
+}
+function scnD(t) {
+  const u = (t - TMUR) / 4;
+  $('mur').style.transform = `translate(-50%,-50%) rotateX(28deg) rotateZ(-14deg) translateY(${mix(500, -500, u)}px) scale(${mix(.9, 1.05, u)})`;
+  $('D').style.perspective = '2000px';
+  $('d1').style.cssText = mot(t, TMUR + .2); $('d2').style.cssText = mot(t, TMUR + .7); $('d3').style.cssText = mot(t, TMUR + 1.2);
+  const s = prog(t, TFIN - .3, .3); $('D').style.opacity = 1 - s;
+}
+function scnE(t) {
+  const u = t - TFIN;
+  $('e1').style.cssText = mot(t, TFIN + .05); $('e2').style.cssText = mot(t, TFIN + .3); $('e3').style.cssText = mot(t, TFIN + .7); $('e4').style.cssText = mot(t, TFIN + .95);
+  const l = prog(t, TFIN + 1.6, .6); $('eLogo').style.cssText += `;opacity:${l};transform:translateY(${(1 - E.out(l)) * 60}px) scale(${mix(.9, 1, E.out(l))})`;
+  const c = prog(t, TFIN + 2.2, .5); $('eCta').style.cssText += `;opacity:${c};transform:translateY(${(1 - E.back(c)) * 80}px) scale(${1 + .03 * Math.sin(Math.max(0, u - 2.7) * 5)})`;
+  $('eBio').style.opacity = prog(t, TFIN + 2.8, .5);
+  $('eHalo').style.transform = `scale(${1 + .06 * Math.sin(u * 2)})`;
+}
+function rendre(t) {
+  const vis = (id, on) => $(id).style.display = on ? 'block' : 'none';
+  vis('A', t < 3); vis('B', t >= 3 && t < T0); vis('C', t >= T0 && t < TMUR); vis('D', t >= TMUR && t < TFIN); vis('E', t >= TFIN);
+  if (t < 3) scnA(t); else if (t < T0) scnB(t); else if (t < TMUR) scnC(t); else if (t < TFIN) scnD(t); else scnE(t);
+  // flashs sur les coupes importantes
+  let f = 0; for (const c of [3, T0, TMUR, TFIN]) f = Math.max(f, clamp(1 - Math.abs(t - c) / .12) * (c === 3 ? 1 : .55));
+  $('flash').style.opacity = f;
+  $('voile').style.background = t > DUREE - .6 ? `rgba(0,0,0,${clamp((t - DUREE + .6) / .6)})` : 'transparent';
+}
+window.DUREE = DUREE; window.REPERES = { coupe: 3, T0, DS, TMUR, TFIN, n: SITES.length };
+Promise.all([document.fonts.ready, ...[...document.images].map(i => i.decode().catch(() => {}))]).then(() => { rendre(0); window.pret = true; });
+</script>
+</body></html>
