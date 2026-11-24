@@ -75,7 +75,7 @@ for i in range(3): ajoute(bip(880 if i < 2 else 1320, .8), M("l06", 1) - .2 + i 
 ajoute(clic(1.), M("l06", 6)); ajoute(erreur(.8), M("l06", 6) + .1)                                                # le visiteur part
 ajoute(whoosh(.9, 300, 8000, .9), P("l07")); ajoute(impact(.7), P("l07") + .85); ajoute(cloche(81, .6), P("l07") + .85)   # refonte
 for a in (M("l08", 1), M("l08", 9), M("l08", 14)): ajoute(cloche(84, .55), a); ajoute(pop(1500, .4), a)            # coches dorées
-ajoute(whoosh(.5, 400, 4000, .5), P("l09")); ajoute(sonnerie(1.6, .9), M("l09", 6) - .1)                            # le client appelle
+ajoute(whoosh(.5, 400, 4000, .5), P("l09")); ajoute(sonnerie(1.6, .75), F("l09") + .05)                          # le client appelle (sonnerie après la phrase, pour ne pas couvrir « client »)
 ajoute(whoosh(.5, 600, 5000, .5), F("l09") + .2); ajoute(cloche(88, .6), P("l10") + .1)
 
 # ---------- mixage : la musique s'efface sous la voix ----------

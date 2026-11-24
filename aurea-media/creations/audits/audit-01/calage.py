@@ -16,9 +16,9 @@ script = json.loads((ICI / "script.json").read_text())
 PAUSE = .3
 PAUSES = {"l00": .45, "l02": .35, "l04": .35, "l05": .25, "l06": .45, "l07": .2, "l08": .35, "l09": .5}
 # V4 : chaîne douce anti grésillements (aucun rehaussement au-dessus de 8 kHz, zone où le vocodeur crépite)
-CHAINE = ("adeclick=w=55:o=75:t=2,highpass=f=85:p=2,lowpass=f=10500:p=2,afftdn=nr=6:nf=-52:tn=1,"
+CHAINE = ("adeclick=w=55:o=75:t=2,highpass=f=85:p=2,lowpass=f=" + ("16000" if os.environ.get("RESTAURE") == "1" else "10500") + ":p=2,afftdn=nr=6:nf=-52:tn=1,"
           "equalizer=f=150:t=q:w=0.9:g=2,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=2800:t=q:w=1.0:g=1.5,"
-          "equalizer=f=6500:t=q:w=1.6:g=-2.5,deesser=i=0.35:m=0.5:f=0.5,"
+          "equalizer=f=6500:t=q:w=1.6:g=" + ("-0.5" if os.environ.get("RESTAURE") == "1" else "-2.5") + ",deesser=i=0.35:m=0.5:f=0.5,"
           "acompressor=threshold=-22dB:ratio=2.5:attack=8:release=120:makeup=2,"
           "loudnorm=I=-16:TP=-2:LRA=9,alimiter=limit=0.89:attack=5:release=60,aresample=48000")
 # voix au téléphone (la prospecte) : bande passante téléphonique, sans saturation
@@ -103,7 +103,7 @@ srt = [(a, min(b, srt[n + 1][0] - .02) if n + 1 < len(srt) else b, x) for n, (a,
 print("durée totale", total, "s ; voix", round(duree_voix, 2), "s ; srt :", len(srt), "sous-titres", flush=True)
 if os.environ.get("SANS_MIX") != "1":
     import librosa
-    SR = 24000
+    SR = 48000 if os.environ.get("RESTAURE") == "1" else 24000   # voix restaurée : on garde les aigus jusqu'à 16 kHz
     pistes = {"alexandre": [], "tel": []}
     for f, g, v in morceaux:
         x, sr = sf.read(str(f))
