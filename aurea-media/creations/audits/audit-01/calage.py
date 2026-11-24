@@ -5,7 +5,7 @@ les lignes vides), écrit calage.json (début, fin et mots horodatés de chaque 
 et produit voix_off.srt calé sur les mots. Aucun time-stretch : le montage s'adapte à la voix.
 Usage : python3 calage.py <dossier_du_kit> <dossier_voix_telephone>
 """
-import json, re, shutil, subprocess, sys, wave
+import json, os, re, shutil, subprocess, sys, wave
 from pathlib import Path
 
 ICI = Path(__file__).resolve().parent
@@ -20,10 +20,10 @@ CHAINE = ("adeclick=w=55:o=75:t=2,highpass=f=85:p=2,lowpass=f=10500:p=2,afftdn=n
           "equalizer=f=150:t=q:w=0.9:g=2,equalizer=f=320:t=q:w=1.2:g=-2.5,equalizer=f=2800:t=q:w=1.0:g=1.5,"
           "equalizer=f=6500:t=q:w=1.6:g=-2.5,deesser=i=0.35:m=0.5:f=0.5,"
           "acompressor=threshold=-22dB:ratio=2.5:attack=8:release=120:makeup=2,"
-          "loudnorm=I=-16:TP=-2:LRA=9,alimiter=limit=0.89:attack=5:release=60,aresample=48000:resampler=soxr")
+          "loudnorm=I=-16:TP=-2:LRA=9,alimiter=limit=0.89:attack=5:release=60,aresample=48000")
 # voix au téléphone (la prospecte) : bande passante téléphonique, sans saturation
 CHAINE_TEL = ("highpass=f=320:p=2,lowpass=f=3400:p=2,equalizer=f=1800:t=q:w=1.0:g=3,"
-              "acompressor=threshold=-20dB:ratio=3:attack=5:release=80:makeup=2,loudnorm=I=-19:TP=-3:LRA=7,aresample=48000:resampler=soxr")
+              "acompressor=threshold=-20dB:ratio=3:attack=5:release=80:makeup=2,loudnorm=I=-19:TP=-3:LRA=7,aresample=48000")
 
 
 def duree(f):
@@ -85,8 +85,11 @@ for ph in script["phrases"]:
         a, b = int(mots_w[-1]["b"] / .02), max(int(mots_w[-1]["b"] / .02) + 1, int(limite / .02))
         fins[wav] = min(fins[wav], (a + int(_np.argmin(_e[a:b]))) * .02 + .02)
     d = fins[wav]
-    morceaux.append((wav, PAUSES.get(ph["id"], PAUSE), ph.get("voix", "alexandre")))
-    t += d + PAUSES.get(ph["id"], PAUSE)
+    pz = PAUSES.get(ph["id"], PAUSE)
+    if os.environ.get("HUMAIN") == "1":   # pauses naturelles : ±15 % selon la réplique (déterministe)
+        import hashlib; pz = round(pz * (1 + .3 * (int(hashlib.md5(ph["id"].encode()).hexdigest(), 16) % 100 / 100 - .5)), 3)
+    morceaux.append((wav, pz, ph.get("voix", "alexandre")))
+    t += d + pz
 
 import numpy as np, soundfile as sf
 import os
@@ -113,7 +116,17 @@ if os.environ.get("SANS_MIX") != "1":
     brute = KIT / "voix_off_audit01_brute.wav"; sf.write(str(brute), np.concatenate(pistes["alexandre"]).astype(np.float32), SR)
     brute_tel = TEL / "voix_tel_brute.wav"; sf.write(str(brute_tel), np.concatenate(pistes["tel"]).astype(np.float32), SR)
     voix = KIT / "voix_off_audit01.wav"
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(brute), "-af", CHAINE, str(voix)], check=True)
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(brute_tel), "-af", CHAINE_TEL, str(ICI / "voix-tel.wav")], check=True)
+    subprocess.run(["ffmpeg", "-nostdin", "-y", "-loglevel", "error", "-i", str(brute), "-af", CHAINE, str(voix)], check=True)
+    subprocess.run(["ffmpeg", "-nostdin", "-y", "-loglevel", "error", "-i", str(brute_tel), "-af", CHAINE_TEL, str(ICI / "voix-tel.wav")], check=True)
+    if os.environ.get("HUMAIN") == "1":
+        amb = KIT / "references" / "ambiance.wav"
+        if amb.exists():
+            v, srv = sf.read(str(voix)); v = v if v.ndim == 1 else v.mean(1)
+            a_, sra = sf.read(str(amb)); a_ = a_ if a_.ndim == 1 else a_.mean(1)
+            if sra != srv: a_ = librosa.resample(a_, orig_sr=sra, target_sr=srv)
+            a_ = np.tile(a_, int(np.ceil(len(v) / len(a_))) + 1)[:len(v)]
+            a_ *= 10 ** (-60 / 20) / (np.sqrt(np.mean(a_ ** 2)) + 1e-12)      # −60 dBFS : à peine perceptible, mais plus de « vide »
+            sf.write(str(voix), np.clip(v + a_, -1, 1).astype(np.float32), srv)
+            print("ambiance de pièce ajoutée (−60 dBFS)", flush=True)
     shutil.copy(voix, ICI / "voix-mix.wav")
     print("mixage terminé : voix-mix.wav et voix-tel.wav", flush=True)
