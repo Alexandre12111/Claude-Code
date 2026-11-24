@@ -85,7 +85,7 @@ for ph in script["phrases"]:
         a, b = int(mots_w[-1]["b"] / .02), max(int(mots_w[-1]["b"] / .02) + 1, int(limite / .02))
         fins[wav] = min(fins[wav], (a + int(_np.argmin(_e[a:b]))) * .02 + .02)
     d = fins[wav]
-    pz = PAUSES.get(ph["id"], PAUSE)
+    pz = PAUSES.get(ph["id"], PAUSE) * float(os.environ.get("RYTHME", 1))   # RYTHME < 1 : enchaînement plus vif
     if os.environ.get("HUMAIN") == "1":   # pauses naturelles : ±15 % selon la réplique (déterministe)
         import hashlib; pz = round(pz * (1 + .3 * (int(hashlib.md5(ph["id"].encode()).hexdigest(), 16) % 100 / 100 - .5)), 3)
     morceaux.append((wav, pz, ph.get("voix", "alexandre")))

@@ -50,7 +50,7 @@ def sonnerie(d=1.4, g=1.):
 def impact(g=1.): t = X(1.4); return np.tanh(np.sin(2 * np.pi * np.cumsum(38 + 60 * np.exp(-t * 8)) / SR) * np.exp(-t * 3) * 2) * .6 * g
 
 # ---------- musique : lo-fi en ré mineur, 92 BPM, plus lumineuse après la refonte ----------
-B = 60 / 92; APRES = P("l07") + .9
+B = 60 / 104; APRES = P("l07") + .9   # 104 BPM : plus entraînant
 ACC_AV = [[50, 53, 57, 60], [46, 50, 53, 57], [48, 52, 55, 58], [45, 49, 52, 57]]      # rém7 · sib · do7 · la
 ACC_AP = [[53, 57, 60, 64], [50, 53, 57, 62], [46, 50, 53, 57], [48, 52, 55, 60]]      # fa · rém · sib · do
 t = 0.; k = 0
@@ -59,7 +59,8 @@ while t < DUREE - 2:
     if k % 4 == 0: ajoute(rhodes(acc, 4 * B, .9), t, mus=True); ajoute(basse(acc[0] - 12, 4 * B * .95, .8), t, mus=True)
     ajoute(kick(.8), t, mus=True) if k % 2 == 0 else ajoute(rim(.8), t, mus=True)
     ajoute(hat(.8), t + B / 2, pan=.3, mus=True)
-    if ap: ajoute(hat(.5), t, pan=-.3, mus=True)
+    if ap: ajoute(hat(.5), t, pan=-.3, mus=True); ajoute(hat(.35), t + B / 4, pan=.4, mus=True); ajoute(hat(.35), t + 3 * B / 4, pan=-.4, mus=True)
+    if ap and k % 2: ajoute(rim(.6), t + B / 2, mus=True)   # après la refonte : rythmique plus vive
     t += B; k += 1
 # ---------- bruitages calés sur la voix ----------
 ajoute(impact(.6), 0); ajoute(whoosh(.5, 300, 6000, .6), 0)
@@ -69,7 +70,7 @@ ajoute(whoosh(1.1, 2000, 400, .5), P("l02"))                                    
 ajoute(feutre(.5, 1.), P("l02") + 1.6)                                                                             # cercle rouge autour du numéro
 ajoute(whoosh(.5, 400, 2000, .4), P("l03"))
 ajoute(feutre(.3, 1.), M("l04", 3) - .1); ajoute(feutre(.3, 1.), M("l04", 3) + .1); ajoute(erreur(.5), M("l04", 3) + .2)   # croix
-for i in range(3): ajoute(pop(1100 + i * 200, .6), M("l04", 10) - .1 + i * .15)                                    # vrais chantiers
+for i in range(3): ajoute(pop(1100 + i * 200, .4), M("l04", 8) - .1 + i * .12)                                    # vrais chantiers, sur « son travail » (pas sur « pas »)
 ajoute(feutre(.45, 1.), M("l05", 5) - .1)                                                                          # surligneur
 for i in range(3): ajoute(bip(880 if i < 2 else 1320, .8), M("l06", 1) - .2 + i * .4)                              # 3, 2, 1
 ajoute(clic(1.), M("l06", 6)); ajoute(erreur(.8), M("l06", 6) + .1)                                                # le visiteur part
@@ -86,7 +87,7 @@ if sr0 != SR: v = np.interp(np.arange(int(len(v) * SR / sr0)) * sr0 / SR, np.ara
 v = np.pad(v, (0, max(0, N - len(v))))[:N]
 e = np.sqrt(np.convolve(v ** 2, np.ones(int(.05 * SR)) / int(.05 * SR), "same")); parle = np.clip(e / .02, 0, 1)
 parle = np.convolve(parle, np.ones(int(.25 * SR)) / int(.25 * SR), "same")
-gm = 1 - .62 * parle
+gm = 1 - .8 * parle   # la musique s'efface davantage sous la voix (intelligibilité)
 mus = np.stack([ML, MR], 1); mus /= np.max(np.abs(mus)) + 1e-9
 sfx = np.stack([SL, SRR], 1); sfx /= np.max(np.abs(sfx)) + 1e-9
 mix = v[:, None] * .95 + mus * gm[:, None] * .22 + sfx * .32

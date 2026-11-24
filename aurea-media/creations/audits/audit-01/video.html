@@ -102,7 +102,7 @@ function rendre(t) {
     const zk = E.io(prog(t, P('l03') + .5, .6)); z = mix(1, 1.15, zk); cx = 500; cy = 180;
     const xk = prog(t, M('l04', 3) - .1, .3);   // croix sur la photo de banque d'images
     if (xk > 0) ann += `<svg style="position:absolute;left:${ph[0] * K}px;top:${ph[1] * K}px" width="${ph[2] * K}" height="${ph[3] * K}" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M8,8 L92,92" stroke="${ROUGE}" stroke-width="2.4" stroke-dasharray="120" stroke-dashoffset="${120 * (1 - clamp(xk * 2))}"/><path d="M92,8 L8,92" stroke="${ROUGE}" stroke-width="2.4" stroke-dasharray="120" stroke-dashoffset="${120 * (1 - clamp(xk * 2 - 1))}"/></svg>`;
-    const gk = prog(t, M('l04', 10) - .1, .5);  // les vrais chantiers apparaissent
+    const gk = prog(t, M('l04', 8) - .1, .5);   // les vrais chantiers apparaissent sur « son travail »  // les vrais chantiers apparaissent
     if (gk > 0) ann += [1, 3, 5].map((r, i) => { const e = E.back(clamp(gk * 1.6 - i * .25)); return `<img src="sites/photos/martin-real${r}.webp" style="position:absolute;left:${120 + i * 260}px;top:${170}px;width:240px;height:170px;object-fit:cover;border-radius:12px;border:4px solid #3DDC84;box-shadow:0 20px 40px rgba(0,0,0,.4);transform:scale(${e}) rotate(${(i - 1) * 4}deg);opacity:${clamp(e)}">`; }).join('');
   }
   else if (t < P('l07')) {
