@@ -1,0 +1,26 @@
+#!/bin/bash
+# Lanceur Mac : installe tout au premier lancement, puis ouvre l'application.
+DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+cd "$DIR" || exit 1
+LOG="$DIR/aurea-compta.log"
+say() { osascript -e "display dialog \"$1\" with title \"Aurea Compta\" buttons {\"OK\"} default button 1" >/dev/null 2>&1; }
+
+if [ ! -x .venv/bin/python ]; then
+  PY=""
+  for c in /Library/Frameworks/Python.framework/Versions/Current/bin/python3 /opt/homebrew/bin/python3 /usr/local/bin/python3 /usr/bin/python3; do
+    if [ -x "$c" ] && "$c" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 11) else 1)' 2>/dev/null; then PY="$c"; break; fi
+  done
+  if [ -z "$PY" ]; then
+    say "Python 3.11 ou plus récent est nécessaire. La page de téléchargement va s'ouvrir : installez Python, puis relancez Aurea Compta."
+    open "https://www.python.org/downloads/macos/"
+    exit 1
+  fi
+  osascript -e 'display notification "Première ouverture : installation en cours (1 à 2 minutes)…" with title "Aurea Compta"'
+  if ! { "$PY" -m venv .venv && .venv/bin/python -m pip install -q -r requirements.txt; } >>"$LOG" 2>&1; then
+    rm -rf .venv
+    say "L'installation a échoué. Vérifiez la connexion Internet et relancez. Détail dans aurea-compta.log."
+    exit 1
+  fi
+fi
+nohup .venv/bin/python lancer.py >>"$LOG" 2>&1 &
+exit 0

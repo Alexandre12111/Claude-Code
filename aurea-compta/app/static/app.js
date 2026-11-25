@@ -782,7 +782,7 @@ async function restoreArchive(input) {
 ROUTES.parametres = async (p) => {
   const s = await api("/api/settings");
   const tab = p.tab || "societe";
-  const tabs = { societe: "Société", fiscal: "Fiscalité", qonto: "Qonto", ia: "IA", facturation: "Facturation", exercices: "Exercices", categories: "Catégories", comptes: "Plan comptable" };
+  const tabs = { societe: "Société", telephone: "Téléphone", fiscal: "Fiscalité", qonto: "Qonto", ia: "IA", facturation: "Facturation", exercices: "Exercices", categories: "Catégories", comptes: "Plan comptable" };
   $("#view").innerHTML = `<div class="tabs">${Object.entries(tabs).map(([k, l]) => `<button class="${k === tab ? "active" : ""}" onclick="location.hash='#/parametres?tab=${k}'">${l}</button>`).join("")}</div><div id="tab" style="max-width:760px"></div>`;
   const T = $("#tab"); const c = s.company, t = s.tax, q = s.qonto, ai = s.ai;
   if (tab === "societe") {
@@ -799,6 +799,28 @@ ROUTES.parametres = async (p) => {
     $("#sf").onsubmit = async (e) => { e.preventDefault(); const f = formData(e.target);
       const v = { ...c, ...f, capital_cents: toCents(f.capital), associate_aliases: f.aliases.split(",").map((x) => x.trim()).filter(Boolean) }; delete v.capital; delete v.aliases;
       await run(() => put("/api/settings/company", v), "Société enregistrée"); route(); };
+  } else if (tab === "telephone") {
+    const r = await api("/api/remote");
+    T.innerHTML = `<div class="alert info">Ouvrez Aurea Compta sur votre téléphone, avec tous vos documents, comme une application. L'ordinateur doit être allumé et l'application ouverte : vos données restent chez vous, sans hébergement.</div>
+      ${!r.is_local ? `<div class="alert warn">Ce réglage se modifie depuis l'ordinateur.</div>` : `
+      <form id="rf" class="panel panel-pad">
+        <div class="field"><label>${r.password_set ? "Changer le mot de passe (facultatif)" : "Mot de passe du téléphone (8 caractères minimum)"}</label><input type="password" name="password" autocomplete="new-password"></div>
+        <label class="check"><input type="checkbox" name="enabled" ${r.enabled ? "checked" : ""}> Autoriser l'accès depuis mon téléphone</label>
+        <div style="margin-top:14px"><button class="primary">Enregistrer</button></div></form>`}
+      ${r.enabled && !r.listening_network && r.is_local ? `<div class="alert warn">Redémarrage nécessaire pour ouvrir l'accès. <button class="sm" onclick="restartApp()">Redémarrer maintenant</button></div>` : ""}
+      ${r.enabled && r.listening_network ? `
+        <h2>Sur votre téléphone</h2>
+        <div class="split"><div class="panel panel-pad" style="text-align:center">${r.qr ? `<div style="max-width:220px;margin:auto;background:#fff;padding:8px;border-radius:8px">${r.qr}</div><p class="small muted">Scannez avec l'appareil photo du téléphone</p>` : ""}
+          ${r.urls.map((u) => `<div class="mono">${esc(u.url)} <span class="badge">${u.type === "tailscale" ? "partout (Tailscale)" : "même Wi-Fi"}</span></div>`).join("")}</div>
+        <div class="panel panel-pad"><ol style="margin:0;padding-left:18px">
+          <li>Connectez le téléphone au même Wi-Fi que l'ordinateur et ouvrez l'adresse ci-contre.</li>
+          <li>Saisissez le mot de passe (une fois tous les 30 jours).</li>
+          <li><b>iPhone</b> : bouton Partager, puis « Sur l'écran d'accueil ». <b>Android</b> : menu ⋮, puis « Ajouter à l'écran d'accueil ».</li>
+          <li>Pour photographier un ticket : Dépenses, puis « Déposer des justificatifs ».</li></ol>
+          <p class="hint">Hors de chez vous : installez l'application gratuite Tailscale sur l'ordinateur et sur le téléphone (même compte). Une adresse « partout » apparaîtra ici, chiffrée de bout en bout.</p></div></div>` : ""}`;
+    if ($("#rf")) $("#rf").onsubmit = async (e) => { e.preventDefault(); const f = formData(e.target);
+      const res = await run(() => put("/api/remote", { password: f.password || null, enabled: f.enabled }), "Réglage enregistré");
+      if (res.restart_needed) await restartApp(); else route(); };
   } else if (tab === "fiscal") {
     T.innerHTML = `${s.confirmed.tax ? "" : `<div class="alert warn">Régimes non confirmés : les valeurs affichées sont provisoires. Renseignez votre situation réelle (voir votre attestation d'immatriculation ou votre espace professionnel impots.gouv.fr).</div>`}<form id="tf" class="panel panel-pad">
       <div class="grid2"><div class="field"><label>Régime de TVA</label><select name="vat_regime"><option value="reel_normal">Réel normal (CA3)</option><option value="reel_simplifie">Réel simplifié (CA12 annuelle + acomptes)</option><option value="franchise">Franchise en base</option></select></div>
@@ -865,6 +887,18 @@ function editFy(id, s, e) {
 async function saveCat(btn) { const tr = btn.closest("tr"); const v = { id: Number(tr.dataset.id) }; $$("[data-k]", tr).forEach((i) => { v[i.dataset.k] = i.type === "checkbox" ? (i.checked ? 1 : 0) : i.value; }); await run(() => post("/api/categories", v), "Catégorie enregistrée"); CACHE.categories = null; }
 async function newCat() { const name = prompt("Nom de la catégorie"); if (!name) return; const account = prompt("Compte de charge (ex. 618100)", "618100"); await run(() => post("/api/categories", { name, account }), "Catégorie ajoutée"); CACHE.categories = null; route(); }
 async function addAccount() { await run(() => post("/api/accounts", { number: $("#na").value, label: $("#nl").value }), "Compte ajouté"); CACHE.accounts = null; route(); }
+
+async function restartApp() {
+  await run(() => post("/api/restart"));
+  toast("Redémarrage…");
+  for (let i = 0; i < 30; i++) { await new Promise((r) => setTimeout(r, 700)); try { await api("/api/overview"); location.reload(); return; } catch (e) { /* encore en redémarrage */ } }
+}
+async function quitApp() {
+  if (!confirm("Quitter Aurea Compta ? Vos données sont enregistrées. Relancez l'application d'un double clic.")) return;
+  try { await post("/api/shutdown"); } catch (e) { toast(e.message, true); return; }
+  document.body.innerHTML = `<div class="empty" style="margin-top:30vh">Aurea Compta est fermée. Vous pouvez fermer cet onglet.</div>`;
+}
+if (!["127.0.0.1", "localhost"].includes(location.hostname)) { const q = document.getElementById("quit-btn"); if (q) q.style.display = "none"; }
 
 // ------------------------------------------------------------------ assistant et recherche
 function openAssistant() {

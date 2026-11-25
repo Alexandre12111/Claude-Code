@@ -31,6 +31,7 @@ def is_demo() -> bool:
 # ---------------------------------------------------------------- secrets
 # Fichier séparé de la base, droits 600, jamais exporté ni renvoyé en clair par l'API.
 SECRET_KEYS = ("qonto_login", "qonto_secret_key", "qonto_staging_token", "anthropic_api_key")
+INTERNAL_KEYS = ("remote_password_hash", "session_secret")   # jamais modifiables par l'API ni affichés
 
 
 def _secrets_file() -> Path:
@@ -55,7 +56,7 @@ def load_secrets() -> dict:
 
 
 def save_secret(key: str, value: str | None) -> None:
-    if key not in SECRET_KEYS:
+    if key not in SECRET_KEYS + INTERNAL_KEYS:
         raise ValueError("Clé inconnue")
     f = _secrets_file()
     data = {}

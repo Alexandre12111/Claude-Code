@@ -336,6 +336,7 @@ DEFAULT_SETTINGS = {
     "qonto": {"enabled": False, "environment": "production", "auto_sync_minutes": 30,
               "bank_account_id": "", "last_sync": None},
     "ai": {"enabled": False, "model": "claude-opus-5-5", "auto_link_threshold": 0.9},
+    "remote": {"enabled": False, "port": 8765},
     "confirmed": {"company": False, "tax": False},
 }
 

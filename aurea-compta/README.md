@@ -2,27 +2,32 @@
 
 Logiciel de comptabilité personnel de la SASU **Aurea Media**. Application locale, mono utilisateur, sans hébergement : une interface web servie par votre ordinateur (http://127.0.0.1:8765), une base SQLite et vos justificatifs rangés dans un dossier local.
 
-## Installation (une seule fois)
+## Ouvrir l'application (sans terminal)
 
-Prérequis : Python 3.11 ou plus récent.
+Prérequis, une seule fois : Python 3.11 ou plus récent (https://www.python.org/downloads/, sous Windows cochez « Add Python to PATH »).
+
+* **Mac** : double clic sur **Aurea Compta.app**. Au premier lancement, macOS peut bloquer une application téléchargée : ouvrez Réglages système, Confidentialité et sécurité, puis « Ouvrir quand même ». Glissez ensuite l'application dans le Dock.
+* **Windows** : double clic sur **Aurea Compta.vbs**. Pour un raccourci sur le bureau : clic droit, Envoyer vers, Bureau.
+
+La première ouverture installe tout automatiquement (1 à 2 minutes), ensuite l'application s'ouvre directement dans le navigateur sur http://127.0.0.1:8765. Si elle est déjà ouverte, le double clic affiche simplement la fenêtre. Pour l'arrêter : bouton ⏻ en bas du menu.
+
+Sans Internet, tout fonctionne sauf la synchronisation Qonto et l'IA.
+
+## Sur le téléphone
+
+Paramètres, onglet **Téléphone** : choisissez un mot de passe, cochez « Autoriser l'accès depuis mon téléphone », puis scannez le QR code avec le téléphone. Ajoutez ensuite la page à l'écran d'accueil (iPhone : Partager, « Sur l'écran d'accueil » ; Android : menu ⋮, « Ajouter à l'écran d'accueil ») : elle s'ouvre comme une application, avec toutes vos données et vos justificatifs, et permet de photographier un ticket.
+
+* L'ordinateur doit être allumé avec l'application ouverte : les données restent chez vous, sans hébergement.
+* Même Wi-Fi : fonctionne directement. Hors de chez vous : installez Tailscale (gratuit) sur l'ordinateur et le téléphone avec le même compte ; une adresse chiffrée apparaît dans l'onglet Téléphone.
+* Le mot de passe est exigé pour tout appareil autre que l'ordinateur (10 essais maximum par quart d'heure, session de 30 jours). Les clés API et le réglage d'accès ne se modifient que depuis l'ordinateur.
+
+## Mode avancé (terminal)
 
 ```bash
-cd aurea-compta
-python3 -m venv .venv
-source .venv/bin/activate          # Windows : .venv\Scripts\activate
-pip install -r requirements.txt
-```
-
-## Lancement
-
-```bash
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
 python lancer.py            # vos données réelles (dossier ./data)
 python lancer.py --demo     # données fictives pour découvrir (dossier ./data-demo)
 ```
-
-Le navigateur s'ouvre sur http://127.0.0.1:8765. L'application n'écoute que sur votre ordinateur. Raccourcis : `lancer.command` (macOS, double clic) et `lancer.bat` (Windows).
-
-Sans Internet, tout fonctionne sauf la synchronisation Qonto et l'IA.
 
 ## Premier démarrage
 

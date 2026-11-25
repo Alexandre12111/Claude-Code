@@ -7,10 +7,10 @@ from datetime import date
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
-from fastapi.responses import FileResponse, JSONResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import (ai, backup, checks, closing, config, db, exports, ledger, posting, qonto, reports, rules, services, tax, vat)
+from . import (ai, backup, checks, closing, config, db, exports, ledger, posting, qonto, remote, reports, rules, services, tax, vat)
 from .ledger import AccountingError
 
 STATIC = Path(__file__).parent / "static"
@@ -65,12 +65,117 @@ def _run_sync(c, full=False):
 async def lifespan(app):
     c = db.get_conn()
     backup.daily_backup_if_needed()
-    if not config.is_demo():
+    if not config.is_demo() and not _sync_state.get("thread"):
+        _sync_state["thread"] = True
         threading.Thread(target=_auto_sync_loop, daemon=True).start()
     yield
 
 
 app = FastAPI(title="Aurea Compta", lifespan=lifespan)
+
+
+app.state.restart = False
+PUBLIC_PATHS = {"/login", "/api/login", "/manifest.webmanifest", "/static/app.css", "/static/icon.svg",
+                "/static/icon-180.png", "/static/icon-192.png", "/static/icon-512.png"}
+
+
+@app.middleware("http")
+async def guard(request: Request, call_next):
+    """L'ordinateur accède librement ; tout autre appareil doit être connecté."""
+    host = request.client.host if request.client else None
+    if remote.is_local(host):
+        return await call_next(request)
+    if not remote.settings(db.get_conn()).get("enabled") or not remote.password_set():
+        return JSONResponse({"detail": "Accès distant désactivé"}, status_code=403)
+    if request.url.path in PUBLIC_PATHS or remote.valid_session(request.cookies.get("aurea_session")):
+        return await call_next(request)
+    if request.url.path.startswith("/api/"):
+        return JSONResponse({"detail": "Connexion requise"}, status_code=401)
+    return RedirectResponse("/login", status_code=303)
+
+
+def _local_only(request: Request):
+    if not remote.is_local(request.client.host if request.client else None):
+        raise HTTPException(403, "Ce réglage se modifie uniquement depuis l'ordinateur.")
+
+
+@app.get("/login")
+def login_page():
+    return HTMLResponse(remote.LOGIN_PAGE.replace("{error}", ""))
+
+
+@app.post("/api/login")
+async def login(request: Request):
+    ip = request.client.host if request.client else "?"
+    if remote.too_many_attempts(ip):
+        return HTMLResponse(remote.LOGIN_PAGE.replace("{error}", '<div class="alert bad">Trop d\'essais : réessayez dans 15 minutes.</div>'), status_code=429)
+    form = await request.form()
+    if not remote.check_password(str(form.get("password") or "")):
+        remote.record_failure(ip)
+        return HTMLResponse(remote.LOGIN_PAGE.replace("{error}", '<div class="alert bad">Mot de passe incorrect.</div>'), status_code=401)
+    r = RedirectResponse("/", status_code=303)
+    r.set_cookie("aurea_session", remote.make_session(), max_age=remote.SESSION_DAYS * 86400, httponly=True, samesite="strict")
+    return r
+
+
+@app.get("/api/remote")
+def remote_info(request: Request):
+    c = conn()
+    s = remote.settings(c)
+    port = request.url.port or s.get("port", 8765)
+    addrs = remote.local_addresses()
+    urls = [{"url": f"http://{a['ip']}:{port}", "type": a["type"]} for a in addrs]
+    main_url = next((u["url"] for u in urls if u["type"] == "wifi"), urls[0]["url"] if urls else None)
+    return {"enabled": s.get("enabled", False), "password_set": remote.password_set(), "urls": urls,
+            "qr": remote.qr_svg(main_url) if main_url and s.get("enabled") else None,
+            "listening_network": getattr(request.app.state, "host", None) == "0.0.0.0",
+            "is_local": remote.is_local(request.client.host if request.client else None)}
+
+
+@app.put("/api/remote")
+def remote_update(request: Request, data: dict):
+    _local_only(request)
+    c = conn()
+    if data.get("password"):
+        remote.set_password(data["password"])
+    if data.get("enabled") and not remote.password_set():
+        raise AccountingError("Choisissez d'abord un mot de passe.")
+    s = remote.settings(c)
+    s["enabled"] = bool(data.get("enabled"))
+    db.set_setting(c, "remote", s)
+    return {"ok": True, "restart_needed": s["enabled"] != (getattr(request.app.state, "host", None) == "0.0.0.0")}
+
+
+@app.post("/api/restart")
+def restart(request: Request):
+    _local_only(request)
+    server = getattr(request.app.state, "server", None)
+    if server is None:
+        raise AccountingError("Relancez l'application manuellement.")
+    request.app.state.restart = True
+    server.should_exit = True
+    return {"ok": True}
+
+
+@app.post("/api/shutdown")
+def shutdown(request: Request):
+    _local_only(request)
+    server = getattr(request.app.state, "server", None)
+    if server is None:
+        raise AccountingError("Arrêt automatique indisponible : fermez la fenêtre de lancement.")
+    request.app.state.restart = False
+    server.should_exit = True
+    return {"ok": True}
+
+
+@app.get("/manifest.webmanifest")
+def manifest():
+    return JSONResponse({
+        "name": "Aurea Compta", "short_name": "Aurea Compta", "start_url": "/", "display": "standalone",
+        "background_color": "#f7f7f5", "theme_color": "#9a7a2e", "lang": "fr",
+        "icons": [{"src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png"},
+                  {"src": "/static/icon-512.png", "sizes": "512x512", "type": "image/png"}]},
+        media_type="application/manifest+json")
 
 
 @app.exception_handler(AccountingError)
@@ -120,7 +225,7 @@ def overview():
         "compte_courant_cents": a["solde_cents"],
         "a_verifier": {"operations": to_review, "depenses": exp_review, "justificatifs_manquants": missing_docs, "pieces_non_traitees": docs_pending},
         "parametres_provisoires": [k for k, v in confirmed.items() if not v],
-        "sync": {**_sync_state, "last_sync": q.get("last_sync"), "enabled": q.get("enabled")},
+        "sync": {**{k: v for k, v in _sync_state.items() if k != "thread"}, "last_sync": q.get("last_sync"), "enabled": q.get("enabled")},
         "mode_demo": config.is_demo(),
     }
 
@@ -154,7 +259,8 @@ def put_setting(key: str, value: dict):
 
 
 @app.put("/api/secrets")
-def put_secrets(values: dict):
+def put_secrets(request: Request, values: dict):
+    _local_only(request)
     for k, v in values.items():
         if k in config.SECRET_KEYS and v is not None:
             config.save_secret(k, v)

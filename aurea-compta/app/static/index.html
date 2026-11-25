@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Aurea Compta</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23b08d3c'/><text x='16' y='22' font-size='16' text-anchor='middle' fill='white' font-family='Georgia'>A</text></svg>">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/static/icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Aurea Compta">
+<meta name="theme-color" content="#9a7a2e">
 <link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
@@ -26,6 +32,7 @@
     <div class="side-foot">
       <button class="ghost" onclick="openAssistant()">Assistant</button>
       <button class="ghost icon" title="Thème clair ou sombre" onclick="toggleTheme()">◐</button>
+      <button class="ghost icon" id="quit-btn" title="Quitter l'application" onclick="quitApp()">⏻</button>
     </div>
   </aside>
   <main>

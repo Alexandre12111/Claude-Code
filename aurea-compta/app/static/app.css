@@ -144,6 +144,11 @@ label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 4
   .sidebar { position: fixed; z-index: 15; width: 260px; transform: translateX(-100%); transition: transform .2s; }
   .sidebar.open { transform: none; }
   .menu { display: inline-flex; }
+  .topbar { flex-wrap: wrap; padding-top: 12px; }
+  .topbar h1 { font-size: 18px; }
+  .top-actions { width: 100%; }
+  .top-actions button, .top-actions .btn { font-size: 13px; padding: 6px 10px; }
+  .card .value { font-size: 21px; }
   .topbar, .view, #banner { padding-left: 16px; padding-right: 16px; }
   .grid2, .grid3, .grid4, .split { grid-template-columns: 1fr; }
   .kv { grid-template-columns: 1fr; }
