@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aurea Compta</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23b08d3c'/><text x='16' y='22' font-size='16' text-anchor='middle' fill='white' font-family='Georgia'>A</text></svg>">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand"><span class="logo">A</span><div><strong>Aurea Media</strong><small>Comptabilité SASU</small></div></div>
+    <button class="search-btn" onclick="openSearch()"><span>Rechercher</span><kbd>/</kbd></button>
+    <nav id="nav">
+      <a href="#/" data-route="">Vue d'ensemble</a>
+      <a href="#/banque" data-route="banque">Banque et transactions <span class="count" id="c-banque"></span></a>
+      <a href="#/recettes" data-route="recettes">Recettes et factures</a>
+      <a href="#/depenses" data-route="depenses">Dépenses et notes de frais <span class="count" id="c-depenses"></span></a>
+      <a href="#/associe" data-route="associe">Apports personnels</a>
+      <a href="#/tva" data-route="tva">TVA</a>
+      <a href="#/comptabilite" data-route="comptabilite">Comptabilité</a>
+      <a href="#/cloture" data-route="cloture">Clôture et exports</a>
+      <a href="#/parametres" data-route="parametres">Paramètres</a>
+    </nav>
+    <div class="side-foot">
+      <button class="ghost" onclick="openAssistant()">Assistant</button>
+      <button class="ghost icon" title="Thème clair ou sombre" onclick="toggleTheme()">◐</button>
+    </div>
+  </aside>
+  <main>
+    <header class="topbar">
+      <button class="ghost menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+      <h1 id="page-title">Vue d'ensemble</h1>
+      <div class="top-actions" id="top-actions"></div>
+    </header>
+    <div id="banner"></div>
+    <section id="view" class="view"></section>
+  </main>
+</div>
+<div id="drawer" class="drawer" aria-hidden="true"><div class="drawer-panel"><button class="ghost close" onclick="closeDrawer()">✕</button><div id="drawer-body"></div></div></div>
+<div id="modal" class="modal" aria-hidden="true"><div class="modal-panel" id="modal-body"></div></div>
+<div id="toasts"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
