@@ -124,7 +124,7 @@
     <div class="laptop persp" style="position:relative;width:760px;transform:rotateY(12deg) rotateX(3deg)"><div class="ecran"><img src="../../maquette/assets/realisations/dual-tech.webp"></div><div class="base"></div></div>
   </div>
   <div class="tel" style="left:770px;top:560px;width:230px"><img src="../../maquette/assets/realisations/dual-tech-mobile.webp"></div>
-  <div class="projet"><div><span class="badge reel">● Client réel</span><b style="margin-top:20px">Dual Tech</b><span class="mute">Site vitrine · services techniques</span></div><div class="mute" style="font-size:22px">ordinateur + mobile</div></div>
+  <div class="projet"><div><b>Dual Tech</b><span class="mute">Site vitrine · services techniques</span></div><div class="mute" style="font-size:22px">ordinateur + mobile</div></div>
   <div class="glisse">›</div><div class="grain"></div>
 </section>
 
@@ -137,7 +137,7 @@
     <h2 class="titre" style="font-size:72px;margin-top:26px">Chaque métier a son site. <span class="or">Sur mesure.</span></h2>
   </div>
   <div style="position:absolute;left:80px;right:80px;top:450px;display:grid;grid-template-columns:1fr 1fr;gap:22px 26px" id="grille"></div>
-  <div style="position:absolute;left:80px;bottom:60px"><span class="badge reel">● Clients réels</span><span class="mute" style="font-size:24px;margin-left:18px">et plus de 40 autres projets</span></div>
+  <div style="position:absolute;left:80px;bottom:60px"><span class="mute" style="font-size:26px">et plus de 40 autres projets</span></div>
   <div class="glisse">›</div><div class="grain"></div>
 </section>
 
@@ -148,7 +148,7 @@
   <div style="position:absolute;left:80px;right:80px;top:200px"><div class="sur"></div><h2 class="titre" style="font-size:76px;margin-top:26px"></h2></div>
   <div class="zone-laptop" style="position:absolute;left:70px;top:520px;width:800px;perspective:1800px"><div class="laptop persp" style="position:relative;width:760px;transform:rotateY(12deg) rotateX(3deg)"><div class="ecran"><img></div><div class="base"></div></div></div>
   <div class="tel" style="left:770px;top:600px;width:230px"><img></div>
-  <div class="projet"><div><span class="badge concept">◆ Concept Aurea Media</span><b style="margin-top:20px"></b><span class="mute"></span></div></div>
+  <div class="projet"><div><b></b><span class="mute"></span></div></div>
   <div class="glisse">›</div><div class="grain"></div>
 </section></template>
 
@@ -190,12 +190,12 @@ document.getElementById('grille').innerHTML = REELS.map(([f, n, s]) => `<figure 
 // Concepts
 const V = '../../creations/video-realisations/sites/captures/', C = 'concepts/captures/';
 const CONCEPTS = [
-  ['c07', V + 'veloce', 'Et maintenant, nos concepts', 'Et si votre site <span class="or">ressemblait</span> à ça ?', 'Véloce', 'Vélos en carbone · boutique en ligne', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(215,255,58,.20),rgba(215,255,58,0) 62%)'],
-  ['c08', V + 'monolithe', 'Concept · construction', 'Un chantier qui <span class="or">inspire</span> confiance.', 'Monolithe', 'Construction · gros œuvre', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(255,90,31,.24),rgba(255,90,31,0) 62%)'],
-  ['c09', V + 'valmont', "Concept · cabinet d'avocats", 'Une expertise qui se <span class="or">voit</span> au premier regard.', 'Valmont Avocats', "Cabinet d'avocats d'affaires", 'left:-150px;top:300px'],
-  ['c10', C + 'braise', 'Concept · restaurant', 'Un site qui <span class="or">remplit</span> vos tables.', 'Braise', 'Table gastronomique · réservation en ligne', 'left:-150px;top:350px;background:radial-gradient(circle,rgba(227,106,46,.24),rgba(227,106,46,0) 62%)'],
-  ['c11', V + 'uppercut', 'Concept · club de sport', 'Un club qui donne envie de <span class="or">s\'inscrire</span>.', 'Uppercut', 'Club de boxe · réservation des cours', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(255,43,43,.24),rgba(255,43,43,0) 62%)'],
-  ['c12', V + 'ebene', "Concept · artisan d'art", 'Un savoir-faire <span class="or">mis en valeur</span>.', 'Ébène', 'Ébéniste · mobilier sur mesure', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(233,196,138,.24),rgba(233,196,138,0) 62%)'],
+  ['c07', V + 'veloce', 'Nos créations', 'Et si votre site <span class="or">ressemblait</span> à ça ?', 'Véloce', 'Vélos en carbone · boutique en ligne', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(215,255,58,.20),rgba(215,255,58,0) 62%)'],
+  ['c08', V + 'monolithe', 'Construction', 'Un chantier qui <span class="or">inspire</span> confiance.', 'Monolithe', 'Construction · gros œuvre', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(255,90,31,.24),rgba(255,90,31,0) 62%)'],
+  ['c09', V + 'valmont', "Cabinet d'avocats", 'Une expertise qui se <span class="or">voit</span> au premier regard.', 'Valmont Avocats', "Cabinet d'avocats d'affaires", 'left:-150px;top:300px'],
+  ['c10', C + 'braise', 'Restaurant', 'Un site qui <span class="or">remplit</span> vos tables.', 'Braise', 'Table gastronomique · réservation en ligne', 'left:-150px;top:350px;background:radial-gradient(circle,rgba(227,106,46,.24),rgba(227,106,46,0) 62%)'],
+  ['c11', V + 'uppercut', 'Club de sport', 'Un club qui donne envie de <span class="or">s\'inscrire</span>.', 'Uppercut', 'Club de boxe · réservation des cours', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(255,43,43,.24),rgba(255,43,43,0) 62%)'],
+  ['c12', V + 'ebene', "Artisan d'art", 'Un savoir-faire <span class="or">mis en valeur</span>.', 'Ébène', 'Ébéniste · mobilier sur mesure', 'left:-150px;top:300px;background:radial-gradient(circle,rgba(233,196,138,.24),rgba(233,196,138,0) 62%)'],
 ];
 const tpl = document.getElementById('tpl-concept').content.firstElementChild, fin = document.getElementById('c13');
 for (const [id, f, sur, titre, nom, desc, halo] of CONCEPTS) {

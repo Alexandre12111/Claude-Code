@@ -18,8 +18,8 @@ Visuels : `export/carrousel-01.png` à `carrousel-13.png` (1080 × 1350, format 
 | 12 | Concept : Ébène, ébéniste |
 | 13 | Appel à l'action : devis sous 24 h, lien en bio |
 
-Les sites 7 à 12 sont des marques fictives (le mot « concept » est volontairement absent des légendes, à la demande d'Alexandre ; ils sont présentés comme des créations du studio, jamais comme des projets clients), conçues de A à Z pour la vidéo « Nos réalisations », et sont signalés
-« Concept Aurea Media » sur chaque visuel. Leurs pages sont dans `creations/video-realisations/sites/` (Braise : `concepts/`),
+Les sites 7 à 12 sont des marques fictives (le mot « concept » est volontairement absent des légendes, à la demande d'Alexandre ; ils sont présentés comme des créations du studio, jamais comme des projets clients), conçues de A à Z pour la vidéo « Nos réalisations », sans étiquette sur les visuels (à la demande d'Alexandre).
+Ils sont présentés comme des créations du studio (« Nos créations », « Et si votre site ressemblait à ça ? »), jamais comme des projets clients. Leurs pages sont dans `creations/video-realisations/sites/` (Braise : `concepts/`),
 les photos viennent d'Unsplash (licence libre, voir les fichiers CREDITS.txt).
 
 ## Légende Instagram
