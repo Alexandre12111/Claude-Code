@@ -1,4 +1,4 @@
-// Exporte les 10 visuels du carrousel en PNG 1080 x 1350, plus un PDF pour LinkedIn (document en carrousel).
+// Exporte les 13 visuels du carrousel en PNG 1080 x 1350, plus un PDF pour LinkedIn (document en carrousel).
 // Usage : node exporter-carrousel.js
 const { chromium } = require('playwright'); const fs = require('fs'); const path = require('path');
 const ICI = __dirname, RACINE = path.join(ICI, '../..'), OUT = path.join(ICI, 'export');
@@ -12,7 +12,7 @@ const types = { '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/w
   p.on('pageerror', e => console.log('ERR', e.message));
   await p.goto('http://aurea.local/reseaux-sociaux/carrousel/carrousel.html'); await p.waitForFunction(() => window.pret); await p.evaluate(() => document.fonts.ready);
   const fichiers = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 13; i++) {
     const id = 'c' + String(i).padStart(2, '0');
     await p.evaluate(id => window.montrer(id), id); await p.waitForTimeout(80);
     const f = path.join(OUT, `carrousel-${String(i).padStart(2, '0')}.png`);
