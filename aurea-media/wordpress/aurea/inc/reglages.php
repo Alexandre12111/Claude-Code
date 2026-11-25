@@ -21,10 +21,17 @@ function aurea_champs_coordonnees() {
 		'siren'        => array( 'SIREN', '992 693 473' ),
 		'fondation'    => array( 'Année de création', '2021' ),
 		'linkedin'     => array( 'Page LinkedIn de l’agence', 'https://www.linkedin.com/company/aureamedia/' ),
+		'instagram'    => array( 'Compte Instagram de l’agence', 'https://www.instagram.com/aurea.media_paris' ),
+		'facebook'     => array( 'Page Facebook de l’agence', 'https://www.facebook.com/people/Aurea-Media/61596379787932/' ),
 		'linkedin_moi' => array( 'Profil LinkedIn du fondateur', 'https://www.linkedin.com/in/alexandre-coury/' ),
 		'google'       => array( 'Lien vers la fiche Google Business Profile', 'https://www.google.com/search?kgmid=/g/11mcqnsjrx' ),
 		'fondateur'    => array( 'Nom du fondateur', 'Alexandre Coury' ),
 	);
+}
+
+/** Champs qui contiennent une adresse web (même URL que sur la fiche Google, au caractère près). */
+function aurea_champs_url() {
+	return array( 'linkedin', 'instagram', 'facebook', 'linkedin_moi', 'google' );
 }
 
 /** Coordonnées enregistrées (valeurs par défaut si rien n'est saisi). */
@@ -49,12 +56,12 @@ add_action( 'customize_register', function ( $wp_customize ) {
 	foreach ( aurea_champs_coordonnees() as $cle => $champ ) {
 		$wp_customize->add_setting( 'aurea_' . $cle, array(
 			'default'           => '',
-			'sanitize_callback' => in_array( $cle, array( 'linkedin', 'linkedin_moi', 'google' ), true ) ? 'esc_url_raw' : ( 0 === strpos( $cle, 'email' ) ? 'sanitize_email' : 'sanitize_text_field' ),
+			'sanitize_callback' => in_array( $cle, aurea_champs_url(), true ) ? 'esc_url_raw' : ( 0 === strpos( $cle, 'email' ) ? 'sanitize_email' : 'sanitize_text_field' ),
 		) );
 		$wp_customize->add_control( 'aurea_' . $cle, array(
 			'label'       => $champ[0],
 			'section'     => 'aurea',
-			'type'        => 0 === strpos( $cle, 'email' ) ? 'email' : ( in_array( $cle, array( 'linkedin', 'linkedin_moi', 'google' ), true ) ? 'url' : 'text' ),
+			'type'        => 0 === strpos( $cle, 'email' ) ? 'email' : ( in_array( $cle, aurea_champs_url(), true ) ? 'url' : 'text' ),
 			'input_attrs' => array( 'placeholder' => $champ[1] ),
 		) );
 	}

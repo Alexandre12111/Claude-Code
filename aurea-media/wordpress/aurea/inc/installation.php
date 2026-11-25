@@ -297,8 +297,8 @@ function aurea_installer_rank_math() {
 		'local_business_type'                      => 'ProfessionalService',
 		'phone'                                    => $c['tel'],
 		'email'                                    => $c['email'],
-		'social_url_facebook'                      => '',
-		'social_additional_profiles'               => implode( "\n", array_filter( array( $c['linkedin'], $c['google'] ) ) ),
+		'social_url_facebook'                      => $c['facebook'],
+		'social_additional_profiles'               => implode( "\n", array_filter( array( $c['linkedin'], $c['instagram'], $c['google'] ) ) ),
 		'disable_author_archives'                  => 'on',
 		'disable_date_archives'                    => 'on',
 		'noindex_empty_taxonomies'                 => 'on',
@@ -520,7 +520,7 @@ function aurea_ecran_installation() {
 
 		<h2>Ensuite</h2>
 		<ol class="aurea-install-suite">
-			<li><a href="<?php echo esc_url( admin_url( 'customize.php?autofocus[section]=aurea' ) ); ?>">Vérifiez vos coordonnées</a> (téléphone, e-mail, adresse, LinkedIn).</li>
+			<li><a href="<?php echo esc_url( admin_url( 'customize.php?autofocus[section]=aurea' ) ); ?>">Vérifiez vos coordonnées</a> (téléphone, e-mail, adresse, LinkedIn, Instagram, Facebook).</li>
 			<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=aurea-avis' ) ); ?>">Reliez vos avis Google</a> dans Aurea Studio (clé d’API et identifiant du lieu).</li>
 			<li>Complétez les <a href="<?php echo esc_url( aurea_url( 'mentions-legales' ) ); ?>" target="_blank">mentions légales</a> et la <a href="<?php echo esc_url( aurea_url( 'politique-confidentialite' ) ); ?>" target="_blank">politique de confidentialité</a> (hébergeur, forme juridique : passages entre crochets).</li>
 			<li>Envoyez le plan du site à Google : Search Console → Sitemaps → <code><?php echo esc_html( home_url( '/sitemap_index.xml' ) ); ?></code></li>

@@ -92,10 +92,28 @@ function aurea_remplacer( $html ) {
 		'{{email}}'       => esc_html( $c['email'] ),
 		'{{admin_post}}'  => esc_url( admin_url( 'admin-post.php' ) ),
 		'{{annee}}'       => esc_html( wp_date( 'Y' ) ),
+		'{{reseaux}}'     => aurea_reseaux_html(),
 	) );
 	return preg_replace_callback( '/\{\{url:([a-z0-9:-]+)\}\}/', function ( $m ) {
 		return esc_url( aurea_url( $m[1] ) );
 	}, $html );
+}
+
+/** Icônes des réseaux sociaux du pied de page (un réseau sans adresse est masqué). */
+function aurea_reseaux_html() {
+	$c      = aurea_coordonnees();
+	$icones = array(
+		'linkedin'  => array( 'LinkedIn', '<rect x="3" y="3" width="18" height="18" rx="3.5"/><path d="M8 10.5v6M12 16.5v-6M12 13.5a2.5 2.5 0 0 1 5 0v3"/><circle cx="8" cy="7.4" r=".6" fill="currentColor"/>' ),
+		'instagram' => array( 'Instagram', '<rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/>' ),
+		'facebook'  => array( 'Facebook', '<circle cx="12" cy="12" r="9"/><path d="M15 8.2h-1.4a2.4 2.4 0 0 0-2.4 2.4V21M8.8 13.2h5.6"/>' ),
+	);
+	$liens = '';
+	foreach ( $icones as $cle => $icone ) {
+		if ( ! empty( $c[ $cle ] ) ) {
+			$liens .= '<a href="' . esc_url( $c[ $cle ] ) . '" target="_blank" rel="noopener" aria-label="' . esc_attr( sprintf( aurea_t( 'Aurea Media sur %s (nouvel onglet)' ), $icone[0] ) ) . '"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $icone[1] . '</svg></a>';
+		}
+	}
+	return $liens ? '<div class="ft-social">' . $liens . '</div>' : '';
 }
 
 /** Affiche une partie de la maquette (parts/entete.html, parts/pied.html, ou parts/en/… en anglais). */

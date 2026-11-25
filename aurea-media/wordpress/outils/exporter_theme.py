@@ -10,7 +10,7 @@ La maquette (aurea-media/maquette) reste la référence du design. Ce script en 
 - assets/ : feuille de style, script, images de la maquette, polices auto hébergées.
 
 Repères remplacés au moment de l'import ou de l'affichage (inc/gabarit.php) :
-{{accueil}}, {{url:slug}}, {{theme}}, {{tel}}, {{tel_affiche}}, {{tel_inter}}, {{email}}.
+{{accueil}}, {{url:slug}}, {{theme}}, {{tel}}, {{tel_affiche}}, {{tel_inter}}, {{email}}, {{reseaux}}.
 Les parties qui dépendent des données d'Aurea Studio deviennent des codes courts :
 [aurea_mur], [aurea_logos_bandeau], [aurea_portfolio], [aurea_projets …], [aurea_avis_cartes],
 [aurea_avis_note], [aurea_contact_jeton].
@@ -226,6 +226,8 @@ def main():
     (THEME / "parts" / "entete.html").write_text(reperes(corps).strip() + "\n")
     pied = index[index.index("</main>") + len("</main>"):index.index('<script src="assets/aurea.js"')]
     pied = pied.replace("© 2026 Aurea Media", "© {{annee}} Aurea Media")
+    # Icônes des réseaux sociaux, sous l'adresse : générées par le thème (Apparence → Personnaliser → Aurea Media)
+    pied = re.sub(r'(75008 Paris[^<]*</li></ul>)(</div>)', r'\1{{reseaux}}\2', pied, count=1)
     (THEME / "parts" / "pied.html").write_text(reperes(pied).strip() + "\n")
 
     infos = {}

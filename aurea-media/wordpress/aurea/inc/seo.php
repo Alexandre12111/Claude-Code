@@ -75,7 +75,7 @@ function aurea_schema_agence() {
 		),
 		'founder'      => array( '@id' => aurea_id( 'fondateur' ) ),
 		'knowsAbout'   => array_map( 'aurea_t', array( 'Création de site vitrine', 'Création de site e-commerce', 'WordPress', 'WooCommerce', 'Référencement naturel', 'Identité visuelle', 'Motion design' ) ),
-		'sameAs'       => array_values( array_filter( array( $c['linkedin'], $c['google'] ) ) ),
+		'sameAs'       => array_values( array_filter( array( $c['linkedin'], $c['instagram'], $c['facebook'], $c['google'] ) ) ),
 	);
 	if ( $c['siren'] ) {
 		$agence['identifier'] = array( '@type' => 'PropertyValue', 'propertyID' => 'SIREN', 'value' => str_replace( ' ', '', $c['siren'] ) );

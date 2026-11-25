@@ -66,6 +66,7 @@ function aurea_t( $fr ) {
 	if ( null === $en ) {
 		$en = array(
 			'Accueil'                                     => 'Home',
+			'Aurea Media sur %s (nouvel onglet)'          => 'Aurea Media on %s (opens in a new tab)',
 			'Fil d’Ariane'                                => 'Breadcrumb',
 			'Réalisations'                                => 'Portfolio',
 			'Voir l’étude de cas'                         => 'View the case study',
