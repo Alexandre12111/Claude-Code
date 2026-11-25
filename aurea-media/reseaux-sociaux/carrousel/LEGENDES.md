@@ -18,7 +18,7 @@ Visuels : `export/carrousel-01.png` à `carrousel-13.png` (1080 × 1350, format 
 | 12 | Concept : Ébène, ébéniste |
 | 13 | Appel à l'action : devis sous 24 h, lien en bio |
 
-Les concepts (7 à 12) sont des marques fictives, conçues de A à Z pour la vidéo « Nos réalisations », et sont signalés
+Les sites 7 à 12 sont des marques fictives (le mot « concept » est volontairement absent des légendes, à la demande d'Alexandre ; ils sont présentés comme des créations du studio, jamais comme des projets clients), conçues de A à Z pour la vidéo « Nos réalisations », et sont signalés
 « Concept Aurea Media » sur chaque visuel. Leurs pages sont dans `creations/video-realisations/sites/` (Braise : `concepts/`),
 les photos viennent d'Unsplash (licence libre, voir les fichiers CREDITS.txt).
 
@@ -35,7 +35,7 @@ On crée des sites vitrines et e-commerce sur mesure, pensés pour une seule cho
 ✦ Votre site en ligne en 4 semaines
 ✦ Un seul interlocuteur, du premier appel à la mise en ligne
 
-Glissez jusqu'au bout 👉 nos réalisations, puis 6 concepts imaginés de A à Z : un vélociste, une entreprise de construction, un cabinet d'avocats, un restaurant, un club de boxe et un ébéniste.
+Glissez jusqu'au bout 👉 nos réalisations, puis 6 univers sur mesure créés par notre studio : un vélociste, une entreprise de construction, un cabinet d'avocats, un restaurant, un club de boxe et un ébéniste.
 
 Votre préféré ? Dites-le en commentaire, de 7 à 12 !
 
@@ -56,9 +56,9 @@ C'est pour ces quelques secondes que je crée des sites chez Aurea Media.
 Dans ce carrousel :
 → ce que nous faisons, et notre méthode en 4 semaines
 → des réalisations pour nos clients : construction, avocate, industrie, location de prestige
-→ 6 concepts créés de toutes pièces, chacun avec sa propre identité
+→ 6 univers créés par notre studio, chacun avec sa propre identité
 
-Pour ces concepts, j'ai voulu montrer qu'un bon site ne suit pas un modèle unique :
+Avec ces six créations, j'ai voulu montrer qu'un bon site ne suit pas un modèle unique :
 • Un vélociste : le produit en star, comme dans une boutique haut de gamme.
 • Une entreprise de construction : la maison annotée comme un plan d'architecte.
 • Un cabinet d'avocats : une élégance qui inspire la confiance dès le premier regard.
