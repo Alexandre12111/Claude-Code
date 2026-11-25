@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Braise · Cuisine de feu et de saison · Lyon</title>
+<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). Typo : Big Shoulders Display (affiche condensée) + Inter Tight. -->
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=Inter+Tight:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+:root{--nuit:#0E0A08;--nuit2:#17110D;--creme:#F4EADB;--mute:#9C8E7E;--feu:#FF6B2C;--feu2:#FFA347}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--nuit);color:var(--creme);font:400 16px/1.55 "Inter Tight",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;position:relative}
+.bs{font-family:"Big Shoulders Display",sans-serif}
+.lueur{position:absolute;width:1100px;height:1100px;left:-300px;bottom:-640px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,44,.42),rgba(255,107,44,0) 62%);filter:blur(10px)}
+nav{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:28px 56px}
+.logo{display:flex;align-items:center;gap:10px;font:900 34px/1 "Big Shoulders Display";letter-spacing:.06em}
+.logo svg{width:26px;height:32px}
+nav ul{display:flex;gap:6px;list-style:none;background:rgba(244,234,219,.06);border:1px solid rgba(244,234,219,.1);border-radius:999px;padding:6px}
+nav li{padding:10px 20px;border-radius:999px;font-size:14px;color:#d9cdbd}
+nav li.on{background:var(--creme);color:var(--nuit);font-weight:600}
+.tel{font:500 15px "Inter Tight";color:#d9cdbd}.tel b{color:var(--creme)}
+.scene{position:relative;z-index:2;display:grid;grid-template-columns:1.12fr .88fr;gap:40px;padding:8px 56px 0;height:calc(100vh - 230px)}
+.sur{display:flex;align-items:center;gap:12px;font:600 13px/1 "Inter Tight";letter-spacing:.26em;text-transform:uppercase;color:var(--feu2)}
+.sur i{width:8px;height:8px;border-radius:50%;background:var(--feu);box-shadow:0 0 14px var(--feu)}
+h1{font:900 150px/.84 "Big Shoulders Display";text-transform:uppercase;letter-spacing:-.005em;margin:26px 0 26px}
+h1 .contour{color:transparent;-webkit-text-stroke:2.5px var(--creme)}
+h1 .feu{background:linear-gradient(180deg,#FFC37A 0%,#FF6B2C 60%,#C8361A 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 30px rgba(255,107,44,.45))}
+.chapo{display:flex;gap:28px;align-items:flex-start;max-width:600px}
+.chapo p{font-size:17px;color:#cfc2b2}
+.chapo .chef{flex:none;display:flex;align-items:center;gap:12px;font-size:14px;color:var(--mute)}
+.chapo .chef img{width:54px;height:54px;border-radius:50%;object-fit:cover;border:2px solid var(--feu)}
+.photos{position:relative}
+.photos .p1{position:absolute;inset:0 0 10px 40px;border-radius:30px;overflow:hidden}
+.photos .p1 img{width:100%;height:100%;object-fit:cover}
+.photos .p1:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(14,10,8,.55),rgba(14,10,8,0) 45%)}
+.photos .p2{position:absolute;left:-20px;bottom:50px;width:200px;height:250px;border-radius:22px;overflow:hidden;border:6px solid var(--nuit);box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.photos .p2 img{width:100%;height:100%;object-fit:cover}
+.sceau{position:absolute;right:-26px;top:-20px;width:150px;height:150px}
+.plat{position:absolute;right:28px;bottom:34px;text-align:right}
+.plat small{font:600 12px "Inter Tight";letter-spacing:.2em;text-transform:uppercase;color:var(--feu2)}
+.plat b{display:block;font:700 34px/1 "Big Shoulders Display";text-transform:uppercase;margin-top:6px}
+.resa{position:absolute;z-index:3;left:56px;right:56px;bottom:30px;height:96px;display:grid;grid-template-columns:1fr 1fr 1fr 1.25fr auto;align-items:center;background:rgba(23,17,13,.86);backdrop-filter:blur(16px);border:1px solid rgba(244,234,219,.12);border-radius:24px;padding:0 12px 0 30px}
+.champ{padding:0 24px;border-right:1px solid rgba(244,234,219,.1)}
+.champ small{display:block;font:600 11px "Inter Tight";letter-spacing:.2em;text-transform:uppercase;color:var(--mute)}
+.champ b{font:600 18px "Inter Tight"}
+.creneaux{display:flex;gap:8px;padding:0 20px}
+.creneaux span{padding:9px 13px;border-radius:12px;border:1px solid rgba(244,234,219,.16);font-size:14px}
+.creneaux span.on{background:var(--creme);color:var(--nuit);font-weight:600;border-color:var(--creme)}
+.go{height:72px;padding:0 34px;border-radius:18px;background:linear-gradient(135deg,#FF8A3D,#E8461C);color:#1a0a03;font:800 22px "Big Shoulders Display";letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:12px;box-shadow:0 14px 40px rgba(255,107,44,.4)}
+@media (max-width:600px){
+  nav{padding:18px 18px}nav ul,.tel{display:none}.logo{font-size:28px}
+  .burger{display:grid !important}
+  .scene{grid-template-columns:1fr;padding:0 18px;gap:0;height:auto}
+  h1{font-size:96px;margin:18px 0 16px}
+  .chapo{flex-direction:column;gap:14px}.chapo p{font-size:15px}
+  .photos{height:250px;margin-top:22px}.photos .p1{inset:0;border-radius:22px}.photos .p2{display:none}
+  .sceau{width:104px;height:104px;right:-8px;top:-40px}
+  .plat{display:none}
+  .resa{left:18px;right:18px;bottom:22px;height:auto;grid-template-columns:1fr;padding:10px}
+  .resa .champ,.resa .creneaux{display:none}
+  .go{height:62px;justify-content:center;font-size:20px}
+}
+.burger{display:none;width:46px;height:46px;border-radius:50%;background:rgba(244,234,219,.08);place-items:center}
+.burger i{width:18px;height:8px;border-top:2px solid var(--creme);border-bottom:2px solid var(--creme)}
+</style></head><body>
+<div class="lueur"></div>
+<nav><div class="logo"><svg viewBox="0 0 26 32"><path d="M13 1c2 6 9 9 9 18a9 9 0 0 1-18 0c0-4 2-7 4-9 0 4 2 6 4 6-1-5 0-11 1-15z" fill="url(#f)"/><defs><linearGradient id="f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFC37A"/><stop offset="1" stop-color="#E8461C"/></linearGradient></defs></svg>BRAISE</div>
+<ul><li class="on">La carte</li><li>Le chef</li><li>Privatiser</li><li>Bons cadeaux</li></ul><div class="tel">Réservations <b>04 78 00 00 00</b></div><div class="burger"><i></i></div></nav>
+<section class="scene">
+  <div>
+    <div class="sur"><i></i>Ouvert ce soir · Lyon 2e</div>
+    <h1>Cuisine<br><span class="feu">de feu</span><br><span class="contour">& de saison</span></h1>
+    <div class="chapo"><div class="chef"><img src="photos/braise-1.webp" alt="">Chef<br>Hugo Marchal</div><p>Produits du marché, cuisson lente à la braise et une carte qui change chaque semaine. 32 couverts, une seule obsession : le goût.</p></div>
+  </div>
+  <div class="photos">
+    <div class="p1"><img src="photos/braise-hero.webp" alt=""></div>
+    <div class="p2"><img src="photos/braise-2.webp" alt=""></div>
+    <svg class="sceau" viewBox="0 0 200 200"><circle cx="100" cy="100" r="98" fill="#FF6B2C"/><defs><path id="c" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><text fill="#1a0a03" font-family="Big Shoulders Display" font-weight="800" font-size="21" letter-spacing="5.2"><textPath href="#c">FEU DE BOIS · DEPUIS 2015 · LYON · </textPath></text><text x="100" y="122" text-anchor="middle" fill="#1a0a03" font-family="Big Shoulders Display" font-weight="900" font-size="64">★</text></svg>
+    <div class="plat"><small>Plat signature</small><b>Pigeon braisé, jus corsé</b></div>
+  </div>
+</section>
+<div class="resa">
+  <div class="champ"><small>Date</small><b>Ce soir, ven. 14</b></div>
+  <div class="champ"><small>Couverts</small><b>2 personnes</b></div>
+  <div class="champ" style="border:0"><small>Créneaux libres</small><b>4 tables</b></div>
+  <div class="creneaux"><span>19:30</span><span class="on">20:00</span><span>20:45</span><span>21:15</span></div>
+  <a class="go">Réserver →</a>
+</div>
+</body></html>

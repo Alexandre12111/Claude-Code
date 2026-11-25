@@ -1,0 +1,94 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.5/theme.json",
+	"version": 2,
+	"settings": {
+		"appearanceTools": false,
+		"layout": {
+			"contentSize": "720px",
+			"wideSize": "1100px"
+		},
+		"color": {
+			"custom": false,
+			"customGradient": false,
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "noir",
+					"name": "Noir Aurea",
+					"color": "#0A0A0A"
+				},
+				{
+					"slug": "or",
+					"name": "Or",
+					"color": "#C9A961"
+				},
+				{
+					"slug": "or-fonce",
+					"name": "Or foncé",
+					"color": "#B8934E"
+				},
+				{
+					"slug": "creme",
+					"name": "Crème",
+					"color": "#F5F5F0"
+				},
+				{
+					"slug": "blanc",
+					"name": "Blanc",
+					"color": "#FFFFFF"
+				}
+			]
+		},
+		"typography": {
+			"customFontSize": false,
+			"dropCap": false,
+			"fontFamilies": [
+				{
+					"slug": "titres",
+					"name": "Bricolage Grotesque",
+					"fontFamily": "\"Bricolage Grotesque\", system-ui, sans-serif"
+				},
+				{
+					"slug": "texte",
+					"name": "Geist",
+					"fontFamily": "Geist, system-ui, sans-serif"
+				}
+			],
+			"fontSizes": [
+				{
+					"slug": "petit",
+					"name": "Petit",
+					"size": "0.9rem"
+				},
+				{
+					"slug": "normal",
+					"name": "Normal",
+					"size": "1.08rem"
+				},
+				{
+					"slug": "grand",
+					"name": "Grand",
+					"size": "1.3rem"
+				}
+			]
+		},
+		"spacing": {
+			"customSpacingSize": false
+		}
+	},
+	"styles": {
+		"elements": {
+			"link": {
+				"typography": {
+					"textDecoration": "none"
+				},
+				":hover": {
+					"typography": {
+						"textDecoration": "none"
+					}
+				}
+			}
+		}
+	}
+}

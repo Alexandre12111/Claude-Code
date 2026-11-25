@@ -1,0 +1,53 @@
+/* Styles de l'éditeur : le texte s'affiche comme sur le site (polices, couleurs, compositions Aurea). */
+@font-face{font-family:"Bricolage Grotesque";src:url(polices/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(polices/geist.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Geist Mono";src:url(polices/geist-mono-500.woff2) format("woff2");font-weight:500}
+:root{--ink:#0A0A0A;--cream:#F5F5F0;--gold:#C9A961;--gold-hi:#E6CB8C;--gold-deep:#B8934E;--paper-mute:#44443F;--mute:#A9A9A2;--line-2:rgba(245,245,240,.14);--display:"Bricolage Grotesque",system-ui,sans-serif;--sans:Geist,system-ui,sans-serif;--mono:"Geist Mono",ui-monospace,monospace}
+body{font-family:var(--sans);font-size:1.08rem;line-height:1.8;color:#2b2b28;background:#F5F5F0}
+h1,h2,h3,h4{font-family:var(--display);font-weight:600;letter-spacing:-.02em;line-height:1.15;color:var(--ink)}
+h2{font-size:2rem}
+.intro{font-size:1.22rem;color:var(--ink);line-height:1.65}
+.tableau table{width:100%;border-collapse:collapse;background:#fff}
+.tableau th,.tableau td{padding:12px 14px;border-bottom:1px solid rgba(10,10,10,.08);text-align:left}
+.tableau th{font:500 .72rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--paper-mute);background:#faf8f3}
+/* Contenu de l'éditeur (articles, pages de texte, études de cas) */
+h3{font-size:1.32rem;margin:34px 0 10px;color:var(--ink)}
+a{color:var(--gold-deep);text-decoration:underline;text-underline-offset:3px}
+a.btn,.wp-block-button__link{text-decoration:none}
+strong{color:var(--ink);font-weight:600}
+ul:not(.liste-or),ol{padding-left:0;margin:0 0 20px;display:grid;gap:8px}
+ul:not(.liste-or){list-style:none}
+ul:not(.liste-or)>li{position:relative;padding-left:26px}
+ul:not(.liste-or)>li::before{content:"";position:absolute;left:4px;top:.72em;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+ol{padding-left:1.4em}
+ol>li::marker{color:var(--gold-deep);font-weight:600}
+blockquote{margin:28px 0;padding:6px 0 6px 22px;border-left:3px solid var(--gold);font:500 1.3rem/1.5 var(--display);color:var(--ink)}
+blockquote cite{display:block;margin-top:8px;font:400 .9rem var(--sans);color:var(--paper-mute)}
+figure{margin:28px 0}
+img{max-width:100%;height:auto;border-radius:16px}
+figcaption{margin-top:10px;font-size:.88rem;color:var(--paper-mute);text-align:center}
+hr{border:0;height:1px;background:rgba(10,10,10,.1);margin:40px 0}
+.wp-block-table.tableau{padding:0}
+.wp-block-table.tableau table{margin:0}
+.alignwide{max-width:none}
+
+/* Compositions : En bref, encart, appel à l'action, questions */
+.en-bref{margin:30px 0;padding:26px 28px;border-radius:20px;background:#fff;border:1px solid rgba(201,169,97,.4);box-shadow:0 20px 40px -30px rgba(10,10,10,.4)}
+.en-bref .en-bref-titre{margin:0 0 10px;font-size:1.25rem}
+.en-bref .en-bref-titre::before{content:"En bref";display:block;margin-bottom:8px;font:500 .72rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--gold-deep)}
+.en-bref p:last-child{margin:0}
+.encart-bloc{margin:26px 0;padding:20px 22px 20px 70px;border-radius:16px;background:var(--ink);color:var(--mute);position:relative}
+.encart-bloc::before{content:"";position:absolute;left:20px;top:20px;width:34px;height:34px;border-radius:10px;background:rgba(201,169,97,.18) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256' fill='%23C9A961'%3E%3Cpath d='M215.79,118.17a8,8,0,0,0-5-5.66L153.18,90.9l14.66-73.33a8,8,0,0,0-13.69-7l-112,120a8,8,0,0,0,3,13l57.63,21.61L88.16,238.43a8,8,0,0,0,13.69,7l112-120A8,8,0,0,0,215.79,118.17Z'/%3E%3C/svg%3E") center/18px no-repeat}
+.encart-bloc p{margin:0 0 6px}.encart-bloc p:last-child{margin:0}
+.encart-bloc strong{color:var(--cream)}
+.appel-bloc{margin-top:40px;padding:24px 26px;border-radius:20px;background:linear-gradient(135deg,#141412,#0b0b0a);color:var(--mute);gap:16px;align-items:center}
+.appel-bloc p{margin:0}.appel-bloc strong{color:var(--cream);font:600 1.15rem var(--display)}
+.wp-block-button__link{display:inline-flex;align-items:center;min-height:48px;padding:0 24px;border-radius:999px;background:var(--gold);color:var(--ink);font-weight:500}
+.wp-block-button__link:hover{background:var(--gold-hi)}
+details.faq-bloc{margin:0 0 10px;padding:16px 20px;border-radius:14px;background:#fff;border:1px solid rgba(10,10,10,.08)}
+details.faq-bloc summary{cursor:pointer;font-weight:600;color:var(--ink);list-style:none;display:flex;justify-content:space-between;gap:12px}
+details.faq-bloc summary::-webkit-details-marker{display:none}
+details.faq-bloc summary::after{content:"+";color:var(--gold-deep);font-size:1.3rem;line-height:1}
+details.faq-bloc[open] summary::after{content:"−"}
+details.faq-bloc p{margin:10px 0 0}
+

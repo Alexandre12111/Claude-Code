@@ -1,0 +1,39 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:"Bricolage";src:url(polices/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(polices/geist.woff2) format("woff2");font-weight:100 900}
+body{margin:0;background:#f3ead9}</style></head><body>
+<svg id="s" width="2000" height="1500" viewBox="0 0 2000 1500" font-family="Geist">
+<text x="60" y="80" font-family="Bricolage" font-weight="800" font-size="56" fill="#15181e">Mascotte : quatre pistes explorées</text>
+<text x="60" y="122" font-size="26" fill="#6d655a">Critères : silhouette lisible en ombre chinoise, personnalité drôle, lien avec le métier, réutilisable sur le site et les réseaux.</text>
+<g id="cases"></g></svg>
+<script src="anim.js"></script><script src="gaspard.js"></script>
+<script>
+const s=document.getElementById('cases');
+const pistes=[
+ {nom:'A · Gaspard, le castor bâtisseur',note:'Le bâtisseur de la nature. Incisives, queue-truelle, casque. Gaffeur attachant.',choix:true},
+ {nom:'B · Brik, la brique vivante',note:'Lien BTP direct, mais personnage rigide et peu expressif.'},
+ {nom:"C · Plâtrou, la boule d'enduit",note:'Très souple et drôle, mais silhouette floue, peu mémorable.'},
+ {nom:'D · Roucou, le pigeon de chantier',note:'Très parisien et comique, mais image négative du pigeon.'},
+];
+const brique=`<g><rect x="-150" y="-330" width="300" height="300" rx="34" fill="#d9663b"/><path d="M-150,-230 H150 M-150,-130 H150 M-40,-330 V-230 M60,-230 V-130 M-40,-130 V-30" stroke="#f4d9c0" stroke-width="12"/><ellipse cx="-50" cy="-210" rx="30" ry="36" fill="#fff"/><ellipse cx="50" cy="-210" rx="30" ry="36" fill="#fff"/><circle cx="-44" cy="-204" r="15" fill="#15181e"/><circle cx="56" cy="-204" r="15" fill="#15181e"/><path d="M-40,-140 C-14,-118 14,-118 40,-140" stroke="#15181e" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M-60,-30 v30 M60,-30 v30" stroke="#15181e" stroke-width="18" stroke-linecap="round"/><path d="M-150,-180 l-60,40 M150,-180 l60,40" stroke="#d9663b" stroke-width="30" stroke-linecap="round"/></g>`;
+const boule=`<g><path d="M-170,0 C-200,-120 -150,-300 0,-310 C150,-300 210,-130 170,0 Z" fill="#f4efe6" stroke="#cfc6b8" stroke-width="8"/><path d="M-60,-300 C-40,-350 20,-350 30,-310" fill="#f4efe6" stroke="#cfc6b8" stroke-width="8"/><ellipse cx="-50" cy="-180" rx="28" ry="34" fill="#15181e"/><ellipse cx="50" cy="-180" rx="28" ry="34" fill="#15181e"/><circle cx="-42" cy="-192" r="9" fill="#fff"/><circle cx="58" cy="-192" r="9" fill="#fff"/><path d="M-50,-100 C-20,-60 20,-60 50,-100 Z" fill="#c9524a"/><path d="M-160,-100 l-60,-30 M160,-100 l60,-50" stroke="#f4efe6" stroke-width="30" stroke-linecap="round"/></g>`;
+const pigeon=`<g><ellipse cx="0" cy="-140" rx="140" ry="130" fill="#8e98a8"/><circle cx="-40" cy="-270" r="78" fill="#a7b0be"/><path d="M-100,-262 l-50,16 l50,12 z" fill="#ff9d3c"/><circle cx="-56" cy="-286" r="22" fill="#fff"/><circle cx="-62" cy="-286" r="11" fill="#15181e"/><path d="M-110,-330 C-80,-370 10,-370 40,-330 Z" fill="#ffc21a"/><path d="M40,-180 C120,-230 180,-160 140,-80 Z" fill="#6f7a8c"/><path d="M-30,-10 v20 M30,-10 v20" stroke="#ff9d3c" stroke-width="12" stroke-linecap="round"/><path d="M-40,-200 C0,-170 60,-170 90,-200" stroke="#7fbf9a" stroke-width="18" fill="none"/></g>`;
+pistes.forEach((p,i)=>{
+  const x=60+i*480,y=170;
+  const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+  g.innerHTML=`<rect x="${x}" y="${y}" width="450" height="1270" rx="28" fill="#fff" stroke="${p.choix?'#e8b84a':'#e3d9c9'}" stroke-width="${p.choix?8:3}"/>
+   <text x="${x+28}" y="${y+60}" font-family="Bricolage" font-weight="800" font-size="30" fill="#15181e">${p.nom}</text>
+   <g transform="translate(${x+225},${y+720}) scale(${i===0?.95:1})" id="perso${i}"></g>
+   <rect x="${x+28}" y="${y+800}" width="394" height="300" rx="20" fill="#f3ead9"/><text x="${x+40}" y="${y+828}" font-size="18" fill="#9a9184" font-weight="600">TEST DE SILHOUETTE</text>
+   <g transform="translate(${x+225},${y+1080}) scale(.42)" id="silh${i}"></g>
+   <foreignObject x="${x+28}" y="${y+1120}" width="400" height="140"><div xmlns="http://www.w3.org/1999/xhtml" style="font:500 21px/1.35 Geist;color:#3c372f">${p.note}</div></foreignObject>
+   ${p.choix?`<rect x="${x+300}" y="${y+84}" width="124" height="44" rx="22" fill="#e8b84a"/><text x="${x+362}" y="${y+114}" text-anchor="middle" font-family="Bricolage" font-weight="800" font-size="22" fill="#15181e">CHOISI</text>`:''}`;
+  s.appendChild(g);
+});
+const G=new Gaspard('ga');document.getElementById('perso0').innerHTML=G.svg();G.poser({mainD:{x:250,y:-330},formeD:'salut',coudeD:1,queue:-6,bouche:'rire'});
+document.getElementById('perso1').innerHTML=brique;document.getElementById('perso2').innerHTML=boule;document.getElementById('perso3').innerHTML=pigeon;
+const G2=new Gaspard('gs');document.getElementById('silh0').innerHTML=G2.svg();G2.poser({mainD:{x:250,y:-330},formeD:'salut',coudeD:1,queue:-6,bouche:'rire'});
+document.getElementById('silh1').innerHTML=brique;document.getElementById('silh2').innerHTML=boule;document.getElementById('silh3').innerHTML=pigeon;
+for(let i=0;i<4;i++){const e=document.getElementById('silh'+i);e.querySelectorAll('*').forEach(n=>{if(n.getAttribute('fill')&&n.getAttribute('fill')!=='none')n.setAttribute('fill','#15181e');if(n.getAttribute('stroke')&&n.getAttribute('stroke')!=='none')n.setAttribute('stroke','#15181e');});}
+window.pret=true;window.rendre=()=>{};
+</script></body></html>

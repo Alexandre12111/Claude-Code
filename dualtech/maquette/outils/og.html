@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Public+Sans:wght@400;600&display=swap">
+<style>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #041226; }
+  .og { position: relative; width: 1200px; height: 630px; color: #fff; font-family: "Public Sans", sans-serif; }
+  .og img.fond { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .55; }
+  .og::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(4,18,38,.55) 0%, rgba(4,18,38,.88) 70%); }
+  .in { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .logo { width: 600px; filter: drop-shadow(0 6px 28px rgba(4,18,38,.6)); }
+  .trait { width: 64px; height: 3px; margin: 40px 0 30px; background: #DF2229; }
+  .sous { margin: 0; font: 600 30px/1.25 Archivo; font-variation-settings: "wdth" 100; letter-spacing: -.005em; color: #fff; }
+  .sur { margin: 18px 0 0; display: flex; gap: 14px; align-items: center; font: 600 19px Archivo; font-variation-settings: "wdth" 85; letter-spacing: .16em; text-transform: uppercase; color: #C9D6EA; }
+  .sur i { width: 6px; height: 6px; background: #DF2229; }
+  .c { position: absolute; width: 26px; height: 26px; border: 0 solid rgba(232,239,250,.6); z-index: 1; }
+</style></head>
+<body><div class="og">
+  <img class="fond" src="../assets/img/hero-poster.webp" alt="">
+  <span class="c" style="top:28px;left:28px;border-top-width:1px;border-left-width:1px"></span>
+  <span class="c" style="top:28px;right:28px;border-top-width:1px;border-right-width:1px"></span>
+  <span class="c" style="bottom:28px;left:28px;border-bottom-width:1px;border-left-width:1px"></span>
+  <span class="c" style="bottom:28px;right:28px;border-bottom-width:1px;border-right-width:1px"></span>
+  <div class="in">
+    <img class="logo" src="../assets/logo-dualtech.webp" alt="">
+    <span class="trait"></span>
+    <p class="sous">Le rendez-vous incontournable de l’industrie duale</p>
+    <p class="sur">26 novembre 2026<i></i>Campus Cyber<i></i>La Défense</p>
+  </div>
+</div></body></html>

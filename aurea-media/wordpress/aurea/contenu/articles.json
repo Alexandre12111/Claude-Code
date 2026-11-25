@@ -1,0 +1,104 @@
+{
+ "prix-site-vitrine": {
+  "titre": "Prix d’un site vitrine en 2026 : combien prévoir ?",
+  "categorie": [
+   "Prix",
+   "prix"
+  ],
+  "mot_cle": "prix d’un site vitrine",
+  "titre_seo": "Prix d’un site vitrine en 2026 : budget, devis et pièges",
+  "description": "Prix d’un site vitrine en 2026 : budgets selon la solution, devis détaillé poste par poste, coûts annuels à prévoir et pièges à éviter avant de signer.",
+  "extrait": "De quelques dizaines d’euros par mois à plusieurs milliers d’euros : voici ce qui explique vraiment le prix d’un site vitrine, et comment lire un devis.",
+  "image": "conseils/prix-site-vitrine-devis.webp",
+  "images": {
+   "conseils/prix-site-vitrine-devis.webp": "Deux personnes étudient un devis de site internet devant un ordinateur portable",
+   "conseils/bureau-creation-site-vitrine.webp": "Bureau lumineux avec un ordinateur affichant un site internet en cours de création"
+  },
+  "ordre": 1
+ },
+ "site-vitrine-ou-site-e-commerce": {
+  "titre": "Site vitrine ou site e-commerce : lequel choisir pour votre activité ?",
+  "categorie": [
+   "Création de site web",
+   "creation-site-web"
+  ],
+  "mot_cle": "site vitrine ou site e-commerce",
+  "titre_seo": "Site vitrine ou site e-commerce : lequel choisir en 2026 ?",
+  "description": "Site vitrine ou site e-commerce : différences, coûts, cas où chacun s’impose et solutions intermédiaires, pour choisir le bon site pour votre activité.",
+  "extrait": "Présenter votre activité ou vendre en ligne ? Les différences concrètes entre un site vitrine et un site e-commerce, et comment choisir sans vous tromper.",
+  "image": "conseils/site-vitrine-ou-site-e-commerce.webp",
+  "images": {
+   "conseils/site-vitrine-ou-site-e-commerce.webp": "Pancarte « Open » accrochée à la vitrine d’une boutique",
+   "conseils/paiement-en-ligne-boutique.webp": "Personne tenant une carte bancaire devant un ordinateur portable pour payer en ligne"
+  },
+  "ordre": 2
+ },
+ "pages-indispensables-site-vitrine": {
+  "titre": "Les 10 pages indispensables d’un site vitrine",
+  "categorie": [
+   "Création de site web",
+   "creation-site-web"
+  ],
+  "mot_cle": "pages indispensables d’un site vitrine",
+  "titre_seo": "Les 10 pages indispensables d’un site vitrine, et leur rôle",
+  "description": "Les 10 pages indispensables d’un site vitrine : accueil, services, réalisations, à propos, avis, contact et pages légales. Le rôle de chacune.",
+  "extrait": "Accueil, services, réalisations, contact, pages légales : les pages indispensables d’un site vitrine, ce que chacune doit contenir et pourquoi.",
+  "image": "conseils/pages-site-vitrine-maquette.webp",
+  "images": {
+   "conseils/pages-site-vitrine-maquette.webp": "Croquis de maquettes de pages web dessinés au feutre sur papier",
+   "conseils/arborescence-site-vitrine-croquis.webp": "Main qui dessine au stylo la structure d’une page web sur une feuille"
+  },
+  "ordre": 3
+ },
+ "refonte-site-referencement": {
+  "titre": "Refonte de site : comment la réussir sans perdre son référencement",
+  "categorie": [
+   "Référencement",
+   "referencement"
+  ],
+  "mot_cle": "sans perdre son référencement",
+  "titre_seo": "Refonte de site sans perdre son référencement : 8 étapes",
+  "description": "Refonte de site sans perdre son référencement : inventaire des pages, plan de redirections 301, préproduction, mise en ligne et suivi, étape par étape.",
+  "extrait": "Une refonte mal préparée peut effacer des années de référencement en quelques jours. Les huit étapes pour changer de site en gardant vos positions sur Google.",
+  "image": "conseils/refonte-site-internet-referencement.webp",
+  "images": {
+   "conseils/refonte-site-internet-referencement.webp": "Designer qui dessine des maquettes de site sur papier devant un écran d’ordinateur",
+   "conseils/suivi-trafic-apres-refonte.webp": "Écran d’ordinateur affichant des courbes de statistiques de trafic"
+  },
+  "ordre": 4
+ },
+ "woocommerce-ou-shopify": {
+  "titre": "WooCommerce ou Shopify : que choisir pour votre boutique en ligne ?",
+  "categorie": [
+   "E-commerce",
+   "e-commerce"
+  ],
+  "mot_cle": "woocommerce ou shopify",
+  "titre_seo": "WooCommerce ou Shopify : que choisir pour sa boutique ?",
+  "description": "WooCommerce ou Shopify : propriété, coûts réels, personnalisation, référencement et maintenance. Le comparatif pour choisir votre boutique en ligne.",
+  "extrait": "Les deux solutions les plus utilisées pour créer une boutique en ligne, comparées critère par critère : propriété, coûts réels, liberté, référencement et maintenance.",
+  "image": "conseils/woocommerce-ou-shopify-boutique.webp",
+  "images": {
+   "conseils/woocommerce-ou-shopify-boutique.webp": "Sacs de shopping rouges et noirs posés sur un fond sombre",
+   "conseils/vente-en-ligne-commercant.webp": "Commerçant souriant qui encaisse une cliente avec un terminal de paiement"
+  },
+  "ordre": 5
+ },
+ "referencement-local-google": {
+  "titre": "Référencement local : 10 actions pour être visible sur Google dans votre ville",
+  "categorie": [
+   "Référencement",
+   "referencement"
+  ],
+  "mot_cle": "référencement local",
+  "titre_seo": "Référencement local : 10 actions pour être visible sur Google",
+  "description": "Référencement local : fiche Google, avis clients, pages locales, données structurées et annuaires. 10 actions pour être trouvé dans votre ville.",
+  "extrait": "Fiche Google, avis, pages locales, données structurées : dix actions concrètes pour apparaître quand un client cherche votre métier dans votre ville.",
+  "image": "conseils/referencement-local-commerce.webp",
+  "images": {
+   "conseils/referencement-local-commerce.webp": "Intérieur d’une boutique de vêtements avec portants et étagères",
+   "conseils/statistiques-visibilite-locale.webp": "Ordinateur portable affichant un tableau de bord de statistiques de visites"
+  },
+  "ordre": 6
+ }
+}

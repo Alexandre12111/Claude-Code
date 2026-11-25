@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Aurea Media · Nos réalisations</title>
+<style>
+/* Vidéo motion design 1080 x 1920, rendue image par image : rendre(t) est appelée par exporter.js.
+   V2 : accroche avant/après (refonte), montage à 133 BPM, transitions en volet, coups de zoom sur les temps. */
+@font-face{font-family:"Bricolage";src:url(../../reseaux-sociaux/sources/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(../../reseaux-sociaux/sources/geist.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Spectral SC";src:url(../../reseaux-sociaux/sources/spectral-sc-600.woff2) format("woff2");font-weight:600}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#v{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0A0A0A;color:#F5F5F0;font-family:Geist,sans-serif}
+.calque{position:absolute;inset:0;overflow:hidden}
+.titre{font-family:Bricolage,sans-serif;font-weight:650;letter-spacing:-.045em;line-height:.98}
+.or{background:linear-gradient(100deg,#F6E3AE 0%,#C9A961 45%,#A9873F 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mot{display:inline-block}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.06;z-index:80;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.fenetre{position:absolute;border-radius:20px;overflow:hidden;background:#111;box-shadow:0 0 0 1.5px rgba(255,255,255,.08),0 60px 120px rgba(0,0,0,.65)}
+.fenetre .bar{height:44px;background:#1b1b1a;display:flex;align-items:center;gap:9px;padding:0 18px}.fenetre .bar i{width:13px;height:13px;border-radius:50%;background:#3a3a38}
+.fenetre .bar i:nth-child(1){background:#ff5f57}.fenetre .bar i:nth-child(2){background:#febc2e}.fenetre .bar i:nth-child(3){background:#28c840}
+.fenetre .bar span{margin-left:16px;flex:1;height:26px;border-radius:8px;background:#262625;font:500 14px/26px Geist;color:#9b9b96;padding-left:14px}
+.fenetre .img{position:relative}.fenetre .img img{display:block;width:100%}
+.laptop{position:absolute}
+.laptop .ecran{position:relative;border-radius:22px 22px 0 0;background:#0c0c0c;padding:2.2% 2.2% 0;box-shadow:0 0 0 2px #2b2b29,0 60px 120px rgba(0,0,0,.6);overflow:hidden}
+.laptop .ecran img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:5px 5px 0 0}
+.laptop .base{height:20px;margin:0 -7%;background:linear-gradient(#3a3a37,#1d1d1b);border-radius:0 0 20px 20px}
+.tel{position:absolute;border-radius:62px;padding:12px;background:linear-gradient(135deg,#d9d6cf 0%,#8e8a82 12%,#4b4844 30%,#2a2826 50%,#4b4844 70%,#9b968d 88%,#e2ded6 100%);box-shadow:0 60px 120px rgba(0,0,0,.6)}
+.tel .verre{position:relative;border-radius:52px;overflow:hidden;background:#000;padding:8px}
+.tel .verre img{display:block;width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:44px}
+.tel .ile{position:absolute;top:22px;left:50%;width:31%;height:30px;transform:translateX(-50%);background:#000;border-radius:999px}
+.reflet{position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.28) 47%,rgba(255,255,255,.06) 53%,transparent 60%);mix-blend-mode:screen}
+.pastille{display:inline-flex;align-items:center;gap:12px;border-radius:999px;padding:14px 26px;font:600 30px Geist;white-space:nowrap}
+.tag{position:absolute;z-index:6;font:800 26px Geist;letter-spacing:.18em;padding:12px 20px;border-radius:12px}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:70;pointer-events:none}
+#volet{position:absolute;top:-300px;bottom:-300px;width:1500px;z-index:65;pointer-events:none;display:none}
+#voile{position:absolute;inset:0;z-index:75;pointer-events:none}
+.lettres{display:inline-flex;overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em}
+.lettres span{display:inline-block;white-space:pre}
+</style></head><body>
+<div id="v">
+  <div class="calque" id="H"></div><div class="calque" id="A"></div><div class="calque" id="R"></div><div class="calque" id="B"></div><div class="calque" id="C"></div><div class="calque" id="D"></div><div class="calque" id="E"></div>
+  <div id="volet"></div><div id="voile"></div><div id="flash"></div><div class="grain"></div>
+</div>
+<script>
+const C1 = '../../reseaux-sociaux/carrousel/concepts/captures/', C2 = 'sites/captures/';
+// nom, secteur, typographie, captures, fond, accent, texte clair (1) ou foncé (0), mise en scène
+const SITES = [
+  ['Véloce', 'Vélos en carbone · e-shop', 'Archivo Expanded · Mono', C2 + 'veloce', '#0A0A0A', '#D7FF3A', 1, 'duo'],
+  ['Monolithe', 'Construction · gros œuvre', 'Syncopate · Barlow', C2 + 'monolithe', '#101214', '#FF5A1F', 1, 'pleine'],
+  ['Valmont Avocats', "Cabinet d'avocats d'affaires", 'Bodoni Moda · DM Mono', C2 + 'valmont', '#0B0A09', '#D4B06A', 1, 'tel'],
+  ['Braise', 'Restaurant gastronomique', 'Big Shoulders · Inter Tight', C1 + 'braise', '#140C08', '#FF6B2C', 1, 'tranches'],
+  ['Uppercut', 'Club de boxe', 'Anton · Space Mono', C2 + 'uppercut', '#070707', '#FF2B2B', 1, 'duo'],
+  ['Ébène', 'Ébéniste · mobilier sur mesure', 'Fraunces · Karla', C2 + 'ebene', '#16100C', '#E9C48A', 1, 'pleine'],
+];
+const B = .45;                                   // un temps à 133 BPM
+const HF = 99, HE = 2.4;                                    // accroche : mur de sites, puis rafale
+const BA0 = HE, W1 = 90, W2 = 91, W3 = 92, W4 = 93, W5 = 94, BAE = HE;   // avant / après
+const R0 = BAE;                                              // recommandations
+const TT = BAE, T0 = HE, DS = 2.7, TMUR = T0 + SITES.length * DS, TFIN = TMUR, DUREE = TFIN + 6;
+const CLIC = TFIN + 3.55;
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const mix = (a, b, k) => a + (b - a) * k;
+const E = { out: k => 1 - Math.pow(1 - k, 3), io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, back: k => { const c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }, expo: k => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k) };
+const prog = (t, a, d) => clamp((t - a) / d);
+function mot(t, a, d = .32) { const k = prog(t, a, d), e = E.back(k); return `opacity:${clamp(k * 3)};transform:translateY(${(1 - e) * 80}px) scale(${mix(.75, 1, e)});filter:blur(${(1 - clamp(k * 1.6)) * 10}px)`; }
+function lettres(txt, t, a, pas = .028) { return `<span class="lettres">${[...txt].map((c, i) => { const k = E.out(prog(t, a + i * pas, .32)); return `<span style="transform:translateY(${(1 - k) * 110}%) rotate(${(1 - k) * 8}deg)">${c}</span>`; }).join('')}</span>`; }
+const coup = t => { const b = Math.max(0, t - T0); const d = b % B; return t >= T0 && t < TMUR ? Math.exp(-d * 10) : 0; };   // coup de zoom sur chaque temps
+
+// ======================= A. ACCROCHE AVANT / APRÈS =======================
+const AV = C2 + 'dupuis-avant', AP = C2 + 'dupuis-apres';
+$('A').innerHTML = `
+  <div id="aHalo" style="position:absolute;width:1600px;height:1600px;left:-260px;top:120px;border-radius:50%;background:radial-gradient(circle,rgba(229,72,77,.22),rgba(229,72,77,0) 60%)"></div>
+  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:90px 90px;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 30%,transparent 75%)"></div>
+  <div style="position:absolute;left:70px;right:70px;top:120px;display:flex;justify-content:space-between;align-items:center;font:600 24px Geist;letter-spacing:.2em;color:#AEAEA8">
+    <span style="display:flex;align-items:center;gap:14px"><i id="rec" style="width:16px;height:16px;border-radius:50%;background:#E5484D;display:inline-block"></i>REFONTE DE SITE</span><span>AVANT / APRÈS</span></div>
+  <div id="aT1" class="titre" style="position:absolute;left:70px;right:70px;top:210px;font-size:118px">
+    <div><span class="mot" id="a1">Ce site lui</span></div><div><span class="mot" id="a2">faisait</span> <span class="mot" id="a3" style="position:relative;color:#fff;padding:0 18px;margin-left:-6px"><b id="a3fond" style="position:absolute;inset:6px -2px 0;background:#E5484D;border-radius:14px;transform:rotate(-2deg);z-index:-1"></b>perdre</span></div><div><span class="mot" id="a4">des clients.</span></div></div>
+  <div id="aT2" class="titre" style="position:absolute;left:70px;right:70px;top:220px;font-size:104px">
+    <div><span class="mot" id="a5">On l'a</span> <span class="mot or" id="a6">refait.</span></div><div style="font-size:64px;margin-top:22px;color:#AEAEA8;font-weight:520;letter-spacing:-.03em"><span class="mot" id="a7">Regardez la différence.</span></div></div>
+  <div id="aScene" style="position:absolute;left:0;top:0;width:1080px;height:1920px;perspective:2400px">
+    <div class="fenetre" id="aFen" style="left:40px;top:640px;width:1000px">
+      <div class="bar"><i></i><i></i><i></i><span id="aUrl">www.dupuis-plomberie.fr</span></div>
+      <div class="img"><img src="${AV}.png"><div id="aApres" style="position:absolute;inset:0;overflow:hidden"><img src="${AP}.png" style="display:block;width:100%"></div>
+        <div id="aLigne" style="position:absolute;top:0;bottom:0;width:6px;margin-left:-3px;background:linear-gradient(#F6E3AE,#C9A961);box-shadow:0 0 30px #C9A961,0 0 80px rgba(201,169,97,.7)"></div>
+        <div id="aPoignee" style="position:absolute;top:50%;width:92px;height:92px;margin:-46px 0 0 -46px;border-radius:50%;background:linear-gradient(135deg,#F6E3AE,#C9A961 55%,#A9873F);display:grid;place-items:center;font:800 34px Geist;color:#0A0A0A;box-shadow:0 10px 40px rgba(0,0,0,.5)">‹ ›</div>
+        <div class="reflet" id="aReflet"></div></div></div>
+    <div class="tag" id="tAv" style="left:70px;top:620px;background:#E5484D;color:#fff;transform:rotate(-4deg)">AVANT · 2009</div>
+    <div class="tag" id="tAp" style="right:70px;top:620px;background:linear-gradient(100deg,#F6E3AE,#C9A961);color:#0A0A0A;transform:rotate(3deg)">APRÈS · AUREA</div>
+    <div id="aTel"></div>
+  </div>
+  <div id="aPb" style="position:absolute;left:70px;right:70px;top:1420px;display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+    <div class="pastille" id="p1" style="background:rgba(229,72,77,.14);border:1.5px solid rgba(229,72,77,.5);color:#ff8a8d">✕ Illisible sur mobile</div>
+    <div class="pastille" id="p2" style="background:rgba(229,72,77,.14);border:1.5px solid rgba(229,72,77,.5);color:#ff8a8d">✕ Aucune demande de devis</div>
+    <div class="pastille" id="p3" style="background:rgba(229,72,77,.14);border:1.5px solid rgba(229,72,77,.5);color:#ff8a8d">✕ Une image d'entreprise datée</div></div>
+  <div id="aOk" style="position:absolute;left:70px;right:70px;top:1420px;display:flex;flex-direction:column;gap:20px;align-items:flex-start">
+    <div class="pastille" id="q1" style="background:rgba(201,169,97,.14);border:1.5px solid rgba(201,169,97,.55);color:#F0DCA4">✓ Moderne et rassurant</div>
+    <div class="pastille" id="q2" style="background:rgba(201,169,97,.14);border:1.5px solid rgba(201,169,97,.55);color:#F0DCA4">✓ Parfait sur mobile</div>
+    <div class="pastille" id="q3" style="background:rgba(201,169,97,.14);border:1.5px solid rgba(201,169,97,.55);color:#F0DCA4">✓ Pensé pour obtenir des devis</div></div>`;
+function scnA(t) {
+  // position du balayage (0 = tout avant, 1 = tout après), avec le retour au milieu pour comparer
+  let w = 0;
+  if (t >= W1) w = E.io(prog(t, W1, W2 - W1));
+  if (t >= W2) w = mix(1, .5, E.io(prog(t, W2, W3 - W2)));
+  if (t >= W4) w = mix(.5, 1, E.io(prog(t, W4, W5 - W4)));
+  const actif = t >= W1 - .05 && t < W5 + .1;
+  $('aApres').style.clipPath = `inset(0 0 0 ${(1 - w) * 0}% )`;
+  $('aApres').style.clipPath = `inset(0 ${(1 - w) * 100}% 0 0)`;
+  $('aLigne').style.left = $('aPoignee').style.left = (w * 100) + '%';
+  $('aLigne').style.opacity = $('aPoignee').style.opacity = actif ? 1 : 0;
+  $('aPoignee').style.transform = `scale(${actif ? 1 + .08 * Math.sin(t * 12) : .5})`;
+  $('aUrl').textContent = w > .5 ? 'dupuis-salledebain.fr' : 'www.dupuis-plomberie.fr';
+  // fenêtre : léger mouvement de caméra, secousse « datée » au début
+  const fin = E.out(prog(t, W5, .6));
+  const sh = t < W1 ? Math.sin(t * 40) * 1.5 : 0;
+  $('aFen').style.transform = `rotateX(${mix(14, 0, E.out(prog(t, BA0, .7)))}deg) translate(${sh}px,0px) scale(${1 + .015 * Math.sin(t * 1.3)})`;
+  $('aFen').style.transformOrigin = '50% 0';
+  $('aReflet').style.transform = `translateX(${mix(-1200, 1200, prog(t, W5 + .1, .7))}px)`;
+  // titres
+  const swap = prog(t, W1 + .05, .2);
+  $('aT1').style.cssText += `;opacity:${1 - swap};transform:translateY(${-swap * 60}px)`;
+  [['a1', BA0], ['a2', BA0 + .08], ['a4', BA0 + .16]].forEach(([id, a]) => $(id).style.cssText = mot(t, a, .25));
+  const p = E.back(prog(t, BA0 + .1, .3)); $('a3').style.cssText = `position:relative;color:#fff;padding:0 18px;margin-left:-6px;display:inline-block;transform:scale(${mix(.6, 1, p)}) rotate(${(1 - p) * -8 + Math.sin(t * 9) * .8}deg)`;
+  $('a5').style.cssText = mot(t, W1 + .2); $('a6').style.cssText = mot(t, W1 + .38); $('a7').style.cssText = mot(t, W3, .3);
+  $('aT2').style.opacity = t >= W1 ? 1 : 0;
+  // pastilles : problèmes puis solutions
+  [['p1', BA0 + .1], ['p2', BA0 + .3], ['p3', BA0 + .5]].forEach(([id, a]) => $(id).style.cssText += ';' + (t < W1 ? mot(t, a, .22) : `opacity:${1 - prog(t, W1, .15)};transform:translateX(${-prog(t, W1, .25) * 300}px)`));
+  [['q1', W5 - .1], ['q2', W5 + .1], ['q3', W5 + .3]].forEach(([id, a]) => $(id).style.cssText += ';' + mot(t, a, .25));
+  $('aOk').style.opacity = t >= W5 - .15 ? 1 : 0; $('aPb').style.opacity = t < W1 + .3 ? 1 : 0;
+  // étiquettes
+  $('tAv').style.opacity = t < W1 + .2 || (t >= W2 && t < W4 + .2) ? 1 : 0; $('tAv').style.transform = `rotate(-4deg) scale(${1 + .06 * Math.max(0, Math.sin(t * 7))})`;
+  $('tAp').style.opacity = t >= W2 ? 1 : 0;
+  // halo : rouge (avant) → or (après)
+  $('aHalo').style.background = `radial-gradient(circle,${w > .5 ? 'rgba(201,169,97,.26)' : 'rgba(229,72,77,.22)'},rgba(0,0,0,0) 60%)`;
+  $('rec').style.opacity = Math.sin(t * 6) > 0 ? 1 : .25;
+  // téléphone : la version mobile arrive
+  const bas = E.out(prog(t, BA0 + .05, .4)), flip = prog(t, W5 - .1, .4), ang = flip < .5 ? flip * 180 : (flip - .5) * 180 - 90;
+  $('aTel').innerHTML = `<div class="tel" style="left:690px;top:${mix(1300, 1160, bas)}px;width:310px;transform:rotateY(${ang}deg) rotate(${5 + Math.sin(t * 1.4) * 1.5}deg)"><div class="verre"><img src="${flip < .5 ? AV : AP}-mobile.png"><div class="ile"></div></div></div>`;
+  // sortie
+  const s = prog(t, BAE - .25, .25), en = E.expo(prog(t, BA0, .3)); $('A').style.opacity = 1 - s; $('A').style.transform = `scale(${mix(1.25, 1, en) + s * .25})`; $('A').style.filter = `blur(${(1 - en) * 12}px)`;
+}
+
+// ======================= B. « ET CE N'EST QUE LE DÉBUT » =======================
+$('B').innerHTML = `<div id="tunnel" style="position:absolute;inset:0;z-index:1;filter:brightness(.6)"></div>
+  <div style="position:absolute;left:60px;right:60px;top:760px;text-align:center;z-index:3;text-shadow:0 10px 40px rgba(0,0,0,.8)" class="titre"><div style="font-size:110px" id="b1"></div><div style="font-size:150px;margin-top:6px" id="b2"></div></div>`;
+function scnB(t) {
+  const u = (t - TT) / (T0 - TT);
+  $('tunnel').innerHTML = SITES.map((s, i) => { const k = (u * 1.3 + i / SITES.length) % 1, z = Math.pow(k, 2.2) * 3.2 + .15, a = i / SITES.length * Math.PI * 2 + u;
+    return `<img src="${s[3]}.png" style="position:absolute;left:540px;top:960px;width:600px;border-radius:12px;transform:translate(-50%,-50%) translate(${Math.cos(a) * 520 * z}px,${Math.sin(a) * 820 * z}px) scale(${z});opacity:${clamp(k * 4) * (1 - clamp((k - .8) * 5)) * .55}">`; }).join('');
+  $('b1').innerHTML = lettres("Et ce n'est que", t, TT + .02, .018);
+  $('b2').innerHTML = `<span class="or">${lettres('le début.', t, TT + .25, .03)}</span>`;
+}
+
+// ======================= C. DÉFILÉ DES SITES =======================
+$('C').innerHTML = `<div id="cFond" style="position:absolute;inset:0"></div><div id="cGeant" style="position:absolute;left:0;top:420px;white-space:nowrap;font:800 360px/1 Bricolage;letter-spacing:-.05em"></div>
+  <div id="scene" style="position:absolute;inset:0;perspective:2200px"></div>
+  <div style="position:absolute;left:70px;right:70px;top:110px;display:flex;justify-content:space-between;align-items:center;z-index:20">
+    <div id="cpt" style="font:600 28px Geist;letter-spacing:.14em"></div><div id="typo" style="font:500 24px Geist;opacity:.7"></div></div>
+  <div style="position:absolute;left:70px;right:70px;top:168px;height:5px;border-radius:5px;background:rgba(128,128,128,.25);z-index:20;overflow:hidden"><i id="bp" style="display:block;height:100%"></i></div>
+  <div style="position:absolute;left:70px;top:205px;z-index:20;font:600 20px Geist;letter-spacing:.3em;opacity:.6" id="cSur">NOS CRÉATIONS</div>
+  <div id="eti" style="position:absolute;left:70px;right:70px;bottom:130px;z-index:20"><div id="nom" style="font:650 112px/1 Bricolage;letter-spacing:-.05em"></div><div style="display:flex;align-items:center;gap:16px;margin-top:18px;font:500 30px Geist"><span id="sect" style="opacity:.85"></span><span style="font:600 17px Geist;letter-spacing:.16em;border-radius:999px;padding:9px 16px;border:1.5px solid currentColor;opacity:.6">CONCEPT</span></div></div>`;
+const lap = (src, x, y, w, ry, rx, rz = 0) => `<div class="laptop" style="left:${x}px;top:${y}px;width:${w}px;transform:rotateY(${ry}deg) rotateX(${rx}deg) rotateZ(${rz}deg)"><div class="ecran"><img src="${src}.png"><div class="reflet" style="transform:translateX(var(--rf))"></div></div><div class="base"></div></div>`;
+const tel = (src, x, y, w, ry = 0, rz = 0) => `<div class="tel" style="left:${x}px;top:${y}px;width:${w}px;transform:rotateY(${ry}deg) rotateZ(${rz}deg)"><div class="verre"><img src="${src}-mobile.png"><div class="ile"></div><div class="reflet" style="transform:translateX(var(--rf))"></div></div></div>`;
+function scnC(t) {
+  const i = Math.min(SITES.length - 1, Math.floor((t - T0) / DS)), u = (t - T0 - i * DS) / DS;
+  const [nom, sect, typo, src, fond, acc, clair, mode] = SITES[i];
+  const ink = clair ? '#F5F5F0' : '#141414';
+  $('C').style.color = ink;
+  $('cFond').style.background = `radial-gradient(1100px 900px at 50% 45%,${acc}33,transparent 70%),${fond}`;
+  // nom géant qui défile derrière
+  $('cGeant').textContent = (nom + ' · ').repeat(4);
+  $('cGeant').style.cssText += `;color:transparent;-webkit-text-stroke:2px ${acc};opacity:.28;transform:translateX(${-200 - u * 700}px)`;
+  const k = E.io(u), c = coup(t);
+  let h = '';
+  if (mode === 'duo') h = lap(src, mix(-60, 10, k), mix(600, 560, k), 1000, mix(26, 6, k), 8) + tel(src, mix(760, 680, k), mix(880, 830, k), 300, mix(-26, -6, k), 5);
+  else if (mode === 'pleine') { const s = mix(1.6, 1.04, E.out(u)); h = `<div class="fenetre" style="left:40px;top:360px;width:1000px;transform:scale(${s});transform-origin:25% 0"><div class="bar"><i></i><i></i><i></i><span>${nom.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '')}.fr</span></div><div class="img"><img src="${src}.png"><div class="reflet" style="transform:translateX(var(--rf))"></div></div></div>` + tel(src, 700, mix(1700, 860, E.back(clamp(u * 2.2))), 290, -6, 6); }
+  else if (mode === 'tel') h = `<div style="position:absolute;left:-260px;top:420px;width:1600px;opacity:.3;filter:blur(8px)"><img src="${src}.png" style="width:100%"></div>` + tel(src, 270, mix(400, 330, k), 540, mix(40, -18, k), mix(-8, 4, k));
+  else h = [0, 1, 2].map(j => { const d = clamp((u - j * .05) / .22), x = (1 - E.expo(d)) * (j % 2 ? -1300 : 1300); return `<div style="position:absolute;left:40px;top:${400 + j * 210}px;width:1000px;height:210px;overflow:hidden;border-radius:${j === 0 ? '20px 20px 0 0' : j === 2 ? '0 0 20px 20px' : '0'};transform:translateX(${x}px);box-shadow:0 40px 80px rgba(0,0,0,.35)"><img src="${src}.png" style="width:1000px;position:absolute;top:${-j * 210}px;left:0"></div>`; }).join('') + tel(src, 720, mix(980, 900, k), 270, -8, 6);
+  $('scene').innerHTML = h;
+  $('scene').style.setProperty('--rf', mix(-1400, 1400, prog(u, .25, .5)) + 'px');
+  // entrée : le site arrive en grand, coup de zoom sur chaque temps
+  const ent = E.expo(clamp(u / .14));
+  $('scene').style.transform = `scale(${mix(1.35, 1, ent) + c * .035}) rotate(${(1 - ent) * (i % 2 ? 3 : -3)}deg)`;
+  $('scene').style.filter = `blur(${(1 - ent) * 14}px)`;
+  // étiquette lettre par lettre
+  $('nom').innerHTML = lettres(nom, t, T0 + i * DS + .1, .03);
+  $('sect').textContent = sect; $('typo').textContent = typo;
+  $('cpt').innerHTML = `<b style="color:${acc}">${String(i + 1).padStart(2, '0')}</b> / 06`;
+  $('bp').style.cssText = `display:block;height:100%;width:${((i + u) / SITES.length) * 100}%;background:${acc}`;
+}
+
+// ======================= D. MUR DE SITES =======================
+const mur = []; for (let c = 0; c < 4; c++) for (let r = 0; r < 8; r++) { const s = SITES[(c * 3 + r) % SITES.length]; mur.push(`<div class="fenetre" style="left:${c * 640}px;top:${r * 440 + (c % 2) * 220}px;width:600px"><div class="bar"><i></i><i></i><i></i></div><img src="${s[3]}.png" style="display:block;width:100%"></div>`); }
+mur.push(`<div class="fenetre" style="left:640px;top:1540px;width:600px"><div class="bar"><i></i><i></i><i></i></div><img src="${AP}.png" style="display:block;width:100%"></div>`);
+$('D').innerHTML = `<div style="position:absolute;inset:0;perspective:2000px"><div id="mur" style="position:absolute;left:50%;top:50%;width:2560px;height:3700px">${mur.join('')}</div></div>
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(10,10,10,.5),rgba(10,10,10,.94) 72%)"></div>
+  <div style="position:absolute;left:60px;right:60px;top:600px;text-align:center" class="titre"><div style="font-size:160px" id="d1"></div><div style="font-size:160px" id="d2"></div><div style="font-size:160px" id="d3"></div></div>`;
+function scnD(t) {
+  const u = (t - TMUR) / (TFIN - TMUR);
+  $('mur').style.transform = `translate(-50%,-50%) rotateX(30deg) rotateZ(-16deg) translateY(${mix(700, -700, u)}px) scale(${mix(.85, 1.15, u) + coup(t + T0 - TMUR) * 0})`;
+  $('d1').innerHTML = lettres('8 sites.', t, TMUR + .15, .03);
+  $('d2').innerHTML = lettres('8 univers.', t, TMUR + .6, .03);
+  $('d3').innerHTML = `<span class="or">${lettres('0 template.', t, TMUR + 1.05, .03)}</span>`;
+  const s = prog(t, TFIN - .3, .3); $('D').style.opacity = 1 - s; $('D').style.transform = `scale(${1 + s * .3})`;
+}
+
+// ======================= E. APPEL À L'ACTION =======================
+$('E').innerHTML = `<div id="eHalo" style="position:absolute;width:1800px;height:1800px;left:-360px;top:60px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,97,.3),rgba(201,169,97,0) 60%)"></div>
+  <div style="position:absolute;left:60px;right:60px;top:250px;text-align:center" class="titre"><div style="font-size:104px" id="e1"></div><div style="font-size:104px" id="e2"></div></div>
+  <div id="eLogo" style="position:absolute;left:0;right:0;top:760px;display:flex;flex-direction:column;align-items:center">
+    <img src="../../reseaux-sociaux/sources/logo-monogramme-clair.svg" style="width:180px">
+    <div style="font:600 66px 'Spectral SC';letter-spacing:.06em;margin-top:30px">AUREA MEDIA</div>
+    <div style="font:600 22px 'Spectral SC';letter-spacing:.5em;color:#C9A961;margin-top:12px">AGENCE WEB · PARIS</div></div>
+  <div id="eCta" style="position:absolute;left:0;right:0;top:1290px;display:flex;flex-direction:column;align-items:center;gap:28px">
+    <div id="eBtn" style="position:relative;display:inline-flex;align-items:center;gap:18px;background:linear-gradient(100deg,#F6E3AE,#C9A961 50%,#A9873F);color:#0A0A0A;border-radius:999px;padding:36px 64px;font:700 46px Geist;box-shadow:0 30px 80px rgba(201,169,97,.4)">Contactez-nous <span>→</span><i id="eRond" style="position:absolute;left:50%;top:50%;width:20px;height:20px;border-radius:50%;border:4px solid #F6E3AE;transform:translate(-50%,-50%)"></i></div>
+    <div style="font:500 32px Geist;color:#AEAEA8">Devis gratuit sous 24 h · <b style="color:#F5F5F0">aurea-media.fr</b></div></div>
+  <svg id="eCurseur" viewBox="0 0 24 24" style="position:absolute;width:70px;height:70px;z-index:5"><path d="M4 2l16 9-7 2-3 7z" fill="#fff" stroke="#000" stroke-width="1.4"/></svg>
+  <div id="eBio" style="position:absolute;left:0;right:0;bottom:150px;text-align:center;font:600 26px Geist;letter-spacing:.24em;color:#C9A961">LIEN EN BIO ↗</div>`;
+function scnE(t) {
+  const u = t - TFIN;
+  $('e1').innerHTML = lettres('Votre site mérite', t, TFIN + .05, .02);
+  $('e2').innerHTML = `<span class="or">${lettres('le même traitement.', t, TFIN + .4, .022)}</span>`;
+  const l = prog(t, TFIN + 1.3, .5); $('eLogo').style.cssText += `;opacity:${l};transform:translateY(${(1 - E.out(l)) * 60}px) scale(${mix(.85, 1, E.back(l))})`;
+  const c = prog(t, TFIN + 1.9, .45);
+  const presse = clamp(1 - Math.abs(t - CLIC) / .12);
+  $('eCta').style.cssText += `;opacity:${c};transform:translateY(${(1 - E.back(c)) * 80}px)`;
+  $('eBtn').style.transform = `scale(${1 - presse * .07 + .025 * Math.sin(Math.max(0, t - CLIC) * 6) * (t > CLIC ? 1 : 0)})`;
+  const r = prog(t, CLIC, .6); $('eRond').style.cssText = `position:absolute;left:62%;top:50%;width:${20 + r * 700}px;height:${20 + r * 700}px;border-radius:50%;border:4px solid #F6E3AE;transform:translate(-50%,-50%);opacity:${t > CLIC ? 1 - r : 0}`;
+  // le curseur vient cliquer sur le bouton
+  const m = E.io(prog(t, TFIN + 2.5, 1.0));
+  $('eCurseur').style.cssText += `;left:${mix(980, 640, m)}px;top:${mix(1800, 1352, m)}px;opacity:${prog(t, TFIN + 2.4, .2)};transform:scale(${1 - presse * .2})`;
+  $('eBio').style.opacity = prog(t, CLIC + .3, .4);
+  $('eHalo').style.transform = `scale(${1 + .06 * Math.sin(u * 2)})`;
+}
+
+
+// ======================= H. ACCROCHE : MUR DE SITES PUIS RAFALE =======================
+const RE = '../../maquette/assets/realisations/';
+const REELS = 'novexia dual-tech villa-moniris laurence-paoli normande-isolation perle-hair enzym iff-paris sultan sunrock havel-trading maryes xpert-medical duchentyls eddy-bilou inas massy portugal-expert tayeb verisol cercle-la-raison barber-korner tcm-grand-est'.split(' ')
+  .map(n => ({ d: RE + n + '.webp', m: ['barber-korner', 'tcm-grand-est'].includes(n) ? null : RE + n + '-mobile.webp' }));
+const CONC = [...SITES.map(s => ({ d: s[3] + '.png', m: s[3] + '-mobile.png' })), { d: AP + '.png', m: AP + '-mobile.png' }];
+const TOUS = []; for (let i = 0; i < Math.max(REELS.length, CONC.length * 2); i++) { if (REELS[i]) TOUS.push(REELS[i]); if (i % 2 === 0 && CONC[i / 2]) TOUS.push(CONC[i / 2]); }
+const HAUT = 540 * 10 / 16 + 30, NCOL = 5, NPAR = 10;
+$('H').innerHTML = `<div style="position:absolute;inset:0;perspective:1800px"><div id="hMur" style="position:absolute;left:50%;top:50%;width:${NCOL * 580}px;height:4200px">` +
+  Array.from({ length: NCOL }, (_, c) => `<div id="hc${c}" style="position:absolute;left:${c * 580}px;top:0;width:540px">` + Array.from({ length: NPAR * 2 }, (_, r) => `<img src="${TOUS[(c * 7 + r) % TOUS.length].d}" style="display:block;width:540px;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:14px;margin-bottom:30px;box-shadow:0 0 0 1.5px rgba(255,255,255,.08),0 30px 60px rgba(0,0,0,.6)">`).join('') + `</div>`).join('') + `</div></div>
+  <div id="hVoile" style="position:absolute;inset:0;background:radial-gradient(ellipse 85% 42% at 50% 47%,rgba(10,10,10,.86),rgba(10,10,10,.3) 70%,rgba(10,10,10,.6))"></div>
+  <div id="hTxt" class="titre" style="position:absolute;left:40px;right:40px;top:560px;text-align:center;text-shadow:0 10px 50px rgba(0,0,0,.6)">
+    <div style="font-size:150px"><span class="mot" id="h1">Votre site</span></div><div style="font-size:150px"><span class="mot" id="h2">pourrait</span></div><div style="font-size:150px"><span class="mot" id="h3">ressembler</span></div><div style="font-size:230px;margin-top:6px"><span class="mot or" id="h4">à ça.</span></div></div>
+  <div id="hRaf" style="position:absolute;inset:0;perspective:2000px"></div>
+  <div id="hHaut" style="position:absolute;left:70px;right:70px;top:150px;display:flex;justify-content:space-between;font:600 26px Geist;letter-spacing:.24em;color:#C9A961"><span>NOS RÉALISATIONS</span><span id="hIdx"></span></div>
+  <div id="hCpt" style="position:absolute;left:0;right:0;top:1360px;text-align:center"><div id="hN" class="titre" style="font-size:260px"></div><div style="font:500 36px Geist;color:#AEAEA8;margin-top:6px">sites livrés depuis 2021</div></div>`;
+const PAL = ['#8B6CFF', '#FF6B2C', '#D7FF3A', '#2563EB', '#C9A961', '#FF3B1F', '#16B988', '#E8C88A'];
+function scnH(t) {
+  const v = 1300 * t + 650 * t * t;   // le mur accélère
+  for (let c = 0; c < NCOL; c++) $('hc' + c).style.transform = `translateY(${-(((c % 2 ? v : -v) * (1 + c * .08) % (NPAR * HAUT)) + NPAR * HAUT) % (NPAR * HAUT)}px)`;
+  const raf = t >= HF, zr = E.io(prog(t, HE - .45, .45));
+  $('hMur').style.transform = `translate(-50%,-50%) rotateX(32deg) rotateZ(-18deg) scale(${1 + .06 * t + zr * .5})`;
+  $('hMur').style.filter = `blur(${zr * 10}px) brightness(${1 - zr * .5})`;
+  // phrase d'accroche : lisible dès la première image, « à ça. » claque sur le premier temps
+  const pun = Math.exp(-Math.max(0, t - .45) * 6) * (t > .45 ? 1 : 0);
+  ['h1', 'h2', 'h3'].forEach((id, i) => $(id).style.cssText = `display:inline-block;transform:scale(${1 + .015 * Math.sin(t * 4 + i)})`);
+  const k4 = prog(t, -.25, .25); $('h4').style.cssText = `display:inline-block;opacity:${clamp(k4 * 3)};transform:scale(${mix(2.6, 1, E.out(k4)) + pun * .08}) rotate(${(1 - E.back(k4)) * -8}deg);filter:blur(${(1 - clamp(k4 * 2)) * 14}px)`;
+  const sortTxt = prog(t, HE - .35, .25); $('hTxt').style.cssText += `;opacity:${1 - sortTxt};transform:translateY(${-sortTxt * 140}px) scale(${1 - sortTxt * .1})`;
+  $('hVoile').style.opacity = 1 - zr * .3;
+  // rafale de sites coupés en rythme, avec compteur jusqu'à 45+
+  const P = .148, j = Math.floor((t - HF) / P), uj = ((t - HF) % P) / P;
+  if (raf) {
+    const s = TOUS[(j * 5 + 3) % TOUS.length], col = PAL[j % PAL.length], tel = j % 2 && s.m;
+    const pop = 1 + (1 - E.out(clamp(uj * 2))) * .1;
+    $('hRaf').innerHTML = `<div style="position:absolute;left:50%;top:47%;width:1300px;height:1300px;margin:-650px;border-radius:50%;background:radial-gradient(circle,${col}55,transparent 62%)"></div>` +
+      (tel ? `<div class="tel" style="left:330px;top:300px;width:420px;transform:scale(${pop}) rotate(${(j % 4 - 1.5) * 2}deg)"><div class="verre"><img src="${s.m}"><div class="ile"></div></div></div>`
+           : `<div class="fenetre" style="left:40px;top:${470}px;width:1000px;transform:scale(${pop}) rotate(${(j % 3 - 1) * 1.5}deg)"><div class="bar"><i></i><i></i><i></i></div><img src="${s.d}" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top"></div>`);
+  } else $('hRaf').innerHTML = '';
+  const n = Math.round(1 + 44 * E.out(prog(t, HF, 1.4))), fini = t >= HF + 1.42;
+  $('hN').innerHTML = fini ? '<span class="or">45+</span>' : String(n);
+  const ck = prog(t, HF, .2); $('hCpt').style.cssText += `;opacity:${raf ? ck : 0};transform:scale(${fini ? 1 + Math.exp(-(t - HF - 1.42) * 7) * .25 : 1})`;
+  $('hHaut').style.opacity = raf ? 1 : 0; $('hIdx').textContent = raf ? String(Math.min(45, j + 1)).padStart(2, '0') : '';
+  const s2 = prog(t, HE - .12, .12); $('H').style.opacity = 1 - s2;
+}
+
+// ======================= R. RECOMMANDATIONS =======================
+const etoile = (k) => `<svg viewBox="0 0 24 24" style="width:96px;height:96px"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#3a352b"/><path id="et${k}" d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill="#F2C14E"/></svg>`;
+$('R').innerHTML = `<div id="rHalo" style="position:absolute;width:1700px;height:1700px;left:-310px;top:200px;border-radius:50%;background:radial-gradient(circle,rgba(242,193,78,.25),rgba(242,193,78,0) 60%)"></div>
+  <div class="titre" style="position:absolute;left:60px;right:60px;top:250px;text-align:center"><div style="font-size:128px" id="r1"></div><div style="font-size:128px" id="r2"></div></div>
+  <div id="rCarte" style="position:absolute;left:90px;right:90px;top:690px;padding:56px 50px;border-radius:44px;background:rgba(245,245,240,.05);border:1.5px solid rgba(245,245,240,.12);text-align:center;box-shadow:0 60px 120px rgba(0,0,0,.5)">
+    <svg viewBox="0 0 48 48" style="width:110px;height:110px"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+    <div id="rNote" class="titre" style="font-size:240px;margin-top:10px"></div>
+    <div style="display:flex;justify-content:center;gap:8px;margin-top:10px">${[0, 1, 2, 3, 4].map(etoile).join('')}</div>
+    <div style="font:500 40px Geist;color:#AEAEA8;margin-top:24px">sur <b style="color:#F5F5F0">39 avis Google</b></div></div>
+  <div id="rChips" style="position:absolute;left:60px;right:60px;top:1500px;display:flex;flex-wrap:wrap;justify-content:center;gap:18px">
+    <div class="pastille" id="rc1" style="background:rgba(201,169,97,.12);border:1.5px solid rgba(201,169,97,.5);color:#F0DCA4;font-size:34px">45+ sites livrés</div>
+    <div class="pastille" id="rc2" style="background:rgba(201,169,97,.12);border:1.5px solid rgba(201,169,97,.5);color:#F0DCA4;font-size:34px">Depuis 2021</div>
+    <div class="pastille" id="rc3" style="background:rgba(201,169,97,.12);border:1.5px solid rgba(201,169,97,.5);color:#F0DCA4;font-size:34px">Un seul interlocuteur</div></div>
+  <div id="rEclats" style="position:absolute;inset:0;pointer-events:none"></div>`;
+function scnR(t) {
+  $('r1').innerHTML = lettres('Ils nous', t, R0 + .05, .025);
+  $('r2').innerHTML = `<span class="or">${lettres('recommandent.', t, R0 + .25, .025)}</span>`;
+  const c = E.back(prog(t, R0 + .3, .45)); $('rCarte').style.cssText += `;opacity:${clamp(c * 2)};transform:translateY(${(1 - c) * 120}px) scale(${mix(.85, 1, c)})`;
+  const n = mix(0, 4.9, E.out(prog(t, R0 + .5, .9)));
+  $('rNote').textContent = n.toFixed(1).replace('.', ',');
+  for (let k = 0; k < 5; k++) { const a = R0 + .7 + k * .13, e = E.back(prog(t, a, .25)); const el = $('et' + k); el.style.transformOrigin = '12px 12px'; el.style.transform = `scale(${e})`; }
+  const fin = R0 + .7 + 4 * .13 + .2;
+  $('rEclats').innerHTML = t > fin ? Array.from({ length: 22 }, (_, i) => { const a = i / 22 * Math.PI * 2, d = E.out(prog(t, fin, .8)) * (360 + (i % 4) * 60); return `<i style="position:absolute;left:${540 + Math.cos(a) * d}px;top:${1060 + Math.sin(a) * d * .7}px;width:14px;height:14px;border-radius:50%;background:${i % 3 ? '#F2C14E' : '#F5F5F0'};opacity:${1 - prog(t, fin, .9)}"></i>`; }).join('') : '';
+  [['rc1', R0 + 1.5], ['rc2', R0 + 1.65], ['rc3', R0 + 1.8]].forEach(([id, a]) => $(id).style.cssText += ';' + mot(t, a, .25));
+  $('rHalo').style.transform = `scale(${1 + .08 * Math.sin((t - R0) * 3)})`;
+  const s = prog(t, T0 - .2, .2); $('R').style.opacity = 1 - s; $('R').style.transform = `scale(${1 + s * .2})`;
+}
+
+function rendre(t) {
+  const vis = (id, on) => $(id).style.display = on ? 'block' : 'none';
+  vis('H', t < HE); vis('A', t >= HE && t < BAE); vis('R', t >= BAE && t < T0); vis('B', false); vis('C', t >= T0 && t < TFIN); vis('D', false); vis('E', t >= TFIN);
+  if (t < HE) scnH(t); else if (t < BAE) scnA(t); else if (t < T0) scnR(t); else if (t < TFIN) scnC(t); else scnE(t);
+  // volet coloré entre deux sites (et à l'entrée du défilé)
+  const coupes = SITES.map((s, i) => [T0 + i * DS, s[5]]);
+  let vol = null; for (const [c, col] of coupes) if (Math.abs(t - c) < .16) vol = [c, col];
+  if (vol) { const k = (t - vol[0] + .16) / .32; $('volet').style.cssText = `display:block;left:0;background:${vol[1]};transform:translateX(${mix(1200, -2800, E.io(k))}px) skewX(-14deg)`; } else $('volet').style.display = 'none';
+  let f = 0; for (const c of [HE, TFIN]) f = Math.max(f, clamp(1 - Math.abs(t - c) / .1) * .6);
+  $('flash').style.opacity = f;
+  $('voile').style.background = t > DUREE - .5 ? `rgba(0,0,0,${clamp((t - DUREE + .5) / .5)})` : 'transparent';
+}
+window.DUREE = DUREE;
+Promise.all([document.fonts.ready, ...[...document.images].map(i => i.decode().catch(() => {}))]).then(() => { rendre(0); window.pret = true; });
+</script>
+</body></html>

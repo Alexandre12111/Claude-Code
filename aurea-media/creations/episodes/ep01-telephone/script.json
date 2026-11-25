@@ -1,0 +1,87 @@
+{
+ "titre": "Épisode 1 : le téléphone sur l'échafaudage",
+ "cible": "Artisans du second œuvre et de la rénovation, Paris et Hauts-de-Seine",
+ "phrases": [
+  {
+   "id": "v1",
+   "scene": "hook",
+   "texte": "Ton téléphone a sonné quatorze fois ce matin.",
+   "sous_titre": "Ton téléphone a sonné *14 fois* ce matin.",
+   "debut_prevu": 0.15
+  },
+  {
+   "id": "v2",
+   "scene": "echafaudage",
+   "texte": "Et toi, t'étais en haut de l'échafaudage.",
+   "sous_titre": "Et toi, t'étais en haut de *l'échafaudage*.",
+   "debut_prevu": 2.9
+  },
+  {
+   "id": "v3",
+   "scene": "decroche",
+   "texte": "Alors tu décroches, avec les mains pleines d'enduit.",
+   "sous_titre": "Alors tu décroches, avec les mains pleines *d'enduit*.",
+   "debut_prevu": 5.4
+  },
+  {
+   "id": "v4",
+   "scene": "questions",
+   "texte": "Et c'est toujours les mêmes questions.",
+   "sous_titre": "Et c'est toujours *les mêmes questions*.",
+   "debut_prevu": 8.4
+  },
+  {
+   "id": "v5",
+   "scene": "chantier",
+   "texte": "Pendant ce temps, ton chantier n'avance pas.",
+   "sous_titre": "Pendant ce temps, ton chantier *n'avance pas*.",
+   "debut_prevu": 12.6
+  },
+  {
+   "id": "v6",
+   "scene": "concurrent",
+   "texte": "Et celui que tu rates, il appelle le suivant.",
+   "sous_titre": "Et celui que tu rates… il appelle *le suivant*.",
+   "debut_prevu": 15.6
+  },
+  {
+   "id": "v7",
+   "scene": "soir",
+   "texte": "Le soir, tu rappelles tout le monde. Pour répondre aux mêmes questions.",
+   "sous_titre": "Le soir, tu rappelles tout le monde. Pour répondre aux *mêmes questions*.",
+   "debut_prevu": 19.0
+  },
+  {
+   "id": "v8",
+   "scene": "declic",
+   "texte": "Et si quelqu'un répondait à ta place ?",
+   "sous_titre": "Et si quelqu'un répondait *à ta place ?*",
+   "debut_prevu": 23.6
+  },
+  {
+   "id": "v9",
+   "scene": "site",
+   "texte": "Ta zone, tes chantiers en photos, tes délais, ton formulaire de devis. Tout est déjà sur ton site.",
+   "sous_titre": "Ta *zone*, tes *chantiers en photos*, tes *délais*, ton *formulaire de devis*. Tout est déjà sur *ton site*.",
+   "debut_prevu": 26.2
+  },
+  {
+   "id": "v10",
+   "scene": "apres",
+   "texte": "Et toi, tu ne rappelles plus que les vrais chantiers.",
+   "sous_titre": "Et toi, tu ne rappelles plus que *les vrais chantiers*.",
+   "debut_prevu": 32.4
+  },
+  {
+   "id": "v11",
+   "scene": "chute",
+   "texte": "Un site internet, c'est un collègue qui répond pendant que tu bosses.",
+   "sous_titre": "Un site internet, c'est *un collègue* qui répond pendant que *tu bosses*.",
+   "debut_prevu": 35.6
+  }
+ ],
+ "fin": {
+  "texte_ecran": "Tu te reconnais ? Écris SITE en commentaire.",
+  "duree": 3.2
+ }
+}

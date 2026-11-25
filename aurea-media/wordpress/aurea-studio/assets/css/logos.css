@@ -1,0 +1,16 @@
+/* Aurea Studio : bandeau des logos clients (styles minimaux, le thème Aurea fournit les siens) */
+.aurea-logos{--logo-teinte:rgba(245,245,240,.55);--logo-survol:#C9A961;--logo-fond:#0A0A0A;position:relative;padding:34px 0;overflow:hidden}
+.aurea-logos-titre{text-align:center;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;opacity:.6;margin:0 0 26px}
+.aurea-logos-rang,.aurea-logos-copie{display:flex;align-items:center}
+.aurea-logos-rang{width:max-content;animation:aurea-logos 55s linear infinite}
+.aurea-logos:hover .aurea-logos-rang{animation-play-state:paused}
+.aurea-logos::before,.aurea-logos::after{content:"";position:absolute;top:0;bottom:0;width:12%;z-index:2;pointer-events:none}
+.aurea-logos::before{left:0;background:linear-gradient(90deg,var(--logo-fond),transparent)}
+.aurea-logos::after{right:0;background:linear-gradient(-90deg,var(--logo-fond),transparent)}
+.aurea-logo-lien{display:block;flex:none}
+.aurea-logo{display:block;flex:none;height:38px;width:150px;margin:0 30px;background:var(--logo-teinte);-webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat;transition:background .3s}
+.aurea-logo:hover,.aurea-logo-lien:focus-visible .aurea-logo{background:var(--logo-survol)}
+.aurea-logo.is-couleur{background:none;object-fit:contain;opacity:.85;transition:opacity .3s}
+.aurea-logo.is-couleur:hover{opacity:1}
+@keyframes aurea-logos{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.aurea-logos-rang{animation:none;flex-wrap:wrap;justify-content:center;width:auto}.aurea-logos-copie{display:none}}

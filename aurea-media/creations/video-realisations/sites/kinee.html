@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kinée · Cabinet de kinésithérapie à Nantes</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Plus Jakarta Sans. -->
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=block" rel="stylesheet">
+<style>
+:root{--fond:#F4F7FB;--bleu:#2563EB;--bleu2:#DCE7FF;--menthe:#16B988;--encre:#0F1B33;--mute:#5E6B85}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(900px 600px at 85% 10%,#D6E6FF 0%,transparent 60%),radial-gradient(700px 500px at 5% 95%,#D9F5EA 0%,transparent 60%),var(--fond);color:var(--encre);font:400 16px/1.55 "Plus Jakarta Sans",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh}
+nav{display:flex;align-items:center;justify-content:space-between;margin:18px 40px 0;padding:12px 12px 12px 24px;background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(15,27,51,.06)}
+.logo{display:flex;align-items:center;gap:10px;font:800 24px/1 "Plus Jakarta Sans";letter-spacing:-.03em}
+.logo i{width:34px;height:34px;border-radius:11px;background:var(--bleu);position:relative}
+.logo i:before,.logo i:after{content:"";position:absolute;background:#fff;border-radius:2px;left:50%;top:50%;transform:translate(-50%,-50%)}
+.logo i:before{width:16px;height:4px}.logo i:after{width:4px;height:16px}
+nav ul{display:flex;gap:30px;list-style:none;font:600 15px "Plus Jakarta Sans";color:var(--mute)}
+.rdv{height:48px;padding:0 22px;border-radius:14px;background:var(--encre);color:#fff;display:flex;align-items:center;font-weight:700;font-size:15px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:44px 40px 0 64px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:#E3F7EF;color:#0B7A58;border-radius:999px;padding:8px 14px;font:700 13px "Plus Jakarta Sans"}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--menthe);box-shadow:0 0 0 4px rgba(22,185,136,.2)}
+h1{font:800 78px/1 "Plus Jakarta Sans";letter-spacing:-.045em;margin:22px 0 20px}
+h1 em{font-style:italic;color:var(--bleu)}
+.txt p{font-size:18px;color:var(--mute);max-width:480px}
+.resa{margin-top:32px;background:#fff;border-radius:24px;padding:22px;box-shadow:0 20px 50px rgba(15,27,51,.08);max-width:520px}
+.resa .t{display:flex;justify-content:space-between;align-items:center;font:700 16px "Plus Jakarta Sans"}
+.resa .t span{font:600 13px "Plus Jakarta Sans";color:var(--mute)}
+.jours{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}
+.jour{text-align:center;border-radius:14px;padding:10px 0;background:var(--fond);font:600 13px "Plus Jakarta Sans";color:var(--mute)}
+.jour b{display:block;font:800 20px "Plus Jakarta Sans";color:var(--encre)}
+.jour.on{background:var(--bleu);color:#cfe0ff}.jour.on b{color:#fff}
+.heures{display:flex;gap:8px;margin-top:12px}
+.heures span{flex:1;text-align:center;padding:11px 0;border-radius:12px;border:1.5px solid var(--bleu2);font:700 14px "Plus Jakarta Sans";color:var(--bleu)}
+.heures span.on{background:var(--bleu2)}
+.visuel{position:relative;height:560px}
+.visuel .ph{position:absolute;inset:0 0 40px 30px;border-radius:40px;overflow:hidden}
+.visuel .ph img{width:100%;height:100%;object-fit:cover}
+.flotte{position:absolute;background:#fff;border-radius:20px;box-shadow:0 24px 50px rgba(15,27,51,.14);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.flotte i{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-style:normal;font-size:20px}
+.flotte b{display:block;font:800 16px "Plus Jakarta Sans"}.flotte small{color:var(--mute);font-size:13px}
+.f1{left:0;top:60px}.f2{right:24px;top:300px}.f3{left:40px;bottom:80px}
+.etoiles{color:#F5B301;letter-spacing:2px;font-size:14px}
+.soins{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:22px 40px 0 64px}
+.soin{background:rgba(255,255,255,.8);backdrop-filter:blur(10px);border:1px solid #fff;border-radius:22px;padding:18px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 14px 30px rgba(15,27,51,.06)}
+.soin i{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-style:normal;font-size:22px}
+.soin b{display:block;font:800 16px "Plus Jakarta Sans"}.soin small{color:var(--mute);font-size:13px}
+@media (max-width:600px){
+  .soins{grid-template-columns:1fr 1fr;padding:14px 18px 0;gap:10px}.soin{padding:12px;gap:10px;border-radius:16px}.soin i{width:38px;height:38px;font-size:18px}.soin b{font-size:14px}.soin small{display:none}
+  nav{margin:12px 12px 0;padding:10px 10px 10px 16px}nav ul{display:none}.logo{font-size:20px}.logo i{width:28px;height:28px}.rdv{height:42px;padding:0 16px;font-size:14px}
+  .hero{grid-template-columns:1fr;padding:22px 18px 0;gap:0}
+  h1{font-size:40px;margin:14px 0 12px}.txt p{font-size:15px}
+  .resa{margin-top:18px;padding:16px}.jours{grid-template-columns:repeat(4,1fr)}.jour:nth-child(5){display:none}.heures span:nth-child(4){display:none}
+  .visuel{display:none}
+}
+</style></head><body>
+<nav><div class="logo"><i></i>kinée</div><ul><li>Soins</li><li>L'équipe</li><li>Sport &amp; reprise</li><li>Tarifs</li></ul><a class="rdv">Prendre rendez-vous</a></nav>
+<section class="hero">
+  <div class="txt"><span class="chip"><i></i>Créneaux disponibles cette semaine</span>
+    <h1>Bougez mieux. <em>Vivez mieux.</em></h1>
+    <p>Rééducation, kiné du sport et soins du dos à Nantes. Une équipe de 6 kinés, du matériel de pointe et un suivi qui vous remet vraiment sur pied.</p>
+    <div class="resa"><div class="t">Choisissez votre créneau <span>Séance · 30 min</span></div>
+      <div class="jours"><div class="jour">Lun<b>12</b></div><div class="jour on">Mar<b>13</b></div><div class="jour">Mer<b>14</b></div><div class="jour">Jeu<b>15</b></div><div class="jour">Ven<b>16</b></div></div>
+      <div class="heures"><span>08:30</span><span class="on">10:00</span><span>12:15</span><span>17:30</span></div></div>
+  </div>
+  <div class="visuel"><div class="ph"><img src="photos/kinee-hero.webp" alt=""></div>
+    <div class="flotte f1"><i style="background:#FFF6D9">★</i><div><b>4,9 <span class="etoiles">★★★★★</span></b><small>812 avis patients</small></div></div>
+    <div class="flotte f2"><i style="background:#E3F7EF;color:#0B7A58">✓</i><div><b>Remboursé</b><small>Sécurité sociale et mutuelle</small></div></div>
+    <div class="flotte f3"><i style="background:#DCE7FF;color:var(--bleu)">⏱</i><div><b>Prochain créneau</b><small>Aujourd'hui · 17 h 30</small></div></div>
+  </div>
+</section>
+<div class="soins"><div class="soin"><i style="background:#DCE7FF">🦴</i><div><b>Dos &amp; nuque</b><small>Douleurs chroniques</small></div></div><div class="soin"><i style="background:#E3F7EF">🏃</i><div><b>Kiné du sport</b><small>Reprise et performance</small></div></div><div class="soin"><i style="background:#FFF1DE">🩹</i><div><b>Rééducation</b><small>Après opération</small></div></div><div class="soin"><i style="background:#F3E8FF">🧘</i><div><b>Pilates médical</b><small>En petits groupes</small></div></div></div>
+</body></html>

@@ -1,0 +1,182 @@
+{
+ "summary": {
+  "health_score": 91,
+  "business_type": "Agence web (services B2B, France et Europe, ancrage local Paris)",
+  "top_findings": [
+   "Les pages piliers ne renvoyaient vers aucun article (corrigé en 3.2.0)",
+   "Pas de page pour la demande collectivités et mairies du 92 (créée en 3.2.0)",
+   "Les nouvelles pages du thème n'étaient pas créées à la mise à jour (corrigé en 3.2.0)",
+   "Article artisan bloqué par une redirection et article fiche Google non publié (corrigé en 3.1.10)",
+   "Page L'agence courte pour une page de confiance (enrichie en 3.2.0)"
+  ],
+  "quick_wins": [
+   "Installer le thème 3.2.0",
+   "Demander l'indexation de /site-internet-collectivites/",
+   "Importer le pack 2 d'articles",
+   "Contacter des mairies du 92 avec la nouvelle page",
+   "Envoyer un export Search Console fin décembre"
+  ],
+  "score_attendu_apres_3_2_0": 92
+ },
+ "categories": [
+  {
+   "name": "Technical SEO",
+   "score": 93,
+   "what_works": [
+    "78 URLs en 200",
+    "HTTPS + HSTS et en-têtes de sécurité",
+    "Sitemap propre",
+    "hreflang réciproques"
+   ],
+   "findings": [
+    {
+     "title": "Rubriques du blog indexables",
+     "severity": "Medium",
+     "description": "Pages de rubrique sans description (97 à 136 mots).",
+     "recommendation": "Thème 3.1.2 : noindex, follow."
+    },
+    {
+     "title": "robots.txt à deux groupes User-agent *",
+     "severity": "Low",
+     "description": "Bloc ajouté par WP-Optimize.",
+     "recommendation": "Sans effet bloquant."
+    }
+   ]
+  },
+  {
+   "name": "Content Quality",
+   "score": 85,
+   "what_works": [
+    "Pages services de 700 à 1 600 mots",
+    "Blocs En bref signés et datés",
+    "23 études de cas détaillées"
+   ],
+   "findings": [
+    {
+     "title": "Blog jeune",
+     "severity": "Medium",
+     "description": "6 articles publiés.",
+     "recommendation": "Un article par semaine."
+    },
+    {
+     "title": "Mentions légales incomplètes",
+     "severity": "Medium",
+     "description": "Capital social, RCS et outil d'audience absents.",
+     "recommendation": "Compléter."
+    }
+   ]
+  },
+  {
+   "name": "On-Page SEO",
+   "score": 94,
+   "what_works": [
+    "Titres et descriptions dans les longueurs, sans doublon",
+    "Un H1 par page",
+    "Canonical justes"
+   ],
+   "findings": []
+  },
+  {
+   "name": "Schema / Structured Data",
+   "score": 88,
+   "what_works": [
+    "Graphe agence, fondateur, services avec prix, études de cas, articles, fil d'Ariane",
+    "JSON-LD valide"
+   ],
+   "findings": []
+  },
+  {
+   "name": "Performance (CWV)",
+   "score": 94,
+   "what_works": [
+    "CLS 0",
+    "Ordinateur : LCP 1,4 à 1,8 s"
+   ],
+   "findings": [
+    {
+     "title": "LCP mobile lent",
+     "severity": "Medium",
+     "description": "3,1 à 4,2 s (laboratoire, 4G, CPU x4, sans cache). Texte du haut de page masqué jusqu'à l'animation.",
+     "recommendation": "Thème 3.1.2 : texte affiché tout de suite."
+    },
+    {
+     "title": "TTFB sans cache",
+     "severity": "Low",
+     "description": "Jusqu'à 1,7 s hors cache.",
+     "recommendation": "Cache objet ou hébergement plus rapide."
+    }
+   ]
+  },
+  {
+   "name": "AI Search Readiness",
+   "score": 88,
+   "what_works": [
+    "llms.txt bilingue",
+    "Robots IA autorisés",
+    "Blocs En bref"
+   ],
+   "findings": [
+    {
+     "title": "Mentions externes de la marque",
+     "severity": "Medium",
+     "description": "Peu de signaux tiers.",
+     "recommendation": "Annuaires, presse, LinkedIn."
+    }
+   ]
+  },
+  {
+   "name": "Images",
+   "score": 94,
+   "what_works": [
+    "Alt et dimensions partout",
+    "WebP et srcset",
+    "og:image partout"
+   ],
+   "findings": []
+  }
+ ],
+ "action_plan": {
+  "phases": [
+   {
+    "name": "Phase 1: Critical Fixes",
+    "timeframe": "Week 1",
+    "items": [
+     "Installer le thème 3.1.2",
+     "Remettre /conseils/%postname%/",
+     "Renvoyer le sitemap"
+    ]
+   },
+   {
+    "name": "Phase 2: High-Impact Improvements",
+    "timeframe": "Weeks 2-3",
+    "items": [
+     "Vérifier la disparition de /en/accueil-english/",
+     "Compléter les mentions légales",
+     "Mesurer PageSpeed mobile"
+    ]
+   },
+   {
+    "name": "Phase 3: Content & Authority",
+    "timeframe": "Month 2",
+    "items": [
+     "Un article par semaine",
+     "Mentions de marque",
+     "Avis Google"
+    ]
+   },
+   {
+    "name": "Phase 4: Monitoring & Iteration",
+    "timeframe": "Ongoing",
+    "items": [
+     "Search Console",
+     "CrUX",
+     "Audit trimestriel"
+    ]
+   }
+  ]
+ },
+ "artifacts": {
+  "findings_dir": "findings/",
+  "screenshots_dir": "screenshots/"
+ }
+}

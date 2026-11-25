@@ -1,0 +1,178 @@
+/* =====================================================================
+   GTranslate aux couleurs de DualTech
+   À coller dans Apparence → Personnaliser → CSS additionnel.
+   Couvre les trois affichages de GTranslate : « Float » (bouton flottant),
+   « Dropdown with flags » (liste à drapeaux) et « Dropdown » (liste simple).
+   ===================================================================== */
+
+/* ---------- Position : au-dessus du bouton « retour en haut » ---------- */
+#gt_float_wrapper,
+.gt_switcher_wrapper {
+  right: 20px !important;
+  bottom: 84px !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 240 !important; /* sous le bandeau cookies et le menu mobile */
+}
+
+/* ---------- 1. Bouton flottant (« Float ») ---------- */
+.gt_float_switcher {
+  font: 600 .8125rem/1 var(--texte, "Public Sans", sans-serif) !important;
+  letter-spacing: .08em;
+  color: var(--brume, #E8EFFA) !important;
+  background: rgba(4, 18, 38, .92) !important;
+  border: 1px solid rgba(157, 182, 220, .22);
+  border-radius: 2px !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .35) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.gt_float_switcher .gt-selected {
+  background: transparent !important;
+}
+.gt_float_switcher .gt-selected .gt-current-lang {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 14px !important;
+  color: var(--blanc, #fff) !important;
+  font-weight: 600 !important;
+  transition: background-color .25s ease;
+}
+.gt_float_switcher .gt-selected .gt-current-lang:hover {
+  background: rgba(232, 239, 250, .06);
+}
+.gt_float_switcher .gt-selected .gt-current-lang span.gt-lang-code {
+  top: 0 !important;
+}
+/* petit repère rouge de la charte avant la langue */
+.gt_float_switcher .gt-selected .gt-current-lang::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  flex: none;
+  background: var(--signal, #DF2229);
+}
+.gt_float_switcher img {
+  width: 22px !important;
+  height: auto;
+  margin: 0 !important;
+  border-radius: 1px !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .15);
+}
+/* flèche blanche à la place de la flèche grise */
+.gt_float_switcher .gt-selected .gt-current-lang span.gt_float_switcher-arrow {
+  height: 16px !important;
+  width: 12px !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 285 285'><path d='M282 76.5l-14.2-14.3a9 9 0 0 0-13.1 0L142.5 174.4 30.3 62.2a9 9 0 0 0-13.2 0L3 76.5a9 9 0 0 0 0 13.1l133 133a9 9 0 0 0 13.1 0l133-133a9 9 0 0 0 0-13z' style='fill:%239DB6DC'/></svg>") !important;
+  background-size: 10px !important;
+}
+/* liste des langues */
+.gt_float_switcher .gt_options {
+  max-height: 260px !important;
+  border-top: 1px solid rgba(157, 182, 220, .16);
+}
+.gt_float_switcher .gt_options a {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px !important;
+  color: var(--acier, #9DB6DC) !important;
+  font-weight: 500;
+  letter-spacing: .02em;
+  border-left: 2px solid transparent;
+  transition: color .2s ease, background-color .2s ease, border-color .2s ease !important;
+}
+.gt_float_switcher .gt_options a:hover,
+.gt_float_switcher .gt_options a:focus-visible {
+  background: rgba(27, 95, 193, .22) !important;
+  color: var(--blanc, #fff) !important;
+  border-left-color: var(--tech, #49A7FF);
+  outline: none;
+}
+.gt_float_switcher .gt_options::-webkit-scrollbar-track { background: transparent !important; }
+.gt_float_switcher .gt_options::-webkit-scrollbar-thumb { background: rgba(157, 182, 220, .35) !important; }
+
+/* ---------- 2. Liste à drapeaux (« Dropdown with flags ») ---------- */
+.gt_switcher {
+  width: 190px !important;
+  font-family: var(--texte, "Public Sans", sans-serif) !important;
+  line-height: 1 !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .35);
+}
+.gt_switcher a {
+  font-size: .8125rem !important;
+}
+.gt_switcher .gt_selected {
+  background: rgba(4, 18, 38, .94) !important;
+  backdrop-filter: blur(12px);
+}
+.gt_switcher .gt_selected a {
+  width: auto !important;
+  padding: 13px 40px 13px 14px !important;
+  border: 1px solid rgba(157, 182, 220, .22) !important;
+  color: var(--blanc, #fff) !important;
+  font-weight: 600;
+}
+.gt_switcher .gt_selected a:hover {
+  background: rgba(232, 239, 250, .06) !important;
+}
+.gt_switcher .gt_selected a::after {
+  top: 50%;
+  margin-top: -8px;
+  height: 16px !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 285 285'><path d='M282 76.5l-14.2-14.3a9 9 0 0 0-13.1 0L142.5 174.4 30.3 62.2a9 9 0 0 0-13.2 0L3 76.5a9 9 0 0 0 0 13.1l133 133a9 9 0 0 0 13.1 0l133-133a9 9 0 0 0 0-13z' style='fill:%239DB6DC'/></svg>") !important;
+  background-size: 10px !important;
+}
+.gt_switcher a img {
+  width: 20px !important;
+  height: auto !important;
+  margin-right: 10px !important;
+  opacity: 1 !important;
+  border-radius: 1px;
+}
+.gt_switcher .gt_option {
+  width: auto !important;
+  background: var(--nuit, #041226) !important;
+  border-color: rgba(157, 182, 220, .22) !important;
+}
+.gt_switcher .gt_option a {
+  padding: 10px 14px !important;
+  color: var(--acier, #9DB6DC) !important;
+  border-left: 2px solid transparent;
+  transition: color .2s ease, background-color .2s ease;
+}
+.gt_switcher .gt_option a:hover {
+  background: rgba(27, 95, 193, .22) !important;
+  color: var(--blanc, #fff) !important;
+  border-left-color: var(--tech, #49A7FF);
+}
+.gt_switcher .gt_option::-webkit-scrollbar { width: 5px; }
+.gt_switcher .gt_option::-webkit-scrollbar-thumb { background: rgba(157, 182, 220, .35); }
+
+/* ---------- 3. Liste simple (« Dropdown ») ---------- */
+select.gt_selector {
+  min-height: 44px;
+  padding: 0 38px 0 14px;
+  font: 600 .8125rem var(--texte, "Public Sans", sans-serif);
+  letter-spacing: .04em;
+  color: var(--blanc, #fff);
+  background: rgba(4, 18, 38, .94) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 285 285'><path d='M282 76.5l-14.2-14.3a9 9 0 0 0-13.1 0L142.5 174.4 30.3 62.2a9 9 0 0 0-13.2 0L3 76.5a9 9 0 0 0 0 13.1l133 133a9 9 0 0 0 13.1 0l133-133a9 9 0 0 0 0-13z' style='fill:%239DB6DC'/></svg>") no-repeat right 14px center / 10px;
+  border: 1px solid rgba(157, 182, 220, .22);
+  border-radius: 2px;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+select.gt_selector:focus-visible { outline: 3px solid var(--tech, #49A7FF); outline-offset: 2px; }
+select.gt_selector option { color: var(--encre, #131A26); background: #fff; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  #gt_float_wrapper,
+  .gt_switcher_wrapper {
+    right: 12px !important;
+    bottom: 80px !important;
+  }
+}

@@ -1,0 +1,19 @@
+User-agent: *
+Disallow: /wp-admin/
+Allow: /wp-admin/admin-ajax.php
+
+Sitemap: https://aurea-media.fr/sitemap_index.xml
+
+User-agent: *
+Disallow: /wp-content/uploads/wpo/wpo-plugins-tables-list.json
+
+# Moteurs de réponse IA : citations dans ChatGPT Search, Claude et Perplexity
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><title>Audit express n°1</title>
+<style>
+/* Audit express n°1 (Martin Rénovation) : 1080 x 1920, calé sur la voix d'Alexandre (calage.json). Rendu image par image. */
+@font-face{font-family:"Bricolage";src:url(../../../reseaux-sociaux/sources/bricolage-grotesque.woff2) format("woff2");font-weight:200 800}
+@font-face{font-family:"Geist";src:url(../../../reseaux-sociaux/sources/geist.woff2) format("woff2");font-weight:100 900}
+@font-face{font-family:"Spectral SC";src:url(../../../reseaux-sociaux/sources/spectral-sc-600.woff2) format("woff2");font-weight:600}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#0A0A0A}
+#v{position:relative;width:1080px;height:1920px;overflow:hidden;background:#0B0B0C;color:#F5F5F0;font-family:Geist,sans-serif}
+.titre{font-family:Bricolage,sans-serif;font-weight:650;letter-spacing:-.04em;line-height:1}
+.or{background:linear-gradient(100deg,#F6E3AE 0%,#C9A961 45%,#A9873F 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#fond{position:absolute;inset:0;background:radial-gradient(1200px 900px at 50% 40%,rgba(229,72,77,.16),transparent 65%)}
+.trame{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:90px 90px}
+#entete{position:absolute;left:60px;right:60px;top:110px;display:flex;justify-content:space-between;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:999px;padding:12px 22px;font:700 24px Geist;letter-spacing:.16em}
+#probleme{position:absolute;left:60px;right:60px;top:200px;height:170px;display:flex;align-items:center}
+/* fenêtre de navigateur */
+#fen{position:absolute;left:40px;top:400px;width:1000px;border-radius:20px;overflow:hidden;background:#1b1b1a;box-shadow:0 0 0 1.5px rgba(255,255,255,.08),0 60px 120px rgba(0,0,0,.6)}
+#fen .bar{height:46px;display:flex;align-items:center;gap:9px;padding:0 18px}
+#fen .bar i{width:13px;height:13px;border-radius:50%}
+#fen .bar span{margin-left:16px;flex:1;height:28px;border-radius:8px;background:#262625;font:500 15px/28px Geist;color:#9b9b96;padding-left:14px}
+#vp{position:relative;width:1000px;height:625px;overflow:hidden;background:#fff}
+#cam{position:absolute;left:0;top:0;width:1000px;height:625px;transform-origin:0 0}
+#cam img{position:absolute;left:0;top:0;width:1000px;display:block}
+#apresBox{position:absolute;inset:0;overflow:hidden}
+#annot{position:absolute;inset:0;pointer-events:none}
+#st{position:absolute;left:60px;right:60px;top:1150px;height:250px;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;gap:4px 16px;transform-origin:50% 50%}
+#st .m{font:800 64px/1.08 "Bricolage";letter-spacing:-.01em;color:#fff;display:inline-block;transform-origin:50% 90%;-webkit-text-stroke:11px #0B0B0C;paint-order:stroke fill}
+#st .m.cle{color:#ffd23f}
+#liste{position:absolute;left:60px;right:60px;top:1470px;display:flex;flex-direction:column;gap:16px}
+.ligne{display:flex;align-items:center;gap:20px;border-radius:22px;padding:20px 26px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.08);font:600 32px Geist}
+.ligne b{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font:800 26px Geist;flex:none}
+#curseur{position:absolute;width:44px;height:44px;z-index:30;pointer-events:none}
+#flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:60}
+#voile{position:absolute;inset:0;z-index:55;pointer-events:none}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.05;z-index:70;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+</style></head><body>
+<div id="v">
+  <div id="fond"></div><div class="trame"></div>
+  <div id="entete"><span class="pill" id="pAudit" style="background:#E5484D;color:#fff"><i style="width:14px;height:14px;border-radius:50%;background:#fff;display:inline-block"></i>AUDIT EXPRESS</span><span id="score" style="font:600 26px Geist;color:#AEAEA8"></span></div>
+  <div id="probleme"></div>
+  <div id="scene">
+    <div id="fen"><div class="bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span id="url">martin-renovation.fr</span></div>
+      <div id="vp"><div id="cam"><img id="imAv" src="sites/captures/martin-avant.png"><div id="apresBox"><img id="imAp" src="sites/captures/martin-apres.png"></div><div id="annot"></div></div><div id="vpFx" style="position:absolute;inset:0;pointer-events:none"></div></div></div>
+  </div>
+  <div id="duo"></div>
+  <div id="st"></div>
+  <div id="liste"></div>
+  <div id="fin" style="position:absolute;inset:0;display:none"></div>
+  <svg id="curseur" viewBox="0 0 24 24"><path d="M4 2l16 9-7 2-3 7z" fill="#fff" stroke="#000" stroke-width="1.4"/></svg>
+  <div id="voile"></div><div id="flash"></div><div class="grain"></div>
+</div>
+<script src="sous-titres.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const mix = (a, b, k) => a + (b - a) * k;
+const E = { out: k => 1 - Math.pow(1 - k, 3), io: k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, back: k => { const c = 1.9; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }, backS: k => { const c = 1.4; return 1 + (c + 1) * Math.pow(k - 1, 3) + c * Math.pow(k - 1, 2); }, expo: k => k >= 1 ? 1 : 1 - Math.pow(2, -10 * k) };
+const prog = (t, a, d) => clamp((t - a) / d);
+let CAL, SCRIPT, POS;
+const P = id => CAL.phrases[id].debut, F = id => CAL.phrases[id].fin;
+const M = (id, k) => { const m = CAL.phrases[id].mots; return m[Math.min(k, m.length - 1)].debut; };
+const K = 1000 / 1600;   // capture (1600 px) → fenêtre (1000 px)
+function mot(t, a, d = .3) { const k = prog(t, a, d), e = E.back(k); return `opacity:${clamp(k * 3)};transform:translateY(${(1 - e) * 50}px) scale(${mix(.8, 1, e)})`; }
+// caméra dans la fenêtre : défilement (px de capture), zoom, point de mire (px de fenêtre)
+function camera(scroll, z, fx, fy) { $('cam').style.transform = `translate(${fx}px,${fy}px) scale(${z}) translate(${-fx}px,${-fy}px) translateY(${-scroll * K}px)`; }
+const PROBS = [['Numéro introuvable', 'Caché en bas de page'], ['Aucune photo de chantier', 'Une image de banque d\'images'], ['Un titre qui ne dit rien', '« Bienvenue sur notre site »']];
+const ROUGE = '#E5484D', OR = '#C9A961';
+function cercle(x, y, w, h, k, col = ROUGE) { const c = 2 * Math.PI * Math.max(w, h) / 2 * 1.15; return `<svg style="position:absolute;left:${x - 14}px;top:${y - 14}px;overflow:visible" width="${w + 28}" height="${h + 28}"><ellipse cx="${w / 2 + 14}" cy="${h / 2 + 14}" rx="${w / 2 + 12}" ry="${h / 2 + 12}" fill="none" stroke="${col}" stroke-width="${5}" stroke-linecap="round" stroke-dasharray="${c * 1.3}" stroke-dashoffset="${c * 1.3 * (1 - k)}"/></svg>`; }
+
+function rendre(t) {
+  const fin = t >= F('l09') + .3;
+  let ann = '', fx = '';
+  // ---------- en-tête et problème en cours ----------
+  const n = t < P('l01') ? -1 : t < P('l03') ? 0 : t < P('l05') ? 1 : t < P('l07') ? 2 : 3;
+  const debutN = [P('l01'), P('l03'), P('l05'), P('l07')][Math.max(0, n)];
+  if (n < 0) $('probleme').innerHTML = `<div class="titre" style="font-size:74px;${mot(t, -.2)}">Ce site perd des <span style="color:${ROUGE}">clients.</span></div>`;
+  else if (n < 3) $('probleme').innerHTML = `<div style="display:flex;align-items:center;gap:24px;${mot(t, debutN - .05, .3)}"><div class="titre" style="width:110px;height:110px;border-radius:28px;background:${ROUGE};display:grid;place-items:center;font-size:66px;flex:none">${n + 1}</div><div><div class="titre" style="font-size:62px">${PROBS[n][0]}</div><div style="font:500 28px Geist;color:#AEAEA8;margin-top:8px">${PROBS[n][1]}</div></div></div>`;
+  else $('probleme').innerHTML = `<div style="display:flex;align-items:center;gap:24px;${mot(t, debutN - .05, .3)}"><div class="titre" style="width:110px;height:110px;border-radius:28px;background:linear-gradient(135deg,#F6E3AE,#A9873F);color:#0A0A0A;display:grid;place-items:center;font-size:58px;flex:none">✦</div><div><div class="titre or" style="font-size:66px">La refonte</div><div style="font:500 28px Geist;color:#AEAEA8;margin-top:8px">par Aurea Media</div></div></div>`;
+  const apres = t >= P('l07') + .2;
+  $('pAudit').style.cssText = apres ? 'background:linear-gradient(100deg,#F6E3AE,#C9A961);color:#0A0A0A' : `background:${ROUGE};color:#fff`;
+  $('pAudit').lastChild.textContent = apres ? 'APRÈS REFONTE' : 'AUDIT EXPRESS';
+  const sc = t < F('l00') ? '' : apres ? `Score du site : <b style="color:#F0DCA4">9/10</b>` : `Score du site : <b style="color:${ROUGE}">3/10</b>`;
+  $('score').innerHTML = sc;
+  $('fond').style.background = `radial-gradient(1200px 900px at 50% 40%,${apres ? 'rgba(201,169,97,.2)' : 'rgba(229,72,77,.16)'},transparent 65%)`;
+  // ---------- caméra dans le site ----------
+  const H = POS['martin-avant'].hauteur, maxAv = H - 1000, maxAp = POS['martin-apres'].hauteur - 1000;
+  let sAv = 0, z = 1, cx = 500, cy = 312;
+  const tel = POS['martin-avant'].tel, ph = POS['martin-avant'].photo, ti = POS['martin-avant'].titre;
+  if (t < P('l01')) { z = 1 + .05 * prog(t, 0, P('l01')); }
+  else if (t < P('l02')) { sAv = 0; }
+  else if (t < P('l03')) {
+    sAv = maxAv * E.io(prog(t, P('l02'), 1.1));
+    const zk = E.io(prog(t, P('l02') + 1.2, .6)); z = mix(1, 2.6, zk);
+    cx = (tel[0] + tel[2] / 2) * K; cy = (tel[1] - maxAv + tel[3] / 2) * K;
+    const ck = prog(t, P('l02') + 1.6, .5);
+    if (ck > 0) ann += cercle(tel[0] * K, (tel[1] - maxAv) * K + maxAv * K, tel[2] * K, tel[3] * K, ck) + `<div style="position:absolute;left:${tel[0] * K - 6}px;top:${(tel[1]) * K - 40}px;font:800 11px Geist;color:#fff;background:${ROUGE};padding:3px 7px;border-radius:6px;opacity:${ck}">10 px</div>`;
+  }
+  else if (t < P('l05')) {
+    sAv = maxAv * (1 - E.io(prog(t, P('l03'), .5)));
+    const zk = E.io(prog(t, P('l03') + .5, .6)); z = mix(1, 1.15, zk); cx = 500; cy = 180;
+    const xk = prog(t, M('l04', 3) - .1, .3);   // croix sur la photo de banque d'images
+    if (xk > 0) ann += `<svg style="position:absolute;left:${ph[0] * K}px;top:${ph[1] * K}px" width="${ph[2] * K}" height="${ph[3] * K}" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M8,8 L92,92" stroke="${ROUGE}" stroke-width="2.4" stroke-dasharray="120" stroke-dashoffset="${120 * (1 - clamp(xk * 2))}"/><path d="M92,8 L8,92" stroke="${ROUGE}" stroke-width="2.4" stroke-dasharray="120" stroke-dashoffset="${120 * (1 - clamp(xk * 2 - 1))}"/></svg>`;
+    const gk = prog(t, M('l04', 8) - .1, .5);   // les vrais chantiers apparaissent sur « son travail »  // les vrais chantiers apparaissent
+    if (gk > 0) ann += [1, 3, 5].map((r, i) => { const e = E.back(clamp(gk * 1.6 - i * .25)); return `<img src="sites/photos/martin-real${r}.webp" style="position:absolute;left:${120 + i * 260}px;top:${170}px;width:240px;height:170px;object-fit:cover;border-radius:12px;border:4px solid #3DDC84;box-shadow:0 20px 40px rgba(0,0,0,.4);transform:scale(${e}) rotate(${(i - 1) * 4}deg);opacity:${clamp(e)}">`; }).join('');
+  }
+  else if (t < P('l07')) {
+    const zk = E.io(prog(t, P('l05'), .7)); z = mix(1.15, 1.9, zk); cx = (ti[0] + ti[2] / 2) * K; cy = (ti[1] + ti[3] / 2) * K;
+    const hk = prog(t, M('l05', 5) - .1, .45);   // surligneur
+    if (hk > 0) ann += `<div style="position:absolute;left:${ti[0] * K - 6}px;top:${(ti[1] + ti[3] * .55) * K}px;width:${(ti[2] * K + 12) * E.out(hk)}px;height:${ti[3] * K * .5}px;background:rgba(255,210,63,.75);mix-blend-mode:multiply;border-radius:4px"></div>`;
+    if (t >= P('l06')) { z = mix(1.9, 1, E.io(prog(t, P('l06'), .5))); }
+  }
+  const avantVisible = t < P('l07') + 1.2;
+  $('imAv').style.transform = `translateY(0)`;
+  // balayage doré : la refonte apparaît
+  const w = E.io(prog(t, P('l07') + .05, .8));
+  $('apresBox').style.clipPath = `inset(0 ${(1 - w) * 100}% 0 0)`;
+  let sAp = 0;
+  if (t >= P('l08')) {
+    sAp = maxAp * E.io(prog(t, M('l08', 8) - .3, .8));
+    const ap = POS['martin-apres'];
+    const coche = (x, y, a) => { const e = E.back(prog(t, a, .35)); return e > 0 ? `<div style="position:absolute;left:${x}px;top:${y}px;width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#F6E3AE,#C9A961);color:#0A0A0A;display:grid;place-items:center;font:900 36px Geist;transform:scale(${e});box-shadow:0 10px 30px rgba(0,0,0,.4)">✓</div>` : ''; };
+    const k1 = prog(t, M('l08', 1) - .1, .4); if (k1 > 0 && sAp < 300) ann += cercle(ap.titre[0] * K, ap.titre[1] * K, ap.titre[2] * K, ap.titre[3] * K, k1, OR) + coche(ap.titre[0] * K + ap.titre[2] * K - 20, ap.titre[1] * K - 30, M('l08', 1));
+    const k2 = prog(t, M('l08', 9) - .05, .4); if (k2 > 0) ann += coche(ap.reals[0] * K + 900, ap.reals[1] * K + 20, M('l08', 9));
+  }
+  const plein = t >= P('l07') + .9;
+  $('imAv').style.display = plein ? 'none' : 'block';
+  $('apresBox').style.overflow = plein ? 'visible' : 'hidden';
+  if (plein) $('apresBox').style.clipPath = 'none';
+  $('imAp').style.transform = plein ? 'none' : `translateY(${-(sAp - sAv) * K}px)`;
+  camera(plein ? sAp : sAv, z, cx, cy);
+  $('annot').innerHTML = ann;
+  // bouton d'appel flottant, toujours visible (dans la fenêtre)
+  const kb = prog(t, M('l08', 14) - .2, .4);
+  $('vpFx').innerHTML = kb > 0 && t < F('l09') ? `<div style="position:absolute;right:22px;bottom:22px;display:flex;align-items:center;gap:10px;background:#F5B82E;color:#0F1720;border-radius:16px;padding:14px 20px;font:800 20px Geist;transform:scale(${E.back(kb) * (1 + .05 * Math.sin(t * 9))});box-shadow:0 0 0 ${8 + 10 * (1 + Math.sin(t * 9)) / 2}px rgba(245,184,46,.25)">📞 Appeler Julien</div>` : '';
+  // ---------- avant / après côte à côte, puis l'appel ----------
+  const duo = t >= P('l09') && !fin;
+  $('scene').style.display = duo || fin ? 'none' : 'block';
+  $('entete').style.display = $('probleme').style.display = duo || fin ? 'none' : 'flex';
+  $('st').style.top = duo ? '1420px' : '1150px';
+  if (duo) {
+    const k = E.out(prog(t, P('l09'), .45));
+    const win = (src, y, lab, col, s) => `<div style="position:absolute;left:${mix(40, 160, k)}px;top:${y}px;width:${mix(1000, 760, k)}px;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)"><div style="height:36px;background:#1b1b1a"></div><img src="${src}" style="display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top"></div><div style="position:absolute;left:${mix(40, 120, k)}px;top:${y - 24}px;transform:rotate(-4deg);background:${col};color:${s};font:800 24px Geist;letter-spacing:.16em;padding:10px 18px;border-radius:10px">${lab}</div>`;
+    let h = win('sites/captures/martin-avant.png', mix(400, 300, k), 'AVANT', ROUGE, '#fff') + win('sites/captures/martin-apres.png', mix(1100, 860, k), 'APRÈS', '#C9A961', '#0A0A0A');
+    const nk = E.back(prog(t, F('l09') - .05, .45));   // la notification arrive juste après « le client appelle »
+    if (nk > 0) h += `<div style="position:absolute;left:60px;right:60px;top:${mix(-200, 120, nk)}px;background:rgba(30,30,32,.92);backdrop-filter:blur(20px);border-radius:34px;padding:26px 30px;display:flex;align-items:center;gap:22px;box-shadow:0 30px 60px rgba(0,0,0,.5);transform:translateX(${Math.sin(t * 60) * 5 * (t < F('l09') + 1.3 ? 1 : 0)}px)"><div style="width:84px;height:84px;border-radius:22px;background:#34C759;display:grid;place-items:center;font-size:44px">📞</div><div><div style="font:700 34px Geist">Appel entrant</div><div style="font:500 26px Geist;color:#AEAEA8;margin-top:4px">Nouveau client · Nantes</div></div></div>`;
+    $('duo').innerHTML = h;
+  } else $('duo').innerHTML = '';
+  // ---------- liste des 3 problèmes, puis corrigés ----------
+  const lignes = PROBS.map(([a], i) => { const vu = t >= [P('l01'), P('l03'), P('l05')][i]; const ok = t >= [M('l08', 14), M('l08', 9), M('l08', 1)][i] - .1;
+    const e = E.back(prog(t, [P('l01'), P('l03'), P('l05')][i], .35));
+    return `<div class="ligne" style="opacity:${vu ? 1 : .25};transform:scale(${vu ? mix(.9, 1, e) : 1});${ok ? 'border-color:rgba(201,169,97,.6);background:rgba(201,169,97,.12)' : vu ? 'border-color:rgba(229,72,77,.5);background:rgba(229,72,77,.1)' : ''}"><b style="background:${ok ? 'linear-gradient(135deg,#F6E3AE,#C9A961)' : vu ? ROUGE : 'rgba(255,255,255,.1)'};color:${ok ? '#0A0A0A' : '#fff'}">${ok ? '✓' : vu ? '✕' : i + 1}</b><span style="${ok ? 'color:#F0DCA4' : ''}">${['Numéro visible en un clin d\'œil', 'Les vrais chantiers en avant', 'Métier et ville dans le titre'][i] && ok ? ['Bouton d\'appel toujours visible', 'Les vrais chantiers en avant', 'Métier et ville dans le titre'][i] : a}</span></div>`; });
+  $('liste').innerHTML = lignes.join('');
+  $('liste').style.display = duo || fin ? 'none' : 'flex';
+  // ---------- compte à rebours « trois secondes » ----------
+  if (t >= M('l06', 1) - .2 && t < M('l06', 1) + 1.0) { const u = (t - M('l06', 1) + .2) / 1.2, c = 3 - Math.floor(u * 3); fx += `<div class="titre" style="position:absolute;left:0;right:0;top:120px;text-align:center;font-size:320px;color:#fff;-webkit-text-stroke:14px #0B0B0C;paint-order:stroke fill;transform:scale(${1.4 - (u * 3 % 1) * .4});opacity:${1 - (u * 3 % 1) * .6}">${c}</div>`; }
+  // le visiteur s'en va (fenêtre grisée, onglet fermé)
+  if (t >= M('l06', 6) && t < P('l07')) { const k = prog(t, M('l06', 6), .5); fx += `<div style="position:absolute;inset:0;background:rgba(20,20,22,${k * .7});display:grid;place-items:center"><div style="font:700 34px Geist;color:#fff;opacity:${k};background:${ROUGE};padding:16px 26px;border-radius:14px">✕ Le visiteur est parti</div></div>`; }
+  // ligne dorée du balayage
+  if (w > 0 && w < 1) fx += `<div style="position:absolute;top:0;bottom:0;left:${w * 100}%;width:6px;margin-left:-3px;background:linear-gradient(#F6E3AE,#C9A961);box-shadow:0 0 30px #C9A961,0 0 80px rgba(201,169,97,.7)"></div>`;
+  $('vpFx').innerHTML += fx;
+  $('url').textContent = apres ? 'martin-renovation-nantes.fr' : 'martin-renovation.fr';
+  // ---------- curseur ----------
+  let cu = null;
+  if (t >= P('l01') && t < P('l02')) { const u = (t - P('l01')) / (P('l02') - P('l01')); cu = [mix(300, 980, (Math.sin(u * 7) + 1) / 2), 520 + Math.sin(u * 11) * 30]; }
+  if (t >= M('l06', 6) - .6 && t < M('l06', 6) + .2) { const u = E.io(prog(t, M('l06', 6) - .6, .6)); cu = [mix(700, 70, u), mix(800, 422, u)]; }
+  $('curseur').style.cssText = cu ? `display:block;left:${cu[0]}px;top:${cu[1]}px` : 'display:none';
+  // ---------- fin : appel à commenter ----------
+  $('fin').style.display = fin ? 'block' : 'none';
+  if (fin) { const u = t - F('l09') - .3;
+    $('fin').innerHTML = `<div style="position:absolute;width:1700px;height:1700px;left:-310px;top:100px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,97,.28),rgba(201,169,97,0) 60%)"></div>
+      <div style="position:absolute;left:0;right:0;top:330px;display:flex;flex-direction:column;align-items:center;${mot(t, F('l09') + .3, .5)}"><img src="../../../reseaux-sociaux/sources/logo-monogramme-clair.svg" style="width:150px"><div style="font:600 54px 'Spectral SC';letter-spacing:.06em;margin-top:26px">AUREA MEDIA</div></div>
+      <div style="position:absolute;left:60px;right:60px;top:760px;text-align:center;${mot(t, P('l10') + .1, .4)}"><div style="display:inline-flex;align-items:center;gap:22px;border-radius:40px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);padding:30px 40px"><div style="width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#F6E3AE,#A9873F);display:grid;place-items:center;font-size:46px">💬</div><div style="text-align:left"><div style="font:500 30px Geist;color:#AEAEA8">Écris en commentaire</div><div class="titre or" style="font-size:120px">AUDIT</div></div></div></div>`; }
+  rendreSousTitres(t);
+  $('flash').style.opacity = Math.max(clamp(1 - Math.abs(t - P('l07') - .85) / .12) * .5, clamp(1 - Math.abs(t - P('l09')) / .1) * .4);
+  $('voile').style.background = t > CAL.duree - .5 ? `rgba(0,0,0,${clamp((t - CAL.duree + .5) / .5)})` : 'transparent';
+}
+Promise.all([fetch('calage.json').then(r => r.json()), fetch('script.json').then(r => r.json()), fetch('sites/captures/positions.json').then(r => r.json())]).then(([c, s, p]) => {
+  CAL = c; SCRIPT = s; POS = p; window.DUREE = CAL.duree; construireSousTitres(SCRIPT, CAL);
+  return Promise.all([document.fonts.ready, ...[...document.images].map(i => i.decode().catch(() => {}))]);
+}).then(() => { rendre(0); window.pret = true; });
+</script>
+</body></html>

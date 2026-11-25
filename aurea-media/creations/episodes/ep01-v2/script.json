@@ -1,0 +1,19 @@
+{
+ "titre": "Épisode 1, V2 : quatorze appels",
+ "cible": "Artisans du second œuvre et de la rénovation, Paris et Hauts-de-Seine",
+ "phrases": [
+  {"id": "v1", "texte": "Quatorze appels. Il est neuf heures du matin.", "sous_titre": "*14 appels.* Il est *9 h* du matin.", "debut_prevu": 0.1},
+  {"id": "v2", "texte": "Et toi, t'es en haut d'un échafaudage.", "sous_titre": "Et toi, t'es en haut d'un *échafaudage*.", "debut_prevu": 2.6},
+  {"id": "v3", "texte": "Tu décroches avec les mains pleines d'enduit.", "sous_titre": "Tu décroches avec les mains pleines *d'enduit*.", "debut_prevu": 4.8},
+  {"id": "v4", "texte": "Pour répondre, encore, aux mêmes questions.", "sous_titre": "Pour répondre, encore, aux *mêmes questions*.", "debut_prevu": 7.4},
+  {"id": "v5", "texte": "Pendant ce temps, ton chantier n'avance pas.", "sous_titre": "Pendant ce temps, ton chantier *n'avance pas*.", "debut_prevu": 10.2},
+  {"id": "v6", "texte": "Et celui que tu rates ? Il appelle le suivant.", "sous_titre": "Et celui que tu rates ? Il appelle *le suivant*.", "debut_prevu": 12.8},
+  {"id": "v7", "texte": "Le soir, tu rappelles tout le monde.", "sous_titre": "Le soir, tu *rappelles tout le monde*.", "debut_prevu": 15.6},
+  {"id": "v8", "texte": "Et si quelqu'un répondait à ta place ?", "sous_titre": "Et si quelqu'un répondait *à ta place ?*", "debut_prevu": 17.8},
+  {"id": "v9", "texte": "Ta zone. Tes chantiers en photos. Tes délais. Et un vrai formulaire de devis.", "sous_titre": "Ta *zone.* Tes *chantiers en photos.* Tes *délais.* Et un vrai *formulaire de devis.*", "debut_prevu": 20.0},
+  {"id": "v10", "texte": "Toi, tu ne rappelles plus que les vrais chantiers.", "sous_titre": "Toi, tu ne rappelles plus que *les vrais chantiers*.", "debut_prevu": 25.4},
+  {"id": "v11", "texte": "Un site internet, c'est un collègue qui répond pendant que tu bosses.", "sous_titre": "Un site internet, c'est *un collègue* qui répond pendant que *tu bosses*.", "debut_prevu": 28.2},
+  {"id": "v12", "texte": "Et lui, il ne prend jamais de pause café.", "sous_titre": "Et lui, il ne prend *jamais de pause café.*", "debut_prevu": 32.0}
+ ],
+ "fin": {"texte_ecran": "Tu te reconnais ? Écris SITE en commentaire.", "duree": 3.0}
+}

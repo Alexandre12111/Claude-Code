@@ -1,0 +1,81 @@
+<!-- wp:html -->
+<section class="iv-hero" data-reseau>
+  <div class="phero__grille-deco" aria-hidden="true"></div>
+  <div class="wrap iv-hero__grille">
+    <div>
+      <nav aria-label="Fil d'Ariane"><ol class="ariane"><li><a href="{{accueil}}">Accueil</a></li><li aria-current="page">Intervenants</li></ol></nav>
+      <p class="surtitre" data-reveal>26 novembre 2026 · Campus Cyber</p>
+      <h1 class="lignes"><span class="l"><span style="--i:0">Speakers <b>2026</b></span></span></h1>
+      <p class="lead" data-reveal style="margin-top:24px;color:var(--brume)">Dirigeants industriels, investisseurs, responsables publics et experts de l'INAS : découvrez les personnalités qui interviendront lors de la seconde édition de DualTech, et retrouvez l'heure de leur passage.</p>
+      <div class="actions" data-reveal style="margin-top:32px"><a class="btn btn--primaire" href="{{url:programme-2026}}">Voir le programme<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a><a class="btn btn--ghost" href="{{url:inscription}}">S'inscrire<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a></div>
+    </div>
+    <div class="iv-mosaique" aria-hidden="true">[dualtech_intervenants partie="mosaique"]</div>
+  </div>
+</section>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<div class="iv-barre">
+  <div class="wrap iv-barre__in">
+    <div class="filtres" role="group" aria-label="Filtrer les intervenants par univers">[dualtech_intervenants partie="filtres"]</div>
+    <div style="display:flex;gap:12px;align-items:center;flex:1 1 320px;justify-content:flex-end">
+      <div class="recherche">
+        <label class="sr-only" for="iv-recherche">Rechercher un intervenant, une fonction ou une organisation</label>
+        <svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"/></svg>
+        <input id="iv-recherche" type="search" placeholder="Rechercher" autocomplete="off">
+        <button type="button" id="iv-effacer" aria-label="Effacer la recherche"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+      </div>
+      <div class="vues" role="group" aria-label="Affichage"><button type="button" data-vue="grille" aria-pressed="true" aria-label="Afficher en grille"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M104 40H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 64H56V56h48Zm96-64h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 64h-48V56h48Zm-96 32H56a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16Zm0 64H56v-48h48Zm96-64h-48a16 16 0 0 0-16 16v48a16 16 0 0 0 16 16h48a16 16 0 0 0 16-16v-48a16 16 0 0 0-16-16Zm0 64h-48v-48h48Z"/></svg></button><button type="button" data-vue="liste" aria-pressed="false" aria-label="Afficher en liste"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 0 1 0-16h176a8 8 0 0 1 8 8ZM40 72h176a8 8 0 0 0 0-16H40a8 8 0 0 0 0 16Zm176 112H40a8 8 0 0 0 0 16h176a8 8 0 0 0 0-16Z"/></svg></button></div>
+    </div>
+  </div>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<section class="sec sec--blanc" aria-label="Liste des intervenants" style="padding-top:56px">
+  <div class="wrap">
+    <p class="secondaire" id="iv-statut" aria-live="polite" style="margin-bottom:24px">[dualtech_nombre_intervenants] intervenants</p>
+    <div class="iv-entete" aria-hidden="true"><span>Intervenant</span><span>Fonction et organisation</span><span>Passage sur scène</span></div>
+    <div class="iv-grille" id="iv-grille">[dualtech_intervenants]</div>
+    <p class="vide" id="iv-vide" hidden>Aucun intervenant ne correspond à votre recherche.</p>
+  </div>
+</section>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<dialog class="fiche fiche--iv" id="fiche-iv" aria-labelledby="fiche-iv-nom">
+  <button class="fiche__fermer" type="button" aria-label="Fermer la fiche"><svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M205.66 194.34a8 8 0 0 1-11.32 11.32L128 139.31l-66.34 66.35a8 8 0 0 1-11.32-11.32L116.69 128 50.34 61.66a8 8 0 0 1 11.32-11.32L128 116.69l66.34-66.35a8 8 0 0 1 11.32 11.32L139.31 128Z"/></svg></button>
+  <div class="fiche__grille">
+    <div class="fiche__photo"><img src="" alt="" width="480" height="480"></div>
+    <div class="fiche__corps">
+      <p class="fiche__cat"></p>
+      <h2 id="fiche-iv-nom"></h2>
+      <p class="fiche__fonction"></p>
+      <ul class="fiche__sessions"></ul>
+      <div class="fiche__nav"><button type="button" data-iv-pas="-1">Intervenant précédent</button><a class="lien-fleche" href="{{url:programme-2026}}">Programme complet<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a><button type="button" data-iv-pas="1">Intervenant suivant</button></div>
+    </div>
+  </div>
+</dialog>
+<!-- /wp:html -->
+
+<!-- wp:html -->
+<section class="sec sec--nuit final">
+  <div class="wrap">
+    <p class="final__date" aria-hidden="true"><span>26</span>.11.2026</p>
+    <div class="final__grille">
+      <div>
+        <h2 class="h2 lignes"><span class="l"><span style="--i:0">S'inscrire à DualTech</span></span></h2>
+        <p class="lead" data-reveal style="margin-top:24px">400 places sont disponibles sur inscription préalable. Chaque demande est examinée par l'organisation avant l'envoi de la confirmation définitive de participation.</p>
+      </div>
+      <div data-reveal>
+        <div class="decompte" data-decompte aria-label="Temps restant avant l'ouverture de DualTech 2026" role="timer">
+          <div class="decompte__bloc"><span class="decompte__val" data-u="j">--</span><span class="decompte__lib">Jours</span></div>
+          <div class="decompte__bloc"><span class="decompte__val" data-u="h">--</span><span class="decompte__lib">Heures</span></div>
+          <div class="decompte__bloc"><span class="decompte__val" data-u="m">--</span><span class="decompte__lib">Min</span></div>
+        </div>
+        <div class="actions" style="margin-top:32px"><a class="btn btn--primaire" href="{{url:inscription}}">S'inscrire<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a><a class="btn btn--ghost" href="{{url:devenir-partenaire}}">Devenir partenaire<svg viewBox="0 0 256 256" fill="currentColor" aria-hidden="true" focusable="false"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg></a></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /wp:html -->

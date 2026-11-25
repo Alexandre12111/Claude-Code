@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Domaine des Aubes · Vins de Bourgogne</title>
+<!-- Concept fictif créé par Aurea Media. Typo : Instrument Serif + Instrument Sans. -->
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&display=block" rel="stylesheet">
+<style>
+:root{--creme:#F2EBDF;--vin:#5A1624;--vin2:#7A2434;--or:#B48A4A;--encre:#22161A;--mute:#7D6E66}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--creme);color:var(--encre);font:400 15px/1.6 "Instrument Sans",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh}
+.is{font-family:"Instrument Serif",serif}
+nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px 56px}
+nav ul{display:flex;gap:30px;list-style:none;font-size:14px;letter-spacing:.04em}
+nav ul.d{justify-content:flex-end}
+.blason{display:flex;flex-direction:column;align-items:center;gap:4px}
+.blason svg{width:46px;height:46px}
+.blason b{font:400 22px/1 "Instrument Serif";letter-spacing:.24em;text-transform:uppercase}
+.blason small{font-size:9px;letter-spacing:.4em;color:var(--mute)}
+.hero{display:grid;grid-template-columns:1fr 1.15fr;height:calc(100vh - 104px)}
+.txt{position:relative;display:flex;flex-direction:column;justify-content:center;padding:0 64px}
+.filigrane{position:absolute;left:30px;top:50%;transform:translateY(-50%);font:400 300px/1 "Instrument Serif";color:transparent;-webkit-text-stroke:1px rgba(180,138,74,.35);z-index:-1;letter-spacing:-.02em}
+.filet{display:flex;align-items:center;gap:14px;margin-top:22px;color:var(--or)}.filet:before,.filet:after{content:"";flex:0 0 60px;height:1px;background:var(--or)}
+.sceauV{position:absolute;right:30px;top:30px;width:150px;height:150px;z-index:2}
+.sur{font:500 12px "Instrument Sans";letter-spacing:.3em;text-transform:uppercase;color:var(--vin2)}
+h1{font:400 112px/.9 "Instrument Serif";letter-spacing:-.03em;margin:22px 0 26px;color:var(--vin)}
+h1 i{color:var(--or)}
+.txt p{font-size:17px;color:var(--mute);max-width:440px}
+.actions{display:flex;gap:14px;margin-top:36px}
+.btn{height:56px;padding:0 28px;display:flex;align-items:center;background:var(--vin);color:var(--creme);font:500 14px "Instrument Sans";letter-spacing:.14em;text-transform:uppercase}
+.btn.l{background:transparent;color:var(--vin);border:1px solid var(--vin)}
+.recomp{display:flex;gap:30px;margin-top:46px;align-items:center}
+.medaille{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--mute)}
+.medaille i{width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f3dc9c,#b48a4a 60%,#8a6630);box-shadow:inset 0 0 0 3px rgba(255,255,255,.25)}
+.medaille b{display:block;color:var(--encre);font:400 20px "Instrument Serif"}
+.photo{position:relative;margin:0 56px 40px 0;overflow:hidden}
+.photo>img{width:100%;height:100%;object-fit:cover}
+.photo:after{content:"";position:absolute;inset:16px;border:1px solid rgba(242,235,223,.6);pointer-events:none}
+.bouteille{position:absolute;left:30px;bottom:30px;width:320px;background:rgba(242,235,223,.95);padding:20px;display:flex;gap:16px;align-items:center}
+.bouteille img{width:80px;height:100px;object-fit:cover}
+.bouteille small{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--vin2)}
+.bouteille b{display:block;font:400 24px/1.1 "Instrument Serif";margin:4px 0}
+.bouteille span{font-size:14px;color:var(--mute)}
+.vert{position:absolute;right:34px;top:34px;writing-mode:vertical-rl;font:400 13px "Instrument Sans";letter-spacing:.4em;text-transform:uppercase;color:var(--creme)}
+@media (max-width:600px){
+  nav{grid-template-columns:1fr auto;padding:16px 20px}nav ul{display:none}.blason{align-items:flex-start}.blason svg{display:none}.blason b{font-size:18px}
+  .hero{grid-template-columns:1fr;height:auto}
+  .photo{order:-1;margin:0 20px;height:330px}.bouteille{left:14px;right:14px;bottom:14px;width:auto;padding:12px}.bouteille img{width:54px;height:66px}.bouteille b{font-size:19px}.sceauV{width:96px;height:96px;right:14px;top:14px}.filigrane{display:none}
+  .txt{padding:28px 20px 0}h1{font-size:62px;margin:14px 0 14px}.txt p{font-size:15px}.actions{margin-top:22px}.btn.l,.recomp{display:none}
+}
+</style></head><body>
+<nav><ul><li>Le domaine</li><li>Nos vins</li><li>Visites</li></ul>
+<div class="blason"><svg viewBox="0 0 48 48" fill="none" stroke="#5A1624" stroke-width="1.4"><circle cx="24" cy="24" r="22"/><path d="M8 30h32M12 30c2-8 6-14 12-16 6 2 10 8 12 16"/><circle cx="24" cy="14" r="3" fill="#B48A4A" stroke="none"/></svg><b>Domaine des Aubes</b><small>BOURGOGNE · DEPUIS 1872</small></div>
+<ul class="d"><li>Boutique</li><li>Contact</li><li>FR · EN</li></ul></nav>
+<section class="hero">
+  <div class="txt"><div class="filigrane">1872</div><div class="sur">Côte de Beaune · Vignerons depuis cinq générations</div>
+    <h1>Le temps fait <i>le reste.</i></h1>
+    <p>Douze hectares travaillés à la main, des vendanges triées grappe par grappe et des vins qui se gardent. Venez les goûter au domaine.</p>
+    <div class="actions"><a class="btn">Réserver une dégustation</a><a class="btn l">La boutique</a></div>
+    <div class="recomp"><div class="medaille"><i></i><div><b>Médaille d'or</b>Concours de Mâcon 2025</div></div><div class="medaille"><i style="background:radial-gradient(circle at 35% 30%,#eee,#a7a7a7 60%,#777)"></i><div><b>94 / 100</b>Guide des vins</div></div></div>
+  </div>
+  <div class="photo"><img src="photos/aubes-hero.webp" alt=""><svg class="sceauV" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="#5A1624"/><circle cx="100" cy="100" r="86" fill="none" stroke="#E8C88A" stroke-width="1.5"/><defs><path id="cv" d="M100,100 m-66,0 a66,66 0 1,1 132,0 a66,66 0 1,1 -132,0"/></defs><text fill="#E8C88A" font-family="Instrument Sans" font-size="14" letter-spacing="4.4"><textPath href="#cv">VIN DE L'ANNÉE · PREMIER CRU · 2025 · </textPath></text><text x="100" y="114" text-anchor="middle" fill="#F2EBDF" font-family="Instrument Serif" font-style="italic" font-size="44">94</text></svg>
+    <div class="bouteille"><img src="photos/aubes-2.webp" alt=""><div><small>Premier cru</small><b>Les Aubes 2021</b><span>Pinot noir · 42 €</span></div></div></div>
+</section>
+</body></html>

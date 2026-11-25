@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maison Sorel · Architecture d'intérieur à Paris</title>
+<!-- Concept créé par Aurea Media pour le carrousel de présentation (marque fictive). Typo : Bodoni Moda (didone de magazine) + Jost. -->
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400;1,6..96,500&family=Jost:wght@300;400;500&display=block" rel="stylesheet">
+<style>
+:root{--lin:#EFE9DF;--lin2:#E5DCCD;--encre:#191714;--gris:#7A7268;--terre:#9A6B43}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--lin);color:var(--encre);font:300 16px/1.65 Jost,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+.bd{font-family:"Bodoni Moda",serif;font-optical-sizing:auto}
+nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:26px 60px;border-bottom:1px solid rgba(25,23,20,.12)}
+nav ul{display:flex;gap:34px;list-style:none;font:400 12px/1 Jost;letter-spacing:.24em;text-transform:uppercase}
+.logo{font-family:"Bodoni Moda";font-size:30px;letter-spacing:.3em;text-align:center;font-weight:500}
+.logo small{display:block;font:400 9px/1 Jost;letter-spacing:.5em;color:var(--gris);margin-top:6px}
+.droite{display:flex;justify-content:flex-end;align-items:center;gap:26px;font:400 12px/1 Jost;letter-spacing:.22em;text-transform:uppercase}
+.droite a{border-bottom:1px solid var(--encre);padding-bottom:6px}
+.rond{width:46px;height:46px;border-radius:50%;border:1px solid rgba(25,23,20,.3);display:grid;place-items:center}
+.rond i{width:16px;height:7px;border-top:1px solid var(--encre);border-bottom:1px solid var(--encre)}
+.hero{position:relative;display:grid;grid-template-columns:1.08fr .92fr;height:calc(100vh - 100px);padding:0 60px}
+.gauche{display:flex;flex-direction:column;justify-content:center;padding-right:40px}
+.index{display:flex;align-items:center;gap:16px;font:400 12px/1 Jost;letter-spacing:.3em;text-transform:uppercase;color:var(--gris)}
+.index b{font-family:"Bodoni Moda";font-style:italic;font-weight:400;font-size:20px;letter-spacing:0;color:var(--terre)}
+.index:after{content:"";flex:0 0 80px;height:1px;background:var(--gris);opacity:.5}
+h1{font-family:"Bodoni Moda";font-weight:400;font-size:122px;line-height:.92;letter-spacing:-.025em;margin:30px 0 34px}
+h1 i{font-weight:400;color:var(--terre)}
+.chapo{max-width:430px;font-size:17px;color:#4a443d}
+.actions{display:flex;align-items:center;gap:30px;margin-top:40px}
+.btn{display:inline-flex;align-items:center;gap:16px;background:var(--encre);color:var(--lin);height:60px;padding:0 30px;border-radius:999px;font:400 13px/1 Jost;letter-spacing:.2em;text-transform:uppercase}
+.btn span{width:30px;height:30px;border-radius:50%;background:var(--lin);color:var(--encre);display:grid;place-items:center;font-size:15px;letter-spacing:0}
+.lien{font:400 13px/1 Jost;letter-spacing:.2em;text-transform:uppercase;border-bottom:1px solid var(--encre);padding-bottom:6px}
+.chiffres{display:flex;gap:0;margin-top:58px;border-top:1px solid rgba(25,23,20,.15)}
+.chiffres div{padding:22px 34px 0 0;margin-right:34px;border-right:1px solid rgba(25,23,20,.15)}
+.chiffres div:last-child{border:0}
+.chiffres b{display:block;font-family:"Bodoni Moda";font-weight:400;font-size:42px;line-height:1}
+.chiffres span{font:400 11px/1 Jost;letter-spacing:.2em;text-transform:uppercase;color:var(--gris)}
+.droiteH{position:relative}
+.arche{position:absolute;right:0;top:44px;bottom:40px;width:86%;border-radius:400px 400px 6px 6px;overflow:hidden}
+.arche img{width:100%;height:100%;object-fit:cover}
+.medaillon{position:absolute;left:0;bottom:70px;width:210px;height:210px;border-radius:50%;overflow:hidden;border:10px solid var(--lin);box-shadow:0 30px 60px rgba(25,23,20,.18)}
+.medaillon img{width:100%;height:100%;object-fit:cover}
+.sceau{position:absolute;left:40px;top:40px;width:160px;height:160px}
+.legende{position:absolute;right:24px;bottom:64px;background:rgba(239,233,223,.92);backdrop-filter:blur(8px);padding:16px 20px;font:400 11px/1.5 Jost;letter-spacing:.18em;text-transform:uppercase}
+.legende b{display:block;font-family:"Bodoni Moda";font-style:italic;font-weight:400;font-size:20px;letter-spacing:0;text-transform:none}
+@media (max-width:600px){
+  nav{grid-template-columns:auto 1fr auto;padding:18px 20px}nav ul,.droite a{display:none}.logo{font-size:22px;text-align:left}.logo small{font-size:7px}
+  .hero{grid-template-columns:1fr;height:auto;padding:0 20px}
+  .droiteH{order:-1;height:380px;margin-top:16px}
+  .arche{left:0;right:0;width:auto;top:0;bottom:0}
+  .medaillon{width:120px;height:120px;left:auto;right:14px;bottom:-40px;border-width:6px}
+  .sceau{left:10px;top:auto;bottom:-46px;width:110px;height:110px}
+  .legende{display:none}
+  .gauche{padding:56px 0 0}.index:after{display:none}.index{font-size:10px;letter-spacing:.22em}
+  h1{font-size:62px;margin:20px 0 18px}
+  .chapo{font-size:15px}
+  .actions{margin-top:24px}.lien{display:none}
+  .chiffres{display:none}
+}
+</style></head><body>
+<nav><ul><li>Projets</li><li>Studio</li><li>Journal</li></ul><div class="logo">SOREL<small>MAISON D'ARCHITECTURE</small></div><div class="droite"><a>Prendre rendez-vous</a><div class="rond"><i></i></div></div></nav>
+<section class="hero">
+  <div class="gauche">
+    <div class="index"><b>(01)</b>Architecture d'intérieur · Paris</div>
+    <h1>L'art de <i>vivre</i> chez soi.</h1>
+    <p class="chapo">Appartements, maisons et lieux de caractère. Nous dessinons des intérieurs calmes et lumineux, pensés dans le moindre détail et faits pour durer.</p>
+    <div class="actions"><a class="btn">Parler de mon projet <span>→</span></a><a class="lien">Voir les projets</a></div>
+    <div class="chiffres"><div><b>120</b><span>Intérieurs livrés</span></div><div><b>12</b><span>Ans de métier</span></div><div><b>4,9</b><span>Note clients</span></div></div>
+  </div>
+  <div class="droiteH">
+    <div class="arche"><img src="photos/sorel-hero.webp" alt=""></div>
+    <div class="medaillon"><img src="photos/sorel-1.webp" alt=""></div>
+    <svg class="sceau" viewBox="0 0 200 200"><circle cx="100" cy="100" r="98" fill="#191714"/><defs><path id="c" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><text fill="#EFE9DF" font-family="Jost" font-size="15.5" letter-spacing="4.6"><textPath href="#c">STUDIO PARISIEN · DEPUIS 2012 · SUR MESURE · </textPath></text><text x="100" y="116" text-anchor="middle" fill="#EFE9DF" font-family="Bodoni Moda" font-style="italic" font-size="46">S</text></svg>
+    <div class="legende"><b>Appartement Monceau</b>Paris 8e · 2025</div>
+  </div>
+</section>
+</body></html>
