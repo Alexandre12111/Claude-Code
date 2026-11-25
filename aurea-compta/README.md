@@ -1,5 +1,7 @@
 # Aurea Compta
 
+> **Version recommandée : l'extension WordPress** dans `aurea-media/wordpress/aurea-compta` (fichier `aurea-compta.zip`), hébergée sur votre site et accessible partout. Ce dossier contient la version locale d'origine (Python), conservée comme alternative hors ligne.
+
 Logiciel de comptabilité personnel de la SASU **Aurea Media**. Application locale, mono utilisateur, sans hébergement : une interface web servie par votre ordinateur (http://127.0.0.1:8765), une base SQLite et vos justificatifs rangés dans un dossier local.
 
 ## Ouvrir l'application (sans terminal)

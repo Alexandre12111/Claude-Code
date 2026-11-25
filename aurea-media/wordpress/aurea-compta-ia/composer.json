@@ -1,0 +1,6 @@
+{
+  "name": "aurea-media/aurea-compta-ia",
+  "description": "SDK officiel Anthropic pour Aurea Compta",
+  "require": { "anthropic-ai/sdk": "^1.14", "guzzlehttp/guzzle": "^7.9" },
+  "config": { "preferred-install": "dist", "platform": { "php": "8.1.0" }, "optimize-autoloader": true }
+}
