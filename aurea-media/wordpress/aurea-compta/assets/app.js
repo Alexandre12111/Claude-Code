@@ -13,6 +13,12 @@ const thisMonth = () => new Date().toISOString().slice(0, 7);
 const toCents = (v) => { if (v === "" || v === null || v === undefined) return null; const n = String(v).replace(/\s/g, "").replace(",", "."); if (isNaN(Number(n))) throw new Error("Montant invalide : " + v); return Math.round(Number(n) * 100); };
 const centsToInput = (c) => (c === null || c === undefined) ? "" : (c / 100).toFixed(2).replace(".", ",");
 
+const ICONS = {"home": "<path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V21h14V9.5\"/><path d=\"M10 21v-6h4v6\"/>", "bank": "<path d=\"M3 21h18\"/><path d=\"M5 21v-9M9.5 21v-9M14.5 21v-9M19 21v-9\"/><path d=\"M2 9.5 12 3l10 6.5z\"/>", "invoice": "<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6M8 13h8M8 17h5\"/>", "card": "<rect x=\"2.5\" y=\"5\" width=\"19\" height=\"14\" rx=\"2\"/><path d=\"M2.5 10h19M6 15h4\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21a8 8 0 0 1 16 0\"/>", "percent": "<path d=\"M19 5 5 19\"/><circle cx=\"6.5\" cy=\"6.5\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"2.5\"/>", "book": "<path d=\"M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z\"/><path d=\"M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z\"/>", "archive": "<rect x=\"2\" y=\"3\" width=\"20\" height=\"5\" rx=\"1\"/><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4\"/>", "sliders": "<path d=\"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "sparkles": "<path d=\"M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z\"/><path d=\"M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z\"/>", "moon": "<path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/>", "menu": "<path d=\"M4 6h16M4 12h16M4 18h16\"/>", "x": "<path d=\"M18 6 6 18M6 6l12 12\"/>", "external": "<path d=\"M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5\"/>", "upload": "<path d=\"M12 16V4M7 9l5-5 5 5\"/><path d=\"M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3\"/>", "download": "<path d=\"M12 4v12M7 11l5 5 5-5\"/><path d=\"M4 20h16\"/>", "sync": "<path d=\"M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8\"/><path d=\"M21 3v5h-5M3 21v-5h5\"/>", "check": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert": "<path d=\"M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z\"/><path d=\"M12 9v4M12 17h.01\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 16v-4M12 8h.01\"/>", "wallet": "<path d=\"M20 7H5a2 2 0 0 1 0-4h13v4\"/><path d=\"M3 5v14a2 2 0 0 0 2 2h15V7\"/><circle cx=\"16\" cy=\"14\" r=\"1.2\"/>", "up": "<path d=\"m3 17 6-6 4 4 8-8\"/><path d=\"M14 7h7v7\"/>", "down": "<path d=\"m3 7 6 6 4-4 8 8\"/><path d=\"M14 17h7v-7\"/>", "scale": "<path d=\"M12 3v18M7 21h10M5 7h14\"/><path d=\"M5 7 2 14a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z\"/>", "inbox": "<path d=\"M22 12h-6l-2 3h-4l-2-3H2\"/><path d=\"M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z\"/>", "more": "<circle cx=\"5\" cy=\"12\" r=\"1.2\"/><circle cx=\"12\" cy=\"12\" r=\"1.2\"/><circle cx=\"19\" cy=\"12\" r=\"1.2\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "calendar": "<rect x=\"3\" y=\"4.5\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 9.5h18M8 3v3M16 3v3\"/>", "file": "<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/>"};
+// Sprite SVG unique (icônes au trait, style Lucide) : utilisé par le gabarit et par les vues.
+document.body.insertAdjacentHTML("afterbegin", `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${Object.entries(ICONS).map(([k, v]) => `<symbol id="i-${k}" viewBox="0 0 24 24">${v}</symbol>`).join("")}</svg>`);
+const ic = (name, label) => `<svg class="icon" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}><use href="#i-${name}"/></svg>`;
+const emptyState = (text, icon = "inbox") => `<div class="empty">${ic(icon)}<div>${text}</div></div>`;
+
 // Les chemins « /api/xxx » de l'interface correspondent à l'API REST WordPress « aurea/v1/xxx ».
 function restUrl(path, withNonce = false) {
   const [p, qs] = path.replace(/^\/api\//, "").split("?");
@@ -48,21 +54,44 @@ const del = (p) => api(p, { method: "DELETE" });
 function toast(msg, err = false) {
   const t = document.createElement("div");
   t.className = "toast" + (err ? " err" : "");
-  t.textContent = msg;
+  t.setAttribute("role", err ? "alert" : "status");
+  t.innerHTML = ic(err ? "alert" : "check") + `<span>${esc(msg)}</span>`;
   $("#toasts").appendChild(t);
   setTimeout(() => t.remove(), err ? 7000 : 3500);
 }
 async function run(fn, okMsg) {
   try { const r = await fn(); if (okMsg) toast(okMsg); return r; } catch (e) { toast(e.message, true); throw e; }
 }
-function openDrawer(html) { $("#drawer-body").innerHTML = html; $("#drawer").classList.add("open"); $("#drawer .drawer-panel").scrollTop = 0; }
-function closeDrawer() { $("#drawer").classList.remove("open"); }
+let lastFocus = null;
+function openDrawer(html) {
+  if (!$("#drawer").classList.contains("open")) lastFocus = document.activeElement;
+  $("#drawer-body").innerHTML = html;
+  const h = $("#drawer-body h2"); if (h) h.id = "drawer-title";
+  $("#drawer").classList.add("open"); $("#drawer").setAttribute("aria-hidden", "false");
+  $("#drawer .drawer-panel").scrollTop = 0;
+  setTimeout(() => $("#drawer .close").focus({ preventScroll: true }), 30);
+}
+function closeDrawer() {
+  if (!$("#drawer").classList.contains("open")) return;
+  $("#drawer").classList.remove("open"); $("#drawer").setAttribute("aria-hidden", "true");
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus({ preventScroll: true });
+}
+function toggleSidebar(force) {
+  const sb = $("#sidebar"); const open = force === undefined ? !sb.classList.contains("open") : force;
+  sb.classList.toggle("open", open);
+  $(".menu").setAttribute("aria-expanded", String(open));
+  let scrim = $(".scrim");
+  if (open && !scrim) { scrim = document.createElement("div"); scrim.className = "scrim"; scrim.onclick = () => toggleSidebar(false); document.body.appendChild(scrim); }
+  if (!open && scrim) scrim.remove();
+}
+window.addEventListener("scroll", () => $("#topbar") && $("#topbar").classList.toggle("scrolled", window.scrollY > 4), { passive: true });
 $("#drawer").addEventListener("click", (e) => { if (e.target.id === "drawer") closeDrawer(); });
-function openModal(html) { $("#modal-body").innerHTML = html; $("#modal").classList.add("open"); }
+function openModal(html) { $("#modal-body").innerHTML = html; $("#modal").classList.add("open"); setTimeout(() => { const f = $("#modal-body input, #modal-body select, #modal-body button"); if (f) f.focus(); }, 30); }
 function closeModal() { $("#modal").classList.remove("open"); }
 $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") { closeDrawer(); closeModal(); }
+  if (e.key === "Escape") { closeDrawer(); closeModal(); toggleSidebar(false); }
+  if (e.key === "Enter" && e.target.matches && e.target.matches("tr.click, .card.link")) e.target.click();
   if (e.key === "/" && !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)) { e.preventDefault(); openSearch(); }
 });
 function formData(form) {
@@ -76,6 +105,11 @@ function toggleTheme() {
   const next = cur === "dark" ? "light" : "dark";
   document.documentElement.dataset.theme = next;
   try { localStorage.setItem("theme", next); } catch (e) { /* stockage indisponible */ }
+  themeIcon();
+}
+function themeIcon() {
+  const dark = (document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+  const b = $("#theme-btn"); if (b) b.innerHTML = ic(dark ? "sun" : "moon");
 }
 try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* */ }
 
@@ -117,11 +151,11 @@ function params() { const q = location.hash.split("?")[1] || ""; return Object.f
 async function route(keepOverlay = false) {
   if (keepOverlay !== true) { closeDrawer(); closeModal(); }
   const name = (location.hash.replace(/^#\/?/, "").split("?")[0]) || "";
-  $$("#nav a").forEach((a) => a.classList.toggle("active", a.dataset.route === name));
+  $$("#nav a, .bottom-nav a").forEach((a) => { if (a.dataset.route === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   $("#page-title").textContent = TITLES[name] || "";
-  $("#sidebar").classList.remove("open");
+  toggleSidebar(false);
   setActions("");
-  $("#view").innerHTML = `<div class="empty">Chargement…</div>`;
+  $("#view").innerHTML = `<div class="skeleton" aria-busy="true" aria-label="Chargement"><div></div><div></div><div></div></div>`;
   try { await (ROUTES[name] || ROUTES[""])(params()); } catch (e) { $("#view").innerHTML = `<div class="alert bad">${esc(e.message)}</div>`; }
   refreshCounts();
 }
@@ -131,29 +165,31 @@ async function refreshCounts() {
     const o = await api("/api/overview");
     $("#c-banque").textContent = o.a_verifier.operations || "";
     $("#c-depenses").textContent = (o.a_verifier.depenses + o.a_verifier.pieces_non_traitees) || "";
+    $("#b-banque").textContent = $("#c-banque").textContent; $("#b-depenses").textContent = $("#c-depenses").textContent;
     const prov = o.parametres_provisoires;
     $("#banner").innerHTML = (o.mode_demo ? `<div class="alert info">Mode démonstration : données fictives séparées de votre base réelle.</div>` : "") +
-      (prov.length ? `<div class="alert warn">Paramètres provisoires utilisés (${prov.map((p) => p === "tax" ? "régimes fiscaux" : "société").join(", ")}). <a href="#/parametres">Les confirmer</a></div>` : "");
+      (prov.length ? `<div class="alert warn">${ic("alert")}<span>Paramètres provisoires utilisés (${prov.map((p) => p === "tax" ? "régimes fiscaux" : "société").join(", ")}). <a href="#/parametres">Les confirmer</a></span></div>` : "");
   } catch (e) { /* ignore */ }
 }
 
 // ------------------------------------------------------------------ vue d'ensemble
+const kpi = (href, icon, label, value, sub, cls = "") => `<div class="card link ${cls}" role="link" tabindex="0" onclick="location.hash='${href}'"><div class="label">${ic(icon)}${label}</div><div class="value">${value}</div><div class="sub">${sub}</div></div>`;
 ROUTES[""] = async () => {
   const o = await api("/api/overview");
-  setActions(`<button onclick="syncQonto()">Synchroniser Qonto</button><button onclick="location.hash='#/comptabilite?tab=mois'">Vérifier le mois</button>`);
+  setActions(`<button onclick="syncQonto()">${ic("sync")}Synchroniser Qonto</button><button class="primary" onclick="location.hash='#/comptabilite?tab=mois'">${ic("check")}Vérifier le mois</button>`);
   const tva = o.tva || {};
   const tvaVal = tva.credit_cents ? eur(tva.credit_cents) : eur(tva.a_payer_cents || 0);
   const todo = o.a_verifier;
   const totalTodo = todo.operations + todo.depenses + todo.justificatifs_manquants + todo.pieces_non_traitees;
   $("#view").innerHTML = `
     <div class="cards">
-      <div class="card link" onclick="location.hash='#/banque'"><div class="label">Solde bancaire</div><div class="value">${eur(o.solde_bancaire_cents)}</div><div class="sub">${esc(o.solde_source)}</div></div>
-      <div class="card link" onclick="location.hash='#/recettes'"><div class="label">Recettes de l'exercice (HT)</div><div class="value">${eur(o.recettes_cents)}</div><div class="sub">Facturé du ${d(o.exercice.start_date)} au ${d(o.exercice.end_date)}</div></div>
-      <div class="card link" onclick="location.hash='#/depenses'"><div class="label">Dépenses de l'exercice (HT)</div><div class="value">${eur(o.depenses_cents)}</div><div class="sub">Charges comptables, amortissements compris</div></div>
-      <div class="card link" onclick="location.hash='#/cloture'"><div class="label">Résultat provisoire</div><div class="value ${o.resultat_cents < 0 ? "neg" : ""}">${eur(o.resultat_cents)}</div><div class="sub">${o.resultat_cents >= 0 ? "Bénéficiaire" : "Déficitaire"} avant impôt</div></div>
-      <div class="card link" onclick="location.hash='#/tva'"><div class="label">${tva.credit_cents ? "Crédit de TVA estimé" : "TVA estimée à payer"}</div><div class="value">${tvaVal}</div><div class="sub">Période ${esc(tva.periode || "")}</div></div>
-      <div class="card link" onclick="location.hash='#/associe'"><div class="label">Apports non remboursés</div><div class="value">${eur(o.apports_non_rembourses_cents)}</div><div class="sub">Somme due par la société</div></div>
-      <div class="card link" onclick="location.hash='#/banque?status=a_verifier'"><div class="label">Opérations à vérifier</div><div class="value">${totalTodo}</div><div class="sub">${todo.operations} opération(s), ${todo.depenses} dépense(s), ${todo.justificatifs_manquants} justificatif(s) manquant(s)</div></div>
+      ${kpi("#/banque", "wallet", "Solde bancaire", eur(o.solde_bancaire_cents), esc(o.solde_source), "hero")}
+      ${kpi("#/recettes", "up", "Recettes de l'exercice (HT)", eur(o.recettes_cents), `Facturé du ${d(o.exercice.start_date)} au ${d(o.exercice.end_date)}`)}
+      ${kpi("#/depenses", "down", "Dépenses de l'exercice (HT)", eur(o.depenses_cents), "Charges comptables, amortissements compris")}
+      ${kpi("#/cloture", "scale", "Résultat provisoire", `<span class="${o.resultat_cents < 0 ? "neg" : ""}">${eur(o.resultat_cents)}</span>`, (o.resultat_cents >= 0 ? "Bénéficiaire" : "Déficitaire") + " avant impôt")}
+      ${kpi("#/tva", "percent", tva.credit_cents ? "Crédit de TVA estimé" : "TVA estimée à payer", tvaVal, "Période " + esc(tva.periode || ""))}
+      ${kpi("#/associe", "user", "Apports non remboursés", eur(o.apports_non_rembourses_cents), "Somme due par la société")}
+      ${kpi("#/banque?status=a_verifier", "inbox", "Opérations à vérifier", String(totalTodo), `${todo.operations} opération(s), ${todo.depenses} dépense(s), ${todo.justificatifs_manquants} justificatif(s) manquant(s)`)}
     </div>
     <h2>À faire</h2>
     <div class="panel"><ul class="issues">
@@ -176,8 +212,8 @@ async function syncQonto(full = false) {
 
 // ------------------------------------------------------------------ banque
 ROUTES.banque = async (p) => {
-  setActions(`<button class="primary" onclick="syncQonto()">Synchroniser Qonto</button>
-    <button onclick="$('#csv-input').click()">Importer un CSV</button><input type="file" id="csv-input" accept=".csv" hidden onchange="importCsv(this)">
+  setActions(`<button class="primary" onclick="syncQonto()">${ic("sync")}Synchroniser Qonto</button>
+    <button onclick="$('#csv-input').click()">${ic("upload")}Importer un CSV</button><input type="file" id="csv-input" accept=".csv" hidden onchange="importCsv(this)">
     <button onclick="manualTx()">Saisir une opération</button>`);
   const status = p.status || "";
   const month = p.month || "";
@@ -197,11 +233,11 @@ ROUTES.banque = async (p) => {
     </div>
     <div class="table-wrap"><table>
       <thead><tr><th>Date</th><th>Tiers</th><th>Libellé</th><th class="right">Montant</th><th>Statut</th><th>Affectation</th></tr></thead>
-      <tbody>${rows.map((t) => `<tr class="click" onclick="openTx(${t.id})">
+      <tbody>${rows.map((t) => `<tr class="click" tabindex="0" onclick="openTx(${t.id})">
         <td>${d(t.date)}</td><td>${esc(t.counterparty || "")}</td><td class="muted">${esc(t.label || "")}${t.note ? `<div class="small">${esc(t.note)}</div>` : ""}</td>
         <td>${eurSigned(t.amount_cents)}</td><td>${badge(t.status)}</td>
         <td class="small">${t.allocations.length ? t.allocations.map((a) => esc(allocLabel(a))).join(", ") : (t.suggestion ? `<span class="muted">${esc(t.suggestion.explanation)}</span>` : "")}</td></tr>`).join("")}</tbody>
-    </table>${rows.length ? "" : `<div class="empty">Aucune opération. Synchronisez Qonto ou importez un relevé CSV.</div>`}</div>`;
+    </table>${rows.length ? "" : emptyState("Aucune opération. Synchronisez Qonto ou importez un relevé CSV.", "bank")}</div>`;
   if (p.tx) openTx(Number(p.tx));
 };
 const ALLOC = { vente: "Règlement client", depense: "Dépense", associe: "Compte courant associé", capital: "Capital", tva: "TVA", is: "Impôt sur les sociétés", virement_interne: "Virement interne", compte: "Compte" };
@@ -306,16 +342,16 @@ function refreshView() { const y = window.scrollY; route(true).then(() => window
 
 // ------------------------------------------------------------------ recettes
 ROUTES.recettes = async (p) => {
-  setActions(`<button class="primary" onclick="invoiceForm()">Nouvelle facture</button>`);
+  setActions(`<button class="primary" onclick="invoiceForm()">${ic("plus")}Nouvelle facture</button>`);
   const rows = await api("/api/invoices");
   const tot = rows.filter((r) => r.kind === "facture").reduce((a, r) => a + r.remaining_cents, 0);
   $("#view").innerHTML = `
     <p class="muted">Une facture émise n'est pas un encaissement : elle devient « payée » lorsqu'un virement Qonto lui est rapproché. Reste à encaisser : <b>${eur(tot)}</b>.</p>
     <div class="table-wrap"><table><thead><tr><th>Numéro</th><th>Date</th><th>Client</th><th class="right">HT</th><th class="right">TVA</th><th class="right">TTC</th><th class="right">Reste dû</th><th>Statut</th></tr></thead>
-    <tbody>${rows.map((r) => `<tr class="click" onclick="openInvoice(${r.id})"><td class="mono">${esc(r.number)}${r.kind === "avoir" ? ` <span class="badge b-info">Avoir</span>` : ""}</td><td>${d(r.issue_date)}</td><td>${esc(r.client)}</td>
+    <tbody>${rows.map((r) => `<tr class="click" tabindex="0" onclick="openInvoice(${r.id})"><td class="mono">${esc(r.number)}${r.kind === "avoir" ? ` <span class="badge b-info">Avoir</span>` : ""}</td><td>${d(r.issue_date)}</td><td>${esc(r.client)}</td>
       <td class="num">${eur(r.kind === "avoir" ? -r.ht_cents : r.ht_cents)}</td><td class="num">${eur(r.kind === "avoir" ? -r.vat_cents : r.vat_cents)}</td><td class="num">${eur(r.kind === "avoir" ? -r.ttc_cents : r.ttc_cents)}</td>
       <td class="num">${r.kind === "facture" ? eur(r.remaining_cents) : ""}</td><td>${badge(r.payment_status)}</td></tr>`).join("")}</tbody></table>
-    ${rows.length ? "" : `<div class="empty">Aucune facture. Créez votre première facture ou importez un PDF.</div>`}</div>`;
+    ${rows.length ? "" : emptyState("Aucune facture. Créez votre première facture ou importez un PDF.", "invoice")}</div>`;
   if (p.id) openInvoice(Number(p.id));
 };
 async function invoiceForm(credited) {
@@ -357,7 +393,7 @@ async function invoiceForm(credited) {
 function addInvLine(l = {}) {
   const tr = document.createElement("tr");
   tr.innerHTML = `<td><input data-k="desc" value="${esc(l.description || "")}"></td><td><input data-k="qty" value="1"></td><td><input data-k="price" value="${esc(l.price || "")}"></td>
-    <td><select data-k="rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option>${r}</option>`).join("")}</select></td><td><button type="button" class="ghost sm" onclick="this.closest('tr').remove();invTotals()">✕</button></td>`;
+    <td><select data-k="rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option>${r}</option>`).join("")}</select></td><td><button type="button" class="ghost sm" aria-label="Supprimer la ligne" onclick="this.closest('tr').remove();invTotals()">${ic("x")}</button></td>`;
   $("#ilines").appendChild(tr);
 }
 function invTotals() {
@@ -383,15 +419,15 @@ async function openInvoice(id) {
 
 // ------------------------------------------------------------------ dépenses
 ROUTES.depenses = async (p) => {
-  setActions(`<button class="primary" onclick="$('#up').click()">Déposer des justificatifs</button><input type="file" id="up" multiple accept=".pdf,image/*" hidden onchange="uploadDocs(this.files)">
-    <button onclick="expenseForm()">Nouvelle dépense</button><button onclick="expenseForm(null,'perso')">Note de frais payée personnellement</button>`);
+  setActions(`<button class="primary" onclick="$('#up').click()">${ic("upload")}Déposer des justificatifs</button><input type="file" id="up" multiple accept=".pdf,image/*" hidden onchange="uploadDocs(this.files)">
+    <button onclick="expenseForm()">${ic("plus")}Nouvelle dépense</button><button onclick="expenseForm(null,'perso')">Note de frais payée personnellement</button>`);
   const tab = p.tab || "depenses";
   if (tab === "pieces") return renderPieces();
   const month = p.month || "";
   const rows = await api(`/api/expenses?month=${month}&status=${p.status || ""}`);
   const total = rows.filter((r) => r.rule !== "personnel").reduce((a, r) => ({ ht: a.ht + r.ht_cents, ttc: a.ttc + r.ttc_cents }), { ht: 0, ttc: 0 });
   $("#view").innerHTML = `
-    <div id="dropzone" class="drop">Déposez ici vos factures et tickets (PDF, JPG, PNG) : lecture automatique et rapprochement avec Qonto.</div>
+    <div id="dropzone" class="drop" role="button" tabindex="0" aria-label="Déposer des justificatifs">${ic("upload")}<strong>Déposez vos factures et tickets</strong><span class="small">PDF, JPG ou PNG, ou prenez une photo sur téléphone : lecture automatique et rapprochement avec Qonto.</span></div>
     <div class="toolbar" style="margin-top:14px">
       <div class="tabs" style="margin:0;border:0"><button class="active">Dépenses</button><button onclick="location.hash='#/depenses?tab=pieces'">Justificatifs déposés</button></div>
       <span class="spacer"></span>
@@ -399,17 +435,18 @@ ROUTES.depenses = async (p) => {
       <input type="month" style="width:auto" value="${esc(month)}" onchange="location.hash='#/depenses?month='+this.value">
     </div>
     <div class="table-wrap"><table><thead><tr><th>Date</th><th>Fournisseur</th><th>Libellé</th><th>Catégorie</th><th class="right">HT</th><th class="right">TVA</th><th class="right">TTC</th><th>Paiement</th><th>Pièce</th><th>Statut</th></tr></thead>
-    <tbody>${rows.map((x) => `<tr class="click" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}</td><td>${esc(x.category || "–")}</td>
+    <tbody>${rows.map((x) => `<tr class="click" tabindex="0" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}</td><td>${esc(x.category || "–")}</td>
       <td class="num">${eur(x.ht_cents)}</td><td class="num">${eur(x.vat_cents)}${x.vat_recovery < 100 && x.vat_cents ? ` <span class="badge" title="TVA non récupérable">NR</span>` : ""}</td><td class="num">${eur(x.ttc_cents)}</td>
       <td class="small">${PAYMENT[x.payment_method]}</td><td>${x.document_id ? "✓" : `<span class="badge b-warn">Manquant</span>`}</td><td>${badge(x.status)}</td></tr>`).join("")}</tbody>
     <tfoot><tr><td colspan="4">Total (hors dépenses personnelles)</td><td class="num">${eur(total.ht)}</td><td></td><td class="num">${eur(total.ttc)}</td><td colspan="3"></td></tr></tfoot></table>
-    ${rows.length ? "" : `<div class="empty">Aucune dépense sur cette période.</div>`}</div>`;
+    ${rows.length ? "" : emptyState("Aucune dépense sur cette période.", "card")}</div>`;
   setupDrop();
   if (p.id) openExpense(Number(p.id));
 };
 function setupDrop() {
   const z = $("#dropzone"); if (!z) return;
   z.onclick = () => $("#up").click();
+  z.onkeydown = (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("#up").click(); } };
   z.ondragover = (e) => { e.preventDefault(); z.classList.add("over"); };
   z.ondragleave = () => z.classList.remove("over");
   z.ondrop = (e) => { e.preventDefault(); z.classList.remove("over"); uploadDocs(e.dataTransfer.files); };
@@ -429,14 +466,14 @@ async function uploadDocs(files) {
 async function renderPieces() {
   const docs = await api("/api/documents?unlinked=true");
   $("#view").innerHTML = `
-    <div id="dropzone" class="drop">Déposez ici vos factures et tickets (PDF, JPG, PNG).</div>
+    <div id="dropzone" class="drop" role="button" tabindex="0" aria-label="Déposer des justificatifs">${ic("upload")}<strong>Déposez vos factures et tickets</strong><span class="small">PDF, JPG ou PNG</span></div>
     <div class="toolbar" style="margin-top:14px"><div class="tabs" style="margin:0;border:0"><button onclick="location.hash='#/depenses'">Dépenses</button><button class="active">Justificatifs déposés</button></div></div>
     <p class="muted small">Justificatifs non encore rattachés. Les données lues par l'IA sont des propositions : vérifiez-les avant de valider.</p>
     <div class="table-wrap"><table><thead><tr><th>Fichier</th><th>Fournisseur</th><th>Date</th><th class="right">TTC</th><th>Lecture</th><th></th></tr></thead>
     <tbody>${docs.map((x) => `<tr><td><a href="/api/documents/${x.id}/file" target="_blank">${esc(x.original_name)}</a></td><td>${esc(x.party_name || "")}</td><td>${d(x.doc_date)}</td>
       <td class="num">${x.amount_cents ? eur(x.amount_cents) : ""}</td><td>${x.ai_data ? `<span class="badge ${x.ai_data.source === "facturx" ? "b-ok" : "b-ai"}">${x.ai_data.source === "facturx" ? "Factur-X" : "IA"}</span>` : `<span class="badge">${x.ai_status === "manuel" ? "Saisie manuelle" : "Non lu"}</span>`}</td>
       <td class="right"><button class="sm" onclick="openPiece(${x.id})">Traiter</button></td></tr>`).join("")}</tbody></table>
-    ${docs.length ? "" : `<div class="empty">Aucun justificatif en attente.</div>`}</div>`;
+    ${docs.length ? "" : emptyState("Aucun justificatif en attente.", "file")}</div>`;
   setupDrop();
 }
 async function openPiece(id) {
@@ -544,7 +581,7 @@ async function deleteExpense(id) { if (!confirm("Supprimer cette dépense ?")) r
 
 // ------------------------------------------------------------------ associé
 ROUTES.associe = async () => {
-  setActions(`<button class="primary" onclick="movementForm('apport')">Enregistrer un apport</button><button onclick="movementForm('remboursement')">Enregistrer un remboursement</button>
+  setActions(`<button class="primary" onclick="movementForm('apport')">${ic("plus")}Enregistrer un apport</button><button onclick="movementForm('remboursement')">Enregistrer un remboursement</button>
     <button onclick="expenseForm(null,'perso')">Dépense payée personnellement</button>`);
   const a = await api("/api/associate");
   $("#view").innerHTML = `
@@ -561,8 +598,8 @@ ROUTES.associe = async () => {
     <div class="table-wrap"><table><thead><tr><th>Date</th><th>Opération</th><th class="right">Apport / avance</th><th class="right">Remboursement</th></tr></thead>
     <tbody>${a.mouvements.map((m) => `<tr><td>${d(m.date)}</td><td>${esc(m.line_label || m.label)} <span class="muted small">${esc(m.journal)}</span></td><td class="num">${m.credit_cents ? eur(m.credit_cents) : ""}</td><td class="num">${m.debit_cents ? eur(m.debit_cents) : ""}</td></tr>`).join("")}</tbody>
     <tfoot><tr><td colspan="2">Solde (positif : la société vous doit)</td><td colspan="2" class="num">${eur(a.solde_cents)}</td></tr></tfoot></table>
-    ${a.mouvements.length ? "" : `<div class="empty">Aucun mouvement.</div>`}</div>
-    ${a.perso_expenses.length ? `<h2>Dépenses payées personnellement</h2><div class="table-wrap"><table>${a.perso_expenses.map((x) => `<tr class="click" onclick="location.hash='#/depenses?id=${x.id}'"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")} ${esc(x.label)}</td><td>${esc(x.category || "")}</td><td class="num">${eur(x.ttc_cents)}</td></tr>`).join("")}</table></div>` : ""}`;
+    ${a.mouvements.length ? "" : emptyState("Aucun mouvement.", "user")}</div>
+    ${a.perso_expenses.length ? `<h2>Dépenses payées personnellement</h2><div class="table-wrap"><table>${a.perso_expenses.map((x) => `<tr class="click" tabindex="0" onclick="location.hash='#/depenses?id=${x.id}'"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")} ${esc(x.label)}</td><td>${esc(x.category || "")}</td><td class="num">${eur(x.ttc_cents)}</td></tr>`).join("")}</table></div>` : ""}`;
 };
 function movementForm(type) {
   openModal(`<h2 style="margin-top:0">${type === "apport" ? "Apport personnel" : "Remboursement de compte courant"}</h2><form id="mvf">
@@ -603,7 +640,7 @@ ROUTES.tva = async (p) => {
     </div>
     <p class="muted small" style="margin-top:12px">Période du ${d(cur.start)} au ${d(cur.end)} · formulaire ${cur.form}. La TVA sur prestations de services est retenue à l'encaissement (TVA collectée en attente : ${eur(data.tva_collectee_en_attente_cents)}). ${data.lignes_provisoires ? `<span class="badge b-warn">${data.lignes_provisoires} écriture(s) provisoire(s)</span>` : ""}</p>
     <div class="toolbar"><button class="primary" onclick="prepareVat('${cur.start}','${cur.end}')">Préparer ma déclaration</button>
-      <a class="btn" href="/api/vat/export?start=${cur.start}&end=${cur.end}">Exporter le dossier (PDF, Excel, justificatifs)</a></div>
+      <a class="btn" href="/api/vat/export?start=${cur.start}&end=${cur.end}">${ic("download")}Exporter le dossier (PDF, Excel, justificatifs)</a></div>
     <h2>Rubriques de la déclaration ${cur.form}</h2>
     <div class="table-wrap"><table><thead><tr><th>Ligne</th><th>Libellé</th><th class="right">Base HT</th><th class="right">Taxe</th><th></th></tr></thead>
     <tbody>${show.map((l) => `<tr class="${l.detail.length ? "click" : ""}" ${l.detail.length ? `onclick="vatDetail('${l.code}')"` : ""}><td class="mono">${esc(l.code)}</td><td>${esc(l.libelle)}</td><td class="num">${l.base_cents !== null ? eur(l.base_cents) : ""}</td><td class="num"><b>${l.taxe_cents !== null ? eur(l.taxe_cents) : ""}</b></td><td class="small muted">${l.detail.length ? l.detail.length + " pièce(s)" : ""}</td></tr>`).join("")}</tbody></table></div>
@@ -650,13 +687,13 @@ ROUTES.comptabilite = async (p) => {
   } else if (tab === "balance") {
     const b = await api("/api/reports/balance");
     T.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Compte</th><th>Libellé</th><th class="right">Débit</th><th class="right">Crédit</th><th class="right">Solde débiteur</th><th class="right">Solde créditeur</th></tr></thead>
-      <tbody>${b.rows.map((r) => `<tr class="click" onclick="location.hash='#/comptabilite?tab=grandlivre&account=${r.account}'"><td class="mono">${r.account}</td><td>${esc(r.label || "")}</td><td class="num">${eur(r.debit)}</td><td class="num">${eur(r.credit)}</td><td class="num">${r.solde_debiteur ? eur(r.solde_debiteur) : ""}</td><td class="num">${r.solde_crediteur ? eur(r.solde_crediteur) : ""}</td></tr>`).join("")}</tbody>
+      <tbody>${b.rows.map((r) => `<tr class="click" tabindex="0" onclick="location.hash='#/comptabilite?tab=grandlivre&account=${r.account}'"><td class="mono">${r.account}</td><td>${esc(r.label || "")}</td><td class="num">${eur(r.debit)}</td><td class="num">${eur(r.credit)}</td><td class="num">${r.solde_debiteur ? eur(r.solde_debiteur) : ""}</td><td class="num">${r.solde_crediteur ? eur(r.solde_crediteur) : ""}</td></tr>`).join("")}</tbody>
       <tfoot><tr><td colspan="2">Total ${b.totals.equilibre ? badge("valide") : `<span class="badge b-bad">Déséquilibre</span>`}</td><td class="num">${eur(b.totals.debit)}</td><td class="num">${eur(b.totals.credit)}</td><td colspan="2"></td></tr></tfoot></table></div>`;
   } else if (tab === "grandlivre") {
     const g = await api(`/api/reports/grand-livre?account=${p.account || ""}`);
     T.innerHTML = `<div class="toolbar"><input placeholder="Compte (ex. 455, 6)" value="${esc(p.account || "")}" style="width:200px" onkeydown="if(event.key==='Enter')location.hash='#/comptabilite?tab=grandlivre&account='+this.value"></div>
       ${g.map((a) => `<h3>${a.account} · ${esc(a.label || "")}</h3><div class="table-wrap"><table><tbody>${a.lines.map((l) => `<tr><td>${d(l.date)}</td><td class="mono small">${esc(l.journal)} ${esc(l.number || "")}</td><td>${esc(l.label)}</td><td class="num">${l.debit_cents ? eur(l.debit_cents) : ""}</td><td class="num">${l.credit_cents ? eur(l.credit_cents) : ""}</td><td class="num muted">${eur(l.cumul)}</td></tr>`).join("")}</tbody>
-      <tfoot><tr><td colspan="3">Solde</td><td class="num">${eur(a.debit)}</td><td class="num">${eur(a.credit)}</td><td class="num">${eur(a.solde)}</td></tr></tfoot></table></div>`).join("") || `<div class="empty">Aucune écriture.</div>`}`;
+      <tfoot><tr><td colspan="3">Solde</td><td class="num">${eur(a.debit)}</td><td class="num">${eur(a.credit)}</td><td class="num">${eur(a.solde)}</td></tr></tfoot></table></div>`).join("") || emptyState("Aucune écriture.", "book")}`;
   } else if (tab === "resultat") {
     const r = await api("/api/reports/resultat");
     T.innerHTML = statementHtml(r);
@@ -668,7 +705,7 @@ ROUTES.comptabilite = async (p) => {
     T.innerHTML = `<div class="toolbar"><button class="primary" onclick='assetForm(${JSON.stringify(a.types)})'>Ajouter une immobilisation</button><span class="muted small">Les achats catégorisés « Immobilisations » sont ajoutés automatiquement. Amortissement linéaire au prorata temporis.</span></div>
       <div class="table-wrap"><table><thead><tr><th>Bien</th><th>Compte</th><th>Mise en service</th><th>Durée</th><th class="right">Valeur brute</th><th class="right">Dotation ${a.exercice.end_date.slice(0, 4)}</th><th class="right">Amortissements cumulés</th><th class="right">VNC</th><th></th></tr></thead>
       <tbody>${a.assets.map((x) => `<tr><td>${esc(x.label)} ${x.disposal_date ? `<span class="badge">Sorti le ${d(x.disposal_date)}</span>` : ""}</td><td class="mono">${x.account}</td><td>${d(x.in_service_date)}</td><td>${x.duration_years} ans</td><td class="num">${eur(x.cost_cents)}</td><td class="num">${eur(x.dotation_cents)}</td><td class="num">${eur(x.cumul_fin_cents)}</td><td class="num">${eur(x.vnc_fin_cents)}</td>
-        <td>${x.disposal_date ? "" : `<button class="sm ghost" onclick="disposeAsset(${x.id})">Sortie</button>`}</td></tr>`).join("")}</tbody></table>${a.assets.length ? "" : `<div class="empty">Aucune immobilisation.</div>`}</div>`;
+        <td>${x.disposal_date ? "" : `<button class="sm ghost" onclick="disposeAsset(${x.id})">Sortie</button>`}</td></tr>`).join("")}</tbody></table>${a.assets.length ? "" : emptyState("Aucune immobilisation.", "archive")}</div>`;
   } else if (tab === "mois") {
     const month = p.month || thisMonth();
     const r = await api(`/api/month/${month}/check`);
@@ -683,7 +720,7 @@ ROUTES.comptabilite = async (p) => {
     accountsList().then((a) => { $("#acc-dl").innerHTML = a.map((x) => `<option value="${x.number}">${esc(x.label)}</option>`).join(""); });
   } else if (tab === "historique") {
     const h = await api("/api/audit");
-    T.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Action</th><th>Objet</th><th>Motif</th></tr></thead><tbody>${h.map((x) => `<tr class="click" onclick='showAudit(${JSON.stringify(x).replace(/'/g, "&#39;")})'><td class="small">${new Date(x.ts).toLocaleString("fr-FR")}</td><td>${esc(x.action)}</td><td>${esc(x.object_type)} ${x.object_id || ""}</td><td class="muted">${esc(x.reason || "")}</td></tr>`).join("")}</tbody></table></div>`;
+    T.innerHTML = `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Action</th><th>Objet</th><th>Motif</th></tr></thead><tbody>${h.map((x) => `<tr class="click" tabindex="0" onclick='showAudit(${JSON.stringify(x).replace(/'/g, "&#39;")})'><td class="small">${new Date(x.ts).toLocaleString("fr-FR")}</td><td>${esc(x.action)}</td><td>${esc(x.object_type)} ${x.object_id || ""}</td><td class="muted">${esc(x.reason || "")}</td></tr>`).join("")}</tbody></table></div>`;
   }
 };
 function showAudit(x) { openDrawer(`<h2>${esc(x.action)} · ${esc(x.object_type)} ${x.object_id || ""}</h2><p class="muted">${new Date(x.ts).toLocaleString("fr-FR")} ${esc(x.reason || "")}</p><h3>Avant</h3><pre class="mono small panel panel-pad" style="white-space:pre-wrap">${esc(JSON.stringify(JSON.parse(x.before || "null"), null, 2))}</pre><h3>Après</h3><pre class="mono small panel panel-pad" style="white-space:pre-wrap">${esc(JSON.stringify(JSON.parse(x.after || "null"), null, 2))}</pre>`); }
@@ -752,7 +789,7 @@ ROUTES.cloture = async (p) => {
       <tr class="total"><td>IS estimé</td><td class="num">${eur(est.is_estime_cents)}</td></tr></table>
       <p class="hint">${est.remarques.map(esc).join("<br>")}<br>Échéance du solde : ${esc(est.echeance_solde)}</p></details>
     <div class="toolbar" style="margin-top:18px"><button class="primary" onclick="prepareYear(${fy.id})">Préparer mon bilan annuel</button>
-      <a class="btn" href="/api/closing/${fy.id}/export">Exporter mon dossier annuel</a><a class="btn" href="/api/closing/${fy.id}/fec">Télécharger le FEC</a></div>
+      <a class="btn" href="/api/closing/${fy.id}/export">${ic("download")}Exporter mon dossier annuel</a><a class="btn" href="/api/closing/${fy.id}/fec">${ic("download")}Télécharger le FEC</a></div>
     <div id="yearprep"></div>
     <h2>Sauvegarde des données</h2>
     <div class="panel panel-pad"><p class="muted small" style="margin-top:0">Sauvegarde automatique quotidienne (30 dernières conservées, dans un dossier privé de votre hébergement). L'export complet contient toutes les données et tous les justificatifs ; les clés API n'y figurent jamais. Pensez aussi aux sauvegardes Ionos ou à UpdraftPlus.</p>
@@ -914,6 +951,7 @@ function openSearch() {
   }, 200); };
 }
 
+themeIcon();
 route();
 // Synchronisation Qonto à l'ouverture si l'intervalle est écoulé (sans bloquer l'affichage).
 post("/api/qonto/auto").then((r) => { if (r && r.result && r.result.imported) { toast(`${r.result.imported} nouvelle(s) opération(s) Qonto.`); refreshView(); } }).catch(() => {});

@@ -51,7 +51,7 @@ class AC_Admin {
 			header( 'Content-Type: application/manifest+json' );
 			echo wp_json_encode( array(
 				'name' => 'Aurea Compta', 'short_name' => 'Compta', 'start_url' => home_url( '/compta' ), 'scope' => home_url( '/' ), 'display' => 'standalone',
-				'background_color' => '#f7f7f5', 'theme_color' => '#9a7a2e', 'lang' => 'fr',
+				'background_color' => '#0a0a0a', 'theme_color' => '#0a0a0a', 'lang' => 'fr',
 				'icons' => array( array( 'src' => AC_URL . 'assets/icon-192.png', 'sizes' => '192x192', 'type' => 'image/png' ),
 					array( 'src' => AC_URL . 'assets/icon-512.png', 'sizes' => '512x512', 'type' => 'image/png' ) ),
 			), JSON_UNESCAPED_SLASHES );
@@ -91,44 +91,53 @@ class AC_Admin {
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Compta">
-<meta name="theme-color" content="#9a7a2e">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="preload" href="<?php echo esc_url( AC_URL . 'assets/fonts/geist.woff2' ); ?>" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?php echo esc_url( AC_URL . 'assets/app.css?v=' . $v ); ?>">
 </head>
 <body>
+<a class="sr-only" href="#view">Aller au contenu</a>
 <div class="layout">
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><span class="logo">A</span><div><strong>Aurea Media</strong><small>Comptabilité SASU</small></div></div>
-    <button class="search-btn" onclick="openSearch()"><span>Rechercher</span><kbd>/</kbd></button>
+  <aside class="sidebar" id="sidebar" aria-label="Navigation principale">
+    <div class="brand"><span class="logo" aria-hidden="true">A</span><div><strong>Aurea Media</strong><small>Comptabilité SASU</small></div></div>
+    <button class="search-btn" onclick="openSearch()" aria-label="Rechercher (raccourci /)"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>Rechercher</span><kbd aria-hidden="true">/</kbd></button>
     <nav id="nav">
-      <a href="#/" data-route="">Vue d'ensemble</a>
-      <a href="#/banque" data-route="banque">Banque et transactions <span class="count" id="c-banque"></span></a>
-      <a href="#/recettes" data-route="recettes">Recettes et factures</a>
-      <a href="#/depenses" data-route="depenses">Dépenses et notes de frais <span class="count" id="c-depenses"></span></a>
-      <a href="#/associe" data-route="associe">Apports personnels</a>
-      <a href="#/tva" data-route="tva">TVA</a>
-      <a href="#/comptabilite" data-route="comptabilite">Comptabilité</a>
-      <a href="#/cloture" data-route="cloture">Clôture et exports</a>
-      <a href="#/parametres" data-route="parametres">Paramètres</a>
+      <a href="#/" data-route=""><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span class="label">Vue d'ensemble</span></a>
+      <a href="#/banque" data-route="banque"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span class="label">Banque et transactions</span><span class="count" id="c-banque"></span></a>
+      <a href="#/recettes" data-route="recettes"><svg class="icon" aria-hidden="true"><use href="#i-invoice"/></svg><span class="label">Recettes et factures</span></a>
+      <a href="#/depenses" data-route="depenses"><svg class="icon" aria-hidden="true"><use href="#i-card"/></svg><span class="label">Dépenses et notes de frais</span><span class="count" id="c-depenses"></span></a>
+      <a href="#/associe" data-route="associe"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span class="label">Apports personnels</span></a>
+      <a href="#/tva" data-route="tva"><svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg><span class="label">TVA</span></a>
+      <a href="#/comptabilite" data-route="comptabilite"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span class="label">Comptabilité</span></a>
+      <a href="#/cloture" data-route="cloture"><svg class="icon" aria-hidden="true"><use href="#i-archive"/></svg><span class="label">Clôture et exports</span></a>
+      <a href="#/parametres" data-route="parametres"><svg class="icon" aria-hidden="true"><use href="#i-sliders"/></svg><span class="label">Paramètres</span></a>
     </nav>
     <div class="side-foot">
-      <button class="ghost" onclick="openAssistant()">Assistant</button>
-      <button class="ghost icon" title="Thème clair ou sombre" onclick="toggleTheme()">◐</button>
-      <a class="ghost icon btn" title="Retour au site WordPress" href="<?php echo esc_url( admin_url() ); ?>">⌂</a>
+      <button class="ghost grow" onclick="openAssistant()"><svg class="icon" aria-hidden="true"><use href="#i-sparkles"/></svg>Assistant</button>
+      <button class="ghost icon" id="theme-btn" aria-label="Basculer le thème clair ou sombre" title="Thème clair ou sombre" onclick="toggleTheme()"><svg class="icon" aria-hidden="true"><use href="#i-moon"/></svg></button>
+      <a class="btn ghost icon" aria-label="Retour à l'administration WordPress" title="Retour à WordPress" href="<?php echo esc_url( admin_url() ); ?>"><svg class="icon" aria-hidden="true"><use href="#i-external"/></svg></a>
     </div>
   </aside>
   <main>
-    <header class="topbar">
-      <button class="ghost menu" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    <header class="topbar" id="topbar">
+      <button class="ghost icon menu" aria-label="Ouvrir le menu" aria-controls="sidebar" aria-expanded="false" onclick="toggleSidebar()"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
       <h1 id="page-title">Vue d'ensemble</h1>
       <div class="top-actions" id="top-actions"></div>
     </header>
     <div id="banner"></div>
-    <section id="view" class="view"></section>
+    <section id="view" class="view" tabindex="-1" aria-live="polite"></section>
   </main>
 </div>
-<div id="drawer" class="drawer" aria-hidden="true"><div class="drawer-panel"><button class="ghost close" onclick="closeDrawer()">✕</button><div id="drawer-body"></div></div></div>
-<div id="modal" class="modal" aria-hidden="true"><div class="modal-panel" id="modal-body"></div></div>
-<div id="toasts"></div>
+<nav class="bottom-nav" aria-label="Navigation rapide">
+  <a href="#/" data-route=""><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg>Accueil</a>
+  <a href="#/banque" data-route="banque"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg>Banque<span class="dot" id="b-banque"></span></a>
+  <a href="#/depenses" data-route="depenses"><svg class="icon" aria-hidden="true"><use href="#i-card"/></svg>Dépenses<span class="dot" id="b-depenses"></span></a>
+  <a href="#/tva" data-route="tva"><svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg>TVA</a>
+  <button type="button" onclick="toggleSidebar()" aria-label="Plus de rubriques"><svg class="icon" aria-hidden="true"><use href="#i-more"/></svg>Plus</button>
+</nav>
+<div id="drawer" class="drawer" aria-hidden="true"><div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title"><button class="ghost icon close" aria-label="Fermer" onclick="closeDrawer()"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button><div id="drawer-body"></div></div></div>
+<div id="modal" class="modal" aria-hidden="true"><div class="modal-panel" id="modal-body" role="dialog" aria-modal="true"></div></div>
+<div id="toasts" role="status" aria-live="polite"></div>
 <script>window.AC = <?php echo wp_json_encode( $config ); ?>;</script>
 <script src="<?php echo esc_url( AC_URL . 'assets/app.js?v=' . $v ); ?>"></script>
 </body>
