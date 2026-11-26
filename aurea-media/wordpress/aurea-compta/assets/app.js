@@ -863,7 +863,7 @@ ROUTES.tva = async (p) => {
   const periods = await api(`/api/vat/periods?year=${year}`);
   const cur = periods.find((x) => x.start === p.start) || periods.find((x) => x.start <= today() && today() <= x.end && !p.start) || periods.filter((x) => x.end < today()).pop() || periods[0];
   setActions(`<select style="width:auto" onchange="location.hash='#/tva?year='+this.value">${[year - 1, year, year + 1].map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select>`);
-  const [data, ex] = await Promise.all([api(`/api/vat/compute?start=${cur.start}&end=${cur.end}`), api(`/api/vat/exercise?date=${cur.start}`).catch(() => null)]);
+  const [data, ex, taxp] = await Promise.all([api(`/api/vat/compute?start=${cur.start}&end=${cur.end}`), api(`/api/vat/exercise?date=${cur.start}`).catch(() => null), api("/api/vat/tax-payments").catch(() => [])]);
   const L = data.lignes;
   const MOIS = (m) => new Date(m + "-15").toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
   const exHtml = ex ? `
@@ -878,6 +878,13 @@ ROUTES.tva = async (p) => {
     <div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>Mois</th><th class="right">Collectée</th><th class="right">Récupérable</th><th class="right">Solde</th></tr></thead>
     <tbody>${ex.mois.map((m) => `<tr><td>${esc(MOIS(m.month))}</td><td class="num">${eur(m.collectee_cents)}</td><td class="num">${eur(m.deductible_cents)}</td><td class="num">${eurSigned(m.solde_cents)}</td></tr>`).join("")}
     <tr class="total"><td>Total</td><td class="num">${eur(ex.collectee_cents)}</td><td class="num">${eur(ex.deductible_cents)}</td><td class="num">${eurSigned(ex.solde_cents)}</td></tr></tbody></table></div></details>
+    ${taxp.length ? `<h2>Paiements aux impôts de l'exercice</h2>
+      <p class="small muted" style="margin-top:0">Un paiement de TVA au SIE n'est pas une charge : classé en « Paiement de TVA », il compte dans la TVA déjà payée.</p>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Opération</th><th class="right">Montant</th><th>Classement actuel</th><th></th></tr></thead><tbody>
+      ${taxp.map((t) => `<tr><td>${d(t.date)}</td><td>${esc(t.label)}<div class="small muted">${esc(t.detail || "")}</div></td><td class="num">${eurSigned(t.amount_cents)}</td>
+        <td>${t.is_vat ? `<span class="badge b-ok">${esc(t.classement)}</span>` : `<span class="badge b-warn">${esc(t.classement)}</span>`}</td>
+        <td class="right">${t.is_vat || t.amount_cents > 0 ? "" : `<button class="sm primary" onclick="markVatPayment(${t.id})">C'est un paiement de TVA</button>`}</td></tr>`).join("")}
+      </tbody></table></div>` : ""}
     <h2>Période de déclaration</h2>` : "";
   const show = Object.values(L).filter((l) => (l.base_cents || l.taxe_cents) || ["16", "23", "28", "32"].includes(l.code));
   $("#view").innerHTML = exHtml + `
@@ -897,6 +904,11 @@ ROUTES.tva = async (p) => {
     <p class="hint">Cliquez sur une ligne pour retrouver les factures qui la composent. Vérifiez la notice du formulaire de l'année avant report sur impots.gouv.fr. Aucune déclaration ni aucun paiement n'est transmis automatiquement.</p>`;
   window._vat = data;
 };
+async function markVatPayment(id) {
+  if (!confirm("Classer ce paiement en paiement de TVA ? S'il était compté en charge, la dépense est annulée par contre passation (rien n'est effacé).")) return;
+  await run(() => post(`/api/transactions/${id}/classify`, { type: "tva" }), "Paiement de TVA enregistré");
+  refreshView();
+}
 function vatDetail(code) {
   const l = window._vat.lignes[code];
   openDrawer(`<h2>Ligne ${esc(code)} · ${esc(l.libelle)}</h2><div class="table-wrap"><table><thead><tr><th>Date</th><th>Pièce</th><th>Libellé</th><th class="right">Base</th><th class="right">Taxe</th></tr></thead>

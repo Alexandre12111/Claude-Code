@@ -32,6 +32,7 @@ class AC_Api {
 			array( 'PUT', 'secrets', 'put_secrets' ),
 			array( 'GET', 'fiscal-years', 'fiscal_years' ),
 			array( 'GET', 'vat/exercise', 'vat_exercise' ),
+			array( 'GET', 'vat/tax-payments', 'vat_tax_payments' ),
 			array( 'POST', 'fiscal-years', 'add_fiscal_year' ),
 			array( 'GET', 'categories', 'categories' ),
 			array( 'POST', 'categories', 'save_category' ),
@@ -238,6 +239,26 @@ class AC_Api {
 			}
 		}
 		return AC_DB::masked_secrets();
+	}
+
+	/** Paiements aux impôts de l'exercice (DGFIP, SIE...) et leur classement actuel, pour vérifier la TVA déjà payée. */
+	public static function r_vat_tax_payments( $r ) {
+		$fy  = AC_DB::q1( 'SELECT * FROM {fiscal_years} WHERE ? BETWEEN start_date AND end_date', array( AC_DB::today() ) ) ?: AC_DB::q1( 'SELECT * FROM {fiscal_years} ORDER BY end_date DESC LIMIT 1' );
+		$out = array();
+		foreach ( AC_DB::q( "SELECT * FROM {bank_transactions} WHERE status<>'ignore' AND date BETWEEN ? AND ?
+			AND CONCAT_WS(' ', counterparty, label) REGEXP 'DGFIP|IMPOT|IMPÔT|SIE |S\\.I\\.E|TRESOR PUBLIC|TRÉSOR PUBLIC|TVA' ORDER BY date", array( $fy['start_date'], $fy['end_date'] ) ) as $t ) {
+			$al    = AC_DB::q( "SELECT a.target_type, a.account, c.name FROM {allocations} a LEFT JOIN {expenses} x ON a.target_type='depense' AND x.id=a.target_id
+				LEFT JOIN {categories} c ON c.id=x.category_id WHERE a.bank_transaction_id=?", array( $t['id'] ) );
+			$types = array_column( $al, 'target_type' );
+			$label = array();
+			foreach ( $al as $x ) {
+				$label[] = 'depense' === $x['target_type'] ? 'Dépense · ' . ( $x['name'] ?: 'sans catégorie' ) : ( 'compte' === $x['target_type'] ? 'Compte ' . $x['account'] . ( '445660' === $x['account'] ? ' (TVA déductible)' : '' ) : ( AC_Reprise::LABELS[ $x['target_type'] ] ?? $x['target_type'] ) );
+			}
+			$out[] = array( 'id' => (int) $t['id'], 'date' => $t['date'], 'amount_cents' => (int) $t['amount_cents'], 'label' => $t['counterparty'] ?: $t['label'],
+				'detail' => $t['label'], 'status' => $t['status'], 'classement' => $label ? implode( ', ', $label ) : 'Non catégorisée',
+				'is_vat' => in_array( 'tva', $types, true ) || in_array( '445660', array_column( $al, 'account' ), true ) );
+		}
+		return $out;
 	}
 
 	/** TVA de tout l'exercice : cumul et détail mois par mois. */

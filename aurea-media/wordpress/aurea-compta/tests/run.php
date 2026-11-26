@@ -502,7 +502,10 @@ test( 'Reclasser une opération dont la dépense est validée (paiement au SIE e
 	$t = tx( 'sie', '2026-03-30', -14200, 'SERVICE DES IMPOTS DES ENTREPRISES' );
 	AC_Services::classify_transaction( $t['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'impots' ), 'vat_regime' => 'sans_tva', 'validate' => true ) );
 	eq( bal( '6351' ), 14200, 'compté en charge' );
+	$tp = AC_Api::r_vat_tax_payments( new WP_REST_Request( 'GET', '/x' ) );
+	eq( array( count( $tp ), $tp[0]['is_vat'] ), array( 1, false ), 'paiement au SIE repéré comme non classé en TVA' );
 	AC_Services::classify_transaction( $t['id'], array( 'type' => 'tva' ) );
+	eq( AC_Api::r_vat_tax_payments( new WP_REST_Request( 'GET', '/x' ) )[0]['is_vat'], true, 'classé en TVA' );
 	eq( bal( '6351' ), 0, 'charge annulée par contre passation' );
 	eq( bal( '4455' ), 14200, 'versement de TVA' );
 	ok( AC_DB::ival( "SELECT COUNT(*) FROM {entries} WHERE reversed_by IS NOT NULL" ) >= 1, 'écritures validées contre passées, pas effacées' );
