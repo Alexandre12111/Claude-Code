@@ -702,7 +702,8 @@ class AC_Services {
 					AND x.source IN ('qonto','banque','ia') AND x.payment_method='qonto' AND x.date=? ORDER BY x.id LIMIT 1", array( $id, $tx['date'] ) );
 				if ( $own_expense && ! in_array( $t, array( 'depense_nouvelle', 'remboursement_fournisseur' ), true ) ) {
 					if ( 'valide' === $own_expense['status'] ) {
-						throw new AC_Error( "Cette opération est liée à une dépense validée : modifiez ou annulez d'abord la dépense." );
+						// Reclassement demandé par l'utilisateur : la dépense validée est annulée par contre passation (rien n'est effacé du grand livre).
+						self::save_expense( array( 'status' => 'a_valider' ), (int) $own_expense['id'], 'Opération reclassée : dépense validée annulée' );
 					}
 					AC_DB::exec( 'DELETE FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
 					self::delete_expense( (int) $own_expense['id'], 'Opération reclassée' );

@@ -498,6 +498,21 @@ test( 'Remboursement reçu : en déduction des charges, jamais en plus', functio
 	eq( AC_DB::ival( 'SELECT SUM(ttc_cents) FROM {expenses}' ), 2500, 'total de la liste des dépenses' );
 } );
 
+test( 'Reclasser une opération dont la dépense est validée (paiement au SIE en TVA)', function () {
+	$t = tx( 'sie', '2026-03-30', -14200, 'SERVICE DES IMPOTS DES ENTREPRISES' );
+	AC_Services::classify_transaction( $t['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'impots' ), 'vat_regime' => 'sans_tva', 'validate' => true ) );
+	eq( bal( '6351' ), 14200, 'compté en charge' );
+	AC_Services::classify_transaction( $t['id'], array( 'type' => 'tva' ) );
+	eq( bal( '6351' ), 0, 'charge annulée par contre passation' );
+	eq( bal( '4455' ), 14200, 'versement de TVA' );
+	ok( AC_DB::ival( "SELECT COUNT(*) FROM {entries} WHERE reversed_by IS NOT NULL" ) >= 1, 'écritures validées contre passées, pas effacées' );
+	$g = tx( 'giani', '2026-01-22', -3000, 'Giani' );
+	AC_Services::classify_transaction( $g['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'logiciels' ), 'vat_regime' => 'sans_tva', 'validate' => true ) );
+	AC_Services::classify_transaction( $g['id'], array( 'type' => 'compte', 'account' => '445660' ) );
+	eq( bal( '6510' ), 0, 'plus de charge' );
+	eq( bal( '44566' ), 3000, 'TVA déductible' );
+} );
+
 function build_year() {
 	$t = tx( 'y0', '2026-01-02', 100000, 'Dépôt de capital', 'transfer' );
 	AC_Services::classify_transaction( $t['id'], array( 'type' => 'capital' ) );
