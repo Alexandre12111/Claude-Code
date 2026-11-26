@@ -286,7 +286,7 @@ HTML = f"""<!doctype html>
     <div>
       <h1>Les idées de vos clients<br>deviennent des <span>applications.</span></h1>
       <p class="lead"><b>YouCraft</b> transforme un besoin métier en application grâce à l’intelligence artificielle. Vos clients décrivent ce qu’ils veulent, YouCraft construit une application complète et sécurisée, <b>en quelques heures plutôt qu’en quelques mois</b>.</p>
-      <div class="stats"><div class="stat"><strong>750+</strong><span>utilisateurs</span></div><div class="stat"><strong>350</strong><span>applications déployées</span></div>
+      <div class="stats"><div class="stat"><strong>1&nbsp;300+</strong><span>utilisateurs</span></div><div class="stat"><strong>500+</strong><span>applications déployées</span></div>
         <div class="stat eu"><strong>{ic("map-pin-check", 11, "#D7FF3F")}Europe</strong><span>données hébergées en Europe</span></div></div>
     </div>
     {MOCK}
