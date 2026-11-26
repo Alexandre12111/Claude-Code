@@ -260,7 +260,54 @@ function addMenu() {
     <button onclick="closeModal();$('#csv-input').click()">${ic("upload")}<span><b>Importer un relevé CSV</b><small>Export Qonto, en secours de la synchronisation</small></span></button>
     <button onclick="closeModal();manualTx()">${ic("bank")}<span><b>Saisir une opération bancaire</b><small>Seulement si elle n'est pas dans Qonto</small></span></button>
     <button onclick="closeModal();fetchQontoDocs()">${ic("download")}<span><b>Récupérer les justificatifs Qonto</b><small>Télécharge les pièces jointes déposées dans Qonto</small></span></button>
-  </div><input type="file" id="csv-input" accept=".csv" hidden onchange="importCsv(this)">`);
+    <button onclick="closeModal();$('#reprise-input').click()">${ic("archive")}<span><b>Reprendre un dossier (Dougs)</b><small>Applique les catégories de votre ancien outil</small></span></button>
+  </div><input type="file" id="csv-input" accept=".csv" hidden onchange="importCsv(this)"><input type="file" id="reprise-input" accept=".json,application/json" hidden onchange="repriseFile(this)">`);
+}
+/* Reprise d'un dossier Dougs : contrôle à blanc, puis catégorisation par lots (hébergement mutualisé). */
+let REPRISE = null;
+async function reprisePass(dry, validate) {
+  const acc = { total: 0, classees: 0, deja_traitees: 0, a_verifier: [], introuvables: [], erreurs: [], trajets: 0, regles: 0 };
+  let offset = 0;
+  for (let i = 0; i < 60; i++) {
+    const r = await run(() => post("/api/reprise", { data: REPRISE, offset, dry, validate }));
+    acc.total = r.total; ["classees", "deja_traitees", "trajets", "regles"].forEach((k) => (acc[k] += r[k]));
+    ["a_verifier", "introuvables", "erreurs"].forEach((k) => acc[k].push(...r[k]));
+    if (r.next_offset === null || r.next_offset === undefined) break;
+    offset = r.next_offset;
+    if (!dry) toast(`Reprise en cours : ${offset} / ${r.total} opérations…`);
+  }
+  return acc;
+}
+function repriseList(title, rows, render) {
+  if (!rows.length) return "";
+  return `<details ${rows.length < 8 ? "open" : ""}><summary><b>${title}</b> (${rows.length})</summary><ul class="small" style="margin:8px 0 0;padding-left:18px">${rows.map((x) => `<li>${render(x)}</li>`).join("")}</ul></details>`;
+}
+async function repriseFile(input) {
+  const f = input.files[0]; input.value = "";
+  if (!f) return;
+  try { REPRISE = JSON.parse(await f.text()); } catch (e) { toast("Fichier illisible : choisissez le fichier .json de reprise.", true); return; }
+  toast("Contrôle du fichier…");
+  const r = await reprisePass(true, true);
+  openModal(`<h2 style="margin-top:0">Reprise depuis ${esc(REPRISE.source || "l'ancien logiciel")}</h2>
+    <p class="muted small">${esc(REPRISE.company || "")} · ${r.total} opérations bancaires et ${r.trajets} trajets dans le fichier. Aucune opération déjà traitée ne sera modifiée.</p>
+    <dl class="kv"><dt>À catégoriser</dt><dd><b>${r.classees}</b></dd><dt>Déjà traitées ici</dt><dd>${r.deja_traitees}</dd>
+      <dt>À vérifier par vous</dt><dd>${r.a_verifier.length}</dd><dt>Introuvables dans Qonto</dt><dd>${r.introuvables.length}</dd><dt>Trajets</dt><dd>${r.trajets}</dd></dl>
+    ${repriseList("Introuvables", r.introuvables, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}`)}
+    <label class="check" style="margin-top:12px"><input type="checkbox" id="reprise-validate" checked> Valider les écritures (elles l'étaient déjà dans ${esc(REPRISE.source || "l'ancien logiciel")})</label>
+    <div class="toolbar" style="margin-top:16px"><button class="primary" onclick="repriseRun()">Lancer la reprise</button><button class="ghost" onclick="closeModal()">Annuler</button></div>`);
+}
+async function repriseRun() {
+  const validate = $("#reprise-validate").checked;
+  closeModal(); toast("Reprise lancée…");
+  const r = await reprisePass(false, validate);
+  openModal(`<h2 style="margin-top:0">Reprise terminée</h2>
+    <dl class="kv"><dt>Opérations catégorisées</dt><dd><b>${r.classees}</b></dd><dt>Règles automatiques créées</dt><dd>${r.regles}</dd><dt>Trajets ajoutés</dt><dd>${r.trajets}</dd>
+      <dt>Déjà traitées (inchangées)</dt><dd>${r.deja_traitees}</dd></dl>
+    ${repriseList("À vérifier par vous", r.a_verifier, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}<br><span class="muted">${esc(x.reason)}</span>`)}
+    ${repriseList("Introuvables dans Qonto", r.introuvables, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}`)}
+    ${repriseList("Erreurs", r.erreurs, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}<br><span class="muted">${esc(x.message)}</span>`)}
+    <div class="toolbar" style="margin-top:16px"><button class="primary" onclick="closeModal();location.hash='#/operations'">Voir les opérations</button></div>`);
+  refreshView();
 }
 async function fetchQontoDocs() {
   let total = 0;
@@ -930,7 +977,10 @@ ROUTES.cloture = async (p) => {
     <h2>Sauvegarde des données</h2>
     <div class="panel panel-pad"><p class="muted small" style="margin-top:0">Sauvegarde automatique quotidienne (30 dernières conservées, dans un dossier privé de votre hébergement). L'export complet contient toutes les données et tous les justificatifs ; les clés API n'y figurent jamais. Pensez aussi aux sauvegardes Ionos ou à UpdraftPlus.</p>
       <div class="toolbar"><a class="btn" href="/api/backup/export">Exporter toutes les données</a><button onclick="backupNow()">Sauvegarder maintenant</button>
-      <button onclick="$('#restore').click()">Restaurer une archive</button><input type="file" id="restore" accept=".zip" hidden onchange="restoreArchive(this)"></div><div id="bklist" class="small muted"></div></div>`;
+      <button onclick="$('#restore').click()">Restaurer une archive</button><input type="file" id="restore" accept=".zip" hidden onchange="restoreArchive(this)"></div><div id="bklist" class="small muted"></div></div>
+    <h2>Reprise d'un autre logiciel</h2>
+    <div class="panel panel-pad"><p class="muted small" style="margin-top:0">Chargez le fichier de reprise (.json) préparé depuis Dougs : chaque opération Qonto reçoit la catégorie et la TVA de l'ancien outil, les trajets deviennent des frais kilométriques. Un contrôle à blanc est affiché avant toute écriture, et les opérations déjà traitées ne sont jamais modifiées.</p>
+      <div class="toolbar"><button onclick="$('#reprise-input2').click()">${ic("upload")}Charger un fichier de reprise</button><input type="file" id="reprise-input2" accept=".json,application/json" hidden onchange="repriseFile(this)"></div></div>`;
   api("/api/backups").then((b) => { $("#bklist").innerHTML = b.slice(0, 5).map((x) => `${esc(x.name)} · ${Math.round(x.size / 1024)} ko`).join("<br>"); });
 };
 async function prepareYear(id) {

@@ -8,7 +8,7 @@ class AC_Error extends Exception {}
 
 class AC_DB {
 
-	const SCHEMA_VERSION = 2;
+	const SCHEMA_VERSION = 3;
 
 	/** Colonnes converties en entiers à la lecture ($wpdb renvoie des chaînes). */
 	const INT_PATTERN = '/(_cents|^id$|_id$|^km_x10$|^round_trip$|^auto$|^vat_recovery$|^deductible$|^locked$|^is_asset$|^active$|^duration_years$|^size$|^custom$|_count$|^n$|^debit$|^credit$|^solde$|^total$|^seq$|^vseq$)/';

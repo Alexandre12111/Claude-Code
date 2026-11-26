@@ -45,6 +45,7 @@ class AC_Api {
 			array( 'POST', 'transactions/(\d+)/document', 'tx_document' ),
 			array( 'POST', 'expenses/(\d+)/document', 'expense_document' ),
 			array( 'POST', 'qonto/attachments', 'qonto_attachments' ),
+			array( 'POST', 'reprise', 'reprise' ),
 			array( 'GET', 'mileage', 'mileage' ),
 			array( 'POST', 'mileage', 'mileage_add' ),
 			array( 'DELETE', 'mileage/(\d+)', 'mileage_delete' ),
@@ -426,6 +427,12 @@ class AC_Api {
 
 	public static function r_qonto_attachments( $r ) {
 		return AC_Qonto::fetch_attachments( 20 );
+	}
+
+	public static function r_reprise( $r ) {
+		$b = self::body( $r );
+		@set_time_limit( 60 );
+		return AC_Reprise::run( (array) ( $b['data'] ?? array() ), (int) ( $b['offset'] ?? 0 ), ! empty( $b['dry'] ), ! isset( $b['validate'] ) || ! empty( $b['validate'] ) );
 	}
 
 	public static function r_mileage( $r ) {

@@ -652,6 +652,15 @@ class AC_Rules {
 			'rule' => 'standard',
 		),
 		array(
+			'code' => 'loyer',
+			'name' => 'Loyer et domiciliation du siège',
+			'account' => '613200',
+			'vat_recovery' => 100,
+			'deductible' => 100,
+			'rule' => 'standard',
+			'help' => 'Domiciliation (LegalPlace, etc.), loyer de bureau ou de coworking.',
+		),
+		array(
 			'code' => 'honoraires',
 			'name' => 'Honoraires (expert comptable, avocat)',
 			'account' => '622600',

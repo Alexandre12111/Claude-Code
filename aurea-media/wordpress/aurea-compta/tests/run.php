@@ -348,6 +348,63 @@ test( 'Frais kilométriques au barème (Forza 350)', function () {
 	ok( strlen( AC_Mileage::pdf( 2026 ) ) > 800, 'état PDF' );
 } );
 
+test( 'Reprise d\'un dossier Dougs (données fictives)', function () {
+	update_option( AC_DB::opt( 's_vehicle' ), array( 'name' => 'Honda Forza 350', 'type' => 'moto', 'cv' => '3-5' ), false );
+	tx( 'r1', '2026-03-02', -120, 'IONOS SARL' );
+	tx( 'r2', '2026-04-02', -120, 'IONOS SARL' );
+	tx( 'r3', '2026-04-02', -120, 'IONOS SARL' );
+	tx( 'r4', '2026-04-03', 17633, 'Stichting Mollie Payments' );
+	tx( 'r5', '2026-04-05', 15000, 'M ALEXANDRE COURY' );
+	tx( 'r6', '2026-04-06', -14200, 'SERVICE DES IMPOTS' );
+	tx( 'r7', '2026-04-07', -2500, 'RESTAURANT TEST' );
+	$done = tx( 'r8', '2026-04-08', -999, 'Deja Traitee' );
+	AC_Services::classify_transaction( $done['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'logiciels' ), 'vat_rate' => '20' ) );
+	$dep = function ( $ref, $date, $amt, $label, $cat, $rate, $vat, $remember = false ) {
+		return array( 'ref' => $ref, 'date' => $date, 'amount_cents' => $amt, 'label' => $label, 'memo' => '', 'action' => array( 'type' => 'depense_nouvelle', 'category' => $cat,
+			'vat_regime' => $rate ? 'fr' : 'sans_tva', 'vat_rate' => $rate, 'vat_cents' => $vat, 'remember' => $remember ) );
+	};
+	$data = array( 'format' => 'aurea-compta-reprise', 'version' => 1, 'source' => 'Dougs', 'operations' => array(
+		$dep( 'd1', '2026-03-02', -120, 'IONOS SARL', 'hebergement', '20', 20, true ),
+		$dep( 'd2', '2026-04-02', -120, 'IONOS SARL', 'hebergement', '20', 20, true ),
+		$dep( 'd3', '2026-04-02', -120, 'IONOS SARL', 'hebergement', '20', 20, true ),
+		array( 'ref' => 'd4', 'date' => '2026-04-03', 'amount_cents' => 17633, 'label' => 'Stichting Mollie Payments', 'memo' => 'Paiement client',
+			'action' => array( 'type' => 'vente', 'gross_cents' => 18000, 'vat_cents' => 3000, 'vat_rate' => '20', 'vat_regime' => 'fr', 'commission_cents' => 367,
+				'provider' => 'Mollie', 'client' => 'Client Test', 'description' => 'Abonnement site' ) ),
+		array( 'ref' => 'd5', 'date' => '2026-04-05', 'amount_cents' => 15000, 'label' => 'M ALEXANDRE COURY', 'action' => array( 'type' => 'associe' ) ),
+		array( 'ref' => 'd6', 'date' => '2026-04-06', 'amount_cents' => -14200, 'label' => 'SERVICE DES IMPOTS', 'action' => array( 'type' => 'verifier', 'reason' => 'TVA ou CFE ?' ) ),
+		$dep( 'd7', '2026-04-07', -2500, 'RESTAURANT TEST', 'repas', '10', 227 ),
+		$dep( 'd8', '2026-04-08', -999, 'Deja Traitee', 'logiciels', '20', 167 ),
+		$dep( 'd9', '2026-05-01', -4242, 'Absente', 'logiciels', '20', 707 ),
+	), 'trips' => array( array( 'ref' => 'k1', 'date' => '2026-02-10', 'km' => 13.9, 'purpose' => 'Verre avec un apporteur' ) ) );
+	$dry = AC_Reprise::run( $data, 0, true );
+	eq( array( $dry['classees'], $dry['deja_traitees'], count( $dry['a_verifier'] ), count( $dry['introuvables'] ) ), array( 6, 1, 1, 1 ), 'contrôle à blanc' );
+	eq( (int) AC_DB::val( 'SELECT COUNT(*) FROM {expenses}' ), 1, 'rien écrit à blanc' );
+	$r = AC_Reprise::run( $data, 0, false, true, 0.0 ); // budget nul : une opération par passage
+	$n = 1;
+	while ( null !== $r['next_offset'] && $n < 50 ) {
+		$r = AC_Reprise::run( $data, $r['next_offset'], false, true, 0.0 );
+		$n++;
+	}
+	ok( $n > 3, 'traitement par lots' );
+	eq( (int) AC_DB::val( "SELECT COUNT(*) FROM {bank_transactions} WHERE status='rapproche'" ), 7, 'opérations rapprochées' );
+	eq( (int) AC_DB::val( "SELECT COUNT(*) FROM {bank_transactions} WHERE external_id IN ('r1','r2','r3') AND status='rapproche'" ), 3, 'trois Ionos distincts' );
+	eq( bal( '626' ), 300, 'hébergement HT' );
+	eq( bal( '706' ), -15000, 'vente HT' );
+	eq( bal( '627' ), 367, 'commission en frais bancaires' );
+	eq( bal( '6256' ), 2273, 'restaurant HT au taux de 10 %' );
+	eq( bal( '455' ), -15000 - 651, 'apport et trajet au compte courant' );
+	eq( (int) AC_DB::val( 'SELECT amount_cents FROM {mileage}' ), 651, 'trajet au barème' );
+	$st = AC_DB::q1( "SELECT status, comment FROM {bank_transactions} WHERE external_id='r6'" );
+	ok( 'rapproche' !== $st['status'] && false !== strpos( $st['comment'], 'TVA ou CFE' ), 'opération à vérifier annotée' );
+	$dr = AC_DB::q( "SELECT e.source_type, e.source_id, e.label FROM {entries} e WHERE status<>'valide' AND source_type IN ('banque','vente','depense') AND label NOT LIKE '%IMPOTS%' AND label NOT LIKE 'Deja%'" ); eq( count( $dr ), 0, 'écritures validées ' . wp_json_encode( $dr ) );
+	$rule = AC_Services::supplier_rule( 'IONOS SARL' );
+	ok( $rule && (int) $rule['auto'] === 1 && '20' === $rule['vat_rate'], 'règle automatique Ionos' );
+	$again = AC_Reprise::run( $data, 0, false );
+	eq( array( $again['classees'], $again['trajets'] ), array( 0, 0 ), 'relance sans doublon' );
+	$t = tx( 'r9', '2026-06-02', -120, 'IONOS SARL' );
+	eq( AC_DB::val( 'SELECT status FROM {bank_transactions} WHERE id=?', array( $t['id'] ) ), 'rapproche', 'prochain Ionos classé automatiquement' );
+} );
+
 function build_year() {
 	$t = tx( 'y0', '2026-01-02', 100000, 'Dépôt de capital', 'transfer' );
 	AC_Services::classify_transaction( $t['id'], array( 'type' => 'capital' ) );
