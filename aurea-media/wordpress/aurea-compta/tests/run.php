@@ -401,6 +401,13 @@ test( 'Reprise d\'un dossier Dougs (données fictives)', function () {
 	ok( $rule && (int) $rule['auto'] === 1 && '20' === $rule['vat_rate'], 'règle automatique Ionos' );
 	$again = AC_Reprise::run( $data, 0, false );
 	eq( array( $again['classees'], $again['trajets'] ), array( 0, 0 ), 'relance sans doublon' );
+	// Fichier de reprise amélioré : la TVA d'une dépense déjà reprise et validée est corrigée.
+	$data['operations'][6]['action'] = array_merge( $data['operations'][6]['action'], array( 'vat_rate' => '10', 'vat_cents' => 300 ) );
+	$fix = AC_Reprise::run( $data, 0, false );
+	eq( $fix['corrigees'], 1, 'TVA corrigée' );
+	eq( bal( '6256' ), 2200, 'restaurant HT corrigé' );
+	eq( AC_DB::ival( "SELECT COUNT(*) FROM {entries} WHERE status<>'valide' AND label LIKE '%RESTAURANT%'" ), 0, 'écritures corrigées validées' );
+	eq( AC_Reprise::run( $data, 0, true )['corrigees'], 0, 'plus rien à corriger' );
 	$t = tx( 'r9', '2026-06-02', -120, 'IONOS SARL' );
 	eq( AC_DB::val( 'SELECT status FROM {bank_transactions} WHERE id=?', array( $t['id'] ) ), 'rapproche', 'prochain Ionos classé automatiquement' );
 } );

@@ -68,7 +68,7 @@ class AC_Reprise {
 		$start = microtime( true );
 		$ops   = array_values( $data['operations'] );
 		$res   = array( 'total' => count( $ops ), 'next_offset' => null, 'classees' => 0, 'deja_traitees' => 0, 'a_verifier' => array(), 'introuvables' => array(),
-			'erreurs' => array(), 'trajets' => 0, 'regles' => 0 );
+			'erreurs' => array(), 'trajets' => 0, 'regles' => 0, 'corrigees' => 0 );
 		$used  = array();
 		$fail  = function ( $op, $msg ) use ( &$res ) {
 			$res['erreurs'][] = array( 'ref' => $op['ref'], 'date' => $op['date'], 'amount_cents' => (int) $op['amount_cents'], 'label' => $op['label'] ?? '', 'message' => $msg );
@@ -96,6 +96,25 @@ class AC_Reprise {
 				continue;
 			}
 			if ( ! in_array( $tx['status'], array( 'a_traiter', 'propose' ), true ) ) {
+				// Déjà reprise : on corrige la TVA si le fichier de reprise a été amélioré depuis (tickets à plusieurs taux, etc.).
+				$fix = self::vat_fix( $op, $a, $tx );
+				if ( $fix ) {
+					if ( ! $dry ) {
+						try {
+							AC_DB::tx( function () use ( $fix, $validate, $tx ) {
+								AC_Services::save_expense( $fix['data'], $fix['id'], 'Reprise Dougs : TVA corrigée' );
+								if ( $validate && 'valide' === $fix['status'] ) {
+									self::validate_sources( array( array( 'depense', $fix['id'] ), array( 'banque', (int) $tx['id'] ) ) );
+								}
+							} );
+						} catch ( Throwable $e ) {
+							$fail( $op, $e->getMessage() );
+							continue;
+						}
+					}
+					$res['corrigees'] = ( $res['corrigees'] ?? 0 ) + 1;
+					continue;
+				}
 				$res['deja_traitees']++;
 				continue;
 			}
@@ -176,6 +195,27 @@ class AC_Reprise {
 			$res['trajets'] = count( $data['trips'] ?? array() );
 		}
 		return $res;
+	}
+
+	/** Dépense issue de la reprise dont la TVA diffère du fichier : données de correction, sinon null. */
+	private static function vat_fix( array $op, array $a, array $tx ): ?array {
+		if ( ! in_array( $a['type'] ?? '', array( 'depense_nouvelle', 'remboursement_fournisseur' ), true ) || false === strpos( (string) $tx['comment'], 'Dougs #' . $op['ref'] ) ) {
+			return null;
+		}
+		$x = AC_DB::q1( "SELECT x.* FROM {expenses} x JOIN {allocations} al ON al.target_type='depense' AND al.target_id=x.id WHERE al.bank_transaction_id=? ORDER BY x.id LIMIT 1", array( $tx['id'] ) );
+		if ( ! $x ) {
+			return null;
+		}
+		$regime = $a['vat_regime'] ?? 'fr';
+		$vat    = 'sans_tva' === $regime ? 0 : (int) ( $a['vat_cents'] ?? 0 );
+		if ( 'remboursement_fournisseur' === $a['type'] ) {
+			$vat = -abs( $vat );
+		}
+		if ( (int) $x['vat_cents'] === $vat && $x['vat_regime'] === $regime ) {
+			return null;
+		}
+		return array( 'id' => (int) $x['id'], 'status' => $x['status'], 'data' => array( 'vat_regime' => $regime, 'vat_rate' => $a['vat_rate'] ?? null,
+			'vat_cents' => $vat, 'ttc_cents' => (int) $x['ttc_cents'] ) );
 	}
 
 	/** Trajets repris (motif, distance) : le montant est recalculé au barème, cumul annuel compris. */

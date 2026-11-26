@@ -294,11 +294,11 @@ function addMenu() {
 /* Reprise d'un dossier Dougs : contrôle à blanc, puis catégorisation par lots (hébergement mutualisé). */
 let REPRISE = null;
 async function reprisePass(dry, validate) {
-  const acc = { total: 0, classees: 0, deja_traitees: 0, a_verifier: [], introuvables: [], erreurs: [], trajets: 0, regles: 0 };
+  const acc = { total: 0, classees: 0, deja_traitees: 0, corrigees: 0, a_verifier: [], introuvables: [], erreurs: [], trajets: 0, regles: 0 };
   let offset = 0;
   for (let i = 0; i < 60; i++) {
     const r = await run(() => post("/api/reprise", { data: REPRISE, offset, dry, validate }));
-    acc.total = r.total; ["classees", "deja_traitees", "trajets", "regles"].forEach((k) => (acc[k] += r[k]));
+    acc.total = r.total; ["classees", "deja_traitees", "corrigees", "trajets", "regles"].forEach((k) => (acc[k] += r[k] || 0));
     ["a_verifier", "introuvables", "erreurs"].forEach((k) => acc[k].push(...r[k]));
     if (r.next_offset === null || r.next_offset === undefined) break;
     offset = r.next_offset;
@@ -318,7 +318,7 @@ async function repriseFile(input) {
   const r = await reprisePass(true, true);
   openModal(`<h2 style="margin-top:0">Reprise depuis ${esc(REPRISE.source || "l'ancien logiciel")}</h2>
     <p class="muted small">${esc(REPRISE.company || "")} · ${r.total} opérations bancaires et ${r.trajets} trajets dans le fichier. Aucune opération déjà traitée ne sera modifiée.</p>
-    <dl class="kv"><dt>À catégoriser</dt><dd><b>${r.classees}</b></dd><dt>Déjà traitées ici</dt><dd>${r.deja_traitees}</dd>
+    <dl class="kv"><dt>À catégoriser</dt><dd><b>${r.classees}</b></dd><dt>Déjà traitées ici</dt><dd>${r.deja_traitees}</dd>${r.corrigees ? `<dt>TVA à corriger</dt><dd><b>${r.corrigees}</b> dépense(s) reprise(s) précédemment</dd>` : ""}
       <dt>À vérifier par vous</dt><dd>${r.a_verifier.length}</dd><dt>Introuvables dans Qonto</dt><dd>${r.introuvables.length}</dd><dt>Trajets</dt><dd>${r.trajets}</dd></dl>
     ${repriseList("Introuvables", r.introuvables, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}`)}
     <label class="check" style="margin-top:12px"><input type="checkbox" id="reprise-validate" checked> Valider les écritures (elles l'étaient déjà dans ${esc(REPRISE.source || "l'ancien logiciel")})</label>
@@ -330,7 +330,7 @@ async function repriseRun() {
   const r = await reprisePass(false, validate);
   openModal(`<h2 style="margin-top:0">Reprise terminée</h2>
     <dl class="kv"><dt>Opérations catégorisées</dt><dd><b>${r.classees}</b></dd><dt>Règles automatiques créées</dt><dd>${r.regles}</dd><dt>Trajets ajoutés</dt><dd>${r.trajets}</dd>
-      <dt>Déjà traitées (inchangées)</dt><dd>${r.deja_traitees}</dd></dl>
+      <dt>Déjà traitées (inchangées)</dt><dd>${r.deja_traitees}</dd>${r.corrigees ? `<dt>TVA corrigée</dt><dd>${r.corrigees}</dd>` : ""}</dl>
     ${repriseList("À vérifier par vous", r.a_verifier, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}<br><span class="muted">${esc(x.reason)}</span>`)}
     ${repriseList("Introuvables dans Qonto", r.introuvables, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}`)}
     ${repriseList("Erreurs", r.erreurs, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}<br><span class="muted">${esc(x.message)}</span>`)}
