@@ -219,7 +219,7 @@ class AC_Calendar {
 			$appr = gmdate( 'Y-m-t', strtotime( self::add_months( $end, 6 ) . '-01' ) );
 			$add( "approbation:{$fy['id']}", $appr, "Approbation des comptes par l'associé unique ($label)", "Dans les 6 mois de la clôture. Associé unique président : le dépôt au greffe des comptes signés vaut approbation.", '#/cloture', array( 'category' => 'Juridique' ) );
 			$greffe = gmdate( 'Y-m-t', strtotime( self::add_months( $appr, 2 ) . '-01' ) );
-			$add( "greffe:{$fy['id']}", $greffe, "Dépôt des comptes au greffe ($label)", '2 mois après l\'approbation pour un dépôt en ligne (guichet unique INPI). Déclaration de confidentialité possible pour une micro entreprise.', 'https://procedures.inpi.fr', array( 'category' => 'Juridique' ) );
+			$add( "greffe:{$fy['id']}", $greffe, "Dépôt des comptes au greffe ($label)", '2 mois après l\'approbation pour un dépôt en ligne (guichet unique INPI). Déclaration de confidentialité possible (société sous les seuils micro au sens comptable).', 'https://procedures.inpi.fr', array( 'category' => 'Juridique' ) );
 			if ( (int) $tax['previous_is_cents'] > 300000 ) {
 				foreach ( array( 3, 6, 9, 12 ) as $k => $mo ) {
 					$d = ( $ey + 1 ) . '-' . str_pad( (string) $mo, 2, '0', STR_PAD_LEFT ) . '-15';

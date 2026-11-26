@@ -31,11 +31,11 @@ class AC_Closing {
 				'note' => "Télétransmission obligatoire (EDI-TDFC via un partenaire ou l'expert comptable, ou mode EFI sur l'espace professionnel lorsqu'il est ouvert à votre situation)." ),
 			array( 'obligation' => "Relevé de solde d'IS n°2572-SD et paiement du solde", 'echeance' => '15 du 4e mois suivant la clôture', 'note' => '' ),
 			array( 'obligation' => 'Comptes annuels : bilan, compte de résultat' . ( $is_micro ? '' : ', annexe' ), 'echeance' => 'Établis par le président à la clôture',
-				'note' => $is_micro ? "Micro entreprise : dispense d'annexe." : 'Annexe obligatoire (entreprise au delà des seuils micro).' ),
+				'note' => $is_micro ? "Petite société sous les seuils micro (sens comptable) : dispense d'annexe." : 'Annexe obligatoire (société au delà des seuils micro).' ),
 			array( 'obligation' => "Approbation des comptes par l'associé unique et décision d'affectation du résultat", 'echeance' => "Dans les 6 mois de la clôture ($appr)",
 				'note' => "Lorsque l'associé unique personne physique est lui même président, le dépôt au greffe de l'inventaire et des comptes annuels signés dans ce délai vaut approbation (C. com. L227-9). La décision est répertoriée dans le registre des décisions." ),
 			array( 'obligation' => 'Dépôt des comptes annuels au greffe (Guichet unique INPI)', 'echeance' => "1 mois après l'approbation (2 mois par voie électronique)",
-				'note' => $is_micro ? 'Déclaration de confidentialité possible pour les micro entreprises (C. com. L232-25).' : 'Confidentialité du compte de résultat possible pour les petites entreprises.' ),
+				'note' => $is_micro ? 'Déclaration de confidentialité possible : société sous les seuils micro au sens comptable (C. com. L232-25).' : 'Confidentialité du compte de résultat possible pour les petites entreprises.' ),
 			array( 'obligation' => 'Rapport de gestion', 'echeance' => '-', 'note' => 'Dispense pour les petites entreprises (C. com. L232-1 IV).' ),
 			array( 'obligation' => 'Fichier des écritures comptables (FEC)', 'echeance' => 'À produire en cas de contrôle fiscal', 'note' => "Généré automatiquement dans l'export annuel." ),
 		);

@@ -618,6 +618,30 @@ function build_year() {
 	AC_Services::save_expense( array( 'document_id' => doc( 'qonto.pdf' ) ), $fee['id'] );
 }
 
+test( 'Guide de liasse : cases 2033-A et 2033-B cohérentes', function () {
+	build_year();
+	$fy = AC_Closing::fiscal_year();
+	$g  = AC_Liasse::guide( $fy );
+	foreach ( $g['controles'] as $c ) {
+		if ( 'SIREN renseigné' !== $c['label'] ) {
+			ok( $c['ok'], 'contrôle : ' . $c['label'] . ' ' . $c['detail'] );
+		}
+	}
+	$v = array();
+	foreach ( $g['forms'] as $f ) {
+		foreach ( $f['lines'] as $l ) {
+			if ( $l['code'] ) {
+				$v[ $f['id'] . ':' . $l['code'] ] = $l['value'];
+			}
+		}
+	}
+	eq( $v['2033B:218'], 3000, 'chiffre d\'affaires (services)' );
+	eq( $v['2033B:310'], $v['2033A:136'], 'résultat identique' );
+	eq( $v['2033A:180'], $v['2033A:110'] - $v['2033A:112'], 'bilan équilibré' );
+	ok( isset( $v['2033A:084'] ) && $v['2033A:084'] > 0, 'disponibilités' );
+	ok( strlen( AC_Exports::statements( $fy )['guide-liasse.pdf'] ) > 1000, 'guide PDF' );
+} );
+
 test( 'Déclaration de TVA mensuelle et report de crédit', function () {
 	build_year();
 	$jan = AC_Vat::prepare( '2026-01-01', '2026-01-31' );

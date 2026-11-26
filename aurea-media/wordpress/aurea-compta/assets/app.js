@@ -1164,13 +1164,37 @@ async function prepareYear(id) {
     <p class="hint">Écritures d'inventaire : <a href="#/comptabilite?tab=saisie">saisir une écriture</a>. Les amortissements et l'IS sont calculés automatiquement à chaque préparation.</p>
     <h3>Compte de résultat</h3>${statementHtml(r.compte_de_resultat)}
     <h3>Bilan</h3>${bilanHtml(r.bilan)}
-    <h3>Documents</h3><div class="toolbar">${["bilan.pdf", "compte-de-resultat.pdf", "immobilisations-amortissements.pdf", "creances-dettes.pdf", "impot-societes.pdf", "elements-liasse-fiscale.pdf", "obligations-annuelles.pdf", "projet-decision-associe-unique.pdf"].map((n) => `<a class="btn sm" target="_blank" href="/api/closing/${id}/statements/${n.replace(".pdf", "")}">${n.replace(".pdf", "").replace(/-/g, " ")}</a>`).join("")}</div>
-    <h3>Obligations applicables</h3><p class="muted small">Régime ${esc(ob.regime_is)} · liasse ${esc(ob.liasse)} · micro entreprise : ${ob.micro_entreprise ? "oui" : "non"}</p>
+    <h3>Liasse fiscale</h3><div class="toolbar"><button class="primary" onclick="liasseGuide(${id})">${ic("book")}Ouvrir le guide de liasse, case par case</button></div>
+    <h3>Documents</h3><div class="toolbar">${["guide-liasse.pdf", "bilan.pdf", "compte-de-resultat.pdf", "immobilisations-amortissements.pdf", "creances-dettes.pdf", "impot-societes.pdf", "elements-liasse-fiscale.pdf", "obligations-annuelles.pdf", "projet-decision-associe-unique.pdf"].map((n) => `<a class="btn sm" target="_blank" href="/api/closing/${id}/statements/${n.replace(".pdf", "")}">${n.replace(".pdf", "").replace(/-/g, " ")}</a>`).join("")}</div>
+    <h3>Obligations applicables</h3><p class="muted small">Régime ${esc(ob.regime_is)} · liasse ${esc(ob.liasse)} · petite société sous les seuils micro (sens comptable) : ${ob.micro_entreprise ? "oui" : "non"}</p>
     <div class="table-wrap"><table>${ob.liste.map((o) => `<tr><td>${esc(o.obligation)}<div class="hint">${esc(o.note || "")}</div></td><td class="small">${esc(o.echeance)}</td></tr>`).join("")}</table></div>
     <h3>Affectation du résultat proposée</h3><p>Résultat ${eur(r.affectation_proposee.resultat_cents)} : réserve légale ${eur(r.affectation_proposee.reserve_legale_cents)}, report à nouveau ${eur(r.affectation_proposee.report_a_nouveau_cents)}. <span class="hint">${esc(r.affectation_proposee.note)}</span></p>
     <div class="toolbar">${r.exercice.status === "closed"
       ? `<button onclick="allocate(${id}, ${r.affectation_proposee.reserve_legale_cents})">Enregistrer l'affectation décidée</button>`
       : `<button class="accent" onclick="closeYear(${id}, ${!r.definitif})">Clôturer définitivement l'exercice</button>`}</div>`;
+}
+
+// ------------------------------------------------------------------ guide de liasse
+const LIASSE_KEY = (fy) => `ac-liasse-${fy}`;
+function liasseDone(fy) { try { return JSON.parse(localStorage.getItem(LIASSE_KEY(fy)) || "{}"); } catch (e) { return {}; } }
+function liasseToggle(fy, id, v) { const d = liasseDone(fy); d[id] = v; try { localStorage.setItem(LIASSE_KEY(fy), JSON.stringify(d)); } catch (e) { /* stockage indisponible */ } }
+async function liasseGuide(id) {
+  const g = await run(() => api(`/api/closing/${id}/liasse`));
+  const done = liasseDone(id);
+  const fmt = (v) => v === null ? "" : v.toLocaleString("fr-FR");
+  $("#yearprep").innerHTML = `
+    <div class="toolbar"><h2 style="margin:0">Guide de liasse, case par case</h2><span class="spacer"></span>
+      <a class="btn sm" target="_blank" href="/api/closing/${id}/statements/guide-liasse">${ic("download")}Version PDF</a>
+      <button class="sm ghost" onclick="prepareYear(${id})">Retour à la préparation</button></div>
+    <p class="small muted">${esc(g.avertissement)} Sur impots.gouv : espace professionnel, Déclarer, Déclarer le résultat. Recopiez chaque montant dans la case indiquée ; les cases non listées restent vides.</p>
+    <h3>Contrôles avant saisie</h3><div class="panel"><ul class="issues">${g.controles.map((c) => `<li>${badge(c.ok ? "valide" : "bloquant")}<span style="flex:1">${esc(c.label)} <span class="small muted">${esc(c.detail)}</span></span></li>`).join("")}</ul></div>
+    ${g.forms.map((f) => `<details class="liasse-form" ${done[f.id] ? "" : "open"}><summary><label class="check" onclick="event.stopPropagation()"><input type="checkbox" ${done[f.id] ? "checked" : ""} onchange="liasseToggle(${id}, '${f.id}', this.checked)"></label><b>${esc(f.title)}</b>${done[f.id] ? ` <span class="badge b-ok">Saisi</span>` : ""}</summary>
+      <p class="small muted">${esc(f.intro)}</p>
+      ${f.lines.length ? `<div class="table-wrap"><table><thead><tr><th>Case</th><th>Libellé</th><th class="right">À saisir</th><th></th></tr></thead><tbody>
+        ${f.lines.map((l) => `<tr><td>${l.code ? `<span class="case-code">${esc(l.code)}</span>` : ""}</td><td>${esc(l.label)}${l.note ? `<div class="small muted">${esc(l.note)}</div>` : ""}</td>
+          <td class="num"><b>${fmt(l.value)}</b></td><td class="right">${l.value !== null ? `<button class="sm ghost" onclick="navigator.clipboard.writeText('${l.value}').then(() => toast('${l.value} copié'))">Copier</button>` : ""}</td></tr>`).join("")}
+      </tbody></table></div>` : ""}</details>`).join("")}`;
+  $("#yearprep").scrollIntoView();
 }
 async function closeYear(id, provisional) {
   let force = false;

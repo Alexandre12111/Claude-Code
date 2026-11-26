@@ -120,6 +120,7 @@ class AC_Api {
 			array( 'GET', 'closing/(\d+)/export', 'closing_export' ),
 			array( 'GET', 'closing/(\d+)/fec', 'closing_fec' ),
 			array( 'GET', 'closing/(\d+)/statements/([\w-]+)', 'closing_statement' ),
+			array( 'GET', 'closing/(\d+)/liasse', 'closing_liasse' ),
 			array( 'GET', 'backups', 'backups' ),
 			array( 'POST', 'backups', 'backup_now' ),
 			array( 'GET', 'backup/export', 'full_export' ),
@@ -1029,6 +1030,10 @@ class AC_Api {
 	public static function r_closing_fec( $r, $id ) {
 		list( $name, $content ) = AC_Exports::fec( AC_Closing::fiscal_year( $id ) );
 		self::send( $content, 'text/plain; charset=utf-8', $name );
+	}
+
+	public static function r_closing_liasse( $r, $id ) {
+		return AC_Liasse::guide( AC_Closing::fiscal_year( (int) $id ) );
 	}
 
 	public static function r_closing_statement( $r, $id, $name ) {

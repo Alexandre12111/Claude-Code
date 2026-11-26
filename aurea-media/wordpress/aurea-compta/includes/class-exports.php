@@ -145,13 +145,32 @@ class AC_Exports {
 			$blocks[] = array( 'table', $t, array( 3, 1 ), array( 1 ) );
 		}
 		$files['elements-liasse-fiscale.pdf'] = AC_Pdf::build( 'Éléments pour la liasse fiscale (2065 et annexes)', $blocks );
+		$g      = AC_Liasse::guide( $fy );
+		$blocks = array( array( 'p', $g['avertissement'] ) );
+		$t      = array( array( 'Contrôle', 'Résultat', 'Détail' ) );
+		foreach ( $g['controles'] as $c ) {
+			$t[] = array( $c['label'], $c['ok'] ? 'OK' : 'À corriger', $c['detail'] );
+		}
+		$blocks[] = array( 'table', $t, array( 2.4, 0.8, 2 ) );
+		foreach ( $g['forms'] as $form ) {
+			$blocks[] = array( 'h', $form['title'] );
+			$blocks[] = array( 'p', $form['intro'] );
+			if ( $form['lines'] ) {
+				$t = array( array( 'Case', 'Libellé', 'À saisir', 'Remarque' ) );
+				foreach ( $form['lines'] as $l ) {
+					$t[] = array( $l['code'] ?: '-', $l['label'], null === $l['value'] ? '' : number_format( $l['value'], 0, ',', ' ' ), $l['note'] );
+				}
+				$blocks[] = array( 'table', $t, array( 0.5, 2.6, 0.9, 2.2 ), array( 2 ) );
+			}
+		}
+		$files['guide-liasse.pdf'] = AC_Pdf::build( 'Guide de liasse fiscale, case par case', $blocks );
 		$ob = $prep['obligations'];
 		$t  = array( array( 'Obligation', 'Échéance', 'Remarque' ) );
 		foreach ( $ob['liste'] as $o ) {
 			$t[] = array( $o['obligation'], $o['echeance'], $o['note'] ?? '' );
 		}
 		$files['obligations-annuelles.pdf'] = AC_Pdf::build( 'Obligations annuelles applicables', array(
-			array( 'p', "Régime d'imposition : {$ob['regime_is']}. Micro entreprise au sens comptable : " . ( $ob['micro_entreprise'] ? 'oui' : 'non' ) . '.' ),
+			array( 'p', "Régime d'imposition : {$ob['regime_is']}. Petite société sous les seuils micro (sens comptable) : " . ( $ob['micro_entreprise'] ? 'oui' : 'non' ) . '.' ),
 			array( 'table', $t, array( 2, 1.3, 2 ) ) ) );
 		$aff     = $prep['affectation_proposee'];
 		$company = AC_DB::get_setting( 'company' );

@@ -167,6 +167,17 @@ class AC_Reports {
 		$tb     = self::trial_balance( $fy['start_date'], $fy['end_date'] )['rows'];
 		$sides  = array( 'actif' => array(), 'passif' => array() );
 		$result = 0;
+		// TVA : les comptes 445 sont compensés et présentés pour leur solde net (crédit de TVA à l'actif, TVA due au passif).
+		$vat = 0;
+		foreach ( $tb as $k => $r ) {
+			if ( 0 === strpos( (string) $r['account'], '445' ) ) {
+				$vat += (int) $r['solde'];
+				unset( $tb[ $k ] );
+			}
+		}
+		if ( $vat ) {
+			$tb[] = array( 'account' => '445', 'label' => 'TVA (solde net des comptes 445)', 'solde' => $vat );
+		}
 		foreach ( $tb as $r ) {
 			if ( in_array( $r['account'][0], array( '6', '7' ), true ) ) {
 				$result -= $r['solde'];
