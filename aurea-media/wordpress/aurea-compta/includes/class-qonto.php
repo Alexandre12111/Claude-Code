@@ -158,7 +158,7 @@ class AC_Qonto {
 					// Pièce déjà présente (même fichier) : on la marque comme venant de Qonto pour ne plus la retélécharger.
 					AC_DB::exec( 'UPDATE {documents} SET external_id=IFNULL(external_id, ?), bank_transaction_id=IFNULL(bank_transaction_id, ?) WHERE id=?', array( "qonto-att:$att", $t['id'], $doc ) );
 					if ( ! AC_DB::q1( 'SELECT id FROM {documents} WHERE external_id=?', array( "qonto-att:$att" ) ) ) {
-						AC_DB::insert( 'documents', array( 'path' => '', 'sha256' => hash( 'sha256', "alias-$att-$doc" ), 'kind' => 'alias', 'source' => 'qonto',
+						AC_DB::insert( 'documents', array( 'path' => "alias:$doc", 'sha256' => hash( 'sha256', "alias-$att-$doc" ), 'kind' => 'alias', 'source' => 'qonto',
 							'external_id' => "qonto-att:$att", 'bank_transaction_id' => $t['id'], 'uploaded_at' => AC_DB::now() ) );
 					}
 					$exp = AC_DB::q1( "SELECT x.id FROM {expenses} x JOIN {allocations} al ON al.target_type='depense' AND al.target_id=x.id WHERE al.bank_transaction_id=? AND x.document_id IS NULL", array( $t['id'] ) );
@@ -172,7 +172,8 @@ class AC_Qonto {
 				continue;
 			}
 		}
-		return array( 'fetched' => $n, 'errors' => $errors, 'remaining' => max( 0, count( $todo ) - $n - $errors ) );
+		$linked = AC_Services::relink_documents();
+		return array( 'fetched' => $n, 'errors' => $errors, 'linked' => $linked, 'remaining' => max( 0, count( $todo ) - $n - $errors ) );
 	}
 
 	/** Synchronisation automatique si l'intervalle est écoulé (tâche planifiée ou ouverture de l'application). */

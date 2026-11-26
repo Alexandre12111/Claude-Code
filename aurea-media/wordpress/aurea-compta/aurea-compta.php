@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Aurea Compta
  * Description:       Comptabilité de la SASU Aurea Media : banque Qonto, recettes, dépenses, apports en compte courant, TVA (CA3 / CA12), impôt sur les sociétés, clôture annuelle, FEC et exports. Accès réservé aux administrateurs, sur ordinateur et téléphone (adresse /compta).
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            Aurea Media
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'AC_VERSION', '1.2.0' );
+define( 'AC_VERSION', '1.3.0' );
 define( 'AC_DIR', __DIR__ );
 define( 'AC_URL', plugin_dir_url( __FILE__ ) );
 define( 'AC_CAP', 'manage_options' );

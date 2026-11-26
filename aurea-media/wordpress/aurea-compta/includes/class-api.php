@@ -31,6 +31,7 @@ class AC_Api {
 			array( 'PUT', 'settings/(\w+)', 'put_setting' ),
 			array( 'PUT', 'secrets', 'put_secrets' ),
 			array( 'GET', 'fiscal-years', 'fiscal_years' ),
+			array( 'GET', 'vat/exercise', 'vat_exercise' ),
 			array( 'POST', 'fiscal-years', 'add_fiscal_year' ),
 			array( 'GET', 'categories', 'categories' ),
 			array( 'POST', 'categories', 'save_category' ),
@@ -74,6 +75,9 @@ class AC_Api {
 			array( 'POST', 'expenses', 'create_expense' ),
 			array( 'PUT', 'expenses/(\d+)', 'update_expense' ),
 			array( 'POST', 'expenses/(\d+)/validate', 'validate_expense' ),
+			array( 'POST', 'expenses/validate', 'validate_expenses' ),
+			array( 'POST', 'expenses/(\d+)/lost', 'expense_lost' ),
+			array( 'POST', 'expenses/(\d+)/unlost', 'expense_unlost' ),
 			array( 'DELETE', 'expenses/(\d+)', 'delete_expense' ),
 			array( 'GET', 'associate', 'associate' ),
 			array( 'POST', 'associate/movements', 'add_movement' ),
@@ -181,7 +185,7 @@ class AC_Api {
 			'a_verifier' => array(
 				'operations' => AC_DB::ival( "SELECT COUNT(*) FROM {bank_transactions} WHERE status IN ('a_traiter','propose')" ),
 				'depenses' => AC_DB::ival( "SELECT COUNT(*) FROM {expenses} WHERE status IN ('a_valider','propose_ia','importe')" ),
-				'justificatifs_manquants' => AC_DB::ival( "SELECT COUNT(*) FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.document_id IS NULL AND IFNULL(c.rule,'') NOT IN ('personnel','ik')" ),
+				'justificatifs_manquants' => AC_DB::ival( 'SELECT COUNT(*) FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE ' . AC_Services::MISSING_DOC_SQL ),
 				'pieces_non_traitees' => AC_DB::ival( "SELECT COUNT(*) FROM {documents} d WHERE d.kind='justificatif' AND d.bank_transaction_id IS NULL AND d.id NOT IN (SELECT document_id FROM {expenses} WHERE document_id IS NOT NULL)
 					AND d.id NOT IN (SELECT document_id FROM {sales_invoices} WHERE document_id IS NOT NULL)" ),
 			),
@@ -234,6 +238,32 @@ class AC_Api {
 			}
 		}
 		return AC_DB::masked_secrets();
+	}
+
+	/** TVA de tout l'exercice : cumul et détail mois par mois. */
+	public static function r_vat_exercise( $r ) {
+		$on = self::q( $r, 'date', AC_DB::today() );
+		$fy = AC_DB::q1( 'SELECT * FROM {fiscal_years} WHERE ? BETWEEN start_date AND end_date', array( $on ) ) ?: AC_DB::q1( 'SELECT * FROM {fiscal_years} ORDER BY end_date DESC LIMIT 1' );
+		if ( ! $fy ) {
+			throw new AC_Error( 'Aucun exercice défini.' );
+		}
+		$tot    = AC_Vat::compute( $fy['start_date'], $fy['end_date'] );
+		$months = array();
+		for ( $m = substr( $fy['start_date'], 0, 7 ); $m <= substr( $fy['end_date'], 0, 7 ); $m = gmdate( 'Y-m', strtotime( "$m-01 +1 month" ) ) ) {
+			$s = max( "$m-01", $fy['start_date'] );
+			$e = min( gmdate( 'Y-m-t', strtotime( "$m-01" ) ), $fy['end_date'] );
+			if ( $s > AC_DB::today() ) {
+				break;
+			}
+			$c        = AC_Vat::compute( $s, $e );
+			$months[] = array( 'month' => $m, 'collectee_cents' => $c['tva_brute_cents'], 'deductible_cents' => $c['tva_deductible_cents'],
+				'solde_cents' => $c['tva_brute_cents'] - $c['tva_deductible_cents'] );
+		}
+		$paid = -AC_DB::ival( "SELECT COALESCE(SUM(a.amount_cents),0) FROM {allocations} a JOIN {bank_transactions} t ON t.id=a.bank_transaction_id
+			WHERE a.target_type='tva' AND t.date BETWEEN ? AND ?", array( $fy['start_date'], $fy['end_date'] ) );
+		return array( 'exercice' => $fy, 'collectee_cents' => $tot['tva_brute_cents'], 'deductible_cents' => $tot['tva_deductible_cents'],
+			'non_recuperable_cents' => $tot['non_recuperable_cents'], 'en_attente_cents' => $tot['tva_collectee_en_attente_cents'],
+			'solde_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'], 'payee_cents' => $paid, 'mois' => $months );
 	}
 
 	public static function r_fiscal_years( $r ) {
@@ -320,7 +350,7 @@ class AC_Api {
 		}
 		$rows   = AC_DB::q( $sql . ' ORDER BY date DESC, id DESC LIMIT 1000', $p );
 		$allocs = array();
-		foreach ( AC_DB::q( "SELECT a.*, x.document_id exp_doc, x.label exp_label, x.status exp_status, c.name category FROM {allocations} a
+		foreach ( AC_DB::q( "SELECT a.*, x.document_id exp_doc, x.label exp_label, x.status exp_status, x.doc_status exp_doc_status, x.vat_cents exp_vat, c.name category, c.code cat_code, c.rule cat_rule FROM {allocations} a
 			LEFT JOIN {expenses} x ON a.target_type='depense' AND x.id=a.target_id LEFT JOIN {categories} c ON c.id=x.category_id" ) as $a ) {
 			$allocs[ $a['bank_transaction_id'] ][] = $a;
 		}
@@ -338,6 +368,13 @@ class AC_Api {
 			// Justificatif attendu ? (pas pour un apport, un virement interne, le capital, la TVA ou l'IS)
 			$types               = array_column( $t['allocations'], 'target_type' );
 			$t['needs_document'] = $t['amount_cents'] < 0 && ! array_intersect( $types, array( 'associe', 'capital', 'tva', 'is', 'virement_interne' ) );
+			foreach ( $t['allocations'] as $a ) {
+				if ( 'depense' === $a['target_type'] && ! AC_Services::needs_document( array( 'document_id' => $a['exp_doc'], 'doc_status' => $a['exp_doc_status'],
+					'rule' => $a['cat_rule'], 'code' => $a['cat_code'], 'vat_cents' => $a['exp_vat'] ) ) && ! $a['exp_doc'] ) {
+					$t['needs_document'] = false;
+					$t['doc_status']     = $a['exp_doc_status'] ?: 'releve';
+				}
+			}
 			$t['attachment_count'] = count( json_decode( (string) ( $t['attachment_ids'] ?: '[]' ), true ) ?: array() );
 			unset( $t['attachment_ids'] );
 		}
@@ -426,6 +463,11 @@ class AC_Api {
 	}
 
 	public static function r_qonto_attachments( $r ) {
+		if ( ! empty( self::body( $r )['full'] ) ) {
+			// Relecture complète de Qonto : retrouve les pièces ajoutées après coup sur d'anciennes opérations.
+			$res = AC_Qonto::sync( true );
+			return array( 'fetched' => $res['attachments'], 'remaining' => $res['attachments_remaining'], 'linked' => 0, 'errors' => 0 );
+		}
 		return AC_Qonto::fetch_attachments( 20 );
 	}
 
@@ -585,7 +627,7 @@ class AC_Api {
 
 	// ------------------------------------------------------------ dépenses
 	public static function r_expenses( $r ) {
-		$sql = 'SELECT x.*, c.name category, c.rule FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE 1=1';
+		$sql = 'SELECT x.*, c.name category, c.rule, c.code FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE 1=1';
 		$p   = array();
 		if ( $m = self::q( $r, 'month' ) ) {
 			$sql .= " AND DATE_FORMAT(x.date,'%Y-%m')=?";
@@ -607,7 +649,7 @@ class AC_Api {
 	}
 
 	public static function r_expense( $r, $id ) {
-		$x = AC_DB::q1( 'SELECT x.*, c.name category, c.rule, c.help category_help, c.is_asset FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.id=?', array( (int) $id ) );
+		$x = AC_DB::q1( 'SELECT x.*, c.name category, c.rule, c.code, c.help category_help, c.is_asset FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.id=?', array( (int) $id ) );
 		if ( ! $x ) {
 			throw new AC_Error( 'Dépense introuvable' );
 		}
@@ -615,6 +657,7 @@ class AC_Api {
 		$x['warnings']       = AC_Services::fiscal_warnings( $x, $cat );
 		$x['rule_explanation'] = $cat ? ( AC_Rules::explanations()[ $cat['rule'] ] ?? null ) : null;
 		$x['paid_cents']     = AC_Services::expense_paid( $x );
+		$x['needs_document'] = AC_Services::needs_document( $x );
 		$x['payments']       = AC_DB::q( "SELECT a.*, t.date, t.label FROM {allocations} a JOIN {bank_transactions} t ON t.id=a.bank_transaction_id WHERE a.target_type='depense' AND a.target_id=?", array( (int) $id ) );
 		$entries             = array();
 		foreach ( AC_Ledger::source_entries( 'depense', (int) $id ) as $e ) {
@@ -650,6 +693,33 @@ class AC_Api {
 			}
 		} );
 		return $res;
+	}
+
+	/** Validation en lot des dépenses à valider (abonnements, etc.). */
+	public static function r_validate_expenses( $r ) {
+		$b   = self::body( $r );
+		$ids = ! empty( $b['ids'] ) ? array_map( 'intval', (array) $b['ids'] )
+			: array_map( 'intval', array_column( AC_DB::q( "SELECT id FROM {expenses} WHERE status='a_valider' AND category_id IS NOT NULL" ), 'id' ) );
+		$n   = 0;
+		$err = array();
+		foreach ( $ids as $id ) {
+			try {
+				self::r_validate_expense( $r, $id );
+				$n++;
+			} catch ( Throwable $e ) {
+				$err[] = $e->getMessage();
+			}
+		}
+		return array( 'validated' => $n, 'errors' => array_slice( array_unique( $err ), 0, 5 ) );
+	}
+
+	public static function r_expense_lost( $r, $id ) {
+		$b = self::body( $r );
+		return AC_Services::mark_document_lost( (int) $id, (string) ( $b['note'] ?? '' ), ! isset( $b['drop_vat'] ) || ! empty( $b['drop_vat'] ) );
+	}
+
+	public static function r_expense_unlost( $r, $id ) {
+		return AC_Services::clear_document_status( (int) $id );
 	}
 
 	public static function r_delete_expense( $r, $id ) {

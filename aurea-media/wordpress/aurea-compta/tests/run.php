@@ -405,6 +405,67 @@ test( 'Reprise d\'un dossier Dougs (données fictives)', function () {
 	eq( AC_DB::val( 'SELECT status FROM {bank_transactions} WHERE id=?', array( $t['id'] ) ), 'rapproche', 'prochain Ionos classé automatiquement' );
 } );
 
+test( 'Justificatifs : pièce ajoutée après coup, alias, perte, relevé, validation groupée', function () {
+	// Pièce ajoutée dans Qonto après la première synchronisation : l'opération connue est mise à jour.
+	$t = tx( 'j1', '2026-03-03', -2400, 'Fournisseur Web' );
+	AC_Services::classify_transaction( $t['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'logiciels' ), 'vat_rate' => '20', 'compute_vat' => true ) );
+	AC_Services::import_transactions( array( array( 'external_id' => 'j1', 'date' => '2026-03-03', 'amount_cents' => -2400, 'label' => 'Fournisseur Web',
+		'counterparty' => 'Fournisseur Web', 'attachment_ids' => array( 'att-late' ) ) ), 'qonto' );
+	$pend = array_map( function ( $x ) { return $x[1]; }, AC_Qonto::pending_attachments() );
+	ok( in_array( 'att-late', $pend, true ), 'pièce tardive détectée' );
+	// Justificatif téléchargé après la catégorisation : rattaché à la dépense.
+	$doc = AC_Services::store_document( 'late.pdf', '%PDF-1.4 late' );
+	AC_DB::exec( "UPDATE {documents} SET bank_transaction_id=?, external_id='qonto-att:att-late' WHERE id=?", array( $t['id'], $doc ) );
+	eq( AC_Services::relink_documents(), 1, 'rattachement' );
+	$x = AC_DB::q1( "SELECT x.* FROM {expenses} x JOIN {allocations} a ON a.target_id=x.id AND a.target_type='depense' WHERE a.bank_transaction_id=?", array( $t['id'] ) );
+	eq( (int) $x['document_id'], $doc, 'dépense justifiée' );
+	// Même fichier sur une autre opération : l'alias renvoie à la pièce réelle.
+	$t2 = tx( 'j2', '2026-03-04', -2400, 'Fournisseur Web' );
+	AC_DB::insert( 'documents', array( 'path' => "alias:$doc", 'sha256' => 'x1', 'kind' => 'alias', 'source' => 'qonto', 'external_id' => 'qonto-att:att-2',
+		'bank_transaction_id' => $t2['id'], 'uploaded_at' => AC_DB::now() ) );
+	eq( AC_Services::tx_document_id( (int) $t2['id'] ), $doc, 'alias résolu' );
+	// Commission de paiement sans TVA : le relevé suffit, pas de justificatif manquant.
+	$inv = AC_Services::save_sales_invoice( array( 'client_name' => 'Client Carte', 'issue_date' => '2026-03-05', 'lines' => array( array( 'description' => 'Site', 'unit_price_cents' => 15000, 'vat_rate' => '20' ) ) ) );
+	$p   = tx( 'j3', '2026-03-06', 17640, 'SumUp' );
+	AC_Services::classify_transaction( $p['id'], array( 'type' => 'vente', 'invoice_id' => $inv['id'], 'commission_cents' => 360, 'provider' => 'SumUp' ) );
+	// Justificatif perdu : la TVA n'est plus récupérée, la dépense ne compte plus comme manquante.
+	$l = tx( 'j4', '2026-03-07', -1200, 'Papeterie' );
+	AC_Services::classify_transaction( $l['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'fournitures' ), 'vat_rate' => '20', 'compute_vat' => true ) );
+	$lx      = AC_DB::q1( "SELECT x.id FROM {expenses} x JOIN {allocations} a ON a.target_id=x.id AND a.target_type='depense' WHERE a.bank_transaction_id=?", array( $l['id'] ) );
+	$missing = function () {
+		return AC_DB::ival( 'SELECT COUNT(*) FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE ' . AC_Services::MISSING_DOC_SQL );
+	};
+	eq( $missing(), 1, 'seule la papeterie manque (commission justifiée par le relevé)' );
+	$ded = bal( '44566' );
+	AC_Services::mark_document_lost( (int) $lx['id'], 'Ticket égaré' );
+	eq( $missing(), 0, 'plus de justificatif manquant' );
+	eq( bal( '44566' ), $ded - 200, 'TVA non récupérée sans facture' );
+	$found = AC_Services::store_document( 'retrouve.pdf', '%PDF-1.4 retrouve' );
+	AC_Services::save_expense( array( 'document_id' => $found ), (int) $lx['id'] );
+	eq( bal( '44566' ), $ded, 'TVA de nouveau récupérable une fois la facture retrouvée' );
+	eq( AC_DB::val( 'SELECT doc_status FROM {expenses} WHERE id=?', array( $lx['id'] ) ), null, 'statut effacé' );
+	// Validation groupée.
+	$n = AC_DB::ival( "SELECT COUNT(*) FROM {expenses} WHERE status='a_valider'" );
+	ok( $n >= 2, 'dépenses à valider' );
+	$res = AC_Api::r_validate_expenses( new WP_REST_Request( 'POST', '/aurea/v1/expenses/validate' ) );
+	eq( $res['validated'], $n, 'toutes validées' );
+	eq( AC_DB::ival( "SELECT COUNT(*) FROM {expenses} WHERE status='a_valider'" ), 0, 'plus rien à valider' );
+	// TVA de l'exercice.
+	$req = new WP_REST_Request( 'GET', '/aurea/v1/vat/exercise' );
+	$req->set_param( 'date', '2026-03-15' );
+	$ex = AC_Api::r_vat_exercise( $req );
+	eq( $ex['deductible_cents'], array_sum( array_column( $ex['mois'], 'deductible_cents' ) ), 'cumul = somme des mois' );
+	ok( $ex['deductible_cents'] === 600 && $ex['collectee_cents'] === 3000, 'cumuls ' . wp_json_encode( array( $ex['deductible_cents'], $ex['collectee_cents'], $ex['en_attente_cents'] ) ) );
+} );
+
+test( 'Règle automatique : prochain abonnement validé d\'office', function () {
+	$a = tx( 'v1', '2026-02-01', -1200, 'IONOS SARL' );
+	AC_Services::bulk_classify( array( $a['id'] ), array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'hebergement' ), 'vat_regime' => 'fr', 'vat_rate' => '20', 'compute_vat' => true ), true );
+	$b = tx( 'v2', '2026-03-01', -1200, 'IONOS SARL' );
+	$x = AC_DB::q1( "SELECT x.status FROM {expenses} x JOIN {allocations} a ON a.target_id=x.id AND a.target_type='depense' WHERE a.bank_transaction_id=?", array( $b['id'] ) );
+	eq( $x['status'], 'valide', 'dépense validée automatiquement' );
+} );
+
 function build_year() {
 	$t = tx( 'y0', '2026-01-02', 100000, 'Dépôt de capital', 'transfer' );
 	AC_Services::classify_transaction( $t['id'], array( 'type' => 'capital' ) );

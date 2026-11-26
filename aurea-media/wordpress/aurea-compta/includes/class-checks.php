@@ -26,12 +26,12 @@ class AC_Checks {
 		if ( $s471 ) {
 			$out[] = self::issue( 'bloquant', 'compte_attente', "Le compte d'attente 471 n'est pas soldé (" . $e( $s471 ) . ').', '#/banque', $s471 );
 		}
-		foreach ( AC_DB::q( 'SELECT x.*, c.rule, c.is_asset FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.date BETWEEN ? AND ?', array( $start, $end ) ) as $x ) {
+		foreach ( AC_DB::q( 'SELECT x.*, c.rule, c.code, c.is_asset FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.date BETWEEN ? AND ?', array( $start, $end ) ) as $x ) {
 			$who  = (string) $x['supplier_name'];
 			$lab  = AC_Services::norm_name( $x['label'] ) !== AC_Services::norm_name( $who ) ? $x['label'] : '';
 			$name = trim( "$who $lab" ) . ' du ' . self::d( $x['date'] );
 			$link = "#/depenses?id={$x['id']}";
-			if ( ! $x['document_id'] && ! in_array( $x['rule'], array( 'personnel', 'ik' ), true ) ) {
+			if ( AC_Services::needs_document( $x ) ) {
 				$out[] = self::issue( ( $x['vat_cents'] && 'fr' === $x['vat_regime'] && $x['vat_recovery'] ) ? 'bloquant' : 'a_verifier', 'justificatif_manquant',
 					"Justificatif manquant : $name.", $link, $x['ttc_cents'] );
 			}

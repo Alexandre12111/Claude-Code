@@ -356,7 +356,58 @@ class AC_Services {
 	}
 
 	const EXPENSE_FIELDS = array( 'date', 'supplier_id', 'supplier_name', 'label', 'invoice_number', 'ht_cents', 'vat_cents', 'ttc_cents', 'vat_rate',
-		'vat_regime', 'vat_recovery', 'deductible', 'nature', 'category_id', 'account', 'payment_method', 'beneficiary', 'document_id', 'status', 'source', 'comment' );
+		'vat_regime', 'vat_recovery', 'deductible', 'nature', 'category_id', 'account', 'payment_method', 'beneficiary', 'document_id', 'status', 'source', 'comment',
+		'doc_status', 'doc_note' );
+
+	/** Dépense sans justificatif à fournir (alias x pour expenses, c pour categories). */
+	const MISSING_DOC_SQL = "x.document_id IS NULL AND x.doc_status IS NULL AND IFNULL(c.rule,'') NOT IN ('personnel','ik') AND NOT (IFNULL(c.code,'')='banque' AND x.vat_cents=0)";
+
+	/** Justificatif attendu ? Pas pour une dépense personnelle, des IK, un frais bancaire sans TVA (justifié par le relevé) ou une pièce déclarée perdue. */
+	public static function needs_document( array $x ): bool {
+		return ! $x['document_id'] && empty( $x['doc_status'] ) && ! in_array( $x['rule'] ?? '', array( 'personnel', 'ik' ), true )
+			&& ! ( 'banque' === ( $x['code'] ?? '' ) && 0 === (int) $x['vat_cents'] );
+	}
+
+	/** Justificatif réel d'une opération bancaire (les alias renvoient à la pièce d'origine). */
+	public static function tx_document_id( int $tx_id ): ?int {
+		$d = AC_DB::q1( "SELECT id FROM {documents} WHERE bank_transaction_id=? AND kind<>'alias' ORDER BY id LIMIT 1", array( $tx_id ) );
+		if ( $d ) {
+			return (int) $d['id'];
+		}
+		$a = AC_DB::q1( "SELECT path FROM {documents} WHERE bank_transaction_id=? AND kind='alias' AND path LIKE 'alias:%' ORDER BY id LIMIT 1", array( $tx_id ) );
+		return $a ? (int) substr( $a['path'], 6 ) : null;
+	}
+
+	/** Rattache aux dépenses les justificatifs déjà présents sur leur opération bancaire. */
+	public static function relink_documents(): int {
+		$n = 0;
+		foreach ( AC_DB::q( "SELECT DISTINCT x.id, al.bank_transaction_id FROM {expenses} x JOIN {allocations} al ON al.target_type='depense' AND al.target_id=x.id
+			WHERE x.document_id IS NULL" ) as $r ) {
+			$doc = self::tx_document_id( (int) $r['bank_transaction_id'] );
+			if ( $doc ) {
+				self::save_expense( array( 'document_id' => $doc ), (int) $r['id'], 'Justificatif Qonto rattaché' );
+				$n++;
+			}
+		}
+		return $n;
+	}
+
+	/** Justificatif perdu : la charge reste déductible (preuve de paiement), la TVA ne peut pas être récupérée sans facture (CGI art. 271). */
+	public static function mark_document_lost( int $id, string $note, bool $drop_vat = true ): array {
+		$x = AC_DB::q1( 'SELECT * FROM {expenses} WHERE id=?', array( $id ) );
+		if ( ! $x ) {
+			throw new AC_Error( 'Dépense introuvable' );
+		}
+		$d = array( 'doc_status' => 'perdu', 'doc_note' => $note ?: 'Justificatif perdu' );
+		if ( $drop_vat && 'fr' === $x['vat_regime'] && $x['vat_cents'] ) {
+			$d['vat_recovery'] = 0;
+		}
+		return self::save_expense( $d, $id, 'Justificatif déclaré perdu' );
+	}
+
+	public static function clear_document_status( int $id ): array {
+		return self::save_expense( array( 'doc_status' => null, 'doc_note' => null, 'vat_recovery' => 100 ), $id, 'Justificatif à nouveau attendu' );
+	}
 
 	private static function asset_cost( array $e ): int {
 		return $e['ht_cents'] + ( 'fr' === $e['vat_regime'] ? $e['vat_cents'] - AC_Money::pct_of( (int) $e['vat_cents'], $e['vat_recovery'] ) : 0 );
@@ -405,6 +456,14 @@ class AC_Services {
 				'status' => 'a_valider', 'source' => 'manuel' );
 			foreach ( array( 'category_id', 'supplier_id', 'document_id' ) as $k ) {
 				$m[ $k ] = ! empty( $m[ $k ] ) ? (int) $m[ $k ] : null;
+			}
+			// Justificatif retrouvé après avoir été déclaré perdu : la TVA redevient récupérable.
+			if ( $m['document_id'] && ! empty( $m['doc_status'] ) ) {
+				if ( 'perdu' === $m['doc_status'] && ! array_key_exists( 'vat_recovery', $data ) ) {
+					$m['vat_recovery'] = $cat ? $cat['vat_recovery'] : 100;
+				}
+				$m['doc_status'] = null;
+				$m['doc_note']   = null;
 			}
 			foreach ( array( 'vat_recovery', 'deductible' ) as $k ) {
 				$m[ $k ] = (int) $m[ $k ];
@@ -498,7 +557,14 @@ class AC_Services {
 			$new = 0;
 			$dup = 0;
 			foreach ( $items as $it ) {
-				if ( AC_DB::q1( 'SELECT id FROM {bank_transactions} WHERE external_id=?', array( $it['external_id'] ) ) ) {
+				$known = AC_DB::q1( 'SELECT id, attachment_ids FROM {bank_transactions} WHERE external_id=?', array( $it['external_id'] ) );
+				if ( $known ) {
+					// Opération déjà connue : un justificatif a pu être ajouté depuis dans Qonto.
+					$old = json_decode( (string) $known['attachment_ids'], true ) ?: array();
+					$all = array_values( array_unique( array_merge( $old, (array) ( $it['attachment_ids'] ?? array() ) ) ) );
+					if ( $all !== $old ) {
+						AC_DB::exec( 'UPDATE {bank_transactions} SET attachment_ids=? WHERE id=?', array( wp_json_encode( $all ), $known['id'] ) );
+					}
 					$dup++;
 					continue;
 				}
@@ -521,6 +587,7 @@ class AC_Services {
 				$sug = self::suggest_for_transaction( $tid );
 				AC_Posting::post_bank_transaction( $tid, 'Import bancaire' );
 				if ( $sug && ! empty( $sug['auto'] ) && ! empty( $sug['category_id'] ) ) {
+					$sug['validate'] = true; // règle automatique choisie par l'utilisateur : dépense validée d'office
 					try {
 						self::classify_transaction( $tid, $sug, 'Règle automatique (abonnement récurrent)' );
 					} catch ( AC_Error $e ) {
@@ -642,7 +709,7 @@ class AC_Services {
 					$own_expense = null;
 				}
 			}
-			$tx_doc = AC_DB::val( 'SELECT id FROM {documents} WHERE bank_transaction_id=? ORDER BY id LIMIT 1', array( $id ) );
+			$tx_doc = self::tx_document_id( $id );
 			if ( empty( $p['append'] ) ) {
 				AC_DB::exec( 'DELETE FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
 				AC_DB::exec( 'DELETE FROM {associate_movements} WHERE bank_transaction_id=?', array( $id ) );
@@ -708,7 +775,8 @@ class AC_Services {
 						$bank_cat = AC_DB::q1( "SELECT id FROM {categories} WHERE code='banque'" );
 						$fee      = self::save_expense( array( 'date' => $tx['date'], 'supplier_name' => ( $p['provider'] ?? '' ) ?: 'Plateforme de paiement',
 							'label' => 'Commission sur encaissement', 'ttc_cents' => $commission, 'vat_regime' => 'sans_tva', 'category_id' => $bank_cat ? $bank_cat['id'] : null,
-							'payment_method' => 'qonto', 'source' => 'banque', 'status' => 'a_valider', 'comment' => 'Retenue par la plateforme sur le paiement client' ), null, $reason );
+							'payment_method' => 'qonto', 'source' => 'banque', 'status' => 'a_valider', 'comment' => 'Retenue par la plateforme sur le paiement client',
+							'document_id' => $tx_doc ), null, $reason );
 						$alloc( 'depense', $fee['id'], -$commission );
 					}
 					break;

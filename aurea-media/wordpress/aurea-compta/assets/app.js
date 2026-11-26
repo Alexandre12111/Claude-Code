@@ -227,8 +227,33 @@ async function attachFile(kind, id, input) {
   if ($("#drawer").classList.contains("open")) { kind === "tx" ? openTx(id) : openExpense(id); }
   refreshView();
 }
+// Justificatif d'une dépense : présent, déclaré perdu, non requis (relevé bancaire, IK, perso) ou à ajouter.
+const expDocCell = (x) => x.document_id
+  ? `<a class="doc-ok" href="/api/documents/${x.document_id}/file" target="_blank" onclick="event.stopPropagation()" title="Voir le justificatif">${ic("file")}</a>`
+  : x.doc_status === "perdu" ? `<span class="badge plain" title="${esc(x.doc_note || "Justificatif perdu")}">Perdu</span>`
+  : ["personnel", "ik"].includes(x.rule) ? ""
+  : (x.code === "banque" && !Number(x.vat_cents)) ? `<span class="badge plain" title="Frais bancaire sans TVA : le relevé Qonto suffit">Relevé</span>`
+  : `<span class="doc-actions">${attachButton("exp", x.id, true)}<button type="button" class="link-btn" onclick="event.stopPropagation();lostForm(${x.id})" title="Justificatif perdu">Perdu ?</button></span>`;
+function lostForm(id) {
+  openModal(`<h2 style="margin-top:0">Justificatif perdu</h2>
+    <p class="small">La dépense reste déductible du résultat si elle est professionnelle et prouvée par le paiement. En revanche, <b>sans facture, la TVA ne peut pas être récupérée</b> (article 271 du CGI) : elle sera ajoutée au coût de la dépense. Si vous retrouvez la facture, ajoutez-la : la TVA redeviendra récupérable.</p>
+    <p class="small muted">Conseil : demandez un duplicata au fournisseur (la plupart des factures se retéléchargent depuis leur espace client).</p>
+    <form id="lostf"><div class="field"><label>Explication (conservée dans le dossier)</label><textarea name="note" rows="2" placeholder="Ex. ticket de caisse égaré, achat professionnel du 12 mars"></textarea></div>
+    <label class="check"><input type="checkbox" name="drop_vat" checked> Ne pas récupérer la TVA de cette dépense (obligatoire sans facture)</label>
+    <div class="toolbar" style="margin-top:14px"><button class="primary" type="submit">Confirmer</button><button type="button" class="ghost" onclick="closeModal()">Annuler</button></div></form>`);
+  $("#lostf").onsubmit = async (e) => { e.preventDefault(); const f = formData(e.target);
+    await run(() => post(`/api/expenses/${id}/lost`, { note: f.note, drop_vat: !!f.drop_vat }), "Justificatif déclaré perdu");
+    closeModal(); if ($("#drawer").classList.contains("open")) openExpense(id); refreshView(); };
+}
+async function unlost(id) { await run(() => post(`/api/expenses/${id}/unlost`), "Justificatif de nouveau attendu"); openExpense(id); refreshView(); }
+async function validateAllExpenses(n) {
+  if (!confirm(`Valider les ${n} dépense(s) à valider ? Les écritures seront figées (une correction passera par une contre-passation).`)) return;
+  const r = await run(() => post("/api/expenses/validate", {}));
+  toast(`${r.validated} dépense(s) validée(s)`); r.errors.forEach((m) => toast(m, true)); refreshView();
+}
 const docCell = (t) => t.document_id
   ? `<a class="doc-ok" href="/api/documents/${t.document_id}/file" target="_blank" onclick="event.stopPropagation()" title="Voir le justificatif">${ic("file")}<span class="sr-only">Justificatif</span></a>`
+  : t.doc_status === "perdu" ? `<span class="badge plain">Perdu</span>` : t.doc_status === "releve" ? `<span class="badge plain" title="Le relevé Qonto suffit">Relevé</span>`
   : (t.attachment_count ? `<span class="badge b-info" title="Justificatif présent dans Qonto, en cours de récupération">Qonto</span>` : (t.needs_document ? attachButton("tx", t.id, true) : ""));
 
 const OPS_TABS = { a_traiter: "À traiter", toutes: "Toutes les opérations", depenses: "Dépenses et notes de frais", pieces: "Justificatifs déposés", km: "Frais kilométriques" };
@@ -311,11 +336,12 @@ async function repriseRun() {
 }
 async function fetchQontoDocs() {
   let total = 0;
+  toast("Relecture de toutes les opérations Qonto…");
   for (let i = 0; i < 40; i++) {
-    const r = await run(() => post("/api/qonto/attachments"));
+    const r = await run(() => post("/api/qonto/attachments", i === 0 ? { full: true } : {}));
     total += r.fetched;
     toast(`${total} justificatif(s) récupéré(s)${r.remaining ? `, encore ${r.remaining}…` : "."}`);
-    if (!r.remaining || !r.fetched) break;
+    if (!r.remaining || (!r.fetched && i > 0)) break;
   }
   refreshView();
 }
@@ -382,7 +408,9 @@ async function renderExpenses(p) {
   const month = p.month || "";
   const rows = await api(`/api/expenses?month=${month}&status=${p.status || ""}&payment=${p.payment || ""}`);
   const total = rows.filter((r) => r.rule !== "personnel").reduce((a, r) => ({ ht: a.ht + r.ht_cents, ttc: a.ttc + r.ttc_cents }), { ht: 0, ttc: 0 });
+  const pending = (await api("/api/expenses?status=a_valider")).filter((x) => x.category_id).length;
   $("#tab").innerHTML = `
+    ${pending ? `<div class="bulk-bar" style="position:static;margin-bottom:12px"><span>${pending} dépense(s) catégorisée(s) à valider (abonnements, frais…)</span><button class="primary sm" onclick="validateAllExpenses(${pending})">${ic("check")}Tout valider</button></div>` : ""}
     <div class="toolbar">
       <select style="width:auto" aria-label="Paiement" onchange="location.hash='#/operations?tab=depenses&month=${month}&payment='+this.value"><option value="">Tous les paiements</option>${Object.entries(PAYMENT).map(([k, l]) => `<option value="${k}" ${p.payment === k ? "selected" : ""}>${l}</option>`).join("")}</select>
       <select style="width:auto" aria-label="Statut" onchange="location.hash='#/operations?tab=depenses&month=${month}&status='+this.value"><option value="">Tous statuts</option>${["a_valider", "propose_ia", "valide"].map((s) => `<option value="${s}" ${p.status === s ? "selected" : ""}>${STATUS[s][0]}</option>`).join("")}</select>
@@ -391,7 +419,7 @@ async function renderExpenses(p) {
     <div class="table-wrap"><table><thead><tr><th>Date</th><th>Fournisseur</th><th>Libellé</th><th>Catégorie</th><th class="right">HT</th><th class="right">TVA</th><th class="right">TTC</th><th>Paiement</th><th>Pièce</th><th>Statut</th></tr></thead>
     <tbody>${rows.map((x) => `<tr class="click" tabindex="0" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}${x.ttc_cents < 0 ? ` <span class="badge b-info">Remboursement</span>` : ""}</td><td>${esc(x.category || "–")}</td>
       <td class="num">${eur(x.ht_cents)}</td><td class="num">${eur(x.vat_cents)}${x.vat_recovery < 100 && x.vat_cents ? ` <span class="badge plain" title="TVA non récupérable">NR</span>` : ""}</td><td class="num">${eur(x.ttc_cents)}</td>
-      <td class="small">${PAYMENT[x.payment_method]}</td><td>${x.document_id ? `<a class="doc-ok" href="/api/documents/${x.document_id}/file" target="_blank" onclick="event.stopPropagation()" title="Voir le justificatif">${ic("file")}</a>` : (["personnel", "ik"].includes(x.rule) ? "" : attachButton("exp", x.id, true))}</td><td>${badge(x.status)}</td></tr>`).join("")}</tbody>
+      <td class="small">${PAYMENT[x.payment_method]}</td><td>${expDocCell(x)}</td><td>${badge(x.status)}</td></tr>`).join("")}</tbody>
     <tfoot><tr><td colspan="4">Total (hors dépenses personnelles)</td><td class="num">${eur(total.ht)}</td><td></td><td class="num">${eur(total.ttc)}</td><td colspan="3"></td></tr></tfoot></table>
     ${rows.length ? "" : emptyState("Aucune dépense sur cette période.", "card")}</div>`;
 }
@@ -418,6 +446,13 @@ async function renderMileage(p) {
         <div class="field" style="display:flex;align-items:flex-end"><label class="check"><input type="checkbox" name="round_trip" checked> Aller et retour (distance doublée)</label></div></div>
       <button class="primary" type="submit">${ic("plus")}Ajouter le trajet</button>
     </form>
+    <details class="panel panel-pad" style="margin-top:12px"><summary><b>Saisir un total sur une période</b> <span class="muted small">(par exemple 2 000 km sur l'année)</span></summary>
+      <p class="small" style="margin:10px 0">C'est possible, mais l'administration peut demander le détail : <b>date, trajet, distance et motif de chaque déplacement</b>. Gardez votre agenda (Google Agenda, rendez vous clients) qui le prouve. Un récapitulatif <b>mensuel</b> est plus sûr qu'un total annuel, et la société vous doit l'indemnité dès la fin de la période.</p>
+      <form id="kmr"><div class="grid4"><div class="field"><label>Du</label><input type="date" name="from" value="${year}-01-01" required></div>
+        <div class="field"><label>Au</label><input type="date" name="to" value="${today() < year + "-12-31" ? today() : year + "-12-31"}" required></div>
+        <div class="field"><label>Total (km)</label><input name="km" inputmode="decimal" placeholder="2000" required></div>
+        <div class="field"><label>Justification</label><input name="purpose" value="Rendez vous clients et prospects (détail dans l'agenda)" required></div></div>
+        <button type="submit">${ic("plus")}Ajouter le récapitulatif</button></form></details>
     <div class="toolbar" style="margin-top:22px"><h2 style="margin:0">Trajets ${year}</h2><span class="spacer"></span>
       <select style="width:auto" aria-label="Année" onchange="location.hash='#/operations?tab=km&year='+this.value">${[year - 1, year, year + 1].map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select>
       <a class="btn" href="/api/mileage/pdf?year=${year}" target="_blank">${ic("download")}État annuel (PDF)</a></div>
@@ -428,6 +463,12 @@ async function renderMileage(p) {
       <tfoot><tr><td colspan="3">Total</td><td class="num">${kmf(m.km_x10)}</td><td class="num">${eur(m.amount_cents)}</td><td></td></tr></tfoot></table>
       ${m.trips.length ? "" : emptyState("Aucun trajet enregistré cette année.", "route")}</div>
     <div class="panel panel-pad" style="margin-top:16px"><h3 style="margin-top:0">Règles</h3><ul class="small muted" style="margin:0;padding-left:18px">${m.rules.map((r) => `<li>${esc(r)}</li>`).join("")}</ul></div>`;
+  $("#kmr").onsubmit = async (e) => {
+    e.preventDefault(); const f = formData(e.target);
+    if (f.to < f.from) { toast("La date de fin précède la date de début.", true); return; }
+    const r = await run(() => post("/api/mileage", { date: f.to, from_place: `Récapitulatif du ${d(f.from)} au ${d(f.to)}`, to_place: "Plusieurs déplacements professionnels", km: f.km, purpose: f.purpose }));
+    toast(`Récapitulatif enregistré : ${eur(r.amount_cents)}.`); refreshView();
+  };
   $("#kmf").onsubmit = async (e) => {
     e.preventDefault(); const f = formData(e.target);
     const r = await run(() => post("/api/mileage", f));
@@ -752,7 +793,10 @@ async function openExpense(id) {
     <dl class="kv"><dt>Date</dt><dd>${d(x.date)}</dd><dt>Montants</dt><dd>HT ${eur(x.ht_cents)} · TVA ${eur(x.vat_cents)} (${esc(x.vat_rate || "")} %) · TTC <b>${eur(x.ttc_cents)}</b></dd>
       <dt>Régime de TVA</dt><dd>${REGIMES[x.vat_regime]} · récupérable ${x.vat_recovery} %</dd><dt>Catégorie</dt><dd>${esc(x.category || "Non catégorisée")}</dd>
       <dt>Traitement fiscal</dt><dd>${esc(x.rule_explanation || "")} Charge déductible ${x.deductible} %.</dd>
-      <dt>Paiement</dt><dd>${PAYMENT[x.payment_method]} · payé ${eur(x.paid_cents)}</dd><dt>Justificatif</dt><dd>${x.document ? docLink(x.document) : (["personnel", "ik"].includes(x.rule) ? `<span class="muted">Non requis</span>` : attachButton("exp", x.id))}</dd>
+      <dt>Paiement</dt><dd>${PAYMENT[x.payment_method]} · payé ${eur(x.paid_cents)}</dd><dt>Justificatif</dt><dd>${x.document ? docLink(x.document)
+        : x.doc_status === "perdu" ? `<span class="badge plain">Déclaré perdu</span> <span class="small muted">${esc(x.doc_note || "")}</span><div style="margin-top:6px">${attachButton("exp", x.id)} <button class="sm ghost" onclick="unlost(${x.id})">Annuler la déclaration</button></div>`
+        : !x.needs_document ? `<span class="muted">Non requis${x.code === "banque" ? " (le relevé Qonto justifie ce frais sans TVA)" : ""}</span>`
+        : `${attachButton("exp", x.id)} <button class="sm ghost" onclick="lostForm(${x.id})">J'ai perdu le justificatif</button>`}</dd>
       ${x.comment ? `<dt>Commentaire</dt><dd>${esc(x.comment)}</dd>` : ""}</dl>
     <div class="toolbar" style="margin-top:14px"><button onclick='expenseForm(${JSON.stringify(x).replace(/'/g, "&#39;")})'>Modifier</button>
       ${x.status !== "valide" ? `<button class="primary" onclick="validateExpense(${x.id})">Valider</button><button class="danger" onclick="deleteExpense(${x.id})">Supprimer</button>` : ""}</div>
@@ -810,10 +854,24 @@ ROUTES.tva = async (p) => {
   const periods = await api(`/api/vat/periods?year=${year}`);
   const cur = periods.find((x) => x.start === p.start) || periods.find((x) => x.start <= today() && today() <= x.end && !p.start) || periods.filter((x) => x.end < today()).pop() || periods[0];
   setActions(`<select style="width:auto" onchange="location.hash='#/tva?year='+this.value">${[year - 1, year, year + 1].map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select>`);
-  const data = await api(`/api/vat/compute?start=${cur.start}&end=${cur.end}`);
+  const [data, ex] = await Promise.all([api(`/api/vat/compute?start=${cur.start}&end=${cur.end}`), api(`/api/vat/exercise?date=${cur.start}`).catch(() => null)]);
   const L = data.lignes;
+  const MOIS = (m) => new Date(m + "-15").toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
+  const exHtml = ex ? `
+    <h2 style="margin-top:0">Sur l'exercice <span class="muted small" style="font-weight:400">du ${d(ex.exercice.start_date)} au ${d(ex.exercice.end_date)}</span></h2>
+    <div class="cards">
+      <div class="card"><div class="label">TVA récupérable (déductible)</div><div class="value">${eur(ex.deductible_cents)}</div><div class="sub">Cumul de l'exercice</div></div>
+      <div class="card"><div class="label">TVA collectée</div><div class="value">${eur(ex.collectee_cents)}</div><div class="sub">${ex.en_attente_cents ? `+ ${eur(ex.en_attente_cents)} en attente d'encaissement` : "Sur les encaissements"}</div></div>
+      <div class="card"><div class="label">${ex.solde_cents < 0 ? "Crédit de TVA cumulé" : "TVA nette cumulée"}</div><div class="value">${eur(Math.abs(ex.solde_cents))}</div><div class="sub">Déjà payée : ${eur(ex.payee_cents)}</div></div>
+      <div class="card"><div class="label">TVA non récupérable</div><div class="value">${eur(ex.non_recuperable_cents)}</div><div class="sub">Incluse dans les charges</div></div>
+    </div>
+    <details style="margin-top:10px"><summary class="small"><b>Détail mois par mois</b></summary>
+    <div class="table-wrap" style="margin-top:8px"><table><thead><tr><th>Mois</th><th class="right">Collectée</th><th class="right">Récupérable</th><th class="right">Solde</th></tr></thead>
+    <tbody>${ex.mois.map((m) => `<tr><td>${esc(MOIS(m.month))}</td><td class="num">${eur(m.collectee_cents)}</td><td class="num">${eur(m.deductible_cents)}</td><td class="num">${eurSigned(m.solde_cents)}</td></tr>`).join("")}
+    <tr class="total"><td>Total</td><td class="num">${eur(ex.collectee_cents)}</td><td class="num">${eur(ex.deductible_cents)}</td><td class="num">${eurSigned(ex.solde_cents)}</td></tr></tbody></table></div></details>
+    <h2>Période de déclaration</h2>` : "";
   const show = Object.values(L).filter((l) => (l.base_cents || l.taxe_cents) || ["16", "23", "28", "32"].includes(l.code));
-  $("#view").innerHTML = `
+  $("#view").innerHTML = exHtml + `
     <div class="toolbar">${periods.map((x) => `<button class="sm ${x.start === cur.start ? "primary" : ""}" onclick="location.hash='#/tva?year=${year}&start=${x.start}'">${esc(x.label)} ${x.status ? badge(x.status) : ""}</button>`).join("")}</div>
     <div class="cards">
       <div class="card"><div class="label">TVA collectée (brute)</div><div class="value">${eur(data.tva_brute_cents)}</div></div>

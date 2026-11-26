@@ -8,7 +8,7 @@ class AC_Error extends Exception {}
 
 class AC_DB {
 
-	const SCHEMA_VERSION = 3;
+	const SCHEMA_VERSION = 4;
 
 	/** Colonnes converties en entiers à la lecture ($wpdb renvoie des chaînes). */
 	const INT_PATTERN = '/(_cents|^id$|_id$|^km_x10$|^round_trip$|^auto$|^vat_recovery$|^deductible$|^locked$|^is_asset$|^active$|^duration_years$|^size$|^custom$|_count$|^n$|^debit$|^credit$|^solde$|^total$|^seq$|^vseq$)/';
@@ -189,7 +189,7 @@ class AC_DB {
 				vat_rate VARCHAR(10) NULL, vat_regime VARCHAR(30) NOT NULL DEFAULT 'fr', vat_recovery INT NOT NULL DEFAULT 100, deductible INT NOT NULL DEFAULT 100,
 				nature VARCHAR(10) NOT NULL DEFAULT 'services', category_id BIGINT NULL, account VARCHAR(12) NULL, payment_method VARCHAR(10) NOT NULL DEFAULT 'qonto',
 				beneficiary VARCHAR(191) NULL, document_id BIGINT NULL, status VARCHAR(12) NOT NULL DEFAULT 'a_valider', source VARCHAR(20) NOT NULL DEFAULT 'manuel',
-				fixed_asset_id BIGINT NULL, comment TEXT NULL, created_at DATETIME NOT NULL, KEY date (date)) $c",
+				fixed_asset_id BIGINT NULL, comment TEXT NULL, doc_status VARCHAR(12) NULL, doc_note TEXT NULL, created_at DATETIME NOT NULL, KEY date (date)) $c",
 			"CREATE TABLE IF NOT EXISTS {$p}allocations (id BIGINT AUTO_INCREMENT PRIMARY KEY, bank_transaction_id BIGINT NOT NULL, target_type VARCHAR(20) NOT NULL,
 				target_id BIGINT NULL, account VARCHAR(12) NULL, amount_cents BIGINT NOT NULL, created_at DATETIME NOT NULL,
 				KEY tx (bank_transaction_id), KEY target (target_type, target_id)) $c",
@@ -252,6 +252,8 @@ class AC_DB {
 			array( 'documents', 'bank_transaction_id', 'BIGINT NULL' ),
 			array( 'supplier_rules', 'vat_rate', 'VARCHAR(10) NULL' ),
 			array( 'supplier_rules', 'auto', 'TINYINT NOT NULL DEFAULT 0' ),
+			array( 'expenses', 'doc_status', 'VARCHAR(12) NULL' ),
+			array( 'expenses', 'doc_note', 'TEXT NULL' ),
 		);
 		foreach ( $adds as list( $t, $col, $def ) ) {
 			if ( ! self::has_column( $t, $col ) ) {
@@ -271,6 +273,20 @@ class AC_DB {
 			if ( $tx ) {
 				self::exec( 'UPDATE {documents} SET bank_transaction_id=? WHERE id=?', array( $tx['id'], $d['id'] ) );
 			}
+		}
+		// Alias de justificatifs (même fichier sur deux opérations) : retrouve la pièce réelle.
+		$real = self::q( "SELECT id FROM {documents} WHERE kind<>'alias'" );
+		foreach ( self::q( "SELECT id, sha256, external_id FROM {documents} WHERE kind='alias' AND (path='' OR path IS NULL)" ) as $al ) {
+			$att = substr( (string) $al['external_id'], 10 );
+			foreach ( $real as $r ) {
+				if ( hash( 'sha256', "alias-$att-{$r['id']}" ) === $al['sha256'] ) {
+					self::exec( 'UPDATE {documents} SET path=? WHERE id=?', array( 'alias:' . $r['id'], $al['id'] ) );
+					break;
+				}
+			}
+		}
+		if ( class_exists( 'AC_Services' ) ) {
+			AC_Services::relink_documents();
 		}
 	}
 

@@ -99,7 +99,7 @@ class AC_Admin {
 <a class="sr-only" href="#view">Aller au contenu</a>
 <div class="layout">
   <aside class="sidebar" id="sidebar" aria-label="Navigation principale">
-    <div class="brand"><span class="logo" aria-hidden="true">A</span><div><strong>Aurea Media</strong><small>Comptabilité SASU</small></div></div>
+    <div class="brand brand-logo"><img class="logo-img logo-for-light" src="<?php echo esc_url( AC_URL . 'assets/logo-light.png' ); ?>" alt="Aurea Media" width="430" height="142"><img class="logo-img logo-for-dark" src="<?php echo esc_url( AC_URL . 'assets/logo-dark.png' ); ?>" alt="" aria-hidden="true" width="430" height="142"><small>Comptabilité SASU</small></div>
     <button class="search-btn" onclick="openSearch()" aria-label="Rechercher (raccourci /)"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>Rechercher</span><kbd aria-hidden="true">/</kbd></button>
     <nav id="nav">
       <a href="#/" data-route=""><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span class="label">Vue d'ensemble</span></a>
@@ -120,6 +120,7 @@ class AC_Admin {
   <main>
     <header class="topbar" id="topbar">
       <button class="ghost icon menu" aria-label="Ouvrir le menu" aria-controls="sidebar" aria-expanded="false" onclick="toggleSidebar()"><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
+      <span class="top-logo" aria-hidden="true"><img class="logo-for-light" src="<?php echo esc_url( AC_URL . 'assets/logo-light.png' ); ?>" alt=""><img class="logo-for-dark" src="<?php echo esc_url( AC_URL . 'assets/logo-dark.png' ); ?>" alt=""></span>
       <h1 id="page-title">Vue d'ensemble</h1>
       <div class="top-actions" id="top-actions"></div>
     </header>
