@@ -265,7 +265,20 @@ class AC_Api {
 			'non_recuperable_cents' => $tot['non_recuperable_cents'], 'en_attente_cents' => $tot['tva_collectee_en_attente_cents'],
 			'solde_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'], 'payee_cents' => $paid,
 			// Position vis-à-vis de l'État : TVA due moins ce qui a déjà été payé (négatif = crédit de TVA)
-			'position_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'] - $paid, 'mois' => $months );
+			'position_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'] - $paid, 'mois' => $months,
+			'fin_mois_precedent' => self::vat_position_until( $fy, gmdate( 'Y-m-t', strtotime( substr( AC_DB::today(), 0, 7 ) . '-01 -1 month' ) ) ) );
+	}
+
+	/** Position de TVA de l'exercice arrêtée à une date (comme le suivi de TVA des déclarations mensuelles). */
+	private static function vat_position_until( array $fy, string $until ): ?array {
+		if ( $until < $fy['start_date'] ) {
+			return null;
+		}
+		$until = min( $until, $fy['end_date'] );
+		$c     = AC_Vat::compute( $fy['start_date'], $until );
+		$paid  = -AC_DB::ival( "SELECT COALESCE(SUM(a.amount_cents),0) FROM {allocations} a JOIN {bank_transactions} t ON t.id=a.bank_transaction_id
+			WHERE a.target_type='tva' AND t.date BETWEEN ? AND ?", array( $fy['start_date'], $until ) );
+		return array( 'date' => $until, 'position_cents' => $c['tva_brute_cents'] - $c['tva_deductible_cents'] - $paid );
 	}
 
 	public static function r_fiscal_years( $r ) {
@@ -476,7 +489,8 @@ class AC_Api {
 	public static function r_reprise( $r ) {
 		$b = self::body( $r );
 		@set_time_limit( 60 );
-		return AC_Reprise::run( (array) ( $b['data'] ?? array() ), (int) ( $b['offset'] ?? 0 ), ! empty( $b['dry'] ), ! isset( $b['validate'] ) || ! empty( $b['validate'] ) );
+		return AC_Reprise::run( (array) ( $b['data'] ?? array() ), (int) ( $b['offset'] ?? 0 ), ! empty( $b['dry'] ), ! isset( $b['validate'] ) || ! empty( $b['validate'] ),
+			20.0, (array) ( $b['align'] ?? array() ) );
 	}
 
 	public static function r_mileage( $r ) {

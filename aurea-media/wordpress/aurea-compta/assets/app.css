@@ -332,3 +332,5 @@ pre { font-family: var(--mono); }
   .top-logo img { height: 28px; width: auto; }
   .top-actions { order: 3; }
 }
+.choice-diff { display: grid; gap: 8px; max-height: 300px; overflow: auto; padding: 4px 2px; }
+.choice-diff .check { min-height: 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: var(--r-md); }

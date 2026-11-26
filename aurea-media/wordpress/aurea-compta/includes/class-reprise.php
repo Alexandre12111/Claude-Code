@@ -63,12 +63,12 @@ class AC_Reprise {
 	 * Traite le fichier à partir de $offset, dans la limite de $budget secondes (hébergement mutualisé).
 	 * $dry : simple contrôle, rien n'est écrit.
 	 */
-	public static function run( array $data, int $offset = 0, bool $dry = false, bool $validate = true, float $budget = 20.0 ): array {
+	public static function run( array $data, int $offset = 0, bool $dry = false, bool $validate = true, float $budget = 20.0, array $align = array() ): array {
 		self::check_file( $data );
 		$start = microtime( true );
 		$ops   = array_values( $data['operations'] );
 		$res   = array( 'total' => count( $ops ), 'next_offset' => null, 'classees' => 0, 'deja_traitees' => 0, 'a_verifier' => array(), 'introuvables' => array(),
-			'erreurs' => array(), 'trajets' => 0, 'regles' => 0, 'corrigees' => 0 );
+			'erreurs' => array(), 'trajets' => 0, 'regles' => 0, 'corrigees' => 0, 'differences' => array(), 'alignees' => 0 );
 		$used  = array();
 		$fail  = function ( $op, $msg ) use ( &$res ) {
 			$res['erreurs'][] = array( 'ref' => $op['ref'], 'date' => $op['date'], 'amount_cents' => (int) $op['amount_cents'], 'label' => $op['label'] ?? '', 'message' => $msg );
@@ -115,6 +115,23 @@ class AC_Reprise {
 					$res['corrigees'] = ( $res['corrigees'] ?? 0 ) + 1;
 					continue;
 				}
+				// Classement différent de l'ancien outil : signalé, réaligné si l'utilisateur l'a demandé pour cette opération.
+				$diff = self::classification_diff( $a, $tx );
+				if ( $diff ) {
+					if ( ! $dry && in_array( (string) $op['ref'], array_map( 'strval', $align ), true ) ) {
+						try {
+							AC_DB::tx( function () use ( $op, $a, $tx, $note, $validate, &$res ) {
+								self::realign( $op, $a, $tx, $note, $validate, $res );
+							} );
+							$res['alignees']++;
+						} catch ( Throwable $e ) {
+							$fail( $op, $e->getMessage() );
+						}
+						continue;
+					}
+					$res['differences'][] = array( 'ref' => $op['ref'], 'id' => (int) $tx['id'], 'date' => $tx['date'], 'amount_cents' => (int) $tx['amount_cents'],
+						'label' => $op['label'] ?? '', 'memo' => $op['memo'] ?? '', 'app' => $diff['app'], 'dougs' => $diff['dougs'] );
+				}
 				$res['deja_traitees']++;
 				continue;
 			}
@@ -124,68 +141,7 @@ class AC_Reprise {
 			}
 			try {
 				AC_DB::tx( function () use ( $op, $a, $tx, $note, $validate, &$res ) {
-					$id      = (int) $tx['id'];
-					$sources = array( array( 'banque', $id ) );
-					switch ( $a['type'] ) {
-						case 'depense_nouvelle':
-						case 'remboursement_fournisseur':
-							$cat = self::category_id( $a['category'] );
-							$p   = array( 'type' => $a['type'], 'category_id' => $cat, 'vat_regime' => $a['vat_regime'] ?? 'fr', 'vat_rate' => $a['vat_rate'] ?? null,
-								'label' => $a['label'] ?? null, 'comment' => $note, 'validate' => $validate );
-							if ( isset( $a['vat_cents'] ) && 'sans_tva' !== $p['vat_regime'] ) {
-								$p['vat_cents'] = (int) $a['vat_cents'];
-							} elseif ( 'sans_tva' === $p['vat_regime'] ) {
-								$p['vat_cents'] = 0;
-							}
-							AC_Services::classify_transaction( $id, $p, 'Reprise Dougs' );
-							if ( ! empty( $a['remember'] ) && $tx['amount_cents'] < 0 ) {
-								AC_Services::remember_rule( $tx['counterparty'] ?: $tx['label'], $cat, $p['vat_regime'], $p['vat_rate'], true );
-								$res['regles']++;
-							}
-							break;
-						case 'vente':
-							$gross = (int) $a['gross_cents'];
-							$vat   = (int) ( $a['vat_cents'] ?? 0 );
-							$inv   = AC_DB::q1( 'SELECT id FROM {sales_invoices} WHERE external_id=?', array( 'dougs:' . $op['ref'] ) );
-							if ( $inv ) {
-								$inv_id = (int) $inv['id'];
-							} else {
-								$saved  = AC_Services::save_sales_invoice( array( 'number' => 'DOUGS-' . $op['ref'], 'issue_date' => $tx['date'], 'client_name' => $a['client'] ?? 'Client',
-									'vat_regime' => $a['vat_regime'] ?? 'fr', 'nature' => 'services',
-									'notes' => 'Encaissement repris de Dougs : facture émise hors du logiciel. ' . ( $a['description'] ?? '' ),
-									'lines' => array( array( 'description' => mb_substr( ( $a['description'] ?? '' ) ?: 'Prestation de services', 0, 250 ), 'quantity' => '1',
-										'unit_price_cents' => $gross - $vat, 'vat_rate' => $a['vat_rate'] ?? '20' ) ) ), null, 'Reprise Dougs' );
-								$inv_id = (int) $saved['id'];
-								AC_DB::exec( 'UPDATE {sales_invoices} SET external_id=? WHERE id=?', array( 'dougs:' . $op['ref'], $inv_id ) );
-							}
-							$p = array( 'type' => 'vente', 'invoice_id' => $inv_id, 'comment' => $note );
-							if ( ! empty( $a['commission_cents'] ) ) {
-								$p['commission_cents'] = (int) $a['commission_cents'];
-								$p['provider']         = $a['provider'] ?? null;
-							}
-							AC_Services::classify_transaction( $id, $p, 'Reprise Dougs' );
-							$sources[] = array( 'vente', $inv_id );
-							foreach ( AC_DB::q( "SELECT target_id FROM {allocations} WHERE bank_transaction_id=? AND target_type='depense'", array( $id ) ) as $al ) {
-								if ( $validate ) {
-									AC_Services::save_expense( array( 'status' => 'valide' ), (int) $al['target_id'], 'Reprise Dougs' );
-								}
-								$sources[] = array( 'depense', (int) $al['target_id'] );
-							}
-							break;
-						case 'associe':
-						case 'capital':
-						case 'tva':
-							AC_Services::classify_transaction( $id, array( 'type' => $a['type'], 'comment' => $note ), 'Reprise Dougs' );
-							break;
-						case 'compte':
-							AC_Services::classify_transaction( $id, array( 'type' => 'compte', 'account' => (string) $a['account'], 'comment' => $note ), 'Reprise Dougs' );
-							break;
-						default:
-							throw new AC_Error( "Type d'opération inconnu : " . ( $a['type'] ?? '' ) );
-					}
-					if ( $validate ) {
-						self::validate_sources( $sources );
-					}
+					self::apply( $op, $a, $tx, $note, $validate, $res );
 				} );
 				$res['classees']++;
 			} catch ( Throwable $e ) {
@@ -198,6 +154,140 @@ class AC_Reprise {
 			$res['trajets'] = count( $data['trips'] ?? array() );
 		}
 		return $res;
+	}
+
+	const LABELS = array( 'vente' => 'Encaissement client', 'associe' => "Compte courant d'associé", 'capital' => 'Capital', 'tva' => 'Paiement de TVA',
+		'is' => 'Impôt sur les sociétés', 'virement_interne' => 'Virement interne' );
+
+	private static function category_name( ?string $code ): string {
+		return (string) AC_DB::val( 'SELECT name FROM {categories} WHERE code=?', array( (string) $code ) );
+	}
+
+	/** Compare le classement actuel de l'opération avec celui de l'ancien outil. Null si identique. */
+	public static function classification_diff( array $a, array $tx ): ?array {
+		$t = $a['type'] ?? '';
+		if ( in_array( $t, array( '', 'verifier' ), true ) ) {
+			return null;
+		}
+		$al    = AC_DB::q( "SELECT a.target_type, a.account, c.code, c.name FROM {allocations} a LEFT JOIN {expenses} x ON a.target_type='depense' AND x.id=a.target_id
+			LEFT JOIN {categories} c ON c.id=x.category_id WHERE a.bank_transaction_id=? ORDER BY a.id", array( $tx['id'] ) );
+		$types = array_values( array_unique( array_column( $al, 'target_type' ) ) );
+		$ok    = false;
+		if ( in_array( $t, array( 'depense_nouvelle', 'remboursement_fournisseur' ), true ) ) {
+			$ok     = array( 'depense' ) === $types && ( $al[0]['code'] ?? '' ) === ( $a['category'] ?? '' );
+			$expect = ( 'remboursement_fournisseur' === $t ? 'Remboursement reçu' : 'Dépense' ) . ' · ' . self::category_name( $a['category'] ?? '' );
+		} elseif ( 'vente' === $t ) {
+			$ok     = in_array( 'vente', $types, true );
+			$expect = self::LABELS['vente'];
+		} elseif ( 'compte' === $t ) {
+			$ok     = array( 'compte' ) === $types && ( $al[0]['account'] ?? '' ) === (string) $a['account'];
+			$expect = 'Compte ' . $a['account'] . ( '445660' === (string) $a['account'] ? ' (TVA déductible)' : '' );
+		} else {
+			$ok     = array( $t ) === $types;
+			$expect = self::LABELS[ $t ] ?? $t;
+		}
+		if ( $ok ) {
+			return null;
+		}
+		$now = array();
+		foreach ( $al as $x ) {
+			$now[] = 'depense' === $x['target_type'] ? ( $tx['amount_cents'] > 0 ? 'Remboursement reçu' : 'Dépense' ) . ' · ' . ( $x['name'] ?: 'sans catégorie' )
+				: ( 'compte' === $x['target_type'] ? 'Compte ' . $x['account'] : ( self::LABELS[ $x['target_type'] ] ?? $x['target_type'] ) );
+		}
+		return array( 'app' => $now ? implode( ', ', array_unique( $now ) ) : 'Non catégorisée', 'dougs' => $expect );
+	}
+
+	/** Réaligne une opération déjà traitée sur le classement de l'ancien outil (à la demande de l'utilisateur ; tout est tracé). */
+	private static function realign( array $op, array $a, array $tx, string $note, bool $validate, array &$res ): void {
+		$id  = (int) $tx['id'];
+		$own = AC_DB::q( "SELECT x.* FROM {allocations} al JOIN {expenses} x ON x.id=al.target_id WHERE al.target_type='depense' AND al.bank_transaction_id=?
+			AND x.source IN ('qonto','banque','ia') AND x.payment_method='qonto'", array( $id ) );
+		$dep = in_array( $a['type'], array( 'depense_nouvelle', 'remboursement_fournisseur' ), true );
+		if ( $dep && 1 === count( $own ) && array( 'depense' ) === array_values( array_unique( array_column( AC_DB::q( 'SELECT target_type FROM {allocations} WHERE bank_transaction_id=?', array( $id ) ), 'target_type' ) ) ) ) {
+			// Même nature, autre catégorie : la dépense est modifiée (correction tracée, écritures contre passées puis revalidées).
+			$x    = $own[0];
+			$data = array( 'category_id' => self::category_id( $a['category'] ), 'vat_regime' => $a['vat_regime'] ?? 'fr', 'vat_rate' => $a['vat_rate'] ?? null,
+				'ttc_cents' => (int) $x['ttc_cents'], 'vat_cents' => 'sans_tva' === ( $a['vat_regime'] ?? 'fr' ) ? 0 : ( $x['ttc_cents'] < 0 ? -1 : 1 ) * abs( (int) ( $a['vat_cents'] ?? 0 ) ) );
+			AC_Services::save_expense( $data, (int) $x['id'], 'Alignement sur Dougs' );
+			if ( $validate && 'valide' === $x['status'] ) {
+				self::validate_sources( array( array( 'depense', (int) $x['id'] ), array( 'banque', $id ) ) );
+			}
+			return;
+		}
+		// Autre nature : la dépense créée depuis cette opération est annulée (contre passation de ses écritures), puis l'opération est reclassée.
+		foreach ( $own as $x ) {
+			if ( 'valide' === $x['status'] ) {
+				AC_Services::save_expense( array( 'status' => 'a_valider' ), (int) $x['id'], 'Alignement sur Dougs' );
+			}
+			AC_Services::delete_expense( (int) $x['id'], 'Alignement sur Dougs : opération reclassée' );
+		}
+		self::apply( $op, $a, AC_DB::q1( 'SELECT * FROM {bank_transactions} WHERE id=?', array( $id ) ), $note, $validate, $res );
+	}
+
+	/** Applique à l'opération bancaire la catégorisation du fichier de reprise. */
+	private static function apply( array $op, array $a, array $tx, string $note, bool $validate, array &$res ): void {
+		$id      = (int) $tx['id'];
+		$sources = array( array( 'banque', $id ) );
+		switch ( $a['type'] ) {
+			case 'depense_nouvelle':
+			case 'remboursement_fournisseur':
+				$cat = self::category_id( $a['category'] );
+				$p   = array( 'type' => $a['type'], 'category_id' => $cat, 'vat_regime' => $a['vat_regime'] ?? 'fr', 'vat_rate' => $a['vat_rate'] ?? null,
+					'label' => $a['label'] ?? null, 'comment' => $note, 'validate' => $validate );
+				if ( isset( $a['vat_cents'] ) && 'sans_tva' !== $p['vat_regime'] ) {
+					$p['vat_cents'] = (int) $a['vat_cents'];
+				} elseif ( 'sans_tva' === $p['vat_regime'] ) {
+					$p['vat_cents'] = 0;
+				}
+				AC_Services::classify_transaction( $id, $p, 'Reprise Dougs' );
+				if ( ! empty( $a['remember'] ) && $tx['amount_cents'] < 0 ) {
+					AC_Services::remember_rule( $tx['counterparty'] ?: $tx['label'], $cat, $p['vat_regime'], $p['vat_rate'], true );
+					$res['regles']++;
+				}
+				break;
+			case 'vente':
+				$gross = (int) $a['gross_cents'];
+				$vat   = (int) ( $a['vat_cents'] ?? 0 );
+				$inv   = AC_DB::q1( 'SELECT id FROM {sales_invoices} WHERE external_id=?', array( 'dougs:' . $op['ref'] ) );
+				if ( $inv ) {
+					$inv_id = (int) $inv['id'];
+				} else {
+					$saved  = AC_Services::save_sales_invoice( array( 'number' => 'DOUGS-' . $op['ref'], 'issue_date' => $tx['date'], 'client_name' => $a['client'] ?? 'Client',
+						'vat_regime' => $a['vat_regime'] ?? 'fr', 'nature' => 'services',
+						'notes' => 'Encaissement repris de Dougs : facture émise hors du logiciel. ' . ( $a['description'] ?? '' ),
+						'lines' => array( array( 'description' => mb_substr( ( $a['description'] ?? '' ) ?: 'Prestation de services', 0, 250 ), 'quantity' => '1',
+							'unit_price_cents' => $gross - $vat, 'vat_rate' => $a['vat_rate'] ?? '20' ) ) ), null, 'Reprise Dougs' );
+					$inv_id = (int) $saved['id'];
+					AC_DB::exec( 'UPDATE {sales_invoices} SET external_id=? WHERE id=?', array( 'dougs:' . $op['ref'], $inv_id ) );
+				}
+				$p = array( 'type' => 'vente', 'invoice_id' => $inv_id, 'comment' => $note );
+				if ( ! empty( $a['commission_cents'] ) ) {
+					$p['commission_cents'] = (int) $a['commission_cents'];
+					$p['provider']         = $a['provider'] ?? null;
+				}
+				AC_Services::classify_transaction( $id, $p, 'Reprise Dougs' );
+				$sources[] = array( 'vente', $inv_id );
+				foreach ( AC_DB::q( "SELECT target_id FROM {allocations} WHERE bank_transaction_id=? AND target_type='depense'", array( $id ) ) as $al ) {
+					if ( $validate ) {
+						AC_Services::save_expense( array( 'status' => 'valide' ), (int) $al['target_id'], 'Reprise Dougs' );
+					}
+					$sources[] = array( 'depense', (int) $al['target_id'] );
+				}
+				break;
+			case 'associe':
+			case 'capital':
+			case 'tva':
+				AC_Services::classify_transaction( $id, array( 'type' => $a['type'], 'comment' => $note ), 'Reprise Dougs' );
+				break;
+			case 'compte':
+				AC_Services::classify_transaction( $id, array( 'type' => 'compte', 'account' => (string) $a['account'], 'comment' => $note ), 'Reprise Dougs' );
+				break;
+			default:
+				throw new AC_Error( "Type d'opération inconnu : " . ( $a['type'] ?? '' ) );
+		}
+		if ( $validate ) {
+			self::validate_sources( $sources );
+		}
 	}
 
 	/** Dépense issue de la reprise dont la TVA diffère du fichier : données de correction, sinon null. */

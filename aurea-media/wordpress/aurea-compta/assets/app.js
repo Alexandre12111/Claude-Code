@@ -293,13 +293,13 @@ function addMenu() {
 }
 /* Reprise d'un dossier Dougs : contrôle à blanc, puis catégorisation par lots (hébergement mutualisé). */
 let REPRISE = null;
-async function reprisePass(dry, validate) {
-  const acc = { total: 0, classees: 0, deja_traitees: 0, corrigees: 0, a_verifier: [], introuvables: [], erreurs: [], trajets: 0, regles: 0 };
+async function reprisePass(dry, validate, align = []) {
+  const acc = { total: 0, classees: 0, deja_traitees: 0, corrigees: 0, alignees: 0, differences: [], a_verifier: [], introuvables: [], erreurs: [], trajets: 0, regles: 0 };
   let offset = 0;
   for (let i = 0; i < 60; i++) {
-    const r = await run(() => post("/api/reprise", { data: REPRISE, offset, dry, validate }));
-    acc.total = r.total; ["classees", "deja_traitees", "corrigees", "trajets", "regles"].forEach((k) => (acc[k] += r[k] || 0));
-    ["a_verifier", "introuvables", "erreurs"].forEach((k) => acc[k].push(...r[k]));
+    const r = await run(() => post("/api/reprise", { data: REPRISE, offset, dry, validate, align }));
+    acc.total = r.total; ["classees", "deja_traitees", "corrigees", "alignees", "trajets", "regles"].forEach((k) => (acc[k] += r[k] || 0));
+    ["a_verifier", "introuvables", "erreurs", "differences"].forEach((k) => acc[k].push(...(r[k] || [])));
     if (r.next_offset === null || r.next_offset === undefined) break;
     offset = r.next_offset;
     if (!dry) toast(`Reprise en cours : ${offset} / ${r.total} opérations…`);
@@ -319,18 +319,24 @@ async function repriseFile(input) {
   openModal(`<h2 style="margin-top:0">Reprise depuis ${esc(REPRISE.source || "l'ancien logiciel")}</h2>
     <p class="muted small">${esc(REPRISE.company || "")} · ${r.total} opérations bancaires et ${r.trajets} trajets dans le fichier. Aucune opération déjà traitée ne sera modifiée.</p>
     <dl class="kv"><dt>À catégoriser</dt><dd><b>${r.classees}</b></dd><dt>Déjà traitées ici</dt><dd>${r.deja_traitees}</dd>${r.corrigees ? `<dt>TVA à corriger</dt><dd><b>${r.corrigees}</b> dépense(s) reprise(s) précédemment</dd>` : ""}
-      <dt>À vérifier par vous</dt><dd>${r.a_verifier.length}</dd><dt>Introuvables dans Qonto</dt><dd>${r.introuvables.length}</dd><dt>Trajets</dt><dd>${r.trajets}</dd></dl>
+      <dt>Classées autrement</dt><dd>${r.differences.length}</dd><dt>À vérifier par vous</dt><dd>${r.a_verifier.length}</dd><dt>Introuvables dans Qonto</dt><dd>${r.introuvables.length}</dd><dt>Trajets</dt><dd>${r.trajets}</dd></dl>
     ${repriseList("Introuvables", r.introuvables, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}`)}
+    ${r.differences.length ? `<h3>Classées autrement que dans ${esc(REPRISE.source || "l'ancien logiciel")} (${r.differences.length})</h3>
+      <p class="small muted" style="margin-top:0">Cochez celles à réaligner. Les écritures validées sont contre passées puis refaites : tout reste tracé.</p>
+      <div class="choice-diff">${r.differences.map((x) => `<label class="check" style="align-items:flex-start"><input type="checkbox" class="align-ref" value="${esc(x.ref)}" checked>
+        <span><b>${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}</b>${x.memo ? ` <span class="muted">${esc(x.memo)}</span>` : ""}<br>
+        <span class="small">Ici : <span class="neg">${esc(x.app)}</span> → ${esc(REPRISE.source || "")} : <span class="pos">${esc(x.dougs)}</span></span></span></label>`).join("")}</div>` : ""}
     <label class="check" style="margin-top:12px"><input type="checkbox" id="reprise-validate" checked> Valider les écritures (elles l'étaient déjà dans ${esc(REPRISE.source || "l'ancien logiciel")})</label>
     <div class="toolbar" style="margin-top:16px"><button class="primary" onclick="repriseRun()">Lancer la reprise</button><button class="ghost" onclick="closeModal()">Annuler</button></div>`);
 }
 async function repriseRun() {
   const validate = $("#reprise-validate").checked;
+  const align = $$(".align-ref").filter((c) => c.checked).map((c) => c.value);
   closeModal(); toast("Reprise lancée…");
-  const r = await reprisePass(false, validate);
+  const r = await reprisePass(false, validate, align);
   openModal(`<h2 style="margin-top:0">Reprise terminée</h2>
     <dl class="kv"><dt>Opérations catégorisées</dt><dd><b>${r.classees}</b></dd><dt>Règles automatiques créées</dt><dd>${r.regles}</dd><dt>Trajets ajoutés</dt><dd>${r.trajets}</dd>
-      <dt>Déjà traitées (inchangées)</dt><dd>${r.deja_traitees}</dd>${r.corrigees ? `<dt>TVA corrigée</dt><dd>${r.corrigees}</dd>` : ""}</dl>
+      <dt>Déjà traitées (inchangées)</dt><dd>${r.deja_traitees}</dd>${r.corrigees ? `<dt>TVA corrigée</dt><dd>${r.corrigees}</dd>` : ""}${r.alignees ? `<dt>Réalignées sur ${esc(REPRISE.source || "")}</dt><dd>${r.alignees}</dd>` : ""}</dl>
     ${repriseList("À vérifier par vous", r.a_verifier, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}<br><span class="muted">${esc(x.reason)}</span>`)}
     ${repriseList("Introuvables dans Qonto", r.introuvables, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}`)}
     ${repriseList("Erreurs", r.erreurs, (x) => `${d(x.date)} · ${esc(x.label)} · ${eur(x.amount_cents)}<br><span class="muted">${esc(x.message)}</span>`)}
@@ -865,7 +871,7 @@ ROUTES.tva = async (p) => {
     <div class="cards">
       <div class="card"><div class="label">TVA récupérable (déductible)</div><div class="value">${eur(ex.deductible_cents)}</div><div class="sub">Cumul de l'exercice</div></div>
       <div class="card"><div class="label">TVA collectée</div><div class="value">${eur(ex.collectee_cents)}</div><div class="sub">${ex.en_attente_cents ? `+ ${eur(ex.en_attente_cents)} en attente d'encaissement` : "Sur les encaissements"}</div></div>
-      <div class="card hero"><div class="label">${ex.position_cents < 0 ? "Crédit de TVA cumulé" : "TVA restant à payer"}</div><div class="value">${eur(Math.abs(ex.position_cents))}</div><div class="sub">${ex.solde_cents < 0 ? "Crédit" : "Solde"} des opérations ${eur(Math.abs(ex.solde_cents))}${ex.payee_cents ? ` · ${ex.payee_cents > 0 ? "+" : ""}${eur(ex.payee_cents)} déjà versés aux impôts` : ""}</div></div>
+      <div class="card hero"><div class="label">${ex.position_cents < 0 ? "Crédit de TVA cumulé" : "TVA restant à payer"}</div><div class="value">${eur(Math.abs(ex.position_cents))}</div><div class="sub">À ce jour${ex.fin_mois_precedent ? ` · au ${d(ex.fin_mois_precedent.date)} (dernier mois clos) : <b>${eur(Math.abs(ex.fin_mois_precedent.position_cents))}</b>${ex.fin_mois_precedent.position_cents > 0 ? " à payer" : ""}` : ""}<br>TVA déjà payée sur l'exercice : ${eur(ex.payee_cents)}</div></div>
       <div class="card"><div class="label">TVA non récupérable</div><div class="value">${eur(ex.non_recuperable_cents)}</div><div class="sub">Incluse dans les charges</div></div>
     </div>
     <details style="margin-top:10px"><summary class="small"><b>Détail mois par mois</b></summary>

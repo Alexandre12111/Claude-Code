@@ -408,6 +408,19 @@ test( 'Reprise d\'un dossier Dougs (données fictives)', function () {
 	eq( bal( '6256' ), 2200, 'restaurant HT corrigé' );
 	eq( AC_DB::ival( "SELECT COUNT(*) FROM {entries} WHERE status<>'valide' AND label LIKE '%RESTAURANT%'" ), 0, 'écritures corrigées validées' );
 	eq( AC_Reprise::run( $data, 0, true )['corrigees'], 0, 'plus rien à corriger' );
+	// Opération classée à la main autrement que dans l'ancien outil : signalée, puis réalignée sur demande.
+	$r6 = AC_DB::q1( "SELECT * FROM {bank_transactions} WHERE external_id='r6'" );
+	AC_Services::classify_transaction( (int) $r6['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'impots' ), 'vat_regime' => 'sans_tva', 'validate' => true ) );
+	eq( bal( '6351' ), 14200, 'paiement au SIE compté en charge' );
+	$data['operations'][5]['action'] = array( 'type' => 'tva' );
+	$chk = AC_Reprise::run( $data, 0, true );
+	eq( count( $chk['differences'] ), 1, 'différence signalée' );
+	eq( $chk['differences'][0]['dougs'], 'Paiement de TVA', 'classement attendu' );
+	$al = AC_Reprise::run( $data, 0, false, true, 20, array( 'd6' ) );
+	eq( $al['alignees'], 1, 'réalignée' );
+	eq( bal( '6351' ), 0, 'plus de charge' );
+	eq( bal( '4455' ), 14200, 'versement de TVA' );
+	eq( count( AC_Reprise::run( $data, 0, true )['differences'] ), 0, 'plus de différence' );
 	$t = tx( 'r9', '2026-06-02', -120, 'IONOS SARL' );
 	eq( AC_DB::val( 'SELECT status FROM {bank_transactions} WHERE id=?', array( $t['id'] ) ), 'rapproche', 'prochain Ionos classé automatiquement' );
 } );
