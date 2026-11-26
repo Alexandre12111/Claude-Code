@@ -53,6 +53,10 @@
   $$('#menu li button').forEach(function (b) { b.onclick = function () { go(+b.dataset.k); $('#menu').classList.remove('on'); }; });
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { goId(b.dataset.go); }); });
 
+  /* barre de navigation : visible quelques secondes après un mouvement de souris */
+  var navT = null, navEl = $('#nav');
+  document.addEventListener('mousemove', function (e) { if (e.clientY > window.innerHeight - 140) { navEl.classList.add('show'); clearTimeout(navT); navT = setTimeout(function () { navEl.classList.remove('show'); }, 2200); } });
+
   /* compteurs */
   function count(s) {
     $$('[data-count]', s).forEach(function (el) {
@@ -96,7 +100,7 @@
   var ex = { app: null, i: 0, pending: null };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
   var tabs = $('#s-explore [data-tabs]');
-  tabs.innerHTML = APPS.map(function (a, i) { return '<button data-i="' + i + '"><span class="tile">' + Y.ic(a.icon, 17, '#fff', 2) + '</span><span>' + esc(a.name) + '<small>' + esc(a.team) + '</small></span></button>'; }).join('');
+  tabs.innerHTML = APPS.map(function (a, i) { return '<button data-i="' + i + '"><span class="dtile">' + Y.ic(a.icon, 17, '#fff', 2) + '</span><span>' + esc(a.name) + '<small>' + esc(a.team) + '</small></span></button>'; }).join('');
   $$('button', tabs).forEach(function (b) { b.onclick = function () { show(+b.dataset.i); }; });
   function show(i) {
     ex.i = i; var a = APPS[i];
@@ -118,20 +122,20 @@
 
   /* ---------------------------------------------------------------- démonstration « Décrivez, YouCraft construit » */
   var B = { tm: [], app: null };
-  var bs = $('#s-build'), typer = $('[data-typer]', bs), thread = $('[data-thread]', bs), prev = $('.prev', bs), toast = $('[data-toast]', bs), pub = $('[data-pub]', bs);
+  var bs = $('#s-build'), typer = $('[data-typer]', bs), thread = $('[data-thread]', bs), prev = $('.bprev', bs), toast = $('[data-toast]', bs), pub = $('[data-pub]', bs);
   var P1 = 'Crée un espace d’intégration pour les nouveaux arrivants, avec une checklist, un parrain et une vue manager.';
   var P2 = 'Ajoute des relances automatiques aux managers avant chaque arrivée.';
   var STEPS = [['Modèle de données', 'Collaborateurs, tâches, parrains'], ['Écrans et navigation', '4 écrans'], ['Logique et automatisations', 'Relances, alertes'], ['Accès et rôles', 'RH, managers, nouveaux arrivants']];
   function later(f, ms) { B.tm.push(setTimeout(f, reduce ? Math.min(ms, 60) : ms)); }
-  function stage(n) { $$('.stp', bs).forEach(function (s, k) { s.classList.toggle('on', k === n); s.classList.toggle('ok', k < n); }); }
+  function stage(n) { $$('.bstp', bs).forEach(function (s, k) { s.classList.toggle('on', k === n); s.classList.toggle('bok', k < n); }); }
   function type(txt, done) {
-    typer.textContent = ''; typer.classList.add('typing'); var i = 0;
-    (function tick() { if (i <= txt.length) { typer.textContent = txt.slice(0, i); i += 2; later(tick, 26); } else { typer.classList.remove('typing'); later(done, 380); } })();
+    typer.textContent = ''; typer.classList.add('btyping'); var i = 0;
+    (function tick() { if (i <= txt.length) { typer.textContent = txt.slice(0, i); i += 2; later(tick, 26); } else { typer.classList.remove('btyping'); later(done, 380); } })();
   }
-  function say(html, me) { var d = document.createElement('div'); d.className = 'msg' + (me ? ' me' : ''); d.innerHTML = html; thread.appendChild(d); return d; }
+  function say(html, me) { var d = document.createElement('div'); d.className = 'bmsg' + (me ? ' bme' : ''); d.innerHTML = html; thread.appendChild(d); return d; }
   function reset() {
-    B.tm.forEach(clearTimeout); B.tm = []; while (thread.children.length > 1) thread.removeChild(thread.lastChild); typer.textContent = ''; typer.classList.remove('typing');
-    prev.classList.remove('ready'); $('.ph', prev).classList.remove('idle'); toast.classList.remove('on'); pub.classList.remove('pulse'); stage(-1);
+    B.tm.forEach(clearTimeout); B.tm = []; while (thread.children.length > 1) thread.removeChild(thread.lastChild); typer.textContent = ''; typer.classList.remove('btyping');
+    prev.classList.remove('bready'); $('.bph', prev).classList.remove('bidle'); toast.classList.remove('on'); pub.classList.remove('bpulse'); stage(-1);
     if (B.app) B.app.stop();
   }
   function run() {
@@ -141,11 +145,11 @@
         typer.textContent = ''; say(esc(P1), true); stage(1);
         var m = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est parti. Voici ce que je construis :<ul>' + STEPS.map(function (s) { return '<li><i></i><span>' + s[0] + '</span></li>'; }).join('') + '</ul>');
         var lis = $$('li', m);
-        lis.forEach(function (li, k) { later(function () { li.classList.add('run'); }, 300 + k * 900); later(function () { li.classList.remove('run'); li.classList.add('done'); }, 1100 + k * 900); });
+        lis.forEach(function (li, k) { later(function () { li.classList.add('brun'); }, 300 + k * 900); later(function () { li.classList.remove('brun'); li.classList.add('bdone'); }, 1100 + k * 900); });
         later(function () {
           if (!B.app) B.app = mount($('#h-build'), 'people');
-          B.app.fit(); B.app.start(); prev.classList.add('ready');
-          later(function () { stage(2); type(P2, function () { typer.textContent = ''; say(esc(P2), true); var r = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est fait : chaque manager reçoit une relance 3 jours avant l’arrivée.'); later(function () { stage(3); pub.classList.add('pulse'); later(function () { toast.classList.add('on'); }, 900); }, 1500); }); }, 2200);
+          B.app.fit(); B.app.start(); prev.classList.add('bready');
+          later(function () { stage(2); type(P2, function () { typer.textContent = ''; say(esc(P2), true); var r = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est fait : chaque manager reçoit une relance 3 jours avant l’arrivée.'); later(function () { stage(3); pub.classList.add('bpulse'); later(function () { toast.classList.add('on'); }, 900); }, 1500); }); }, 2200);
         }, 300 + STEPS.length * 900 + 400);
       });
     }, 700);
