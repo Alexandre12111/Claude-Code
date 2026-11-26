@@ -865,7 +865,7 @@ ROUTES.tva = async (p) => {
     <div class="cards">
       <div class="card"><div class="label">TVA récupérable (déductible)</div><div class="value">${eur(ex.deductible_cents)}</div><div class="sub">Cumul de l'exercice</div></div>
       <div class="card"><div class="label">TVA collectée</div><div class="value">${eur(ex.collectee_cents)}</div><div class="sub">${ex.en_attente_cents ? `+ ${eur(ex.en_attente_cents)} en attente d'encaissement` : "Sur les encaissements"}</div></div>
-      <div class="card"><div class="label">${ex.solde_cents < 0 ? "Crédit de TVA cumulé" : "TVA nette cumulée"}</div><div class="value">${eur(Math.abs(ex.solde_cents))}</div><div class="sub">Déjà payée : ${eur(ex.payee_cents)}</div></div>
+      <div class="card hero"><div class="label">${ex.position_cents < 0 ? "Crédit de TVA cumulé" : "TVA restant à payer"}</div><div class="value">${eur(Math.abs(ex.position_cents))}</div><div class="sub">${ex.solde_cents < 0 ? "Crédit" : "Solde"} des opérations ${eur(Math.abs(ex.solde_cents))}${ex.payee_cents ? ` · ${ex.payee_cents > 0 ? "+" : ""}${eur(ex.payee_cents)} déjà versés aux impôts` : ""}</div></div>
       <div class="card"><div class="label">TVA non récupérable</div><div class="value">${eur(ex.non_recuperable_cents)}</div><div class="sub">Incluse dans les charges</div></div>
     </div>
     <details style="margin-top:10px"><summary class="small"><b>Détail mois par mois</b></summary>

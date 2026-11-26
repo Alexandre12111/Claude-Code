@@ -177,6 +177,9 @@ class AC_Reprise {
 						case 'tva':
 							AC_Services::classify_transaction( $id, array( 'type' => $a['type'], 'comment' => $note ), 'Reprise Dougs' );
 							break;
+						case 'compte':
+							AC_Services::classify_transaction( $id, array( 'type' => 'compte', 'account' => (string) $a['account'], 'comment' => $note ), 'Reprise Dougs' );
+							break;
 						default:
 							throw new AC_Error( "Type d'opération inconnu : " . ( $a['type'] ?? '' ) );
 					}

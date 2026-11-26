@@ -263,7 +263,9 @@ class AC_Api {
 			WHERE a.target_type='tva' AND t.date BETWEEN ? AND ?", array( $fy['start_date'], $fy['end_date'] ) );
 		return array( 'exercice' => $fy, 'collectee_cents' => $tot['tva_brute_cents'], 'deductible_cents' => $tot['tva_deductible_cents'],
 			'non_recuperable_cents' => $tot['non_recuperable_cents'], 'en_attente_cents' => $tot['tva_collectee_en_attente_cents'],
-			'solde_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'], 'payee_cents' => $paid, 'mois' => $months );
+			'solde_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'], 'payee_cents' => $paid,
+			// Position vis-à-vis de l'État : TVA due moins ce qui a déjà été payé (négatif = crédit de TVA)
+			'position_cents' => $tot['tva_brute_cents'] - $tot['tva_deductible_cents'] - $paid, 'mois' => $months );
 	}
 
 	public static function r_fiscal_years( $r ) {
