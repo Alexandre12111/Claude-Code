@@ -8,10 +8,10 @@ class AC_Error extends Exception {}
 
 class AC_DB {
 
-	const SCHEMA_VERSION = 1;
+	const SCHEMA_VERSION = 2;
 
 	/** Colonnes converties en entiers à la lecture ($wpdb renvoie des chaînes). */
-	const INT_PATTERN = '/(_cents|^id$|_id$|^vat_recovery$|^deductible$|^locked$|^is_asset$|^active$|^duration_years$|^size$|^custom$|_count$|^n$|^debit$|^credit$|^solde$|^total$|^seq$|^vseq$)/';
+	const INT_PATTERN = '/(_cents|^id$|_id$|^km_x10$|^round_trip$|^auto$|^vat_recovery$|^deductible$|^locked$|^is_asset$|^active$|^duration_years$|^size$|^custom$|_count$|^n$|^debit$|^credit$|^solde$|^total$|^seq$|^vseq$)/';
 
 	private static $depth = 0;
 
@@ -211,7 +211,11 @@ class AC_DB {
 			"CREATE TABLE IF NOT EXISTS {$p}month_closings (month CHAR(7) PRIMARY KEY, closed_at DATETIME NOT NULL, report LONGTEXT NULL) $c",
 			"CREATE TABLE IF NOT EXISTS {$p}audit_log (id BIGINT AUTO_INCREMENT PRIMARY KEY, ts DATETIME NOT NULL, user_id BIGINT NULL, action VARCHAR(40) NOT NULL,
 				object_type VARCHAR(40) NOT NULL, object_id BIGINT NULL, `before` LONGTEXT NULL, `after` LONGTEXT NULL, reason TEXT NULL) $c",
-			"CREATE TABLE IF NOT EXISTS {$p}supplier_rules (pattern VARCHAR(191) PRIMARY KEY, category_id BIGINT NULL, vat_regime VARCHAR(30) NULL, updated_at DATETIME NOT NULL) $c",
+			"CREATE TABLE IF NOT EXISTS {$p}supplier_rules (pattern VARCHAR(191) PRIMARY KEY, category_id BIGINT NULL, vat_regime VARCHAR(30) NULL, vat_rate VARCHAR(10) NULL,
+				auto TINYINT NOT NULL DEFAULT 0, updated_at DATETIME NOT NULL) $c",
+			"CREATE TABLE IF NOT EXISTS {$p}mileage (id BIGINT AUTO_INCREMENT PRIMARY KEY, date DATE NOT NULL, vehicle VARCHAR(100) NOT NULL, vehicle_type VARCHAR(20) NOT NULL,
+				cv VARCHAR(10) NOT NULL, from_place VARCHAR(191) NOT NULL, to_place VARCHAR(191) NOT NULL, purpose VARCHAR(255) NOT NULL, km_x10 INT NOT NULL,
+				round_trip TINYINT NOT NULL DEFAULT 0, amount_cents BIGINT NOT NULL DEFAULT 0, expense_id BIGINT NULL, created_at DATETIME NOT NULL, KEY date (date)) $c",
 		);
 		foreach ( $sql as $s ) {
 			$wpdb->query( $s );
@@ -231,8 +235,43 @@ class AC_DB {
 			$y = (int) current_time( 'Y' );
 			self::insert( 'fiscal_years', array( 'start_date' => "$y-01-01", 'end_date' => "$y-12-31" ) );
 		}
+		self::migrate();
 		self::docs_dir();
 		update_option( self::opt( 'schema' ), self::SCHEMA_VERSION, false );
+	}
+
+	private static function has_column( string $table, string $col ): bool {
+		global $wpdb;
+		return (bool) $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM `' . self::t( $table ) . '` LIKE %s', $col ) );
+	}
+
+	/** Mises à jour du schéma des installations existantes (sans perte de données). */
+	public static function migrate(): void {
+		global $wpdb;
+		$adds = array(
+			array( 'documents', 'bank_transaction_id', 'BIGINT NULL' ),
+			array( 'supplier_rules', 'vat_rate', 'VARCHAR(10) NULL' ),
+			array( 'supplier_rules', 'auto', 'TINYINT NOT NULL DEFAULT 0' ),
+		);
+		foreach ( $adds as list( $t, $col, $def ) ) {
+			if ( ! self::has_column( $t, $col ) ) {
+				$wpdb->query( 'ALTER TABLE `' . self::t( $t ) . "` ADD COLUMN `$col` $def" );
+			}
+		}
+		foreach ( AC_Rules::categories() as $cat ) {
+			if ( ! self::q1( 'SELECT id FROM {categories} WHERE code=?', array( $cat['code'] ) ) ) {
+				self::insert( 'categories', array( 'code' => $cat['code'], 'name' => $cat['name'], 'account' => $cat['account'], 'vat_recovery' => $cat['vat_recovery'],
+					'deductible' => $cat['deductible'], 'rule' => $cat['rule'], 'is_asset' => $cat['is_asset'] ?? 0, 'help' => $cat['help'] ?? null ) );
+			}
+		}
+		// Justificatifs Qonto déjà téléchargés : rattachés à leur opération bancaire.
+		foreach ( self::q( "SELECT id, external_id FROM {documents} WHERE external_id LIKE 'qonto-att:%' AND bank_transaction_id IS NULL" ) as $d ) {
+			$att = substr( $d['external_id'], 10 );
+			$tx  = self::q1( 'SELECT id FROM {bank_transactions} WHERE attachment_ids LIKE ?', array( '%"' . $att . '"%' ) );
+			if ( $tx ) {
+				self::exec( 'UPDATE {documents} SET bank_transaction_id=? WHERE id=?', array( $tx['id'], $d['id'] ) );
+			}
+		}
 	}
 
 	/** Suppression complète (utilisée par les tests uniquement). */
@@ -258,6 +297,7 @@ class AC_DB {
 			'invoicing' => array( 'prefix' => 'F', 'credit_prefix' => 'AV', 'pattern' => '{prefix}{year}-{seq}', 'payment_terms_days' => 30, 'legal_mentions' => '' ),
 			'qonto'     => array( 'enabled' => false, 'environment' => 'production', 'auto_sync_minutes' => 60, 'bank_account_id' => '', 'last_sync' => null ),
 			'ai'        => array( 'enabled' => false, 'model' => 'claude-opus-5-5', 'auto_link_threshold' => 0.9 ),
+			'vehicle'   => array( 'name' => 'Honda Forza 350', 'type' => 'moto', 'cv' => '3-5', 'confirmed' => false ),
 			'bank_statement' => array(),
 			'confirmed' => array( 'company' => false, 'tax' => false ),
 		);

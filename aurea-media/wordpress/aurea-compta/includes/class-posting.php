@@ -187,7 +187,8 @@ class AC_Posting {
 			if ( $is_asset ) {
 				$vat_acc = AC_Rules::VAT_DEDUCTIBLE_ASSETS;
 				$code    = self::vat_code( 'I', $rate );
-			} elseif ( 'biens' === $exp['nature'] || 'perso' === $exp['payment_method'] ) {
+			} elseif ( 'biens' === $exp['nature'] || 'perso' === $exp['payment_method'] || $exp['ttc_cents'] < 0 ) {
+				// biens, note de frais déjà payée, ou remboursement fournisseur (avoir encaissé) : TVA régularisée immédiatement
 				$vat_acc = AC_Rules::VAT_DEDUCTIBLE;
 				$code    = self::vat_code( 'D', $rate );
 			} else {

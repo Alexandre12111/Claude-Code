@@ -28,6 +28,29 @@ class AC_Rules {
 
 	public static function rules() {
 		return array(
+			// Barème kilométrique (deux roues motorisés et voitures), revenus 2024, reconduit en 2025.
+			// Tranches : [plafond km, coefficient, fixe en centimes] ; à vérifier chaque année (BOI-BAREME-000001).
+			'bareme_ik' => array(
+				array(
+					'valid_from' => '2024-01-01',
+					'valid_to' => null,
+					'value' => array(
+						'cyclo' => array( 'all' => array( array( 3000, '0.315', 0 ), array( 6000, '0.079', 71100 ), array( null, '0.198', 0 ) ) ),
+						'moto' => array(
+							'1-2' => array( array( 3000, '0.395', 0 ), array( 6000, '0.099', 89100 ), array( null, '0.248', 0 ) ),
+							'3-5' => array( array( 3000, '0.468', 0 ), array( 6000, '0.082', 115800 ), array( null, '0.275', 0 ) ),
+							'6+' => array( array( 3000, '0.606', 0 ), array( 6000, '0.079', 158300 ), array( null, '0.343', 0 ) ),
+						),
+						'voiture' => array(
+							'3' => array( array( 5000, '0.529', 0 ), array( 20000, '0.316', 106500 ), array( null, '0.370', 0 ) ),
+							'4' => array( array( 5000, '0.606', 0 ), array( 20000, '0.340', 133000 ), array( null, '0.407', 0 ) ),
+							'5' => array( array( 5000, '0.636', 0 ), array( 20000, '0.357', 139500 ), array( null, '0.427', 0 ) ),
+							'6' => array( array( 5000, '0.665', 0 ), array( 20000, '0.374', 145700 ), array( null, '0.447', 0 ) ),
+							'7+' => array( array( 5000, '0.697', 0 ), array( 20000, '0.394', 151500 ), array( null, '0.470', 0 ) ),
+						),
+					),
+				),
+			),
 		'is_taux_normal' => array(
 			array(
 				'valid_from' => '2022-01-01',
@@ -532,6 +555,15 @@ class AC_Rules {
 
 	public static function categories() {
 		return array(
+			array(
+				'code' => 'ik',
+				'name' => 'Indemnités kilométriques (véhicule personnel)',
+				'account' => '625100',
+				'vat_recovery' => 0,
+				'deductible' => 100,
+				'rule' => 'ik',
+				'help' => 'Trajets professionnels avec votre véhicule personnel, remboursés selon le barème fiscal. Sans TVA. Incompatible avec la prise en charge par la société du carburant ou de l\'assurance du même véhicule.',
+			),
 		array(
 			'code' => 'repas',
 			'name' => 'Restaurants et repas professionnels',
@@ -693,6 +725,7 @@ class AC_Rules {
 
 	public static function explanations() {
 		return array(
+			'ik' => 'Indemnités kilométriques : barème fiscal, sans TVA, inscrites au crédit de votre compte courant (la société vous les doit).',
 		'repas' => 'Repas professionnel : charge déductible si intérêt de l\'entreprise justifié ; TVA récupérable sur facture au nom de la société.',
 		'invitation' => 'Invitation clients : déductible et TVA récupérable si justifiée (nom des invités, objet).',
 		'cadeau' => 'Cadeau client : TVA récupérable uniquement si valeur TTC par bénéficiaire et par an ≤ 73 €.',

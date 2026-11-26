@@ -13,7 +13,7 @@ const thisMonth = () => new Date().toISOString().slice(0, 7);
 const toCents = (v) => { if (v === "" || v === null || v === undefined) return null; const n = String(v).replace(/\s/g, "").replace(",", "."); if (isNaN(Number(n))) throw new Error("Montant invalide : " + v); return Math.round(Number(n) * 100); };
 const centsToInput = (c) => (c === null || c === undefined) ? "" : (c / 100).toFixed(2).replace(".", ",");
 
-const ICONS = {"home": "<path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V21h14V9.5\"/><path d=\"M10 21v-6h4v6\"/>", "bank": "<path d=\"M3 21h18\"/><path d=\"M5 21v-9M9.5 21v-9M14.5 21v-9M19 21v-9\"/><path d=\"M2 9.5 12 3l10 6.5z\"/>", "invoice": "<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6M8 13h8M8 17h5\"/>", "card": "<rect x=\"2.5\" y=\"5\" width=\"19\" height=\"14\" rx=\"2\"/><path d=\"M2.5 10h19M6 15h4\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21a8 8 0 0 1 16 0\"/>", "percent": "<path d=\"M19 5 5 19\"/><circle cx=\"6.5\" cy=\"6.5\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"2.5\"/>", "book": "<path d=\"M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z\"/><path d=\"M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z\"/>", "archive": "<rect x=\"2\" y=\"3\" width=\"20\" height=\"5\" rx=\"1\"/><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4\"/>", "sliders": "<path d=\"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "sparkles": "<path d=\"M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z\"/><path d=\"M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z\"/>", "moon": "<path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/>", "menu": "<path d=\"M4 6h16M4 12h16M4 18h16\"/>", "x": "<path d=\"M18 6 6 18M6 6l12 12\"/>", "external": "<path d=\"M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5\"/>", "upload": "<path d=\"M12 16V4M7 9l5-5 5 5\"/><path d=\"M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3\"/>", "download": "<path d=\"M12 4v12M7 11l5 5 5-5\"/><path d=\"M4 20h16\"/>", "sync": "<path d=\"M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8\"/><path d=\"M21 3v5h-5M3 21v-5h5\"/>", "check": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert": "<path d=\"M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z\"/><path d=\"M12 9v4M12 17h.01\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 16v-4M12 8h.01\"/>", "wallet": "<path d=\"M20 7H5a2 2 0 0 1 0-4h13v4\"/><path d=\"M3 5v14a2 2 0 0 0 2 2h15V7\"/><circle cx=\"16\" cy=\"14\" r=\"1.2\"/>", "up": "<path d=\"m3 17 6-6 4 4 8-8\"/><path d=\"M14 7h7v7\"/>", "down": "<path d=\"m3 7 6 6 4-4 8 8\"/><path d=\"M14 17h7v-7\"/>", "scale": "<path d=\"M12 3v18M7 21h10M5 7h14\"/><path d=\"M5 7 2 14a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z\"/>", "inbox": "<path d=\"M22 12h-6l-2 3h-4l-2-3H2\"/><path d=\"M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z\"/>", "more": "<circle cx=\"5\" cy=\"12\" r=\"1.2\"/><circle cx=\"12\" cy=\"12\" r=\"1.2\"/><circle cx=\"19\" cy=\"12\" r=\"1.2\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "calendar": "<rect x=\"3\" y=\"4.5\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 9.5h18M8 3v3M16 3v3\"/>", "file": "<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/>"};
+const ICONS = {"home": "<path d=\"M3 10.5 12 3l9 7.5\"/><path d=\"M5 9.5V21h14V9.5\"/><path d=\"M10 21v-6h4v6\"/>", "bank": "<path d=\"M3 21h18\"/><path d=\"M5 21v-9M9.5 21v-9M14.5 21v-9M19 21v-9\"/><path d=\"M2 9.5 12 3l10 6.5z\"/>", "invoice": "<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6M8 13h8M8 17h5\"/>", "card": "<rect x=\"2.5\" y=\"5\" width=\"19\" height=\"14\" rx=\"2\"/><path d=\"M2.5 10h19M6 15h4\"/>", "user": "<circle cx=\"12\" cy=\"8\" r=\"4\"/><path d=\"M4 21a8 8 0 0 1 16 0\"/>", "percent": "<path d=\"M19 5 5 19\"/><circle cx=\"6.5\" cy=\"6.5\" r=\"2.5\"/><circle cx=\"17.5\" cy=\"17.5\" r=\"2.5\"/>", "book": "<path d=\"M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z\"/><path d=\"M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z\"/>", "archive": "<rect x=\"2\" y=\"3\" width=\"20\" height=\"5\" rx=\"1\"/><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4\"/>", "sliders": "<path d=\"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/>", "sparkles": "<path d=\"M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z\"/><path d=\"M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z\"/>", "moon": "<path d=\"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z\"/>", "sun": "<circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4\"/>", "menu": "<path d=\"M4 6h16M4 12h16M4 18h16\"/>", "x": "<path d=\"M18 6 6 18M6 6l12 12\"/>", "external": "<path d=\"M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5\"/>", "upload": "<path d=\"M12 16V4M7 9l5-5 5 5\"/><path d=\"M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3\"/>", "download": "<path d=\"M12 4v12M7 11l5 5 5-5\"/><path d=\"M4 20h16\"/>", "sync": "<path d=\"M21 12a9 9 0 0 1-15.5 6.2L3 16M3 12a9 9 0 0 1 15.5-6.2L21 8\"/><path d=\"M21 3v5h-5M3 21v-5h5\"/>", "check": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"m8 12 3 3 5-6\"/>", "alert": "<path d=\"M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z\"/><path d=\"M12 9v4M12 17h.01\"/>", "info": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 16v-4M12 8h.01\"/>", "wallet": "<path d=\"M20 7H5a2 2 0 0 1 0-4h13v4\"/><path d=\"M3 5v14a2 2 0 0 0 2 2h15V7\"/><circle cx=\"16\" cy=\"14\" r=\"1.2\"/>", "up": "<path d=\"m3 17 6-6 4 4 8-8\"/><path d=\"M14 7h7v7\"/>", "down": "<path d=\"m3 7 6 6 4-4 8 8\"/><path d=\"M14 17h7v-7\"/>", "scale": "<path d=\"M12 3v18M7 21h10M5 7h14\"/><path d=\"M5 7 2 14a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z\"/>", "inbox": "<path d=\"M22 12h-6l-2 3h-4l-2-3H2\"/><path d=\"M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z\"/>", "more": "<circle cx=\"5\" cy=\"12\" r=\"1.2\"/><circle cx=\"12\" cy=\"12\" r=\"1.2\"/><circle cx=\"19\" cy=\"12\" r=\"1.2\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "calendar": "<rect x=\"3\" y=\"4.5\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 9.5h18M8 3v3M16 3v3\"/>", "route":"<circle cx=\"6\" cy=\"19\" r=\"3\"/><circle cx=\"18\" cy=\"5\" r=\"3\"/><path d=\"M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15\"/>", "scooter":"<circle cx=\"5.5\" cy=\"17.5\" r=\"2.5\"/><circle cx=\"18.5\" cy=\"17.5\" r=\"2.5\"/><path d=\"M8 17.5h8l2-6h-4l-2 6M15 5h2l2 6.5M3 13h6\"/>", "file": "<path d=\"M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z\"/><path d=\"M14 3v6h6\"/>"};
 // Sprite SVG unique (icônes au trait, style Lucide) : utilisé par le gabarit et par les vues.
 document.body.insertAdjacentHTML("afterbegin", `<svg width="0" height="0" style="position:absolute" aria-hidden="true">${Object.entries(ICONS).map(([k, v]) => `<symbol id="i-${k}" viewBox="0 0 24 24">${v}</symbol>`).join("")}</svg>`);
 const ic = (name, label) => `<svg class="icon" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}><use href="#i-${name}"/></svg>`;
@@ -141,17 +141,18 @@ function issuesHtml(issues, empty = "Aucun problème à corriger.") {
   if (!issues.length) return `<div class="alert ok">${empty}</div>`;
   return `<div class="panel"><ul class="issues">${issues.map((i) => `<li>${badge(i.niveau)}<span style="flex:1">${esc(i.message)}</span>${i.lien ? `<a href="${i.lien}" onclick="closeDrawer();closeModal()">Corriger</a>` : ""}</li>`).join("")}</ul></div>`;
 }
-function docLink(doc) { return doc ? `<a href="/api/documents/${doc.id}/file" target="_blank">${esc(doc.original_name || "Justificatif")}</a>` : `<span class="badge b-warn">Justificatif manquant</span>`; }
+function docLink(doc) { return doc ? `<a class="doc-link" href="/api/documents/${doc.id}/file" target="_blank">${ic("file")}${esc(doc.original_name || "Justificatif")}</a>` : `<span class="badge b-warn">Justificatif manquant</span>`; }
 
 // ------------------------------------------------------------------ routeur
 const ROUTES = {};
-const TITLES = { "": "Vue d'ensemble", banque: "Banque et transactions", recettes: "Recettes et factures clients", depenses: "Dépenses et notes de frais",
+const TITLES = { "": "Vue d'ensemble", operations: "Opérations", banque: "Opérations", recettes: "Recettes et factures clients", depenses: "Opérations",
   associe: "Apports personnels et compte courant", tva: "TVA", comptabilite: "Comptabilité et écritures", cloture: "Clôture annuelle et exports", parametres: "Paramètres" };
 function params() { const q = location.hash.split("?")[1] || ""; return Object.fromEntries(new URLSearchParams(q)); }
 async function route(keepOverlay = false) {
   if (keepOverlay !== true) { closeDrawer(); closeModal(); }
   const name = (location.hash.replace(/^#\/?/, "").split("?")[0]) || "";
-  $$("#nav a, .bottom-nav a").forEach((a) => { if (a.dataset.route === name) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
+  const navName = ["banque", "depenses"].includes(name) ? "operations" : name;
+  $$("#nav a, .bottom-nav a").forEach((a) => { if (a.dataset.route === navName) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current"); });
   $("#page-title").textContent = TITLES[name] || "";
   toggleSidebar(false);
   setActions("");
@@ -163,9 +164,8 @@ window.addEventListener("hashchange", () => route());
 async function refreshCounts() {
   try {
     const o = await api("/api/overview");
-    $("#c-banque").textContent = o.a_verifier.operations || "";
-    $("#c-depenses").textContent = (o.a_verifier.depenses + o.a_verifier.pieces_non_traitees) || "";
-    $("#b-banque").textContent = $("#c-banque").textContent; $("#b-depenses").textContent = $("#c-depenses").textContent;
+    $("#c-operations").textContent = o.a_verifier.operations || "";
+    $("#b-operations").textContent = $("#c-operations").textContent;
     const prov = o.parametres_provisoires;
     $("#banner").innerHTML = (o.mode_demo ? `<div class="alert info">Mode démonstration : données fictives séparées de votre base réelle.</div>` : "") +
       (prov.length ? `<div class="alert warn">${ic("alert")}<span>Paramètres provisoires utilisés (${prov.map((p) => p === "tax" ? "régimes fiscaux" : "société").join(", ")}). <a href="#/parametres">Les confirmer</a></span></div>` : "");
@@ -183,20 +183,20 @@ ROUTES[""] = async () => {
   const totalTodo = todo.operations + todo.depenses + todo.justificatifs_manquants + todo.pieces_non_traitees;
   $("#view").innerHTML = `
     <div class="cards">
-      ${kpi("#/banque", "wallet", "Solde bancaire", eur(o.solde_bancaire_cents), esc(o.solde_source), "hero")}
+      ${kpi("#/operations?tab=toutes", "wallet", "Solde bancaire", eur(o.solde_bancaire_cents), esc(o.solde_source), "hero")}
       ${kpi("#/recettes", "up", "Recettes de l'exercice (HT)", eur(o.recettes_cents), `Facturé du ${d(o.exercice.start_date)} au ${d(o.exercice.end_date)}`)}
-      ${kpi("#/depenses", "down", "Dépenses de l'exercice (HT)", eur(o.depenses_cents), "Charges comptables, amortissements compris")}
+      ${kpi("#/operations?tab=depenses", "down", "Dépenses de l'exercice (HT)", eur(o.depenses_cents), "Charges comptables, amortissements compris")}
       ${kpi("#/cloture", "scale", "Résultat provisoire", `<span class="${o.resultat_cents < 0 ? "neg" : ""}">${eur(o.resultat_cents)}</span>`, (o.resultat_cents >= 0 ? "Bénéficiaire" : "Déficitaire") + " avant impôt")}
       ${kpi("#/tva", "percent", tva.credit_cents ? "Crédit de TVA estimé" : "TVA estimée à payer", tvaVal, "Période " + esc(tva.periode || ""))}
       ${kpi("#/associe", "user", "Apports non remboursés", eur(o.apports_non_rembourses_cents), "Somme due par la société")}
-      ${kpi("#/banque?status=a_verifier", "inbox", "Opérations à vérifier", String(totalTodo), `${todo.operations} opération(s), ${todo.depenses} dépense(s), ${todo.justificatifs_manquants} justificatif(s) manquant(s)`)}
+      ${kpi("#/operations", "inbox", "Opérations à vérifier", String(totalTodo), `${todo.operations} opération(s), ${todo.depenses} dépense(s), ${todo.justificatifs_manquants} justificatif(s) manquant(s)`)}
     </div>
     <h2>À faire</h2>
     <div class="panel"><ul class="issues">
-      ${todo.operations ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.operations} opération(s) bancaire(s) à catégoriser</span><a href="#/banque?status=a_verifier">Ouvrir</a></li>` : ""}
-      ${todo.pieces_non_traitees ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.pieces_non_traitees} justificatif(s) déposé(s) non rattaché(s)</span><a href="#/depenses?tab=pieces">Ouvrir</a></li>` : ""}
-      ${todo.depenses ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.depenses} dépense(s) à valider</span><a href="#/depenses?status=a_valider">Ouvrir</a></li>` : ""}
-      ${todo.justificatifs_manquants ? `<li>${badge("info")}<span style="flex:1">${todo.justificatifs_manquants} dépense(s) sans justificatif</span><a href="#/depenses">Ouvrir</a></li>` : ""}
+      ${todo.operations ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.operations} opération(s) bancaire(s) à catégoriser</span><a href="#/operations">Ouvrir</a></li>` : ""}
+      ${todo.pieces_non_traitees ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.pieces_non_traitees} justificatif(s) déposé(s) non rattaché(s)</span><a href="#/operations?tab=pieces">Ouvrir</a></li>` : ""}
+      ${todo.depenses ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.depenses} dépense(s) à valider</span><a href="#/operations?tab=depenses&status=a_valider">Ouvrir</a></li>` : ""}
+      ${todo.justificatifs_manquants ? `<li>${badge("info")}<span style="flex:1">${todo.justificatifs_manquants} dépense(s) sans justificatif</span><a href="#/operations?tab=depenses">Ouvrir</a></li>` : ""}
       ${!totalTodo ? `<li>${badge("valide")}<span>Tout est à jour.</span></li>` : ""}
     </ul></div>
     <p class="muted small" style="margin-top:18px">${o.sync.enabled ? `Synchronisation Qonto automatique active. Dernière synchronisation : ${o.sync.last_sync ? new Date(o.sync.last_sync).toLocaleString("fr-FR") : "jamais"}.` : "Synchronisation Qonto non configurée : <a href='#/parametres?tab=qonto'>configurer</a> ou importer un CSV dans Banque."}
@@ -207,39 +207,200 @@ async function syncQonto(full = false) {
   toast("Synchronisation en cours…");
   const r = await run(() => post("/api/qonto/sync" + (full ? "?full=true" : "")));
   toast(`${r.imported} nouvelle(s) opération(s), ${r.duplicates} déjà connue(s), ${r.attachments} justificatif(s).`);
+  if (r.attachments_remaining) { toast(`Récupération de ${r.attachments_remaining} justificatif(s) Qonto…`); await fetchQontoDocs(); return; }
   route();
 }
 
 // ------------------------------------------------------------------ banque
-ROUTES.banque = async (p) => {
+// ------------------------------------------------------------------ opérations (banque, dépenses, justificatifs, frais kilométriques)
+// Champ de fichier en français, au style de l'application (remplace le bouton natif « Choose File »).
+const fileField = (name, label = "Ajouter un justificatif", accept = ".pdf,image/*") => `<label class="file-field">
+  <input type="file" name="${name}" accept="${accept}" class="sr-only" onchange="this.closest('.file-field').classList.toggle('has-file', !!this.files[0]); this.closest('.file-field').querySelector('.file-name').textContent = this.files[0] ? this.files[0].name : 'PDF, JPG ou PNG'">
+  ${ic("upload")}<span class="file-btn">${label}</span><span class="file-name">PDF, JPG ou PNG</span></label>`;
+// Bouton qui ajoute directement un justificatif à une opération ou une dépense.
+const attachButton = (kind, id, small = false) => `<label class="attach-btn ${small ? "sm" : ""}" onclick="event.stopPropagation()" title="Ajouter le justificatif">
+  <input type="file" accept=".pdf,image/*" class="sr-only" onchange="attachFile('${kind}', ${id}, this)">${ic("upload")}<span>${small ? "Ajouter" : "Ajouter le justificatif"}</span></label>`;
+async function attachFile(kind, id, input) {
+  if (!input.files[0]) return;
+  const fd = new FormData(); fd.append("file", input.files[0]);
+  await run(() => api(`/api/${kind === "tx" ? "transactions" : "expenses"}/${id}/document`, { method: "POST", body: fd }), "Justificatif ajouté");
+  if ($("#drawer").classList.contains("open")) { kind === "tx" ? openTx(id) : openExpense(id); }
+  refreshView();
+}
+const docCell = (t) => t.document_id
+  ? `<a class="doc-ok" href="/api/documents/${t.document_id}/file" target="_blank" onclick="event.stopPropagation()" title="Voir le justificatif">${ic("file")}<span class="sr-only">Justificatif</span></a>`
+  : (t.attachment_count ? `<span class="badge b-info" title="Justificatif présent dans Qonto, en cours de récupération">Qonto</span>` : (t.needs_document ? attachButton("tx", t.id, true) : ""));
+
+const OPS_TABS = { a_traiter: "À traiter", toutes: "Toutes les opérations", depenses: "Dépenses et notes de frais", pieces: "Justificatifs déposés", km: "Frais kilométriques" };
+ROUTES.operations = async (p) => {
+  const tab = p.tab || "a_traiter";
   setActions(`<button class="primary" onclick="syncQonto()">${ic("sync")}Synchroniser Qonto</button>
-    <button onclick="$('#csv-input').click()">${ic("upload")}Importer un CSV</button><input type="file" id="csv-input" accept=".csv" hidden onchange="importCsv(this)">
-    <button onclick="manualTx()">Saisir une opération</button>`);
-  const status = p.status || "";
-  const month = p.month || "";
-  const rows = await api(`/api/transactions?status=${status}&month=${month}&q=${encodeURIComponent(p.q || "")}`);
-  const proposals = rows.filter((r) => r.status === "propose" && r.suggestion && r.suggestion.confidence >= 0.9).length;
-  $("#view").innerHTML = `
-    <div class="toolbar">
-      <div class="tabs" style="margin:0;border:0">
-        <button class="${status === "a_verifier" ? "active" : ""}" onclick="location.hash='#/banque?status=a_verifier'">À vérifier</button>
-        <button class="${!status ? "active" : ""}" onclick="location.hash='#/banque'">Toutes</button>
-        <button class="${status === "rapproche" ? "active" : ""}" onclick="location.hash='#/banque?status=rapproche'">Rapprochées</button>
-      </div>
-      <span class="spacer"></span>
-      <input type="month" value="${esc(month)}" style="width:auto" onchange="location.hash='#/banque?status=${status}&month='+this.value">
-      <input placeholder="Rechercher libellé ou montant" style="width:220px" value="${esc(p.q || "")}" onkeydown="if(event.key==='Enter')location.hash='#/banque?status=${status}&q='+encodeURIComponent(this.value)">
-      ${proposals ? `<button class="accent" onclick="acceptAll()">Accepter ${proposals} proposition(s) sûre(s)</button>` : ""}
-    </div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>Date</th><th>Tiers</th><th>Libellé</th><th class="right">Montant</th><th>Statut</th><th>Affectation</th></tr></thead>
-      <tbody>${rows.map((t) => `<tr class="click" tabindex="0" onclick="openTx(${t.id})">
-        <td>${d(t.date)}</td><td>${esc(t.counterparty || "")}</td><td class="muted">${esc(t.label || "")}${t.note ? `<div class="small">${esc(t.note)}</div>` : ""}</td>
-        <td>${eurSigned(t.amount_cents)}</td><td>${badge(t.status)}</td>
-        <td class="small">${t.allocations.length ? t.allocations.map((a) => esc(allocLabel(a))).join(", ") : (t.suggestion ? `<span class="muted">${esc(t.suggestion.explanation)}</span>` : "")}</td></tr>`).join("")}</tbody>
-    </table>${rows.length ? "" : emptyState("Aucune opération. Synchronisez Qonto ou importez un relevé CSV.", "bank")}</div>`;
+    <button onclick="$('#up').click()">${ic("upload")}Déposer des justificatifs</button><input type="file" id="up" multiple accept=".pdf,image/*" hidden onchange="uploadDocs(this.files)">
+    <button onclick="addMenu()">${ic("plus")}Ajouter</button>`);
+  const counts = await api("/api/overview").catch(() => null);
+  const n = counts ? counts.a_verifier : {};
+  const badgeN = (k) => { const v = { a_traiter: n.operations, depenses: n.depenses, pieces: n.pieces_non_traitees }[k]; return v ? ` <span class="count">${v}</span>` : ""; };
+  $("#view").innerHTML = `<div class="tabs" role="tablist">${Object.entries(OPS_TABS).map(([k, l]) => `<button role="tab" aria-selected="${k === tab}" class="${k === tab ? "active" : ""}" onclick="location.hash='#/operations?tab=${k}'">${l}${badgeN(k)}</button>`).join("")}</div><div id="tab"></div>`;
+  if (tab === "a_traiter" || tab === "toutes") await renderTransactions(p, tab);
+  else if (tab === "depenses") await renderExpenses(p);
+  else if (tab === "pieces") await renderPieces();
+  else if (tab === "km") await renderMileage(p);
   if (p.tx) openTx(Number(p.tx));
+  if (p.id) openExpense(Number(p.id));
 };
+// Anciennes adresses (liens des contrôles) : redirigées vers la rubrique unique.
+ROUTES.banque = (p) => ROUTES.operations({ ...p, tab: p.status === "a_verifier" ? "a_traiter" : (p.tx ? "toutes" : (p.tab || "toutes")) });
+ROUTES.depenses = (p) => ROUTES.operations({ ...p, tab: p.tab || "depenses" });
+
+function addMenu() {
+  openModal(`<h2 style="margin-top:0">Ajouter</h2><div class="choice-list">
+    <button onclick="closeModal();expenseForm()">${ic("card")}<span><b>Dépense ou facture fournisseur</b><small>Facture à payer, achat payé par la société</small></span></button>
+    <button onclick="closeModal();expenseForm(null,'perso')">${ic("user")}<span><b>Note de frais payée personnellement</b><small>La société vous la doit (compte courant)</small></span></button>
+    <button onclick="closeModal();location.hash='#/operations?tab=km'">${ic("route")}<span><b>Trajet professionnel</b><small>Frais kilométriques au barème</small></span></button>
+    <button onclick="closeModal();$('#csv-input').click()">${ic("upload")}<span><b>Importer un relevé CSV</b><small>Export Qonto, en secours de la synchronisation</small></span></button>
+    <button onclick="closeModal();manualTx()">${ic("bank")}<span><b>Saisir une opération bancaire</b><small>Seulement si elle n'est pas dans Qonto</small></span></button>
+    <button onclick="closeModal();fetchQontoDocs()">${ic("download")}<span><b>Récupérer les justificatifs Qonto</b><small>Télécharge les pièces jointes déposées dans Qonto</small></span></button>
+  </div><input type="file" id="csv-input" accept=".csv" hidden onchange="importCsv(this)">`);
+}
+async function fetchQontoDocs() {
+  let total = 0;
+  for (let i = 0; i < 40; i++) {
+    const r = await run(() => post("/api/qonto/attachments"));
+    total += r.fetched;
+    toast(`${total} justificatif(s) récupéré(s)${r.remaining ? `, encore ${r.remaining}…` : "."}`);
+    if (!r.remaining || !r.fetched) break;
+  }
+  refreshView();
+}
+
+let SELECTED = new Set();
+async function renderTransactions(p, tab) {
+  const month = p.month || "";
+  const status = tab === "a_traiter" ? "a_verifier" : (p.status || "");
+  const [rows, groups] = await Promise.all([api(`/api/transactions?status=${status}&month=${month}&q=${encodeURIComponent(p.q || "")}`), tab === "a_traiter" ? api("/api/transactions/groups") : []]);
+  SELECTED = new Set();
+  const proposals = rows.filter((r) => r.status === "propose" && r.suggestion && r.suggestion.confidence >= 0.9).length;
+  const sel = tab === "a_traiter";
+  $("#tab").innerHTML = `
+    ${groups.length ? `<h2 style="margin-top:4px">Opérations récurrentes</h2><p class="muted small" style="margin-top:-6px">Catégorisez en un clic tous les prélèvements d'un même fournisseur (abonnements, hébergement…). La règle s'appliquera aussi aux prochains.</p>
+      <div class="group-grid">${groups.slice(0, 8).map((g, i) => `<div class="group-card"><div><b>${esc(g.name)}</b><div class="small muted">${g.count} opération(s) · ${eurSigned(g.total_cents)}</div></div>
+        <button class="sm ${i === 0 ? "primary" : ""}" onclick='bulkForm(${JSON.stringify(g.ids)}, ${JSON.stringify(g.name).replace(/'/g, "&#39;")}, true, ${g.debit})'>Tout catégoriser</button></div>`).join("")}</div>` : ""}
+    <div class="toolbar" style="margin-top:${groups.length ? 22 : 0}px">
+      ${tab === "toutes" ? `<select style="width:auto" onchange="location.hash='#/operations?tab=toutes&status='+this.value"><option value="">Tous statuts</option><option value="rapproche" ${p.status === "rapproche" ? "selected" : ""}>Rapprochées</option><option value="a_traiter" ${p.status === "a_traiter" ? "selected" : ""}>À catégoriser</option></select>` : ""}
+      <input type="month" value="${esc(month)}" style="width:auto" aria-label="Mois" onchange="location.hash='#/operations?tab=${tab}&month='+this.value">
+      <input placeholder="Rechercher un libellé ou un montant" style="width:240px" value="${esc(p.q || "")}" aria-label="Rechercher" onkeydown="if(event.key==='Enter')location.hash='#/operations?tab=${tab}&q='+encodeURIComponent(this.value)">
+      <span class="spacer"></span>
+      ${proposals ? `<button class="accent" onclick="acceptAll()">${ic("check")}Accepter ${proposals} proposition(s) sûre(s)</button>` : ""}
+    </div>
+    <div class="bulk-bar" id="bulk-bar" hidden><span id="bulk-n"></span><span class="spacer"></span><button class="sm" onclick="SELECTED.clear();$$('.row-check').forEach(c=>c.checked=false);updateBulk()">Annuler</button><button class="sm primary" onclick="bulkForm([...SELECTED], null, false, null)">Catégoriser la sélection</button></div>
+    <div class="table-wrap"><table>
+      <thead><tr>${sel ? `<th style="width:36px"><input type="checkbox" aria-label="Tout sélectionner" onchange="$$('.row-check').forEach(c=>{c.checked=this.checked; c.checked?SELECTED.add(+c.value):SELECTED.delete(+c.value)});updateBulk()"></th>` : ""}<th>Date</th><th>Tiers</th><th>Libellé</th><th class="right">Montant</th><th>Pièce</th><th>${sel ? "Proposition" : "Affectation"}</th></tr></thead>
+      <tbody>${rows.map((t) => `<tr class="click" tabindex="0" onclick="openTx(${t.id})">
+        ${sel ? `<td onclick="event.stopPropagation()"><input type="checkbox" class="row-check" value="${t.id}" aria-label="Sélectionner" onchange="this.checked?SELECTED.add(${t.id}):SELECTED.delete(${t.id});updateBulk()"></td>` : ""}
+        <td>${d(t.date)}</td><td>${esc(t.counterparty || "")}</td><td class="muted">${esc(t.label || "")}${t.note ? `<div class="small">${esc(t.note)}</div>` : ""}</td>
+        <td>${eurSigned(t.amount_cents)}</td><td>${docCell(t)}</td>
+        <td class="small">${t.allocations.length ? t.allocations.map((a) => esc(a.category || allocLabel(a))).join(", ") + " " + badge(t.status)
+          : (t.suggestion ? `<span class="muted">${esc(t.suggestion.explanation)}</span>` : badge(t.status))}</td></tr>`).join("")}</tbody>
+    </table>${rows.length ? "" : emptyState(tab === "a_traiter" ? "Tout est catégorisé." : "Aucune opération. Synchronisez Qonto ou importez un relevé CSV.", tab === "a_traiter" ? "check" : "bank")}</div>`;
+}
+function updateBulk() {
+  const b = $("#bulk-bar"); if (!b) return;
+  b.hidden = SELECTED.size === 0; $("#bulk-n").textContent = `${SELECTED.size} opération(s) sélectionnée(s)`;
+}
+async function bulkForm(ids, name, fromGroup, debit) {
+  const cats = await categories();
+  const rule = fromGroup ? null : null;
+  openModal(`<h2 style="margin-top:0">Catégoriser ${ids.length} opération(s)${name ? ` · ${esc(name)}` : ""}</h2>
+    <form id="bulkf">
+      <div class="field"><label>Catégorie</label><select name="category_id">${cats.filter((c) => c.active && !c.is_asset && c.rule !== "ik").map((c) => `<option value="${c.id}" ${/heberg/.test(c.code) && /ionos|o2switch|ovh|hostinger/i.test(name || "") ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
+      <div class="grid3"><div class="field"><label>TVA</label><select name="vat_regime">${Object.entries(REGIMES).map(([k, l]) => `<option value="${k}">${l}</option>`).join("")}</select></div>
+        <div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option>${r}</option>`).join("")}</select></div>
+        <div class="field"><label>Nature</label><select name="nature"><option value="services">Services</option><option value="biens">Biens</option></select></div></div>
+      <label class="check"><input type="checkbox" name="validate" checked> Valider directement ces dépenses</label>
+      ${name ? `<label class="check"><input type="checkbox" name="remember" checked> Appliquer automatiquement aux prochaines opérations de ${esc(name)}</label>` : ""}
+      ${debit === false ? `<p class="hint">Ces opérations sont des crédits : elles seront enregistrées comme remboursements du fournisseur (avoirs).</p>` : ""}
+      <p class="hint">La TVA est recalculée à partir du taux choisi sur le montant de chaque prélèvement. Les justificatifs déjà présents dans Qonto sont rattachés automatiquement.</p>
+      <div class="toolbar" style="margin-top:12px"><button class="primary" type="submit">${ic("check")}Catégoriser ${ids.length} opération(s)</button><button type="button" class="ghost" onclick="closeModal()">Annuler</button></div>
+    </form>`);
+  $("#bulkf").onsubmit = async (e) => {
+    e.preventDefault(); const f = formData(e.target);
+    const r = await run(() => post("/api/transactions/bulk", { ids, remember: !!f.remember, payload: { type: "depense_nouvelle", category_id: Number(f.category_id), vat_regime: f.vat_regime, vat_rate: f.vat_rate, nature: f.nature, validate: !!f.validate } }));
+    toast(`${r.done} opération(s) catégorisée(s).`);
+    r.errors.forEach((m) => toast(m, true));
+    closeModal(); refreshView();
+  };
+}
+
+async function renderExpenses(p) {
+  const month = p.month || "";
+  const rows = await api(`/api/expenses?month=${month}&status=${p.status || ""}&payment=${p.payment || ""}`);
+  const total = rows.filter((r) => r.rule !== "personnel").reduce((a, r) => ({ ht: a.ht + r.ht_cents, ttc: a.ttc + r.ttc_cents }), { ht: 0, ttc: 0 });
+  $("#tab").innerHTML = `
+    <div class="toolbar">
+      <select style="width:auto" aria-label="Paiement" onchange="location.hash='#/operations?tab=depenses&month=${month}&payment='+this.value"><option value="">Tous les paiements</option>${Object.entries(PAYMENT).map(([k, l]) => `<option value="${k}" ${p.payment === k ? "selected" : ""}>${l}</option>`).join("")}</select>
+      <select style="width:auto" aria-label="Statut" onchange="location.hash='#/operations?tab=depenses&month=${month}&status='+this.value"><option value="">Tous statuts</option>${["a_valider", "propose_ia", "valide"].map((s) => `<option value="${s}" ${p.status === s ? "selected" : ""}>${STATUS[s][0]}</option>`).join("")}</select>
+      <input type="month" style="width:auto" aria-label="Mois" value="${esc(month)}" onchange="location.hash='#/operations?tab=depenses&month='+this.value">
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Date</th><th>Fournisseur</th><th>Libellé</th><th>Catégorie</th><th class="right">HT</th><th class="right">TVA</th><th class="right">TTC</th><th>Paiement</th><th>Pièce</th><th>Statut</th></tr></thead>
+    <tbody>${rows.map((x) => `<tr class="click" tabindex="0" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}${x.ttc_cents < 0 ? ` <span class="badge b-info">Remboursement</span>` : ""}</td><td>${esc(x.category || "–")}</td>
+      <td class="num">${eur(x.ht_cents)}</td><td class="num">${eur(x.vat_cents)}${x.vat_recovery < 100 && x.vat_cents ? ` <span class="badge plain" title="TVA non récupérable">NR</span>` : ""}</td><td class="num">${eur(x.ttc_cents)}</td>
+      <td class="small">${PAYMENT[x.payment_method]}</td><td>${x.document_id ? `<a class="doc-ok" href="/api/documents/${x.document_id}/file" target="_blank" onclick="event.stopPropagation()" title="Voir le justificatif">${ic("file")}</a>` : (["personnel", "ik"].includes(x.rule) ? "" : attachButton("exp", x.id, true))}</td><td>${badge(x.status)}</td></tr>`).join("")}</tbody>
+    <tfoot><tr><td colspan="4">Total (hors dépenses personnelles)</td><td class="num">${eur(total.ht)}</td><td></td><td class="num">${eur(total.ttc)}</td><td colspan="3"></td></tr></tfoot></table>
+    ${rows.length ? "" : emptyState("Aucune dépense sur cette période.", "card")}</div>`;
+}
+
+async function renderMileage(p) {
+  const year = Number(p.year || new Date().getFullYear());
+  const m = await api(`/api/mileage?year=${year}`);
+  const v = m.vehicle;
+  const kmf = (x10) => (x10 / 10).toLocaleString("fr-FR", { maximumFractionDigits: 1 });
+  $("#tab").innerHTML = `
+    <div class="cards">
+      <div class="card hero"><div class="label">${ic("route")}Distance ${year}</div><div class="value">${kmf(m.km_x10)} km</div><div class="sub">${m.trips.length} trajet(s)</div></div>
+      <div class="card"><div class="label">${ic("wallet")}Indemnités ${year}</div><div class="value">${eur(m.amount_cents)}</div><div class="sub">Dues par la société (compte courant)</div></div>
+      <div class="card"><div class="label">${ic("scooter")}Véhicule</div><div class="value" style="font-size:18px">${esc(v.name)}</div><div class="sub">${esc(m.types[v.type] || "")} · ${esc((m.cv_options[v.type] || {})[v.cv] || "")} <a href="#" onclick="vehicleForm();return false">Modifier</a></div></div>
+    </div>
+    ${v.confirmed ? "" : `<div class="alert warn">${ic("alert")}<span>Vérifiez la puissance fiscale sur la carte grise (case P.6) de votre ${esc(v.name)} : elle détermine le barème. <a href="#" onclick="vehicleForm();return false">Confirmer le véhicule</a></span></div>`}
+    <h2>Nouveau trajet professionnel</h2>
+    <form id="kmf" class="panel panel-pad"><datalist id="places">${m.places.map((x) => `<option value="${esc(x)}">`).join("")}</datalist>
+      <div class="grid4"><div class="field"><label>Date</label><input type="date" name="date" value="${today()}" required></div>
+        <div class="field"><label>Départ</label><input name="from_place" list="places" placeholder="Meudon" required></div>
+        <div class="field"><label>Arrivée</label><input name="to_place" list="places" placeholder="Client, ville" required></div>
+        <div class="field"><label>Distance (km)</label><input name="km" inputmode="decimal" placeholder="12,5" required></div></div>
+      <div class="grid2"><div class="field"><label>Motif professionnel</label><input name="purpose" placeholder="Rendez vous client Cabinet Durand" required></div>
+        <div class="field" style="display:flex;align-items:flex-end"><label class="check"><input type="checkbox" name="round_trip" checked> Aller et retour (distance doublée)</label></div></div>
+      <button class="primary" type="submit">${ic("plus")}Ajouter le trajet</button>
+    </form>
+    <div class="toolbar" style="margin-top:22px"><h2 style="margin:0">Trajets ${year}</h2><span class="spacer"></span>
+      <select style="width:auto" aria-label="Année" onchange="location.hash='#/operations?tab=km&year='+this.value">${[year - 1, year, year + 1].map((y) => `<option ${y === year ? "selected" : ""}>${y}</option>`).join("")}</select>
+      <a class="btn" href="/api/mileage/pdf?year=${year}" target="_blank">${ic("download")}État annuel (PDF)</a></div>
+    <div class="table-wrap"><table><thead><tr><th>Date</th><th>Trajet</th><th>Motif</th><th class="right">Km</th><th class="right">Indemnité</th><th></th></tr></thead>
+      <tbody>${m.trips.map((t) => `<tr><td>${d(t.date)}</td><td>${esc(t.from_place)} ${t.round_trip ? "⇄" : "→"} ${esc(t.to_place)}</td><td class="muted">${esc(t.purpose)}</td>
+        <td class="num">${kmf(t.km_x10 * (t.round_trip ? 2 : 1))}</td><td class="num">${eur(t.amount_cents)}</td>
+        <td class="right"><button class="ghost icon sm" aria-label="Supprimer le trajet" onclick="delTrip(${t.id})">${ic("x")}</button></td></tr>`).join("")}</tbody>
+      <tfoot><tr><td colspan="3">Total</td><td class="num">${kmf(m.km_x10)}</td><td class="num">${eur(m.amount_cents)}</td><td></td></tr></tfoot></table>
+      ${m.trips.length ? "" : emptyState("Aucun trajet enregistré cette année.", "route")}</div>
+    <div class="panel panel-pad" style="margin-top:16px"><h3 style="margin-top:0">Règles</h3><ul class="small muted" style="margin:0;padding-left:18px">${m.rules.map((r) => `<li>${esc(r)}</li>`).join("")}</ul></div>`;
+  $("#kmf").onsubmit = async (e) => {
+    e.preventDefault(); const f = formData(e.target);
+    const r = await run(() => post("/api/mileage", f));
+    toast(`Trajet enregistré : ${eur(r.amount_cents)}.`); refreshView();
+  };
+}
+async function delTrip(id) { if (!confirm("Supprimer ce trajet ?")) return; await run(() => del(`/api/mileage/${id}`), "Trajet supprimé"); refreshView(); }
+async function vehicleForm() {
+  const m = await api("/api/mileage"); const v = m.vehicle;
+  openModal(`<h2 style="margin-top:0">Véhicule personnel</h2><form id="vf">
+    <div class="field"><label>Nom</label><input name="name" value="${esc(v.name)}"></div>
+    <div class="grid2"><div class="field"><label>Type</label><select name="type" id="vtype">${Object.entries(m.types).map(([k, l]) => `<option value="${k}" ${v.type === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label>Puissance fiscale (carte grise, case P.6)</label><select name="cv" id="vcv"></select></div></div>
+    <p class="hint">Honda Forza 350 : scooter de plus de 50 cm³, catégorie « moto ». Indiquez la puissance inscrite sur votre carte grise.</p>
+    <button class="primary">Enregistrer</button></form>`);
+  const fill = () => { const t = $("#vtype").value; $("#vcv").innerHTML = Object.entries(m.cv_options[t]).map(([k, l]) => `<option value="${k}" ${v.cv === k ? "selected" : ""}>${l}</option>`).join(""); };
+  $("#vtype").onchange = fill; fill();
+  $("#vf").onsubmit = async (e) => { e.preventDefault(); await run(() => put("/api/settings/vehicle", { ...formData(e.target), confirmed: true }), "Véhicule enregistré"); closeModal(); refreshView(); };
+}
+
 const ALLOC = { vente: "Règlement client", depense: "Dépense", associe: "Compte courant associé", capital: "Capital", tva: "TVA", is: "Impôt sur les sociétés", virement_interne: "Virement interne", compte: "Compte" };
 const allocLabel = (a) => (ALLOC[a.target_type] || a.target_type) + (a.account && a.target_type === "compte" ? " " + a.account : "");
 async function importCsv(input) {
@@ -272,7 +433,7 @@ async function openTx(id) {
     <dl class="kv" style="margin-top:14px"><dt>Libellé</dt><dd>${esc(t.label || "")}</dd><dt>Type d'opération</dt><dd>${esc(t.operation_type || "")}</dd>
       <dt>Référence</dt><dd>${esc(t.reference || "")}</dd><dt>Source</dt><dd>${esc(t.source)} · <span class="mono small">${esc(t.external_id)}</span></dd>
       ${t.qonto_vat_cents ? `<dt>TVA indiquée dans Qonto</dt><dd>${eur(t.qonto_vat_cents)} (${esc(t.qonto_vat_rate || "")} %)</dd>` : ""}
-      <dt>Justificatif</dt><dd>${t.documents.length ? t.documents.map(docLink).join(", ") : docLink(null)}</dd></dl>
+      <dt>Justificatif</dt><dd>${t.documents.filter((x) => x.kind !== "alias").length ? t.documents.filter((x) => x.kind !== "alias").map(docLink).join(", ") : (t.amount_cents < 0 ? attachButton("tx", t.id) : `<span class="muted">Non requis pour un encaissement</span>`)}</dd></dl>
     ${s && t.status !== "rapproche" ? `<div class="alert ${s.confidence >= 0.9 ? "info" : "warn"}"><b>Proposition</b> (confiance ${Math.round(s.confidence * 100)} %) : ${esc(s.explanation)}
       <div style="margin-top:8px"><button class="primary sm" onclick="acceptTx(${t.id})">Accepter</button></div></div>` : ""}
     ${t.allocations.length ? `<h3>Affectation actuelle</h3><div class="panel panel-pad">${t.allocations.map((a) => `<div>${esc(allocLabel(a))} : ${eur(a.amount_cents)}
@@ -281,7 +442,7 @@ async function openTx(id) {
     <h3>${t.allocations.length ? "Modifier l'affectation" : "Catégoriser"}</h3>
     <form id="classify" class="panel panel-pad">
       <div class="field"><label>Nature de l'opération</label><select name="type" id="ctype">
-        ${credit ? `<option value="vente">Règlement d'une facture client</option><option value="associe">Apport personnel en compte courant</option>
+        ${credit ? `<option value="vente">Règlement d'une facture client</option><option value="remboursement_fournisseur">Remboursement d'un fournisseur (abonnement, avoir)</option><option value="associe">Apport personnel en compte courant</option>
           <option value="capital">Libération du capital social</option><option value="tva">Remboursement de crédit de TVA</option><option value="compte">Autre (compte comptable)</option>`
         : `<option value="depense_nouvelle">Dépense (nouvelle)</option><option value="depense">Paiement d'une facture fournisseur déjà saisie</option>
           <option value="associe">Remboursement de mon compte courant</option><option value="tva">Paiement de TVA</option><option value="is">Impôt sur les sociétés</option>
@@ -296,7 +457,7 @@ async function openTx(id) {
   else if (t.allocations[0]) sel.value = t.allocations[0].target_type === "depense" ? "depense_nouvelle" : t.allocations[0].target_type;
   const render = () => {
     const v = sel.value; let h = "";
-    if (v === "depense_nouvelle") h = `
+    if (v === "depense_nouvelle" || v === "remboursement_fournisseur") h = `${v === "remboursement_fournisseur" ? `<div class="alert info">${ic("info")}<span>Le fournisseur vous rembourse une dépense (abonnement résilié, avoir) : la charge et la TVA déductible sont diminuées d'autant. Choisissez la catégorie de la dépense d'origine.</span></div>` : ""}
       <div class="grid2"><div class="field"><label>Catégorie</label><select name="category_id">${cats.filter((c) => c.active).map((c) => `<option value="${c.id}" ${s && s.category_id == c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
       <div class="field"><label>Fournisseur</label><input name="supplier_name" value="${esc(t.counterparty || "")}"></div></div>
       <div class="field"><label>Libellé</label><input name="label" value="${esc(t.label || "")}"></div>
@@ -304,13 +465,14 @@ async function openTx(id) {
       <div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${t.qonto_vat_rate === r ? "selected" : ""}>${r}</option>`).join("")}</select></div>
       <div class="field"><label>Montant TVA (facultatif)</label><input name="vat" value="${centsToInput(t.qonto_vat_cents)}" placeholder="calculé"></div></div>
       <div class="grid2"><div class="field"><label>Nature</label><select name="nature"><option value="services">Services</option><option value="biens">Biens</option></select></div>
-      <div class="field"><label>Justificatif (PDF, image)</label><input type="file" name="file" accept=".pdf,image/*"></div></div>
+      <div class="field"><label>Justificatif</label>${t.documents.filter((x) => x.kind !== "alias").length ? `<div class="muted small" style="padding-top:10px">${ic("file")} Justificatif de l'opération repris automatiquement</div>` : fileField("file")}</div></div>
       <div class="field"><label>Commentaire (objet, invités, bénéficiaire…)</label><input name="comment"></div>`;
     else if (v === "depense") h = `<div class="field"><label>Facture fournisseur à payer</label><select name="expense_id">${exps.map((x) => `<option value="${x.id}">${d(x.date)} · ${esc(x.supplier_name || "")} · ${eur(x.ttc_cents)}</option>`).join("")}</select>
       ${exps.length ? "" : `<p class="hint">Aucune dépense « à payer ». Utilisez « Dépense (nouvelle) ».</p>`}</div>`;
     else if (v === "vente") { const open = invs.filter((i) => i.kind === "facture" && i.remaining_cents > 0);
       h = `<div class="field"><label>Facture client</label><select name="invoice_id">${open.map((i) => `<option value="${i.id}" ${s && s.invoice_id == i.id ? "selected" : ""}>${esc(i.number)} · ${esc(i.client)} · reste ${eur(i.remaining_cents)}</option>`).join("")}</select></div>
-      <div class="field"><label>Montant affecté (si paiement partiel de plusieurs factures)</label><input name="amount" value="${centsToInput(t.amount_cents)}"></div>`; }
+      <div class="grid2"><div class="field"><label>Commission de la plateforme de paiement</label><input name="commission" value="${centsToInput(s && s.commission_cents ? s.commission_cents : null)}" placeholder="0,00"><div class="hint">Retenue par SumUp, Stripe… : la facture est soldée pour son montant total, la commission est enregistrée en frais bancaires. La TVA reste due sur le total facturé.</div></div>
+      <div class="field"><label>Plateforme</label><input name="provider" value="${esc(/sumup|stripe|paypal|payplug|lydia|qonto/i.test(t.counterparty || "") ? t.counterparty : "")}" placeholder="SumUp, Stripe…"></div></div>`; }
     else if (v === "compte") h = `<div class="field"><label>Compte</label><input name="account" list="acc-list" placeholder="ex. 775000"><datalist id="acc-list"></datalist></div>`;
     else if (v === "associe") h = `<div class="alert info">${credit ? "Apport : la société vous doit cette somme (compte 455). Ce n'est pas un chiffre d'affaires." : "Remboursement : diminue la somme que la société vous doit. Ce n'est ni une charge ni une rémunération."}</div><div class="field"><label>Commentaire</label><input name="comment"></div>`;
     else if (v === "capital") h = `<div class="alert info">Libération du capital social (compte 1013), distincte d'un apport en compte courant.</div>`;
@@ -321,18 +483,18 @@ async function openTx(id) {
   sel.onchange = render; render();
   $("#classify").onsubmit = async (e) => {
     e.preventDefault(); const f = formData(e.target); const payload = { type: f.type };
-    if (f.type === "depense_nouvelle") {
+    if (f.type === "depense_nouvelle" || f.type === "remboursement_fournisseur") {
       let doc = null;
-      const file = e.target.querySelector("[name=file]").files[0];
+      const fi = e.target.querySelector("[name=file]"); const file = fi && fi.files[0];
       if (file) { const fd = new FormData(); fd.append("file", file); fd.append("process", "false"); doc = (await run(() => api("/api/documents", { method: "POST", body: fd }))).document_id; }
       Object.assign(payload, { category_id: Number(f.category_id), supplier_name: f.supplier_name, label: f.label, vat_regime: f.vat_regime,
         vat_rate: f.vat_rate, nature: f.nature, comment: f.comment, document_id: doc });
       if (f.vat) payload.vat_cents = toCents(f.vat);
     }
     if (f.type === "depense") payload.expense_id = Number(f.expense_id);
-    if (f.type === "vente") payload.invoices = [{ invoice_id: Number(f.invoice_id), amount_cents: toCents(f.amount) }];
+    if (f.type === "vente") { payload.invoice_id = Number(f.invoice_id); const c = toCents(f.commission); if (c) payload.commission_cents = c; payload.provider = f.provider; }
     if (f.type === "compte") payload.account = f.account;
-    if (f.comment && f.type !== "depense_nouvelle") payload.comment = f.comment;
+    if (f.comment && !["depense_nouvelle", "remboursement_fournisseur"].includes(f.type)) payload.comment = f.comment;
     await run(() => post(`/api/transactions/${id}/classify`, payload), "Opération enregistrée");
     openTx(id); refreshView();
   };
@@ -370,7 +532,7 @@ async function invoiceForm(credited) {
       <h3>Lignes</h3>
       <table class="lines-table"><thead><tr><th>Description</th><th style="width:70px">Qté</th><th style="width:120px">Prix unitaire HT</th><th style="width:80px">TVA %</th><th></th></tr></thead><tbody id="ilines"></tbody></table>
       <button type="button" class="sm" style="margin:8px 0" onclick="addInvLine()">Ajouter une ligne</button>
-      <div class="field"><label>PDF de la facture (facultatif)</label><input type="file" name="file" accept=".pdf"></div>
+      <div class="field"><label>PDF de la facture (facultatif)</label>${fileField("file", "Joindre le PDF", ".pdf")}</div>
       <div class="field"><label>Notes</label><input name="notes"></div>
       <div id="invtot" class="muted"></div>
       <button class="primary" type="submit">${credited ? "Émettre l'avoir" : "Enregistrer la facture"}</button>
@@ -418,31 +580,6 @@ async function openInvoice(id) {
 }
 
 // ------------------------------------------------------------------ dépenses
-ROUTES.depenses = async (p) => {
-  setActions(`<button class="primary" onclick="$('#up').click()">${ic("upload")}Déposer des justificatifs</button><input type="file" id="up" multiple accept=".pdf,image/*" hidden onchange="uploadDocs(this.files)">
-    <button onclick="expenseForm()">${ic("plus")}Nouvelle dépense</button><button onclick="expenseForm(null,'perso')">Note de frais payée personnellement</button>`);
-  const tab = p.tab || "depenses";
-  if (tab === "pieces") return renderPieces();
-  const month = p.month || "";
-  const rows = await api(`/api/expenses?month=${month}&status=${p.status || ""}`);
-  const total = rows.filter((r) => r.rule !== "personnel").reduce((a, r) => ({ ht: a.ht + r.ht_cents, ttc: a.ttc + r.ttc_cents }), { ht: 0, ttc: 0 });
-  $("#view").innerHTML = `
-    <div id="dropzone" class="drop" role="button" tabindex="0" aria-label="Déposer des justificatifs">${ic("upload")}<strong>Déposez vos factures et tickets</strong><span class="small">PDF, JPG ou PNG, ou prenez une photo sur téléphone : lecture automatique et rapprochement avec Qonto.</span></div>
-    <div class="toolbar" style="margin-top:14px">
-      <div class="tabs" style="margin:0;border:0"><button class="active">Dépenses</button><button onclick="location.hash='#/depenses?tab=pieces'">Justificatifs déposés</button></div>
-      <span class="spacer"></span>
-      <select style="width:auto" onchange="location.hash='#/depenses?month=${month}&status='+this.value"><option value="">Tous statuts</option>${["a_valider", "propose_ia", "valide"].map((s) => `<option value="${s}" ${p.status === s ? "selected" : ""}>${STATUS[s][0]}</option>`).join("")}</select>
-      <input type="month" style="width:auto" value="${esc(month)}" onchange="location.hash='#/depenses?month='+this.value">
-    </div>
-    <div class="table-wrap"><table><thead><tr><th>Date</th><th>Fournisseur</th><th>Libellé</th><th>Catégorie</th><th class="right">HT</th><th class="right">TVA</th><th class="right">TTC</th><th>Paiement</th><th>Pièce</th><th>Statut</th></tr></thead>
-    <tbody>${rows.map((x) => `<tr class="click" tabindex="0" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}</td><td>${esc(x.category || "–")}</td>
-      <td class="num">${eur(x.ht_cents)}</td><td class="num">${eur(x.vat_cents)}${x.vat_recovery < 100 && x.vat_cents ? ` <span class="badge" title="TVA non récupérable">NR</span>` : ""}</td><td class="num">${eur(x.ttc_cents)}</td>
-      <td class="small">${PAYMENT[x.payment_method]}</td><td>${x.document_id ? "✓" : `<span class="badge b-warn">Manquant</span>`}</td><td>${badge(x.status)}</td></tr>`).join("")}</tbody>
-    <tfoot><tr><td colspan="4">Total (hors dépenses personnelles)</td><td class="num">${eur(total.ht)}</td><td></td><td class="num">${eur(total.ttc)}</td><td colspan="3"></td></tr></tfoot></table>
-    ${rows.length ? "" : emptyState("Aucune dépense sur cette période.", "card")}</div>`;
-  setupDrop();
-  if (p.id) openExpense(Number(p.id));
-};
 function setupDrop() {
   const z = $("#dropzone"); if (!z) return;
   z.onclick = () => $("#up").click();
@@ -460,15 +597,14 @@ async function uploadDocs(files) {
   }
   const auto = results.filter((r) => r.status === "rattache").length;
   toast(`${results.length} justificatif(s) déposé(s), ${auto} rattaché(s) automatiquement.`);
-  location.hash = "#/depenses?tab=pieces";
+  location.hash = "#/operations?tab=pieces";
   route();
 }
 async function renderPieces() {
   const docs = await api("/api/documents?unlinked=true");
-  $("#view").innerHTML = `
-    <div id="dropzone" class="drop" role="button" tabindex="0" aria-label="Déposer des justificatifs">${ic("upload")}<strong>Déposez vos factures et tickets</strong><span class="small">PDF, JPG ou PNG</span></div>
-    <div class="toolbar" style="margin-top:14px"><div class="tabs" style="margin:0;border:0"><button onclick="location.hash='#/depenses'">Dépenses</button><button class="active">Justificatifs déposés</button></div></div>
-    <p class="muted small">Justificatifs non encore rattachés. Les données lues par l'IA sont des propositions : vérifiez-les avant de valider.</p>
+  $("#tab").innerHTML = `
+    <div id="dropzone" class="drop" role="button" tabindex="0" aria-label="Déposer des justificatifs">${ic("upload")}<strong>Déposez vos factures et tickets</strong><span class="small">PDF, JPG ou PNG, ou prenez une photo sur téléphone : lecture automatique et rapprochement avec Qonto.</span></div>
+    <p class="muted small" style="margin-top:14px">Justificatifs déposés ici et pas encore rattachés à une opération. Les pièces jointes dans Qonto sont rattachées automatiquement à leur opération. Les données lues par l'IA sont des propositions : vérifiez-les avant de valider.</p>
     <div class="table-wrap"><table><thead><tr><th>Fichier</th><th>Fournisseur</th><th>Date</th><th class="right">TTC</th><th>Lecture</th><th></th></tr></thead>
     <tbody>${docs.map((x) => `<tr><td><a href="/api/documents/${x.id}/file" target="_blank">${esc(x.original_name)}</a></td><td>${esc(x.party_name || "")}</td><td>${d(x.doc_date)}</td>
       <td class="num">${x.amount_cents ? eur(x.amount_cents) : ""}</td><td>${x.ai_data ? `<span class="badge ${x.ai_data.source === "facturx" ? "b-ok" : "b-ai"}">${x.ai_data.source === "facturx" ? "Factur-X" : "IA"}</span>` : `<span class="badge">${x.ai_status === "manuel" ? "Saisie manuelle" : "Non lu"}</span>`}</td>
@@ -538,7 +674,7 @@ async function expenseForm(x, mode) {
         <div class="field"><label>TVA récupérable %</label><input name="vat_recovery" type="number" min="0" max="100" value="${x.vat_recovery ?? ""}" placeholder="selon catégorie"></div>
         <div class="field"><label>Charge déductible %</label><input name="deductible" type="number" min="0" max="100" value="${x.deductible ?? ""}" placeholder="selon catégorie"></div></div>
       <div class="grid2"><div class="field"><label>Bénéficiaire (cadeaux)</label><input name="beneficiary" value="${esc(x.beneficiary || "")}"></div>
-        <div class="field"><label>Justificatif ${x.document_id ? "(remplacer)" : ""}</label><input type="file" name="file" accept=".pdf,image/*"></div></div>
+        <div class="field"><label>Justificatif ${x.document_id ? "(remplacer)" : ""}</label>${fileField("file", x.document_id ? "Remplacer le justificatif" : "Ajouter un justificatif")}</div></div>
       <div class="field"><label>Commentaire</label><textarea name="comment" rows="2">${esc(x.comment || "")}</textarea></div>
       ${edit && x.status === "valide" ? `<div class="field"><label>Motif de la correction (dépense validée : la modification sera tracée par contrepassation)</label><input name="reason" required></div>` : ""}
       <button class="primary" type="submit">Enregistrer</button>
@@ -569,7 +705,7 @@ async function openExpense(id) {
     <dl class="kv"><dt>Date</dt><dd>${d(x.date)}</dd><dt>Montants</dt><dd>HT ${eur(x.ht_cents)} · TVA ${eur(x.vat_cents)} (${esc(x.vat_rate || "")} %) · TTC <b>${eur(x.ttc_cents)}</b></dd>
       <dt>Régime de TVA</dt><dd>${REGIMES[x.vat_regime]} · récupérable ${x.vat_recovery} %</dd><dt>Catégorie</dt><dd>${esc(x.category || "Non catégorisée")}</dd>
       <dt>Traitement fiscal</dt><dd>${esc(x.rule_explanation || "")} Charge déductible ${x.deductible} %.</dd>
-      <dt>Paiement</dt><dd>${PAYMENT[x.payment_method]} · payé ${eur(x.paid_cents)}</dd><dt>Justificatif</dt><dd>${docLink(x.document)}</dd>
+      <dt>Paiement</dt><dd>${PAYMENT[x.payment_method]} · payé ${eur(x.paid_cents)}</dd><dt>Justificatif</dt><dd>${x.document ? docLink(x.document) : (["personnel", "ik"].includes(x.rule) ? `<span class="muted">Non requis</span>` : attachButton("exp", x.id))}</dd>
       ${x.comment ? `<dt>Commentaire</dt><dd>${esc(x.comment)}</dd>` : ""}</dl>
     <div class="toolbar" style="margin-top:14px"><button onclick='expenseForm(${JSON.stringify(x).replace(/'/g, "&#39;")})'>Modifier</button>
       ${x.status !== "valide" ? `<button class="primary" onclick="validateExpense(${x.id})">Valider</button><button class="danger" onclick="deleteExpense(${x.id})">Supprimer</button>` : ""}</div>

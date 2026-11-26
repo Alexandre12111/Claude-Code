@@ -41,7 +41,7 @@ function raises( callable $fn, $msg ) {
 }
 function setup() {
 	AC_DB::drop_all();
-	foreach ( array( 's_company', 's_tax', 's_confirmed', 's_bank_statement', 's_invoicing', 's_ai', 's_qonto', 'secrets', 'schema' ) as $o ) {
+	foreach ( array( 's_company', 's_tax', 's_confirmed', 's_bank_statement', 's_invoicing', 's_ai', 's_qonto', 's_vehicle', 'secrets', 'schema' ) as $o ) {
 		delete_option( AC_DB::opt( $o ) );
 	}
 	AC_DB::install();
@@ -278,6 +278,74 @@ test( 'Import CSV Qonto', function () {
 	}
 	$items = AC_Qonto::parse_csv( "Date de l'opération (UTC);Montant total (TTC);Nom de la contrepartie;Libellé;Statut\n15/01/2026 10:00;-120,00;Logiciel Pro;Abonnement;Exécuté\n16/01/2026;1 200,50;Client;Facture F1;Exécuté\n" );
 	eq( array( $items[0]['date'], $items[0]['amount_cents'], $items[1]['date'], $items[1]['amount_cents'] ), array( '2026-01-15', -12000, '2026-01-16', 120050 ), 'lecture' );
+} );
+
+
+test( 'Catégorisation en lot des abonnements récurrents et règle automatique', function () {
+	$ids = array();
+	foreach ( array( '01-05', '02-05', '03-05' ) as $i => $d ) {
+		AC_Services::import_transactions( array( array( 'external_id' => "ionos$i", 'date' => "2026-$d", 'amount_cents' => -1200, 'label' => 'IONOS SE', 'counterparty' => 'IONOS SE',
+			'operation_type' => 'direct_debit', 'vat_cents' => 150, 'vat_rate' => '10' ) ), 'qonto' );
+		$ids[] = AC_DB::val( 'SELECT id FROM {bank_transactions} WHERE external_id=?', array( "ionos$i" ) );
+	}
+	$g = AC_Services::transaction_groups();
+	eq( array( $g[0]['name'], $g[0]['count'] ), array( 'IONOS SE', 3 ), 'regroupement' );
+	$r = AC_Services::bulk_classify( $ids, array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'hebergement' ), 'vat_rate' => '20', 'vat_regime' => 'fr', 'compute_vat' => true, 'validate' => true ), true );
+	eq( $r['done'], 3, 'trois opérations' );
+	eq( AC_DB::ival( "SELECT COUNT(*) FROM {expenses} WHERE vat_cents=200 AND ht_cents=1000 AND status='valide'" ), 3, 'TVA 20 % recalculée, dépenses validées' );
+	eq( bal( '626' ), 3000, 'charges' );
+	// Le mois suivant : appliqué automatiquement à l'import
+	AC_Services::import_transactions( array( array( 'external_id' => 'ionos9', 'date' => '2026-04-05', 'amount_cents' => -1200, 'label' => 'IONOS SE', 'counterparty' => 'IONOS SE', 'operation_type' => 'direct_debit' ) ), 'qonto' );
+	eq( AC_DB::val( "SELECT status FROM {bank_transactions} WHERE external_id='ionos9'" ), 'rapproche', 'règle automatique' );
+	eq( bal( '626' ), 4000, 'quatrième mois' );
+	// Recatégoriser ne crée pas de doublon
+	AC_Services::classify_transaction( (int) AC_DB::val( "SELECT id FROM {bank_transactions} WHERE external_id='ionos9'" ), array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'logiciels' ), 'vat_rate' => '20' ) );
+	eq( AC_DB::ival( 'SELECT COUNT(*) FROM {expenses}' ), 4, 'pas de doublon' );
+	eq( array( bal( '626' ), bal( '651' ) ), array( 3000, 1000 ), 'reclassement' );
+} );
+
+test( 'Remboursement d\'un abonnement par le fournisseur', function () {
+	$t = tx( 'rb1', '2026-03-10', -2400, 'IONOS SE' );
+	AC_Services::classify_transaction( $t['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'hebergement' ), 'vat_rate' => '20', 'document_id' => doc( 'io.pdf' ) ) );
+	$c = tx( 'rb2', '2026-03-20', 2400, 'IONOS SE', 'transfer' );
+	eq( json_decode( $c['suggestion'], true )['type'], 'remboursement_fournisseur', 'proposition de remboursement' );
+	AC_Services::apply_suggestion( $c['id'] );
+	eq( array( bal( '626' ), bal( '4456' ), bal( '401' ), bal( '471' ) ), array( 0, 0, 0, 0 ), 'charge et TVA annulées' );
+	eq( AC_Vat::compute( '2026-03-01', '2026-03-31' )['lignes']['20']['taxe_cents'], 0, 'TVA déductible nette' );
+} );
+
+test( 'Encaissement par carte avec commission de la plateforme', function () {
+	$inv = AC_Services::save_sales_invoice( array( 'client_name' => 'Client Carte', 'issue_date' => '2026-05-02', 'lines' => array( array( 'unit_price_cents' => 15000, 'vat_rate' => '20' ) ) ) );
+	$t   = tx( 'sumup', '2026-05-04', 17640, 'SUMUP PAYMENTS', 'transfer' );
+	$sug = json_decode( $t['suggestion'], true );
+	eq( array( $sug['type'], $sug['invoice_id'], $sug['commission_cents'] ), array( 'vente', $inv['id'], 360 ), 'commission détectée' );
+	AC_Services::classify_transaction( $t['id'], array_merge( $sug, array( 'provider' => 'SumUp' ) ) );
+	$i = AC_DB::q1( 'SELECT * FROM {sales_invoices} WHERE id=?', array( $inv['id'] ) );
+	eq( AC_Services::invoice_status( $i )['payment_status'], 'payee', 'facture soldée' );
+	eq( array( bal( '627' ), bal( '411' ), bal( '512' ) ), array( 360, 0, 17640 ), 'commission en frais bancaires' );
+	eq( AC_Vat::compute( '2026-05-01', '2026-05-31' )['tva_brute_cents'], 3000, 'TVA collectée sur 180 €' );
+} );
+
+test( 'Justificatif ajouté à l\'opération puis repris par la dépense', function () {
+	$t = tx( 'jd1', '2026-06-01', -6000, 'Canva' );
+	AC_Services::attach_to_transaction( $t['id'], doc( 'canva.pdf' ) );
+	$r = AC_Services::classify_transaction( $t['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'logiciels' ), 'vat_rate' => '20' ) );
+	ok( (bool) AC_DB::val( 'SELECT document_id FROM {expenses} WHERE id=?', array( $r['id'] ) ), 'justificatif repris' );
+} );
+
+test( 'Frais kilométriques au barème (Forza 350)', function () {
+	update_option( AC_DB::opt( 's_vehicle' ), array( 'name' => 'Honda Forza 350', 'type' => 'moto', 'cv' => '3-5' ), false );
+	eq( AC_Mileage::bareme( 'moto', '3-5', 35000, '2026-06-01' ), 144500, 'barème 3 500 km' );
+	$a = AC_Mileage::add( array( 'date' => '2026-02-01', 'from_place' => 'Meudon', 'to_place' => 'Paris 8', 'km' => '1000', 'round_trip' => true, 'purpose' => 'Rendez vous client' ) );
+	eq( $a['amount_cents'], 93600, '2 000 km à 0,468' );
+	$b = AC_Mileage::add( array( 'date' => '2026-03-01', 'from_place' => 'Meudon', 'to_place' => 'Lyon', 'km' => '1500', 'purpose' => 'Salon' ) );
+	eq( $b['amount_cents'], 144500 - 93600, 'deuxième trajet au cumul' );
+	eq( bal( '455' ), -144500, 'dû au dirigeant' );
+	eq( bal( '6251' ), 144500, 'charge' );
+	AC_Mileage::delete( $a['id'] );
+	eq( (int) AC_DB::val( 'SELECT amount_cents FROM {mileage} WHERE id=?', array( $b['id'] ) ), 70200, 'recalcul après suppression' );
+	eq( bal( '455' ), -70200, 'compte courant recalculé' );
+	ok( strlen( AC_Mileage::pdf( 2026 ) ) > 800, 'état PDF' );
 } );
 
 function build_year() {

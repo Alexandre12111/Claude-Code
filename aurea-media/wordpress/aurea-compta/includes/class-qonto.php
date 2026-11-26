@@ -108,41 +108,71 @@ class AC_Qonto {
 			$page = $data['meta']['next_page'] ?? null;
 		} while ( $page );
 		$res  = AC_Services::import_transactions( $items, 'qonto' );
-		$docs = self::fetch_attachments();
+		$docs = self::fetch_attachments( 15 );
 		$q    = array_merge( $q, array( 'last_sync' => $started, 'balance_cents' => $main['balance_cents'] ?? null, 'balance_at' => $started, 'iban' => $main['iban'] ?? null ) );
 		update_option( AC_DB::opt( 's_qonto' ), $q, false );
 		update_option( AC_DB::opt( 's_bank_statement' ), array( 'date' => substr( current_time( 'Y-m-d' ), 0, 10 ), 'balance_cents' => $main['balance_cents'] ?? null, 'source' => 'qonto' ), false );
-		return $res + array( 'attachments' => $docs, 'balance_cents' => $main['balance_cents'] ?? null );
+		return $res + array( 'attachments' => $docs['fetched'], 'attachments_remaining' => $docs['remaining'], 'balance_cents' => $main['balance_cents'] ?? null );
 	}
 
-	/** Télécharge les justificatifs déposés dans Qonto et les relie aux dépenses. */
-	public static function fetch_attachments(): int {
-		$n = 0;
-		foreach ( AC_DB::q( "SELECT * FROM {bank_transactions} WHERE source='qonto' AND attachment_ids IS NOT NULL AND attachment_ids<>'[]'" ) as $t ) {
-			foreach ( json_decode( $t['attachment_ids'], true ) ?: array() as $att ) {
-				if ( AC_DB::q1( 'SELECT id FROM {documents} WHERE external_id=?', array( "qonto-att:$att" ) ) ) {
-					continue;
-				}
-				try {
-					$a = self::get( "/v2/attachments/$att" )['attachment'];
-					$r = wp_remote_get( $a['url'], array( 'timeout' => 60 ) );
-					if ( is_wp_error( $r ) || 200 !== wp_remote_retrieve_response_code( $r ) ) {
-						continue;
-					}
-					AC_DB::tx( function () use ( $a, $att, $r, $t ) {
-						$doc = AC_Services::store_document( $a['file_name'] ?? "$att.pdf", wp_remote_retrieve_body( $r ), 'justificatif', $t['date'], $t['counterparty'], 'qonto', "qonto-att:$att" );
-						$exp = AC_DB::q1( "SELECT x.id FROM {expenses} x JOIN {allocations} al ON al.target_type='depense' AND al.target_id=x.id WHERE al.bank_transaction_id=? AND x.document_id IS NULL", array( $t['id'] ) );
-						if ( $exp ) {
-							AC_Services::save_expense( array( 'document_id' => $doc ), $exp['id'], 'Justificatif Qonto rattaché' );
-						}
-					} );
-					$n++;
-				} catch ( AC_Error $e ) {
-					continue;
+	/** Justificatifs Qonto pas encore téléchargés : [opération, identifiant de pièce]. */
+	public static function pending_attachments(): array {
+		$known = array();
+		foreach ( AC_DB::q( "SELECT external_id FROM {documents} WHERE external_id LIKE 'qonto-att:%'" ) as $d ) {
+			$known[ substr( $d['external_id'], 10 ) ] = true;
+		}
+		$out = array();
+		foreach ( AC_DB::q( "SELECT * FROM {bank_transactions} WHERE source='qonto' AND attachment_ids IS NOT NULL AND attachment_ids<>'[]' ORDER BY date DESC" ) as $t ) {
+			foreach ( json_decode( (string) $t['attachment_ids'], true ) ?: array() as $att ) {
+				if ( ! isset( $known[ $att ] ) ) {
+					$out[] = array( $t, (string) $att );
 				}
 			}
 		}
-		return $n;
+		return $out;
+	}
+
+	/**
+	 * Télécharge les justificatifs déposés dans Qonto, les relie à leur opération et à la dépense correspondante.
+	 * Traitement par lots (budget de temps) pour rester sous la durée maximale d'exécution de l'hébergement.
+	 */
+	public static function fetch_attachments( int $budget_seconds = 20 ): array {
+		$start = microtime( true );
+		$n     = 0;
+		$errors = 0;
+		$todo  = self::pending_attachments();
+		foreach ( $todo as list( $t, $att ) ) {
+			if ( microtime( true ) - $start > $budget_seconds ) {
+				break;
+			}
+			try {
+				$a   = self::get( "/v2/attachments/$att" )['attachment'] ?? array();
+				$url = html_entity_decode( (string) ( $a['url'] ?? '' ), ENT_QUOTES );
+				$r   = $url ? wp_remote_get( $url, array( 'timeout' => 30 ) ) : null;
+				if ( ! $r || is_wp_error( $r ) || 200 !== wp_remote_retrieve_response_code( $r ) ) {
+					$errors++;
+					continue;
+				}
+				AC_DB::tx( function () use ( $a, $att, $r, $t ) {
+					$doc = AC_Services::store_document( ( $a['file_name'] ?? '' ) ?: "$att.pdf", wp_remote_retrieve_body( $r ), 'justificatif', $t['date'], $t['counterparty'], 'qonto', "qonto-att:$att" );
+					// Pièce déjà présente (même fichier) : on la marque comme venant de Qonto pour ne plus la retélécharger.
+					AC_DB::exec( 'UPDATE {documents} SET external_id=IFNULL(external_id, ?), bank_transaction_id=IFNULL(bank_transaction_id, ?) WHERE id=?', array( "qonto-att:$att", $t['id'], $doc ) );
+					if ( ! AC_DB::q1( 'SELECT id FROM {documents} WHERE external_id=?', array( "qonto-att:$att" ) ) ) {
+						AC_DB::insert( 'documents', array( 'path' => '', 'sha256' => hash( 'sha256', "alias-$att-$doc" ), 'kind' => 'alias', 'source' => 'qonto',
+							'external_id' => "qonto-att:$att", 'bank_transaction_id' => $t['id'], 'uploaded_at' => AC_DB::now() ) );
+					}
+					$exp = AC_DB::q1( "SELECT x.id FROM {expenses} x JOIN {allocations} al ON al.target_type='depense' AND al.target_id=x.id WHERE al.bank_transaction_id=? AND x.document_id IS NULL", array( $t['id'] ) );
+					if ( $exp ) {
+						AC_Services::save_expense( array( 'document_id' => $doc ), $exp['id'], 'Justificatif Qonto rattaché' );
+					}
+				} );
+				$n++;
+			} catch ( AC_Error $e ) {
+				$errors++;
+				continue;
+			}
+		}
+		return array( 'fetched' => $n, 'errors' => $errors, 'remaining' => max( 0, count( $todo ) - $n - $errors ) );
 	}
 
 	/** Synchronisation automatique si l'intervalle est écoulé (tâche planifiée ou ouverture de l'application). */

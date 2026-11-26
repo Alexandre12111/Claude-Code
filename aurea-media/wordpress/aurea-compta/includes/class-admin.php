@@ -103,9 +103,8 @@ class AC_Admin {
     <button class="search-btn" onclick="openSearch()" aria-label="Rechercher (raccourci /)"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><span>Rechercher</span><kbd aria-hidden="true">/</kbd></button>
     <nav id="nav">
       <a href="#/" data-route=""><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg><span class="label">Vue d'ensemble</span></a>
-      <a href="#/banque" data-route="banque"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span class="label">Banque et transactions</span><span class="count" id="c-banque"></span></a>
+      <a href="#/operations" data-route="operations"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg><span class="label">Opérations</span><span class="count" id="c-operations"></span></a>
       <a href="#/recettes" data-route="recettes"><svg class="icon" aria-hidden="true"><use href="#i-invoice"/></svg><span class="label">Recettes et factures</span></a>
-      <a href="#/depenses" data-route="depenses"><svg class="icon" aria-hidden="true"><use href="#i-card"/></svg><span class="label">Dépenses et notes de frais</span><span class="count" id="c-depenses"></span></a>
       <a href="#/associe" data-route="associe"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span class="label">Apports personnels</span></a>
       <a href="#/tva" data-route="tva"><svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg><span class="label">TVA</span></a>
       <a href="#/comptabilite" data-route="comptabilite"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span class="label">Comptabilité</span></a>
@@ -130,8 +129,8 @@ class AC_Admin {
 </div>
 <nav class="bottom-nav" aria-label="Navigation rapide">
   <a href="#/" data-route=""><svg class="icon" aria-hidden="true"><use href="#i-home"/></svg>Accueil</a>
-  <a href="#/banque" data-route="banque"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg>Banque<span class="dot" id="b-banque"></span></a>
-  <a href="#/depenses" data-route="depenses"><svg class="icon" aria-hidden="true"><use href="#i-card"/></svg>Dépenses<span class="dot" id="b-depenses"></span></a>
+  <a href="#/operations" data-route="operations"><svg class="icon" aria-hidden="true"><use href="#i-bank"/></svg>Opérations<span class="dot" id="b-operations"></span></a>
+  <a href="#/recettes" data-route="recettes"><svg class="icon" aria-hidden="true"><use href="#i-invoice"/></svg>Recettes</a>
   <a href="#/tva" data-route="tva"><svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg>TVA</a>
   <button type="button" onclick="toggleSidebar()" aria-label="Plus de rubriques"><svg class="icon" aria-hidden="true"><use href="#i-more"/></svg>Plus</button>
 </nav>

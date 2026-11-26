@@ -434,7 +434,7 @@ class AC_Services {
 			}
 			$after = AC_DB::q1( 'SELECT * FROM {expenses} WHERE id=?', array( $id ) );
 			AC_DB::audit( $before ? 'modification' : 'creation', 'depense', $id, $before, $after, $reason );
-			if ( $cat && $cat['is_asset'] && ! $after['fixed_asset_id'] ) {
+			if ( $cat && $cat['is_asset'] && ! $after['fixed_asset_id'] && $after['ttc_cents'] > 0 ) {
 				$acc   = $after['account'] ?: $cat['account'];
 				$types = AC_Rules::asset_types();
 				$fa    = AC_DB::insert( 'fixed_assets', array( 'label' => $after['label'], 'account' => $acc, 'acquisition_date' => $after['date'],
@@ -450,7 +450,7 @@ class AC_Services {
 			if ( 'valide' === $after['status'] ) {
 				self::lock_document( $after['document_id'] );
 			}
-			if ( $after['supplier_name'] && $after['category_id'] ) {
+			if ( $after['supplier_name'] && $after['category_id'] && $after['ttc_cents'] > 0 && ( ! $cat || 'ik' !== $cat['rule'] ) ) {
 				AC_DB::exec( 'INSERT INTO {supplier_rules}(pattern,category_id,vat_regime,updated_at) VALUES(?,?,?,?)
 					ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), vat_regime=VALUES(vat_regime), updated_at=VALUES(updated_at)',
 					array( mb_substr( self::norm_name( $after['supplier_name'] ), 0, 190 ), $after['category_id'], $after['vat_regime'], AC_DB::now() ) );
@@ -518,8 +518,15 @@ class AC_Services {
 					'raw' => wp_json_encode( $it['raw'] ?? array() ), 'imported_at' => AC_DB::now(),
 				) );
 				$new++;
-				self::suggest_for_transaction( $tid );
+				$sug = self::suggest_for_transaction( $tid );
 				AC_Posting::post_bank_transaction( $tid, 'Import bancaire' );
+				if ( $sug && ! empty( $sug['auto'] ) && ! empty( $sug['category_id'] ) ) {
+					try {
+						self::classify_transaction( $tid, $sug, 'Règle automatique (abonnement récurrent)' );
+					} catch ( AC_Error $e ) {
+						// la proposition reste à valider manuellement
+					}
+				}
 			}
 			return array( 'imported' => $new, 'duplicates' => $dup );
 		} );
@@ -558,7 +565,9 @@ class AC_Services {
 				if ( $st['remaining_cents'] <= 0 ) {
 					continue;
 				}
-				$score = $st['remaining_cents'] === $amt ? 0.6 : ( $amt < $st['remaining_cents'] ? 0.25 : 0 );
+				$gap   = $st['remaining_cents'] - $amt;
+				$fee   = $gap > 0 && $gap <= max( 100, intdiv( $st['remaining_cents'] * 6, 100 ) ); // écart compatible avec une commission de paiement (6 % maximum)
+				$score = $st['remaining_cents'] === $amt ? 0.6 : ( $fee ? 0.55 : ( $amt < $st['remaining_cents'] ? 0.25 : 0 ) );
 				$score += 0.3 * self::name_similarity( $who, $inv['client'] );
 				if ( $inv['number'] && false !== strpos( str_replace( ' ', '', $tx['reference'] . $tx['label'] ), str_replace( ' ', '', $inv['number'] ) ) ) {
 					$score += 0.4;
@@ -568,8 +577,16 @@ class AC_Services {
 				}
 			}
 			if ( $best ) {
+				$rem = self::invoice_status( $best[1] )['remaining_cents'];
 				$sug = array( 'type' => 'vente', 'invoice_id' => $best[1]['id'], 'confidence' => min( $best[0], 1.0 ),
 					'explanation' => "Règlement probable de la facture {$best[1]['number']} ({$best[1]['client']})." );
+				if ( $rem > $amt && $rem - $amt <= max( 100, intdiv( $rem * 6, 100 ) ) ) {
+					$sug['commission_cents'] = $rem - $amt;
+					$sug['explanation']     .= ' Écart de ' . AC_Money::fmt( $rem - $amt ) . ' : commission de la plateforme de paiement probable.';
+				}
+			} elseif ( $rule = self::supplier_rule( $who ) ) {
+				$sug = array( 'type' => 'remboursement_fournisseur', 'category_id' => $rule['category_id'], 'vat_regime' => $rule['vat_regime'], 'vat_rate' => $rule['vat_rate'],
+					'confidence' => 0.7, 'explanation' => 'Crédit venant d\'un fournisseur connu : remboursement (avoir) probable.' );
 			}
 		} else {
 			$best = null;
@@ -590,12 +607,10 @@ class AC_Services {
 				$sug = array( 'type' => 'depense', 'expense_id' => $best[1]['id'], 'confidence' => min( $best[0], 1.0 ),
 					'explanation' => "Paiement probable de la dépense « {$best[1]['supplier_name']} {$best[1]['label']} »." );
 			} else {
-				foreach ( AC_DB::q( 'SELECT * FROM {supplier_rules}' ) as $r ) {
-					if ( $r['pattern'] && self::name_similarity( $who, $r['pattern'] ) >= 0.99 ) {
-						$sug = array( 'type' => 'depense_nouvelle', 'category_id' => $r['category_id'], 'vat_regime' => $r['vat_regime'], 'confidence' => 0.75,
-							'explanation' => 'Fournisseur déjà connu : même catégorie que précédemment.' );
-						break;
-					}
+				if ( $r = self::supplier_rule( $who ) ) {
+					$sug = array( 'type' => 'depense_nouvelle', 'category_id' => $r['category_id'], 'vat_regime' => $r['vat_regime'], 'vat_rate' => $r['vat_rate'],
+						'compute_vat' => (bool) $r['vat_rate'], 'confidence' => $r['auto'] ? 0.95 : 0.75, 'auto' => (bool) $r['auto'],
+						'explanation' => $r['auto'] ? 'Abonnement récurrent : catégorie et TVA appliquées automatiquement.' : 'Fournisseur déjà connu : même catégorie que précédemment.' );
 				}
 			}
 		}
@@ -613,6 +628,21 @@ class AC_Services {
 			}
 			$t      = $p['type'];
 			$before = AC_DB::q( 'SELECT * FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
+			// Dépense déjà créée depuis cette opération : réutilisée (pas de doublon), ou supprimée si l'opération change de nature.
+			$own_expense = null;
+			if ( empty( $p['append'] ) ) {
+				$own_expense = AC_DB::q1( "SELECT x.* FROM {allocations} a JOIN {expenses} x ON x.id=a.target_id WHERE a.target_type='depense' AND a.bank_transaction_id=?
+					AND x.source IN ('qonto','banque','ia') AND x.payment_method='qonto' AND x.date=? ORDER BY x.id LIMIT 1", array( $id, $tx['date'] ) );
+				if ( $own_expense && ! in_array( $t, array( 'depense_nouvelle', 'remboursement_fournisseur' ), true ) ) {
+					if ( 'valide' === $own_expense['status'] ) {
+						throw new AC_Error( "Cette opération est liée à une dépense validée : modifiez ou annulez d'abord la dépense." );
+					}
+					AC_DB::exec( 'DELETE FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
+					self::delete_expense( (int) $own_expense['id'], 'Opération reclassée' );
+					$own_expense = null;
+				}
+			}
+			$tx_doc = AC_DB::val( 'SELECT id FROM {documents} WHERE bank_transaction_id=? ORDER BY id LIMIT 1', array( $id ) );
 			if ( empty( $p['append'] ) ) {
 				AC_DB::exec( 'DELETE FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
 				AC_DB::exec( 'DELETE FROM {associate_movements} WHERE bank_transaction_id=?', array( $id ) );
@@ -625,34 +655,61 @@ class AC_Services {
 			};
 			switch ( $t ) {
 				case 'depense_nouvelle':
-					if ( $amt >= 0 ) {
+				case 'remboursement_fournisseur':
+					$refund = 'remboursement_fournisseur' === $t;
+					if ( ! $refund && $amt >= 0 ) {
 						throw new AC_Error( 'Une dépense correspond à un débit bancaire.' );
 					}
+					if ( $refund && $amt <= 0 ) {
+						throw new AC_Error( 'Un remboursement de fournisseur correspond à un crédit bancaire.' );
+					}
+					if ( $refund && ( $cat_r = AC_Posting::category( $p['category_id'] ?? null ) ) && $cat_r['is_asset'] ) {
+						throw new AC_Error( "Remboursement d'une immobilisation : enregistrez une sortie d'immobilisation." );
+					}
 					$data = array( 'date' => $tx['date'], 'supplier_name' => ( $p['supplier_name'] ?? '' ) ?: ( $tx['counterparty'] ?: $tx['label'] ),
-						'label' => ( $p['label'] ?? '' ) ?: ( $tx['label'] ?: 'Dépense' ), 'ttc_cents' => -$amt,
+						'label' => ( $p['label'] ?? '' ) ?: ( $refund ? 'Remboursement ' . ( $tx['counterparty'] ?: '' ) : ( $tx['label'] ?: 'Dépense' ) ), 'ttc_cents' => -$amt,
 						'vat_rate' => ( $p['vat_rate'] ?? '' ) ?: ( ! in_array( $tx['qonto_vat_rate'], array( null, '-1' ), true ) ? $tx['qonto_vat_rate'] : null ),
 						'vat_regime' => ( $p['vat_regime'] ?? '' ) ?: 'fr', 'category_id' => $p['category_id'] ?? null, 'nature' => ( $p['nature'] ?? '' ) ?: 'services',
-						'payment_method' => 'qonto', 'document_id' => $p['document_id'] ?? null, 'comment' => $p['comment'] ?? null, 'beneficiary' => $p['beneficiary'] ?? null,
-						'source' => 'qonto' === $tx['source'] ? 'qonto' : 'banque', 'status' => 'a_valider', 'invoice_number' => $p['invoice_number'] ?? null );
-					$v = self::has( $p, 'vat_cents' ) ? $p['vat_cents'] : $tx['qonto_vat_cents'];
+						'payment_method' => 'qonto', 'document_id' => ( $p['document_id'] ?? null ) ?: ( $own_expense['document_id'] ?? null ) ?: $tx_doc,
+						'comment' => $p['comment'] ?? null, 'beneficiary' => $p['beneficiary'] ?? null,
+						'source' => 'qonto' === $tx['source'] ? 'qonto' : 'banque', 'status' => ! empty( $p['validate'] ) ? 'valide' : 'a_valider', 'invoice_number' => $p['invoice_number'] ?? null );
+					// Taux choisi explicitement (catégorisation en lot) : la TVA est recalculée depuis le taux, sans reprendre celle de Qonto.
+					$v = self::has( $p, 'vat_cents' ) ? $p['vat_cents'] : ( empty( $p['compute_vat'] ) ? $tx['qonto_vat_cents'] : null );
 					if ( null !== $v && '' !== $v ) {
-						$data['vat_cents'] = $v;
+						$data['vat_cents'] = $refund ? -abs( (int) self::cents( $v ) ) : $v;
+					} elseif ( $own_expense ) {
+						$data['vat_cents'] = null;
+						$data['ht_cents']  = null;
 					}
-					$result = self::save_expense( $data, null, $reason );
+					AC_DB::exec( 'DELETE FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
+					$result = self::save_expense( $data, $own_expense ? (int) $own_expense['id'] : null, $reason );
 					$alloc( 'depense', $result['id'] );
 					break;
 				case 'depense':
 					$alloc( 'depense', (int) $p['expense_id'] );
 					$exp = AC_DB::q1( 'SELECT * FROM {expenses} WHERE id=?', array( (int) $p['expense_id'] ) );
+					if ( $tx_doc && ! $exp['document_id'] ) {
+						self::save_expense( array( 'document_id' => (int) $tx_doc ), $exp['id'], 'Justificatif Qonto rattaché' );
+					}
 					if ( 'a_payer' === $exp['payment_method'] ) {
 						AC_DB::exec( "UPDATE {expenses} SET payment_method='qonto' WHERE id=?", array( $exp['id'] ) );
 						AC_Posting::post_expense( $exp['id'], $reason );
 					}
 					break;
 				case 'vente':
-					$list = ! empty( $p['invoices'] ) ? $p['invoices'] : array( array( 'invoice_id' => $p['invoice_id'], 'amount_cents' => $amt ) );
+					// Commission de la plateforme de paiement : la facture est soldée pour son montant total,
+					// la commission est une dépense distincte (frais bancaires). La TVA collectée reste due sur le total facturé.
+					$commission = self::has( $p, 'commission_cents' ) ? abs( self::cents( $p['commission_cents'] ) ) : 0;
+					$list       = ! empty( $p['invoices'] ) ? $p['invoices'] : array( array( 'invoice_id' => $p['invoice_id'], 'amount_cents' => $amt + $commission ) );
 					foreach ( $list as $it ) {
-						$alloc( 'vente', (int) $it['invoice_id'], self::has( $it, 'amount_cents' ) ? self::cents( $it['amount_cents'] ) : $amt );
+						$alloc( 'vente', (int) $it['invoice_id'], self::has( $it, 'amount_cents' ) ? self::cents( $it['amount_cents'] ) : $amt + $commission );
+					}
+					if ( $commission ) {
+						$bank_cat = AC_DB::q1( "SELECT id FROM {categories} WHERE code='banque'" );
+						$fee      = self::save_expense( array( 'date' => $tx['date'], 'supplier_name' => ( $p['provider'] ?? '' ) ?: 'Plateforme de paiement',
+							'label' => 'Commission sur encaissement', 'ttc_cents' => $commission, 'vat_regime' => 'sans_tva', 'category_id' => $bank_cat ? $bank_cat['id'] : null,
+							'payment_method' => 'qonto', 'source' => 'banque', 'status' => 'a_valider', 'comment' => 'Retenue par la plateforme sur le paiement client' ), null, $reason );
+						$alloc( 'depense', $fee['id'], -$commission );
 					}
 					break;
 				case 'associe':
@@ -689,6 +746,7 @@ class AC_Services {
 			}
 			$total = AC_DB::ival( 'SELECT COALESCE(SUM(amount_cents),0) FROM {allocations} WHERE bank_transaction_id=?', array( $id ) );
 			if ( abs( $total ) > abs( $tx['amount_cents'] ) || ( $total && ( $total > 0 ) !== ( $tx['amount_cents'] > 0 ) ) ) {
+				// (une affectation peut dépasser l'opération si une commission vient en déduction : seul le total compte)
 				throw new AC_Error( "Le montant affecté dépasse le montant de l'opération." );
 			}
 			if ( ! empty( $p['comment'] ) ) {
@@ -696,7 +754,100 @@ class AC_Services {
 			}
 			AC_DB::audit( 'rapprochement', 'operation_bancaire', $id, $before, AC_DB::q( 'SELECT * FROM {allocations} WHERE bank_transaction_id=?', array( $id ) ), $reason );
 			AC_Posting::post_bank_transaction( $id, $reason );
+			if ( ! empty( $p['validate'] ) && ! empty( $result['id'] ) ) {
+				foreach ( array_merge( AC_Ledger::source_entries( 'depense', (int) $result['id'] ), AC_Ledger::source_entries( 'banque', $id ) ) as $e ) {
+					AC_Ledger::validate_entry( $e['id'] );
+				}
+			}
 			return array( 'ok' => true ) + $result;
+		} );
+	}
+
+	public static function supplier_rule( ?string $who ): ?array {
+		foreach ( AC_DB::q( 'SELECT * FROM {supplier_rules} ORDER BY auto DESC' ) as $r ) {
+			if ( $r['pattern'] && self::name_similarity( $who, $r['pattern'] ) >= 0.99 ) {
+				return $r;
+			}
+		}
+		return null;
+	}
+
+	public static function remember_rule( string $who, $category_id, string $regime, ?string $rate, bool $auto ): void {
+		AC_DB::exec( 'INSERT INTO {supplier_rules}(pattern,category_id,vat_regime,vat_rate,auto,updated_at) VALUES(?,?,?,?,?,?)
+			ON DUPLICATE KEY UPDATE category_id=VALUES(category_id), vat_regime=VALUES(vat_regime), vat_rate=VALUES(vat_rate), auto=VALUES(auto), updated_at=VALUES(updated_at)',
+			array( mb_substr( self::norm_name( $who ), 0, 190 ), $category_id ? (int) $category_id : null, $regime, $rate, $auto ? 1 : 0, AC_DB::now() ) );
+	}
+
+	/** Opérations à traiter regroupées par tiers (abonnements récurrents). */
+	public static function transaction_groups(): array {
+		$groups = array();
+		foreach ( AC_DB::q( "SELECT id, counterparty, label, amount_cents, date FROM {bank_transactions} WHERE status IN ('a_traiter','propose') ORDER BY date DESC" ) as $t ) {
+			$name = $t['counterparty'] ?: $t['label'];
+			$key  = self::norm_name( $name ) . ( $t['amount_cents'] < 0 ? '|D' : '|C' );
+			if ( '' === self::norm_name( $name ) ) {
+				continue;
+			}
+			$groups[ $key ] = $groups[ $key ] ?? array( 'name' => $name, 'debit' => $t['amount_cents'] < 0, 'ids' => array(), 'total_cents' => 0, 'last' => $t['date'] );
+			$groups[ $key ]['ids'][]        = $t['id'];
+			$groups[ $key ]['total_cents'] += $t['amount_cents'];
+		}
+		$out = array();
+		foreach ( $groups as $g ) {
+			if ( count( $g['ids'] ) >= 2 && $g['debit'] ) { // prélèvements récurrents uniquement
+				$g['count'] = count( $g['ids'] );
+				$r          = self::supplier_rule( $g['name'] );
+				$g['rule']  = $r;
+				$out[]      = $g;
+			}
+		}
+		usort( $out, function ( $a, $b ) { return $b['count'] <=> $a['count']; } );
+		return $out;
+	}
+
+	/** Catégorisation en lot (par exemple tous les prélèvements Ionos en hébergement, TVA 20 %). */
+	public static function bulk_classify( array $ids, array $payload, bool $remember = false ): array {
+		$done   = 0;
+		$errors = array();
+		$names  = array();
+		foreach ( array_unique( array_map( 'intval', $ids ) ) as $id ) {
+			$tx = AC_DB::q1( 'SELECT * FROM {bank_transactions} WHERE id=?', array( $id ) );
+			if ( ! $tx ) {
+				continue;
+			}
+			$p = $payload;
+			if ( 'depense_nouvelle' === ( $p['type'] ?? '' ) && $tx['amount_cents'] > 0 ) {
+				$p['type'] = 'remboursement_fournisseur';
+			}
+			unset( $p['supplier_name'], $p['label'] );
+			try {
+				self::classify_transaction( $id, $p, 'Catégorisation en lot' );
+				$names[ self::norm_name( $tx['counterparty'] ?: $tx['label'] ) ] = $tx['counterparty'] ?: $tx['label'];
+				$done++;
+			} catch ( AC_Error $e ) {
+				$errors[] = AC_Checks::d( $tx['date'] ) . ' ' . ( $tx['counterparty'] ?: $tx['label'] ) . ' : ' . $e->getMessage();
+			}
+		}
+		if ( $remember && in_array( $payload['type'] ?? '', array( 'depense_nouvelle', 'remboursement_fournisseur' ), true ) ) {
+			foreach ( $names as $n ) {
+				self::remember_rule( $n, $payload['category_id'] ?? null, ( $payload['vat_regime'] ?? '' ) ?: 'fr', ( $payload['vat_rate'] ?? '' ) ?: null, true );
+			}
+		}
+		// Les opérations restantes de ces fournisseurs (remboursements, nouveaux prélèvements) reçoivent une nouvelle proposition.
+		foreach ( AC_DB::q( "SELECT id FROM {bank_transactions} WHERE status IN ('a_traiter','propose')" ) as $t ) {
+			self::suggest_for_transaction( (int) $t['id'] );
+		}
+		return array( 'done' => $done, 'errors' => $errors );
+	}
+
+	/** Ajoute un justificatif à une opération bancaire (et à la dépense qui lui est liée). */
+	public static function attach_to_transaction( int $tx_id, int $doc_id ): void {
+		AC_DB::tx( function () use ( $tx_id, $doc_id ) {
+			AC_DB::exec( 'UPDATE {documents} SET bank_transaction_id=? WHERE id=?', array( $tx_id, $doc_id ) );
+			foreach ( AC_DB::q( "SELECT x.id FROM {allocations} a JOIN {expenses} x ON x.id=a.target_id WHERE a.target_type='depense' AND a.bank_transaction_id=? AND x.document_id IS NULL",
+				array( $tx_id ) ) as $x ) {
+				self::save_expense( array( 'document_id' => $doc_id ), $x['id'], 'Justificatif ajouté' );
+			}
+			AC_DB::audit( 'ajout_justificatif', 'operation_bancaire', $tx_id, null, array( 'document' => $doc_id ) );
 		} );
 	}
 

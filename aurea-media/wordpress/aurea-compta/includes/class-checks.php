@@ -31,7 +31,7 @@ class AC_Checks {
 			$lab  = AC_Services::norm_name( $x['label'] ) !== AC_Services::norm_name( $who ) ? $x['label'] : '';
 			$name = trim( "$who $lab" ) . ' du ' . self::d( $x['date'] );
 			$link = "#/depenses?id={$x['id']}";
-			if ( ! $x['document_id'] && 'personnel' !== $x['rule'] ) {
+			if ( ! $x['document_id'] && ! in_array( $x['rule'], array( 'personnel', 'ik' ), true ) ) {
 				$out[] = self::issue( ( $x['vat_cents'] && 'fr' === $x['vat_regime'] && $x['vat_recovery'] ) ? 'bloquant' : 'a_verifier', 'justificatif_manquant',
 					"Justificatif manquant : $name.", $link, $x['ttc_cents'] );
 			}

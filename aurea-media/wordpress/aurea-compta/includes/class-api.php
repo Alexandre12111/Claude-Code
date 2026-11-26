@@ -40,6 +40,15 @@ class AC_Api {
 			array( 'GET', 'transactions', 'transactions' ),
 			array( 'POST', 'transactions', 'add_transaction' ),
 			array( 'POST', 'transactions/accept-all', 'accept_all' ),
+			array( 'GET', 'transactions/groups', 'tx_groups' ),
+			array( 'POST', 'transactions/bulk', 'tx_bulk' ),
+			array( 'POST', 'transactions/(\d+)/document', 'tx_document' ),
+			array( 'POST', 'expenses/(\d+)/document', 'expense_document' ),
+			array( 'POST', 'qonto/attachments', 'qonto_attachments' ),
+			array( 'GET', 'mileage', 'mileage' ),
+			array( 'POST', 'mileage', 'mileage_add' ),
+			array( 'DELETE', 'mileage/(\d+)', 'mileage_delete' ),
+			array( 'GET', 'mileage/pdf', 'mileage_pdf' ),
 			array( 'GET', 'transactions/(\d+)', 'transaction' ),
 			array( 'POST', 'transactions/(\d+)/classify', 'classify' ),
 			array( 'POST', 'transactions/(\d+)/accept', 'accept' ),
@@ -171,8 +180,8 @@ class AC_Api {
 			'a_verifier' => array(
 				'operations' => AC_DB::ival( "SELECT COUNT(*) FROM {bank_transactions} WHERE status IN ('a_traiter','propose')" ),
 				'depenses' => AC_DB::ival( "SELECT COUNT(*) FROM {expenses} WHERE status IN ('a_valider','propose_ia','importe')" ),
-				'justificatifs_manquants' => AC_DB::ival( "SELECT COUNT(*) FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.document_id IS NULL AND IFNULL(c.rule,'')<>'personnel'" ),
-				'pieces_non_traitees' => AC_DB::ival( "SELECT COUNT(*) FROM {documents} d WHERE d.kind='justificatif' AND d.id NOT IN (SELECT document_id FROM {expenses} WHERE document_id IS NOT NULL)
+				'justificatifs_manquants' => AC_DB::ival( "SELECT COUNT(*) FROM {expenses} x LEFT JOIN {categories} c ON c.id=x.category_id WHERE x.document_id IS NULL AND IFNULL(c.rule,'') NOT IN ('personnel','ik')" ),
+				'pieces_non_traitees' => AC_DB::ival( "SELECT COUNT(*) FROM {documents} d WHERE d.kind='justificatif' AND d.bank_transaction_id IS NULL AND d.id NOT IN (SELECT document_id FROM {expenses} WHERE document_id IS NOT NULL)
 					AND d.id NOT IN (SELECT document_id FROM {sales_invoices} WHERE document_id IS NOT NULL)" ),
 			),
 			'parametres_provisoires' => array_keys( array_filter( $conf, function ( $v ) { return ! $v; } ) ),
@@ -289,7 +298,7 @@ class AC_Api {
 
 	// ------------------------------------------------------------ banque
 	public static function r_transactions( $r ) {
-		$sql = 'SELECT id, source, external_id, date, amount_cents, label, counterparty, operation_type, reference, note, qonto_vat_cents, qonto_vat_rate, status, suggestion, comment FROM {bank_transactions} WHERE 1=1';
+		$sql = 'SELECT id, source, external_id, date, amount_cents, label, counterparty, operation_type, reference, note, qonto_vat_cents, qonto_vat_rate, status, suggestion, comment, attachment_ids FROM {bank_transactions} WHERE 1=1';
 		$p   = array();
 		$st  = self::q( $r, 'status' );
 		if ( 'a_verifier' === $st ) {
@@ -310,12 +319,26 @@ class AC_Api {
 		}
 		$rows   = AC_DB::q( $sql . ' ORDER BY date DESC, id DESC LIMIT 1000', $p );
 		$allocs = array();
-		foreach ( AC_DB::q( 'SELECT * FROM {allocations}' ) as $a ) {
+		foreach ( AC_DB::q( "SELECT a.*, x.document_id exp_doc, x.label exp_label, x.status exp_status, c.name category FROM {allocations} a
+			LEFT JOIN {expenses} x ON a.target_type='depense' AND x.id=a.target_id LEFT JOIN {categories} c ON c.id=x.category_id" ) as $a ) {
 			$allocs[ $a['bank_transaction_id'] ][] = $a;
+		}
+		$docs = array();
+		foreach ( AC_DB::q( "SELECT id, bank_transaction_id FROM {documents} WHERE bank_transaction_id IS NOT NULL AND kind<>'alias' ORDER BY id" ) as $d ) {
+			$docs[ $d['bank_transaction_id'] ] = $docs[ $d['bank_transaction_id'] ] ?? $d['id'];
 		}
 		foreach ( $rows as &$t ) {
 			$t['suggestion']  = $t['suggestion'] ? json_decode( $t['suggestion'], true ) : null;
 			$t['allocations'] = $allocs[ $t['id'] ] ?? array();
+			$t['document_id'] = $docs[ $t['id'] ] ?? null;
+			foreach ( $t['allocations'] as $a ) {
+				$t['document_id'] = $t['document_id'] ?: ( $a['exp_doc'] ?: null );
+			}
+			// Justificatif attendu ? (pas pour un apport, un virement interne, le capital, la TVA ou l'IS)
+			$types               = array_column( $t['allocations'], 'target_type' );
+			$t['needs_document'] = $t['amount_cents'] < 0 && ! array_intersect( $types, array( 'associe', 'capital', 'tva', 'is', 'virement_interne' ) );
+			$t['attachment_count'] = count( json_decode( (string) ( $t['attachment_ids'] ?: '[]' ), true ) ?: array() );
+			unset( $t['attachment_ids'] );
 		}
 		return $rows;
 	}
@@ -373,6 +396,56 @@ class AC_Api {
 			'amount_cents' => AC_Services::cents( $d['amount_cents'] ), 'label' => $d['label'] ?? '', 'counterparty' => $d['label'] ?? '' ) ), 'manuel' );
 	}
 
+	public static function r_tx_groups( $r ) {
+		return AC_Services::transaction_groups();
+	}
+
+	public static function r_tx_bulk( $r ) {
+		$d = self::body( $r );
+		$p = (array) ( $d['payload'] ?? array() );
+		if ( in_array( $p['type'] ?? '', array( 'depense_nouvelle', 'remboursement_fournisseur' ), true ) ) {
+			$p['compute_vat'] = true;
+		}
+		return AC_Services::bulk_classify( (array) ( $d['ids'] ?? array() ), $p, ! empty( $d['remember'] ) );
+	}
+
+	public static function r_tx_document( $r, $id ) {
+		list( $name, $content ) = self::uploaded( $r );
+		$tx  = AC_DB::q1( 'SELECT * FROM {bank_transactions} WHERE id=?', array( (int) $id ) );
+		$doc = AC_DB::tx( function () use ( $name, $content, $tx ) { return AC_Services::store_document( $name, $content, 'justificatif', $tx['date'], $tx['counterparty'] ); } );
+		AC_Services::attach_to_transaction( (int) $id, $doc );
+		return array( 'document_id' => $doc );
+	}
+
+	public static function r_expense_document( $r, $id ) {
+		list( $name, $content ) = self::uploaded( $r );
+		$x   = AC_DB::q1( 'SELECT * FROM {expenses} WHERE id=?', array( (int) $id ) );
+		$doc = AC_DB::tx( function () use ( $name, $content, $x ) { return AC_Services::store_document( $name, $content, 'justificatif', $x['date'], $x['supplier_name'] ); } );
+		return AC_Services::save_expense( array( 'document_id' => $doc ), (int) $id, 'Justificatif ajouté' );
+	}
+
+	public static function r_qonto_attachments( $r ) {
+		return AC_Qonto::fetch_attachments( 20 );
+	}
+
+	public static function r_mileage( $r ) {
+		return AC_Mileage::summary( (int) self::q( $r, 'year', substr( AC_DB::today(), 0, 4 ) ) );
+	}
+
+	public static function r_mileage_add( $r ) {
+		return AC_Mileage::add( self::body( $r ) );
+	}
+
+	public static function r_mileage_delete( $r, $id ) {
+		AC_Mileage::delete( (int) $id );
+		return array( 'ok' => true );
+	}
+
+	public static function r_mileage_pdf( $r ) {
+		$y = (int) self::q( $r, 'year', substr( AC_DB::today(), 0, 4 ) );
+		self::send( AC_Mileage::pdf( $y ), 'application/pdf', "frais-kilometriques-$y.pdf", true );
+	}
+
 	public static function r_qonto_sync( $r ) {
 		return AC_Qonto::sync( (bool) self::q( $r, 'full', false ) );
 	}
@@ -416,9 +489,9 @@ class AC_Api {
 			$sql .= ' AND (d.original_name LIKE ? OR d.party_name LIKE ? OR d.doc_date LIKE ? OR d.amount_cents=?)';
 			array_push( $p, "%$s%", "%$s%", "%$s%", preg_match( '/^[\d\s.,-]+$/', $s ) ? AC_Money::to_cents( $s ) : -1 );
 		}
-		$rows = AC_DB::q( $sql . ' ORDER BY d.id DESC LIMIT 500', $p );
+		$rows = AC_DB::q( str_replace( 'WHERE 1=1', "WHERE d.kind<>'alias'", $sql ) . ' ORDER BY d.id DESC LIMIT 500', $p );
 		if ( self::q( $r, 'unlinked' ) ) {
-			$rows = array_values( array_filter( $rows, function ( $d ) { return ! $d['expense_id'] && ! $d['invoice_id'] && 'justificatif' === $d['kind']; } ) );
+			$rows = array_values( array_filter( $rows, function ( $d ) { return ! $d['expense_id'] && ! $d['invoice_id'] && ! $d['bank_transaction_id'] && 'justificatif' === $d['kind']; } ) );
 		}
 		foreach ( $rows as &$d ) {
 			$d['ai_data'] = $d['ai_data'] ? json_decode( $d['ai_data'], true ) : null;
@@ -793,7 +866,7 @@ class AC_Api {
 			'transactions' => AC_DB::q( 'SELECT id, date, counterparty, label, amount_cents, status FROM {bank_transactions} WHERE label LIKE ? OR counterparty LIKE ? OR date LIKE ? OR ABS(amount_cents)=? LIMIT 20', array( $like, $like, $like, $amt ) ),
 			'depenses' => AC_DB::q( 'SELECT id, date, supplier_name, label, ttc_cents, status FROM {expenses} WHERE supplier_name LIKE ? OR label LIKE ? OR date LIKE ? OR ttc_cents=? LIMIT 20', array( $like, $like, $like, $amt ) ),
 			'factures' => AC_DB::q( 'SELECT s.id, s.number, s.issue_date, p.name client, s.ttc_cents FROM {sales_invoices} s JOIN {parties} p ON p.id=s.client_id WHERE s.number LIKE ? OR p.name LIKE ? OR s.issue_date LIKE ? OR s.ttc_cents=? LIMIT 20', array( $like, $like, $like, $amt ) ),
-			'pieces' => AC_DB::q( 'SELECT id, original_name, party_name, doc_date, amount_cents FROM {documents} WHERE original_name LIKE ? OR party_name LIKE ? OR doc_date LIKE ? OR amount_cents=? LIMIT 20', array( $like, $like, $like, $amt ) ),
+			'pieces' => AC_DB::q( "SELECT id, original_name, party_name, doc_date, amount_cents FROM {documents} WHERE kind<>'alias' AND (original_name LIKE ? OR party_name LIKE ? OR doc_date LIKE ? OR amount_cents=?) LIMIT 20", array( $like, $like, $like, $amt ) ),
 		);
 	}
 }
