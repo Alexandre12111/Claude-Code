@@ -33,6 +33,7 @@ class AC_Api {
 			array( 'GET', 'fiscal-years', 'fiscal_years' ),
 			array( 'GET', 'vat/exercise', 'vat_exercise' ),
 			array( 'GET', 'calendar', 'calendar' ),
+			array( 'POST', 'checks/not-duplicate', 'not_duplicate' ),
 			array( 'POST', 'calendar/done', 'calendar_done' ),
 			array( 'POST', 'calendar/test-email', 'calendar_test' ),
 			array( 'GET', 'des', 'des_months' ),
@@ -268,6 +269,22 @@ class AC_Api {
 				'is_vat' => in_array( 'tva', $types, true ) || in_array( '445660', array_column( $al, 'account' ), true ) );
 		}
 		return $out;
+	}
+
+	/** Doublon possible écarté : pour une paire de dépenses, ou pour tout un fournisseur (abonnements multiples). */
+	public static function r_not_duplicate( $r ) {
+		$b = self::body( $r );
+		if ( ! empty( $b['supplier'] ) ) {
+			$list   = (array) get_option( AC_DB::opt( 'duplicate_ok_suppliers' ), array() );
+			$list[] = AC_Services::norm_name( (string) $b['supplier'] );
+			update_option( AC_DB::opt( 'duplicate_ok_suppliers' ), array_values( array_unique( array_filter( $list ) ) ), false );
+		} elseif ( ! empty( $b['pair'] ) && preg_match( '/^\d+-\d+$/', (string) $b['pair'] ) ) {
+			$list   = (array) get_option( AC_DB::opt( 'not_duplicates' ), array() );
+			$list[] = (string) $b['pair'];
+			update_option( AC_DB::opt( 'not_duplicates' ), array_values( array_unique( $list ) ), false );
+		}
+		AC_DB::audit( 'controle', 'doublon', 0, null, $b, 'Doublon possible écarté par l\'utilisateur' );
+		return array( 'ok' => true );
 	}
 
 	// ------------------------------------------------------------ échéances et DES

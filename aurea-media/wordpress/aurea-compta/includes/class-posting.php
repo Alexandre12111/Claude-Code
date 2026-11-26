@@ -168,6 +168,9 @@ class AC_Posting {
 		$aux_label = AC_Rules::ASSOCIATE === $cp ? 'Associé unique' : $sup;
 		$tag       = 'D' . $exp['id'];
 		$rate      = $exp['vat_rate'] ?: '20';
+		if ( 'multi' === $rate ) { // plusieurs taux : code TVA au taux moyen du ticket (la TVA déductible se déclare globalement)
+			$rate = $exp['ht_cents'] ? sprintf( '%.1f', abs( $exp['vat_cents'] ) * 100 / abs( $exp['ht_cents'] ) ) : '20';
+		}
 		$o_cp      = array( 'aux' => $aux, 'aux_label' => $aux_label, 'lettrage' => $tag );
 		$lines     = array();
 		if ( in_array( $exp['vat_regime'], array( 'autoliquidation_ue', 'autoliquidation_hors_ue' ), true ) ) {

@@ -41,7 +41,7 @@ function raises( callable $fn, $msg ) {
 }
 function setup() {
 	AC_DB::drop_all();
-	foreach ( array( 's_company', 's_tax', 's_confirmed', 's_bank_statement', 's_invoicing', 's_ai', 's_qonto', 's_vehicle', 's_reminders', 'secrets', 'schema', 'calendar_done', 'calendar_reminded' ) as $o ) {
+	foreach ( array( 's_company', 's_tax', 's_confirmed', 's_bank_statement', 's_invoicing', 's_ai', 's_qonto', 's_vehicle', 's_reminders', 'secrets', 'schema', 'calendar_done', 'calendar_reminded', 'not_duplicates', 'duplicate_ok_suppliers' ) as $o ) {
 		delete_option( AC_DB::opt( $o ) );
 	}
 	AC_DB::install();
@@ -560,6 +560,43 @@ test( 'Échéances, rappels par e-mail et déclaration européenne de services',
 	ok( $r1['sent'] >= 1 && 1 === count( $mails ), 'rappel envoyé' );
 	ok( false !== strpos( $mails[0]['message'], 'TVA' ), 'contenu du rappel' );
 	eq( $r2['sent'], 0, 'pas de doublon' );
+} );
+
+test( 'Ticket à plusieurs taux et doublons écartés', function () {
+	// Restaurant : 50 € HT à 10 % + 10 € HT de vin à 20 % = 7 € de TVA (11,67 %)
+	$t = tx( 'resto', '2026-04-10', -6700, 'LE CLAUZEL' );
+	AC_Services::classify_transaction( $t['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'repas' ), 'vat_regime' => 'fr', 'vat_rate' => 'multi', 'vat_cents' => 700, 'validate' => true ) );
+	$x = AC_DB::q1( "SELECT x.* FROM {expenses} x JOIN {allocations} a ON a.target_id=x.id AND a.target_type='depense' WHERE a.bank_transaction_id=?", array( $t['id'] ) );
+	eq( array( $x['vat_rate'], (int) $x['ht_cents'], (int) $x['vat_cents'] ), array( 'multi', 6000, 700 ), 'montants du ticket' );
+	eq( bal( '44566' ), 700, 'TVA récupérée' );
+	$issues = array_filter( AC_Checks::period_checks( '2026-04-01', '2026-04-30' ), function ( $i ) { return false !== strpos( $i['message'], 'TVA incohérente' ); } );
+	eq( count( $issues ), 0, 'pas de blocage pour un ticket à plusieurs taux' );
+	raises( function () use ( $x ) { AC_Services::save_expense( array( 'vat_rate' => 'multi', 'ht_cents' => null, 'vat_cents' => null, 'ttc_cents' => 6700 ), null ); }, 'montant de TVA exigé' );
+	// Ticket saisi avec un seul taux par erreur : reconnu à la migration
+	$u = tx( 'resto2', '2026-04-12', -6700, 'SUSHI TEST' );
+	AC_Services::classify_transaction( $u['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'repas' ), 'vat_regime' => 'fr', 'vat_rate' => '10', 'vat_cents' => 700, 'validate' => true ) );
+	$issues = array_filter( AC_Checks::period_checks( '2026-04-01', '2026-04-30' ), function ( $i ) { return false !== strpos( $i['message'], 'TVA incohérente' ); } );
+	eq( count( $issues ), 1, 'incohérence signalée avec un taux unique' );
+	AC_DB::migrate();
+	$issues = array_filter( AC_Checks::period_checks( '2026-04-01', '2026-04-30' ), function ( $i ) { return false !== strpos( $i['message'], 'TVA incohérente' ); } );
+	eq( count( $issues ), 0, 'ticket reconnu à plusieurs taux' );
+	// Doublons : abonnements identiques de plusieurs clients chez le même hébergeur
+	foreach ( array( 'i1', 'i2', 'i3' ) as $k ) {
+		$a = tx( $k, '2026-04-20', -120, 'IONOS SARL' );
+		AC_Services::classify_transaction( $a['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'hebergement' ), 'vat_rate' => '20', 'compute_vat' => true ) );
+	}
+	$dups = function () { return array_values( array_filter( AC_Checks::period_checks( '2026-04-01', '2026-04-30' ), function ( $i ) { return 'doublon' === $i['type'] && false !== strpos( $i['message'], 'IONOS' ); } ) ); };
+	$d = $dups();
+	eq( count( $d ), 3, 'trois paires signalées' );
+	ok( 2 === count( $d[0]['actions'] ), 'actions proposées' );
+	$req = new WP_REST_Request( 'POST', '/x' );
+	$req->set_header( 'Content-Type', 'application/json' );
+	$req->set_body( wp_json_encode( $d[0]['actions'][0]['body'] ) );
+	AC_Api::r_not_duplicate( $req );
+	eq( count( $dups() ), 2, 'une paire écartée' );
+	$req->set_body( wp_json_encode( $d[0]['actions'][1]['body'] ) );
+	AC_Api::r_not_duplicate( $req );
+	eq( count( $dups() ), 0, 'fournisseur exclu du contrôle' );
 } );
 
 function build_year() {

@@ -57,10 +57,22 @@ class AC_Checks {
 				$out[] = self::issue( 'a_verifier', 'depense_sans_paiement', "Dépense payée par Qonto mais non rapprochée d'une opération : $name.", $link );
 			}
 		}
+		$ok_pairs = (array) get_option( AC_DB::opt( 'not_duplicates' ), array() );
+		$ok_sup   = (array) get_option( AC_DB::opt( 'duplicate_ok_suppliers' ), array() );
 		foreach ( AC_DB::q( "SELECT a.id ida, b.id idb, a.supplier_name, a.ttc_cents, a.date FROM {expenses} a JOIN {expenses} b ON a.id<b.id
 			AND a.ttc_cents=b.ttc_cents AND ABS(DATEDIFF(a.date,b.date))<=3 AND IFNULL(a.supplier_name,'')=IFNULL(b.supplier_name,'') WHERE a.date BETWEEN ? AND ?", array( $start, $end ) ) as $d ) {
-			$out[] = self::issue( 'a_verifier', 'doublon', "Doublon possible : {$d['supplier_name']} " . $e( $d['ttc_cents'] ) . ' le ' . self::d( $d['date'] ) . " (dépenses {$d['ida']} et {$d['idb']}).",
+			$sup = AC_Services::norm_name( $d['supplier_name'] );
+			if ( in_array( "{$d['ida']}-{$d['idb']}", $ok_pairs, true ) || ( '' !== $sup && in_array( $sup, $ok_sup, true ) ) ) {
+				continue; // confirmé : ce ne sont pas des doublons
+			}
+			$i            = self::issue( 'a_verifier', 'doublon', "Doublon possible : {$d['supplier_name']} " . $e( $d['ttc_cents'] ) . ' le ' . self::d( $d['date'] ) . " (dépenses {$d['ida']} et {$d['idb']}).",
 				"#/depenses?id={$d['idb']}" );
+			$i['actions'] = array(
+				array( 'label' => 'Pas un doublon', 'url' => '/api/checks/not-duplicate', 'body' => array( 'pair' => "{$d['ida']}-{$d['idb']}" ), 'done' => 'Noté : ce ne sont pas des doublons' ),
+				array( 'label' => 'Jamais pour ' . ( $d['supplier_name'] ?: 'ce fournisseur' ), 'url' => '/api/checks/not-duplicate', 'body' => array( 'supplier' => $d['supplier_name'] ),
+					'confirm' => "Ne plus signaler de doublon pour {$d['supplier_name']} (plusieurs abonnements identiques) ?", 'done' => 'Fournisseur exclu du contrôle des doublons', 'reload' => true ),
+			);
+			$out[] = $i;
 		}
 		foreach ( AC_DB::q( 'SELECT document_id, COUNT(*) n FROM {expenses} WHERE document_id IS NOT NULL AND date BETWEEN ? AND ? GROUP BY document_id HAVING n>1', array( $start, $end ) ) as $d ) {
 			$out[] = self::issue( 'a_verifier', 'doublon', "Le même justificatif est rattaché à {$d['n']} dépenses.", '#/depenses' );

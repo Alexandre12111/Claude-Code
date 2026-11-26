@@ -8,7 +8,7 @@ class AC_Error extends Exception {}
 
 class AC_DB {
 
-	const SCHEMA_VERSION = 4;
+	const SCHEMA_VERSION = 5;
 
 	/** Colonnes converties en entiers à la lecture ($wpdb renvoie des chaînes). */
 	const INT_PATTERN = '/(_cents|^id$|_id$|^km_x10$|^round_trip$|^auto$|^vat_recovery$|^deductible$|^locked$|^is_asset$|^active$|^duration_years$|^size$|^custom$|_count$|^n$|^debit$|^credit$|^solde$|^total$|^seq$|^vseq$)/';
@@ -287,6 +287,14 @@ class AC_DB {
 		}
 		if ( class_exists( 'AC_Services' ) ) {
 			AC_Services::relink_documents();
+		}
+		// Tickets à plusieurs taux déjà saisis (TVA entre 5,5 % et 20 % du HT, sans correspondre au taux indiqué) : taux « plusieurs taux ».
+		foreach ( self::q( "SELECT id, ht_cents, vat_cents, vat_rate FROM {expenses} WHERE vat_regime='fr' AND vat_cents<>0 AND ht_cents<>0 AND vat_rate IS NOT NULL AND vat_rate NOT IN ('multi','0','-1')" ) as $x ) {
+			$exp = AC_Money::vat_from_ht( abs( (int) $x['ht_cents'] ), $x['vat_rate'] );
+			$pct = abs( (int) $x['vat_cents'] ) * 100 / abs( (int) $x['ht_cents'] );
+			if ( abs( $exp - abs( (int) $x['vat_cents'] ) ) > max( 2, intdiv( abs( (int) $x['ht_cents'] ), 1000 ) ) && $pct > 5.4 && $pct < 20.1 ) {
+				self::exec( "UPDATE {expenses} SET vat_rate='multi' WHERE id=?", array( $x['id'] ) );
+			}
 		}
 	}
 

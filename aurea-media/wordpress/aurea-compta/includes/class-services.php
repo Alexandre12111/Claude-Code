@@ -304,7 +304,11 @@ class AC_Services {
 		}
 		if ( 'fr' === ( $exp['vat_regime'] ?? 'fr' ) && $vat && $ht ) {
 			$r = $exp['vat_rate'] ?? '';
-			if ( $r && ! in_array( $r, array( '0', '-1' ), true ) ) {
+			if ( 'multi' === $r ) {
+				if ( abs( $vat ) > AC_Money::vat_from_ht( abs( $ht ), '20' ) + max( 2, intdiv( abs( $ht ), 1000 ) ) ) {
+					$w[] = 'TVA incohérente : ' . AC_Money::fmt( $vat ) . ' dépasse 20 % du montant HT, même avec plusieurs taux.';
+				}
+			} elseif ( $r && ! in_array( $r, array( '0', '-1' ), true ) ) {
 				$expected = AC_Money::vat_from_ht( $ht, $r );
 				if ( abs( $expected - $vat ) > max( 2, intdiv( $ht, 1000 ) ) ) {
 					$w[] = sprintf( 'TVA incohérente : %s pour un taux de %s %% (attendu %s).', AC_Money::fmt( $vat ), $r, AC_Money::fmt( $expected ) );
@@ -319,6 +323,24 @@ class AC_Services {
 
 	public static function expense_amounts( array $d ): array {
 		$regime = ( $d['vat_regime'] ?? '' ) ?: 'fr';
+		// Ticket à plusieurs taux (restaurant : plats à 10 %, alcool à 20 %) : le montant total de TVA fait foi.
+		if ( 'multi' === ( $d['vat_rate'] ?? '' ) && 'fr' === $regime ) {
+			$ht  = self::has( $d, 'ht_cents' ) ? self::cents( $d['ht_cents'] ) : null;
+			$vat = self::has( $d, 'vat_cents' ) ? self::cents( $d['vat_cents'] ) : null;
+			$ttc = self::has( $d, 'ttc_cents' ) ? self::cents( $d['ttc_cents'] ) : null;
+			if ( null === $vat ) {
+				$vat = null !== $ttc && null !== $ht ? $ttc - $ht : null;
+			}
+			if ( null === $vat ) {
+				throw new AC_Error( 'Avec plusieurs taux, saisissez le montant total de TVA du ticket.' );
+			}
+			$ht  = null !== $ht ? $ht : (int) $ttc - $vat;
+			$ttc = null !== $ttc ? $ttc : $ht + $vat;
+			if ( $ht + $vat !== $ttc ) {
+				throw new AC_Error( 'HT + TVA ≠ TTC (' . ( $ht + $vat ) . " ≠ $ttc centimes)." );
+			}
+			return array( 'ht_cents' => $ht, 'vat_cents' => $vat, 'ttc_cents' => $ttc, 'vat_rate' => 'multi' );
+		}
 		$r      = AC_Money::rate_str( ( $d['vat_rate'] ?? '' ) ?: ( 'sans_tva' === $regime ? '0' : '20' ) );
 		$ht     = self::has( $d, 'ht_cents' ) ? self::cents( $d['ht_cents'] ) : null;
 		$vat    = self::has( $d, 'vat_cents' ) ? self::cents( $d['vat_cents'] ) : null;

@@ -139,7 +139,13 @@ function entriesHtml(entries) {
 }
 function issuesHtml(issues, empty = "Aucun problème à corriger.") {
   if (!issues.length) return `<div class="alert ok">${empty}</div>`;
-  return `<div class="panel"><ul class="issues">${issues.map((i) => `<li>${badge(i.niveau)}<span style="flex:1">${esc(i.message)}</span>${i.lien ? `<a href="${i.lien}" onclick="closeDrawer();closeModal()">Corriger</a>` : ""}</li>`).join("")}</ul></div>`;
+  return `<div class="panel"><ul class="issues">${issues.map((i) => `<li>${badge(i.niveau)}<span style="flex:1">${esc(i.message)}</span>${(i.actions || []).map((x) => `<button class="sm ghost" onclick='issueAction(${JSON.stringify(x).replace(/'/g, "&#39;")}, this)'>${esc(x.label)}</button>`).join(" ")}${i.lien ? `<a href="${i.lien}" onclick="closeDrawer();closeModal()">Corriger</a>` : ""}</li>`).join("")}</ul></div>`;
+}
+async function issueAction(x, btn) {
+  if (x.confirm && !confirm(x.confirm)) return;
+  await run(() => post(x.url, x.body || {}), x.done || "Enregistré");
+  const li = btn.closest("li"); if (li) li.remove();
+  if (x.reload) refreshView();
 }
 function docLink(doc) { return doc ? `<a class="doc-link" href="/api/documents/${doc.id}/file" target="_blank">${ic("file")}${esc(doc.original_name || "Justificatif")}</a>` : `<span class="badge b-warn">Justificatif manquant</span>`; }
 
@@ -569,7 +575,7 @@ async function openTx(id) {
       <div class="field"><label>Fournisseur</label><input name="supplier_name" value="${esc(t.counterparty || "")}"></div></div>
       <div class="field"><label>Libellé</label><input name="label" value="${esc(t.label || "")}"></div>
       <div class="grid3"><div class="field"><label>TVA</label><select name="vat_regime">${Object.entries(REGIMES).map(([k, l]) => `<option value="${k}" ${s && s.vat_regime === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
-      <div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${t.qonto_vat_rate === r ? "selected" : ""}>${r}</option>`).join("")}</select></div>
+      <div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${t.qonto_vat_rate === r ? "selected" : ""}>${r}</option>`).join("")}<option value="multi">Plusieurs taux</option></select></div>
       <div class="field"><label>Montant TVA (facultatif)</label><input name="vat" value="${centsToInput(t.qonto_vat_cents)}" placeholder="calculé"></div></div>
       <div class="grid2"><div class="field"><label>Nature</label><select name="nature"><option value="services">Services</option><option value="biens">Biens</option></select></div>
       <div class="field"><label>Justificatif</label>${t.documents.filter((x) => x.kind !== "alias").length ? `<div class="muted small" style="padding-top:10px">${ic("file")} Justificatif de l'opération repris automatiquement</div>` : fileField("file")}</div></div>
@@ -739,7 +745,7 @@ async function openPiece(id) {
       <div class="grid2"><div class="field"><label>Libellé</label><input name="label" value="${esc(ex.description || "")}"></div>
         <div class="field"><label>N° de facture</label><input name="invoice_number" value="${esc(ex.invoice_number || "")}"></div></div>
       <div class="grid4"><div class="field"><label>HT</label><input name="ht" value="${centsToInput(ex.ht_cents)}"></div><div class="field"><label>TVA</label><input name="vat" value="${centsToInput(ex.vat_cents)}"></div>
-        <div class="field"><label>TTC</label><input name="ttc" value="${centsToInput(ex.ttc_cents)}"></div><div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${ex.vat_rate === r ? "selected" : ""}>${r}</option>`).join("")}</select></div></div>
+        <div class="field"><label>TTC</label><input name="ttc" value="${centsToInput(ex.ttc_cents)}"></div><div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${ex.vat_rate === r ? "selected" : ""}>${r}</option>`).join("")}<option value="multi" ${ex.vat_rate === "multi" ? "selected" : ""}>Plusieurs taux</option></select></div></div>
       <div class="grid3"><div class="field"><label>Catégorie</label><select name="category_id">${cats.filter((c) => c.active).map((c) => `<option value="${c.id}" ${ex.category_id == c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
         <div class="field"><label>TVA</label><select name="vat_regime">${Object.entries(REGIMES).map(([k, l]) => `<option value="${k}" ${ex.vat_regime === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
         <div class="field"><label>Nature</label><select name="nature"><option value="services">Services</option><option value="biens" ${ex.nature === "biens" ? "selected" : ""}>Biens</option></select></div></div>
@@ -772,8 +778,8 @@ async function expenseForm(x, mode) {
       <div class="grid2"><div class="field"><label>Date</label><input type="date" name="date" value="${esc(x.date)}"></div><div class="field"><label>Fournisseur</label><input name="supplier_name" value="${esc(x.supplier_name || "")}"></div></div>
       <div class="grid2"><div class="field"><label>Libellé</label><input name="label" value="${esc(x.label || "")}"></div><div class="field"><label>N° de facture</label><input name="invoice_number" value="${esc(x.invoice_number || "")}"></div></div>
       <div class="grid4"><div class="field"><label>HT</label><input name="ht" value="${edit ? centsToInput(x.ht_cents) : ""}"></div><div class="field"><label>TVA</label><input name="vat" value="${edit ? centsToInput(x.vat_cents) : ""}"></div>
-        <div class="field"><label>TTC</label><input name="ttc" value="${edit ? centsToInput(x.ttc_cents) : ""}"></div><div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${String(x.vat_rate) === r ? "selected" : ""}>${r}</option>`).join("")}</select></div></div>
-      <p class="hint" style="margin-top:-6px">Renseignez le TTC et le taux : HT et TVA sont calculés. Ou saisissez les montants exacts de la facture.</p>
+        <div class="field"><label>TTC</label><input name="ttc" value="${edit ? centsToInput(x.ttc_cents) : ""}"></div><div class="field"><label>Taux</label><select name="vat_rate">${["20", "10", "5.5", "2.1", "0"].map((r) => `<option ${String(x.vat_rate) === r ? "selected" : ""}>${r}</option>`).join("")}<option value="multi" ${x.vat_rate === "multi" ? "selected" : ""}>Plusieurs taux</option></select></div></div>
+      <p class="hint" style="margin-top:-6px">Renseignez le TTC et le taux : HT et TVA sont calculés. Ou saisissez les montants exacts de la facture. Ticket avec plusieurs taux (repas à 10 %, vin à 20 %) : choisissez « Plusieurs taux » et saisissez le total de TVA du ticket.</p>
       <div class="grid3"><div class="field"><label>Catégorie</label><select name="category_id"><option value="">Choisir…</option>${cats.filter((c) => c.active || c.id === x.category_id).map((c) => `<option value="${c.id}" ${x.category_id === c.id ? "selected" : ""}>${esc(c.name)}</option>`).join("")}</select></div>
         <div class="field"><label>TVA</label><select name="vat_regime">${Object.entries(REGIMES).map(([k, l]) => `<option value="${k}" ${x.vat_regime === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
         <div class="field"><label>Nature</label><select name="nature"><option value="services">Services</option><option value="biens" ${x.nature === "biens" ? "selected" : ""}>Biens</option></select></div></div>
@@ -809,7 +815,7 @@ async function openExpense(id) {
   openDrawer(`<h2>${esc(x.supplier_name || "")} · ${esc(x.label)}</h2>
     <div style="margin-bottom:10px">${badge(x.status)} <span class="badge">${esc(x.source)}</span></div>
     ${x.warnings.length ? `<div class="alert warn"><ul style="margin:0 0 0 18px;padding:0">${x.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div>` : ""}
-    <dl class="kv"><dt>Date</dt><dd>${d(x.date)}</dd><dt>Montants</dt><dd>HT ${expAmt(x, x.ht_cents)} · TVA ${expAmt(x, x.vat_cents)} (${esc(x.vat_rate || "")} %) · TTC <b>${expAmt(x, x.ttc_cents)}</b>${x.ttc_cents < 0 ? `<div class="small" style="margin-top:4px"><span class="badge b-ok">Remboursement reçu</span> Vient en déduction de vos charges : il n'augmente pas vos dépenses.</div>` : ""}</dd>
+    <dl class="kv"><dt>Date</dt><dd>${d(x.date)}</dd><dt>Montants</dt><dd>HT ${expAmt(x, x.ht_cents)} · TVA ${expAmt(x, x.vat_cents)} (${x.vat_rate === "multi" ? "plusieurs taux" : esc(x.vat_rate || "") + " %"}) · TTC <b>${expAmt(x, x.ttc_cents)}</b>${x.ttc_cents < 0 ? `<div class="small" style="margin-top:4px"><span class="badge b-ok">Remboursement reçu</span> Vient en déduction de vos charges : il n'augmente pas vos dépenses.</div>` : ""}</dd>
       <dt>Régime de TVA</dt><dd>${REGIMES[x.vat_regime]} · récupérable ${x.vat_recovery} %</dd><dt>Catégorie</dt><dd>${esc(x.category || "Non catégorisée")}</dd>
       <dt>Traitement fiscal</dt><dd>${esc(x.rule_explanation || "")} Charge déductible ${x.deductible} %.</dd>
       <dt>Paiement</dt><dd>${PAYMENT[x.payment_method]} · payé ${eur(x.paid_cents)}</dd><dt>Justificatif</dt><dd>${x.document ? docLink(x.document)
