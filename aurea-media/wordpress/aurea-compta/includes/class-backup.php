@@ -8,7 +8,7 @@ class AC_Backup {
 
 	const TABLES = array( 'fiscal_years', 'accounts', 'categories', 'parties', 'documents', 'bank_transactions', 'sales_invoices', 'sales_invoice_lines',
 		'expenses', 'allocations', 'associate_movements', 'fixed_assets', 'entries', 'entry_lines', 'vat_returns', 'month_closings', 'audit_log', 'supplier_rules', 'mileage' );
-	const SETTINGS = array( 'company', 'tax', 'invoicing', 'qonto', 'ai', 'bank_statement', 'confirmed', 'vehicle' );
+	const SETTINGS = array( 'company', 'tax', 'invoicing', 'qonto', 'ai', 'bank_statement', 'confirmed', 'vehicle', 'reminders' );
 	const KEEP = 30;
 
 	private static function dump(): string {

@@ -41,7 +41,7 @@ function raises( callable $fn, $msg ) {
 }
 function setup() {
 	AC_DB::drop_all();
-	foreach ( array( 's_company', 's_tax', 's_confirmed', 's_bank_statement', 's_invoicing', 's_ai', 's_qonto', 's_vehicle', 'secrets', 'schema' ) as $o ) {
+	foreach ( array( 's_company', 's_tax', 's_confirmed', 's_bank_statement', 's_invoicing', 's_ai', 's_qonto', 's_vehicle', 's_reminders', 'secrets', 'schema', 'calendar_done', 'calendar_reminded' ) as $o ) {
 		delete_option( AC_DB::opt( $o ) );
 	}
 	AC_DB::install();
@@ -514,6 +514,52 @@ test( 'Reclasser une opération dont la dépense est validée (paiement au SIE e
 	AC_Services::classify_transaction( $g['id'], array( 'type' => 'compte', 'account' => '445660' ) );
 	eq( bal( '6510' ), 0, 'plus de charge' );
 	eq( bal( '44566' ), 3000, 'TVA déductible' );
+} );
+
+test( 'Échéances, rappels par e-mail et déclaration européenne de services', function () {
+	// Jours ouvrés (week ends et jours fériés français)
+	eq( AC_Calendar::business_day_after( '2027-05-01', 2 ), '2027-05-04', 'liasse : 2e jour ouvré après le 1er mai 2027' );
+	eq( AC_Calendar::nth_business_day( '2026-12', 10 ), '2026-12-14', '10e jour ouvré de décembre 2026' );
+	ok( ! AC_Calendar::is_business_day( '2026-05-14' ), 'Ascension 2026 fériée' );
+	ok( ! AC_Calendar::is_business_day( '2026-05-25' ), 'lundi de Pentecôte 2026 férié' );
+	// DES : client professionnel bulgare facturé sans TVA
+	$inv = AC_Services::save_sales_invoice( array( 'client_name' => 'Creation Company', 'issue_date' => '2026-06-23', 'vat_regime' => 'exonere',
+		'lines' => array( array( 'description' => 'Abonnement site', 'unit_price_cents' => 15049, 'vat_rate' => '0' ) ) ) );
+	eq( count( AC_Calendar::des_month( '2026-06' )['lines'] ), 0, 'pays inconnu : pas encore en DES' );
+	$cid = (int) AC_DB::val( 'SELECT client_id FROM {sales_invoices} WHERE id=?', array( $inv['id'] ) );
+	$req = new WP_REST_Request( 'PUT', '/x' );
+	$req->set_header( 'Content-Type', 'application/json' );
+	$req->set_body( wp_json_encode( array( 'country' => 'BG' ) ) );
+	AC_Api::r_update_party( $req, $cid );
+	$m = AC_Calendar::des_month( '2026-06' );
+	eq( array( count( $m['lines'] ), $m['lines'][0]['montant_euros'], $m['due'] ), array( 1, 150, '2026-07-15' ), 'ligne DES arrondie à l\'euro, échéance au 10e jour ouvré' );
+	ok( false !== strpos( implode( ' ', $m['issues'] ), 'numéro de TVA' ), 'numéro de TVA manquant signalé' );
+	AC_DB::exec( "UPDATE {parties} SET vat_number='BG123456789' WHERE id=?", array( $cid ) );
+	ok( false !== strpos( AC_Calendar::des_csv( '2026-06' ), 'BG123456789;BG;Creation Company;150' ), 'export CSV' );
+	eq( AC_Calendar::des_months(), array( '2026-06' ), 'mois à déclarer' );
+	// Échéances
+	update_option( AC_DB::opt( 's_company' ), array_merge( AC_DB::get_setting( 'company' ), array( 'creation_date' => '2025-10-15' ) ), false );
+	$items = AC_Calendar::items( '2026-06-01', '2027-08-31' );
+	$keys  = array_column( $items, 'due', 'key' );
+	eq( $keys['tva:2026-10'] ?? null, '2026-11-15', 'TVA d\'octobre' );
+	eq( $keys['des:2026-06'] ?? null, '2026-07-15', 'DES de juin ' . implode( ',', array_keys( $keys ) ) );
+	eq( $keys['cfe:2026'] ?? null, '2026-12-15', 'CFE 2026' );
+	$fy = AC_DB::val( 'SELECT id FROM {fiscal_years}' );
+	eq( array( $keys[ "liasse:$fy" ] ?? null, $keys[ "is-solde:$fy" ] ?? null, $keys[ "approbation:$fy" ] ?? null, $keys[ "greffe:$fy" ] ?? null ),
+		array( '2027-05-04', '2027-05-15', '2027-06-30', '2027-08-31' ), 'liasse, solde d\'IS, approbation, greffe' );
+	AC_Calendar::set_done( 'des:2026-06', true );
+	$done = array_column( AC_Calendar::items( '2026-06-01', '2026-08-31' ), 'done', 'key' );
+	ok( $done['des:2026-06'], 'échéance marquée comme faite' );
+	// Rappels : un seul e-mail par étape, puis plus rien
+	$mails = array();
+	$cap   = function ( $r, $atts ) use ( &$mails ) { $mails[] = $atts; return true; };
+	add_filter( 'pre_wp_mail', $cap, 10, 2 );
+	$r1 = AC_Calendar::send_reminders();
+	$r2 = AC_Calendar::send_reminders();
+	remove_filter( 'pre_wp_mail', $cap, 10 );
+	ok( $r1['sent'] >= 1 && 1 === count( $mails ), 'rappel envoyé' );
+	ok( false !== strpos( $mails[0]['message'], 'TVA' ), 'contenu du rappel' );
+	eq( $r2['sent'], 0, 'pas de doublon' );
 } );
 
 function build_year() {

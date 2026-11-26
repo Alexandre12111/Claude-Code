@@ -37,6 +37,11 @@ class AC_Admin {
 	public static function hourly(): void {
 		AC_Backup::daily();
 		AC_Qonto::maybe_sync();
+		try {
+			AC_Calendar::send_reminders();
+		} catch ( Throwable $e ) {
+			// un rappel manqué ne doit pas bloquer la tâche planifiée
+		}
 	}
 
 	/** aurea-media.fr/compta → application (connexion WordPress si nécessaire). */
@@ -107,6 +112,7 @@ class AC_Admin {
       <a href="#/recettes" data-route="recettes"><svg class="icon" aria-hidden="true"><use href="#i-invoice"/></svg><span class="label">Recettes et factures</span></a>
       <a href="#/associe" data-route="associe"><svg class="icon" aria-hidden="true"><use href="#i-user"/></svg><span class="label">Apports personnels</span></a>
       <a href="#/tva" data-route="tva"><svg class="icon" aria-hidden="true"><use href="#i-percent"/></svg><span class="label">TVA</span></a>
+      <a href="#/echeances" data-route="echeances"><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg><span class="label">Échéances</span><span class="count" id="c-echeances"></span></a>
       <a href="#/comptabilite" data-route="comptabilite"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><span class="label">Comptabilité</span></a>
       <a href="#/cloture" data-route="cloture"><svg class="icon" aria-hidden="true"><use href="#i-archive"/></svg><span class="label">Clôture et exports</span></a>
       <a href="#/parametres" data-route="parametres"><svg class="icon" aria-hidden="true"><use href="#i-sliders"/></svg><span class="label">Paramètres</span></a>

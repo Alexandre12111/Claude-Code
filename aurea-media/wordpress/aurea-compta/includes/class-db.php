@@ -314,6 +314,7 @@ class AC_DB {
 			'qonto'     => array( 'enabled' => false, 'environment' => 'production', 'auto_sync_minutes' => 60, 'bank_account_id' => '', 'last_sync' => null ),
 			'ai'        => array( 'enabled' => false, 'model' => 'claude-opus-5-5', 'auto_link_threshold' => 0.9 ),
 			'vehicle'   => array( 'name' => 'Honda Forza 350', 'type' => 'moto', 'cv' => '3-5', 'confirmed' => false ),
+			'reminders' => array( 'enabled' => true, 'email' => '', 'days_before' => 7 ),
 			'bank_statement' => array(),
 			'confirmed' => array( 'company' => false, 'tax' => false ),
 		);

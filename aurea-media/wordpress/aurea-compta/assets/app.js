@@ -146,7 +146,7 @@ function docLink(doc) { return doc ? `<a class="doc-link" href="/api/documents/$
 // ------------------------------------------------------------------ routeur
 const ROUTES = {};
 const TITLES = { "": "Vue d'ensemble", operations: "Opérations", banque: "Opérations", recettes: "Recettes et factures clients", depenses: "Opérations",
-  associe: "Apports personnels et compte courant", tva: "TVA", comptabilite: "Comptabilité et écritures", cloture: "Clôture annuelle et exports", parametres: "Paramètres" };
+  associe: "Apports personnels et compte courant", tva: "TVA", echeances: "Échéances et obligations", comptabilite: "Comptabilité et écritures", cloture: "Clôture annuelle et exports", parametres: "Paramètres" };
 function params() { const q = location.hash.split("?")[1] || ""; return Object.fromEntries(new URLSearchParams(q)); }
 async function route(keepOverlay = false) {
   if (keepOverlay !== true) { closeDrawer(); closeModal(); }
@@ -191,6 +191,7 @@ ROUTES[""] = async () => {
       ${kpi("#/associe", "user", "Apports non remboursés", eur(o.apports_non_rembourses_cents), "Somme due par la société")}
       ${kpi("#/operations", "inbox", "Opérations à vérifier", String(totalTodo), `${todo.operations} opération(s), ${todo.depenses} dépense(s), ${todo.justificatifs_manquants} justificatif(s) manquant(s)`)}
     </div>
+    <div id="next-deadlines"></div>
     <h2>À faire</h2>
     <div class="panel"><ul class="issues">
       ${todo.operations ? `<li>${badge("a_verifier")}<span style="flex:1">${todo.operations} opération(s) bancaire(s) à catégoriser</span><a href="#/operations">Ouvrir</a></li>` : ""}
@@ -202,7 +203,16 @@ ROUTES[""] = async () => {
     <p class="muted small" style="margin-top:18px">${o.sync.enabled ? `Synchronisation Qonto automatique active. Dernière synchronisation : ${o.sync.last_sync ? new Date(o.sync.last_sync).toLocaleString("fr-FR") : "jamais"}.` : "Synchronisation Qonto non configurée : <a href='#/parametres?tab=qonto'>configurer</a> ou importer un CSV dans Banque."}
     ${o.sync.last_error ? `<br><span class="neg">${esc(o.sync.last_error)}</span>` : ""}</p>
     <p class="muted small">Trésorerie et résultat sont différents : le résultat tient compte des factures non encaissées, des dettes et des amortissements ; la trésorerie est l'argent disponible.</p>`;
+  loadNextDeadlines();
 };
+async function loadNextDeadlines() {
+  const box = $("#next-deadlines"); if (!box) return;
+  const c = await api("/api/calendar").catch(() => null); if (!c) return;
+  const next = c.items.filter((it) => !it.done && it.days <= 45).slice(0, 4);
+  const nav = $("#c-echeances"); if (nav) nav.textContent = c.items.filter((it) => !it.done && it.days <= 15).length || "";
+  if (!next.length) return;
+  box.innerHTML = `<h2>Prochaines échéances</h2><ul class="cal-list">${next.map(calRow).join("")}</ul><p class="small"><a href="#/echeances">Toutes les échéances</a></p>`;
+}
 async function syncQonto(full = false) {
   toast("Synchronisation en cours…");
   const r = await run(() => post("/api/qonto/sync" + (full ? "?full=true" : "")));
@@ -814,6 +824,80 @@ async function openExpense(id) {
 }
 async function validateExpense(id) { await run(() => post(`/api/expenses/${id}/validate`), "Dépense validée"); openExpense(id); refreshView(); }
 async function deleteExpense(id) { if (!confirm("Supprimer cette dépense ?")) return; await run(() => del(`/api/expenses/${id}`), "Dépense supprimée"); closeDrawer(); route(); }
+
+
+// ------------------------------------------------------------------ échéances et DES
+const CAL_STATE = { en_retard: ["En retard", "b-bad"], bientot: ["Dans les 15 jours", "b-warn"], a_venir: ["À venir", "plain"], faite: ["Faite", "b-ok"] };
+const calLink = (it) => it.link ? (it.link.startsWith("#") ? `<a href="${esc(it.link)}">Ouvrir</a>` : `<a href="${esc(it.link)}" target="_blank" rel="noopener">Site officiel</a>`) : "";
+const calRow = (it) => `<li class="cal-item ${it.state}">
+  <div class="cal-date"><b>${new Date(it.due + "T12:00:00").toLocaleDateString("fr-FR", { day: "2-digit", month: "short" })}</b><small>${it.due.slice(0, 4)}</small></div>
+  <div class="cal-body"><div><b>${esc(it.title)}</b> <span class="badge plain">${esc(it.category || "")}</span> ${it.state !== "a_venir" ? `<span class="badge ${CAL_STATE[it.state][1]}">${CAL_STATE[it.state][0]}${it.state === "en_retard" ? ` (${-it.days} j)` : it.state === "bientot" ? ` (${it.days === 0 ? "aujourd'hui" : "J-" + it.days})` : ""}</span>` : ""}</div>
+    <div class="small muted">${esc(it.note)}</div><div class="small" style="margin-top:4px">${calLink(it)}</div></div>
+  <div class="cal-act">${it.auto_done ? `<span class="small muted">Déposée</span>` : `<button class="sm ${it.done ? "ghost" : ""}" onclick="calDone('${esc(it.key)}', ${!it.done})">${it.done ? "Annuler" : ic("check") + "Fait"}</button>`}</div></li>`;
+async function calDoneMany(keys) {
+  if (!confirm(`Marquer ${keys.length} déclaration(s) de TVA comme déjà déposée(s) ?`)) return;
+  await run(() => post("/api/calendar/done", { keys, done: true }), "Échéances mises à jour"); refreshView();
+}
+async function calDone(key, done) { await run(() => post("/api/calendar/done", { key, done }), done ? "Échéance marquée comme faite" : "Échéance de nouveau à faire"); refreshView(); }
+ROUTES.echeances = async (p) => {
+  setActions(`<button onclick="calSettings()">${ic("sliders")}Rappels par e-mail</button>`);
+  const [c, des, clients] = await Promise.all([api("/api/calendar"), api("/api/des"), api("/api/des-clients")]);
+  const groups = { en_retard: [], bientot: [], a_venir: [], faite: [] };
+  c.items.forEach((it) => groups[it.state].push(it));
+  const upcoming = groups.a_venir.filter((it) => it.days <= 200);
+  const later = groups.a_venir.length - upcoming.length;
+  const r = c.reminders;
+  $("#view").innerHTML = `
+    <div class="alert ${r.enabled ? "info" : "warn"}">${ic(r.enabled ? "info" : "alert")}<span>${r.enabled ? `Rappels par e-mail actifs : ${r.days_before} jours avant puis le jour même, à <b>${esc(r.email || c.admin_email)}</b>.` : "Rappels par e-mail désactivés."} <a href="#" onclick="calSettings();return false">Modifier</a></span></div>
+    ${groups.en_retard.length ? `<div class="toolbar" style="margin-top:22px"><h2 style="margin:0">En retard</h2><span class="spacer"></span>
+      ${groups.en_retard.some((it) => it.category === "TVA") ? `<button class="sm" onclick="calDoneMany(${esc(JSON.stringify(groups.en_retard.filter((it) => it.category === "TVA").map((it) => it.key)))})">${ic("check")}Déclarations de TVA déjà déposées (Dougs)</button>` : ""}</div>
+      <ul class="cal-list" style="margin-top:10px">${groups.en_retard.map(calRow).join("")}</ul>` : ""}
+    <h2>Dans les 15 jours</h2>${groups.bientot.length ? `<ul class="cal-list">${groups.bientot.map(calRow).join("")}</ul>` : `<p class="muted small">Rien dans les 15 prochains jours.</p>`}
+    <h2>À venir</h2><ul class="cal-list">${upcoming.map(calRow).join("")}</ul>${later ? `<p class="small muted">${later} échéance(s) plus lointaine(s).</p>` : ""}
+    ${groups.faite.length ? `<details style="margin-top:14px"><summary><b>Faites</b> (${groups.faite.length})</summary><ul class="cal-list">${groups.faite.slice().reverse().map(calRow).join("")}</ul></details>` : ""}
+    <h2 id="des">Déclaration européenne de services (DES)</h2>
+    <p class="small muted" style="margin-top:0">Chaque mois où vous facturez une prestation à un <b>client professionnel d'un autre pays de l'UE</b>, déclarez son numéro de TVA et le montant HT (en euros, sans centimes) sur douane.gouv.fr avant le 10e jour ouvré du mois suivant. La facture se fait sans TVA, avec la mention « Autoliquidation ». Un client hors UE n'entre pas dans la DES.</p>
+    ${des.length ? `<div class="table-wrap"><table><thead><tr><th>Mois</th><th>Clients (numéro de TVA)</th><th class="right">Montant HT</th><th>Échéance</th><th></th></tr></thead><tbody>
+      ${des.map((m) => `<tr><td>${esc(new Date(m.month + "-15").toLocaleDateString("fr-FR", { month: "long", year: "numeric" }))}</td>
+        <td>${m.lines.map((l) => `${esc(l.client)} <span class="mono small">${esc(l.vat_number || "numéro manquant")}</span>`).join("<br>")}${m.issues.length ? `<div class="small neg">${m.issues.map(esc).join("<br>")}</div>` : ""}</td>
+        <td class="num">${m.total_euros} €</td><td>${d(m.due)} ${m.done ? badge("valide") : ""}</td>
+        <td class="right"><a class="btn sm" href="/api/des/${m.month}/csv">${ic("download")}CSV</a> <button class="sm" onclick="calDone('des:${m.month}', ${!m.done})">${m.done ? "Annuler" : "Déclarée"}</button></td></tr>`).join("")}
+      </tbody></table></div>` : `<p class="small">Aucune prestation à un client professionnel de l'UE pour l'instant. Renseignez le pays de vos clients facturés sans TVA ci-dessous.</p>`}
+    <h3>Clients facturés sans TVA</h3>
+    <p class="small muted" style="margin-top:0">Indiquez le pays et le numéro de TVA de chaque client. Client de l'UE avec numéro de TVA : DES et mention « Autoliquidation ». Client hors UE : mention « TVA non applicable, article 259-1 du CGI ». Client en France : la TVA à 20 % est due.</p>
+    <div class="table-wrap"><table><thead><tr><th>Client</th><th class="right">Factures</th><th>Pays</th><th>N° de TVA intracommunautaire</th><th></th></tr></thead><tbody>
+      ${clients.map((x) => `<tr><td>${esc(x.name)}<div class="small muted">dernière facture ${d(x.last_date)}</div></td><td class="num">${x.invoices} · ${eur(x.ht_cents)}</td>
+        <td><select id="cc-${x.id}" style="width:auto"><option value="">À préciser</option>${Object.entries(COUNTRIES).map(([k, l]) => `<option value="${k}" ${x.country === k ? "selected" : ""}>${l}</option>`).join("")}</select></td>
+        <td><input id="vat-${x.id}" value="${esc(x.vat_number || "")}" placeholder="ex. BG123456789" style="max-width:190px"></td>
+        <td class="right" style="white-space:nowrap"><button class="sm ghost" onclick="checkVies(${x.id})">Vérifier (VIES)</button> <button class="sm primary" onclick="saveClient(${x.id})">Enregistrer</button></td></tr>`).join("")}
+    </tbody></table>${clients.length ? "" : emptyState("Aucun client facturé sans TVA.", "user")}</div>`;
+  const nav = $("#c-echeances"); if (nav) nav.textContent = groups.en_retard.length + groups.bientot.length || "";
+  if (p.des) $("#des").scrollIntoView();
+};
+const COUNTRIES = { FR: "France", DE: "Allemagne", AT: "Autriche", BE: "Belgique", BG: "Bulgarie", CY: "Chypre", HR: "Croatie", DK: "Danemark", ES: "Espagne", EE: "Estonie", FI: "Finlande", GR: "Grèce", HU: "Hongrie", IE: "Irlande", IT: "Italie", LV: "Lettonie", LT: "Lituanie", LU: "Luxembourg", MT: "Malte", NL: "Pays-Bas", PL: "Pologne", PT: "Portugal", CZ: "Tchéquie", RO: "Roumanie", SK: "Slovaquie", SI: "Slovénie", SE: "Suède", CH: "Suisse (hors UE)", GB: "Royaume-Uni (hors UE)", US: "États-Unis (hors UE)", CA: "Canada (hors UE)", MA: "Maroc (hors UE)", TN: "Tunisie (hors UE)", DZ: "Algérie (hors UE)", AE: "Émirats arabes unis (hors UE)", XX: "Autre pays hors UE" };
+async function saveClient(id) {
+  await run(() => api(`/api/parties/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ country: $(`#cc-${id}`).value, vat_number: $(`#vat-${id}`).value }) }), "Client enregistré");
+  refreshView();
+}
+async function checkVies(id) {
+  const v = $(`#vat-${id}`).value;
+  if (!v) { toast("Saisissez d'abord le numéro de TVA.", true); return; }
+  const r = await run(() => post("/api/vies", { vat_number: v }));
+  toast(r.valid ? `Numéro valide${r.name && r.name !== "---" ? " : " + r.name : ""}` : "Numéro invalide sur VIES : vérifiez-le auprès du client.", !r.valid);
+}
+async function calSettings() {
+  const c = await api("/api/calendar"); const s = c.reminders;
+  openModal(`<h2 style="margin-top:0">Rappels par e-mail</h2><form id="remf">
+    <label class="check"><input type="checkbox" name="enabled" ${s.enabled ? "checked" : ""}> Recevoir un e-mail avant chaque échéance</label>
+    <div class="grid2" style="margin-top:10px"><div class="field"><label>Adresse e-mail</label><input type="email" name="email" value="${esc(s.email || "")}" placeholder="${esc(c.admin_email)}"></div>
+      <div class="field"><label>Premier rappel (jours avant)</label><input type="number" min="1" max="30" name="days_before" value="${Number(s.days_before) || 7}"></div></div>
+    <p class="small muted">Un second rappel est envoyé le jour même si l'échéance n'est pas marquée comme faite. Les e-mails partent de votre WordPress : vérifiez vos indésirables lors du premier envoi.</p>
+    <div class="toolbar"><button class="primary" type="submit">Enregistrer</button><button type="button" onclick="testReminder()">Envoyer un e-mail de test</button><button type="button" class="ghost" onclick="closeModal()">Fermer</button></div></form>`);
+  $("#remf").onsubmit = async (e) => { e.preventDefault(); const f = formData(e.target);
+    await run(() => api("/api/settings/reminders", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ enabled: !!f.enabled, email: f.email, days_before: Number(f.days_before) || 7 }) }), "Rappels enregistrés");
+    closeModal(); refreshView(); };
+}
+async function testReminder() { const r = await run(() => post("/api/calendar/test-email")); toast(r.ok ? `E-mail de test envoyé à ${r.to}` : "L'envoi a échoué : votre hébergement n'envoie peut-être pas d'e-mails (extension SMTP conseillée).", !r.ok); }
 
 // ------------------------------------------------------------------ associé
 ROUTES.associe = async () => {

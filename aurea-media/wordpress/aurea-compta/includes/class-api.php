@@ -32,6 +32,15 @@ class AC_Api {
 			array( 'PUT', 'secrets', 'put_secrets' ),
 			array( 'GET', 'fiscal-years', 'fiscal_years' ),
 			array( 'GET', 'vat/exercise', 'vat_exercise' ),
+			array( 'GET', 'calendar', 'calendar' ),
+			array( 'POST', 'calendar/done', 'calendar_done' ),
+			array( 'POST', 'calendar/test-email', 'calendar_test' ),
+			array( 'GET', 'des', 'des_months' ),
+			array( 'GET', 'des/(\d{4}-\d{2})', 'des_month' ),
+			array( 'GET', 'des/(\d{4}-\d{2})/csv', 'des_csv' ),
+			array( 'GET', 'des-clients', 'des_clients' ),
+			array( 'PUT', 'parties/(\d+)', 'update_party' ),
+			array( 'POST', 'vies', 'vies' ),
 			array( 'GET', 'vat/tax-payments', 'vat_tax_payments' ),
 			array( 'POST', 'fiscal-years', 'add_fiscal_year' ),
 			array( 'GET', 'categories', 'categories' ),
@@ -259,6 +268,70 @@ class AC_Api {
 				'is_vat' => in_array( 'tva', $types, true ) || in_array( '445660', array_column( $al, 'account' ), true ) );
 		}
 		return $out;
+	}
+
+	// ------------------------------------------------------------ échéances et DES
+	public static function r_calendar( $r ) {
+		$t = AC_DB::today();
+		return array( 'items' => AC_Calendar::items( self::q( $r, 'from', gmdate( 'Y-m-d', strtotime( "$t -12 months" ) ) ), self::q( $r, 'to', gmdate( 'Y-m-d', strtotime( "$t +14 months" ) ) ) ),
+			'reminders' => AC_DB::get_setting( 'reminders' ), 'admin_email' => get_option( 'admin_email' ) );
+	}
+
+	public static function r_calendar_done( $r ) {
+		$b = self::body( $r );
+		foreach ( ! empty( $b['keys'] ) ? (array) $b['keys'] : array( (string) ( $b['key'] ?? '' ) ) as $k ) {
+			if ( '' !== (string) $k ) {
+				AC_Calendar::set_done( (string) $k, ! empty( $b['done'] ) );
+			}
+		}
+		return array( 'ok' => true );
+	}
+
+	public static function r_calendar_test( $r ) {
+		return AC_Calendar::send_reminders( true );
+	}
+
+	public static function r_des_months( $r ) {
+		return array_map( function ( $m ) { return AC_Calendar::des_month( $m ) + array( 'done' => isset( ( (array) get_option( AC_DB::opt( 'calendar_done' ), array() ) )[ "des:$m" ] ) ); }, AC_Calendar::des_months() );
+	}
+
+	public static function r_des_month( $r, $m ) {
+		return AC_Calendar::des_month( $m );
+	}
+
+	public static function r_des_csv( $r, $m ) {
+		self::send( AC_Calendar::des_csv( $m ), 'text/csv; charset=utf-8', "des-$m.csv" );
+	}
+
+	/** Clients facturés sans TVA : pays et numéro de TVA à renseigner (DES, mentions de facture). */
+	public static function r_des_clients( $r ) {
+		return AC_DB::q( "SELECT p.id, p.name, p.country, p.vat_number, COUNT(s.id) invoices, SUM(s.ht_cents) ht_cents, MAX(s.issue_date) last_date
+			FROM {parties} p JOIN {sales_invoices} s ON s.client_id=p.id WHERE s.vat_cents=0 GROUP BY p.id ORDER BY p.name" );
+	}
+
+	public static function r_update_party( $r, $id ) {
+		$b   = self::body( $r );
+		$row = array();
+		if ( array_key_exists( 'country', $b ) ) {
+			$c = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $b['country'] ), 0, 2 ) );
+			if ( $c && ! isset( AC_Calendar::COUNTRIES[ $c ] ) ) {
+				throw new AC_Error( 'Pays inconnu' );
+			}
+			$row['country'] = $c ?: null;
+		}
+		if ( array_key_exists( 'vat_number', $b ) ) {
+			$row['vat_number'] = strtoupper( preg_replace( '/[^A-Za-z0-9]/', '', (string) $b['vat_number'] ) ) ?: null;
+		}
+		if ( $row ) {
+			$before = AC_DB::q1( 'SELECT * FROM {parties} WHERE id=?', array( (int) $id ) );
+			AC_DB::update( 'parties', $row, (int) $id );
+			AC_DB::audit( 'modification', 'tiers', (int) $id, $before, AC_DB::q1( 'SELECT * FROM {parties} WHERE id=?', array( (int) $id ) ), 'Pays et numéro de TVA du client' );
+		}
+		return array( 'ok' => true );
+	}
+
+	public static function r_vies( $r ) {
+		return AC_Calendar::vies( (string) ( self::body( $r )['vat_number'] ?? '' ) );
 	}
 
 	/** TVA de tout l'exercice : cumul et détail mois par mois. */
