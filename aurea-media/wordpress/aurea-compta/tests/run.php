@@ -466,6 +466,18 @@ test( 'Règle automatique : prochain abonnement validé d\'office', function () 
 	eq( $x['status'], 'valide', 'dépense validée automatiquement' );
 } );
 
+test( 'Remboursement reçu : en déduction des charges, jamais en plus', function () {
+	$a = tx( 'm1', '2026-09-08', -20500, 'Stichting Mollie Payments' );
+	$b = tx( 'm2', '2026-10-28', 18000, 'Stichting Mollie Payments' );
+	AC_Services::classify_transaction( $a['id'], array( 'type' => 'depense_nouvelle', 'category_id' => cat( 'banque' ), 'vat_regime' => 'sans_tva', 'validate' => true ) );
+	AC_Services::classify_transaction( $b['id'], array( 'type' => 'remboursement_fournisseur', 'category_id' => cat( 'banque' ), 'vat_regime' => 'sans_tva', 'validate' => true ) );
+	$inc = AC_Reports::income_statement( '2026-01-01', '2026-12-31' );
+	eq( $inc['total_charges'], 2500, 'charges nettes : 205 − 180' );
+	eq( $inc['resultat_net'], -2500, 'résultat' );
+	eq( bal( '627' ), 2500, 'frais bancaires nets' );
+	eq( AC_DB::ival( 'SELECT SUM(ttc_cents) FROM {expenses}' ), 2500, 'total de la liste des dépenses' );
+} );
+
 function build_year() {
 	$t = tx( 'y0', '2026-01-02', 100000, 'Dépôt de capital', 'transfer' );
 	AC_Services::classify_transaction( $t['id'], array( 'type' => 'capital' ) );

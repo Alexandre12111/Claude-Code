@@ -227,6 +227,9 @@ async function attachFile(kind, id, input) {
   if ($("#drawer").classList.contains("open")) { kind === "tx" ? openTx(id) : openExpense(id); }
   refreshView();
 }
+// Remboursement reçu d'un fournisseur : montant affiché en vert, en déduction des charges.
+const expAmt = (x, c) => x.ttc_cents < 0 && c ? `<span class="pos">+${eur(-c)}</span>` : eur(Math.abs(c) ? c : 0);
+const netAmt = (c) => c < 0 ? `<span class="pos">+${eur(-c)}</span>` : eur(c);
 // Justificatif d'une dépense : présent, déclaré perdu, non requis (relevé bancaire, IK, perso) ou à ajouter.
 const expDocCell = (x) => x.document_id
   ? `<a class="doc-ok" href="/api/documents/${x.document_id}/file" target="_blank" onclick="event.stopPropagation()" title="Voir le justificatif">${ic("file")}</a>`
@@ -372,7 +375,7 @@ async function renderTransactions(p, tab) {
         ${sel ? `<td onclick="event.stopPropagation()"><input type="checkbox" class="row-check" value="${t.id}" aria-label="Sélectionner" onchange="this.checked?SELECTED.add(${t.id}):SELECTED.delete(${t.id});updateBulk()"></td>` : ""}
         <td>${d(t.date)}</td><td>${esc(t.counterparty || "")}</td><td class="muted">${esc(t.label || "")}${t.note ? `<div class="small">${esc(t.note)}</div>` : ""}</td>
         <td>${eurSigned(t.amount_cents)}</td><td>${docCell(t)}</td>
-        <td class="small">${t.allocations.length ? t.allocations.map((a) => esc(a.category || allocLabel(a))).join(", ") + " " + badge(t.status)
+        <td class="small">${t.allocations.length ? t.allocations.map((a) => a.target_type === "depense" && a.amount_cents > 0 ? `<span class="pos">Remboursement reçu</span>${a.category ? " · " + esc(a.category) : ""}` : esc(a.category || allocLabel(a))).join(", ") + " " + badge(t.status)
           : (t.suggestion ? `<span class="muted">${esc(t.suggestion.explanation)}</span>` : badge(t.status))}</td></tr>`).join("")}</tbody>
     </table>${rows.length ? "" : emptyState(tab === "a_traiter" ? "Tout est catégorisé." : "Aucune opération. Synchronisez Qonto ou importez un relevé CSV.", tab === "a_traiter" ? "check" : "bank")}</div>`;
 }
@@ -417,10 +420,10 @@ async function renderExpenses(p) {
       <input type="month" style="width:auto" aria-label="Mois" value="${esc(month)}" onchange="location.hash='#/operations?tab=depenses&month='+this.value">
     </div>
     <div class="table-wrap"><table><thead><tr><th>Date</th><th>Fournisseur</th><th>Libellé</th><th>Catégorie</th><th class="right">HT</th><th class="right">TVA</th><th class="right">TTC</th><th>Paiement</th><th>Pièce</th><th>Statut</th></tr></thead>
-    <tbody>${rows.map((x) => `<tr class="click" tabindex="0" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}${x.ttc_cents < 0 ? ` <span class="badge b-info">Remboursement</span>` : ""}</td><td>${esc(x.category || "–")}</td>
-      <td class="num">${eur(x.ht_cents)}</td><td class="num">${eur(x.vat_cents)}${x.vat_recovery < 100 && x.vat_cents ? ` <span class="badge plain" title="TVA non récupérable">NR</span>` : ""}</td><td class="num">${eur(x.ttc_cents)}</td>
+    <tbody>${rows.map((x) => `<tr class="click" tabindex="0" onclick="openExpense(${x.id})"><td>${d(x.date)}</td><td>${esc(x.supplier_name || "")}</td><td class="muted">${esc(x.label)}${x.ttc_cents < 0 ? ` <span class="badge b-ok" title="Vient en déduction de vos charges">Remboursement reçu</span>` : ""}</td><td>${esc(x.category || "–")}</td>
+      <td class="num">${expAmt(x, x.ht_cents)}</td><td class="num">${expAmt(x, x.vat_cents)}${x.vat_recovery < 100 && x.vat_cents ? ` <span class="badge plain" title="TVA non récupérable">NR</span>` : ""}</td><td class="num">${expAmt(x, x.ttc_cents)}</td>
       <td class="small">${PAYMENT[x.payment_method]}</td><td>${expDocCell(x)}</td><td>${badge(x.status)}</td></tr>`).join("")}</tbody>
-    <tfoot><tr><td colspan="4">Total (hors dépenses personnelles)</td><td class="num">${eur(total.ht)}</td><td></td><td class="num">${eur(total.ttc)}</td><td colspan="3"></td></tr></tfoot></table>
+    <tfoot><tr><td colspan="4">Total net (remboursements reçus déduits, hors dépenses personnelles)</td><td class="num">${netAmt(total.ht)}</td><td></td><td class="num">${netAmt(total.ttc)}</td><td colspan="3"></td></tr></tfoot></table>
     ${rows.length ? "" : emptyState("Aucune dépense sur cette période.", "card")}</div>`;
 }
 
@@ -490,7 +493,7 @@ async function vehicleForm() {
 }
 
 const ALLOC = { vente: "Règlement client", depense: "Dépense", associe: "Compte courant associé", capital: "Capital", tva: "TVA", is: "Impôt sur les sociétés", virement_interne: "Virement interne", compte: "Compte" };
-const allocLabel = (a) => (ALLOC[a.target_type] || a.target_type) + (a.account && a.target_type === "compte" ? " " + a.account : "");
+const allocLabel = (a) => (a.target_type === "depense" && a.amount_cents > 0 ? "Remboursement reçu" : (ALLOC[a.target_type] || a.target_type)) + (a.account && a.target_type === "compte" ? " " + a.account : "");
 async function importCsv(input) {
   const f = new FormData(); f.append("file", input.files[0]);
   const r = await run(() => api("/api/import/csv", { method: "POST", body: f }));
@@ -790,7 +793,7 @@ async function openExpense(id) {
   openDrawer(`<h2>${esc(x.supplier_name || "")} · ${esc(x.label)}</h2>
     <div style="margin-bottom:10px">${badge(x.status)} <span class="badge">${esc(x.source)}</span></div>
     ${x.warnings.length ? `<div class="alert warn"><ul style="margin:0 0 0 18px;padding:0">${x.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul></div>` : ""}
-    <dl class="kv"><dt>Date</dt><dd>${d(x.date)}</dd><dt>Montants</dt><dd>HT ${eur(x.ht_cents)} · TVA ${eur(x.vat_cents)} (${esc(x.vat_rate || "")} %) · TTC <b>${eur(x.ttc_cents)}</b></dd>
+    <dl class="kv"><dt>Date</dt><dd>${d(x.date)}</dd><dt>Montants</dt><dd>HT ${expAmt(x, x.ht_cents)} · TVA ${expAmt(x, x.vat_cents)} (${esc(x.vat_rate || "")} %) · TTC <b>${expAmt(x, x.ttc_cents)}</b>${x.ttc_cents < 0 ? `<div class="small" style="margin-top:4px"><span class="badge b-ok">Remboursement reçu</span> Vient en déduction de vos charges : il n'augmente pas vos dépenses.</div>` : ""}</dd>
       <dt>Régime de TVA</dt><dd>${REGIMES[x.vat_regime]} · récupérable ${x.vat_recovery} %</dd><dt>Catégorie</dt><dd>${esc(x.category || "Non catégorisée")}</dd>
       <dt>Traitement fiscal</dt><dd>${esc(x.rule_explanation || "")} Charge déductible ${x.deductible} %.</dd>
       <dt>Paiement</dt><dd>${PAYMENT[x.payment_method]} · payé ${eur(x.paid_cents)}</dd><dt>Justificatif</dt><dd>${x.document ? docLink(x.document)
