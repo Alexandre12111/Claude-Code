@@ -126,7 +126,7 @@ STEPS = [('message-square-text', 'Décrivez votre besoin', 'Comme vous l’expli
 WHY = [('shield-check', 'Vos données restent protégées', 'Hébergées en Europe, jamais utilisées pour entraîner l’IA.'),
        ('app-window', 'De vraies applications', 'Base de données, connexion sécurisée, mise en ligne en un clic.'),
        ('building-2', 'Signé Leyton', 'Conçue par CognitX, l’entité tech et IA du groupe.')]
-TRIAL = [('J0 · 1 h', 'Nous créons ensemble votre première application'), ('J0 à J7', 'Vos équipes l’utilisent et l’améliorent'), ('J7', 'Bilan et suite, sans engagement')]
+TRIAL = [('Séance d’1 h', 'Nous créons ensemble votre première application'), ('Ensuite', 'Vos équipes l’utilisent et l’améliorent'), ('Et après', 'Vous l’étendez à d’autres besoins')]
 
 
 def cir_cards(cards):
@@ -344,8 +344,8 @@ def page(V):
   <div class="hw"><div><div class="sh"><span class="no">03</span><h2>Simple comme <span>une conversation</span></h2></div><div class="how">{steps()}</div></div>
     <div class="why">{why()}</div></div>
   <div class="cta"><div>
-      <span class="of">{ic("sparkles", 10, "#0B0B0F", 2.4)}Offre réservée aux clients Leyton</span>
-      <h3>Testez YouCraft sur votre propre cas, <span>7 jours offerts</span></h3>
+      <span class="of">{ic("sparkles", 10, "#0B0B0F", 2.4)}Pour les clients Leyton</span>
+      <h3>Lancez votre première application, <span>sur votre propre cas</span></h3>
       <div class="trs">{trial()}</div>
       <div class="ct"><span>Votre consultant Leyton :</span><span>Contact :</span></div>
     </div>
@@ -404,8 +404,8 @@ def slides(V):
     <p class="intro">{V['s2'][1]}</p><div class="mos">{more(V['more'])}</div></div>
     <div class="hw1"><div class="sh"><span class="no">03</span><h2>Simple comme <span>une conversation</span></h2></div><div class="how">{steps()}</div></div></div>
   <div class="r3"><div class="cta"><div>
-      <span class="of">{ic("sparkles", 10, "#0B0B0F", 2.4)}Offre réservée aux clients Leyton</span>
-      <h3>Testez YouCraft sur votre propre cas, <span>7 jours offerts</span></h3>
+      <span class="of">{ic("sparkles", 10, "#0B0B0F", 2.4)}Pour les clients Leyton</span>
+      <h3>Lancez votre première application, <span>sur votre propre cas</span></h3>
       <div class="trs">{trial()}</div>
       <div class="ct"><span>Votre consultant Leyton :</span><span>Contact :</span></div>
     </div>
