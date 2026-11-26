@@ -118,6 +118,7 @@ html = f'''<!doctype html>
   <button data-prev aria-label="Diapositive précédente">{ic('arrow-left2')}</button><span>1 / 1</span><button data-next aria-label="Diapositive suivante">{ic('arrow-right2')}</button>
   <button data-menu aria-label="Sommaire (touche M)">{ic('list')}</button><button data-full aria-label="Plein écran (touche F)">{ic('maximize')}</button>
 </nav>
+<div id="fsv" role="dialog" aria-modal="true" aria-label="Application en plein écran"><div class="dwin fw"><div class="dbar"><span class="ddots"><b></b><b></b><b></b></span><span class="durl">{ic('lock')}<span data-url></span></span><span class="dlive">En ligne</span><button class="fx" data-close aria-label="Fermer le plein écran (Échap)">{ic('x')}</button></div><div class="host" id="h-full"></div></div><span class="fhint">Échap pour revenir à la présentation</span></div>
 <div id="menu" role="dialog" aria-modal="true" aria-label="Sommaire"><div class="mw"><h4>Aller à une diapositive<small>Touche M pour ouvrir, Échap pour fermer</small></h4><ol></ol></div></div>
 {SHIM}
 {ENGINE}

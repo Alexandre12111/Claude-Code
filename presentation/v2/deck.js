@@ -35,6 +35,7 @@
     var t = e.target, tag = t && t.tagName;
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
+    if (FS.on) { if (e.key === 'Escape') closeFull(); return; }
     var m = $('#menu');
     if (e.key === 'Escape' && m.classList.contains('on')) { m.classList.remove('on'); return; }
     if (['ArrowRight', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0 && !(e.key === 'Enter' && tag === 'BUTTON')) { e.preventDefault(); go(cur + 1); }
@@ -116,8 +117,34 @@
     enter: function () { var i = ex.pending != null ? ex.pending : ex.i; ex.pending = null; if (!ex.app || i !== ex.i) show(i); else { ex.app.fit(); ex.app.start(); } },
     leave: function () { if (ex.app) ex.app.stop(); }
   };
-  $$('#s-teams [data-app]').forEach(function (b) {
-    b.addEventListener('click', function () { var k = APPS.findIndex(function (a) { return a.k === b.dataset.app; }); ex.pending = k; goId('s-explore'); });
+  /* application en plein écran */
+  var FS = { on: false, app: null }, fsv = $('#fsv');
+  function openFull(i) {
+    var a = APPS[i]; FS.on = true; fsv.classList.add('on');
+    $('[data-url]', fsv).textContent = urlOf(a.k);
+    if (ex.app) ex.app.stop(); if (cover.app) cover.app.stop();
+    if (FS.app) FS.app.destroy();
+    FS.app = mount($('#h-full'), a.k, a.view); FS.app.start();
+    setTimeout(function () { if (FS.app) FS.app.fit(); }, 60);
+    $('[data-close]', fsv).focus();
+  }
+  function closeFull() {
+    FS.on = false; fsv.classList.remove('on');
+    if (FS.app) { FS.app.destroy(); FS.app = null; }
+    var id = slides[cur] && slides[cur].id;
+    if (id === 's-explore' && ex.app) { ex.app.fit(); ex.app.start(); }
+    if (id === 's-cover' && cover.app) cover.app.start();
+  }
+  $('[data-close]', fsv).onclick = closeFull;
+  fsv.addEventListener('click', function (e) { if (e.target === fsv) closeFull(); });
+  window.addEventListener('resize', function () { if (FS.app) FS.app.fit(); });
+  $('#s-explore [data-fs]').onclick = function () { openFull(ex.i); };
+  function appIndex(k) { return APPS.findIndex(function (a) { return a.k === k; }); }
+  $$('#s-teams [data-app]').forEach(function (card) {
+    var k = appIndex(card.dataset.app);
+    function explore() { ex.pending = k; goId('s-explore'); }
+    card.addEventListener('click', function (e) { if (e.target.closest('[data-full-app]')) { e.stopPropagation(); openFull(k); } else explore(); });
+    card.addEventListener('keydown', function (e) { if ((e.key === 'Enter' || e.key === ' ') && e.target === card) { e.preventDefault(); e.stopPropagation(); explore(); } });
   });
 
   /* ---------------------------------------------------------------- démonstration « Décrivez, YouCraft construit » */

@@ -377,3 +377,31 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .dk .dtag.lm,#s-price .pc.bu .dtag.lm{background:var(--lime);color:var(--ink)}
 #s-agenda li b{white-space:nowrap}
 #s-agenda li span{max-width:360px}
+
+/* tuiles d'icônes : toujours centrées, même quand un style de texte cible les span */
+.dtile{display:grid !important;place-items:center}
+.dtile .ic{display:block}
+
+/* cartes « une application par équipe » : deux actions */
+#s-teams .tc{cursor:pointer}
+#s-teams .tc .acts{margin-top:auto;padding-top:16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#s-teams .tc .go{margin:0;padding:0}
+#s-teams .tc .fsb{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border-radius:11px;background:var(--ink);color:#fff;font:600 14.5px/1 var(--display);transition:background .2s,transform .2s}
+#s-teams .tc .fsb .ic{width:16px;height:16px}
+#s-teams .tc .fsb:hover{background:var(--um);transform:translateY(-1px)}
+
+/* bouton plein écran dans la fenêtre de démonstration */
+.dwin .dbar .fsb2{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;border-radius:8px;background:var(--um);color:#fff;font:700 13px/1 var(--body);margin-left:12px}
+.dwin .dbar .fsb2 .ic{width:15px;height:15px}
+.dwin .dbar .fsb2:hover{background:#1530D8}
+
+/* application en plein écran */
+#fsv{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(8,8,12,.84);backdrop-filter:blur(8px)}
+#fsv.on{display:flex;animation:fsin .35s var(--ease)}
+@keyframes fsin{from{opacity:0}to{opacity:1}}
+#fsv .fw{width:min(97vw,calc((92vh - 42px) * 1.6));margin-bottom:2vh;border-radius:14px;box-shadow:0 40px 120px rgba(0,0,0,.6)}
+#fsv .host{width:100%;aspect-ratio:16 / 10}
+#fsv .fx{margin-left:14px;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#E4E2DB;color:#2B2B30}
+#fsv .fx:hover{background:var(--ink);color:#fff}
+#fsv .fx .ic{width:16px;height:16px}
+#fsv .fhint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font:500 14px/1 var(--body);color:rgba(255,255,255,.55)}
