@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var deck = document.getElementById('deck'), chrome = document.getElementById('chrome');
-  var slides = Array.prototype.slice.call(document.querySelectorAll('section.yd:not(.annex)')), N = slides.length, cur = -1;
+  var slides = Array.prototype.slice.call(document.querySelectorAll('section.yd')), N = slides.length, cur = -1;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -12,11 +12,8 @@
   window.addEventListener('resize', fit); fit();
 
   /* ---------------------------------------------------------------- navigation */
-  var annex = document.getElementById('s-live'), inAnnex = false;
   function go(i) {
-    i = Math.max(0, Math.min(N - 1, i));
-    if (inAnnex) { inAnnex = false; annex.classList.toggle('on', false); var keep = cur; cur = -1; if (i === keep) slides[i].classList.toggle('on', false); }
-    if (i === cur) return;
+    i = Math.max(0, Math.min(N - 1, i)); if (i === cur) return;
     var prev = slides[cur];
     if (prev) { prev.classList.remove('on'); var lk = prev.dataset.enter; if (lk && H[lk] && H[lk].leave) H[lk].leave(); }
     cur = i; var s = slides[i]; s.classList.add('on');
@@ -39,7 +36,6 @@
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (FS.on) { if (e.key === 'Escape') closeFull(); return; }
-    if (inAnnex) { if (['Escape', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown'].indexOf(e.key) >= 0) { e.preventDefault(); go(cur); return; } if (e.key !== 'm' && e.key !== 'M') return; }
     var m = $('#menu');
     if (e.key === 'Escape' && m.classList.contains('on')) { m.classList.remove('on'); return; }
     if (['ArrowRight', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0 && !(e.key === 'Enter' && tag === 'BUTTON')) { e.preventDefault(); go(cur + 1); }
@@ -56,47 +52,6 @@
   $('#menu').addEventListener('click', function (e) { if (e.target.id === 'menu') this.classList.remove('on'); });
   $('#menu ol').innerHTML = slides.map(function (s, k) { return '<li><button data-k="' + k + '"><em>' + String(k + 1).padStart(2, '0') + '</em><span>' + s.dataset.t + '<small>' + (s.dataset.ch || 'Ouverture') + '</small></span></button></li>'; }).join('');
   $$('#menu li button').forEach(function (b) { b.onclick = function () { go(+b.dataset.k); $('#menu').classList.remove('on'); }; });
-
-  /* ---------------------------------------------------------------- annexe : YouCraft en direct (sommaire uniquement) */
-  $('#menu ol').insertAdjacentHTML('afterend', '<div class="mx"><span>Annexe</span><button data-annex><em>A</em><span>YouCraft en direct<small>Construire en direct pendant le rendez‑vous</small></span></button></div>');
-  $('#menu [data-annex]').onclick = function () { showAnnex(); $('#menu').classList.toggle('on', false); };
-  function showAnnex() {
-    if (inAnnex) return;
-    var s = slides[cur];
-    if (s) { s.classList.toggle('on', false); var lk = s.dataset.enter; if (lk && H[lk] && H[lk].leave) H[lk].leave(); }
-    inAnnex = true; annex.classList.add('on');
-    chrome.classList.toggle('dk', false); chrome.classList.toggle('cover', false); document.body.classList.toggle('dk', false);
-    $('#chrome .ch').innerHTML = '<span>Annexe</span><i></i><b>A</b>';
-    $('#nav span').textContent = 'Annexe';
-    $$('#menu li button').forEach(function (b) { b.classList.toggle('on', false); });
-  }
-  /* L'iframe n'est jamais retirée : YouCraft continue de tourner quand on change de diapositive. */
-  var LV = { frame: null, win: null }, KEYU = 'yc-live-url', DEFU = 'https://app.youcraft.tech/';
-  var lurl = $('[data-lurl]', annex), lhost = $('[data-lhost]', annex), lstate = $('[data-lstate]', annex);
-  try { lurl.value = localStorage.getItem(KEYU) || DEFU; } catch (e) { lurl.value = DEFU; }
-  function lu() { var u = (lurl.value || '').trim() || DEFU; if (!/^https?:\/\//.test(u)) u = 'https://' + u; try { localStorage.setItem(KEYU, u); } catch (e) {} return u; }
-  function connect() {
-    if (!LV.frame) {
-      LV.frame = document.createElement('iframe');
-      LV.frame.setAttribute('allow', 'clipboard-read; clipboard-write; fullscreen');
-      LV.frame.setAttribute('title', 'YouCraft');
-      lhost.appendChild(LV.frame);
-    }
-    LV.frame.src = lu(); annex.classList.add('live'); lstate.textContent = 'Connecté'; lstate.classList.add('on');
-  }
-  function openWin() {
-    if (LV.win && !LV.win.closed) { LV.win.focus(); return; }
-    var w = Math.round(screen.availWidth * .92), h = Math.round(screen.availHeight * .92);
-    LV.win = window.open(lu(), 'youcraft-live', 'popup=yes,width=' + w + ',height=' + h + ',left=' + Math.round((screen.availWidth - w) / 2) + ',top=0');
-    $$('[data-lwin] span', annex).forEach(function (s) { s.textContent = 'Afficher la fenêtre YouCraft'; });
-  }
-  $('[data-lconnect]', annex).onclick = connect;
-  $$('[data-lwin]', annex).forEach(function (b) { b.onclick = openWin; });
-  $('[data-lreload]', annex).onclick = function () { if (LV.frame) LV.frame.src = lu(); };
-  $('[data-back]', annex).onclick = function () { go(cur); };
-  $('[data-lfull]', annex).onclick = function () { var w = $('.lwin', annex); if (document.fullscreenElement) document.exitFullscreen(); else if (w.requestFullscreen) w.requestFullscreen(); };
-  lurl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); if (LV.frame) LV.frame.src = lu(); else connect(); } });
-
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { goId(b.dataset.go); }); });
 
   /* barre de navigation : visible quelques secondes après un mouvement de souris */
@@ -170,6 +125,50 @@
       var mk = lg.querySelector('.mk'); if (mk) mk.innerHTML = br[2];
       var b = lg.querySelector('b'); if (b) b.textContent = br[0];
       var sub = lg.querySelector('span span'); if (sub) sub.textContent = br[1];
+    });
+    layout(host);
+  }
+
+  /* Mise en page propre à chaque application : position des blocs et forme des indicateurs.
+     Les blocs gardent leur taille (leur contenu reste intact), seule leur disposition change. */
+  var LAY = {
+    people: { kpi: 'band' },
+    sales: { mirror: true, kpi: 'hero' },
+    expenses: { kpiBottom: true, kpi: 'band' },
+    tower: {},
+    assets: { kpi: 'gap' },
+    legal: { mirror: true, kpi: 'band' },
+    rnd: { mirror: true, kpiBottom: true, kpi: 'gap' },
+    portal: { kpi: 'band' }
+  };
+  function px(e, p, v) { var s = Math.round(v) + 'px'; if (e.style[p] !== s) e.style[p] = s; }
+  function layout(host) {
+    var L = LAY[host._k]; if (!L) return;
+    var m = host.querySelector('.ya-main'); if (!m) return;
+    var els = Array.prototype.slice.call(m.querySelectorAll(':scope > .ya-card, :scope > .ya-map'));
+    els.forEach(function (e) {
+      if (e.dataset.ox != null || !e.style.left || !e.style.top) return;
+      e.dataset.ox = parseFloat(e.style.left); e.dataset.oy = parseFloat(e.style.top);
+      e.dataset.ow = parseFloat(e.style.width); e.dataset.oh = parseFloat(e.style.height);
+    });
+    els = els.filter(function (e) { return e.dataset.ox != null; });
+    var kp = els.filter(function (e) { return e.classList.contains('ya-kpi'); });
+    var kTop = Infinity, kBot = -Infinity, cTop = Infinity;
+    kp.forEach(function (e) { kTop = Math.min(kTop, +e.dataset.oy); kBot = Math.max(kBot, +e.dataset.oy + +e.dataset.oh); });
+    els.forEach(function (e) { if (!e.classList.contains('ya-kpi') && +e.dataset.oy >= kBot) cTop = Math.min(cTop, +e.dataset.oy); });
+    var row = kp.length >= 3 && kp.every(function (e) { return +e.dataset.oy === kTop; });
+    els.forEach(function (e) {
+      var x = +e.dataset.ox, y = +e.dataset.oy, w = +e.dataset.ow, isK = e.classList.contains('ya-kpi');
+      if (L.mirror && !isK) x = 1376 - x - w;
+      if (L.kpiBottom && row && cTop < Infinity) { if (isK) y = 928 - (kBot - y); else if (y >= kBot) y -= cTop - kTop; }
+      if (isK && row) {
+        var i = kp.indexOf(e), n = kp.length;
+        e.classList.toggle('k0', i === 0); e.classList.toggle('kl', i === n - 1);
+        if (L.kpi === 'band') { w = 1320 / n; x = 28 + i * w; }
+        else if (L.kpi === 'hero' && n === 4) { var W = [652, 206, 206, 206]; w = W[i]; x = 28; for (var j = 0; j < i; j++) x += W[j] + 16; }
+        else if (L.kpi === 'gap') { w = (1320 - (n - 1) * 24) / n; x = 28 + i * (w + 24); }
+      }
+      px(e, 'left', x); px(e, 'top', y); px(e, 'width', w);
     });
   }
 
