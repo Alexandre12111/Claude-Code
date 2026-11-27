@@ -278,41 +278,45 @@
     prev.classList.remove('bready'); $('.bph', prev).classList.remove('bidle'); toast.classList.remove('on'); pub.classList.remove('bpulse'); stage(-1);
     if (B.app) B.app.stop();
   }
-  /* Démonstration pas à pas : chaque étape se lance au clic (ou avec les flèches du clavier),
-     et l'on peut revenir à une étape précédente à tout moment. */
-  var CUR = -1;
+  /* Démonstration pilotée depuis le chat, comme dans le vrai produit :
+     on envoie la demande (bouton d'envoi), puis la modification, puis on clique sur « Publier ».
+     Les pastilles d'étape et les flèches du clavier permettent aussi d'avancer ou de revenir. */
+  var CUR = -1, sendB = $('.bcomp button', bs);
   function plan(done) {
     var m = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est parti. Voici ce que je construis :<ul>' + STEPS.map(function (s) { return '<li' + (done ? ' class="bdone"' : '') + '><i></i><span>' + s[0] + '</span></li>'; }).join('') + '</ul>');
     return $$('li', m);
   }
   function showApp() { if (!B.app) B.app = mount($('#h-build'), 'people'); B.app.fit(); B.app.start(); prev.classList.add('bready'); }
-  var REPLY = 'C’est fait : chaque manager reçoit une relance 3 jours avant l’arrivée.';
+  var REPLY = 'C’est fait : chaque manager reçoit une relance 3 jours avant l’arrivée. Vous pouvez publier l’application.';
+  function ready(el) { el.classList.add('bgo'); }
   function instant(n) {
     if (n === 0) { typer.textContent = P1; }
-    if (n === 1) { typer.textContent = ''; say(esc(P1), true); plan(true); showApp(); }
-    if (n === 2) { say(esc(P2), true); say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>' + REPLY); }
-    if (n === 3) { pub.classList.add('bpulse'); toast.classList.add('on'); }
+    if (n === 1) { say(esc(P1), true); plan(true); showApp(); typer.textContent = P2; }
+    if (n === 2) { typer.textContent = ''; say(esc(P2), true); say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>' + REPLY); }
+    if (n === 3) { toast.classList.add('on'); }
   }
   function animate(n) {
-    if (n === 0) later(function () { type(P1, function () {}); }, 400);
+    if (n === 0) later(function () { type(P1, function () { ready(sendB); }); }, 400);
     if (n === 1) {
       typer.textContent = ''; say(esc(P1), true);
       var lis = plan(false);
       lis.forEach(function (li, k) { later(function () { li.classList.add('brun'); }, 300 + k * 700); later(function () { li.classList.remove('brun'); li.classList.add('bdone'); }, 900 + k * 700); });
-      later(showApp, 300 + STEPS.length * 700 + 200);
+      later(function () { showApp(); later(function () { type(P2, function () { ready(sendB); }); }, 1200); }, 300 + STEPS.length * 700 + 200);
     }
-    if (n === 2) type(P2, function () { typer.textContent = ''; say(esc(P2), true); later(function () { say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>' + REPLY); }, 500); });
-    if (n === 3) { pub.classList.add('bpulse'); later(function () { toast.classList.add('on'); }, 700); }
+    if (n === 2) { typer.textContent = ''; say(esc(P2), true); later(function () { say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>' + REPLY); ready(pub); pub.classList.add('bpulse'); }, 900); }
+    if (n === 3) { pub.classList.add('bpulse'); later(function () { toast.classList.add('on'); }, 500); }
   }
   function goStage(n) {
     n = Math.max(0, Math.min(3, n));
-    reset(); for (var k = 0; k < n; k++) instant(k);
+    reset(); sendB.classList.remove('bgo'); pub.classList.remove('bgo');
+    for (var k = 0; k < n; k++) instant(k);
     CUR = n; stage(n); animate(n);
-    $('[data-sprev]', bs).disabled = n === 0; $('[data-snext]', bs).disabled = n === 3;
   }
   $$('.bstp', bs).forEach(function (b) { b.onclick = function () { goStage(+b.dataset.st); }; });
-  $('[data-sprev]', bs).onclick = function () { goStage(CUR - 1); };
-  $('[data-snext]', bs).onclick = function () { goStage(CUR + 1); };
+  sendB.onclick = function () { if (CUR === 0 || CUR === 1) goStage(CUR + 1); };
+  pub.setAttribute('role', 'button'); pub.setAttribute('tabindex', '0');
+  pub.onclick = function () { if (CUR >= 1 && CUR < 3) goStage(3); };
+  pub.onkeydown = function (e) { if (e.key === 'Enter') { e.stopPropagation(); pub.onclick(); } };
   $('[data-replay]', bs).onclick = function () { goStage(0); };
   $('[data-url]', toast).textContent = Y.DEF.people[4].split('/')[0];
   H.build = { enter: function () { goStage(0); }, leave: function () { reset(); CUR = -1; },

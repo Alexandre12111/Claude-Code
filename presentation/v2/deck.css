@@ -711,3 +711,10 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 #s-build .sr{padding:16px 0}
 #s-build .sr:last-of-type{border-bottom:0}
 #s-price .pc{padding:34px 34px 30px}
+
+/* démonstration pilotée depuis le chat */
+#s-build .bcomp button{transition:transform .2s,box-shadow .2s}
+#s-build .bcomp button.bgo{animation:bgo 1.4s ease-in-out infinite;cursor:pointer}
+#s-build .bpub{cursor:pointer}
+#s-build .bpub.bgo{animation:bgo 1.4s ease-in-out infinite}
+@keyframes bgo{0%,100%{box-shadow:0 0 0 0 rgba(30,59,255,.45)}50%{box-shadow:0 0 0 8px rgba(30,59,255,0);transform:scale(1.06)}}
