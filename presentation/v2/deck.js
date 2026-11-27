@@ -71,7 +71,7 @@
   /* ---------------------------------------------------------------- applications réelles (moteur YouCraft) */
   var Y = window.YA;
   /* Chaque application a sa propre couleur : les bleus du moteur sont remplacés par sa palette. */
-  var ACC = { people: '#7C3AED', sales: '#1E3BFF', expenses: '#0F766E', tower: '#334155', assets: '#0284C7', legal: '#BE185D', rnd: '#A21CAF', portal: '#18181B' };
+  var ACC = { people: '#7C3AED', sales: '#1E3BFF', expenses: '#0F766E', tower: '#E8590C', assets: '#0284C7', legal: '#BE185D', rnd: '#A21CAF', portal: '#18181B' };
   var YB = window.__YB || [];
   function hx(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
   function mixc(h, t) { var c = hx(h), e = t >= 0 ? 255 : 0, a = Math.abs(t); return '#' + c.map(function (v) { return Math.round(v + (e - v) * a).toString(16).padStart(2, '0'); }).join(''); }
@@ -91,7 +91,8 @@
     els.forEach(function (el) { ATTRS.forEach(function (a) { var v = el.getAttribute(a); if (v) { var n = swap(v, pal); if (n !== v) el.setAttribute(a, n); } }); });
   }
   function themeHost(host, k) {
-    var pal = palette(k); host._pal = pal;
+    var pal = palette(k); host._pal = pal; host._k = k;
+    host.className = host.className.replace(/\s*\bth-\w+/g, '') + ' thm th-' + k;
     pal.c.forEach(function (c, i) { host.style.setProperty('--yb' + i, c); });
     host.style.setProperty('--yrgb', pal.rgb);
     if (!host._ob) {
@@ -101,10 +102,32 @@
           if (m.type === 'attributes') recolor(m.target, p);
           else m.addedNodes.forEach(function (n) { if (n.nodeType === 1) recolor(n, p); });
         });
+        brandify(host);
       });
       host._ob.observe(host, { subtree: true, childList: true, attributes: true, attributeFilter: ATTRS });
     }
   }
+  /* Marques fictives : logo, nom et signature de chaque application */
+  var BR = {
+    people: ['Kaya', 'Northwind · Espace RH', '<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill="#7C3AED"/><circle cx="12.5" cy="14" r="2.6" fill="#fff"/><circle cx="21.5" cy="14" r="2.6" fill="#fff"/><path d="M10.5 20.5c3.6 4 9.4 4 13 0" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>'],
+    sales: ['Vela', 'Northwind · Revenus', '<svg viewBox="0 0 34 34"><rect width="34" height="34" rx="9" fill="#1E3BFF"/><path d="M17 7 L17 24 L8 24 Z" fill="#fff"/><path d="M19 11 L19 24 L26 24 Z" fill="#9DB0FF"/><rect x="7" y="26" width="20" height="2" rx="1" fill="#fff"/></svg>'],
+    expenses: ['Ledgr', 'Northwind · Finance', '<svg viewBox="0 0 34 34"><rect width="34" height="34" rx="4" fill="#0F766E"/><rect x="8" y="9" width="18" height="3.4" fill="#fff"/><rect x="8" y="15.3" width="13" height="3.4" fill="#99E0D4"/><rect x="8" y="21.6" width="8" height="3.4" fill="#fff"/></svg>'],
+    tower: ['Routa', 'Northwind · Logistique', '<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill="#E8590C"/><path d="M10 23 C 14 23, 13 12, 17 12 S 21 19, 24 11" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="10" cy="23" r="2.6" fill="#fff"/><circle cx="24" cy="11" r="2.6" fill="#FFD8C2"/></svg>'],
+    assets: ['Forgex', 'Northwind · Usines', '<svg viewBox="0 0 34 34"><path d="M17 1.5 30.4 9.25v15.5L17 32.5 3.6 24.75V9.25Z" fill="#0284C7"/><path d="M17 9.5 23.5 13.25v7.5L17 24.5 10.5 20.75v-7.5Z" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="17" cy="17" r="2.4" fill="#BAE6FD"/></svg>'],
+    legal: ['Clausia', 'Northwind · Juridique', '<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#BE185D"/><circle cx="17" cy="17" r="12.5" fill="none" stroke="#F9A8D4" stroke-width="1"/><text x="17" y="23.5" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-style="italic" font-weight="700" fill="#fff">C</text></svg>'],
+    rnd: ['Labora', 'Northwind · Innovation', '<svg viewBox="0 0 34 34"><defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C026D3"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs><rect width="34" height="34" rx="11" fill="url(#lbg)"/><ellipse cx="17" cy="17" rx="10" ry="4" fill="none" stroke="#fff" stroke-width="1.8"/><ellipse cx="17" cy="17" rx="10" ry="4" fill="none" stroke="#fff" stroke-width="1.8" transform="rotate(60 17 17)"/><ellipse cx="17" cy="17" rx="10" ry="4" fill="none" stroke="#fff" stroke-width="1.8" transform="rotate(120 17 17)"/><circle cx="17" cy="17" r="2.2" fill="#fff"/></svg>'],
+    portal: ['Atrium', 'Northwind · Espace clients', '<svg viewBox="0 0 34 34"><rect width="34" height="34" rx="10" fill="#fff"/><path d="M9 27V16a8 8 0 0 1 16 0v11" fill="none" stroke="#0B0B0F" stroke-width="3"/><path d="M14 27v-9a3 3 0 0 1 6 0v9" fill="#D7FF3F"/></svg>']
+  };
+  function brandify(host) {
+    var k = host._k, br = BR[k]; if (!br) return;
+    host.querySelectorAll('.ya-logo').forEach(function (lg) {
+      if (lg.dataset.br === k) return; lg.dataset.br = k;
+      var mk = lg.querySelector('.mk'); if (mk) mk.innerHTML = br[2];
+      var b = lg.querySelector('b'); if (b) b.textContent = br[0];
+      var sub = lg.querySelector('span span'); if (sub) sub.textContent = br[1];
+    });
+  }
+
   function tileBg(k) { var a = ACC[k] || '#1E3BFF'; return 'linear-gradient(150deg,' + mixc(a, .38) + ' 0%,' + a + ' 50%,' + mixc(a, -.2) + ' 100%)'; }
 
   function mount(host, k, view) {
@@ -112,6 +135,7 @@
     themeHost(host, k);
     var app = Y.create(k, host);
     recolor(host, host._pal);
+    brandify(host);
     if (view != null && window.YAX && window.YAX.nav) { try { window.YAX.nav(app, view); } catch (e) {} }
     requestAnimationFrame(function () { app.fit(); });
     return app;

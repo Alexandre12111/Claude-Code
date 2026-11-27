@@ -369,3 +369,123 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 #s-build .hc.hi .dtag.lm{background:var(--lime);color:var(--ink)}
 
 #s-vs .pad{padding-top:136px}
+
+/* ================================================================ identité propre à chaque application de démonstration */
+.thm .ya-logo .mk{width:34px;height:34px;border-radius:0;background:none !important;box-shadow:none}
+.thm .ya-logo .mk svg{width:34px;height:34px;display:block}
+.thm .ya-logo b{font-size:15px;letter-spacing:-.01em}
+.MONO{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+
+/* Kaya · RH : doux, arrondi, ombres colorées */
+.th-people .ya{background:#F8F6FE}
+.th-people .ya-sb{background:#fff;border-right:0;box-shadow:1px 0 0 #EEE9FB}
+.th-people .ya .ya-nav{border-radius:20px}
+.th-people .ya .ya-nav.on{background:#7C3AED;color:#fff}
+.th-people .ya-top{background:transparent;border-bottom:0}
+.th-people .ya-card{border:0;border-radius:18px;box-shadow:0 1px 2px rgba(76,29,149,.05),0 10px 28px rgba(124,58,237,.09)}
+.th-people .ya-kpi .v{color:#5B21B6}
+.th-people .ya .ya-btn{border-radius:18px}
+.th-people .ya-badge{border-radius:11px}
+.th-people .ya-th{background:#F6F2FF;border-color:#EEE9FB}
+.th-people .ya-tabs button.on{background:#7C3AED}
+.th-people .ya-h1{font-family:'Plus Jakarta Sans',sans-serif;font-weight:700}
+
+/* Vela · commercial : barre latérale marine, chiffres soulignés */
+.th-sales .ya-sb{background:#0B1640;border-right:0;color:#C9D2F5}
+.th-sales .ya-logo b,.th-sales .ya-me{color:#fff}
+.th-sales .ya-logo span span,.th-sales .ya-me span span,.th-sales .ya-sv{color:#7F8BB8}
+.th-sales .ya-srch{background:#16224F;border-color:#24316A;color:#9AA6D6}
+.th-sales .ya .ya-nav{color:#C9D2F5}
+.th-sales .ya .ya-nav:hover{background:#16224F}
+.th-sales .ya .ya-nav.on{background:#1E3BFF;color:#fff}
+.th-sales .ya-svi{color:#C9D2F5}
+.th-sales .ya-kpi{border-top:3px solid #1E3BFF}
+.th-sales .ya-th{background:#F3F5FB}
+
+/* Ledgr · finance : net, angles droits, chiffres à chasse fixe */
+.th-expenses .ya{background:#F2F6F5}
+.th-expenses .ya-sb{background:#F8FBFA;border-right:1px solid #DCE5E2}
+.th-expenses .ya .ya-nav{border-radius:3px}
+.th-expenses .ya .ya-nav.on{background:#E1F0EC;color:#0F766E;box-shadow:inset 3px 0 0 #0F766E}
+.th-expenses .ya-card{border-radius:4px;border-color:#DCE5E2;box-shadow:none}
+.th-expenses .ya-kpi{border-left:4px solid #0F766E}
+.th-expenses .ya-kpi .v,.th-expenses .ya-row>div:nth-child(4),.th-expenses .ya-row>div:nth-child(5){font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;letter-spacing:-.03em}
+.th-expenses .ya .ya-btn,.th-expenses .ya-badge,.th-expenses .ya-in,.th-expenses .ya-tabs button{border-radius:3px}
+.th-expenses .ya-th{background:#0F766E;color:#E6F4F1;border-color:#0F766E;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+.th-expenses .ya-tabs button.on{background:#0F766E}
+
+/* Routa · logistique : interface d'exploitation sombre */
+.th-tower .ya{background:#EEF1F5}
+.th-tower .ya-sb{background:#0F172A;border-right:0}
+.th-tower .ya-logo b,.th-tower .ya-me{color:#fff}
+.th-tower .ya-logo span span,.th-tower .ya-me span span,.th-tower .ya-sv{color:#64748B}
+.th-tower .ya-srch{background:#1E293B;border-color:#1E293B;color:#94A3B8}
+.th-tower .ya .ya-nav{color:#CBD5E1}
+.th-tower .ya .ya-nav:hover{background:#1E293B}
+.th-tower .ya .ya-nav.on{background:#E8590C;color:#fff}
+.th-tower .ya-svi{color:#CBD5E1}
+.th-tower .ya-top{background:#111827;border-bottom:0}
+.th-tower .ya-crumb,.th-tower .ya-crumb b{color:#E5E7EB}
+.th-tower .ya-card{border-radius:8px;border-color:#DDE2EA}
+.th-tower .ya-kpi{background:#0F172A;border:0;color:#fff}
+.th-tower .ya-kpi .l{color:#94A3B8}
+.th-tower .ya-th{background:#F1F4F8}
+
+/* Forgex · industrie : bandeau technique, titres en capitales */
+.th-assets .ya{background:#EEF3F7}
+.th-assets .ya-sb{background:#F4F8FB;border-right:1px solid #D6E2EC}
+.th-assets .ya .ya-nav{border-radius:2px}
+.th-assets .ya .ya-nav.on{background:#0C4A6E;color:#fff}
+.th-assets .ya-top{background:#0C4A6E;border-bottom:0}
+.th-assets .ya-crumb,.th-assets .ya-crumb b{color:#E0F2FE}
+.th-assets .ya-card{border-radius:2px;border-color:#D6E2EC;border-top:2px solid #0284C7;box-shadow:none}
+.th-assets .ya-ct,.th-assets .ya-kpi .l{text-transform:uppercase;letter-spacing:.08em;font-size:11.5px}
+.th-assets .ya-kpi .v{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;letter-spacing:-.04em}
+.th-assets .ya .ya-btn,.th-assets .ya-badge,.th-assets .ya-tabs button{border-radius:2px}
+.th-assets .ya-th{background:#E6EEF4;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
+
+/* Clausia · juridique : éditorial, serif, papier crème */
+.th-legal .ya{background:#FBF8F3}
+.th-legal .ya-sb{background:#F6F1E8;border-right:1px solid #E8DFD3}
+.th-legal .ya-top{background:#FBF8F3;border-bottom:1px solid #E8DFD3}
+.th-legal .ya .ya-nav.on{background:#fff;color:#BE185D;box-shadow:0 0 0 1px #E8DFD3}
+.th-legal .ya-h1,.th-legal .ya-ct,.th-legal .ya-kpi .v,.th-legal .ya-logo b{font-family:Georgia,'Times New Roman',serif;font-weight:700;letter-spacing:0}
+.th-legal .ya-h1{font-size:26px}
+.th-legal .ya-card{border-radius:6px;border-color:#E8DFD3;box-shadow:none;background:#FFFDF9}
+.th-legal .ya-kpi{background:transparent;border:0;border-bottom:1px solid #E8DFD3;border-radius:0}
+.th-legal .ya-th{background:#F6F1E8;border-color:#E8DFD3;font-style:italic}
+.th-legal .ya-tabs button.on{background:#BE185D}
+
+/* Labora · R&D : laboratoire, trame pointillée, bandeau dégradé */
+.th-rnd .ya{background:#FBF7FC radial-gradient(#E9D5F0 1px,transparent 1px) 0 0/18px 18px}
+.th-rnd .ya-sb{background:#fff;border-right:1px solid #F0E3F3}
+.th-rnd .ya .ya-nav.on{background:linear-gradient(90deg,#A21CAF,#7C3AED);color:#fff}
+.th-rnd .ya-top{background:linear-gradient(90deg,#A21CAF,#7C3AED);border-bottom:0}
+.th-rnd .ya-crumb,.th-rnd .ya-crumb b{color:#fff}
+.th-rnd .ya-card{border-radius:14px;border-color:#F0E3F3;box-shadow:0 6px 20px rgba(162,28,175,.07)}
+.th-rnd .ya-kpi{background:linear-gradient(160deg,#FDF4FF,#fff 70%)}
+.th-rnd .ya-kpi .v{color:#86198F}
+.th-rnd .ya-badge{border-radius:11px}
+.th-rnd .ya-th{background:#FAF0FC;border-color:#F0E3F3}
+
+/* Atrium · portail client : minimal, noir et blanc, grandes courbes */
+.th-portal .ya{background:#fff}
+.th-portal .ya-sb{background:#0B0B0F;border-right:0}
+.th-portal .ya-logo b,.th-portal .ya-me{color:#fff}
+.th-portal .ya-logo span span,.th-portal .ya-me span span,.th-portal .ya-sv{color:#71717A}
+.th-portal .ya-srch{background:#18181B;border-color:#18181B;color:#A1A1AA}
+.th-portal .ya .ya-nav{color:#D4D4D8;border-radius:20px}
+.th-portal .ya .ya-nav:hover{background:#18181B}
+.th-portal .ya .ya-nav.on{background:#fff;color:#0B0B0F}
+.th-portal .ya-svi{color:#D4D4D8}
+.th-portal .ya-top{border-bottom:1px solid #F1F1F1}
+.th-portal .ya-h1{font-size:28px;letter-spacing:-.04em}
+.th-portal .ya-card{border-radius:22px;border-color:#EDEDED;box-shadow:none}
+.th-portal .ya-kpi{background:#F6F6F4;border:0}
+.th-portal .ya .ya-btn{border-radius:20px}
+.th-portal .ya .ya-btn.p{background:#0B0B0F;border-color:#0B0B0F !important}
+.th-portal .ya-th{background:#fff}
+
+/* icônes du menu : même couleur que le texte (lisibles sur fonds sombres et éléments actifs) */
+.thm .ya .ya-nav svg{stroke:currentColor}
+.thm .ya .ya-nav:not(.on) svg{opacity:.8}
