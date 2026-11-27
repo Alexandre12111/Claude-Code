@@ -38,6 +38,9 @@
     if (FS.on) { if (e.key === 'Escape') closeFull(); return; }
     var m = $('#menu');
     if (e.key === 'Escape' && m.classList.contains('on')) { m.classList.remove('on'); return; }
+    var ek0 = slides[cur] && slides[cur].dataset.enter, hs = ek0 && H[ek0] && H[ek0].step;
+    if (hs && (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') && hs(1)) { e.preventDefault(); return; }
+    if (hs && (e.key === 'ArrowLeft' || e.key === 'PageUp') && hs(-1)) { e.preventDefault(); return; }
     if (['ArrowRight', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0 && !(e.key === 'Enter' && tag === 'BUTTON')) { e.preventDefault(); go(cur + 1); }
     else if (['ArrowLeft', 'PageUp', 'Backspace'].indexOf(e.key) >= 0) { e.preventDefault(); go(cur - 1); }
     else if (e.key === 'Home') go(0); else if (e.key === 'End') go(N - 1);
@@ -275,25 +278,45 @@
     prev.classList.remove('bready'); $('.bph', prev).classList.remove('bidle'); toast.classList.remove('on'); pub.classList.remove('bpulse'); stage(-1);
     if (B.app) B.app.stop();
   }
-  function run() {
-    reset(); stage(0);
-    later(function () {
-      type(P1, function () {
-        typer.textContent = ''; say(esc(P1), true); stage(1);
-        var m = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est parti. Voici ce que je construis :<ul>' + STEPS.map(function (s) { return '<li><i></i><span>' + s[0] + '</span></li>'; }).join('') + '</ul>');
-        var lis = $$('li', m);
-        lis.forEach(function (li, k) { later(function () { li.classList.add('brun'); }, 300 + k * 900); later(function () { li.classList.remove('brun'); li.classList.add('bdone'); }, 1100 + k * 900); });
-        later(function () {
-          if (!B.app) B.app = mount($('#h-build'), 'people');
-          B.app.fit(); B.app.start(); prev.classList.add('bready');
-          later(function () { stage(2); type(P2, function () { typer.textContent = ''; say(esc(P2), true); var r = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est fait : chaque manager reçoit une relance 3 jours avant l’arrivée.'); later(function () { stage(3); pub.classList.add('bpulse'); later(function () { toast.classList.add('on'); }, 900); }, 1500); }); }, 2200);
-        }, 300 + STEPS.length * 900 + 400);
-      });
-    }, 700);
+  /* Démonstration pas à pas : chaque étape se lance au clic (ou avec les flèches du clavier),
+     et l'on peut revenir à une étape précédente à tout moment. */
+  var CUR = -1;
+  function plan(done) {
+    var m = say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>C’est parti. Voici ce que je construis :<ul>' + STEPS.map(function (s) { return '<li' + (done ? ' class="bdone"' : '') + '><i></i><span>' + s[0] + '</span></li>'; }).join('') + '</ul>');
+    return $$('li', m);
   }
+  function showApp() { if (!B.app) B.app = mount($('#h-build'), 'people'); B.app.fit(); B.app.start(); prev.classList.add('bready'); }
+  var REPLY = 'C’est fait : chaque manager reçoit une relance 3 jours avant l’arrivée.';
+  function instant(n) {
+    if (n === 0) { typer.textContent = P1; }
+    if (n === 1) { typer.textContent = ''; say(esc(P1), true); plan(true); showApp(); }
+    if (n === 2) { say(esc(P2), true); say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>' + REPLY); }
+    if (n === 3) { pub.classList.add('bpulse'); toast.classList.add('on'); }
+  }
+  function animate(n) {
+    if (n === 0) later(function () { type(P1, function () {}); }, 400);
+    if (n === 1) {
+      typer.textContent = ''; say(esc(P1), true);
+      var lis = plan(false);
+      lis.forEach(function (li, k) { later(function () { li.classList.add('brun'); }, 300 + k * 700); later(function () { li.classList.remove('brun'); li.classList.add('bdone'); }, 900 + k * 700); });
+      later(showApp, 300 + STEPS.length * 700 + 200);
+    }
+    if (n === 2) type(P2, function () { typer.textContent = ''; say(esc(P2), true); later(function () { say('<small>' + Y.ic('sparkles', 12, '#1E3BFF', 2.4) + 'YouCraft</small>' + REPLY); }, 500); });
+    if (n === 3) { pub.classList.add('bpulse'); later(function () { toast.classList.add('on'); }, 700); }
+  }
+  function goStage(n) {
+    n = Math.max(0, Math.min(3, n));
+    reset(); for (var k = 0; k < n; k++) instant(k);
+    CUR = n; stage(n); animate(n);
+    $('[data-sprev]', bs).disabled = n === 0; $('[data-snext]', bs).disabled = n === 3;
+  }
+  $$('.bstp', bs).forEach(function (b) { b.onclick = function () { goStage(+b.dataset.st); }; });
+  $('[data-sprev]', bs).onclick = function () { goStage(CUR - 1); };
+  $('[data-snext]', bs).onclick = function () { goStage(CUR + 1); };
+  $('[data-replay]', bs).onclick = function () { goStage(0); };
   $('[data-url]', toast).textContent = Y.DEF.people[4].split('/')[0];
-  H.build = { enter: run, leave: reset };
-  $('[data-replay]', bs).onclick = run;
+  H.build = { enter: function () { goStage(0); }, leave: function () { reset(); CUR = -1; },
+    step: function (d) { var n = CUR + d; if (n < 0 || n > 3) return false; goStage(n); return true; } };
 
   /* ---------------------------------------------------------------- sécurité : anneaux et cartes liés */
   $$('#s-sec [data-r]').forEach(function (el) {

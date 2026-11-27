@@ -95,11 +95,11 @@
     <div class="bg2">
       <div>
         <div class="bsteps rv" style="--d:180">
-          <div class="bstp" data-st="0"><i>1</i><b>Décrire</b></div><span class="ar">{{i:chevron-right}}</span>
-          <div class="bstp" data-st="1"><i>2</i><b>Générer</b></div><span class="ar">{{i:chevron-right}}</span>
-          <div class="bstp" data-st="2"><i>3</i><b>Personnaliser</b></div><span class="ar">{{i:chevron-right}}</span>
-          <div class="bstp" data-st="3"><i>4</i><b>Déployer</b></div>
-          <button class="breplay" data-replay>{{i:history}}Rejouer</button>
+          <button class="bstp" data-st="0" aria-label="Étape 1 : Décrire"><i>1</i><b>Décrire</b></button><span class="ar">{{i:chevron-right}}</span>
+          <button class="bstp" data-st="1" aria-label="Étape 2 : Générer"><i>2</i><b>Générer</b></button><span class="ar">{{i:chevron-right}}</span>
+          <button class="bstp" data-st="2" aria-label="Étape 3 : Personnaliser"><i>3</i><b>Personnaliser</b></button><span class="ar">{{i:chevron-right}}</span>
+          <button class="bstp" data-st="3" aria-label="Étape 4 : Déployer"><i>4</i><b>Déployer</b></button>
+          <span class="bnav"><button class="bnb" data-sprev aria-label="Étape précédente">{{i:arrow-left2}}</button><button class="bnb p" data-snext aria-label="Étape suivante">{{i:chevron-right}}</button><button class="breplay" data-replay>{{i:history}}Rejouer</button></span>
         </div>
         <div class="bwrap rvs" style="--d:220">
           <div class="dwin">
@@ -119,12 +119,7 @@
         <div class="sr"><span class="dtile sm">{{i:app-window}}</span><div><b>Applications</b><ul><li>Scan de sécurité à chaque déploiement <em>Business</em></li><li>Journaux d’audit <em>Business</em></li><li>Tests d’intrusion <em>Enterprise</em></li></ul></div></div>
         <div class="sr"><span class="dtile sm">{{i:database}}</span><div><b>Données</b><ul><li>Cloud européen opéré par Leyton</li><li>Isolées par application</li><li>Zero Data Retention <em>Business</em></li></ul></div></div>
         <div class="sr"><span class="dtile sm lm">{{i:sparkles}}</span><div><b>Modèles d’IA</b><ul><li>Aucun entraînement sur vos données <em>Business</em></li><li>Choix du modèle</li><li>LLM souverain <em>Souverain</em></li></ul></div></div>
-        <h4>{{i:server}}Où sont hébergées vos données ?</h4>
-        <div class="hg">
-          <div class="hc"><span class="dtag">Starter</span><b>Cloud</b><span>SaaS standard</span><div class="lv"><i class="on"></i><i></i><i></i></div></div>
-          <div class="hc"><span class="dtag">Business</span><b>Cloud régional</b><span>Dans votre région</span><div class="lv"><i class="on"></i><i class="on"></i><i></i></div></div>
-          <div class="hc hi"><span class="dtag lm">Souverain</span><b>Souverain</b><span>Résidence des données, auto‑hébergement</span><div class="lv"><i class="on"></i><i class="on"></i><i class="on"></i></div></div>
-        </div>
+</div>
       </div>
     </div>
   </div>
@@ -176,9 +171,7 @@
     <div class="kick rv"><b>05</b>Tarifs</div>
     <h2 class="rv" style="--d:100">Une tarification simple, <span class="hl">par créateur</span>.</h2>
     <div class="pz">
-      <div class="dcard pc rvs" style="--d:200"><div class="nm"><h3>Starter</h3><span class="dtag">Construire</span></div><div class="pr"><b>25</b><span>€ HT / créateur<br>/ mois</span></div><p class="ds">Démarrez vite avec les outils IA essentiels.</p>
-        <ul><li><b>100 crédits / mois</b> *</li><li>Jusqu’à 10 applications, aperçus en direct</li><li>Déploiement en 1 clic</li><li>Import de données CSV / JSON</li><li>Applications et domaines publics</li><li>Hébergement cloud SaaS standard</li></ul></div>
-      <div class="dcard pc bu rvs" style="--d:280"><span class="flag">Le plus avantageux</span><div class="nm"><h3>Business</h3><span class="dtag lm">Maîtriser</span></div><div class="pr"><b>50</b><span>€ HT / créateur<br>/ mois</span></div><p class="ds">Tout Starter, plus le contrôle et la sécurité des données.</p>
+      <div class="dcard pc bu rvs" style="--d:280"><span class="flag">Le plus avantageux</span><div class="nm"><h3>Business</h3><span class="dtag lm">Maîtriser</span></div><div class="pr"><b>50</b><span>€ HT / créateur<br>/ mois</span></div><p class="ds">Le contrôle et la sécurité des données pour vos équipes.</p>
         <ul><li><b>300 crédits / mois</b> *</li><li>Aucun entraînement sur vos données, Zero Data Retention</li><li>Propriété du code source</li><li>SSO et accès par rôles</li><li>Applications privées, domaines personnalisés</li><li>10 licences utilisateur d’application incluses<small>puis 10 € HT / utilisateur d’application / mois</small></li><li>Hébergement cloud régional</li></ul></div>
       <div class="dcard pc sv rvs" style="--d:360"><div class="nm"><h3>Souverain</h3><span class="dtag">Protéger</span></div><div class="pr"><b>100</b><span>€ HT / créateur<br>/ mois</span></div><p class="ds">Tout Business, avec une souveraineté maximale.</p>
         <ul><li><b>500 crédits / mois</b> *</li><li>LLM souverain open source</li><li>Résidence régionale des données</li><li>Déploiement auto‑hébergé possible **</li><li>Support dédié</li></ul></div>
