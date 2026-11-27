@@ -489,3 +489,37 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 /* icônes du menu : même couleur que le texte (lisibles sur fonds sombres et éléments actifs) */
 .thm .ya .ya-nav svg{stroke:currentColor}
 .thm .ya .ya-nav:not(.on) svg{opacity:.8}
+
+/* ================================================================ annexe : YouCraft en direct */
+#s-live .pad{padding:132px 90px 40px;display:flex;flex-direction:column}
+#s-live .lh{display:flex;align-items:flex-end;justify-content:space-between;gap:30px}
+#s-live h2{font-size:52px;margin-top:14px}
+#s-live .lc{display:flex;gap:10px}
+.lbtn{display:inline-flex;align-items:center;gap:9px;height:46px;padding:0 18px;border-radius:13px;background:var(--um);color:#fff;font:600 16px/1 var(--display);transition:background .2s,transform .2s}
+.lbtn:hover{background:#1530D8;transform:translateY(-1px)}
+.lbtn .ic{width:18px;height:18px}
+.lbtn.ghost{background:#fff;color:var(--ink2);border:1px solid var(--line)}
+.lbtn.ghost:hover{background:var(--ums);color:var(--um)}
+.lbtn.big{height:56px;padding:0 24px;font-size:18px;border-radius:15px}
+#s-live .lwin{flex:1;margin-top:24px;display:flex;flex-direction:column;min-height:0}
+#s-live .lwin:fullscreen{border-radius:0}
+#s-live .durl{max-width:none;flex:1}
+#s-live .durl input{flex:1;min-width:0;border:0;outline:0;background:none;font:500 15px var(--body);color:#3C3C42}
+#s-live .dlive{color:var(--mut2)}#s-live .dlive::before{background:#C9C6BD;box-shadow:none}
+#s-live .dlive.on{color:var(--ok)}#s-live .dlive.on::before{background:var(--ok);box-shadow:0 0 0 4px rgba(28,140,78,.15)}
+#s-live .lbody{position:relative;flex:1;min-height:0;background:#fff}
+#s-live .lhost,#s-live .lhost iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#s-live .lstart{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px;background:radial-gradient(700px 400px at 50% 30%,rgba(30,59,255,.08),transparent),#FBFAF6}
+#s-live .lstart .dtile{width:72px;height:72px;border-radius:22px}
+#s-live .lstart .dtile .ic{width:34px;height:34px}
+#s-live .lstart h3{margin-top:24px;font-size:38px}
+#s-live .lstart p{margin-top:12px;max-width:760px;font-size:20px;line-height:1.5;color:var(--mut)}
+#s-live .lgo{display:flex;gap:14px;margin-top:30px}
+#s-live .lstart small{margin-top:24px;max-width:700px;font-size:15px;line-height:1.45;color:var(--mut2)}
+#s-live.live .lstart{display:none}
+#menu .mx{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+#menu .mx>span{display:block;font:700 13px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--mut2);margin:0 0 8px 14px}
+#menu .mx button{width:100%;text-align:left;display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:14px;font:500 18px/1.3 var(--body);color:var(--ink2)}
+#menu .mx button:hover{background:var(--ums);color:var(--um)}
+#menu .mx em{font:700 14px/1 var(--display);font-style:normal;color:var(--um);min-width:26px}
+#menu .mx small{display:block;font-size:13px;color:var(--mut2);margin-top:3px}

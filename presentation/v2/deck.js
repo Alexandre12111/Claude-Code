@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var deck = document.getElementById('deck'), chrome = document.getElementById('chrome');
-  var slides = Array.prototype.slice.call(document.querySelectorAll('section.yd')), N = slides.length, cur = -1;
+  var slides = Array.prototype.slice.call(document.querySelectorAll('section.yd:not(.annex)')), N = slides.length, cur = -1;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -12,8 +12,11 @@
   window.addEventListener('resize', fit); fit();
 
   /* ---------------------------------------------------------------- navigation */
+  var annex = document.getElementById('s-live'), inAnnex = false;
   function go(i) {
-    i = Math.max(0, Math.min(N - 1, i)); if (i === cur) return;
+    i = Math.max(0, Math.min(N - 1, i));
+    if (inAnnex) { inAnnex = false; annex.classList.toggle('on', false); var keep = cur; cur = -1; if (i === keep) slides[i].classList.toggle('on', false); }
+    if (i === cur) return;
     var prev = slides[cur];
     if (prev) { prev.classList.remove('on'); var lk = prev.dataset.enter; if (lk && H[lk] && H[lk].leave) H[lk].leave(); }
     cur = i; var s = slides[i]; s.classList.add('on');
@@ -36,6 +39,7 @@
     if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (FS.on) { if (e.key === 'Escape') closeFull(); return; }
+    if (inAnnex) { if (['Escape', 'ArrowLeft', 'ArrowRight', 'PageUp', 'PageDown'].indexOf(e.key) >= 0) { e.preventDefault(); go(cur); return; } if (e.key !== 'm' && e.key !== 'M') return; }
     var m = $('#menu');
     if (e.key === 'Escape' && m.classList.contains('on')) { m.classList.remove('on'); return; }
     if (['ArrowRight', 'PageDown', ' ', 'Enter'].indexOf(e.key) >= 0 && !(e.key === 'Enter' && tag === 'BUTTON')) { e.preventDefault(); go(cur + 1); }
@@ -52,6 +56,47 @@
   $('#menu').addEventListener('click', function (e) { if (e.target.id === 'menu') this.classList.remove('on'); });
   $('#menu ol').innerHTML = slides.map(function (s, k) { return '<li><button data-k="' + k + '"><em>' + String(k + 1).padStart(2, '0') + '</em><span>' + s.dataset.t + '<small>' + (s.dataset.ch || 'Ouverture') + '</small></span></button></li>'; }).join('');
   $$('#menu li button').forEach(function (b) { b.onclick = function () { go(+b.dataset.k); $('#menu').classList.remove('on'); }; });
+
+  /* ---------------------------------------------------------------- annexe : YouCraft en direct (sommaire uniquement) */
+  $('#menu ol').insertAdjacentHTML('afterend', '<div class="mx"><span>Annexe</span><button data-annex><em>A</em><span>YouCraft en direct<small>Construire en direct pendant le rendez‑vous</small></span></button></div>');
+  $('#menu [data-annex]').onclick = function () { showAnnex(); $('#menu').classList.toggle('on', false); };
+  function showAnnex() {
+    if (inAnnex) return;
+    var s = slides[cur];
+    if (s) { s.classList.toggle('on', false); var lk = s.dataset.enter; if (lk && H[lk] && H[lk].leave) H[lk].leave(); }
+    inAnnex = true; annex.classList.add('on');
+    chrome.classList.toggle('dk', false); chrome.classList.toggle('cover', false); document.body.classList.toggle('dk', false);
+    $('#chrome .ch').innerHTML = '<span>Annexe</span><i></i><b>A</b>';
+    $('#nav span').textContent = 'Annexe';
+    $$('#menu li button').forEach(function (b) { b.classList.toggle('on', false); });
+  }
+  /* L'iframe n'est jamais retirée : YouCraft continue de tourner quand on change de diapositive. */
+  var LV = { frame: null, win: null }, KEYU = 'yc-live-url', DEFU = 'https://app.youcraft.tech/';
+  var lurl = $('[data-lurl]', annex), lhost = $('[data-lhost]', annex), lstate = $('[data-lstate]', annex);
+  try { lurl.value = localStorage.getItem(KEYU) || DEFU; } catch (e) { lurl.value = DEFU; }
+  function lu() { var u = (lurl.value || '').trim() || DEFU; if (!/^https?:\/\//.test(u)) u = 'https://' + u; try { localStorage.setItem(KEYU, u); } catch (e) {} return u; }
+  function connect() {
+    if (!LV.frame) {
+      LV.frame = document.createElement('iframe');
+      LV.frame.setAttribute('allow', 'clipboard-read; clipboard-write; fullscreen');
+      LV.frame.setAttribute('title', 'YouCraft');
+      lhost.appendChild(LV.frame);
+    }
+    LV.frame.src = lu(); annex.classList.add('live'); lstate.textContent = 'Connecté'; lstate.classList.add('on');
+  }
+  function openWin() {
+    if (LV.win && !LV.win.closed) { LV.win.focus(); return; }
+    var w = Math.round(screen.availWidth * .92), h = Math.round(screen.availHeight * .92);
+    LV.win = window.open(lu(), 'youcraft-live', 'popup=yes,width=' + w + ',height=' + h + ',left=' + Math.round((screen.availWidth - w) / 2) + ',top=0');
+    $$('[data-lwin] span', annex).forEach(function (s) { s.textContent = 'Afficher la fenêtre YouCraft'; });
+  }
+  $('[data-lconnect]', annex).onclick = connect;
+  $$('[data-lwin]', annex).forEach(function (b) { b.onclick = openWin; });
+  $('[data-lreload]', annex).onclick = function () { if (LV.frame) LV.frame.src = lu(); };
+  $('[data-back]', annex).onclick = function () { go(cur); };
+  $('[data-lfull]', annex).onclick = function () { var w = $('.lwin', annex); if (document.fullscreenElement) document.exitFullscreen(); else if (w.requestFullscreen) w.requestFullscreen(); };
+  lurl.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); if (LV.frame) LV.frame.src = lu(); else connect(); } });
+
   $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { goId(b.dataset.go); }); });
 
   /* barre de navigation : visible quelques secondes après un mouvement de souris */
