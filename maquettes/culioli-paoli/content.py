@@ -46,7 +46,7 @@ CABINET = {
     "desc": "Le parcours de Me Charles Culioli-Paoli, avocat pénaliste à Paris : LL.M. de Harvard Law School, Master de Sciences Po, et sa vision de la défense pénale.",
     "h1_plain": "Charles Culioli-Paoli, avocat",
     "body": f"""
-<section class="page-head grain"><div class="wrap">
+<section class="page-head"><div class="wrap">
 {{{{CRUMBS}}}}
 <div class="head-split">
   <div><span class="cote">Le cabinet</span>
@@ -72,7 +72,7 @@ CABINET = {
   </div>
 </div></section>
 
-<section class="dark section grain"><div class="wrap folio">
+<section class="dark section"><div class="wrap folio">
   <div class="folio-margin"><span class="cote">Pièce 2 · Formation</span><span class="note">Deux écoles, deux traditions juridiques.</span></div>
   <div class="folio-body">
     <h2 class="sec-title">Une formation entre <em>Paris et Cambridge</em></h2>
@@ -126,7 +126,7 @@ def expertises_hub(p):
     som = "".join(
         f'<li><a href="/{x["slug"]}/"><h3>{x["nav"]}</h3><p>{x["somm"]}</p><span class="arrow">{{{{ARROW}}}}</span></a></li>'
         for x in EXPERTISES)
-    return f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}
+    return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
 <span class="cote">Expertises</span><h1 style="margin-top:1rem">Les domaines <em>d'intervention</em> du cabinet</h1>
 <p class="intro">Le cabinet de <strong>Me Charles Culioli-Paoli</strong> intervient en droit pénal, du premier acte d'enquête à l'exécution de la peine, en France et dans les dossiers internationaux.</p></div></section>
 <section class="section"><div class="wrap folio">
@@ -171,7 +171,7 @@ def ressources_body(p):
             for t, u, st in items)
         blocks += f"""<div class="folio" style="margin-top:3rem"><div class="folio-margin"><span class="cote">Thème {i:02d}</span></div>
 <div class="folio-body"><h2 class="sec-title" style="font-size:var(--step-3)">{theme}</h2><div class="edito-list" style="margin-top:1rem">{li}</div></div></div>"""
-    return f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}
+    return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
 <span class="cote">Ressources</span><h1 style="margin-top:1rem">Comprendre le droit pénal, <em>thème par thème</em></h1>
 <p class="intro">Des guides et des analyses rédigés par <strong>Me Charles Culioli-Paoli</strong> pour comprendre une procédure, connaître ses droits et préparer sa défense. Pas d'actualités au fil de l'eau : des contenus organisés et mis à jour.</p></div></section>
 <section class="section"><div class="wrap">{blocks}</div></section>"""
@@ -195,7 +195,7 @@ GUIDE = {
     "h1_plain": "Aménagement de peine : conditions, procédure et délais",
     "faq": [("Combien de temps dure la procédure&nbsp;?", "Les délais varient selon les juridictions et la situation de la personne. Il faut compter plusieurs semaines, parfois plusieurs mois, entre le dépôt de la requête et le débat contradictoire."),
             ("Peut-on demander un aménagement sans avocat&nbsp;?", "Oui, mais l'assistance d'un avocat permet de construire un dossier complet et de défendre le projet lors du débat devant le juge.")],
-    "body": f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}
+    "body": f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
 <span class="cote">Guide · Exécution des peines</span>
 <h1 style="margin-top:1rem">Aménagement de peine : <em>conditions, procédure et délais</em></h1>
 <p class="intro">Ce guide présente les principales mesures d'<strong>aménagement de peine</strong>, les conditions prévues par le Code de procédure pénale et la manière de préparer une demande devant le juge de l'application des peines.</p>
@@ -243,7 +243,7 @@ CONTACT = {
     "title": "Contacter Me Charles Culioli-Paoli | Avocat à Paris 8e",
     "desc": "Prendre rendez-vous avec Me Charles Culioli-Paoli, avocat pénaliste à Paris 8e : formulaire, WhatsApp ou ligne d'urgence pénale pour une garde à vue.",
     "h1_plain": "Contacter le cabinet",
-    "body": f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}
+    "body": f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
 <span class="cote">Contact</span><h1 style="margin-top:1rem">Contacter <em>le cabinet</em></h1>
 <p class="intro">Pour une situation urgente, utilisez la <strong>ligne d'urgence pénale</strong>. Pour toute autre demande, le formulaire ci-dessous permet d'exposer brièvement votre situation.</p>
 <div class="hero-actions"><button class="btn btn--solid" type="button" data-urgence>{{{{PHONE}}}} Urgence pénale</button><a class="btn btn--ghost" href="{SITE["whatsapp"]}" target="_blank" rel="noopener">{{{{WA}}}} WhatsApp</a></div></div></section>
@@ -281,7 +281,7 @@ MENTIONS = {
     "slug": "mentions-legales", "nav": "Mentions légales", "prio": "P3", "noindex": True,
     "kw": "", "title": "Mentions légales | Charles Culioli-Paoli, avocat", "desc": "Mentions légales du site.",
     "h1_plain": "Mentions légales",
-    "body": f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}<h1>Mentions légales</h1></div></section>
+    "body": f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}<h1>Mentions légales</h1></div></section>
 <section class="section"><div class="wrap"><div class="prose">
 <h2 style="margin-top:0">Éditeur du site</h2>
 <p>Me Charles Culioli-Paoli, avocat au Barreau de Paris{T}. Structure d'exercice : à compléter (exercice individuel, SELARL ou autre). Adresse : 264 rue du Faubourg Saint-Honoré, 75008 Paris{T}. Numéro de toque, SIRET et numéro de TVA intracommunautaire : à compléter.</p>

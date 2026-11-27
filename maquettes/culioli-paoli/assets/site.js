@@ -115,6 +115,11 @@
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+  /* Ombre de l'en-tête au défilement */
+  var head = $(".site-header");
+  var onHead = function () { head.classList.toggle("scrolled", window.scrollY > 10); };
+  window.addEventListener("scroll", onHead, { passive: true }); onHead();
+
   /* Halo qui suit le curseur (héros et en-têtes de page) */
   if (fine && !reduce) $$(".hero, .page-head").forEach(function (h) {
     h.addEventListener("pointermove", function (e) {

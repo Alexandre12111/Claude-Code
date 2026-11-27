@@ -9,7 +9,7 @@ def expertise_body(p):
         toc += '<li><a href="#faq">Questions fréquentes</a></li>'
     secs = "".join(f'<h2 id="{i}">{t}</h2>{h}' for i, t, h in p["sections"])
     rel = "".join(f'<a href="/{s}/"><b>{t}</b><span>{d}</span></a>' for s, t, d in p["related"])
-    return f"""<section class="page-head grain"><div class="wrap">
+    return f"""<section class="page-head"><div class="wrap">
 {{{{CRUMBS}}}}
 <div class="head-split">
   <div>

@@ -93,7 +93,7 @@ def footer():
     exp = "".join(f'<li><a href="{href(x["slug"])}">{E(x["nav"])}</a></li>' for x in PAGES if x.get("group") == "expertise")
     return f"""<footer class="site-footer">
   <div class="wrap">
-    <p class="foot-sign" aria-hidden="true">Culioli-Paoli<em>.</em></p>
+    <p class="foot-sign" aria-hidden="true">Charles <em>Culioli-Paoli</em></p>
     <div class="foot-grid">
       <div>
         <h2>Cabinet</h2>
@@ -241,10 +241,10 @@ def render(p):
 <meta property="og:url" content="{prod(p["slug"])}">
 <meta property="og:image" content="{img}">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#0D1726">
+<meta name="theme-color" content="#F6F2EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,100,0;1,9..144,300..900,100,0&family=Manrope:wght@400..800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Lato:wght@400;700;900&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 <script type="application/ld+json">
 {jsonld(p)}

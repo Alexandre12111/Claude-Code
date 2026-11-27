@@ -31,6 +31,7 @@ CHIPS = {
     "avocat-cybercriminalite": ["Cyberattaque", "Fraude informatique"],
     "avocat-plaidoirie-penale": ["Cour d'assises", "Tribunal correctionnel"],
 }
+ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"]
 COLORS = ["#0B1424", "#101C33", "#15233E", "#1A2A48", "#1F3152", "#24385C", "#2A3F66"]
 
 TERR = [
@@ -62,14 +63,14 @@ def home_body(p):
              "Droit pénal des affaires", "Cybercriminalité", "Comparution immédiate", "Notice rouge Interpol"]
     marquee = "".join(f"<span>{w}</span>" for w in words) * 2
     pcards = "".join(
-        f'''<a class="p-card spot" href="{u}"><span class="n" aria-hidden="true">{i+1:02d}</span><span class="when">{n} · {s}</span>
+        f'''<a class="p-card" href="{u}"><span class="n" aria-hidden="true">{ROMAN[i]}.</span><span class="when">{n} · {s}</span>
 <h3>{h}</h3><p>{t}</p><span class="chips">{"".join(f'<span class="chip">{c}</span>' for c in ch)}</span><span class="go">En savoir plus {{{{ARROW}}}}</span></a>'''
         for i, (n, s, h, t, ch, u) in enumerate(PROC))
     stack = "".join(
         f'''<a class="s-card" href="/{x["slug"]}/" style="--i:{i};--c:{COLORS[i]}">
-  <div class="l"><span class="k">Expertise {i+1:02d} / 07</span><h3>{x["nav"]}</h3><p>{x["somm"]}</p>
+  <div class="l"><span class="k">Expertise {ROMAN[i]}</span><h3>{x["nav"]}</h3><p>{x["somm"]}</p>
     <span class="chips">{"".join(f'<span class="chip">{c}</span>' for c in CHIPS[x["slug"]])}</span></div>
-  <div class="r"><span class="cta">{{{{ARROW}}}}</span><span class="big" aria-hidden="true">{i+1:02d}</span></div></a>'''
+  <div class="r"><span class="cta">{{{{ARROW}}}}</span><span class="big" aria-hidden="true">{ROMAN[i]}</span></div></a>'''
         for i, x in enumerate(EXPERTISES))
     terr = "".join(
         f'''<a class="ex{" on" if i == 0 else ""}" href="{u}"><span class="dep" aria-hidden="true">{d}</span><h3>{n}</h3><p class="more">{t}</p><span class="chip">{tag}</span></a>'''
@@ -79,42 +80,32 @@ def home_body(p):
          f'<li data-k="{n} {l}"><div><span><b>{n}</b><small>{l}</small></span><span class="chip">Bientôt</span></div></li>')
         for n, l, u in ETABS)
     return f"""
-<section class="hero grain">
-  <div class="hero-glow" aria-hidden="true"></div>
-  <span class="hero-mono" aria-hidden="true">CCP</span>
+<section class="hero">
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <span class="hero-tag"><b>Urgence pénale 24h/24</b>Cabinet à Paris 8<sup>e</sup>{T}</span>
+        <span class="hero-tag">Avocat au Barreau de Paris</span>
         <h1><span class="l"><span>Charles</span></span><span class="l"><span class="g">Culioli-Paoli</span></span></h1>
         <span class="role">Avocat pénaliste à Paris</span>
         <p class="hero-lede">Une défense pénale <strong>exigeante, disponible et discrète</strong>, de la garde à vue à l'exécution de la peine, pour les personnes mises en cause comme pour les victimes.</p>
         <div class="hero-actions">
-          <a class="btn btn--solid" href="/contact/">Exposer votre situation {{{{ARROW}}}}</a>
+          <a class="btn btn--solid" href="/contact/">Prendre rendez-vous {{{{ARROW}}}}</a>
           <button class="btn btn--ghost" type="button" data-urgence>{{{{PHONE}}}} Urgence pénale</button>
         </div>
       </div>
       <div class="hero-card">
-        <div class="tilt">
-          <div class="hero-photo">
-            <img src="assets/img/charles-culioli-paoli-avocat-robe.webp" width="900" height="1317" alt="Me Charles Culioli-Paoli en robe d'avocat au tribunal judiciaire de Paris" fetchpriority="high">
-            <div class="cap"><b>Me Charles Culioli-Paoli</b>Tribunal judiciaire de Paris</div>
-          </div>
-          <div class="float f1"><span class="ic">{SVG["cap"]}</span><span><b>LL.M., Harvard</b>Harvard Law School</span></div>
-          <div class="float f2"><span class="ic">{SVG["bar"]}</span><span><b>Barreau de Paris</b>New York{T}</span></div>
-          <div class="float f3"><span class="ic">{SVG["cap"]}</span><span><b>Sciences Po</b>École de droit</span></div>
+        <div class="hero-photo">
+          <img src="assets/img/charles-culioli-paoli-avocat-robe.webp" width="900" height="1317" alt="Me Charles Culioli-Paoli en robe d'avocat au tribunal judiciaire de Paris" fetchpriority="high">
+          <div class="cap"><b>Me Charles Culioli-Paoli</b>Tribunal judiciaire de Paris</div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="marquee" aria-hidden="true"><div class="marquee-track">{marquee}</div></div>
-  <div class="wrap">
-    <div class="stats stagger">
-      <div class="stat"><b data-count="7">7</b><span>domaines d'intervention en droit pénal</span></div>
-      <div class="stat"><b data-count="6">6</b><span>étapes de la procédure couvertes</span></div>
-      <div class="stat"><b data-count="5">5</b><span>langues de travail, dont le corse{T}</span></div>
-      <div class="stat"><b data-count="24" data-suf="h">24h</b><span>sur 24 pour les urgences pénales{T}</span></div>
-    </div>
+    <dl class="creds">
+      <div><dt>Formation</dt><dd>LL.M., Harvard Law School</dd></div>
+      <div><dt>Formation</dt><dd>Master, Sciences Po</dd></div>
+      <div><dt>Barreaux</dt><dd>Paris · New York{T}</dd></div>
+      <div><dt>Cabinet</dt><dd>Paris 8<sup>e</sup> · Massy{T}</dd></div>
+    </dl>
   </div>
 </section>
 
@@ -123,21 +114,21 @@ def home_body(p):
     <div class="sec-head"><div><span class="cote">L'approche</span><h2 class="sec-title">Une défense <em>sur mesure</em></h2></div>
       <p>Un avocat indépendant, un interlocuteur unique. Chaque dossier est lu, compris et défendu personnellement par Charles Culioli-Paoli.</p></div>
     <div class="bento stagger">
-      <div class="b-card b-quote spot">
-        <span class="cote" style="color:var(--gold)">Manifeste</span>
+      <div class="b-card b-quote">
+        <span class="cote" style="color:var(--gold-2)">Manifeste</span>
         <p>Chaque dossier pénal raconte une histoire incomplète. Mon travail est de la <em>lire entièrement</em>, puis de la rendre audible devant le juge.</p>
         <div class="sig"><img src="assets/img/charles-culioli-paoli-portrait.webp" width="400" height="400" alt="" loading="lazy"><span><b>Charles Culioli-Paoli</b>Avocat au Barreau de Paris · citation à valider</span></div>
       </div>
-      <div class="b-card b-1 spot"><span class="ic">{SVG["eye"]}</span><h3>Rigueur</h3><p>Lecture intégrale de la procédure, contrôle de chaque acte, stratégie expliquée sans détour.</p></div>
-      <div class="b-card b-2 spot"><span class="ic">{SVG["clock"]}</span><h3>Disponibilité</h3><p>Intervention rapide en garde à vue, joignable aux moments où tout se décide.</p></div>
-      <div class="b-card b-1 spot"><span class="ic">{SVG["lock"]}</span><h3>Discrétion</h3><p>Le secret professionnel comme règle de travail, pour les particuliers comme pour les dirigeants.</p></div>
-      <div class="b-card b-2 spot" style="grid-column:span 7"><span class="ic">{SVG["cap"]}</span><h3>Culture internationale</h3><p>Formé à Harvard Law School et à Sciences Po, à l'aise avec les dossiers qui franchissent les frontières.</p></div>
+      <div class="b-card b-1"><span class="ic">{SVG["eye"]}</span><h3>Rigueur</h3><p>Lecture intégrale de la procédure, contrôle de chaque acte, stratégie expliquée sans détour.</p></div>
+      <div class="b-card b-2"><span class="ic">{SVG["clock"]}</span><h3>Disponibilité</h3><p>Intervention rapide en garde à vue, joignable aux moments où tout se décide.</p></div>
+      <div class="b-card b-1"><span class="ic">{SVG["lock"]}</span><h3>Discrétion</h3><p>Le secret professionnel comme règle de travail, pour les particuliers comme pour les dirigeants.</p></div>
+      <div class="b-card b-2" style="grid-column:span 7"><span class="ic">{SVG["cap"]}</span><h3>Culture internationale</h3><p>Formé à Harvard Law School et à Sciences Po, à l'aise avec les dossiers qui franchissent les frontières.</p></div>
       <div class="b-card b-wide"><h3>Garde à vue, convocation, mise en examen&nbsp;?</h3><a class="btn" href="/contact/">Parler de votre dossier {{{{ARROW}}}}</a></div>
     </div>
   </div>
 </section>
 
-<section class="dark abyss hs" aria-label="Les étapes de la procédure pénale">
+<section class="dark hs" aria-label="Les étapes de la procédure pénale">
   <div class="hs-sticky">
     <div class="hs-track">
       <div class="hs-intro"><span class="cote">La procédure</span><h2 class="sec-title">À chaque <em>étape</em>, une même défense</h2><p>Faites défiler : de la plainte à l'exécution de la peine, découvrez comment l'avocat intervient.</p></div>
@@ -163,10 +154,10 @@ def home_body(p):
       <h2 class="sec-title" style="font-size:var(--step-3);max-width:20ch">Paris, Cambridge, <em>le Parquet</em></h2>
       <div class="flips">
         <button class="flip" type="button" aria-pressed="false" aria-label="LL.M., Harvard Law School : afficher le détail">
-          <span class="flip-in"><span class="flip-f"><span class="hint"><span>Cambridge, MA</span><span>Retourner ↻</span></span><span class="deg">LL.M.</span><span class="sch">Harvard Law School</span></span>
+          <span class="flip-in"><span class="flip-f"><span class="hint"><span>Cambridge, MA</span><span>Retourner</span></span><span class="deg">LL.M.</span><span class="sch">Harvard Law School</span></span>
           <span class="flip-b"><b>Common law et procédure américaine</b><p>Une formation utile aux dossiers internationaux, à l'extradition et au dialogue avec les confrères étrangers.{T}</p></span></span></button>
         <button class="flip" type="button" aria-pressed="false" aria-label="Master, École de droit de Sciences Po : afficher le détail">
-          <span class="flip-in"><span class="flip-f"><span class="hint"><span>Paris</span><span>Retourner ↻</span></span><span class="deg">Master</span><span class="sch">École de droit de Sciences Po</span></span>
+          <span class="flip-in"><span class="flip-f"><span class="hint"><span>Paris</span><span>Retourner</span></span><span class="deg">Master</span><span class="sch">École de droit de Sciences Po</span></span>
           <span class="flip-b"><b>Contentieux et international</b><p>Une formation exigeante, ouverte sur le contentieux, les libertés et l'international.{T}</p></span></span></button>
       </div>
       <ul class="timeline">
@@ -181,7 +172,7 @@ def home_body(p):
   </div>
 </section>
 
-<section class="dark section grain">
+<section class="dark section">
   <div class="wrap">
     <div class="sec-head"><div><span class="cote">Territoires</span><h2 class="sec-title">Où le cabinet <em>intervient</em></h2></div>
       <p>Paris en priorité, l'Essonne en second cœur d'activité, et partout en France lorsque la défense l'exige.</p></div>
@@ -190,7 +181,7 @@ def home_body(p):
       <div><span class="cote">Établissements pénitentiaires</span><h3 style="margin-top:.8rem">Un proche est détenu&nbsp;?</h3>
         <p>Recherchez l'établissement : le cabinet se rend en détention pour les demandes de mise en liberté, la discipline et l'aménagement de peine.</p>
         <div class="search"><label for="etab-q">Rechercher un établissement</label>{SVG["search"]}<input id="etab-q" type="search" placeholder="Fleury-Mérogis, Fresnes, Lyon…" autocomplete="off"></div>
-        <p style="margin-top:1.2rem"><a class="link-arrow" href="/etablissements-penitentiaires/" style="color:var(--gold-2)">Tous les établissements {{{{ARROW}}}}</a></p></div>
+        <p style="margin-top:1.2rem"><a class="link-arrow" href="/etablissements-penitentiaires/">Tous les établissements {{{{ARROW}}}}</a></p></div>
       <ul class="results" aria-live="polite">{etabs}<li class="empty" hidden>Aucun établissement trouvé. Contactez le cabinet, il intervient dans toute la France.</li></ul>
     </div>
   </div>
@@ -199,7 +190,7 @@ def home_body(p):
 <section class="section">
   <div class="wrap">
     <div class="sec-head"><div><span class="cote">Ressources</span><h2 class="sec-title">Comprendre <em>avant d'agir</em></h2></div>
-      <a class="btn btn--ghost" href="/ressources/" style="border-color:var(--rule)">Toutes les ressources {{{{ARROW}}}}</a></div>
+      <a class="btn btn--ghost" href="/ressources/">Toutes les ressources {{{{ARROW}}}}</a></div>
     <div class="covers stagger">
       <a class="cover cover--gold" href="/guide-amenagement-de-peine/"><span class="meta"><span>Guide</span><span>6 min</span></span><h3>Aménagement de peine : conditions, procédure et délais</h3><span class="glyph" aria-hidden="true">A</span></a>
       <a class="cover" href="/avocat-garde-a-vue-paris/"><span class="meta"><span>Procédure</span><span>4 min</span></span><h3>Garde à vue : vos droits et le rôle de l'avocat</h3><span class="glyph" aria-hidden="true">G</span></a>
@@ -210,7 +201,7 @@ def home_body(p):
 
 <section class="section--tight" style="padding-top:0">
   <div class="wrap">
-    <div class="final grain reveal">
+    <div class="final reveal">
       <div class="txt"><span class="cote">Prendre contact</span><h2>Un proche est en <em>garde à vue</em>&nbsp;?</h2>
         <p>Le cabinet intervient en urgence à Paris et en Essonne. Pour toute autre demande, décrivez votre situation : vous serez recontacté rapidement.</p>
         <div class="hero-actions"><button class="btn btn--solid" type="button" data-urgence>{{{{PHONE}}}} Afficher le numéro d'urgence</button><a class="btn btn--ghost" href="/contact/">Écrire au cabinet {{{{ARROW}}}}</a></div></div>
