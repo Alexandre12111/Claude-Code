@@ -244,7 +244,7 @@ def render(p):
 <meta name="theme-color" content="#0D1726">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,200..600;1,6..72,200..600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,100,0;1,9..144,300..900,100,0&family=Manrope:wght@400..800&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 <script type="application/ld+json">
 {jsonld(p)}
@@ -274,7 +274,7 @@ def seo_plan():
 <td>{E(p["title"])}<br><span class="ref">{tl} car.</span> {ok(45 <= tl <= 62)}</td>
 <td>{E(p["desc"])}<br><span class="ref">{dl} car.</span> {ok(135 <= dl <= 162)}</td>
 <td>{E(p["h1_plain"])}</td><td>{E(p.get("schema_label", p.get("schema", "WebPage")))}</td><td>{E(p.get("prio", ""))}</td></tr>""")
-    body = f"""<section class="night page-head"><div class="wrap">{{{{CRUMBS}}}}
+    body = f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
 <h1>Plan SEO <em>page par page</em></h1>
 <p class="intro">Contrôle des règles Rank Math pour chaque page de la maquette : mot-clé principal, title (50 à 60 caractères), meta description (140 à 160 caractères), H1 unique et schéma. Page interne, non indexée.</p></div></section>
 <section class="section--tight"><div class="wrap"><div class="table-wrap"><table>

@@ -19,7 +19,7 @@ def interventions_body(p):
     rows = "".join(
         f'<tr><td><b>{d}</b></td><td><b>{n}</b></td><td>{t}</td><td>{f"<a href=\"{u}\">Voir la page</a>" if u else "—"}</td><td><span class="pill{" pill--on" if s == "Page publiée" else ""}">{s}</span></td></tr>'
         for d, n, t, u, s in REGIONS)
-    return f"""<section class="night page-head"><div class="wrap">{{{{CRUMBS}}}}
+    return f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}
 <span class="cote">Interventions</span><h1 style="margin-top:1rem">Où intervient <em>le cabinet</em></h1>
 <p class="intro">Inscrit au Barreau de Paris, <strong>Me Charles Culioli-Paoli</strong> peut plaider devant toutes les juridictions pénales françaises. Le cabinet concentre son activité sur Paris et l'Essonne, et intervient dans d'autres régions selon les dossiers.</p></div></section>
 <section class="section"><div class="wrap">
@@ -103,7 +103,7 @@ def etab_body(p):
     rows = "".join(
         f'<tr data-region="{r}"><td><b>{n}</b></td><td>{l}</td><td>{t}</td><td>{pot}</td><td>{f"<a href=\"{u}\">Voir la page</a>" if u else "—"}</td><td><span class="pill{" pill--on" if s == "Publiée" else ""}">{s}</span></td></tr>'
         for r, n, l, t, pot, u, s in ETAB)
-    return f"""<section class="night page-head"><div class="wrap">{{{{CRUMBS}}}}
+    return f"""<section class="page-head grain"><div class="wrap">{{{{CRUMBS}}}}
 <span class="cote">Établissements pénitentiaires</span><h1 style="margin-top:1rem">Défendre une personne <em>détenue</em></h1>
 <p class="intro">Détention provisoire, demande de mise en liberté, commission de discipline, aménagement de peine&nbsp;: <strong>Me Charles Culioli-Paoli</strong> se rend dans les établissements pénitentiaires pour rencontrer les personnes qu'il défend.</p></div></section>
 <section class="section"><div class="wrap folio">

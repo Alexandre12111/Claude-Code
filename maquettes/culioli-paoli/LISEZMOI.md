@@ -8,8 +8,8 @@ python3 build.py
 ```
 Les contenus sont dans `content.py`, `pages_expertises.py` et `pages_lieux.py`. Le style est dans `assets/site.css`, les interactions dans `assets/site.js`.
 
-## Direction artistique
-« Le dossier » : grille éditoriale asymétrique avec une colonne de marge portant des cotes (D.01, D.02…) comme les pièces d'un dossier pénal. Bleu nuit, ivoire, bronze en filet. Newsreader (serif éditoriale) et Inter Tight.
+## Direction artistique (v2)
+« Nuit d'audience » : un site sombre et profond, éclairé par touches de champagne. Fraunces Soft (serif ronde et puissante) et Manrope. Cartes arrondies, verre fumé, halo qui suit le curseur, photo inclinable en 3D, bandeau défilant, procédure en défilement horizontal, expertises en cartes empilées, diplômes en cartes qui se retournent, territoires en panneaux extensibles, recherche d'établissement pénitentiaire en direct.
 
 ## Fonctionnalités
 * Bouton « Urgence pénale » : le numéro ne s'affiche qu'après un clic, puis devient cliquable (tel:) et copiable.

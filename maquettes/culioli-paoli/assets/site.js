@@ -112,13 +112,137 @@
     });
   }
 
-  /* Apparitions au défilement : seuls les éléments hors écran au chargement sont masqués */
-  var rm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!rm && "IntersectionObserver" in window) {
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fine = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  /* Halo qui suit le curseur (héros et en-têtes de page) */
+  if (fine && !reduce) $$(".hero, .page-head").forEach(function (h) {
+    h.addEventListener("pointermove", function (e) {
+      var r = h.getBoundingClientRect();
+      h.style.setProperty("--mx", (e.clientX - r.left) + "px"); h.style.setProperty("--my", (e.clientY - r.top) + "px");
+    });
+  });
+
+  /* Halo sur les cartes */
+  $$(".spot").forEach(function (c) {
+    c.addEventListener("pointermove", function (e) {
+      var r = c.getBoundingClientRect();
+      c.style.setProperty("--x", (e.clientX - r.left) + "px"); c.style.setProperty("--y", (e.clientY - r.top) + "px");
+    });
+  });
+
+  /* Inclinaison 3D */
+  if (fine && !reduce) $$(".tilt").forEach(function (t) {
+    var host = t.parentElement;
+    host.addEventListener("pointermove", function (e) {
+      var r = host.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      t.style.transform = "rotateY(" + (x * 10) + "deg) rotateX(" + (-y * 10) + "deg)";
+    });
+    host.addEventListener("pointerleave", function () { t.style.transform = ""; });
+  });
+
+  /* Procédure : défilement horizontal piloté par le défilement vertical */
+  var hs = $(".hs");
+  if (hs) {
+    var track = $(".hs-track", hs), hbar = $(".hs-bar i", hs);
+    var hsScroll = function () {
+      if (hs.classList.contains("static")) return;
+      var r = hs.getBoundingClientRect(), dist = track.scrollWidth - window.innerWidth;
+      var p = Math.min(Math.max(-r.top / Math.max(hs.offsetHeight - window.innerHeight, 1), 0), 1);
+      track.style.transform = "translate3d(" + (-p * dist) + "px,0,0)";
+      if (hbar) hbar.style.width = (p * 100) + "%";
+    };
+    var hsSetup = function () {
+      var desktop = window.innerWidth > 860 && !reduce;
+      hs.classList.toggle("static", !desktop);
+      if (!desktop) { hs.style.height = ""; track.style.transform = ""; return; }
+      hs.style.height = (window.innerHeight + Math.max(track.scrollWidth - window.innerWidth, 0)) + "px";
+      hsScroll();
+    };
+    window.addEventListener("scroll", hsScroll, { passive: true });
+    window.addEventListener("resize", hsSetup);
+    window.addEventListener("load", hsSetup);
+    hsSetup();
+  }
+
+  /* Cartes empilées : la carte recouverte recule légèrement */
+  var cards = $$(".s-card");
+  if (cards.length && !reduce) {
+    var stackScroll = function () {
+      cards.forEach(function (c, i) {
+        var next = cards[i + 1];
+        if (!next || window.innerWidth <= 760) { c.style.transform = ""; c.style.filter = ""; return; }
+        var a = c.getBoundingClientRect(), b = next.getBoundingClientRect();
+        var o = Math.min(Math.max((a.bottom - b.top) / a.height, 0), 1);
+        c.style.transform = "scale(" + (1 - o * .05) + ")"; c.style.filter = "brightness(" + (1 - o * .35) + ")";
+      });
+    };
+    window.addEventListener("scroll", stackScroll, { passive: true }); stackScroll();
+  }
+
+  /* Territoires : panneaux extensibles */
+  var exs = $$(".ex");
+  exs.forEach(function (x) {
+    var on = function () { exs.forEach(function (y) { y.classList.toggle("on", y === x); }); };
+    x.addEventListener("mouseenter", on); x.addEventListener("focus", on);
+  });
+
+  /* Cartes qui se retournent */
+  $$(".flip").forEach(function (f) {
+    f.addEventListener("click", function () { f.setAttribute("aria-pressed", f.getAttribute("aria-pressed") !== "true"); });
+  });
+
+  /* Recherche d'établissement */
+  var q = $("#etab-q");
+  if (q) {
+    var items = $$(".results li[data-k]"), empty = $(".results .empty");
+    var norm = function (s) { return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); };
+    q.addEventListener("input", function () {
+      var v = norm(q.value.trim()), n = 0;
+      items.forEach(function (li) { var ok = !v || norm(li.getAttribute("data-k")).indexOf(v) > -1; li.hidden = !ok; if (ok) n++; });
+      empty.hidden = n > 0;
+    });
+  }
+
+  /* Compteurs */
+  var count = function (el) {
+    var to = parseFloat(el.getAttribute("data-count")), suf = el.getAttribute("data-suf") || "", t0 = null;
+    var step = function (t) {
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0) / 1400, 1);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))) + suf;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  /* Sommaire actif */
+  var tocLinks = $$(".toc a[href^='#']");
+  if (tocLinks.length && "IntersectionObserver" in window) {
+    var tio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) tocLinks.forEach(function (a) { a.classList.toggle("is-active", a.getAttribute("href") === "#" + e.target.id); });
+      });
+    }, { rootMargin: "-20% 0px -70% 0px" });
+    tocLinks.forEach(function (a) { var t = document.getElementById(a.getAttribute("href").slice(1)); if (t) tio.observe(t); });
+  }
+
+  /* Apparitions : seuls les éléments hors écran au chargement sont masqués */
+  if (!reduce && "IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.remove("pre"); io.unobserve(e.target); } });
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var el = e.target, kids = Array.prototype.slice.call(el.children);
+        if (el.classList.contains("stagger")) {
+          kids.forEach(function (c, i) { c.style.transitionDelay = (i * 80) + "ms"; });
+          setTimeout(function () { kids.forEach(function (c) { c.style.transitionDelay = ""; }); }, 1600);
+        }
+        el.classList.remove("pre");
+        $$("[data-count]", el).forEach(count);
+        io.unobserve(el);
+      });
     }, { rootMargin: "0px 0px -8% 0px" });
-    $$(".reveal").forEach(function (el) {
+    $$(".reveal, .stagger").forEach(function (el) {
       if (el.getBoundingClientRect().top > window.innerHeight) { el.classList.add("pre"); io.observe(el); }
     });
   }

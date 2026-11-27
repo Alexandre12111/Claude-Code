@@ -9,7 +9,7 @@ def expertise_body(p):
         toc += '<li><a href="#faq">Questions fréquentes</a></li>'
     secs = "".join(f'<h2 id="{i}">{t}</h2>{h}' for i, t, h in p["sections"])
     rel = "".join(f'<a href="/{s}/"><b>{t}</b><span>{d}</span></a>' for s, t, d in p["related"])
-    return f"""<section class="night page-head"><div class="wrap">
+    return f"""<section class="page-head grain"><div class="wrap">
 {{{{CRUMBS}}}}
 <div class="head-split">
   <div>
@@ -36,7 +36,7 @@ def expertise_body(p):
       <a class="btn btn--solid" href="/contact/">Prendre rendez-vous</a></div>
   </aside>
 </div></section>
-<section class="night contact-band"><div class="wrap">
+<section class="contact-band"><div class="wrap">
   <div class="cb"><span class="cote">Urgence</span><h2 style="margin-top:.8rem">Une mesure est <em>en cours</em>&nbsp;?</h2>
     <p>Garde à vue, perquisition, convocation imminente : le cabinet peut être joint à tout moment pour une intervention rapide.</p>
     <button class="btn btn--solid" type="button" data-urgence>{{{{PHONE}}}} Afficher le numéro d'urgence</button></div>
