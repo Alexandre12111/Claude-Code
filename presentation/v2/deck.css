@@ -445,16 +445,6 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .th-assets .ya-th{background:#E6EEF4;text-transform:uppercase;letter-spacing:.06em;font-size:11px}
 
 /* Clausia · juridique : éditorial, serif, papier crème */
-.th-legal .ya{background:#FBF8F3}
-.th-legal .ya-sb{background:#F6F1E8;border-right:1px solid #E8DFD3}
-.th-legal .ya-top{background:#FBF8F3;border-bottom:1px solid #E8DFD3}
-.th-legal .ya .ya-nav.on{background:#fff;color:#BE185D;box-shadow:0 0 0 1px #E8DFD3}
-.th-legal .ya-h1,.th-legal .ya-ct,.th-legal .ya-kpi .v,.th-legal .ya-logo b{font-family:Georgia,'Times New Roman',serif;font-weight:700;letter-spacing:0}
-.th-legal .ya-h1{font-size:26px}
-.th-legal .ya-card{border-radius:6px;border-color:#E8DFD3;box-shadow:none;background:#FFFDF9}
-.th-legal .ya-kpi{background:transparent;border:0;border-bottom:1px solid #E8DFD3;border-radius:0}
-.th-legal .ya-th{background:#F6F1E8;border-color:#E8DFD3;font-style:italic}
-.th-legal .ya-tabs button.on{background:#BE185D}
 
 /* Labora · R&D : laboratoire, trame pointillée, bandeau dégradé */
 .th-rnd .ya{background:#FBF7FC radial-gradient(#E9D5F0 1px,transparent 1px) 0 0/18px 18px}
@@ -543,13 +533,13 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .th-tower .ya-card{border-left:3px solid #E8590C}
 
 /* Forgex (industrie) : barre de navigation horizontale, instruments */
-.th-assets .ya-sb,.th-legal .ya-sb{width:1600px !important;height:60px !important;display:flex;align-items:center;gap:2px;padding:0 22px 0 20px;border:0 !important}
-.th-assets .ya-sb>*,.th-legal .ya-sb>*{position:static !important}
-.th-assets .ya-srch,.th-assets .ya-sv,.th-assets .ya-svi,.th-legal .ya-srch,.th-legal .ya-sv,.th-legal .ya-svi{display:none !important}
-.th-assets .ya .ya-nav,.th-legal .ya .ya-nav{width:auto !important;height:36px !important;padding:0 12px !important;white-space:nowrap}
-.th-assets .ya-me,.th-legal .ya-me{margin-left:auto}
-.th-assets .ya-top,.th-legal .ya-top{display:none}
-.th-assets .ya-main,.th-legal .ya-main{left:112px !important;top:60px !important}
+.th-assets .ya-sb{width:1600px !important;height:60px !important;display:flex;align-items:center;gap:2px;padding:0 22px 0 20px;border:0 !important}
+.th-assets .ya-sb>*{position:static !important}
+.th-assets .ya-srch,.th-assets .ya-sv,.th-assets .ya-svi{display:none !important}
+.th-assets .ya .ya-nav{width:auto !important;height:36px !important;padding:0 12px !important;white-space:nowrap}
+.th-assets .ya-me{margin-left:auto}
+.th-assets .ya-top{display:none}
+.th-assets .ya-main{left:112px !important;top:60px !important}
 .th-assets .ya-sb{background:#0C4A6E !important}
 .th-assets .ya-logo{margin-right:26px}
 .th-assets .ya-logo b,.th-assets .ya-me{color:#fff !important}
@@ -566,18 +556,6 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .th-assets .ya-card:not(.ya-kpi)::before{content:"";position:absolute;left:0;right:0;top:0;height:46px;background:#F1F6FA;border-bottom:1px solid #D6E2EC}
 
 /* Clausia (juridique) : bandeau éditorial avec logo centré, chiffres typographiques */
-.th-legal .ya-sb{background:#FBF8F3 !important;border-bottom:1px solid #E8DFD3 !important}
-.th-legal .ya-sb{justify-content:center}
-.th-legal .ya-logo{position:absolute !important;left:24px;top:13px}
-.th-legal .ya-me{position:absolute !important;left:auto !important;right:22px;top:14px;bottom:auto !important;margin:0}
-.th-legal .ya-logo b{font-size:20px}
-.th-legal .ya .ya-nav{font-family:Georgia,serif;font-size:14px;color:#6B5E57;border-radius:0 !important;background:transparent !important}
-.th-legal .ya .ya-nav.on{color:#BE185D !important;box-shadow:inset 0 -2px 0 #BE185D !important}
-.th-legal .ya-kpi{background:transparent !important;border:0 !important;border-top:3px double #1F1A17 !important;border-radius:0 !important;box-shadow:none !important}
-.th-legal .ya-kpi .v{font-size:38px;color:#1F1A17}
-.th-legal .ya-kpi .l{font-style:italic;font-family:Georgia,serif}
-.th-legal .ya-kpi .s{display:none}
-.th-legal .ya-ct{border-bottom:2px solid #BE185D;padding-bottom:4px}
 
 /* Labora (R&D) : disposition inversée, tuiles en dégradé en bas de page */
 .th-rnd .ya-kpi{border:0 !important;color:#fff;box-shadow:0 12px 30px rgba(134,25,143,.22) !important}
@@ -683,16 +661,6 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .thm.th-assets .ya-kpi .v{font-family:'JetBrains Mono',ui-monospace,monospace !important;font-weight:500;font-size:30px}
 
 /* Clausia : maison d'édition, serif élégant */
-.thm.th-legal .ya{background:#FAF7F1}
-.thm.th-legal .ya-h1,.thm.th-legal .ya-ct,.thm.th-legal .ya-kpi .v,.thm.th-legal .ya-logo b{font-family:'Instrument Serif',Georgia,serif !important;font-weight:400 !important;letter-spacing:-.01em !important}
-.thm.th-legal .ya-h1{font-size:36px !important}
-.thm.th-legal .ya-ct{font-size:20px;border-bottom:0;padding:0}
-.thm.th-legal .ya-kpi .v{font-size:46px;top:30px}
-.thm.th-legal .ya-kpi{border-top:1px solid #1F1A17 !important}
-.thm.th-legal .ya-logo b{font-size:24px !important}
-.thm.th-legal .ya .ya-nav{font-family:'Instrument Serif',Georgia,serif;font-size:17px;color:#5B4F48}
-.thm.th-legal .ya-card:not(.ya-kpi){background:#FFFDF8;border:1px solid #EDE5D8;border-radius:12px;box-shadow:0 1px 0 #fff inset,0 18px 40px -28px rgba(60,40,20,.25)}
-.thm.th-legal .ya-tabs button.on{color:#BE185D !important}
 
 /* Labora : laboratoire lumineux, verre et dégradés */
 .thm.th-rnd .ya{background:radial-gradient(800px 500px at 100% 0%,rgba(192,38,211,.12),transparent 60%),radial-gradient(#E9D5F0 1px,transparent 1px) 0 0/20px 20px,#FBF7FD}
@@ -714,3 +682,17 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .thm.th-portal .ya-kpi{background:transparent !important;border:0 !important;border-right:1px solid #EAEAE7 !important}
 .thm.th-portal .ya-kpi.k0 .v{color:#09090B;background:linear-gradient(transparent 62%,#D7FF3F 62%,#D7FF3F 92%,transparent 92%);padding:0 4px;margin-left:-4px}
 .thm.th-portal .ya .ya-btn.p{background:#09090B !important;box-shadow:0 6px 14px -4px rgba(0,0,0,.4)}
+
+/* Socia (bilan social) : clair et chaleureux, indicateurs en pastilles colorées */
+.thm.th-legal .ya{background:radial-gradient(900px 500px at 100% 0%,rgba(219,39,119,.07),transparent 60%),radial-gradient(800px 500px at 0% 100%,rgba(79,70,229,.06),transparent 60%),#FAF9FB}
+.thm.th-legal .ya-sb{background:#fff !important;border-right:1px solid rgba(15,15,20,.06) !important}
+.thm.th-legal .ya .ya-nav.on{background:linear-gradient(135deg,#DB2777,#BE185D) !important;color:#fff !important;box-shadow:0 8px 18px -8px rgba(219,39,119,.6)}
+.thm.th-legal .ya-kpi{border:0 !important;border-radius:18px !important;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 12px 30px -18px rgba(15,15,20,.25) !important}
+.thm.th-legal .ya-kpi.k0{background:linear-gradient(160deg,#FFF1F7,#fff 70%) !important}
+.thm.th-legal .ya-kpi:nth-of-type(n){background:linear-gradient(160deg,#EEF0FF,#fff 70%)}
+.thm.th-legal .ya-kpi.k0{background:linear-gradient(160deg,#FFE4F0,#fff 75%) !important}
+.thm.th-legal .ya-kpi.kl{background:linear-gradient(160deg,#E0F7F3,#fff 75%) !important}
+.thm.th-legal .ya-kpi .v{font-size:31px;color:#18181B}
+.thm.th-legal .ya-card:not(.ya-kpi){border-radius:20px}
+.thm.th-legal .ya-ct{display:flex;align-items:center;gap:8px}
+.thm.th-legal .ya-ct::before{content:"";width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#DB2777 50%,#4F46E5 50%)}

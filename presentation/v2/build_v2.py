@@ -13,6 +13,10 @@ rd = lambda f: open(os.path.join(HERE, f), encoding='utf-8').read()
 scripts = re.findall(r'<script>.*?</script>', OLD, re.S)
 ENGINE = next(s for s in scripts if s.startswith('<script>\nwindow.YA_ICONS='))
 NAVJS = next(s for s in scripts if '/* ===== v1.8 : navigation complète' in s[:200])
+_anchor = '/* ================================================================== slide 9 popup'
+if _anchor not in NAVJS: _anchor = '/* ---------------------------------------------------------------- slide 9 popup'
+assert NAVJS.count(_anchor) == 1
+NAVJS = NAVJS.replace(_anchor, open(os.path.join(HERE, 'app_social.js'), encoding='utf-8').read() + '\n' + _anchor)
 ICONS = json.loads(re.search(r'window\.YA_ICONS=(\{.*?\});\n', ENGINE, re.S).group(1))
 
 

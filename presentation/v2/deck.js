@@ -71,7 +71,7 @@
   /* ---------------------------------------------------------------- applications réelles (moteur YouCraft) */
   var Y = window.YA;
   /* Chaque application a sa propre couleur : les bleus du moteur sont remplacés par sa palette. */
-  var ACC = { people: '#7C3AED', sales: '#1E3BFF', expenses: '#0F766E', tower: '#E8590C', assets: '#0284C7', legal: '#BE185D', rnd: '#A21CAF', portal: '#18181B' };
+  var ACC = { people: '#7C3AED', sales: '#1E3BFF', expenses: '#0F766E', tower: '#E8590C', assets: '#0284C7', legal: '#DB2777', rnd: '#A21CAF', portal: '#18181B' };
   var YB = window.__YB || [];
   function hx(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
   function mixc(h, t) { var c = hx(h), e = t >= 0 ? 255 : 0, a = Math.abs(t); return '#' + c.map(function (v) { return Math.round(v + (e - v) * a).toString(16).padStart(2, '0'); }).join(''); }
@@ -114,7 +114,7 @@
     expenses: ['Ledgr', 'Northwind · Finance', '<svg viewBox="0 0 34 34"><rect width="34" height="34" rx="4" fill="#0F766E"/><rect x="8" y="9" width="18" height="3.4" fill="#fff"/><rect x="8" y="15.3" width="13" height="3.4" fill="#99E0D4"/><rect x="8" y="21.6" width="8" height="3.4" fill="#fff"/></svg>'],
     tower: ['Routa', 'Northwind · Logistique', '<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill="#E8590C"/><path d="M10 23 C 14 23, 13 12, 17 12 S 21 19, 24 11" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><circle cx="10" cy="23" r="2.6" fill="#fff"/><circle cx="24" cy="11" r="2.6" fill="#FFD8C2"/></svg>'],
     assets: ['Forgex', 'Northwind · Usines', '<svg viewBox="0 0 34 34"><path d="M17 1.5 30.4 9.25v15.5L17 32.5 3.6 24.75V9.25Z" fill="#0284C7"/><path d="M17 9.5 23.5 13.25v7.5L17 24.5 10.5 20.75v-7.5Z" fill="none" stroke="#fff" stroke-width="2.4"/><circle cx="17" cy="17" r="2.4" fill="#BAE6FD"/></svg>'],
-    legal: ['Clausia', 'Northwind · Juridique', '<svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#BE185D"/><circle cx="17" cy="17" r="12.5" fill="none" stroke="#F9A8D4" stroke-width="1"/><text x="17" y="23.5" text-anchor="middle" font-family="Georgia,serif" font-size="18" font-style="italic" font-weight="700" fill="#fff">C</text></svg>'],
+    legal: ['Socia', 'Northwind · DAF', '<svg viewBox="0 0 34 34"><rect width="34" height="34" rx="11" fill="#fff"/><circle cx="13.5" cy="17" r="8" fill="#DB2777" opacity=".9"/><circle cx="20.5" cy="17" r="8" fill="#4F46E5" opacity=".85" style="mix-blend-mode:multiply"/></svg>'],
     rnd: ['Labora', 'Northwind · Innovation', '<svg viewBox="0 0 34 34"><defs><linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C026D3"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs><rect width="34" height="34" rx="11" fill="url(#lbg)"/><ellipse cx="17" cy="17" rx="10" ry="4" fill="none" stroke="#fff" stroke-width="1.8"/><ellipse cx="17" cy="17" rx="10" ry="4" fill="none" stroke="#fff" stroke-width="1.8" transform="rotate(60 17 17)"/><ellipse cx="17" cy="17" rx="10" ry="4" fill="none" stroke="#fff" stroke-width="1.8" transform="rotate(120 17 17)"/><circle cx="17" cy="17" r="2.2" fill="#fff"/></svg>'],
     portal: ['Atrium', 'Northwind · Espace clients', '<svg viewBox="0 0 34 34"><rect width="34" height="34" rx="10" fill="#fff"/><path d="M9 27V16a8 8 0 0 1 16 0v11" fill="none" stroke="#0B0B0F" stroke-width="3"/><path d="M14 27v-9a3 3 0 0 1 6 0v9" fill="#D7FF3F"/></svg>']
   };
@@ -137,7 +137,7 @@
     expenses: { kpiBottom: true, kpi: 'band' },
     tower: {},
     assets: { kpi: 'gap' },
-    legal: { mirror: true, kpi: 'band' },
+    legal: { kpi: 'gap' },
     rnd: { mirror: true, kpiBottom: true, kpi: 'gap' },
     portal: { kpi: 'band' }
   };
@@ -201,7 +201,7 @@
     { k: 'expenses', team: 'Finance', name: 'Notes de frais', icon: 'receipt', p: 'Crée une application de notes de frais avec une validation par le manager.', f: ['Circuit de validation', 'Justificatifs lus automatiquement', 'Export mensuel vers la comptabilité'] },
     { k: 'tower', team: 'Logistique', name: 'Tour de contrôle', icon: 'truck', p: 'Crée une tour de contrôle pour suivre nos camions en direct et signaler les livraisons en retard.', f: ['Carte des camions en direct', 'Retards signalés en temps réel', 'Incidents suivis jusqu’à leur résolution'] },
     { k: 'assets', team: 'Industrie', name: 'Supervision machines', icon: 'gauge', view: 0, p: 'Surveille nos machines sur chaque site et ouvre un ordre de travail quand un capteur dérive.', f: ['Capteurs et alertes en direct', 'Ordres de travail attribués automatiquement', 'Stock de pièces détachées'] },
-    { k: 'legal', team: 'Juridique', name: 'Revue de contrats', icon: 'file-text', p: 'Crée un agent de revue de contrats qui signale les clauses à risque et suit les dates de renouvellement.', f: ['Revue IA de chaque contrat', 'Alertes de renouvellement', 'Suivi des preuves d’audit'] },
+    { k: 'legal', team: 'Direction financière', name: 'Bilan social', icon: 'chart-pie', p: 'Je suis DAF, je souhaite une application de bilan social à partir du fichier Excel de nos salariés, avec des tableaux de bord sur l’absentéisme, la parité et les catégories socio‑professionnelles.', f: ['Import du fichier Excel des salariés', 'Absentéisme, parité et CSP en un coup d’œil', 'Fiches salariés, alertes et index égalité cliquables'] },
     { k: 'rnd', team: 'R&D', name: 'Temps R&D', icon: 'timer', p: 'Saisis les temps par projet R&D et prépare le dossier de crédit d’impôt recherche.', f: ['Feuilles de temps hebdomadaires', 'Projets par phase', 'Dossier CIR prêt à envoyer'] },
     { k: 'portal', team: 'Conseil', name: 'Portail client', icon: 'building-2', p: 'Crée un portail où nos clients partagent leurs documents, valident les étapes et suivent l’avancement.', f: ['Documents partagés', 'Validations en ligne', 'Suivi de l’avancement'] }
   ];
