@@ -110,6 +110,9 @@ def mark(w):
 fonts = open(os.path.join(ROOT, 'onepager', 'fonts.css'), encoding='utf-8').read()
 fonts += ''.join("@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:%d;font-display:swap;src:url(data:font/woff2;base64,%s) format('woff2')}"
                  % (w, base64.b64encode(open(os.path.join(HERE, f'plus-jakarta-sans-latin-{w}-normal.woff2'), 'rb').read()).decode()) for w in (500, 600))
+fonts += ''.join("@font-face{font-family:'%s';font-style:normal;font-weight:%d;font-display:swap;src:url(data:font/woff2;base64,%s) format('woff2')}"
+                 % (fam, w, base64.b64encode(open(os.path.join(HERE, f), 'rb').read()).decode())
+                 for fam, w, f in [('Instrument Serif', 400, 'instrument-serif-latin-400-normal.woff2'), ('JetBrains Mono', 400, 'jetbrains-mono-latin-400-normal.woff2'), ('JetBrains Mono', 500, 'jetbrains-mono-latin-500-normal.woff2')])
 
 # ---------------------------------------------------------------- page
 slides = rd('slides.html')

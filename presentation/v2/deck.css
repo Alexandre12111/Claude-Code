@@ -599,3 +599,118 @@ body.dk #nav button:hover{background:rgba(255,255,255,.08);color:var(--lime)}
 .th-portal .ya-kpi .d{top:82px}
 .th-portal .ya-kpi .s{display:none}
 .th-portal .ya-ct{font-size:18px;letter-spacing:-.02em}
+
+/* ================================================================ v2.3 : finition premium des applications de démonstration */
+/* socle commun : typographie, surfaces, tableaux, badges, boutons */
+.thm .ya{font-feature-settings:'tnum' 1,'ss01' 1;-webkit-font-smoothing:antialiased;color:#0F0F12}
+.thm .ya-h1{font-family:'Plus Jakarta Sans',sans-serif !important;font-weight:600 !important;font-size:27px;letter-spacing:-.035em !important}
+.thm .ya-sub{color:#80808A}
+.thm .ya-ct{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:14.5px;letter-spacing:-.015em}
+.thm .ya-cr{color:#8A8A93}
+.thm .ya-card{border:1px solid rgba(15,15,20,.06);border-radius:16px;box-shadow:0 1px 1px rgba(15,15,20,.025),0 12px 32px -16px rgba(15,15,20,.16)}
+.thm .ya-kpi .v{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;letter-spacing:-.04em}
+.thm .ya-kpi .l{font-weight:500;color:#71717A}
+.thm .ya-kpi .d{font-weight:600}
+.thm .ya-th{background:transparent !important;border-top:0 !important;border-bottom:1px solid rgba(15,15,20,.06) !important;color:#8A8A93 !important;font-size:12px !important;font-weight:500 !important;text-transform:none !important;letter-spacing:0 !important;font-style:normal !important}
+.thm .ya-row{border-bottom:1px solid rgba(15,15,20,.045);background:transparent}
+.thm .ya-row:hover{background:rgba(var(--yrgb,30,59,255),.04)}
+.thm .ya-row.sel{background:rgba(var(--yrgb,30,59,255),.07)}
+.thm .ya-who b{font-weight:600;letter-spacing:-.005em}
+.thm .ya-badge{height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:600}
+.thm .ya-ok{background:rgba(28,140,78,.1)}.thm .ya-warn{background:rgba(217,137,15,.12)}.thm .ya-bad{background:rgba(207,59,59,.1)}.thm .ya-neu{background:rgba(15,15,20,.05)}
+.thm .ya-bar{height:5px;background:rgba(15,15,20,.06)}
+.thm .ya .ya-btn{border-radius:10px;border-color:rgba(15,15,20,.09) !important;box-shadow:0 1px 2px rgba(15,15,20,.05);font-weight:600}
+.thm .ya .ya-btn.p{background:linear-gradient(180deg,var(--yb2,#4F6BFF),var(--yb0,#1E3BFF));border-color:transparent !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px -4px rgba(var(--yrgb,30,59,255),.55)}
+.thm .ya-tabs{padding:3px;border-radius:11px;background:rgba(15,15,20,.04)}
+.thm .ya-tabs button{border-radius:8px;height:26px;color:#5A5A63}
+.thm .ya-tabs button:hover{background:rgba(255,255,255,.7)}
+.thm .ya-tabs button.on{background:#fff !important;color:#0F0F12 !important;box-shadow:0 1px 2px rgba(15,15,20,.08),0 1px 6px rgba(15,15,20,.06)}
+.thm .ya-in{border-radius:10px;border-color:rgba(15,15,20,.08);background:rgba(255,255,255,.8)}
+.thm .ya-srch{border-radius:10px;border-color:rgba(15,15,20,.07)}
+.thm .ya .ya-nav{border-radius:10px;font-weight:500}
+.thm .ya-sv{text-transform:uppercase;letter-spacing:.09em;font-size:10.5px;font-weight:600;color:#A1A1AA}
+.thm .ya-top{background:rgba(255,255,255,.7);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(15,15,20,.06)}
+.thm .ya-av{box-shadow:0 0 0 2px #fff}
+.thm .ya-tip{border-radius:10px;background:rgba(15,15,18,.9);backdrop-filter:blur(8px)}
+.thm .ya-toast{border-radius:14px;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.thm .ya-dr{border-left:1px solid rgba(15,15,20,.06);box-shadow:-30px 0 60px -20px rgba(15,15,20,.25)}
+
+/* Kaya : aurore pastel, verre dépoli */
+.thm.th-people .ya{background:radial-gradient(900px 600px at 15% -10%,#EDE4FF,transparent 60%),radial-gradient(800px 600px at 100% 10%,#FFE9F2,transparent 55%),radial-gradient(900px 700px at 70% 110%,#E4F0FF,transparent 60%),#F7F5FC}
+.thm.th-people .ya-sb{background:rgba(255,255,255,.62) !important;backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.8) !important;box-shadow:0 20px 50px -20px rgba(76,29,149,.25) !important}
+.thm.th-people .ya-top{background:transparent;border:0;backdrop-filter:none}
+.thm.th-people .ya .ya-nav.on{background:linear-gradient(135deg,#7C3AED,#A855F7) !important;color:#fff;box-shadow:0 8px 18px -6px rgba(124,58,237,.6)}
+.thm.th-people .ya-card:not(.ya-kpi){background:rgba(255,255,255,.72);backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,.9);border-radius:22px;box-shadow:0 1px 0 rgba(255,255,255,.8) inset,0 20px 50px -24px rgba(76,29,149,.22)}
+.thm.th-people .ya-kpi{background:radial-gradient(120% 140% at 0% 0%,rgba(255,255,255,.22),transparent 50%),linear-gradient(135deg,#5B21B6,#8B5CF6 60%,#C084FC) !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25) !important}
+
+/* Vela : marine profond, halo, grand indicateur en dégradé */
+.thm.th-sales .ya{background:#F5F6FA}
+.thm.th-sales .ya-sb{background:radial-gradient(400px 300px at 0% 0%,rgba(79,107,255,.35),transparent 70%),linear-gradient(180deg,#0A1233,#060A1F) !important}
+.thm.th-sales .ya .ya-nav.on{background:rgba(255,255,255,.1) !important;color:#fff !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.thm.th-sales .ya-srch{background:rgba(255,255,255,.06) !important;border-color:rgba(255,255,255,.08) !important}
+.thm.th-sales .ya-kpi.k0{background:radial-gradient(120% 160% at 100% 0%,rgba(79,107,255,.65),transparent 55%),linear-gradient(135deg,#0B1640,#13216B) !important;box-shadow:0 18px 40px -18px rgba(11,22,64,.7),inset 0 1px 0 rgba(255,255,255,.12) !important}
+.thm.th-sales .ya-card:not(.ya-kpi){border-top:1px solid rgba(15,15,20,.06)}
+
+/* Ledgr : comptable raffiné, chiffres à chasse fixe */
+.thm.th-expenses .ya{background:#F3F6F5}
+.thm.th-expenses .ya-sb{background:#FBFCFC !important}
+.thm.th-expenses .ya .ya-nav.on{background:rgba(15,118,110,.09) !important;color:#0F766E !important;box-shadow:none !important}
+.thm.th-expenses .ya-card{border-radius:14px}
+.thm.th-expenses .ya-kpi{background:#fff !important;border-top:0 !important;border-radius:0 !important}
+.thm.th-expenses .ya-kpi.k0{border-radius:16px 0 0 16px !important}.thm.th-expenses .ya-kpi.kl{border-radius:0 16px 16px 0 !important}
+.thm.th-expenses .ya-kpi::before{content:"";position:absolute;left:18px;right:18px;top:0;height:2px;background:linear-gradient(90deg,#0F766E,#5EEAD4)}
+.thm.th-expenses .ya-kpi .v,.thm.th-expenses .ya-row>div:nth-child(4),.thm.th-expenses .ya-row>div:nth-child(5){font-family:'JetBrains Mono',ui-monospace,monospace !important;font-weight:500;letter-spacing:-.04em !important}
+.thm.th-expenses .ya-tabs button.on{color:#0F766E !important}
+
+/* Routa : poste d'exploitation, rail lumineux */
+.thm.th-tower .ya{background:#F1F3F7}
+.thm.th-tower .ya-sb{background:linear-gradient(180deg,#0B1220,#111A2E) !important}
+.thm.th-tower .ya .ya-nav.on{background:linear-gradient(135deg,#F97316,#E8590C) !important;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 8px 20px -6px rgba(232,89,12,.8)}
+.thm.th-tower .ya-top{background:rgba(11,18,32,.92) !important;backdrop-filter:blur(14px)}
+.thm.th-tower .ya-card{border-left:1px solid rgba(15,15,20,.06) !important;border-radius:18px}
+.thm.th-tower .ya-map{border-radius:20px;box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 24px 60px -28px rgba(11,18,32,.45)}
+.thm.th-tower .ya-ct{display:flex;align-items:center;gap:8px}
+.thm.th-tower .ya-ct::before{content:"";width:7px;height:7px;border-radius:50%;background:#F97316;box-shadow:0 0 0 4px rgba(249,115,22,.15)}
+
+/* Forgex : console industrielle, instruments */
+.thm.th-assets .ya{background:#EDF2F6}
+.thm.th-assets .ya-sb{background:linear-gradient(90deg,#04263A,#0C4A6E) !important;box-shadow:0 10px 30px -12px rgba(4,38,58,.6)}
+.thm.th-assets .ya .ya-nav{font-size:12px;letter-spacing:.05em;font-weight:600}
+.thm.th-assets .ya-card{border-radius:14px;border-top:1px solid rgba(15,15,20,.06)}
+.thm.th-assets .ya-card:not(.ya-kpi)::before{display:none}
+.thm.th-assets .ya-ct{text-transform:uppercase;letter-spacing:.1em;font-size:11.5px;color:#0C4A6E}
+.thm.th-assets .ya-kpi{background:linear-gradient(rgba(125,211,252,.07) 1px,transparent 1px) 0 0/100% 14px,linear-gradient(160deg,#062A40,#0B3B57) !important;border-radius:14px !important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 14px 30px -16px rgba(4,38,58,.8) !important}
+.thm.th-assets .ya-kpi .v{font-family:'JetBrains Mono',ui-monospace,monospace !important;font-weight:500;font-size:30px}
+
+/* Clausia : maison d'édition, serif élégant */
+.thm.th-legal .ya{background:#FAF7F1}
+.thm.th-legal .ya-h1,.thm.th-legal .ya-ct,.thm.th-legal .ya-kpi .v,.thm.th-legal .ya-logo b{font-family:'Instrument Serif',Georgia,serif !important;font-weight:400 !important;letter-spacing:-.01em !important}
+.thm.th-legal .ya-h1{font-size:36px !important}
+.thm.th-legal .ya-ct{font-size:20px;border-bottom:0;padding:0}
+.thm.th-legal .ya-kpi .v{font-size:46px;top:30px}
+.thm.th-legal .ya-kpi{border-top:1px solid #1F1A17 !important}
+.thm.th-legal .ya-logo b{font-size:24px !important}
+.thm.th-legal .ya .ya-nav{font-family:'Instrument Serif',Georgia,serif;font-size:17px;color:#5B4F48}
+.thm.th-legal .ya-card:not(.ya-kpi){background:#FFFDF8;border:1px solid #EDE5D8;border-radius:12px;box-shadow:0 1px 0 #fff inset,0 18px 40px -28px rgba(60,40,20,.25)}
+.thm.th-legal .ya-tabs button.on{color:#BE185D !important}
+
+/* Labora : laboratoire lumineux, verre et dégradés */
+.thm.th-rnd .ya{background:radial-gradient(800px 500px at 100% 0%,rgba(192,38,211,.12),transparent 60%),radial-gradient(#E9D5F0 1px,transparent 1px) 0 0/20px 20px,#FBF7FD}
+.thm.th-rnd .ya-sb{background:rgba(255,255,255,.75) !important;backdrop-filter:blur(16px)}
+.thm.th-rnd .ya-top{background:linear-gradient(90deg,rgba(162,28,175,.92),rgba(124,58,237,.92)) !important;backdrop-filter:blur(14px)}
+.thm.th-rnd .ya .ya-nav.on{box-shadow:0 8px 18px -6px rgba(162,28,175,.55)}
+.thm.th-rnd .ya-card:not(.ya-kpi){background:rgba(255,255,255,.78);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.9);border-radius:20px}
+.thm.th-rnd .ya-kpi{border-radius:20px !important;background:radial-gradient(120% 140% at 0% 0%,rgba(255,255,255,.28),transparent 50%),linear-gradient(135deg,#C026D3,#7C3AED) !important}
+.thm.th-rnd .ya-kpi.k0{background:radial-gradient(120% 140% at 0% 0%,rgba(255,255,255,.28),transparent 50%),linear-gradient(135deg,#DB2777,#C026D3) !important}
+.thm.th-rnd .ya-kpi.kl{background:radial-gradient(120% 140% at 0% 0%,rgba(255,255,255,.28),transparent 50%),linear-gradient(135deg,#7C3AED,#4F46E5) !important}
+
+/* Atrium : galerie minimaliste, noir et blanc, accent citron */
+.thm.th-portal .ya{background:#FAFAF9}
+.thm.th-portal .ya-sb{background:#09090B !important}
+.thm.th-portal .ya .ya-nav.on{background:#fff !important;color:#09090B !important;box-shadow:0 0 0 4px rgba(215,255,63,.25)}
+.thm.th-portal .ya-top{background:rgba(250,250,249,.8)}
+.thm.th-portal .ya-h1{font-size:34px !important;letter-spacing:-.05em !important}
+.thm.th-portal .ya-card{border-radius:24px;border:1px solid #EEEEEC;box-shadow:none}
+.thm.th-portal .ya-kpi{background:transparent !important;border:0 !important;border-right:1px solid #EAEAE7 !important}
+.thm.th-portal .ya-kpi.k0 .v{color:#09090B;background:linear-gradient(transparent 62%,#D7FF3F 62%,#D7FF3F 92%,transparent 92%);padding:0 4px;margin-left:-4px}
+.thm.th-portal .ya .ya-btn.p{background:#09090B !important;box-shadow:0 6px 14px -4px rgba(0,0,0,.4)}
