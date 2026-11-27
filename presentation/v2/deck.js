@@ -70,9 +70,48 @@
 
   /* ---------------------------------------------------------------- applications réelles (moteur YouCraft) */
   var Y = window.YA;
+  /* Chaque application a sa propre couleur : les bleus du moteur sont remplacés par sa palette. */
+  var ACC = { people: '#7C3AED', sales: '#1E3BFF', expenses: '#0F766E', tower: '#334155', assets: '#0284C7', legal: '#BE185D', rnd: '#A21CAF', portal: '#18181B' };
+  var YB = window.__YB || [];
+  function hx(h) { return [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]; }
+  function mixc(h, t) { var c = hx(h), e = t >= 0 ? 255 : 0, a = Math.abs(t); return '#' + c.map(function (v) { return Math.round(v + (e - v) * a).toString(16).padStart(2, '0'); }).join(''); }
+  var YB_RGB = YB.map(function (p) { return hx(p[0]).join(','); });
+  var HEXRE = new RegExp(YB.map(function (p) { return p[0]; }).join('|'), 'gi');
+  var RGBRE = /rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(,\s*[\d.]+\s*)?\)/g;
+  function palette(k) { var a = ACC[k] || '#1E3BFF'; return { acc: a, c: YB.map(function (p) { return mixc(a, p[1]); }), rgb: hx(a).join(',') }; }
+  function swap(v, pal) {
+    if (!v) return v;
+    var o = v.replace(HEXRE, function (m) { for (var i = 0; i < YB.length; i++) if (YB[i][0].toLowerCase() === m.toLowerCase()) return pal.c[i]; return m; });
+    return o.replace(RGBRE, function (m, r, g, b2, al) { var i = YB_RGB.indexOf(r + ',' + g + ',' + b2); if (i < 0) return m; var n = hx(pal.c[i]).join(', '); return al ? 'rgba(' + n + al + ')' : 'rgb(' + n + ')'; });
+  }
+  var ATTRS = ['style', 'fill', 'stroke', 'stop-color'];
+  function recolor(root, pal) {
+    if (!pal || pal.acc.toLowerCase() === '#1e3bff') return;
+    var els = root.nodeType === 1 ? [root].concat(Array.prototype.slice.call(root.querySelectorAll('*'))) : [];
+    els.forEach(function (el) { ATTRS.forEach(function (a) { var v = el.getAttribute(a); if (v) { var n = swap(v, pal); if (n !== v) el.setAttribute(a, n); } }); });
+  }
+  function themeHost(host, k) {
+    var pal = palette(k); host._pal = pal;
+    pal.c.forEach(function (c, i) { host.style.setProperty('--yb' + i, c); });
+    host.style.setProperty('--yrgb', pal.rgb);
+    if (!host._ob) {
+      host._ob = new MutationObserver(function (ms) {
+        var p = host._pal; if (!p) return;
+        ms.forEach(function (m) {
+          if (m.type === 'attributes') recolor(m.target, p);
+          else m.addedNodes.forEach(function (n) { if (n.nodeType === 1) recolor(n, p); });
+        });
+      });
+      host._ob.observe(host, { subtree: true, childList: true, attributes: true, attributeFilter: ATTRS });
+    }
+  }
+  function tileBg(k) { var a = ACC[k] || '#1E3BFF'; return 'linear-gradient(150deg,' + mixc(a, .38) + ' 0%,' + a + ' 50%,' + mixc(a, -.2) + ' 100%)'; }
+
   function mount(host, k, view) {
     host.innerHTML = '';
+    themeHost(host, k);
     var app = Y.create(k, host);
+    recolor(host, host._pal);
     if (view != null && window.YAX && window.YAX.nav) { try { window.YAX.nav(app, view); } catch (e) {} }
     requestAnimationFrame(function () { app.fit(); });
     return app;
@@ -101,7 +140,7 @@
   var ex = { app: null, i: 0, pending: null };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); };
   var tabs = $('#s-explore [data-tabs]');
-  tabs.innerHTML = APPS.map(function (a, i) { return '<button data-i="' + i + '"><span class="dtile">' + Y.ic(a.icon, 17, '#fff', 2) + '</span><span>' + esc(a.name) + '<small>' + esc(a.team) + '</small></span></button>'; }).join('');
+  tabs.innerHTML = APPS.map(function (a, i) { return '<button data-i="' + i + '"><span class="dtile" style="background:' + tileBg(a.k) + '">' + Y.ic(a.icon, 17, '#fff', 2) + '</span><span>' + esc(a.name) + '<small>' + esc(a.team) + '</small></span></button>'; }).join('');
   $$('button', tabs).forEach(function (b) { b.onclick = function () { show(+b.dataset.i); }; });
   function show(i) {
     ex.i = i; var a = APPS[i];
@@ -117,6 +156,9 @@
     enter: function () { var i = ex.pending != null ? ex.pending : ex.i; ex.pending = null; if (!ex.app || i !== ex.i) show(i); else { ex.app.fit(); ex.app.start(); } },
     leave: function () { if (ex.app) ex.app.stop(); }
   };
+  /* cartes des équipes : la couleur de chaque application */
+  $$('#s-teams [data-app]').forEach(function (card) { var t = card.querySelector('.dtile'); if (t) t.style.background = tileBg(card.dataset.app); });
+
   /* application en plein écran */
   var FS = { on: false, app: null }, fsv = $('#fsv');
   function openFull(i) {

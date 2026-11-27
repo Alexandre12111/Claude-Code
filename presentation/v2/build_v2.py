@@ -42,6 +42,21 @@ for sel, body in css_blocks(oldcss):
     if m and m.group(1) in anims: YACSS.append(f'{sel}{{{body}}}')
 assert 'B64' not in ''.join(YACSS)
 
+# Palette propre à chaque application : les bleus du moteur deviennent des variables CSS (--yb0, --yb1…),
+# et deck.js recolore aussi les couleurs écrites directement dans les écrans.
+BLUES = ['#1E3BFF', '#1530E0', '#4F6BFF', '#6F86FF', '#8C9BFF', '#8FA2FF', '#9BA8F5', '#B9BDD6', '#C7CEFA', '#C9CEF7', '#E1E5FF', '#EEF0FF', '#F3F5FF', '#F6F7FF']
+def _t(h):
+    r = int(h[1:3], 16)
+    return round((r - 30) / 225, 3) if r >= 30 else round(-(30 - r) / 30 * 0.25, 3)
+YB = [[h, _t(h)] for h in BLUES]
+_css = ''.join(YACSS)
+for i, (h, t) in enumerate(YB):
+    _css = re.sub(re.escape(h), f'var(--yb{i},{h})', _css, flags=re.I)
+_css = re.sub(r'rgba\(\s*30\s*,\s*59\s*,\s*255\s*,', 'rgba(var(--yrgb,30,59,255),', _css)
+YACSS = [_css]
+SHIM_YB = '<script>window.__YB = ' + json.dumps(YB) + ';</script>'
+
+
 FR = json.load(open(os.path.join(HERE, 'apps_fr.json'), encoding='utf-8'))
 SHIM = '''<script>
 /* Textes français des applications et formats de nombres */
@@ -121,6 +136,7 @@ html = f'''<!doctype html>
 <div id="fsv" role="dialog" aria-modal="true" aria-label="Application en plein écran"><div class="dwin fw"><div class="dbar"><span class="ddots"><b></b><b></b><b></b></span><span class="durl">{ic('lock')}<span data-url></span></span><span class="dlive">En ligne</span><button class="fx" data-close aria-label="Fermer le plein écran (Échap)">{ic('x')}</button></div><div class="host" id="h-full"></div></div><span class="fhint">Échap pour revenir à la présentation</span></div>
 <div id="menu" role="dialog" aria-modal="true" aria-label="Sommaire"><div class="mw"><h4>Aller à une diapositive<small>Touche M pour ouvrir, Échap pour fermer</small></h4><ol></ol></div></div>
 {SHIM}
+{SHIM_YB}
 {ENGINE}
 {NAVJS}
 <script>{rd('deck.js')}</script>
