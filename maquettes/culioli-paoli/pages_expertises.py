@@ -13,36 +13,33 @@ def expertise_body(p):
 {{{{CRUMBS}}}}
 <div class="head-split">
   <div>
-    <span class="cote">{p["cote"]}</span>
-    <h1 style="margin-top:1rem">{p["h1"]}</h1>
+    <p class="eyebrow">{p["cote"]}</p>
+    <h1>{p["h1"]}</h1>
     <p class="intro">{p["intro"]}</p>
     <div class="hero-actions">
-      <a class="btn btn--solid" href="/contact/">Exposer votre situation {{{{ARROW}}}}</a>
-      <button class="btn btn--ghost" type="button" data-urgence>{{{{PHONE}}}} Urgence pénale</button>
+      <a class="btn" href="/contact/">Prendre rendez-vous</a>
+      <button class="urg-link" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button>
     </div>
   </div>
-  <aside class="head-aside"><dl>{aside}</dl></aside>
+  <aside class="head-aside" aria-label="Repères"><dl>{aside}</dl></aside>
 </div></div></section>
 <section class="section"><div class="wrap article">
+  <aside class="toc" aria-label="Sommaire de la page">
+    <p class="eyebrow">Sur cette page</p>
+    <ol>{toc}</ol>
+    <div class="aside-cta"><p class="eyebrow">Premier échange</p>
+      <p>Un entretien permet d'analyser votre situation et de définir la stratégie de défense.</p>
+      <a class="link" href="/contact/">Prendre rendez-vous {{{{ARROW}}}}</a></div>
+  </aside>
   <article class="prose">{secs}{{{{FAQ}}}}
     <h2 id="liens">Pour aller plus loin</h2>
     <div class="related">{rel}</div>
   </article>
-  <aside class="toc" aria-label="Sommaire de la page">
-    <span class="eyebrow">Sur cette page</span>
-    <ol>{toc}</ol>
-    <div class="aside-cta"><span class="cote">Premier échange</span>
-      <p>Un premier entretien permet d'analyser votre situation et de définir la stratégie de défense.</p>
-      <a class="btn btn--solid" href="/contact/">Prendre rendez-vous</a></div>
-  </aside>
 </div></section>
-<section class="contact-band"><div class="wrap">
-  <div class="cb"><span class="cote">Urgence</span><h2 style="margin-top:.8rem">Une mesure est <em>en cours</em>&nbsp;?</h2>
-    <p>Garde à vue, perquisition, convocation imminente : le cabinet peut être joint à tout moment pour une intervention rapide.</p>
-    <button class="btn btn--solid" type="button" data-urgence>{{{{PHONE}}}} Afficher le numéro d'urgence</button></div>
-  <div class="cb"><span class="cote">Rendez-vous</span><h2 style="margin-top:.8rem">Préparer votre <em>défense</em></h2>
-    <p>Décrivez votre situation sans transmettre de pièce sensible. Le cabinet vous répond pour organiser un premier entretien.</p>
-    <a class="btn btn--ghost" href="/contact/">Écrire au cabinet {{{{ARROW}}}}</a></div>
+<section class="navy end-band"><div class="wrap">
+  <div class="t"><p class="eyebrow">Contact</p><h2 style="margin-top:1rem">Une mesure est <em>en cours</em>&nbsp;?</h2>
+    <p>Garde à vue, perquisition, convocation imminente : le cabinet peut être joint rapidement. Pour toute autre demande, décrivez votre situation sans transmettre de pièce sensible.</p></div>
+  <div class="a"><a class="btn btn--light" href="/contact/">Prendre rendez-vous</a><button class="urg-link urg-link--light" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button></div>
 </div></section>"""
 
 
@@ -57,7 +54,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Droit pénal général
     {
         "slug": "avocat-penaliste-paris", "nav": "Droit pénal général", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "Paris", "prio": "P1", "cote": "Expertise · D.01",
+        "schema": "Service", "area": "Paris", "prio": "P1", "cote": "Expertise · 01",
         "kw": "avocat pénaliste Paris",
         "kw2": ["avocat droit pénal Paris", "avocat défense pénale", "avocat tribunal correctionnel Paris"],
         "title": "Avocat pénaliste Paris | Me Charles Culioli-Paoli",
@@ -99,7 +96,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Pénal des affaires
     {
         "slug": "avocat-droit-penal-des-affaires", "nav": "Droit pénal des affaires", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "France", "prio": "P1", "cote": "Expertise · D.02",
+        "schema": "Service", "area": "France", "prio": "P1", "cote": "Expertise · 02",
         "kw": "avocat droit pénal des affaires Paris",
         "kw2": ["avocat abus de biens sociaux", "avocat blanchiment", "avocat fraude fiscale", "avocat défense dirigeant"],
         "title": "Avocat droit pénal des affaires Paris | Culioli-Paoli",
@@ -141,7 +138,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Extradition
     {
         "slug": "avocat-extradition", "nav": "Extradition", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "France", "prio": "P1", "cote": "Expertise · D.03",
+        "schema": "Service", "area": "France", "prio": "P1", "cote": "Expertise · 03",
         "kw": "avocat extradition",
         "kw2": ["avocat mandat d'arrêt européen", "avocat procédure d'extradition", "avocat extradition Paris"],
         "title": "Avocat extradition et mandat d'arrêt européen | Paris",
@@ -177,7 +174,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Pénal international
     {
         "slug": "avocat-droit-penal-international", "nav": "Droit pénal international", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "France", "prio": "P2", "cote": "Expertise · D.04",
+        "schema": "Service", "area": "France", "prio": "P2", "cote": "Expertise · 04",
         "kw": "avocat droit pénal international",
         "kw2": ["avocat notice rouge Interpol", "avocat entraide pénale internationale", "international criminal lawyer Paris"],
         "title": "Avocat droit pénal international Paris | Culioli-Paoli",
@@ -200,7 +197,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Aménagement de peine
     {
         "slug": "avocat-amenagement-de-peine", "nav": "Aménagement de peine", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "France", "prio": "P1", "cote": "Expertise · D.05",
+        "schema": "Service", "area": "France", "prio": "P1", "cote": "Expertise · 05",
         "kw": "avocat aménagement de peine",
         "kw2": ["avocat juge de l'application des peines", "avocat libération conditionnelle", "avocat bracelet électronique", "avocat réduction de peine"],
         "title": "Avocat aménagement de peine | Me Culioli-Paoli, Paris",
@@ -237,7 +234,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Cybercriminalité
     {
         "slug": "avocat-cybercriminalite", "nav": "Cybercriminalité", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "France", "prio": "P2", "cote": "Expertise · D.06",
+        "schema": "Service", "area": "France", "prio": "P2", "cote": "Expertise · 06",
         "kw": "avocat cybercriminalité",
         "kw2": ["avocat fraude informatique", "avocat cyberattaque", "avocat pénal numérique", "avocat escroquerie en ligne"],
         "title": "Avocat cybercriminalité Paris | Me Culioli-Paoli",
@@ -263,7 +260,7 @@ EXPERTISES = [
     # ------------------------------------------------------------------ Plaidoirie
     {
         "slug": "avocat-plaidoirie-penale", "nav": "Plaidoirie", "group": EXP, "crumbs": CR,
-        "schema": "Service", "area": "France", "prio": "P2", "cote": "Expertise · D.07",
+        "schema": "Service", "area": "France", "prio": "P2", "cote": "Expertise · 07",
         "kw": "avocat cour d'assises",
         "kw2": ["avocat plaidoirie pénale", "avocat défense criminelle", "avocat cour criminelle départementale", "avocat tribunal correctionnel"],
         "title": "Avocat cour d'assises et plaidoirie pénale | Paris",

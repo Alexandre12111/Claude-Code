@@ -17,19 +17,18 @@ REGIONS = [
 
 def interventions_body(p):
     rows = "".join(
-        f'<tr><td><b>{d}</b></td><td><b>{n}</b></td><td>{t}</td><td>{f"<a href=\"{u}\">Voir la page</a>" if u else "—"}</td><td><span class="pill{" pill--on" if s == "Page publiée" else ""}">{s}</span></td></tr>'
+        f'<li><{"a href=" + chr(34) + u + chr(34) if u else "div"}><span class="num">{d}</span><h3>{n}</h3><p>{t}</p>{"{{ARROW}}" if u else ""}</{"a" if u else "div"}></li>'
         for d, n, t, u, s in REGIONS)
     return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Interventions</span><h1 style="margin-top:1rem">Où intervient <em>le cabinet</em></h1>
+<p class="eyebrow">Territoires</p><h1>Où intervient <em>le cabinet</em></h1>
 <p class="intro">Inscrit au Barreau de Paris, <strong>Me Charles Culioli-Paoli</strong> peut plaider devant toutes les juridictions pénales françaises. Le cabinet concentre son activité sur Paris et l'Essonne, et intervient dans d'autres régions selon les dossiers.</p></div></section>
 <section class="section"><div class="wrap">
-<div class="table-wrap" style="margin-top:0"><table><thead><tr><th>Dép.</th><th>Territoire</th><th>Juridictions et établissements</th><th>Page</th><th>Statut</th></tr></thead><tbody>{rows}</tbody></table></div>
-<div class="prose" style="margin-top:3rem">
-<h2 style="margin-top:0">Pourquoi ces régions</h2>
-<p><b>La Corse</b> : le nom du cabinet et la pratique de la langue corse créent une légitimité naturelle. Le marché local compte peu de cabinets pénalistes visibles en ligne sur les requêtes liées à Borgo ou à la cour d'appel de Bastia.</p>
-<p><b>Provence-Alpes-Côte d'Azur</b> : Marseille et Nice concentrent des dossiers de criminalité organisée et des affaires transfrontalières (Italie, Monaco, Espagne) qui rejoignent les compétences du cabinet en extradition et en droit international.</p>
-<p><b>Lyon</b> : second pôle économique du pays, avec une JIRS et un contentieux pénal des affaires important.</p>
-<p class="ref">Ces propositions sont à confirmer avec Me Culioli-Paoli et à vérifier avec des données de volume et de concurrence (Google Search Console, outil de recherche de mots-clés) avant la création de toute page régionale.</p>
+<ol class="index-list">{rows}</ol>
+<div class="sec-grid" style="margin-top:var(--sp-5)">
+  <div class="sec-side"><p class="eyebrow">Détention</p><h2 style="font-size:var(--fs-h3)">Un proche <em>est détenu</em>&nbsp;?</h2></div>
+  <div class="sec-main"><p class="lead muted" style="max-width:34em">Le cabinet se rend dans les établissements pénitentiaires pour les demandes de mise en liberté, la commission de discipline et l'aménagement de peine.</p>
+  <p style="margin-top:1.4rem"><a class="link" href="/etablissements-penitentiaires/">Les établissements pénitentiaires {{{{ARROW}}}}</a></p>
+  <p class="small muted" style="margin-top:2rem">Note de maquette : les régions Corse, Provence-Alpes-Côte d'Azur et Lyon sont des propositions, détaillées dans la page Direction artistique.</p></div>
 </div></div></section>"""
 
 
@@ -44,7 +43,7 @@ INTERVENTIONS = {
 # ---------------------------------------------------------------------------- Essonne
 ESSONNE = {
     "slug": "avocat-penaliste-essonne", "nav": "Avocat pénaliste en Essonne", "crumbs": [("Interventions", "interventions")],
-    "nav_slug": "interventions", "schema": "Service", "area": "Essonne", "prio": "P1", "cote": "Territoire · 91",
+    "nav_slug": "interventions", "schema": "Service", "area": "Essonne", "prio": "P1", "cote": "Territoire · Essonne (91)",
     "kw": "avocat pénaliste Essonne",
     "kw2": ["avocat pénaliste Évry", "avocat tribunal Évry-Courcouronnes", "avocat pénaliste Massy", "avocat garde à vue Essonne"],
     "title": "Avocat pénaliste Essonne | Évry, Massy, Fleury-Mérogis",
@@ -66,7 +65,7 @@ ESSONNE = {
 <div><dt>Longjumeau</dt><dd>Commissariat</dd></div>
 <div><dt>Étampes</dt><dd>Commissariat, brigades de gendarmerie du sud du département</dd></div>
 </div>
-<p class="ref" style="margin-top:1rem">Liste des services d'enquête à vérifier avant publication.</p>"""),
+<p class="small muted" style="margin-top:1rem">Liste des services d'enquête à vérifier avant publication.</p>"""),
         ("situations", "Les situations les plus fréquentes", """<ul>
 <li><a href="/avocat-garde-a-vue-paris/">Garde à vue</a> dans un commissariat ou une brigade de gendarmerie de l'Essonne.</li>
 <li>Comparution immédiate devant le tribunal correctionnel d'Évry-Courcouronnes.</li>
@@ -101,31 +100,34 @@ ETAB = [
 
 def etab_body(p):
     rows = "".join(
-        f'<tr data-region="{r}"><td><b>{n}</b></td><td>{l}</td><td>{t}</td><td>{pot}</td><td>{f"<a href=\"{u}\">Voir la page</a>" if u else "—"}</td><td><span class="pill{" pill--on" if s == "Publiée" else ""}">{s}</span></td></tr>'
+        f'<tr data-region="{r}"><td><b>{n}</b></td><td>{l}</td><td>{t}</td><td>{f"<a class=\"link\" href=\"{u}\">Lire la page</a>" if u else "<span class=\"pill\">À paraître</span>"}</td></tr>'
         for r, n, l, t, pot, u, s in ETAB)
     return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Établissements pénitentiaires</span><h1 style="margin-top:1rem">Défendre une personne <em>détenue</em></h1>
+<p class="eyebrow">Établissements pénitentiaires</p><h1>Défendre une personne <em>détenue</em></h1>
 <p class="intro">Détention provisoire, demande de mise en liberté, commission de discipline, aménagement de peine&nbsp;: <strong>Me Charles Culioli-Paoli</strong> se rend dans les établissements pénitentiaires pour rencontrer les personnes qu'il défend.</p></div></section>
-<section class="section"><div class="wrap folio">
-<div class="folio-margin"><span class="cote">Registre</span><span class="note">Une page par établissement, seulement quand elle apporte une information utile.</span></div>
-<div class="folio-body">
-<div class="filters" role="group" aria-label="Filtrer par zone"><button type="button" data-f="all" aria-pressed="true">Tous</button><button type="button" data-f="idf" aria-pressed="false">Île-de-France</button><button type="button" data-f="reg" aria-pressed="false">Régions</button><button type="button" data-f="cor" aria-pressed="false">Corse</button></div>
-<div class="table-wrap"><table><thead><tr><th>Établissement</th><th>Commune</th><th>Type</th><th>Potentiel de recherche</th><th>Page</th><th>Statut</th></tr></thead><tbody>{rows}</tbody></table></div>
-<p class="ref" style="margin-top:1rem">Potentiel estimé qualitativement, à confirmer avec des données réelles de volume. Dénominations officielles à vérifier sur le site du ministère de la Justice.</p>
-<div class="prose" style="margin-top:3rem">
-<h2 style="margin-top:0">Ce que l'avocat peut faire pour une personne détenue</h2>
-<ul><li><b>Personne en détention provisoire</b> : demandes de mise en liberté, appel devant la chambre de l'instruction, préparation des interrogatoires.</li>
-<li><b>Personne condamnée</b> : <a href="/avocat-amenagement-de-peine/">aménagement de peine</a>, libération conditionnelle, permissions de sortir.</li>
-<li><b>Vie en détention</b> : assistance devant la commission de discipline, recours contre certaines décisions de l'administration pénitentiaire.</li></ul>
-<h2>Une méthode éditoriale exigeante</h2>
-<p>Chaque page d'établissement contient des informations propres : juridictions compétentes, modalités de visite des avocats, organisation de l'établissement, démarches utiles pour les proches. Aucune page n'est publiée si elle se limite à remplacer le nom d'une prison, conformément aux règles de Google sur les contenus à faible valeur ajoutée.</p>
-</div></div></div></section>"""
+<section class="section"><div class="wrap sec-grid">
+<div class="sec-side"><div class="sticky"><p class="eyebrow">Intervention</p><h2>Ce que l'avocat <em>peut faire</em></h2></div></div>
+<div class="sec-main prose">
+<ol class="steps" style="margin-top:0">
+<li><div><b>Personne en détention provisoire</b><span>Demandes de mise en liberté, appel devant la chambre de l'instruction, préparation des interrogatoires.</span></div></li>
+<li><div><b>Personne condamnée</b><span>Aménagement de peine, libération conditionnelle, permissions de sortir.</span></div></li>
+<li><div><b>Vie en détention</b><span>Assistance devant la commission de discipline, recours contre certaines décisions de l'administration pénitentiaire.</span></div></li>
+</ol>
+<p style="margin-top:1.6rem"><a href="/avocat-amenagement-de-peine/">Avocat en aménagement de peine</a></p>
+</div></div></section>
+<section class="section tone"><div class="wrap">
+<div class="sec-grid"><div class="sec-side"><p class="eyebrow">Établissements</p><h2>Où le cabinet <em>se rend</em></h2></div>
+<div class="sec-main"><div class="filters" role="group" aria-label="Filtrer par zone"><button type="button" data-f="all" aria-pressed="true">Tous</button><button type="button" data-f="idf" aria-pressed="false">Île-de-France</button><button type="button" data-f="reg" aria-pressed="false">Régions</button><button type="button" data-f="cor" aria-pressed="false">Corse</button></div></div></div>
+<div class="table-wrap" style="margin-top:2rem"><table><thead><tr><th>Établissement</th><th>Commune</th><th>Type</th><th>Page dédiée</th></tr></thead><tbody>{rows}</tbody></table></div>
+<p class="small muted" style="margin-top:1rem">Dénominations officielles à vérifier sur le site du ministère de la Justice avant publication.</p>
+</div></section>"""
 
 
 ETABLISSEMENTS = {
     "slug": "etablissements-penitentiaires", "nav": "Établissements pénitentiaires", "prio": "P1", "schema_label": "CollectionPage",
     "kw": "avocat prison", "kw2": ["avocat détenu", "avocat centre pénitentiaire", "avocat maison d'arrêt"],
     "title": "Avocat pour détenu | Établissements pénitentiaires",
+    "nav_slug": "interventions",
     "desc": "Avocat pour une personne détenue : détention provisoire, mise en liberté, discipline et aménagement de peine. Fleury-Mérogis, Fresnes, La Santé et ailleurs.",
     "h1_plain": "Défendre une personne détenue", "body": etab_body,
 }
@@ -133,7 +135,7 @@ ETABLISSEMENTS = {
 # ---------------------------------------------------------------------------- Fleury-Mérogis
 FLEURY = {
     "slug": "avocat-centre-penitentiaire-fleury-merogis", "nav": "Fleury-Mérogis",
-    "crumbs": [("Établissements pénitentiaires", "etablissements-penitentiaires")], "nav_slug": "etablissements-penitentiaires",
+    "crumbs": [("Établissements pénitentiaires", "etablissements-penitentiaires")], "nav_slug": "interventions",
     "schema": "Service", "area": "Essonne", "prio": "P1", "cote": "Établissement · Essonne (91)",
     "kw": "avocat Fleury-Mérogis",
     "kw2": ["avocat centre pénitentiaire de Fleury-Mérogis", "avocat aménagement de peine Fleury-Mérogis", "avocat détenu Fleury-Mérogis"],
@@ -151,7 +153,7 @@ FLEURY = {
 <p>L'avocat obtient un permis de communiquer délivré par le magistrat en charge du dossier, généralement le juge d'instruction. Il peut ensuite rencontrer la personne au parloir avocat, sans limitation de fréquence et hors de la présence d'un surveillant.</p>
 <h3>Personne condamnée</h3>
 <p>L'avocat se présente avec sa carte professionnelle et le justificatif de sa désignation. L'entretien est confidentiel.</p>
-<p class="ref">Horaires et modalités pratiques des parloirs avocats à vérifier auprès de l'établissement avant publication.</p>"""),
+<p class="small muted">Horaires et modalités pratiques des parloirs avocats à vérifier auprès de l'établissement avant publication.</p>"""),
         ("demarches", "Les démarches que l'avocat peut engager", """<ol class="steps">
 <li><div><b>Demande de mise en liberté</b><span>Adressée au juge d'instruction, avec un appel possible devant la chambre de l'instruction de la cour d'appel.</span></div></li>
 <li><div><b>Commission de discipline</b><span>La personne détenue peut être assistée par un avocat lorsqu'elle est poursuivie devant la commission de discipline de l'établissement.</span></div></li>

@@ -19,7 +19,7 @@
 <meta name="theme-color" content="#F6F2EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Lato:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 <script type="application/ld+json">
 {
@@ -111,99 +111,113 @@
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
-<div class="mock-flag">Maquette de travail · contenus soumis à la validation de Me Culioli-Paoli · <a href="plan-seo.html">Plan SEO page par page</a></div>
+<div class="mock-flag">Maquette de travail · contenus soumis à la validation de Me Culioli-Paoli · <a href="direction-artistique.html">Direction artistique</a> · <a href="plan-seo.html">Plan SEO</a></div>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html" aria-label="Accueil, Charles Culioli-Paoli avocat">
-      <span class="mono" aria-hidden="true">CCP</span>
-      <span class="brand-name">Charles Culioli-Paoli<small>Avocat · Barreau de Paris</small></span>
+    <a class="brand" href="index.html" aria-label="Accueil, Charles Culioli-Paoli, avocat">
+      <span class="brand-name">Charles Culioli-Paoli</span>
+      <span class="brand-sub">Avocat au Barreau de Paris</span>
     </a>
-    <nav class="nav" aria-label="Navigation principale"><a href="charles-culioli-paoli-avocat.html">Le cabinet</a><a href="expertises.html">Expertises</a><a href="interventions.html">Interventions</a><a href="etablissements-penitentiaires.html" aria-current="page">Établissements</a><a href="ressources.html">Ressources</a><a href="contact.html">Contact</a></nav>
-    <button class="btn-urgence" type="button" data-urgence aria-haspopup="dialog"><span class="pulse" aria-hidden="true"></span><span>Urgence<span class="lbl-long"> pénale</span></span></button>
-    <button class="menu-toggle" type="button" data-menu-open aria-controls="drawer" aria-expanded="false" aria-label="Ouvrir le menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 7h18M3 12h18M9 17h12"/></svg></button>
+    <nav class="nav" aria-label="Navigation principale"><a href="charles-culioli-paoli-avocat.html">Le cabinet</a><a href="expertises.html">Expertises</a><a href="interventions.html" aria-current="page">Territoires</a><a href="ressources.html">Ressources</a><a href="honoraires.html">Honoraires</a><a href="contact.html">Contact</a></nav>
+    <div class="head-actions">
+      <button class="urg-link" type="button" data-urgence aria-haspopup="dialog"><span class="dot" aria-hidden="true"></span>Urgence pénale</button>
+      <a class="btn btn--line btn--sm" href="contact.html">Rendez-vous</a>
+    </div>
+    <button class="menu-toggle" type="button" data-menu-open aria-controls="drawer" aria-expanded="false"><span>Menu</span></button>
   </div>
 </header>
 <div class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-top">
-    <a class="brand" href="index.html"><span class="mono" aria-hidden="true">CCP</span><span class="brand-name">Charles Culioli-Paoli</span></a>
-    <button class="menu-toggle" type="button" data-menu-close aria-label="Fermer le menu" style="display:grid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <span class="brand-name">Charles Culioli-Paoli</span>
+    <button class="menu-toggle" type="button" data-menu-close style="display:inline-flex"><span>Fermer</span></button>
   </div>
-  <nav aria-label="Menu mobile"><a href="index.html">Accueil<span>00</span></a><a href="charles-culioli-paoli-avocat.html">Le cabinet<span>01</span></a><a href="expertises.html">Expertises<span>02</span></a><a href="interventions.html">Interventions<span>03</span></a><a href="etablissements-penitentiaires.html">Établissements<span>04</span></a><a href="ressources.html">Ressources<span>05</span></a><a href="contact.html">Contact<span>06</span></a></nav>
-  <button class="btn-urgence" type="button" data-urgence><span class="pulse" aria-hidden="true"></span>Urgence pénale · 24h/24</button>
+  <nav aria-label="Menu mobile"><a href="index.html">Accueil</a><a href="charles-culioli-paoli-avocat.html">Le cabinet</a><a href="expertises.html">Expertises</a><a href="interventions.html">Territoires</a><a href="ressources.html">Ressources</a><a href="honoraires.html">Honoraires</a><a href="contact.html">Contact</a></nav>
+  <div class="drawer-foot">
+    <button class="btn btn--solid" type="button" data-urgence>Urgence pénale</button>
+    <a class="btn btn--line" href="contact.html">Prendre rendez-vous</a>
+  </div>
 </div>
 <main id="contenu">
 <section class="page-head"><div class="wrap"><ol class="crumbs" aria-label="Fil d'Ariane"><li><a href="index.html">Accueil</a></li><li aria-current="page">Établissements pénitentiaires</li></ol>
-<span class="cote">Établissements pénitentiaires</span><h1 style="margin-top:1rem">Défendre une personne <em>détenue</em></h1>
+<p class="eyebrow">Établissements pénitentiaires</p><h1>Défendre une personne <em>détenue</em></h1>
 <p class="intro">Détention provisoire, demande de mise en liberté, commission de discipline, aménagement de peine&nbsp;: <strong>Me Charles Culioli-Paoli</strong> se rend dans les établissements pénitentiaires pour rencontrer les personnes qu'il défend.</p></div></section>
-<section class="section"><div class="wrap folio">
-<div class="folio-margin"><span class="cote">Registre</span><span class="note">Une page par établissement, seulement quand elle apporte une information utile.</span></div>
-<div class="folio-body">
-<div class="filters" role="group" aria-label="Filtrer par zone"><button type="button" data-f="all" aria-pressed="true">Tous</button><button type="button" data-f="idf" aria-pressed="false">Île-de-France</button><button type="button" data-f="reg" aria-pressed="false">Régions</button><button type="button" data-f="cor" aria-pressed="false">Corse</button></div>
-<div class="table-wrap"><table><thead><tr><th>Établissement</th><th>Commune</th><th>Type</th><th>Potentiel de recherche</th><th>Page</th><th>Statut</th></tr></thead><tbody><tr data-region="idf"><td><b>Centre pénitentiaire de Fleury-Mérogis</b></td><td>Fleury-Mérogis (91)</td><td>Centre pénitentiaire</td><td>Très forte</td><td><a href="avocat-centre-penitentiaire-fleury-merogis.html">Voir la page</a></td><td><span class="pill pill--on">Publiée</span></td></tr><tr data-region="idf"><td><b>Centre pénitentiaire de Fresnes</b></td><td>Fresnes (94)</td><td>Centre pénitentiaire</td><td>Forte</td><td>—</td><td><span class="pill">Phase 2</span></td></tr><tr data-region="idf"><td><b>Prison de Paris-La Santé</b></td><td>Paris (75)</td><td>Centre pénitentiaire</td><td>Forte</td><td>—</td><td><span class="pill">Phase 2</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt de Villepinte</b></td><td>Villepinte (93)</td><td>Maison d'arrêt</td><td>Moyenne</td><td>—</td><td><span class="pill">Phase 2</span></td></tr><tr data-region="idf"><td><b>Centre pénitentiaire Sud-Francilien</b></td><td>Réau (77)</td><td>Centre pénitentiaire</td><td>Moyenne</td><td>—</td><td><span class="pill">Phase 2</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt de Bois-d'Arcy</b></td><td>Bois-d'Arcy (78)</td><td>Maison d'arrêt</td><td>Moyenne</td><td>—</td><td><span class="pill">Phase 3</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt de Nanterre</b></td><td>Nanterre (92)</td><td>Maison d'arrêt</td><td>Moyenne</td><td>—</td><td><span class="pill">Phase 3</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt du Val-d'Oise</b></td><td>Osny (95)</td><td>Maison d'arrêt</td><td>Moyenne</td><td>—</td><td><span class="pill">Phase 3</span></td></tr><tr data-region="reg"><td><b>Maison d'arrêt de Lyon-Corbas</b></td><td>Corbas (69)</td><td>Maison d'arrêt</td><td>Forte</td><td>—</td><td><span class="pill">Phase 3</span></td></tr><tr data-region="reg"><td><b>Centre pénitentiaire de Marseille</b></td><td>Marseille (13)</td><td>Centre pénitentiaire</td><td>Forte</td><td>—</td><td><span class="pill">Phase 3</span></td></tr><tr data-region="reg"><td><b>Centre pénitentiaire de Châteauroux</b></td><td>Châteauroux (36)</td><td>Centre pénitentiaire</td><td>Moyenne</td><td>—</td><td><span class="pill">Phase 3</span></td></tr><tr data-region="cor"><td><b>Centre pénitentiaire de Borgo</b></td><td>Borgo (2B)</td><td>Centre pénitentiaire</td><td>Faible, peu concurrencée</td><td>—</td><td><span class="pill">Proposition</span></td></tr><tr data-region="cor"><td><b>Maison d'arrêt d'Ajaccio</b></td><td>Ajaccio (2A)</td><td>Maison d'arrêt</td><td>Faible, peu concurrencée</td><td>—</td><td><span class="pill">Proposition</span></td></tr><tr data-region="cor"><td><b>Centre de détention de Casabianda</b></td><td>Aléria (2B)</td><td>Centre de détention</td><td>Faible</td><td>—</td><td><span class="pill">Proposition</span></td></tr></tbody></table></div>
-<p class="ref" style="margin-top:1rem">Potentiel estimé qualitativement, à confirmer avec des données réelles de volume. Dénominations officielles à vérifier sur le site du ministère de la Justice.</p>
-<div class="prose" style="margin-top:3rem">
-<h2 style="margin-top:0">Ce que l'avocat peut faire pour une personne détenue</h2>
-<ul><li><b>Personne en détention provisoire</b> : demandes de mise en liberté, appel devant la chambre de l'instruction, préparation des interrogatoires.</li>
-<li><b>Personne condamnée</b> : <a href="avocat-amenagement-de-peine.html">aménagement de peine</a>, libération conditionnelle, permissions de sortir.</li>
-<li><b>Vie en détention</b> : assistance devant la commission de discipline, recours contre certaines décisions de l'administration pénitentiaire.</li></ul>
-<h2>Une méthode éditoriale exigeante</h2>
-<p>Chaque page d'établissement contient des informations propres : juridictions compétentes, modalités de visite des avocats, organisation de l'établissement, démarches utiles pour les proches. Aucune page n'est publiée si elle se limite à remplacer le nom d'une prison, conformément aux règles de Google sur les contenus à faible valeur ajoutée.</p>
-</div></div></div></section>
+<section class="section"><div class="wrap sec-grid">
+<div class="sec-side"><div class="sticky"><p class="eyebrow">Intervention</p><h2>Ce que l'avocat <em>peut faire</em></h2></div></div>
+<div class="sec-main prose">
+<ol class="steps" style="margin-top:0">
+<li><div><b>Personne en détention provisoire</b><span>Demandes de mise en liberté, appel devant la chambre de l'instruction, préparation des interrogatoires.</span></div></li>
+<li><div><b>Personne condamnée</b><span>Aménagement de peine, libération conditionnelle, permissions de sortir.</span></div></li>
+<li><div><b>Vie en détention</b><span>Assistance devant la commission de discipline, recours contre certaines décisions de l'administration pénitentiaire.</span></div></li>
+</ol>
+<p style="margin-top:1.6rem"><a href="avocat-amenagement-de-peine.html">Avocat en aménagement de peine</a></p>
+</div></div></section>
+<section class="section tone"><div class="wrap">
+<div class="sec-grid"><div class="sec-side"><p class="eyebrow">Établissements</p><h2>Où le cabinet <em>se rend</em></h2></div>
+<div class="sec-main"><div class="filters" role="group" aria-label="Filtrer par zone"><button type="button" data-f="all" aria-pressed="true">Tous</button><button type="button" data-f="idf" aria-pressed="false">Île-de-France</button><button type="button" data-f="reg" aria-pressed="false">Régions</button><button type="button" data-f="cor" aria-pressed="false">Corse</button></div></div></div>
+<div class="table-wrap" style="margin-top:2rem"><table><thead><tr><th>Établissement</th><th>Commune</th><th>Type</th><th>Page dédiée</th></tr></thead><tbody><tr data-region="idf"><td><b>Centre pénitentiaire de Fleury-Mérogis</b></td><td>Fleury-Mérogis (91)</td><td>Centre pénitentiaire</td><td><a class="link" href="avocat-centre-penitentiaire-fleury-merogis.html">Lire la page</a></td></tr><tr data-region="idf"><td><b>Centre pénitentiaire de Fresnes</b></td><td>Fresnes (94)</td><td>Centre pénitentiaire</td><td><span class="pill">À paraître</span></td></tr><tr data-region="idf"><td><b>Prison de Paris-La Santé</b></td><td>Paris (75)</td><td>Centre pénitentiaire</td><td><span class="pill">À paraître</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt de Villepinte</b></td><td>Villepinte (93)</td><td>Maison d'arrêt</td><td><span class="pill">À paraître</span></td></tr><tr data-region="idf"><td><b>Centre pénitentiaire Sud-Francilien</b></td><td>Réau (77)</td><td>Centre pénitentiaire</td><td><span class="pill">À paraître</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt de Bois-d'Arcy</b></td><td>Bois-d'Arcy (78)</td><td>Maison d'arrêt</td><td><span class="pill">À paraître</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt de Nanterre</b></td><td>Nanterre (92)</td><td>Maison d'arrêt</td><td><span class="pill">À paraître</span></td></tr><tr data-region="idf"><td><b>Maison d'arrêt du Val-d'Oise</b></td><td>Osny (95)</td><td>Maison d'arrêt</td><td><span class="pill">À paraître</span></td></tr><tr data-region="reg"><td><b>Maison d'arrêt de Lyon-Corbas</b></td><td>Corbas (69)</td><td>Maison d'arrêt</td><td><span class="pill">À paraître</span></td></tr><tr data-region="reg"><td><b>Centre pénitentiaire de Marseille</b></td><td>Marseille (13)</td><td>Centre pénitentiaire</td><td><span class="pill">À paraître</span></td></tr><tr data-region="reg"><td><b>Centre pénitentiaire de Châteauroux</b></td><td>Châteauroux (36)</td><td>Centre pénitentiaire</td><td><span class="pill">À paraître</span></td></tr><tr data-region="cor"><td><b>Centre pénitentiaire de Borgo</b></td><td>Borgo (2B)</td><td>Centre pénitentiaire</td><td><span class="pill">À paraître</span></td></tr><tr data-region="cor"><td><b>Maison d'arrêt d'Ajaccio</b></td><td>Ajaccio (2A)</td><td>Maison d'arrêt</td><td><span class="pill">À paraître</span></td></tr><tr data-region="cor"><td><b>Centre de détention de Casabianda</b></td><td>Aléria (2B)</td><td>Centre de détention</td><td><span class="pill">À paraître</span></td></tr></tbody></table></div>
+<p class="small muted" style="margin-top:1rem">Dénominations officielles à vérifier sur le site du ministère de la Justice avant publication.</p>
+</div></section>
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <p class="foot-sign" aria-hidden="true">Charles <em>Culioli-Paoli</em></p>
+    <div class="foot-top">
+      <div>
+        <p class="foot-name">Charles Culioli-Paoli</p>
+        <p class="foot-role">Avocat au Barreau de Paris · Droit pénal</p>
+      </div>
+      <div class="foot-cta"><a class="btn btn--light" href="contact.html">Prendre rendez-vous</a><button class="urg-link urg-link--light" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button></div>
+    </div>
     <div class="foot-grid">
       <div>
         <h2>Cabinet</h2>
-        <p>Me Charles Culioli-Paoli<br>Avocat au Barreau de Paris<span class="todo">à confirmer : Barreau de New York</span></p>
-        <p style="margin-top:.8rem">264 rue du Faubourg Saint-Honoré, 75008 Paris<span class="todo">adresse à confirmer</span></p>
-        <p style="margin-top:.8rem">Sur rendez-vous · <a href="contact.html">Écrire au cabinet</a></p>
+        <address>264 rue du Faubourg Saint-Honoré, 75008 Paris<span class="todo">à confirmer</span><br>Bureau secondaire à Massy<span class="todo">à confirmer</span></address>
+        <p>Sur rendez-vous, au cabinet ou en visioconférence.</p>
       </div>
       <div><h2>Expertises</h2><ul><li><a href="avocat-penaliste-paris.html">Droit pénal général</a></li><li><a href="avocat-droit-penal-des-affaires.html">Droit pénal des affaires</a></li><li><a href="avocat-extradition.html">Extradition</a></li><li><a href="avocat-droit-penal-international.html">Droit pénal international</a></li><li><a href="avocat-amenagement-de-peine.html">Aménagement de peine</a></li><li><a href="avocat-cybercriminalite.html">Cybercriminalité</a></li><li><a href="avocat-plaidoirie-penale.html">Plaidoirie</a></li></ul></div>
-      <div><h2>Interventions</h2><ul>
+      <div><h2>Territoires</h2><ul>
         <li><a href="avocat-penaliste-paris.html">Paris</a></li>
         <li><a href="avocat-penaliste-essonne.html">Essonne</a></li>
-        <li><a href="interventions.html">Régions et territoires</a></li>
         <li><a href="etablissements-penitentiaires.html">Établissements pénitentiaires</a></li>
         <li><a href="avocat-centre-penitentiaire-fleury-merogis.html">Fleury-Mérogis</a></li>
+        <li><a href="interventions.html">Autres territoires</a></li>
       </ul></div>
-      <div><h2>Repères</h2><ul>
+      <div><h2>Informations</h2><ul>
+        <li><a href="charles-culioli-paoli-avocat.html">Le cabinet</a></li>
+        <li><a href="honoraires.html">Honoraires</a></li>
         <li><a href="avocat-garde-a-vue-paris.html">Garde à vue</a></li>
         <li><a href="ressources.html">Ressources</a></li>
-        <li><a href="guide-amenagement-de-peine.html">Guide de l'aménagement de peine</a></li>
-        <li><a href="mentions-legales.html">Mentions légales</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul></div>
     </div>
     <div class="foot-legal">
-      <span>© 2026 Charles Culioli-Paoli, avocat. Les informations publiées sur ce site ont une valeur générale et ne constituent pas une consultation juridique.</span>
-      <span><a href="mentions-legales.html">Mentions légales</a> · <a href="mentions-legales.html#donnees">Données personnelles</a> · <a href="mentions-legales.html#cookies">Cookies</a></span>
+      <span>© 2026 Charles Culioli-Paoli, avocat. Informations générales ne constituant pas une consultation juridique.</span>
+      <span><a href="mentions-legales.html">Mentions légales</a><a href="mentions-legales.html#donnees">Confidentialité</a><a href="mentions-legales.html#cookies">Cookies</a></span>
     </div>
   </div>
 </footer>
 <dialog class="urgence" id="urgence" aria-labelledby="urg-title">
   <div class="urg-in">
     <button class="urg-close" type="button" data-urg-close aria-label="Fermer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-    <span class="cote">Urgence pénale · 24h/24, 7j/7<span class="todo">disponibilité à confirmer</span></span>
-    <h2 id="urg-title">Garde à vue, perquisition, déferrement&nbsp;?</h2>
+    <p class="eyebrow">Urgence pénale · 24h/24, 7j/7<span class="todo">à confirmer</span></p>
+    <h2 id="urg-title">Garde à vue, perquisition, déferrement</h2>
     <p>Une personne placée en garde à vue peut demander l'assistance d'un avocat dès le début de la mesure. Communiquez aux enquêteurs le nom de Me Charles Culioli-Paoli, ou appelez directement le cabinet.</p>
-    <button class="btn btn--solid urg-reveal" id="urg-reveal" type="button" data-n="+33600000000" data-d="06 00 00 00 00"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg> Afficher le numéro d'urgence</button>
+    <button class="btn btn--light urg-reveal" id="urg-reveal" type="button" data-n="+33600000000" data-d="06 00 00 00 00">Afficher le numéro d'urgence</button>
     <div class="urg-number" id="urg-number" hidden>
       <a class="tel" href="#">…</a>
       <div class="row">
-        <a class="btn btn--ghost" href="https://wa.me/33600000000" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2l-.5-.2Z"/></svg> WhatsApp</a>
-        <button class="btn btn--ghost" type="button" id="urg-copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg> <span>Copier le numéro</span></button>
+        <a class="link link--light" href="https://wa.me/33600000000" rel="noopener" target="_blank">Écrire sur WhatsApp</a>
+        <button class="link link--light" type="button" id="urg-copy"><span>Copier le numéro</span></button>
       </div>
       <p class="urg-law">Article 63-3-1 du Code de procédure pénale : dès le début de la garde à vue, la personne peut demander à être assistée par un avocat. Elle a également le droit de se taire.</p>
     </div>
-    <p class="ref" style="margin-top:1.2rem;color:var(--on-night-soft)">Numéro provisoire de maquette<span class="todo">numéro à fournir</span></p>
+    <p class="urg-note">Numéro provisoire de maquette<span class="todo">numéro à fournir</span></p>
   </div>
 </dialog>
-<a class="wa-float" href="https://wa.me/33600000000" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp"><span class="ic"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2l-.5-.2Z"/></svg></span>WhatsApp</a>
+<a class="wa-float" href="https://wa.me/33600000000" target="_blank" rel="noopener" aria-label="Écrire au cabinet sur WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2l-.5-.2Z"/></svg></a>
 <nav class="mbar" aria-label="Actions rapides">
-  <button type="button" class="u" data-urgence><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Urgence</button>
-  <a href="https://wa.me/33600000000" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2s.2-1.1.1-1.2l-.5-.2Z"/></svg>WhatsApp</a>
-  <a href="contact.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="14"/><path d="m3 7 9 6 9-6"/></svg>Écrire</a>
+  <button type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence</button>
+  <a href="https://wa.me/33600000000" target="_blank" rel="noopener">WhatsApp</a>
+  <a href="contact.html">Rendez-vous</a>
 </nav>
 <script src="assets/site.js" defer></script>
 </body>

@@ -1,107 +1,138 @@
 # -*- coding: utf-8 -*-
-"""Gabarits v2 : Le cabinet, Expertises, Ressources."""
+"""Pages Le cabinet, Expertises, Ressources, Honoraires · direction « Éditorial parisien »."""
 from pages_expertises import EXPERTISES
-from home import CHIPS, COLORS, ROMAN, SVG
 
 T = '<span class="todo">à confirmer</span>'
+
+END_BAND = """<section class="navy end-band"><div class="wrap">
+  <div class="t"><p class="eyebrow">Contact</p><h2 style="margin-top:1rem">{title}</h2><p>{text}</p></div>
+  <div class="a"><a class="btn btn--light" href="/contact/">Prendre rendez-vous</a><button class="urg-link urg-link--light" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button></div>
+</div></section>"""
 
 CABINET_BODY = f"""
 <section class="page-head"><div class="wrap">
 {{{{CRUMBS}}}}
 <div class="head-split">
-  <div><span class="cote">Le cabinet</span>
-    <h1 style="margin-top:1rem">Charles Culioli-Paoli, <em>avocat</em></h1>
-    <p class="intro">Avocat pénaliste indépendant installé à Paris, <strong>Charles Culioli-Paoli</strong> a construit sa pratique entre la rigueur académique de Sciences Po et de Harvard Law School et l'expérience concrète des cabinets pénalistes et du Parquet de Paris.</p>
-    <div class="hero-actions"><a class="btn btn--solid" href="/contact/">Prendre rendez-vous {{{{ARROW}}}}</a></div></div>
-  <div class="head-photo"><img src="assets/img/charles-culioli-paoli-portrait.webp" width="400" height="400" alt="Portrait de Charles Culioli-Paoli, avocat au Barreau de Paris"></div>
+  <div><p class="eyebrow">Le cabinet</p>
+    <h1>Charles Culioli-Paoli, <em>avocat</em></h1>
+    <p class="intro">Avocat pénaliste indépendant installé à Paris, <strong>Charles Culioli-Paoli</strong> a construit sa pratique entre la formation académique de Sciences Po et de Harvard Law School et l'expérience concrète des cabinets pénalistes et du Parquet de Paris.</p></div>
+  <figure class="head-photo"><img src="assets/img/charles-culioli-paoli-portrait.webp" width="400" height="400" alt="Portrait de Charles Culioli-Paoli, avocat au Barreau de Paris"></figure>
 </div></div></section>
 
-<section class="section"><div class="wrap">
-  <div class="bento stagger">
-    <div class="b-card b-quote"><span class="cote" style="color:var(--gold-2)">Le portrait</span>
-      <p>Défendre, c'est d'abord comprendre <em>une personne</em>, puis un dossier.</p>
-      <div class="sig"><span><b>Charles Culioli-Paoli</b>Formulation proposée, à valider</span></div></div>
-    <div class="b-card b-1"><span class="ic">{SVG["eye"]}</span><h3>Toute la chaîne pénale</h3><p>Garde à vue, enquête, information judiciaire, audience et exécution des peines, pour les mis en cause comme pour les victimes.</p></div>
-    <div class="b-card b-2"><span class="ic">{SVG["cap"]}</span><h3>Dossiers techniques et internationaux</h3><p>Pénal des affaires, cybercriminalité, extradition, mandat d'arrêt européen, entraide pénale.</p></div>
+<section class="section"><div class="wrap sec-grid">
+  <div class="sec-side"><div class="sticky"><p class="eyebrow">Portrait</p><h2>Défendre, c'est d'abord <em>comprendre</em></h2></div></div>
+  <div class="sec-main prose">
+    <p class="lead">Charles Culioli-Paoli exerce en droit pénal, aux côtés des personnes mises en cause comme des victimes. Sa pratique couvre l'ensemble de la chaîne pénale : garde à vue, enquête, information judiciaire, audience et exécution des peines.</p>
+    <p>Il porte une attention particulière aux dossiers qui exigent une lecture technique, comme le droit pénal des affaires ou la cybercriminalité, et à ceux qui franchissent les frontières : extradition, mandat d'arrêt européen, entraide pénale internationale.</p>
+    <p>Chaque dossier est suivi personnellement. La personne défendue a un interlocuteur unique, qui lui explique la procédure, les risques et les choix possibles.</p>
+    <p class="small muted">Texte de présentation proposé, à réécrire avec Me Culioli-Paoli pour refléter sa voix.</p>
   </div>
 </div></section>
 
-<section class="dark section"><div class="wrap">
-  <div class="sec-head"><div><span class="cote">Formation</span><h2 class="sec-title">Entre <em>Paris et Cambridge</em></h2></div>
-    <p>Deux écoles, deux traditions juridiques. Survolez ou touchez une carte pour la retourner.</p></div>
-  <div class="flips" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">
-    <button class="flip" type="button" aria-pressed="false" aria-label="LL.M., Harvard Law School : afficher le détail"><span class="flip-in">
-      <span class="flip-f"><span class="hint"><span>Cambridge, MA</span><span>Retourner</span></span><span class="deg">LL.M.</span><span class="sch">Harvard Law School</span></span>
-      <span class="flip-b"><b>Common law</b><p>Une immersion dans la common law et la procédure pénale américaine, utile aux dossiers internationaux.{T}</p></span></span></button>
-    <button class="flip" type="button" aria-pressed="false" aria-label="Master, Sciences Po : afficher le détail"><span class="flip-in">
-      <span class="flip-f"><span class="hint"><span>Paris</span><span>Retourner</span></span><span class="deg">Master</span><span class="sch">École de droit de Sciences Po</span></span>
-      <span class="flip-b"><b>Contentieux</b><p>Une formation exigeante, ouverte sur le contentieux et l'international.{T}</p></span></span></button>
-    <button class="flip" type="button" aria-pressed="false" aria-label="Barreaux : afficher le détail"><span class="flip-in">
-      <span class="flip-f"><span class="hint"><span>Inscription</span><span>Retourner</span></span><span class="deg">Paris</span><span class="sch">Barreau de Paris · New York{T}</span></span>
-      <span class="flip-b"><b>Serment 2025</b><p>Inscription aux barreaux de Paris et de New York mentionnée sur sa fiche professionnelle, à confirmer avant publication.</p></span></span></button>
+<section class="arch" aria-label="Tribunal judiciaire de Paris" style="margin-top:0">
+  <img src="assets/img/tribunal-judiciaire-paris-architecture.webp" width="1600" height="520" loading="lazy" alt="Verrières de la salle des pas perdus du tribunal judiciaire de Paris">
+  <div class="wrap"><div class="arch-note reveal">
+    <blockquote>« La défense pénale demande de connaître le dossier mieux que quiconque, d'être présent quand tout se décide, et de dire la vérité à la personne défendue. »</blockquote>
+    <p class="eyebrow">Formulation proposée, à valider</p></div></div>
+</section>
+
+<section class="section"><div class="wrap sec-grid">
+  <div class="sec-side"><div class="sticky"><p class="eyebrow">Formation</p><h2>Deux écoles, <em>deux traditions juridiques</em></h2></div></div>
+  <div class="sec-main">
+    <div class="cv" style="margin-top:0"><h3>Formation</h3><dl>
+      <div><dt>LL.M., Harvard Law School</dt><dd>Cambridge, Massachusetts. Une immersion dans la common law et la procédure pénale américaine, utile aux dossiers internationaux.{T}</dd></div>
+      <div><dt>Master en droit, École de droit de Sciences Po</dt><dd>Paris. Une formation exigeante, ouverte sur le contentieux et l'international.{T}</dd></div>
+    </dl></div>
+    <div class="cv"><h3>Expérience</h3><dl>
+      <div><dt>Fedida &amp; Associés</dt><dd>Cabinet de défense pénale, Paris{T}</dd></div>
+      <div><dt>Schapira Associés</dt><dd>Cabinet de défense pénale, Paris{T}</dd></div>
+      <div><dt>Parquet de Paris</dt><dd>Ministère public{T}</dd></div>
+      <div><dt>Ministère de l'Économie</dt><dd>Administration centrale{T}</dd></div>
+    </dl></div>
+    <div class="cv"><h3>Inscription et langues</h3><dl>
+      <div><dt>Barreau de Paris</dt><dd>Prestation de serment en 2025{T}</dd></div>
+      <div><dt>Barreau de New York</dt><dd>Inscription mentionnée sur sa fiche professionnelle{T}</dd></div>
+      <div><dt>Langues de travail</dt><dd>Français, anglais, espagnol, arabe, corse{T}</dd></div>
+    </dl></div>
   </div>
 </div></section>
 
-<section class="section"><div class="wrap parcours">
-  <div class="reveal">
-    <span class="cote">Expériences</span>
-    <h2 class="sec-title" style="font-size:var(--step-3);max-width:18ch">Le pénal vu de <em>chaque côté</em> de la barre</h2>
-    <p style="margin-top:1.4rem;color:var(--ink-soft);max-width:52ch">Cabinets pénalistes reconnus, Parquet de Paris, ministère de l'Économie : une double perspective, celle de la défense et celle de l'accusation, qui nourrit sa manière de lire un dossier.{T}</p>
-    <div class="langs"><span>Français</span><span lang="en">English</span><span lang="es">Español</span><span lang="ar">العربية</span><span lang="co">Corsu</span></div>
-  </div>
-  <ul class="timeline stagger" style="margin:0">
-    <li><b>Fedida &amp; Associés</b><span>Défense pénale</span></li>
-    <li><b>Schapira Associés</b><span>Défense pénale</span></li>
-    <li><b>Parquet de Paris</b><span>Ministère public</span></li>
-    <li><b>Ministère de l'Économie</b><span>Administration</span></li>
-    <li><b>Barreau de Paris</b><span>Prestation de serment 2025</span></li>
-  </ul>
-</div></section>
-
-<section class="section--tight" style="padding-top:0"><div class="wrap">
-  <div class="final reveal">
-    <div class="txt"><span class="cote">La vision</span><h2>Connaître le dossier, être <em>présent</em>, dire la vérité.</h2>
-      <p>Trois exigences pour une défense pénale. Formulation proposée, à valider par Me Culioli-Paoli.</p>
-      <div class="hero-actions"><a class="btn btn--solid" href="/contact/">Rencontrer Charles Culioli-Paoli {{{{ARROW}}}}</a><a class="btn btn--ghost" href="/expertises/">Les expertises</a></div></div>
-    <div class="img"><img src="assets/img/charles-culioli-paoli-tribunal-paris.webp" width="1600" height="1200" loading="lazy" alt="Charles Culioli-Paoli en robe au tribunal judiciaire de Paris"></div>
-  </div>
-</div></section>"""
+""" + END_BAND.format(title="Rencontrer <em>Charles Culioli-Paoli</em>",
+                      text="Au cabinet, à Paris 8<sup>e</sup>, ou en visioconférence. Un premier échange permet d'analyser votre situation.")
 
 
 def expertises_hub(p):
-    stack = "".join(
-        f'''<a class="s-card" href="/{x["slug"]}/" style="--i:{i};--c:{COLORS[i]}">
-  <div class="l"><span class="k">Expertise {ROMAN[i]}</span><h3>{x["nav"]}</h3><p>{x["somm"]}</p>
-    <span class="chips">{"".join(f'<span class="chip">{c}</span>' for c in CHIPS[x["slug"]])}</span></div>
-  <div class="r"><span class="cta">{{{{ARROW}}}}</span><span class="big" aria-hidden="true">{ROMAN[i]}</span></div></a>'''
+    items = "".join(
+        f'<li><a href="/{x["slug"]}/"><span class="num">{i+1:02d}</span><h3>{x["nav"]}</h3><p>{x["somm"]}</p>{{{{ARROW}}}}</a></li>'
         for i, x in enumerate(EXPERTISES))
     return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Expertises</span><h1 style="margin-top:1rem">Les domaines <em>d'intervention</em> du cabinet</h1>
+<p class="eyebrow">Expertises</p><h1>Les domaines <em>d'intervention</em></h1>
 <p class="intro">Le cabinet de <strong>Me Charles Culioli-Paoli</strong> intervient en droit pénal, du premier acte d'enquête à l'exécution de la peine, en France et dans les dossiers internationaux.</p></div></section>
-<section class="section"><div class="wrap"><div class="stack">{stack}</div>
-<div class="list-cards" style="margin-top:3rem">
-  <a href="/avocat-garde-a-vue-paris/"><span><span class="cote">Procédure</span><h3>Garde à vue : vos droits et le rôle de l'avocat</h3></span><span class="arr">{{{{ARROW}}}}</span></a>
-  <a href="/guide-amenagement-de-peine/"><span><span class="cote">Guide</span><h3>Aménagement de peine : conditions, procédure et délais</h3></span><span class="arr">{{{{ARROW}}}}</span></a>
-</div>
-<p class="ref" style="margin-top:1.5rem">Mention déontologique : les domaines présentés sont des domaines d'activité dominante et non des mentions de spécialisation délivrées par le Conseil national des barreaux.</p>
-</div></section>"""
+<section class="section"><div class="wrap">
+<ol class="index-list stagger">{items}</ol>
+<div class="sec-grid" style="margin-top:var(--sp-5)">
+  <div class="sec-side"><p class="eyebrow">Procédures</p><h2 style="font-size:var(--fs-h3)">Une situation <em>précise</em>&nbsp;?</h2></div>
+  <div class="sec-main"><div class="related" style="margin-top:0">
+    <a href="/avocat-garde-a-vue-paris/"><b>Garde à vue</b><span>Les droits de la personne et le rôle de l'avocat</span></a>
+    <a href="/guide-amenagement-de-peine/"><b>Aménagement de peine</b><span>Conditions, procédure et délais</span></a>
+    <a href="/etablissements-penitentiaires/"><b>Personne détenue</b><span>Intervention en établissement pénitentiaire</span></a>
+  </div>
+  <p class="small muted" style="margin-top:1.5rem">Les domaines présentés sont des domaines d'activité dominante. Ils ne constituent pas des mentions de spécialisation délivrées par le Conseil national des barreaux.</p></div>
+</div></div></section>"""
 
 
 def ressources_body(p, RES):
     themes = ""
     for i, (theme, items) in enumerate(RES, 1):
         li = "".join(
-            (f'<a href="{u}"><span><span class="cote">{st}</span><h3>{t}</h3></span><span class="arr">{{{{ARROW}}}}</span></a>' if u else
-             f'<div class="muted"><span><span class="cote">{st}</span><h3>{t}</h3></span></div>')
+            (f'<li><a href="{u}"><span>{t}</span><span class="st">Lire</span></a></li>' if u else
+             f'<li><div class="soon"><span>{t}</span><span class="st">À paraître</span></div></li>')
             for t, u, st in items)
-        themes += f'<div class="theme"><span class="cote">Thème {i:02d}</span><h2>{theme}</h2><div class="list-cards" style="margin-top:1rem">{li}</div></div>'
+        themes += f'<div class="theme"><span class="num">{i:02d}</span><h2>{theme}</h2><ul>{li}</ul></div>'
     return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Ressources</span><h1 style="margin-top:1rem">Comprendre le droit pénal, <em>thème par thème</em></h1>
-<p class="intro">Des guides et des analyses rédigés par <strong>Me Charles Culioli-Paoli</strong> pour comprendre une procédure, connaître ses droits et préparer sa défense.</p></div></section>
+<p class="eyebrow">Ressources</p><h1>Comprendre le droit pénal, <em>thème par thème</em></h1>
+<p class="intro">Des guides rédigés par <strong>Me Charles Culioli-Paoli</strong> pour comprendre une procédure, connaître ses droits et préparer sa défense.</p></div></section>
 <section class="section"><div class="wrap">
-<div class="covers stagger" style="margin-bottom:1rem">
-  <a class="cover cover--gold" href="/guide-amenagement-de-peine/"><span class="meta"><span>Guide</span><span>6 min</span></span><h3>Aménagement de peine : conditions, procédure et délais</h3><span class="glyph" aria-hidden="true">A</span></a>
-  <a class="cover" href="/avocat-garde-a-vue-paris/"><span class="meta"><span>Procédure</span><span>4 min</span></span><h3>Garde à vue : vos droits et le rôle de l'avocat</h3><span class="glyph" aria-hidden="true">G</span></a>
-  <a class="cover cover--ink" href="/avocat-extradition/"><span class="meta"><span>International</span><span>5 min</span></span><h3>Mandat d'arrêt européen : les premières heures</h3><span class="glyph" aria-hidden="true">E</span></a>
+<div class="reads" style="margin-bottom:var(--sp-6)">
+  <a class="read-main" href="/guide-amenagement-de-peine/"><p class="eyebrow">À la une · Guide</p><h3>Aménagement de peine : conditions, procédure et délais</h3><p>Bracelet électronique, semi-liberté, libération conditionnelle : ce que prévoit le Code de procédure pénale et comment préparer la demande.</p></a>
+  <div class="read-list">
+    <a href="/avocat-garde-a-vue-paris/"><p class="eyebrow">Procédure</p><h3>Garde à vue : vos droits et le rôle de l'avocat</h3></a>
+    <a href="/avocat-extradition/"><p class="eyebrow">International</p><h3>Mandat d'arrêt européen : les premières heures</h3></a>
+  </div>
 </div>
-<div class="theme-grid">{themes}</div></div></section>"""
+<div class="themes">{themes}</div></div></section>"""
+
+
+HONORAIRES = {
+    "slug": "honoraires", "nav": "Honoraires", "prio": "P2", "schema_label": "WebPage",
+    "kw": "honoraires avocat pénaliste Paris", "kw2": ["tarif avocat pénaliste", "convention d'honoraires avocat", "prix avocat garde à vue"],
+    "title": "Honoraires d'avocat pénaliste à Paris | Culioli-Paoli",
+    "desc": "Comment sont fixés les honoraires de Me Charles Culioli-Paoli, avocat pénaliste à Paris : convention écrite, forfait ou temps passé, transparence.",
+    "h1_plain": "Honoraires",
+    "body": f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
+<div class="head-split">
+  <div><p class="eyebrow">Honoraires</p><h1>Des honoraires <em>clairs et convenus par écrit</em></h1>
+  <p class="intro">La loi impose une <strong>convention d'honoraires</strong> écrite entre l'avocat et son client. Elle précise le montant ou le mode de calcul des honoraires avant toute intervention.</p></div>
+  <aside class="head-aside"><dl>
+    <div><dt>Premier rendez-vous</dt><dd>Modalités à préciser{T}</dd></div>
+    <div><dt>Taux horaire indicatif</dt><dd>À préciser{T}</dd></div>
+    <div><dt>Paiement</dt><dd>Échelonnement possible selon le dossier{T}</dd></div>
+  </dl></aside>
+</div></div></section>
+<section class="section"><div class="wrap sec-grid">
+  <div class="sec-side"><div class="sticky"><p class="eyebrow">Principes</p><h2>Comment sont fixés <em>les honoraires</em></h2></div></div>
+  <div class="sec-main prose">
+    <p class="lead">Les honoraires tiennent compte de la complexité du dossier, du temps consacré, de l'urgence et des diligences nécessaires. Ils sont présentés lors du premier échange.</p>
+    <h3>Le forfait</h3>
+    <p>Adapté aux interventions bien délimitées : assistance en garde à vue, audience correctionnelle, requête en aménagement de peine.</p>
+    <h3>Le temps passé</h3>
+    <p>Adapté aux dossiers dont la durée est difficile à prévoir, comme une information judiciaire ou une affaire de droit pénal des affaires. Un relevé détaillé des diligences est communiqué.</p>
+    <h3>L'honoraire complémentaire de résultat</h3>
+    <p>Il peut s'ajouter à un honoraire fixe lorsque la convention le prévoit. La loi interdit en revanche un honoraire fixé uniquement en fonction du résultat.</p>
+    <h3>L'aide juridictionnelle</h3>
+    <p>Selon ses ressources, une personne peut bénéficier de l'aide juridictionnelle. Les conditions sont présentées sur <a href="https://www.service-public.fr/" target="_blank" rel="noopener">service-public.fr</a>.<span class="todo">acceptation à confirmer</span></p>
+    <p class="small muted">Référence : article 10 de la loi n° 71-1130 du 31 décembre 1971. Les montants seront affichés seulement si Me Culioli-Paoli souhaite les communiquer publiquement.</p>
+  </div>
+</div></section>
+""" + END_BAND.format(title="Obtenir une <em>estimation</em>", text="Décrivez votre situation : le cabinet vous indique le mode de facturation adapté avant toute intervention."),
+}

@@ -8,13 +8,12 @@ python3 build.py
 ```
 Les contenus sont dans `content.py`, `pages_expertises.py` et `pages_lieux.py`. Le style est dans `assets/site.css`, les interactions dans `assets/site.js`.
 
-## Direction artistique (v2)
-« Nuit d'audience » : un site sombre et profond, éclairé par touches de champagne. Fraunces Soft (serif ronde et puissante) et Manrope. Cartes arrondies, verre fumé, halo qui suit le curseur, photo inclinable en 3D, bandeau défilant, procédure en défilement horizontal, expertises en cartes empilées, diplômes en cartes qui se retournent, territoires en panneaux extensibles, recherche d'établissement pénitentiaire en direct.
+## Direction artistique (v4, retenue)
+« Éditorial parisien » : ivoire dominant, anthracite, bleu nuit en contrepoint (domaines, bandeaux de contact, pied de page), bronze réservé aux numéros. Cormorant Garamond pour les titres (H1 54 px, H2 37 px, H3 25 px) et Manrope pour le texte (16 px) et l'interface (13 px). Grille de 12 colonnes, compositions déséquilibrées, filets fins, aucun arrondi ni ombre. Audit, trois pistes comparées, design system et auto-évaluation : `direction-artistique.html`.
 
 ## Fonctionnalités
 * Bouton « Urgence pénale » : le numéro ne s'affiche qu'après un clic, puis devient cliquable (tel:) et copiable.
 * WhatsApp flottant (desktop) et barre d'actions fixe (mobile).
-* Frise interactive de la procédure pénale (clavier : flèches gauche et droite).
 * Formulaire de contact avec validation, mention de confidentialité, sans pièce jointe.
 * Filtres de la rubrique établissements pénitentiaires.
 * JSON-LD (LegalService, Attorney, Person, Service, FAQPage, BreadcrumbList, Article), Open Graph, canonical, sitemap.xml, robots.txt.

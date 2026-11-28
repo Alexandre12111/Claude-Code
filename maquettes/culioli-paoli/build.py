@@ -20,6 +20,7 @@ import os
 import re
 
 from content import PAGES, SITE
+from direction import DIRECTION
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 E = html.escape
@@ -37,9 +38,9 @@ ICON = {
 NAV = [
     ("charles-culioli-paoli-avocat", "Le cabinet"),
     ("expertises", "Expertises"),
-    ("interventions", "Interventions"),
-    ("etablissements-penitentiaires", "Établissements"),
+    ("interventions", "Territoires"),
     ("ressources", "Ressources"),
+    ("honoraires", "Honoraires"),
     ("contact", "Contact"),
 ]
 
@@ -62,29 +63,35 @@ def local_links(body):
 
 def header(slug):
     links = "".join(
-        f'<a href="{href(s)}"{" aria-current=\"page\"" if s == slug or slug.startswith(s + "/") else ""}>{l}</a>'
+        f'<a href="{href(s)}"{" aria-current=\"page\"" if s == slug else ""}>{l}</a>'
         for s, l in NAV)
-    dlinks = "".join(f'<a href="{href(s)}">{l}<span>0{i+1}</span></a>' for i, (s, l) in enumerate(NAV))
+    dlinks = "".join(f'<a href="{href(s)}">{l}</a>' for s, l in NAV)
     return f"""<a class="skip" href="#contenu">Aller au contenu</a>
-<div class="mock-flag">Maquette de travail · contenus soumis à la validation de Me Culioli-Paoli · <a href="plan-seo.html">Plan SEO page par page</a></div>
+<div class="mock-flag">Maquette de travail · contenus soumis à la validation de Me Culioli-Paoli · <a href="direction-artistique.html">Direction artistique</a> · <a href="plan-seo.html">Plan SEO</a></div>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="index.html" aria-label="Accueil, Charles Culioli-Paoli avocat">
-      <span class="mono" aria-hidden="true">CCP</span>
-      <span class="brand-name">Charles Culioli-Paoli<small>Avocat · Barreau de Paris</small></span>
+    <a class="brand" href="index.html" aria-label="Accueil, Charles Culioli-Paoli, avocat">
+      <span class="brand-name">Charles Culioli-Paoli</span>
+      <span class="brand-sub">Avocat au Barreau de Paris</span>
     </a>
     <nav class="nav" aria-label="Navigation principale">{links}</nav>
-    <button class="btn-urgence" type="button" data-urgence aria-haspopup="dialog"><span class="pulse" aria-hidden="true"></span><span>Urgence<span class="lbl-long"> pénale</span></span></button>
-    <button class="menu-toggle" type="button" data-menu-open aria-controls="drawer" aria-expanded="false" aria-label="Ouvrir le menu">{ICON["menu"]}</button>
+    <div class="head-actions">
+      <button class="urg-link" type="button" data-urgence aria-haspopup="dialog"><span class="dot" aria-hidden="true"></span>Urgence pénale</button>
+      <a class="btn btn--line btn--sm" href="contact.html">Rendez-vous</a>
+    </div>
+    <button class="menu-toggle" type="button" data-menu-open aria-controls="drawer" aria-expanded="false"><span>Menu</span></button>
   </div>
 </header>
 <div class="drawer" id="drawer" aria-hidden="true">
   <div class="drawer-top">
-    <a class="brand" href="index.html"><span class="mono" aria-hidden="true">CCP</span><span class="brand-name">Charles Culioli-Paoli</span></a>
-    <button class="menu-toggle" type="button" data-menu-close aria-label="Fermer le menu" style="display:grid">{ICON["close"]}</button>
+    <span class="brand-name">Charles Culioli-Paoli</span>
+    <button class="menu-toggle" type="button" data-menu-close style="display:inline-flex"><span>Fermer</span></button>
   </div>
-  <nav aria-label="Menu mobile"><a href="index.html">Accueil<span>00</span></a>{dlinks}</nav>
-  <button class="btn-urgence" type="button" data-urgence><span class="pulse" aria-hidden="true"></span>Urgence pénale · 24h/24</button>
+  <nav aria-label="Menu mobile"><a href="index.html">Accueil</a>{dlinks}</nav>
+  <div class="drawer-foot">
+    <button class="btn btn--solid" type="button" data-urgence>Urgence pénale</button>
+    <a class="btn btn--line" href="contact.html">Prendre rendez-vous</a>
+  </div>
 </div>"""
 
 
@@ -93,32 +100,38 @@ def footer():
     exp = "".join(f'<li><a href="{href(x["slug"])}">{E(x["nav"])}</a></li>' for x in PAGES if x.get("group") == "expertise")
     return f"""<footer class="site-footer">
   <div class="wrap">
-    <p class="foot-sign" aria-hidden="true">Charles <em>Culioli-Paoli</em></p>
+    <div class="foot-top">
+      <div>
+        <p class="foot-name">Charles Culioli-Paoli</p>
+        <p class="foot-role">Avocat au Barreau de Paris · Droit pénal</p>
+      </div>
+      <div class="foot-cta"><a class="btn btn--light" href="contact.html">Prendre rendez-vous</a><button class="urg-link urg-link--light" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button></div>
+    </div>
     <div class="foot-grid">
       <div>
         <h2>Cabinet</h2>
-        <p>Me Charles Culioli-Paoli<br>Avocat au Barreau de Paris<span class="todo">à confirmer : Barreau de New York</span></p>
-        <p style="margin-top:.8rem">{s["address"]}<span class="todo">adresse à confirmer</span></p>
-        <p style="margin-top:.8rem">Sur rendez-vous · <a href="contact.html">Écrire au cabinet</a></p>
+        <address>{s["address"]}<span class="todo">à confirmer</span><br>Bureau secondaire à Massy<span class="todo">à confirmer</span></address>
+        <p>Sur rendez-vous, au cabinet ou en visioconférence.</p>
       </div>
       <div><h2>Expertises</h2><ul>{exp}</ul></div>
-      <div><h2>Interventions</h2><ul>
+      <div><h2>Territoires</h2><ul>
         <li><a href="avocat-penaliste-paris.html">Paris</a></li>
         <li><a href="avocat-penaliste-essonne.html">Essonne</a></li>
-        <li><a href="interventions.html">Régions et territoires</a></li>
         <li><a href="etablissements-penitentiaires.html">Établissements pénitentiaires</a></li>
         <li><a href="avocat-centre-penitentiaire-fleury-merogis.html">Fleury-Mérogis</a></li>
+        <li><a href="interventions.html">Autres territoires</a></li>
       </ul></div>
-      <div><h2>Repères</h2><ul>
+      <div><h2>Informations</h2><ul>
+        <li><a href="charles-culioli-paoli-avocat.html">Le cabinet</a></li>
+        <li><a href="honoraires.html">Honoraires</a></li>
         <li><a href="avocat-garde-a-vue-paris.html">Garde à vue</a></li>
         <li><a href="ressources.html">Ressources</a></li>
-        <li><a href="guide-amenagement-de-peine.html">Guide de l'aménagement de peine</a></li>
-        <li><a href="mentions-legales.html">Mentions légales</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul></div>
     </div>
     <div class="foot-legal">
-      <span>© {datetime.date.today().year} Charles Culioli-Paoli, avocat. Les informations publiées sur ce site ont une valeur générale et ne constituent pas une consultation juridique.</span>
-      <span><a href="mentions-legales.html">Mentions légales</a> · <a href="mentions-legales.html#donnees">Données personnelles</a> · <a href="mentions-legales.html#cookies">Cookies</a></span>
+      <span>© {datetime.date.today().year} Charles Culioli-Paoli, avocat. Informations générales ne constituant pas une consultation juridique.</span>
+      <span><a href="mentions-legales.html">Mentions légales</a><a href="mentions-legales.html#donnees">Confidentialité</a><a href="mentions-legales.html#cookies">Cookies</a></span>
     </div>
   </div>
 </footer>"""
@@ -129,26 +142,26 @@ def chrome_end():
     return f"""<dialog class="urgence" id="urgence" aria-labelledby="urg-title">
   <div class="urg-in">
     <button class="urg-close" type="button" data-urg-close aria-label="Fermer">{ICON["close"]}</button>
-    <span class="cote">Urgence pénale · 24h/24, 7j/7<span class="todo">disponibilité à confirmer</span></span>
-    <h2 id="urg-title">Garde à vue, perquisition, déferrement&nbsp;?</h2>
+    <p class="eyebrow">Urgence pénale · 24h/24, 7j/7<span class="todo">à confirmer</span></p>
+    <h2 id="urg-title">Garde à vue, perquisition, déferrement</h2>
     <p>Une personne placée en garde à vue peut demander l'assistance d'un avocat dès le début de la mesure. Communiquez aux enquêteurs le nom de Me Charles Culioli-Paoli, ou appelez directement le cabinet.</p>
-    <button class="btn btn--solid urg-reveal" id="urg-reveal" type="button" data-n="{s["tel"]}" data-d="{s["tel_display"]}">{ICON["phone"]} Afficher le numéro d'urgence</button>
+    <button class="btn btn--light urg-reveal" id="urg-reveal" type="button" data-n="{s["tel"]}" data-d="{s["tel_display"]}">Afficher le numéro d'urgence</button>
     <div class="urg-number" id="urg-number" hidden>
       <a class="tel" href="#">…</a>
       <div class="row">
-        <a class="btn btn--ghost" href="{s["whatsapp"]}" rel="noopener" target="_blank">{ICON["wa"]} WhatsApp</a>
-        <button class="btn btn--ghost" type="button" id="urg-copy">{ICON["phone"]} <span>Copier le numéro</span></button>
+        <a class="link link--light" href="{s["whatsapp"]}" rel="noopener" target="_blank">Écrire sur WhatsApp</a>
+        <button class="link link--light" type="button" id="urg-copy"><span>Copier le numéro</span></button>
       </div>
       <p class="urg-law">Article 63-3-1 du Code de procédure pénale : dès le début de la garde à vue, la personne peut demander à être assistée par un avocat. Elle a également le droit de se taire.</p>
     </div>
-    <p class="ref" style="margin-top:1.2rem;color:var(--on-night-soft)">Numéro provisoire de maquette<span class="todo">numéro à fournir</span></p>
+    <p class="urg-note">Numéro provisoire de maquette<span class="todo">numéro à fournir</span></p>
   </div>
 </dialog>
-<a class="wa-float" href="{s["whatsapp"]}" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp"><span class="ic">{ICON["wa"]}</span>WhatsApp</a>
+<a class="wa-float" href="{s["whatsapp"]}" target="_blank" rel="noopener" aria-label="Écrire au cabinet sur WhatsApp">{ICON["wa"]}</a>
 <nav class="mbar" aria-label="Actions rapides">
-  <button type="button" class="u" data-urgence>{ICON["phone"]}Urgence</button>
-  <a href="{s["whatsapp"]}" target="_blank" rel="noopener">{ICON["wa"]}WhatsApp</a>
-  <a href="contact.html">{ICON["mail"]}Écrire</a>
+  <button type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence</button>
+  <a href="{s["whatsapp"]}" target="_blank" rel="noopener">WhatsApp</a>
+  <a href="contact.html">Rendez-vous</a>
 </nav>
 <script src="assets/site.js" defer></script>"""
 
@@ -211,7 +224,7 @@ def crumbs_html(p):
 def faq_html(p):
     if not p.get("faq"):
         return ""
-    items = "".join(f"<details><summary>{E(q)}</summary><div><p>{a}</p></div></details>" for q, a in p["faq"])
+    items = "".join(f"<details><summary>{q}</summary><div><p>{a}</p></div></details>" for q, a in p["faq"])
     return f'<h2 id="faq">Questions fréquentes</h2><div class="faq">{items}</div>'
 
 
@@ -244,14 +257,14 @@ def render(p):
 <meta name="theme-color" content="#F6F2EA">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Lato:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Manrope:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="assets/site.css">
 <script type="application/ld+json">
 {jsonld(p)}
 </script>
 </head>
 <body>
-{header(p.get("nav_slug", p["slug"]))}
+{header(p.get("nav_slug", "expertises" if p.get("group") in ("expertise", "procedure") else p["slug"]))}
 <main id="contenu">
 {body}
 </main>
@@ -269,15 +282,15 @@ def seo_plan():
             continue
         tl, dl = len(p["title"]), len(p["desc"])
         ok = lambda c: '<span class="pill pill--on">OK</span>' if c else '<span class="pill">À revoir</span>'
-        rows.append(f"""<tr><td><b>{E(p["nav"])}</b><br><span class="ref">/{"" if p["slug"] == "index" else p["slug"] + "/"}</span></td>
-<td>{E(p["kw"])}<br><span class="ref">{E(", ".join(p.get("kw2", [])))}</span></td>
-<td>{E(p["title"])}<br><span class="ref">{tl} car.</span> {ok(45 <= tl <= 62)}</td>
-<td>{E(p["desc"])}<br><span class="ref">{dl} car.</span> {ok(135 <= dl <= 162)}</td>
+        rows.append(f"""<tr><td><b>{E(p["nav"])}</b><br><span class="small muted">/{"" if p["slug"] == "index" else p["slug"] + "/"}</span></td>
+<td>{E(p["kw"])}<br><span class="small muted">{E(", ".join(p.get("kw2", [])))}</span></td>
+<td>{E(p["title"])}<br><span class="small muted">{tl} car.</span> {ok(45 <= tl <= 62)}</td>
+<td>{E(p["desc"])}<br><span class="small muted">{dl} car.</span> {ok(135 <= dl <= 162)}</td>
 <td>{E(p["h1_plain"])}</td><td>{E(p.get("schema_label", p.get("schema", "WebPage")))}</td><td>{E(p.get("prio", ""))}</td></tr>""")
     body = f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
 <h1>Plan SEO <em>page par page</em></h1>
 <p class="intro">Contrôle des règles Rank Math pour chaque page de la maquette : mot-clé principal, title (50 à 60 caractères), meta description (140 à 160 caractères), H1 unique et schéma. Page interne, non indexée.</p></div></section>
-<section class="section--tight"><div class="wrap"><div class="table-wrap"><table>
+<section class="section"><div class="wrap"><div class="table-wrap"><table>
 <thead><tr><th>Page et URL</th><th>Mot-clé principal et secondaires</th><th>SEO title</th><th>Meta description</th><th>H1</th><th>Schema</th><th>Priorité</th></tr></thead>
 <tbody>{"".join(rows)}</tbody></table></div></div></section>"""
     return {"slug": "plan-seo", "nav": "Plan SEO", "title": "Plan SEO de la maquette | Charles Culioli-Paoli",
@@ -285,7 +298,7 @@ def seo_plan():
 
 
 def main():
-    pages = PAGES + [seo_plan()]
+    pages = PAGES + [seo_plan(), DIRECTION]
     for p in pages:
         out = os.path.join(ROOT, href(p["slug"]))
         open(out, "w", encoding="utf-8").write(render(p))

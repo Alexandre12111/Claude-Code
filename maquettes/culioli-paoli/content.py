@@ -45,105 +45,16 @@ CABINET = {
     "title": "Charles Culioli-Paoli, avocat | Parcours et vision",
     "desc": "Le parcours de Me Charles Culioli-Paoli, avocat pénaliste à Paris : LL.M. de Harvard Law School, Master de Sciences Po, et sa vision de la défense pénale.",
     "h1_plain": "Charles Culioli-Paoli, avocat",
-    "body": f"""
-<section class="page-head"><div class="wrap">
-{{{{CRUMBS}}}}
-<div class="head-split">
-  <div><span class="cote">Le cabinet</span>
-    <h1 style="margin-top:1rem">Charles Culioli-Paoli, <em>avocat</em></h1>
-    <p class="intro">Avocat pénaliste indépendant installé à Paris, <strong>Charles Culioli-Paoli</strong> a construit sa pratique entre la rigueur académique de Sciences Po et de Harvard Law School et l'expérience concrète des cabinets pénalistes et du Parquet de Paris.</p></div>
-  <aside class="head-aside"><dl>
-    <div><dt>Prestation de serment</dt><dd>2025{T}</dd></div>
-    <div><dt>Barreaux</dt><dd>Paris · New York{T}</dd></div>
-    <div><dt>Cabinet</dt><dd>Paris 8<sup>e</sup> · Massy{T}</dd></div>
-  </dl></aside>
-</div></div></section>
-
-<section class="section"><div class="wrap folio">
-  <div class="folio-margin"><span class="cote">Pièce 1 · Le portrait</span></div>
-  <div class="folio-body parcours">
-    <div class="parcours-photo"><img src="assets/img/charles-culioli-paoli-portrait.webp" width="400" height="400" alt="Portrait de Charles Culioli-Paoli, avocat au Barreau de Paris"></div>
-    <div class="prose">
-      <p class="lead">Défendre, c'est d'abord comprendre une personne, puis un dossier.</p>
-      <p>Charles Culioli-Paoli exerce en droit pénal, aux côtés des personnes mises en cause comme des victimes. Sa pratique couvre l'ensemble de la chaîne pénale : garde à vue, enquête, information judiciaire, audience et exécution des peines.</p>
-      <p>Il porte une attention particulière aux dossiers qui exigent une lecture technique (droit pénal des affaires, cybercriminalité) et à ceux qui franchissent les frontières (extradition, mandat d'arrêt européen, entraide pénale).</p>
-      <p class="ref">Texte de présentation proposé, à réécrire avec Me Culioli-Paoli pour refléter sa voix.</p>
-    </div>
-  </div>
-</div></section>
-
-<section class="dark section"><div class="wrap folio">
-  <div class="folio-margin"><span class="cote">Pièce 2 · Formation</span><span class="note">Deux écoles, deux traditions juridiques.</span></div>
-  <div class="folio-body">
-    <h2 class="sec-title">Une formation entre <em>Paris et Cambridge</em></h2>
-    <div class="principes" style="margin-top:2.5rem">
-      <div style="border-color:var(--champagne)"><span class="cote">Cambridge, Massachusetts</span><h3 style="font-size:var(--step-3);font-weight:300;margin-top:.6rem">LL.M., Harvard Law School</h3><p style="color:var(--on-night-soft)">Une immersion dans la common law et la procédure pénale américaine, utile pour les dossiers internationaux et le dialogue avec les confrères étrangers.{T}</p></div>
-      <div style="border-color:var(--champagne)"><span class="cote">Paris</span><h3 style="font-size:var(--step-3);font-weight:300;margin-top:.6rem">Master, École de droit de Sciences Po</h3><p style="color:var(--on-night-soft)">Une formation exigeante, ouverte sur le contentieux et l'international.{T}</p></div>
-      <div style="border-color:var(--champagne)"><span class="cote">Barreau</span><h3 style="font-size:var(--step-3);font-weight:300;margin-top:.6rem">Paris, New York</h3><p style="color:var(--on-night-soft)">Inscription aux barreaux de Paris et de New York, mentionnée sur sa fiche professionnelle.{T}</p></div>
-    </div>
-  </div>
-</div></section>
-
-<section class="section"><div class="wrap folio">
-  <div class="folio-margin"><span class="cote">Pièce 3 · Expériences</span></div>
-  <div class="folio-body prose">
-    <h2 style="margin-top:0">Le pénal vu de chaque côté de la barre</h2>
-    <p>Avant de prêter serment, Charles Culioli-Paoli s'est formé auprès de cabinets reconnus de la place parisienne, dont Fedida &amp; Associés et Schapira Associés. Il a également acquis une expérience au Parquet de Paris et au ministère de l'Économie.{T}</p>
-    <p>Cette double perspective, celle de la défense et celle de l'accusation, nourrit sa manière de lire un dossier : anticiper les arguments adverses, mesurer les risques, identifier les marges de manœuvre.</p>
-    <ul class="experiences">
-      <li><span>Fedida &amp; Associés</span><span>Défense pénale</span></li>
-      <li><span>Schapira Associés</span><span>Défense pénale</span></li>
-      <li><span>Parquet de Paris</span><span>Ministère public</span></li>
-      <li><span>Ministère de l'Économie</span><span>Administration</span></li>
-    </ul>
-    <p class="ref">Dates, fonctions exactes et intitulés à compléter et valider.</p>
-  </div>
-</div></section>
-
-<section class="section" style="background:var(--paper-2)"><div class="wrap folio">
-  <div class="folio-margin"><span class="cote">Pièce 4 · Vision</span></div>
-  <div class="folio-body">
-    <p class="manifeste">La défense pénale demande trois choses : <em>connaître le dossier</em> mieux que quiconque, être présent quand tout se décide, et dire à la personne défendue la vérité sur sa situation.</p>
-    <p class="ref" style="margin-top:1rem">Formulation proposée, à valider par Me Culioli-Paoli.</p>
-    <div class="principes">
-      <div><h3>La plaidoirie</h3><p>Une parole préparée, précise, qui part des pièces et parle au juge comme aux jurés.</p></div>
-      <div><h3>L'international</h3><p>Une aisance en anglais et en espagnol pour les dossiers qui dépassent les frontières.</p></div>
-      <div><h3>Les langues</h3><p>Français, anglais, espagnol, arabe et corse : parler à chacun dans sa langue.{T}</p></div>
-    </div>
-  </div>
-</div></section>
-
-<section class="contact-band"><div class="wrap">
-  <div class="cb"><span class="cote">Rendez-vous</span><h2 style="margin-top:.8rem">Rencontrer <em>Charles Culioli-Paoli</em></h2>
-    <p>Au cabinet, à Paris, ou en visioconférence.</p><a class="btn btn--solid" href="/contact/">Prendre rendez-vous {{{{ARROW}}}}</a></div>
-  <div class="cb"><span class="cote">Expertises</span><h2 style="margin-top:.8rem">Sept domaines <em>d'intervention</em></h2>
-    <p>Droit pénal général, pénal des affaires, extradition, international, aménagement de peine, cybercriminalité, plaidoirie.</p><a class="btn btn--ghost" href="/expertises/">Voir les expertises {{{{ARROW}}}}</a></div>
-</div></section>""",
+    "body": None,  # voir pages_cabinet.py
 }
 
 # ---------------------------------------------------------------------------- Hub expertises
-def expertises_hub(p):
-    som = "".join(
-        f'<li><a href="/{x["slug"]}/"><h3>{x["nav"]}</h3><p>{x["somm"]}</p><span class="arrow">{{{{ARROW}}}}</span></a></li>'
-        for x in EXPERTISES)
-    return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Expertises</span><h1 style="margin-top:1rem">Les domaines <em>d'intervention</em> du cabinet</h1>
-<p class="intro">Le cabinet de <strong>Me Charles Culioli-Paoli</strong> intervient en droit pénal, du premier acte d'enquête à l'exécution de la peine, en France et dans les dossiers internationaux.</p></div></section>
-<section class="section"><div class="wrap folio">
-  <div class="folio-margin"><span class="cote">Sommaire</span><span class="note">Cliquez sur un domaine pour le détail.</span></div>
-  <div class="folio-body"><ul class="sommaire" style="margin-top:0">{som}</ul>
-  <div class="prose" style="margin-top:3rem"><h2 style="margin-top:0">Une procédure en particulier&nbsp;?</h2>
-  <p>Consultez la page dédiée à la <a href="/avocat-garde-a-vue-paris/">garde à vue</a> ou le <a href="/guide-amenagement-de-peine/">guide de l'aménagement de peine</a>.</p>
-  <p class="ref">Mention déontologique : les domaines présentés sont des domaines d'activité dominante. Ils ne constituent pas des mentions de spécialisation délivrées par le Conseil national des barreaux.</p></div></div>
-</div></section>"""
-
-
 EXP_HUB = {
     "slug": "expertises", "nav": "Expertises", "prio": "P1", "schema_label": "CollectionPage",
     "kw": "avocat droit pénal Paris", "kw2": ["expertises avocat pénaliste", "domaines d'intervention avocat"],
     "title": "Expertises en droit pénal | Me Charles Culioli-Paoli",
     "desc": "Droit pénal général, pénal des affaires, extradition, droit pénal international, aménagement de peine, cybercriminalité et plaidoirie : les expertises du cabinet.",
-    "h1_plain": "Les domaines d'intervention du cabinet", "body": expertises_hub,
+    "h1_plain": "Les domaines d'intervention", "body": None,
 }
 
 # ---------------------------------------------------------------------------- Ressources
@@ -162,27 +73,12 @@ RES = [
 ]
 
 
-def ressources_body(p):
-    blocks = ""
-    for i, (theme, items) in enumerate(RES, 1):
-        li = "".join(
-            (f'<a href="{u}"><span class="cote">{st}</span><h3>{t}</h3></a>' if u else
-             f'<div style="padding:1.2rem 0;border-top:1px solid var(--rule);opacity:.7"><span class="cote">{st}</span><h3 style="font-size:var(--step-2);margin-top:.4rem">{t}</h3></div>')
-            for t, u, st in items)
-        blocks += f"""<div class="folio" style="margin-top:3rem"><div class="folio-margin"><span class="cote">Thème {i:02d}</span></div>
-<div class="folio-body"><h2 class="sec-title" style="font-size:var(--step-3)">{theme}</h2><div class="edito-list" style="margin-top:1rem">{li}</div></div></div>"""
-    return f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Ressources</span><h1 style="margin-top:1rem">Comprendre le droit pénal, <em>thème par thème</em></h1>
-<p class="intro">Des guides et des analyses rédigés par <strong>Me Charles Culioli-Paoli</strong> pour comprendre une procédure, connaître ses droits et préparer sa défense. Pas d'actualités au fil de l'eau : des contenus organisés et mis à jour.</p></div></section>
-<section class="section"><div class="wrap">{blocks}</div></section>"""
-
-
 RESSOURCES = {
     "slug": "ressources", "nav": "Ressources", "prio": "P2", "schema_label": "CollectionPage",
     "kw": "guide procédure pénale", "kw2": ["comprendre la procédure pénale", "droits garde à vue", "aménagement de peine guide"],
     "title": "Ressources en droit pénal | Guides de Me Culioli-Paoli",
     "desc": "Guides pratiques et analyses en droit pénal : garde à vue, aménagement de peine, extradition, pénal des affaires et cybercriminalité, classés par thème.",
-    "h1_plain": "Comprendre le droit pénal, thème par thème", "body": ressources_body,
+    "h1_plain": "Comprendre le droit pénal, thème par thème", "body": None,
 }
 
 # ---------------------------------------------------------------------------- Guide
@@ -196,10 +92,10 @@ GUIDE = {
     "faq": [("Combien de temps dure la procédure&nbsp;?", "Les délais varient selon les juridictions et la situation de la personne. Il faut compter plusieurs semaines, parfois plusieurs mois, entre le dépôt de la requête et le débat contradictoire."),
             ("Peut-on demander un aménagement sans avocat&nbsp;?", "Oui, mais l'assistance d'un avocat permet de construire un dossier complet et de défendre le projet lors du débat devant le juge.")],
     "body": f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Guide · Exécution des peines</span>
-<h1 style="margin-top:1rem">Aménagement de peine : <em>conditions, procédure et délais</em></h1>
+<p class="eyebrow">Guide · Exécution des peines</p>
+<h1>Aménagement de peine : <em>conditions, procédure et délais</em></h1>
 <p class="intro">Ce guide présente les principales mesures d'<strong>aménagement de peine</strong>, les conditions prévues par le Code de procédure pénale et la manière de préparer une demande devant le juge de l'application des peines.</p>
-<p class="ref" style="color:var(--on-night-soft);margin-top:1.2rem">Par Me Charles Culioli-Paoli · Mis à jour le 27 novembre 2026 · Lecture : 6 minutes</p></div></section>
+<p class="small muted" style="margin-top:1.4rem">Par Me Charles Culioli-Paoli · Mis à jour le 27 novembre 2026 · Lecture : 6 minutes</p></div></section>
 <section class="section"><div class="wrap article">
 <article class="prose">
 <h2 id="principe" style="margin-top:0">Le principe</h2>
@@ -223,16 +119,16 @@ GUIDE = {
 <li><div><b>Montrer l'indemnisation des victimes</b><span>Versements effectués, échéancier, démarches engagées.</span></div></li>
 <li><div><b>Documenter le suivi</b><span>Soins, suivi addictologique, attaches familiales.</span></div></li>
 </ol>
-<div class="callout" style="margin-top:2rem">Le projet compte autant que les conditions légales : un dossier précis et vérifiable rassure le juge.<small>Pour un accompagnement, consultez la page <a href="/avocat-amenagement-de-peine/">avocat en aménagement de peine</a>.</small></div>
+<div class="callout">Le projet compte autant que les conditions légales : un dossier précis et vérifiable rassure le juge.<small>Pour un accompagnement, consultez la page <a href="/avocat-amenagement-de-peine/">avocat en aménagement de peine</a>.</small></div>
 <h2 id="recours">Les recours</h2>
 <p>Les décisions du juge de l'application des peines peuvent faire l'objet d'un appel devant la chambre de l'application des peines de la cour d'appel, dans des délais brefs fixés par le Code de procédure pénale.</p>
-<p class="ref">Sources : Code de procédure pénale, articles 707 et suivants, sur <a href="https://www.legifrance.gouv.fr/" rel="noopener" target="_blank">Légifrance</a> ; fiches pratiques sur <a href="https://www.justice.fr/" rel="noopener" target="_blank">justice.fr</a>.</p>
+<p class="small muted">Sources : Code de procédure pénale, articles 707 et suivants, sur <a href="https://www.legifrance.gouv.fr/" rel="noopener" target="_blank">Légifrance</a> ; fiches pratiques sur <a href="https://www.justice.fr/" rel="noopener" target="_blank">justice.fr</a>.</p>
 {{{{FAQ}}}}
 </article>
-<aside class="toc" aria-label="Sommaire"><span class="eyebrow">Sommaire</span><ol>
+<aside class="toc" aria-label="Sommaire"><p class="eyebrow">Sommaire</p><ol>
 <li><a href="#principe">Le principe</a></li><li><a href="#quand">À quel moment</a></li><li><a href="#mesures">Les mesures</a></li>
 <li><a href="#dossier">Préparer le dossier</a></li><li><a href="#recours">Les recours</a></li><li><a href="#faq">Questions fréquentes</a></li></ol>
-<div class="aside-cta"><span class="cote">Accompagnement</span><p>Préparer une requête et la défendre devant le juge.</p><a class="btn btn--solid" href="/contact/">Prendre contact</a></div></aside>
+<div class="aside-cta"><p class="eyebrow">Accompagnement</p><p>Préparer une requête et la défendre devant le juge.</p><a class="link" href="/avocat-amenagement-de-peine/">Avocat en aménagement de peine {{{{ARROW}}}}</a></div></aside>
 </div></section>""",
 }
 
@@ -244,9 +140,9 @@ CONTACT = {
     "desc": "Prendre rendez-vous avec Me Charles Culioli-Paoli, avocat pénaliste à Paris 8e : formulaire, WhatsApp ou ligne d'urgence pénale pour une garde à vue.",
     "h1_plain": "Contacter le cabinet",
     "body": f"""<section class="page-head"><div class="wrap">{{{{CRUMBS}}}}
-<span class="cote">Contact</span><h1 style="margin-top:1rem">Contacter <em>le cabinet</em></h1>
+<p class="eyebrow">Contact</p><h1>Contacter <em>le cabinet</em></h1>
 <p class="intro">Pour une situation urgente, utilisez la <strong>ligne d'urgence pénale</strong>. Pour toute autre demande, le formulaire ci-dessous permet d'exposer brièvement votre situation.</p>
-<div class="hero-actions"><button class="btn btn--solid" type="button" data-urgence>{{{{PHONE}}}} Urgence pénale</button><a class="btn btn--ghost" href="{SITE["whatsapp"]}" target="_blank" rel="noopener">{{{{WA}}}} WhatsApp</a></div></div></section>
+<div class="hero-actions"><button class="urg-link" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button><a class="link" href="{SITE["whatsapp"]}" target="_blank" rel="noopener">Écrire sur WhatsApp</a></div></div></section>
 <section class="section"><div class="wrap article">
 <div>
   <form id="contact-form" class="form-card" novalidate>
@@ -258,20 +154,20 @@ CONTACT = {
       <div class="field field--full"><label for="domaine">Domaine juridique concerné</label><select id="domaine" name="domaine" required><option value="">Choisir</option><option>Droit pénal général</option><option>Droit pénal des affaires</option><option>Extradition</option><option>Droit pénal international</option><option>Aménagement de peine</option><option>Cybercriminalité</option><option>Je ne sais pas</option></select><span class="err" aria-live="polite"></span></div>
       <div class="field field--full"><label for="message">Message</label><textarea id="message" name="message" required aria-describedby="msg-help"></textarea><span class="help" id="msg-help">Décrivez la situation en quelques lignes : nature de la procédure, juridiction, échéance éventuelle. Ne joignez aucune pièce.</span><span class="err" aria-live="polite"></span></div>
       <div class="field--full confid"><b>Confidentialité.</b> Ce formulaire sert uniquement à une première prise de contact. N'y indiquez pas d'informations détaillées sur les faits ni de documents sensibles : ils seront échangés directement avec l'avocat, dans un cadre couvert par le secret professionnel.</div>
-      <div class="field--full"><label class="check"><input type="checkbox" id="rgpd" name="rgpd"> <span>J'accepte que mes données soient utilisées pour être recontacté par le cabinet. Elles ne sont jamais transmises à des tiers. <a href="/mentions-legales/#donnees">Politique de confidentialité</a></span></label><span class="err" id="rgpd-err" aria-live="polite" style="color:var(--danger);font-size:.82rem"></span></div>
-      <div class="field--full"><button class="btn btn--solid" type="submit">Envoyer la demande {{{{ARROW}}}}</button></div>
+      <div class="field--full"><label class="check"><input type="checkbox" id="rgpd" name="rgpd"> <span>J'accepte que mes données soient utilisées pour être recontacté par le cabinet. Elles ne sont jamais transmises à des tiers. <a href="/mentions-legales/#donnees">Politique de confidentialité</a></span></label><span class="err" id="rgpd-err" aria-live="polite" style="display:block;color:var(--danger);font-size:var(--fs-small)"></span></div>
+      <div class="field--full"><button class="btn" type="submit">Envoyer la demande</button></div>
     </div>
   </form>
-  <div class="form-success" id="form-success" tabindex="-1" hidden><span class="cote">Maquette</span><h2 style="font-size:var(--step-2);margin-top:.5rem">Demande prête à être envoyée</h2><p style="margin-top:.6rem;color:var(--ink-soft)">Dans la maquette, aucune donnée n'est transmise. Sur le site final, le cabinet confirmera la réception par email.</p></div>
+  <div class="form-success" id="form-success" tabindex="-1" hidden><p class="eyebrow">Maquette</p><h2 style="font-size:var(--fs-h3);margin-top:.6rem">Demande prête à être envoyée</h2><p>Dans la maquette, aucune donnée n'est transmise. Sur le site final, le cabinet confirmera la réception par email.</p></div>
 </div>
-<aside class="toc" aria-label="Coordonnées"><span class="eyebrow">Cabinet</span>
+<aside class="toc" aria-label="Coordonnées"><p class="eyebrow">Cabinet</p>
   <dl class="fiche" style="grid-template-columns:1fr">
     <div><dt>Adresse</dt><dd>264 rue du Faubourg Saint-Honoré<br>75008 Paris{T}</dd></div>
     <div><dt>Second bureau</dt><dd>Massy (91){T}</dd></div>
     <div><dt>Rendez-vous</dt><dd>Au cabinet ou en visioconférence</dd></div>
     <div><dt>Langues</dt><dd>Français, anglais, espagnol, arabe, corse</dd></div>
   </dl>
-  <div class="aside-cta"><span class="cote">Garde à vue en cours</span><p>N'attendez pas une réponse par email.</p><button class="btn btn--solid" type="button" data-urgence>Urgence pénale</button></div>
+  <div class="aside-cta"><p class="eyebrow">Garde à vue en cours</p><p>N'attendez pas une réponse par email.</p><button class="urg-link" type="button" data-urgence><span class="dot" aria-hidden="true"></span>Urgence pénale</button></div>
 </aside>
 </div></section>""",
 }
@@ -294,9 +190,9 @@ MENTIONS = {
 </div></div></section>""",
 }
 
-from pages_cabinet import CABINET_BODY, expertises_hub as _eh, ressources_body as _rb  # noqa: E402
+from pages_cabinet import CABINET_BODY, HONORAIRES, expertises_hub as _eh, ressources_body as _rb  # noqa: E402
 CABINET["body"] = CABINET_BODY
 EXP_HUB["body"] = _eh
 RESSOURCES["body"] = lambda p: _rb(p, RES)
 
-PAGES = [HOME, CABINET, EXP_HUB] + EXPERTISES + [GAV] + LIEUX + [RESSOURCES, GUIDE, CONTACT, MENTIONS]
+PAGES = [HOME, CABINET, EXP_HUB] + EXPERTISES + [GAV] + LIEUX + [RESSOURCES, GUIDE, HONORAIRES, CONTACT, MENTIONS]
